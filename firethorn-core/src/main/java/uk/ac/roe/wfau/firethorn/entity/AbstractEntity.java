@@ -41,7 +41,9 @@ import org.joda.time.DateTime;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -143,28 +145,17 @@ implements Entity
     	}
 
     /**
-     * Our parent {@link Entity.EntityFactory}.
-     * TODO This _should_ be abstract, but isn't yet.
-    protected abstract Entity.EntityFactory<?> factory();
+     * Our parent {@link Entity.EntityFactory} instance.
      * 
      */
     protected abstract Entity.EntityFactory<?>  factory();
+
+    /**
+     * Our {@link Entity.EntityServices} instance.
+     * 
+     */
     protected abstract Entity.EntityServices<?> services();
 
-    protected Entity.EntityFactory<?> xfactory()
-        {
-        log.error("Call to abstract factory() method");
-        return null ;
-		/*
-		 *
-        throw new NotImplementedException(
-    		"Call to abstract factory() method"
-    		);
-		 * 
-		 */
-        }
-
-    
     /**
      * Helper method to check for empty or blank strings.
      *
@@ -197,29 +188,66 @@ implements Entity
 
     /**
      * Protected constructor, sets the owner and create date.
-     * @param init Flag to distinguish this from the default constructor.
      *
      */
-    protected AbstractEntity(final boolean init)
-        {
+    protected AbstractEntity(final boolean flag)
+		{
         super();
-        //log.debug("AbstractEntity(boolean)");
-        //log.debug("  init [{}]", init);
-        if (init)
+        if (flag)
             {
-            this.uidlo = random.nextLong();
-            this.uidhi = System.currentTimeMillis();
-            
-            this.owner = factories().contexts().current().identity();
-            this.created = new DateTime();
+            this.init(
+        		null
+        		);
             }
         else {
             throw new IllegalStateException(
                 "AbstractEntity constructor called with invalid param [false]"
                 );
             }
-        log.debug("  created  [{}]", created);
+		}
 
+    /**
+     * Protected constructor, sets the owner and create date.
+     *
+     */
+    protected AbstractEntity(final Identity owner)
+        {
+        super();
+        this.init(
+    		owner
+    		);
+        }
+
+    /**
+     * Set the owner and create date.
+     *
+     */
+    private void init(final Identity owner)
+    	{
+	    log.debug("init(Identity)");
+        this.uidlo = random.nextLong();
+        this.uidhi = System.currentTimeMillis();
+        if (owner != null)
+        	{
+    	    log.debug("Using owner param");
+        	this.owner = owner;
+        	}
+        else {
+    		log.debug("Using identity from context");
+        	this.owner = factories().contexts().current().identity();
+        	}
+        this.created = new DateTime();
+		if (this.owner != null)
+			{
+	        log.debug("  owner   [{}][{}]", this.owner.ident(), this.owner.name());
+			}
+		else {
+	        log.debug("  owner   [null]");
+			}
+	    log.debug("  created [{}]", this.created);
+
+	    
+	    
         /*
         *
         * [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
@@ -239,7 +267,7 @@ implements Entity
         */
         }
 
-    /**
+	/**
      * The database primary key.
      * Note - unique=false because @Id already adds a unique primary key.
      * https://hibernate.onjira.com/browse/HHH-5376

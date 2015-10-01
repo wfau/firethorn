@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -121,12 +122,41 @@ extends Entity
          *
          */
         public Iterable<Authentication> select();
+
         }
 
     /**
-     * Access to the list of Authentication(s) for this operation.
+     * The list of Authentication(s) for this operation.
      *
      */
-    public Authentications auth();
+    public Authentications authentications();
 
+    /**
+     * The list of Identity(s) for this operation.
+     *
+     */
+    public static interface Identities
+        {
+        /**
+         * The primary Identity for this operation.
+         *
+         */
+        public Identity primary();
+
+        }
+
+    /**
+     * The list of Identity(s) for this operation.
+     *
+     */
+    public Identities identities();
+    
+    /**
+     * Get the {@link Entity} instance linked to the current {@link Thread}.
+     * @todo Move this to a base class.
+     * 
+     */
+    public Operation rebase()
+	throws HibernateConvertException;
+    
     }

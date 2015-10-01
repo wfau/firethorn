@@ -128,7 +128,7 @@ implements HandlerInterceptor
 
         if ((operation != null) && (community != null) && (identity != null))
             {
-            operation.auth().create(
+            operation.authentications().create(
                     factories.communities().entities().create(
                         community,
                         community
@@ -140,7 +140,7 @@ implements HandlerInterceptor
             }
 
         log.debug("Operation [{}]", operation);
-        log.debug("Primary   [{}]", operation.auth().primary());
+        log.debug("Primary   [{}]", operation.authentications().primary());
 
         return true ;
         }

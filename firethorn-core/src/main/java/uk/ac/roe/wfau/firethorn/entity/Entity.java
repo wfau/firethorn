@@ -53,8 +53,8 @@ public interface Entity
         /**
          * Our {@link Entity.EntityFactory} instance.
          *
-        public EntityFactory<EntityType> entities();
          */
+        public EntityFactory<EntityType> entities();
 
         }
 

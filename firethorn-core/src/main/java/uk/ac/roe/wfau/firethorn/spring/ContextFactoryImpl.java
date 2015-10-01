@@ -37,6 +37,7 @@ extends AbstractComponent
 implements Context.Factory
     {
     
+    
     @Override
     public Context current()
         {
@@ -54,7 +55,7 @@ implements Context.Factory
                 Operation oper = this.oper();
                 if (oper != null)
                     {
-                    return oper.auth().primary();
+                    return oper.authentications().primary();
                     }
                 return null ;
                 }

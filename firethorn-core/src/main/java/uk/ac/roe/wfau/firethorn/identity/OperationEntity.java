@@ -40,9 +40,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 
 /**
  *
@@ -241,12 +244,13 @@ implements Operation
 
     /**
      * Protected constructor.
-     * @todo remove name
      *
      */
     protected OperationEntity(final String target, final String method, final String source)
         {
         super(true);
+	    // Question - how can Operation get an owner, when we haven't handled the authentication yet. 
+        // Because the ThreadLocal Operation does not get cleared when a Thread from a ThreadPool is re-used ? 
         this.target = target ;
         this.method = method ;
         this.source = source ;
@@ -323,13 +327,13 @@ implements Operation
 
     private void primary(final Authentication auth)
         {
-        if (this.primary == null)
-            {
-            this.primary = auth ;
-            this.owner(
-                auth.identity()
-                ) ;
-            }
+        log.debug("primary(Authentication)");
+        log.debug("  Authentication [{}]", auth);
+        log.debug("  Identity [{}]", auth.identity());
+        this.primary = auth ;
+        this.owner(
+            auth.identity()
+            ) ;
         }
 
     /**
@@ -367,7 +371,7 @@ implements Operation
         }
 
     @Override
-    public Authentications auth()
+    public Authentications authentications()
         {
         return new Authentications()
             {
@@ -392,5 +396,51 @@ implements Operation
                     );
                 }
             };
+        }
+
+	@Override
+	public Identities identities()
+		{
+		return new Identities()
+			{
+			@Override
+			public Identity primary()
+				{
+				final Authentication auth = OperationEntity.this.primary();
+				if (auth != null)
+					{
+					return auth.identity();
+					}
+				else {
+					return null;
+					}
+				}
+			};
+		}
+    
+    /**
+     * Get the corresponding Hibernate entity for the current thread.
+     * @throws HibernateConvertException 
+     * @todo Move to a generic base class. 
+     *
+     */
+    @Override
+    public Operation rebase()
+    throws HibernateConvertException
+    	{
+        log.debug("Converting current instance [{}]", ident());
+        try {
+			return services().entities().select(
+			    ident()
+			    );
+        	}
+        catch (final IdentifierNotFoundException ouch)
+        	{
+        	log.error("IdentifierNotFound selecting instance [{}][{}]", this.getClass().getName(), ident());
+        	throw new HibernateConvertException(
+    			ident(),
+    			ouch
+    			);
+        	}
         }
     }

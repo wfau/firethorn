@@ -48,14 +48,14 @@ extends TestBase
             "community-name"
             );
 
-        operation.auth().create(
+        operation.authentications().create(
             community.members().create(
                 "identity-name"
                 ),
             "urn:authentication"
             );
 
-        for (final Authentication auth : operation.auth().select())
+        for (final Authentication auth : operation.authentications().select())
             {
             log.debug("Auth [{}]", auth.ident());
             }

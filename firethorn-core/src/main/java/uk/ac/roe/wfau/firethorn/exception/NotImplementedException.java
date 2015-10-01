@@ -21,7 +21,7 @@ extends FirethornUncheckedException
 	 * Default mesage, {@value}.
 	 *
 	 */
-	protected static final String DEFAULT_MESSAGE = "Functonality implemented yet"; 
+	protected static final String DEFAULT_MESSAGE = "Not implemented yet"; 
 
 	/**
 	 * Public constructor, using the default message.

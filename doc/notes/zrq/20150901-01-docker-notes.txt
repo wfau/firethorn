@@ -29,5 +29,9 @@
     #
     # Supermin - minimal Debian/Fedora appliances
     # https://people.redhat.com/~rjones/supermin/
+    
+    # Supermin (re)uses the core libraries from the host OS.
+    # Which means the appliances need to be the same OS as the host.
+    
 
 

@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Type;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Generic base class for a persistent Entity.
@@ -94,7 +95,17 @@ implements Entity, NamedEntity
             );
         }
 
-    /**
+    public AbstractNamedEntity(final Identity owner, final String name)
+		{
+    	super(
+			owner
+			);
+    	this.name(
+            name
+            );
+		}
+
+	/**
      * The Entity name.
      *
      */

@@ -164,6 +164,12 @@ implements OgsaBaseResource
        {
        log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);
        this.scan();
+
+// TODO wrong place to trigger a scan.
+// If the ping() fails, we need to replace this entity with another
+// Which happens at the factory level, not here. 
+       
+       
 /*
        log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);
        if (this.ogstatus.active()) 

@@ -283,6 +283,7 @@ implements JdbcTable
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema)
             {
+            // Create an empty table.
             throw new NotImplementedException();
             }
         

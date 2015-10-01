@@ -38,8 +38,7 @@ pushd /toolkits
         tar -xvzf "${tarfile:?}"
         ln -s "${current:?}" current
 
-        # This doesn't work because /var/cache/ is a volume,
-        # which gets recreated at runtime. 
+        # This doesn't work because it uses a volume which gets created at runtime. 
         mkdir /var/local/cache/maven
         chgrp users /var/local/cache/maven
         chmod g+rws /var/local/cache/maven

@@ -63,6 +63,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -71,6 +72,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.AdqlType;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -88,6 +90,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflow;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflowClient;
+import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
  *
@@ -212,22 +215,40 @@ implements BlueQuery
         public BlueQuery create(final AdqlResource source, final String input, final TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
-            log.debug("create(AdqlResource, String, TaskState, long");
+            log.debug("create(AdqlResource, String, TaskState, Long)");
             log.debug("  state [{}]", next);
             log.debug("  wait  [{}]", wait);
 
+/*
+ * Reason for doing this inside a new Thread is to force a new Hibernate session.
+ * Ensuring that the new Entity is committed to the database when the method returns.
+ * This is the first time we have had to do this .. because we want to do other things to the entity after it has been created.
+ * 
+ * Problem - anything relying on ThreadLocal, like current Operation will fail.
+ * Solution - modify thread() to pass in Operation context.
+ *             
+ */
+
+            final Identity outer = services().contexts().current().oper().identities().primary();
+            log.debug("Outer    [{}][{}]", outer.ident(), outer.name());
+            
             log.debug("Creating BlueQuery");
             final BlueQuery query = services().runner().thread(
                 new BlueQuery.TaskRunner.Creator()
                     {
                     @Override
                     public BlueQuery create()
-                    throws InvalidStateTransitionException
+                    throws InvalidStateTransitionException, HibernateConvertException
                         {
                         log.debug("create(");
                         log.debug("Creating query task");
+
+                        final Identity inner = outer.rebase();
+                        log.debug("Inner    [{}][{}]", inner.ident(), inner.name());
+                        
                         return insert(
                     		new BlueQueryEntity(
+                				inner,
                 				source,
                 				input,
                 				services().names().name()
@@ -238,7 +259,7 @@ implements BlueQuery
                 );
 
             log.debug("Converting BlueQuery");
-            final BlueQuery result = query.current();
+            final BlueQuery result = query.rebase();
             
             if (next != null)
 	            {
@@ -469,6 +490,14 @@ implements BlueQuery
 			{
 			return this.runner;
 			}
+
+        @Autowired
+        private Context.Factory contexts;
+		@Override
+        public Context.Factory contexts()
+            {
+            return this.contexts;
+            }
         }
 
     @Override
@@ -503,10 +532,11 @@ implements BlueQuery
      * Protected constructor.
      * 
      */
-    protected BlueQueryEntity(final AdqlResource source, final String input)
+    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input)
     throws InvalidStateTransitionException
         {
         this(
+            owner,
             source,
             input,
             "BlueQuery"
@@ -517,11 +547,12 @@ implements BlueQuery
      * Protected constructor.
      * 
      */
-    protected BlueQueryEntity(final AdqlResource source, final String input, final String name)
+    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final String name)
     throws InvalidStateTransitionException
         {
         super(
-            name
+    		owner,
+    		name
             );
         this.mode = Mode.AUTO;
         this.source = source;
@@ -1133,7 +1164,8 @@ implements BlueQuery
                     public TaskState execute()
                         {
                         try {
-                            BlueQueryEntity query = (BlueQueryEntity) current();
+// Need to initialise current context.                        
+                            BlueQueryEntity query = (BlueQueryEntity) rebase();
                             log.debug("Before input(String)");
                             log.debug("  state [{}]", query.state().name());
                             query.prepare(
@@ -1324,10 +1356,11 @@ implements BlueQuery
 
         //
         // Mark our task as active.
+/*
         transition(
     		TaskState.QUEUED
     		);
-
+ */
         //
         // Build our target resources.
         build();
@@ -1533,7 +1566,7 @@ implements BlueQuery
                     try {
                         //
                         // Get the current instance for this Thread.
-                        BlueQueryEntity query = (BlueQueryEntity) current();
+                        BlueQueryEntity query = (BlueQueryEntity) rebase();
                         //
                         // Update the row count.
                         if (message.rowcount() != null)
@@ -1583,7 +1616,7 @@ implements BlueQuery
      */
     protected void build()
     	{
-        log.debug("build(");
+        log.debug("build()");
         //
         // Log the start time.
         this.timings().jdbcstart();
@@ -1604,6 +1637,7 @@ implements BlueQuery
 			}
         
         final Identity identity = this.owner();
+        log.debug(" Identity [{}]", identity);
         log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
         final JdbcSchema jdbcspace = identity.spaces().jdbc().current();
@@ -1612,7 +1646,7 @@ implements BlueQuery
         final AdqlSchema adqlspace = identity.spaces().adql().current();
         log.debug(" ADQL space [{}][{}]", adqlspace.ident(), adqlspace.name());
 
-        this.jdbctable = jdbcspace.tables().create();
+        this.jdbctable = jdbcspace.tables().create(); // NotImplYet ?
         this.adqltable = adqlspace.tables().create(
     		jdbctable
             );
@@ -1731,4 +1765,30 @@ implements BlueQuery
         this.timings().jdbcdone();
 	
     	}
+
+    /**
+     * Get the corresponding Hibernate entity for the current thread.
+     * @throws HibernateConvertException 
+     * @todo Move to a generic base class. 
+     *
+     */
+    @Override
+    public BlueQuery rebase()
+    throws HibernateConvertException
+    	{
+        log.debug("Converting current instance [{}]", ident());
+        try {
+			return services().entities().select(
+			    ident()
+			    );
+        	}
+        catch (final IdentifierNotFoundException ouch)
+        	{
+        	log.error("IdentifierNotFound selecting instance [{}][{}]", this.getClass().getName(), ident());
+        	throw new HibernateConvertException(
+    			ident(),
+    			ouch
+    			);
+        	}
+        }
     }

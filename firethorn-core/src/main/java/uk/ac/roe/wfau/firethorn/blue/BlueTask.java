@@ -27,6 +27,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
  * Generic task interface.
@@ -54,6 +55,12 @@ extends NamedEntity
          * 
          */
         public BlueTask.TaskRunner<TaskType> runner(); 
+        
+        /**
+         * Our {@link Context.Factory} instance.
+         * 
+         */
+        public Context.Factory contexts();        
         }
 
     /**
@@ -101,10 +108,12 @@ extends NamedEntity
             {
             /**
              * Execute the step.
+             * @throws HibernateConvertException
+             * @throws InvalidStateTransitionException
              *
              */
             public TaskType create()
-            throws InvalidStateTransitionException;
+            throws InvalidStateTransitionException, HibernateConvertException;
 
             }
 
@@ -114,9 +123,6 @@ extends NamedEntity
          * Running the {@link TaskRunner.Creator} in a new {@link Thread} means that it is run in
          * a new Hibernate {@link Session}, which gets committed to the database when
          * the {@link TaskRunner.Creator} completes its operation.
-         * <br/> 
-         * Implementations of this method MUST load the {@link BlueTask} entity into
-         * the current Hibernate {@link Session} before they return.
          * 
          */
         public TaskType thread(final Creator<TaskType> creator)
@@ -328,7 +334,7 @@ extends NamedEntity
      * Get the {@link Entity} instance linked to the current {@link Thread}.
      * 
      */
-    public TaskType current()
+    public TaskType rebase()
 	throws HibernateConvertException;
     
     /**

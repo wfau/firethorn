@@ -109,11 +109,11 @@ extends TestRoot
 
         log.debug(" Oper [{}][{}][{}][{}]", operation.ident(), operation.target(), operation.method(), operation.source());
 
-        Authentication primary = operation.auth().primary();
+        Authentication primary = operation.authentications().primary();
         if (primary == null)
             {
             
-            primary = operation.auth().create(
+            primary = operation.authentications().create(
                 factories().communities().entities().create(
                     config().property(
                         "junit.community.uri",

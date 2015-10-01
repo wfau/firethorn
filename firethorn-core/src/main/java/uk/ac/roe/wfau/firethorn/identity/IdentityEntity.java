@@ -40,6 +40,8 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -446,5 +448,31 @@ implements Identity
 				}
 			};
 		}
+
+    /**
+     * Get the corresponding Hibernate entity for the current thread.
+     * @throws HibernateConvertException 
+     * @todo Move to a generic base class. 
+     *
+     */
+    @Override
+    public Identity rebase()
+    throws HibernateConvertException
+    	{
+        log.debug("Converting current instance [{}]", ident());
+        try {
+			return services().entities().select(
+			    ident()
+			    );
+        	}
+        catch (final IdentifierNotFoundException ouch)
+        	{
+        	log.error("IdentifierNotFound selecting instance [{}][{}]", this.getClass().getName(), ident());
+        	throw new HibernateConvertException(
+    			ident(),
+    			ouch
+    			);
+        	}
+        }
     }
 

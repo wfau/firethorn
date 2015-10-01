@@ -1,0 +1,491 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Stop our old containers.
+#[root@virtual]
+
+    docker rm -fv "${ogsaname:?}"
+    docker rm -fv "${firename:?}"
+
+# -----------------------------------------------------
+# Build our source code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    properties=${HOME:?}/firethorn.properties
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Check the logs ..
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker logs -f --tail 100 "${firename:?}"
+
+
+    source "${HOME:?}/chain.properties"
+    docker logs -f --tail 100 "${ogsaname:?}"
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | bin/pp | tee system-info.json
+
+# -----------------------------------------------------
+# Load the ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasTwomass.xml"
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TwomassPsc.xml"
+
+# -----------------------------------------------------
+# Create our workspace
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'TWOMASS'  'twomass'
+
+# -----------------------------------------------------
+# Run an ATLASDR1 query
+#[root@tester]
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+
+#------------------------------------------------------------------
+
+        #
+        # List our ADQL resources.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/adql/resource/select" \
+            | bin/pp | tee adql-list.json
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/${queryspace:?}" \
+            | bin/pp | tee adql-resource.json
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/select" \
+            | bin/pp
+
+#------------------------------------------------------------------
+
+        #
+        # Create BlueQuery with a null input.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "frog=green" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+#------------------------------------------------------------------
+
+        #
+        # Create BlueQuery with an empty input.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+#------------------------------------------------------------------
+
+        #
+        # Create BlueQuery with an invalid input.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=NOT ADQL" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+#------------------------------------------------------------------
+
+        #
+        # Create BlueQuery with a valid input.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+        queryself=$(
+            cat blue-query.json | self
+            )
+
+        querynode=$(
+            cat blue-query.json | self | node
+            )
+
+        queryident=$(
+            cat blue-query.json | self | ident
+            )
+
+        #
+        # Select the BlueQuery.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Run the BlueQuery.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.next.status=RUNNING" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Select the BlueQuery.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+    #
+    # Complete the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Select the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+#------------------------------------------------------------------
+
+    #
+    # Create BlueQuery with null input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.other=other " \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    queryself=$(
+        cat blue-query.json | self
+        )
+
+    querynode=$(
+        cat blue-query.json | self | node
+        )
+
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+
+    #
+    # Set the query ADQL.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Run the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=RUNNING" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Complete the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
+        | bin/pp
+
+#------------------------------------------------------------------
+
+    #
+    # Create BlueQuery with null input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.other=other " \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+
+    #
+    # Set the query ADQL and set status to RUNNING.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=RUNNING" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+#------------------------------------------------------------------
+
+    #
+    # Create BlueQuery with null input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.other=other " \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+
+    #
+    # Set the query ADQL and set status to COMPLETED.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+#------------------------------------------------------------------
+
+    #
+    # Create BlueQuery with null input.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.other=other " \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+    echo "queryident=${queryident:?}"
+
+    #
+    # Set the query ADQL and set status to COMPLETED, and wait 60 sec.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.wait=60000" \
+        --data "blue.query.next.status=COMPLETED" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Complete the BlueQuery.
+queryident=622605
+
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
+        | bin/pp
+
+#------------------------------------------------------------------
+
+    #
+    # Create BlueQuery with vaild ADQL, status to COMPLETED, and wait 60 sec.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.wait=120000" \
+        --data "blue.query.next.status=COMPLETED" \
+        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
+        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        | bin/pp | tee blue-query.json
+
+    queryident=$(
+        cat blue-query.json | self | ident
+        )
+    echo "queryident=${queryident:?}"
+
+
+    #
+    # Select the BlueQuery.
+queryident=163853
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
+
+    #
+    # Complete the BlueQuery.
+queryident=163853
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "blue.query.next.status=COMPLETED" \
+        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
+        | bin/pp
+
+

@@ -243,7 +243,26 @@ implements OgsaJdbcResource
             if (found != null)
                 {
                 log.debug("Found primary OgsaJdbcResource [{}]", found.ident());
-                return found ;
+
+// Temp fix to force a scan.
+// TODO Add a verify method ?
+                log.debug("Checking ogsaid ...");
+                final String ogsaid = found.ogsaid();
+                log.debug("Found ogsaid [{}][{}]", ogsaid, found.ogstatus());
+                if (found.ogstatus() == OgsaStatus.ACTIVE)
+                	{
+                    return found ;
+                	}
+                else {
+// Assume this is because the scan failed.
+// TODO Better error handling.
+// TODO Prevent runaway errors creating a new resource a on every call
+	                log.debug("Primary OgsaJdbcResource failed ping test, creating a new one");
+	                return create(
+	                    service,
+	                    resource
+	                    );
+                	}
                 }
             else {
                 log.debug("No primary OgsaJdbcResource, creating a new one");

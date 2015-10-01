@@ -54,6 +54,9 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
+import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
  * {@link BlueTask} implementation. 
@@ -174,7 +177,7 @@ implements BlueTask<TaskType>
     public static class TaskRunner<TaskType extends BlueTask<?>>
     implements BlueTask.TaskRunner<TaskType>
         {
-
+        
         @Autowired
         private BlueTask.EntityServices<TaskType> services ;
         protected BlueTask.EntityServices<TaskType> services()
@@ -237,22 +240,23 @@ implements BlueTask<TaskType>
             {
             log.debug("create(Creator)");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
-
-            log.debug("Before execute()");
+            
+            log.debug("Before future()");
             final Future<TaskType> future = services.runner().future(
                 creator
                 );
-            log.debug("After execute()");
+            log.debug("After future()");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             
             try {
-                log.debug("Before future()");
-                final TaskType initial = future.get();
-                log.debug("After future()");
-                log.debug("  initial [{}]", initial);
-                // Convert the entity to the current thread/session
-            	final TaskType result = (TaskType) initial.current();
-                log.debug("After select()");
+                log.debug("Before future.get()");
+                final TaskType result = future.get();
+                log.debug("After future.get()");
+// Easier to do the convert back in the calling Thread.
+                //log.debug("  initial [{}]", initial);
+                // Convert the initial result to the current thread/session
+            	//final TaskType result = (TaskType) initial.current();
+                //log.debug("After select()");
                 log.debug("  result [{}]", result);
                 return result ;
                 }
@@ -274,11 +278,15 @@ implements BlueTask<TaskType>
                 log.error("Interrupted waiting for Creator [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
                 return null;
         	    }
+/*
+ * 
             catch (final HibernateConvertException ouch)
 	    	    {
 	            log.error("HibernateConvertException [{}]");
 	            return null;
 	    	    }
+ * 
+ */
             }
 
         @Async
@@ -286,7 +294,7 @@ implements BlueTask<TaskType>
         @UpdateAtomicMethod
         public Future<TaskType> future(final Creator<TaskType> creator)
             {
-            log.debug("execute(Creator)");
+            log.debug("future(Creator)");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             // TODO Much better error handling
             try {
@@ -295,6 +303,12 @@ implements BlueTask<TaskType>
 				    );
 				}
             catch (final InvalidStateTransitionException ouch)
+            	{
+                // TODO Much better error handling
+                // TODO Needs Spring 4.2
+            	return null ;
+            	}
+            catch (final HibernateConvertException ouch)
             	{
                 // TODO Much better error handling
                 // TODO Needs Spring 4.2
@@ -354,31 +368,6 @@ implements BlueTask<TaskType>
             }
         }
 
-    /**
-     * Get the entity linked to the current thread.
-     * @throws HibernateConvertException 
-     *
-     */
-    @Override
-    public TaskType current()
-    throws HibernateConvertException
-    	{
-        log.debug("Selecting current task [{}]", ident());
-        try {
-			return services().entities().select(
-			    ident()
-			    );
-        	}
-        catch (final IdentifierNotFoundException ouch)
-        	{
-        	log.error("IdentifierNotFound selecting current instance [{}]", ident());
-        	throw new HibernateConvertException(
-    			ident(),
-    			ouch
-    			);
-        	}
-        }
-
     // TODO Move this to base class
     protected void refresh()
     	{
@@ -403,11 +392,13 @@ implements BlueTask<TaskType>
 
     /**
      * Protected constructor.
+     * @param owner 
      * 
      */
-    protected BlueTaskEntity(final String name)
+    protected BlueTaskEntity(final Identity owner, final String name)
         {
         super(
+    		owner,
             name
             );
         this.state = TaskState.EDITING;
@@ -1168,7 +1159,7 @@ implements BlueTask<TaskType>
                 public TaskState execute()
                     {
                 	try {
-	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) current();
+	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
 	                    log.debug("Before prepare()");
 	                    log.debug("  state [{}]", task.state().name());
 	                    task.prepare();
@@ -1215,7 +1206,7 @@ implements BlueTask<TaskType>
                 public TaskState execute()
                     {
                 	try {
-	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) current();
+	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
 	                    log.debug("Before prepare()");
 	                    log.debug("  state [{}]", task.state().name());
 	                    task.prepare();
@@ -1280,7 +1271,7 @@ implements BlueTask<TaskType>
                 public TaskState execute()
                     {
                 	try {
-	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) current();
+	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
 	                    log.debug("Before change()");
 	                    log.debug("  state [{}]", task.state().name());
 	                    task.transition(
