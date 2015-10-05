@@ -1,6 +1,6 @@
 
 
-source /tmp/chain.properties
+source /root/chain.properties
 
 
 pyroproperties=$(mktemp)
@@ -121,8 +121,10 @@ mkdir -p /var/logs/${pyroname:?}
 docker run -i -t \
     --name ${pyroname:?} \
     --detach \
+    --memory 512M \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
     --volume /root/tests/test01-nohup.sh:/scripts/test01-nohup.sh \
+    --volume "${pyrologs}:/home/pyrothorn/logs" \
     --link "${firename:?}:${firelink:?}" \
     --link "${pyrosqlname:?}:${pyrosqllink:?}" \
     --link "${storedqueriesname:?}:${storedquerieslink:?}" \

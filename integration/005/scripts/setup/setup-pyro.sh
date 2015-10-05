@@ -1,4 +1,4 @@
-source /tmp/chain.properties
+source /root/chain.properties
 
 docker run \
     --detach \

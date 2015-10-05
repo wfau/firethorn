@@ -1,6 +1,6 @@
 
 
-source /tmp/chain.properties
+source /root/chain.properties
 
 
 pyroproperties=$(mktemp)
@@ -116,12 +116,12 @@ chcon -t svirt_sandbox_file_t "${pyroproperties:?}"
 chmod a+r "/root/tests/test02-nohup.sh" 
 chcon -t svirt_sandbox_file_t "/root/tests/test02-nohup.sh" 
 
-mkdir -p /var/logs/${pyroname:?}
-
 docker run -i -t \
     --name ${pyroname:?} \
     --detach \
+    --memory 512M \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
+    --volume "${pyrologs}:/home/pyrothorn/logs" \
     --volume /root/tests/test02-nohup.sh:/scripts/test02-nohup.sh \
     --link "${firename:?}:${firelink:?}" \
     --link "${pyrosqlname:?}:${pyrosqllink:?}" \
