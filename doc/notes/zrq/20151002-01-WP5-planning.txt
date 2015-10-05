@@ -1,0 +1,391 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    [Distributed join]
+
+        In progress
+
+            Import remote TAP
+                Harvest metadata
+                    VOSI (fix namespaces)
+                    VOSI (fix vizier, interactive)
+                    TAP_SCHEMA (interactive)
+
+            Callbacks
+                MAX_ROW indication
+                Error reports
+
+        Next
+
+            Join testing
+                Test queries
+                Logged queries
+                Large data
+                MAX_ROW errors
+                Multiple joins
+
+                ** Critical to estimating work involved
+                ** Instinct says lots of bugs in here
+
+        Future
+        
+            Optimisations 
+                Statistics
+                Caching
+                TAP upload
+
+    [Admin UI]
+
+        Start early and grow
+
+        Separate Maven project(s)
+
+            1) Simple JSP pages
+            2) Full GWT
+
+        One page per entity
+        Copy AstroDAbis
+
+
+    [User data]
+
+        In progress
+
+            JDBC drivers
+                Automatic names 
+                Drop Liquibase
+                Platform drivers
+
+            Identity context
+                Needs to work in all cases
+
+        Next
+
+            Access control
+                Protectors
+                Permissions
+
+                Simple owner|other
+                Specific permissions
+
+            User stories                
+                User interface
+                    User spaces
+                
+            Groups
+                Sharing
+
+            User interface
+                Admin
+                Science
+
+        Later
+
+            Private data in TAP
+                SSO mechanism
+                    x509 or other
+                TopCat integration
+                SAMP integration                
+
+    [User code]
+
+        Docker jobs
+        
+            UWS based web service
+
+            OpenStack or custom ?
+            What are LSST doing ?
+            What are Gaia doing ?            
+
+            Keep VM for isolation ?
+
+            POLITICS
+
+        Most scientists happy with an interactive shell.
+
+            iPython NoteBook
+            DataJoy
+            R Studio
+
+        Python libraries
+            LSST
+            AstroPy
+            PyroThorn ?
+            
+        Docker behind it .. but not primary use case
+
+        Long running jobs - sync/async, attach/detach
+
+                
+--------------------------------------------------------------------------------
+
+    [Distributed join]
+
+        In progress
+            Import remote TAP
+                Harvest metadata
+                    VOSI (fix namespaces)
+                    VOSI (fix vizier, interactive)
+                    TAP_SCHEMA (interactive)
+            Callbacks
+                MAX_ROW indication
+                Error reports
+        Next
+            Join testing
+                Test queries
+                Logged queries
+                Large data
+                MAX_ROW errors
+                Multiple joins
+
+                ** Critical to estimating work involved
+                ** Instinct says lots of bugs in here
+
+        Future
+            Optimisations 
+                Statistics
+                Caching
+                TAP upload
+
+    [Admin UI]
+        Start now and grow
+        Two separate Maven project(s)
+
+            1) Simple JSP pages
+                   One page per entity
+                   Copy AstroDAbis
+            2) Full GWT
+                   TBD
+
+    [User data]
+        In progress
+            JDBC drivers
+                Automatic names 
+                Drop Liquibase
+                Platform drivers
+            Identity context
+                Needs to work in all cases
+        Next
+            Access control
+                Protectors & Permissions
+                    Simple owner|other yes|no
+                    Specific permissions
+
+            User stories                
+                User spaces
+                    User interface
+                
+            Groups
+                Sharing
+
+        Later
+            Private data in TAP
+                SSO mechanism
+                    x509 or other
+                    TopCat integration
+                    SAMP integration                
+
+    [User code]
+        Docker jobs
+            UWS based web service
+
+            OpenStack or custom ?
+            What are LSST doing ?
+            What are Gaia doing ?            
+
+            Keep VM for isolation ?
+
+            ** POLITICS **
+
+        Interactive shell
+            Many scientists happy with this
+            Deploy existing examples ?
+                iPython NoteBook
+                DataJoy
+                R Studio
+
+            Python libraries
+                LSST
+                AstroPy
+                PyroThorn ?
+            
+        Docker behind it, but not primary use case
+        Long running jobs - sync/async, attach/detach
+
+
+
+
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+
+    [Distributed join]
+        In progress
+            Import remote TAP
+                Harvest metadata
+                    VOSI (fix namespaces)
+                    VOSI (fix vizier, interactive)
+                    TAP_SCHEMA (interactive)
+            Callbacks
+                MAX_ROW indication
+                Error reports
+        Next
+            Join testing
+                ** Critical to estimating work involved
+                ** Instinct says lots of bugs in here
+                Test queries
+                Logged queries
+                Large data
+                MAX_ROW errors
+                Multiple joins
+        Future
+            Optimisations 
+                Statistics
+                Caching
+                TAP upload
+
+    [Admin UI]
+        Next
+            Start now and grow
+            Two separate Maven project(s)
+                1) Simple JSP pages
+                       One page per entity
+                       Copy AstroDAbis
+                2) Full GWT
+                       TBD
+
+    [User data]
+        In progress
+            JDBC drivers
+                Automatic names 
+                Drop Liquibase
+                Platform drivers
+            Identity context
+                Needs to work in all cases
+        Next
+            Access control
+                Protectors & Permissions
+                    Simple owner|other yes|no
+                    Specific permissions
+            User stories
+                H-Atlas                
+                User spaces
+                    User interface
+            Groups
+                Sharing
+        Later
+            Private data in TAP
+                SSO mechanism
+                    x509 or other
+                    TopCat integration
+                    SAMP integration                
+
+    [User code]
+        Next
+            Docker jobs
+                UWS based web service
+                    Secure deployment
+                    
+                OpenStack or custom ?
+                What are LSST doing ?
+                What are Gaia doing ?            
+
+                Keep VM for isolation ?
+
+                ** POLITICS **
+
+            Interactive shell
+                Deploy existing examples
+                    iPython NoteBook
+                    DataJoy
+                    R Studio
+
+            Science cases
+                H-Atlas
+
+        Future
+            Python libraries
+                LSST
+                AstroPy
+                PyroThorn
+
+        Future
+            Docker jobs
+                Secure deployment
+                
+            Long running jobs
+                sync/async
+                attach/detach
+
+
+
+
+    
+
+    User interface
+        OSA interface re-branded for H-Atlas
+            GetImage etc from WebPy
+            Using Mike's Java code
+            A-Atlas have some scripts for extracting images 
+
+
+    Standard library of tools and things that other projects can adapt themselves
+    HAtlas will help us to define those tools
+    Will need more hand holding at the start
+    OSA is a good start
+    Exporting with SAMP etc
+
+    Scientists used to using SQL
+    Offer introductory examples
+    They will take those and develop more
+    More and better examples
+
+
+    User data
+        Workspaces
+            Pulling resources into them
+        Based on earlier OSA designs
+            Logical ordering of things
+
+    Work with them from the start
+    Iterative development
+    Grow it gradually
+
+    Interaction with HAtlas people
+        Make our work more visible
+        Progress will need to be visible    
+
+

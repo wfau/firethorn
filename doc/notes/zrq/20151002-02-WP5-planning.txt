@@ -1,0 +1,237 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+h2. Development infrastructure
+
+Based on experience gained from developing similar projects the development
+infrastructure will make use of the open source development tools available
+from Atlasian. This includes tools for project planning, communcation and
+collaboration, source control, issue tracking, end user support, continuous
+integration and deployment.
+
+h3. Deliverable 2016-Q2 :
+
+Development infrastructure in place and in use as soon as possible.
+
+
+h2. Admin user interface design
+
+The core admin-user interface design, with page designs for all the tools
+needed to manage the core system components.
+
+h3. Deliverable 2016-Q2+
+
+Initial deliverable followed by incremental updates to include new tools
+needed to manage new system components plus design changes based on user
+feedback.
+
+
+h2. Admin user interface development
+
+The core admin user interface in place, with tools for managing all of the core
+system components.
+
+h3. Deliverable 2016-Q3+
+        
+Initial implementation followed by incremental updates to include new tools
+needed to manage new system components plus design changes based on user feedback.
+
+
+h2. User data use cases.
+
+Use cases describing the requirements and interactions needed to provide user data space.
+
+h3. Deliverable 2016-Q3+ :
+Initial document followed by incremental updates based on user feedback.
+
+h2. User data interface design
+
+User data interface design, including all the components needed to implement the user data use cases.
+
+h3. Deliverable 2016-Q4+
+
+Initial design documents followed by incremental updates to include design changes based on user feedback.
+
+
+h2. User data service design
+
+Software architecture design for the service components needed to implement the user data use cases.
+
+h3. Deliverable 2016-Q4+
+Initial design documents followed by incremental updates to include design changes based on user feedback.
+
+h2. User data development
+
+Software development of the user interface and service components needed to implement the user data use cases.
+
+Each use case will be developed through a series of iterative stages from initial prototype to production ready deployment.
+
+h3. Milestone 2016-Q2
+Functional prototype that can be used to collect user feedback.
+
+h3. Deliverable 2016-Q4
+Production system that meets 80% of the requirements.
+
+h3. Deliverable 2017-Q4
+Production system for managing user data.
+
+h2. User data standards
+
+Collaboration with colleages within the IVOA to develop the interoperability standards needed to support secure data sharing between 3rd party services.
+
+In particular this will involve working within the Grid and WebServices working group to develop the next iteration of the IVOA SingeSignOn standard to fully support secure data sharing.
+
+h2. H-ATLAS specific data requirements
+
+Work with H-ATLAS science team to document the project's data requirements. This should include details of which catalogs need to be stored where, how large they are and how complex they are, including details of the cross-referening and indexing required.
+
+h3. Deliverable 2016-Q3
+
+Document detailing the H-ATLAS data requirements.
+
+
+
+
+h2. H-ATLAS data deployment
+Deployment of the H-ATLAS catalogs, using existing software and services.
+
+h3. Deliverable 2016-Q4
+Initial deployment of the H-ATLAS catalogs, making them accessible online and via the virtual observatory tools.
+
+h2. H-ATLAS science cases
+Work with H-ATLAS team to develop specific science use cases that solve
+specific problems. These should include details of which catalogs need to be
+accessed, what processing algorithms need to be applied etc.
+
+h3. Deliverable 2016-Q4+ 
+Initial document detailing the H-ATLAS science use cases followed by incremental updates based on user feedback.
+
+h2. H-ATLAS development
+Each of the H-ATLAS science cases will be developed through a series of
+iterative stages from initial prototype to science ready deployment, working
+directly with members of the H-ATLAS science team to develop a solution that
+meets their requirements.
+
+Key milestones for this part of the project will be identified based on
+specific targets from the H-ATLAS science cases.
+
+h3. Milestones 2017-Q1 .. 2018-Q4
+Development of the H-ATLAS science cases.
+
+h3. Deliverable 2018-Q1
+Production system that meets 80% of the science cases.
+
+h3. Deliverable 2018-Q4
+Production system that meets H-ATLAS science cases.
+
+h1. Interactive code
+
+h2. Deploy interactive services
+
+Deploy an initial set of interactive services based on existing 3rd party software.
+
+h3. Deliverable 2016-Q3
+
+* IPython and Jupyter Notebook
+** https://ipython.org/
+** https://jupyter.org/
+* DataJoy
+** https://www.getdatajoy.com/
+* RStudio
+** https://www.rstudio.com/
+
+h2. Evaluate interactive services
+
+Evaluate how the interactive code services could be used to provide solutions
+for each the H-ATLAS science cases.
+
+h3. Deliverable 2016-Q4+
+
+Initial analysis followed by incremental updates to take into account changes to the science requirements and service capabilities.
+
+h2. Evaluate virtual machine management solutions
+
+    * OpenStack (containers and VMs)
+
+h3. Deliverable 201N-QN
+
+Report on the suitability of using virtual machine management solutions to meet the end user requirements.
+
+h2. Evaluate container management solutions
+    
+    * OpenStack (containers and VMs)
+    * Kubernetes (containers only)
+
+h3. Deliverable 201N-QN
+
+Report on the suitability of using container machine management solutions to meet the end user requirements.
+
+
+h2. User code use cases.
+
+h2. User code development.
+
+h2. User code standards
+
+h2. User code paper.
+
+h2. End user documentation
+
+    User manual
+    Science case examples
+    
+h2. System administration documentation
+
+    System install
+    System admin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Working user data system with
+in-process analysis functionality
+Deliverable
+
+
+
+
+
+Specific Deliverable
+Paper describing the archittecture
+
+
+

@@ -1,0 +1,89 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+h1. User data
+
+h3. Milestone 2016-Q3
+
+User interface design and software architecture.
+
+h3. Milestone 2016-Q4
+
+Prototype system that can be used to collect user feedback.
+
+h3. Deliverable 2017-Q2
+
+Functional system that meets 80% of the requirements.
+
+h3. Deliverable 2017-Q4
+
+Production system for managing user data.
+
+----
+
+h1. H-ATLAS project
+
+h3. Deliverable 2016-Q4
+
+Initial deployment of the H-ATLAS public catalogs using existing software,
+making them accessible online and via the virtual observatory.
+
+h3. Deliverable 2016-Q4
+
+Science use cases including details of which catalogs are
+involved and what processing algorithms need to be applied.
+
+h3. Deliverable 2017-Q4
+
+Prototype system that can be used to collect user feedback.
+
+h3. Deliverable 2018-Q2
+
+Functonal system that meets 80% of the science cases.
+
+h3. Deliverable 2019-Q1
+
+Production system that meets H-ATLAS science cases.
+
+----
+
+h1. Data analysis platform
+
+h3. Deliverable 2016-Q3
+
+Prototype interactive SaaS systems deployed using off the shelf 3rd party software,
+e.g. IPython Notebook (https://ipython.org/)
+
+h3. Deliverable 2017-Q1
+
+Evaluation of the interactive SaaS systems looking at how they could be used to
+provide solutions for each the H-ATLAS science cases.
+
+h3. Deliverable 2018-Q1
+
+Prototype IaaS/PaaS system that can be used to evaluate use cases and collect user feedback.
+
+h3. Deliverable 2019-Q1
+
+Production system that enables end users to deploy their own software and
+perform data analysis inside the data center.
+
