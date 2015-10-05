@@ -89,9 +89,14 @@ docker rmi -f $(docker images -q)
 
     chmod a+r "/root/setup/build.sh" 
     chcon -t svirt_sandbox_file_t "/root/setup/build.sh" 
+ 
+    touch /root/chain.properties
+    chmod a+r "/root/chain.properties"
+    chcon -t svirt_sandbox_file_t "/root/chain.properties"
 
 
-    cat > /tmp/chain.properties << EOF
+
+    cat > /root/chain.properties << EOF
 
     version=${version:?}
 
@@ -150,7 +155,7 @@ docker rmi -f $(docker images -q)
 
 EOF
 
-    source /tmp/chain.properties
+    source /root/chain.properties
 
 
 

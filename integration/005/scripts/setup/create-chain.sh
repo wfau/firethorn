@@ -1,4 +1,4 @@
-    source /tmp/chain.properties
+    source /root/chain.properties
 
 
 # -----------------------------------------------------
@@ -58,7 +58,7 @@
 # Start our OGSA-DAI container.
 #[root@virtual]
 
-    source /tmp/chain.properties
+    source /root/chain.properties
 
     ogsatemp="/var/temp/${ogsaname:?}"
     ogsalogs="/var/logs/${ogsaname:?}"
@@ -81,7 +81,7 @@
 # Create our FireThorn config.
 #[root@virtual]
 
-    source /tmp/chain.properties
+    source /root/chain.properties
 
 
 properties=$(mktemp)
@@ -111,7 +111,7 @@ EOF
 # Create our Tomcat setenv script.
 #[root@virtual]
 
-    source /tmp/chain.properties
+    source /root/chain.properties
 
     setenv=$(mktemp)
     cat > "${setenv:?}" << 'EOF'
@@ -132,7 +132,7 @@ EOF
 # Start our FireThorn container.
 #[root@virtual]
 
-    source /tmp/chain.properties
+    source /root/chain.properties
 
     firetemp="/var/temp/${firename:?}"
     firelogs="/var/logs/${firename:?}"
@@ -156,4 +156,6 @@ EOF
         "firethorn/firethorn:${version:?}"
 
 
+    pyrologs="/var/logs/pyrothorn"
+    directory "${pyrologs:?}"
 
