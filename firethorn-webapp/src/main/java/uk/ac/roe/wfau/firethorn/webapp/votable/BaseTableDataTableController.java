@@ -92,21 +92,16 @@ extends AbstractTableController
         public String format(final ResultSet results)
         throws SQLException
             {
-    		log.debug("***DatatableFormatter****");
-
-        	if (results.getObject(index())!=null){
-        		log.debug("***1****");
-
-        		return StringEscapeUtils.escapeJson(
-                        results.getString(
-                            index()
-                            )
-                        );
-	   		} else {
-	   			log.debug("***2****");
-
-	   			return "\"\"";
-	   		}
+    		
+	        	if (results.getObject(index())!=null){
+	        		return StringEscapeUtils.escapeJson(
+	                        results.getString(
+	                            index()
+	                            )
+	                        );
+		   		} else {
+		   			return "\"\"";
+		   		}
             
             }
         }

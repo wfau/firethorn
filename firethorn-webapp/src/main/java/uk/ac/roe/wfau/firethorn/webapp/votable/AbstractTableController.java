@@ -144,17 +144,11 @@ extends AbstractController
         public String format(final ResultSet results)
         throws SQLException
             {
-           
-        	        log.debug("***format****");
-        		
-            		if (results.getObject(index())!=null){
-            			log.debug("****1***");
-            			 return results.getObject(index()).toString();
-            		} else {
-            			log.debug("****2***");
-
-            			return "";
-            		}
+        		if (results.getObject(index())!=null){
+        			return results.getObject(index()).toString();
+        		} else {
+        			return "";
+        		}
             }
         }
 
