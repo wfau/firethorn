@@ -109,10 +109,13 @@ public class AdqlQueryDatatablesController
         public String fetch()
         throws SQLException
             {
-            return resultset.getObject(
-                colnum
-                ).toString();
-            }
+
+    		if (resultset.getObject(colnum)!=null){
+    			 return resultset.getObject(colnum).toString();
+    		} else {
+    			return "";
+    		}
+          
         }
 
     /**
