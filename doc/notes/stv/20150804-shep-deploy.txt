@@ -381,7 +381,39 @@ END
 dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
 EOF
 
-     popd
+cat > resources/gavo-tap << EOF
+id=gavo-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+cat > resources/vizier-tap << EOF
+id=vizier-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://tapvizier.u-strasbg.fr/TAPVizieR/tap/
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource 
+EOF
+
+        popd
     exit
 
 # -----------------------------------------------------

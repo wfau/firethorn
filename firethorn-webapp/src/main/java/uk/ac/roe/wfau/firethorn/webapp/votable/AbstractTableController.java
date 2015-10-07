@@ -145,13 +145,13 @@ extends AbstractController
         throws SQLException
             {
            
-        		System.out.println("***format****");
+        	        log.debug("***format****");
         		
             		if (results.getObject(index())!=null){
-            			System.out.println("****1***");
+            			log.debug("****1***");
             			 return results.getObject(index()).toString();
             		} else {
-            			System.out.println("****2***");
+            			log.debug("****2***");
 
             			return "";
             		}

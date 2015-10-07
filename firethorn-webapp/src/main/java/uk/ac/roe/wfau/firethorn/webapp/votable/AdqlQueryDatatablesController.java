@@ -112,7 +112,7 @@ public class AdqlQueryDatatablesController
 	        	if (resultset.getObject(colnum)!=null){
 	   			    return resultset.getObject(colnum).toString();
 		   		} else {
-		   			return "";
+		   			return "\"\"";
 		   		}
             }
         }
