@@ -321,7 +321,7 @@ extends AbstractTableController
                     );
     
             default :
-                return new SimpleFormatter(
+                return new DatatableFormatter(
                     column
                     );
             }
