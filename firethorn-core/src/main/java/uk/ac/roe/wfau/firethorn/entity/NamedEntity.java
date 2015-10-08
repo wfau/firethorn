@@ -17,12 +17,14 @@ extends Entity
      * Common interface for a name factory.
      *
      */
+	@Deprecated
     public interface NameFactory<EntityType extends NamedEntity>
         {
         /**
          * Generate a new name.
          *
          */
+        @Deprecated
         public String name();
 
         /**
@@ -30,8 +32,9 @@ extends Entity
          * @param name An initial name to base the new name on. 
          *
          */
+        @Deprecated
         public String name(final String name);
-        
+
         }
 
     /**

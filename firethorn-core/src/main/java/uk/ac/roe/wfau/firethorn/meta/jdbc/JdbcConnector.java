@@ -174,5 +174,11 @@ public interface JdbcConnector
      * 
      */
     public JdbcMetadataScanner scanner();
+
+    /**
+     * Get the corresponding {@link JdbcResource.JdbcDriver} for this type.
+     * 
+     */
+    public JdbcResource.JdbcDriver jdbcdriver();
     
     }

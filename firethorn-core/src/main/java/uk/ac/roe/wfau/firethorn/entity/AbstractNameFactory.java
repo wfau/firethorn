@@ -17,19 +17,28 @@
  */
 package uk.ac.roe.wfau.firethorn.entity;
 
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
+
 /**
  *
  *
  */
-public abstract class AbstractNameFactory<EntityType extends NamedEntity>
+@Deprecated
+public class AbstractNameFactory<EntityType extends NamedEntity>
 extends AbstractComponent
 implements NamedEntity.NameFactory<EntityType>
     {
-    /*
-    @Override
-    public String name(final String name)
-        {
-        return name;
-        }
-     */
+
+	@Override
+	public String name()
+		{
+		throw new NotImplementedException();
+		}
+
+	@Override
+	public String name(String name)
+		{
+		throw new NotImplementedException();
+		}
+
     }

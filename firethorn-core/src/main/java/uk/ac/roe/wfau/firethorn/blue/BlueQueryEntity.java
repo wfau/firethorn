@@ -940,7 +940,8 @@ implements BlueQuery
                     table
                     );
                 this.add(
-                    table.resource()
+                    //table.resource() - why did this work ?
+                    table.root().resource()
                     );
                 }
 
@@ -1367,7 +1368,15 @@ implements BlueQuery
         
         //
         // Select our target OGSA-DAI service.  
-        final OgsaService service = source().ogsa().primary().service();
+//        final OgsaService service = source().ogsa().primary().service();
+//TODO Check all the resources are available through the same OgsaService.         
+        log.debug("Getting primary BaseResource");
+        final BaseResource<?> p = resources().primary();
+        log.debug("Found primary BaseResource [{}]", p.name());
+
+        log.debug("Getting primary OgsaService");
+        final OgsaService service = p.ogsa().primary().service();
+        log.debug("Found primary OgsaService [{}]", service.name());
         
         //
         // Execute our workflow.
@@ -1646,7 +1655,7 @@ implements BlueQuery
         final AdqlSchema adqlspace = identity.spaces().adql().current();
         log.debug(" ADQL space [{}][{}]", adqlspace.ident(), adqlspace.name());
 
-        this.jdbctable = jdbcspace.tables().create(); // NotImplYet ?
+        this.jdbctable = jdbcspace.tables().create();
         this.adqltable = adqlspace.tables().create(
     		jdbctable
             );
@@ -1748,14 +1757,15 @@ implements BlueQuery
         	// TODO Create with ADQL metadata.
         	// TODO Column create() and update() should only add fields that are different to the base.
         	final AdqlColumn adqlcol = adqltable.columns().create(
-    			jdbccol
+    			jdbccol,
+        		field.name()    		
     			);
         	}
 
         //
         // Should this be part of the table ?
         log.debug("Creating JDBC table");
-        jdbctable.resource().driver().create(
+        jdbctable.resource().jdbcdriver().create(
     		jdbctable
     		);
         log.debug("JDBC table created");
@@ -1770,6 +1780,7 @@ implements BlueQuery
      * Get the corresponding Hibernate entity for the current thread.
      * @throws HibernateConvertException 
      * @todo Move to a generic base class. 
+     * @todo Is this the same as BaseComponentEntity.self()
      *
      */
     @Override

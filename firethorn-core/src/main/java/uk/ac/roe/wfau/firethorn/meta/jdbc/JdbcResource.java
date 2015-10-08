@@ -33,7 +33,7 @@ public interface JdbcResource
 extends BaseResource<JdbcSchema>
     {
     /**
-     * Physical JDBC driver interface.
+     * JDBC driver interface.
      *
      */
     public static interface JdbcDriver
@@ -46,7 +46,7 @@ extends BaseResource<JdbcSchema>
      * The {@link JdbcDriver} for this {@link JdbcResource}.
      *
      */
-    public JdbcDriver driver();
+    public JdbcDriver jdbcdriver();
 
     /**
      * {@link BaseResource.IdentFactory} interface.

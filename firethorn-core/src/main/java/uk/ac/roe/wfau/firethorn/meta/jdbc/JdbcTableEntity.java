@@ -283,8 +283,11 @@ implements JdbcTable
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema)
             {
-            // Create an empty table.
-            throw new NotImplementedException();
+            return this.insert(
+                new JdbcTableEntity(
+                    schema
+                    )
+                );
             }
         
         @Override
@@ -333,7 +336,7 @@ implements JdbcTable
                 new JdbcTableEntity(
                     schema,
                     query,
-                    names.name()
+                    null
                     )
                 );
             //
@@ -635,6 +638,20 @@ implements JdbcTable
             );
         }
 
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcTableEntity(final JdbcSchema schema)
+        {
+        this(
+            schema,
+            null,
+            null,
+            JdbcType.TABLE
+            );
+        }
+    
     /**
      * Protected constructor.
      *
@@ -1115,7 +1132,7 @@ implements JdbcTable
     
     protected void jdbcdelete()
         {
-        this.resource().driver().delete(
+        this.resource().jdbcdriver().delete(
             JdbcTableEntity.this
             );
         this.adqlcount  = EMPTY_COUNT_VALUE;
@@ -1125,7 +1142,7 @@ implements JdbcTable
 
     protected void jdbcdrop()
         {
-        this.resource().driver().drop(
+        this.resource().jdbcdriver().drop(
             JdbcTableEntity.this
             );
         this.adqlcount  = EMPTY_COUNT_VALUE;

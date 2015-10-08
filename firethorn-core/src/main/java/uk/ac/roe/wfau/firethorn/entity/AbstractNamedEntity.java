@@ -24,11 +24,17 @@ import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
+import java.nio.ByteBuffer;
+
 import lombok.extern.slf4j.Slf4j;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.BaseEncoding;
 
 import org.hibernate.annotations.Type;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -57,7 +63,7 @@ implements Entity, NamedEntity
      */
     public static final String DB_NAME_COL    = "name";
     public static final String DB_TEXT_COL    = "text";
-
+    
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -69,18 +75,6 @@ implements Entity, NamedEntity
         }
 
     /**
-     * Protected constructor, sets the owner and create date.
-     * @param init A flag to distinguish this from the default constructor.
-     *
-    @Deprecated
-    protected AbstractNamedEntity(final boolean init)
-    throws NameFormatException
-        {
-        super(init);
-        }
-     */
-
-    /**
      * Protected constructor, sets the owner, name and create date.
      *
      */
@@ -88,24 +82,48 @@ implements Entity, NamedEntity
     throws NameFormatException
         {
     	super(true);
-    	//log.debug("AbstractNamedEntity(String)");
-        //log.debug("  Name  [{}]", name);
-    	this.name(
+    	log.debug("AbstractNamedEntity(String)");
+        log.debug("  Name  [{}]", name);
+    	this.init(
             name
             );
         }
 
-    public AbstractNamedEntity(final Identity owner, final String name)
+    /**
+     * Protected constructor, sets the owner, name and create date.
+     *
+     */
+    protected AbstractNamedEntity(final Identity owner, final String name)
 		{
     	super(
 			owner
 			);
-    	this.name(
+    	log.debug("AbstractNamedEntity(Identity, String)");
+        log.debug("  Name  [{}]", name);
+    	this.init(
             name
             );
 		}
 
-	/**
+    /**
+     * Initialise our entity name.
+     * 
+     */
+    protected void init(final String name)
+    	{
+        if (name != null)
+            {
+            this.name = name;
+            }
+        else {
+        	final UniqueNamefactory factory = new UniqueNamefactory();
+            this.name = factory.name(
+        		this
+        		);
+        	}
+    	}
+    
+    /**
      * The Entity name.
      *
      */

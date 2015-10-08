@@ -150,10 +150,25 @@ implements OgsaExecResource
                 }
             else {
                 log.debug("No primary OgsaExecResource, creating a new one");
-                return create(
+                return simple(
                     service
                     );
                 }
+            }
+
+        /**
+         * Create a new {@link OgsaExecResource} using the default resource ID configured in the OGSA-DAI webapp.
+         *  
+         */
+        protected OgsaExecResource simple(final OgsaService service)
+            {
+            log.debug("simple(OgsaService) [{}]", service.ident());
+            return super.insert(
+                new OgsaExecResourceEntity(
+                    service,
+                    "DataRequestExecutionResource"
+                    )
+                );
             }
         }
 
@@ -260,28 +275,43 @@ implements OgsaExecResource
      * Protected constructor. 
      *
      */
-    public OgsaExecResourceEntity()
+    protected OgsaExecResourceEntity()
         {
         super();
         }
 
-    /**
-     *
-     * Public constructor.
-     * @param service The parent {@link OgsaService}
-     *
-     */
-    public OgsaExecResourceEntity(final OgsaService service)
-        {
-        super(
-            service
-            );
-        }
+   /**
+    *
+    * Protected constructor.
+    * @param service The parent {@link OgsaService}.
+    * @param ogsaid  The OGSA-DAI resource ID.
+    *
+    */
+   protected OgsaExecResourceEntity(final OgsaService service, final String ogsaid)
+       {
+       super(
+           service,
+           ogsaid
+           );
+       }
+
+   /**
+    *
+    * Protected constructor.
+    * @param service The parent {@link OgsaService}
+    *
+    */
+   protected OgsaExecResourceEntity(final OgsaService service)
+	   {
+	   super(
+		   service
+		   );
+	   }
 
     @Override
 	public BaseResource<?> resource()
 		{
-		// This shouldn't be here.
+		// This should not be here.
 		// A DRER is not linked to a BaseResource resource.
 		throw new NotImplementedException();
 		}

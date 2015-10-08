@@ -61,37 +61,41 @@ implements JdbcResource.JdbcDriver
         {
         log.debug("Create JdbcTable [{}]", table.name());
 
-        final StringBuilder builder = new StringBuilder(
+        final StringBuilder statement = new StringBuilder(
     		"CREATE TABLE "
     		);
 		fullname(
-			builder,
+			statement,
 			table
 			);
-        builder.append(" (");
 
         boolean comma = false ;
+		statement.append(" (");
         for(JdbcColumn column : table.columns().select())
         	{
         	if (comma)
         		{
-                builder.append(",");
+                statement.append(",");
         		}
         	else {
             	comma = true ;
         		}
         	sqlname(
-    			builder,
+    			statement,
     			column
     			);
-            builder.append(" ");
+            statement.append(" ");
             sqltype(
-				builder,
+				statement,
 				column.meta().jdbc()
     			);
         	}
+        statement.append(" )");
 
-        builder.append(" )");
+		execute(
+			table.resource().connection(),
+			statement.toString()
+			);
         }
     
     @Override
@@ -102,25 +106,14 @@ implements JdbcResource.JdbcDriver
         final StringBuilder statement = new StringBuilder(
     		"DROP TABLE "
     		); 
-		fullname(statement,
+		fullname(
+			statement,
 			table
 			);
-        final JdbcConnector connection = table.resource().connection();
-        try {
-            log.debug("SQL statement [{}]", statement);
-            final int result = connection.open().createStatement().executeUpdate(
-                statement.toString()
-                );
-            log.debug("SQL result [{}]", result);
-            }
-        catch (final SQLException ouch)
-            {
-            log.warn("SQLException while attempting to drop table [{}]", ouch.getMessage());
-            log.warn("SQL statement [{}]", statement.toString());
-            }
-        finally {
-            connection.close();
-            }
+		execute(
+			table.resource().connection(),
+			statement.toString()
+			);
         }
     
     @Override
@@ -131,10 +124,18 @@ implements JdbcResource.JdbcDriver
         final StringBuilder statement = new StringBuilder(
     		"DELETE FROM "
     		); 
-		fullname(statement,
+		fullname(
+			statement,
 			table
 			);
-        final JdbcConnector connection = table.resource().connection();
+		execute(
+			table.resource().connection(),
+			statement.toString()
+			);
+        }
+    
+    protected void execute(final JdbcConnector connection, final String statement)
+        {
         try {
             log.debug("SQL statement [{}]", statement);
             final int result = connection.open().createStatement().executeUpdate(
@@ -151,7 +152,7 @@ implements JdbcResource.JdbcDriver
             connection.close();
             }
         }
-
+    
     @UpdateMethod
     public void truncate(final JdbcTable table)
         {

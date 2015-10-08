@@ -1026,7 +1026,7 @@
         </profile>
 
         <!--+
-            | Build the databases.
+            | Just the databases.
             +-->
         <profile>
             <id>database</id>
@@ -1036,7 +1036,7 @@
         </profile>
 
         <!--+
-            | Build the webapps.
+            | Just the webapps.
             +-->
         <profile>
             <id>webapps</id>

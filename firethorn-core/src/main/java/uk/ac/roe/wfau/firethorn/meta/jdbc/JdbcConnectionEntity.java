@@ -50,8 +50,10 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource.JdbcDriver;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PGSQLMetadataScanner;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.SQLServerDriver;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
@@ -863,7 +865,25 @@ public class JdbcConnectionEntity
                 );
             
             default : throw new RuntimeException(
-                "Unable to load scanner for connection type [" + this.type + "]"
+                "Unable to load scanner for type [" + this.type + "]"
+                );
+            }
+        }
+
+    /**
+     * The {@link JdbcDriver} for this {@link JdbcResource}.
+     *
+     */
+    public JdbcResource.JdbcDriver jdbcdriver()
+        {
+        log.debug("jdbcdriver() for [{}]", this.type().name());
+        switch (this.type())
+            {
+            case MSSQL :
+                return new SQLServerDriver();
+
+            default : throw new RuntimeException(
+                "Unable to load driver for type [" + this.type + "]"
                 );
             }
         }

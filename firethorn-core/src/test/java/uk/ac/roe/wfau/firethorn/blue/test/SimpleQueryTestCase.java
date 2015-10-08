@@ -37,7 +37,7 @@ public class SimpleQueryTestCase
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
-    //@Test
+    @Test
     public void testEditing()
     throws Exception
         {

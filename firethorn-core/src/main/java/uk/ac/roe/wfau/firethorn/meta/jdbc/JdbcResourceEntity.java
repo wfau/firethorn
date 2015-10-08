@@ -831,8 +831,9 @@ public class JdbcResourceEntity
         }
 
 	@Override
-	public JdbcDriver driver()
+	public JdbcResource.JdbcDriver jdbcdriver()
 		{
-		throw new NotImplementedException();
+        log.debug("jdbcdriver() for [{}]", this.name());
+		return this.connection.jdbcdriver();
 		}
     }

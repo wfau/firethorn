@@ -84,12 +84,6 @@ implements OgsaBaseResource
             }
         }
     
-	/**
-	 * Default component name.
-	 * 
-	 */
-	protected static final String DEFAULT_NAME = "OGSA-DAI resource" ;
-
     /**
      * Hibernate column mapping, {@value}.
      *
@@ -112,7 +106,7 @@ implements OgsaBaseResource
      * Protected constructor.
      *
      */
-    public OgsaBaseResourceEntity()
+    protected OgsaBaseResourceEntity()
         {
         super();
         }
@@ -121,13 +115,24 @@ implements OgsaBaseResource
     *
     * Protected constructor.
     * @param service The parent {@link OgsaService}.
+    * @param ogsaid  The OGSA-DAI resource ID.
+    *
+    */
+   protected OgsaBaseResourceEntity(final OgsaService service, final String ogsaid)
+       {
+       this(service);
+       this.ogsaid = ogsaid ;
+       }
+
+   /**
+    *
+    * Protected constructor.
+    * @param service The parent {@link OgsaService}.
     *
     */
    protected OgsaBaseResourceEntity(final OgsaService service)
        {
-       super(
-           DEFAULT_NAME
-           );
+       super(null);
        this.ogstatus  = OgsaStatus.CREATED ;
        this.ogservice = service ;
        }
@@ -168,7 +173,7 @@ implements OgsaBaseResource
 // TODO wrong place to trigger a scan.
 // If the ping() fails, we need to replace this entity with another
 // Which happens at the factory level, not here. 
-       
+      
        
 /*
        log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);

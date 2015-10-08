@@ -211,6 +211,8 @@ implements BlueTask<TaskType>
                 {
                 final Throwable cause = ouch.getCause();
                 log.error("ExecutionException executing Future [{}][{}]", cause.getClass().getName(), cause.getMessage());
+                log.debug("ExecutionException executing Future", cause);
+
                 return TaskState.ERROR;
                 }
             catch (InterruptedException ouch)
@@ -857,7 +859,11 @@ implements BlueTask<TaskType>
                 case QUEUED:
                     accept(next);
                     break ;
-    
+
+                case RUNNING:
+	                accept(next);
+	                break ;
+
                 case CANCELLED:
                 case FAILED:
                 case ERROR:
