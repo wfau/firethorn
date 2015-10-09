@@ -112,14 +112,14 @@ public class AdqlQueryVOTableController
         public String fetch()
         throws SQLException
             {
-        	if (resultset.getObject(colnum)!=null){
-    			return resultset.getObject(colnum).toString();
-    		} else {
-    			return "";
-    		}
+	        	if (resultset.getObject(colnum)!=null){
+	    			return resultset.getObject(colnum).toString();
+	    		} else {
+	    			return "";
+	    		}
            
+            }
         }
-
     /**
      * Escape string values for XML.
      * http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/StringEscapeUtils.html
