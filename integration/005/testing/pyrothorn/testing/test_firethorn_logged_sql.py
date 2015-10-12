@@ -34,7 +34,8 @@ try:
     import base64
     import collections
     import hashlib
-    
+    sys.stdout = open('logs/logfile.txt', 'w')
+
     # get a UUID - URL safe, Base64
     def get_a_uuid():
         '''
