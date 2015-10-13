@@ -35,21 +35,23 @@ implements SecurityContextFactory
      *
      */
     private static Log log = LogFactory.getLog(FirethornSecurityContextFactory.class);
-    
-    protected static final String FIRETHORN_ENDPOINT_KEY = "firethorn.callback.endpoint" ;
+
+    protected static final String CALLBACK_IDENT_KEY = "firethorn.callback.ident" ;
+
+    protected static final String CALLBACK_ENDPOINT_KEY = "firethorn.callback.endpoint" ;
 
     protected static final String DEFAULT_ENDPOINT_URL = "http://localhost:8080/firethorn" ;
 
     public static String endpoint(final HttpServletRequest request)
         {
         log.debug("endpoint(HttpServletRequest)");
-        final String callback = request.getHeader(
-            FIRETHORN_ENDPOINT_KEY
+        final String endpoint = request.getHeader(
+            CALLBACK_ENDPOINT_KEY
             );
-        log.debug("Callback [" + callback + "]");
-        if (callback != null)
+        log.debug("Endpoint [" + endpoint + "]");
+        if (endpoint != null)
             {
-            return callback  ;
+            return endpoint  ;
             }
         else {
             final String hostname = request.getRemoteHost();                

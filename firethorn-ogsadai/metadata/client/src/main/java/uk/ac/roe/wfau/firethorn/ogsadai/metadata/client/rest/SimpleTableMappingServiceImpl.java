@@ -62,7 +62,7 @@ implements TableMappingService
         log.debug("getTableMapping(String)");
         log.debug("  Source [" + source  + "]");
         return debug(
-            rest().getForObject(
+    		rest().getForObject(
                 endpoint(
                     SOURCE_NAME_PATH
                     ),

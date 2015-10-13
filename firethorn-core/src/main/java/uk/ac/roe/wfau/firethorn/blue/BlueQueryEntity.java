@@ -87,6 +87,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflow;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflowClient;
@@ -353,7 +354,7 @@ implements BlueQuery
         public BlueQuery callback(final Identifier ident, final BlueQuery.Callback message)
         throws IdentifierNotFoundException, InvalidStateRequestException
             {
-            log.debug("callback(Identifier, CallbackEvent");
+            log.debug("callback(Identifier, CallbackEvent)");
             log.debug("  ident [{}]", ident);
             log.debug("  next  [{}]", message.next());
             log.debug("  count [{}]", message.rowcount());
@@ -1368,15 +1369,30 @@ implements BlueQuery
         
         //
         // Select our target OGSA-DAI service.  
-//        final OgsaService service = source().ogsa().primary().service();
-//TODO Check all the resources are available through the same OgsaService.         
+		// Assumes a valid resource list for a DIRECT query.
+		// TODO fails on a DISTRIBUTED query.
+		// Need a default DQP resource
         log.debug("Getting primary BaseResource");
-        final BaseResource<?> p = resources().primary();
-        log.debug("Found primary BaseResource [{}]", p.name());
+        final BaseResource<?> base = resources().primary();
+        log.debug("Found primary BaseResource [{}]", base.name());
 
+        final OgsaBaseResource from = base.ogsa().primary();
+        log.debug("Found primary OgsaBaseResource [{}]", from.name());
+        
         log.debug("Getting primary OgsaService");
-        final OgsaService service = p.ogsa().primary().service();
+        final OgsaService service = from.service();
         log.debug("Found primary OgsaService [{}]", service.name());
+
+        log.debug("Getting target table");
+        final String into = BlueQueryEntity.this.jdbctable.fullname() ; 
+        log.debug("Found target table [{}]", into);
+        
+        log.debug("Getting target OgsaBaseResource");
+        final OgsaBaseResource dest = BlueQueryEntity.this.jdbctable.resource().ogsa().primary() ; 
+        log.debug("Found target OgsaBaseResource [{}]", dest.name());
+
+      //TODO Check all the resources are available through the same OgsaService.         
+
         
         //
         // Execute our workflow.
@@ -1391,9 +1407,7 @@ implements BlueQuery
 				@Override
 				public String source()
 					{
-					// Assume valid resource list for a DIRECT query.
-					// TODO fails on a DISTRIBUTED query.
-					return resources().primary().ogsa().primary().ogsaid();
+					return from.ogsaid();
 					}
 					
 				@Override
@@ -1410,7 +1424,7 @@ implements BlueQuery
 						@Override
 						public String resource()
 							{
-							return BlueQueryEntity.this.jdbctable.resource().ogsa().primary().ogsaid();
+							return dest.ogsaid();
 							}
 
 						@Override
@@ -1471,22 +1485,32 @@ implements BlueQuery
 						@Override
 						public Integer first()
 							{
-							// TODO Auto-generated method stub
-							return null;
+							return new Integer(10000);
 							}
 
 						@Override
 						public Integer last()
 							{
-							// TODO Auto-generated method stub
-							return null;
+							return new Integer(10000);
 							}
 
 						@Override
 						public Integer every()
 							{
-							// TODO Auto-generated method stub
 							return null;
+							}
+						};
+					}
+
+				@Override
+				public CallbackParam callback()
+					{
+					return new CallbackParam()
+						{
+						@Override
+						public String ident()
+							{
+							return BlueQueryEntity.this.ident().toString();
 							}
 						};
 					}
@@ -1562,7 +1586,7 @@ implements BlueQuery
     public void callback(final BlueQuery.Callback message)
     throws InvalidStateRequestException
         {
-        log.debug("callback(Callback");
+        log.debug("callback(Callback)");
         log.debug("  next  [{}]", message.next());
         log.debug("  ident [{}]", this.ident());
         log.debug("  state [{}]", this.state());

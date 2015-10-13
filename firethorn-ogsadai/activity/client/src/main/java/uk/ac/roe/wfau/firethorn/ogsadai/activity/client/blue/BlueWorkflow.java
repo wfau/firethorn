@@ -21,7 +21,6 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.RownumClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 /**
@@ -89,7 +88,21 @@ public interface BlueWorkflow
     	 * 
     	 */
         public LimitsParam limits();
-    	
+
+    	/**
+    	 * The callback activity parameters.
+    	 * 
+    	 */
+    	public static interface CallbackParam
+    	extends CallbackClient.Param 
+    		{}
+
+    	/**
+    	 * The limits activity parameters.
+    	 * 
+    	 */
+        public CallbackParam callback();
+
     	}
 
     /**

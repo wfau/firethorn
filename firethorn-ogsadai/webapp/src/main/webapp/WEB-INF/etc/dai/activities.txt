@@ -711,7 +711,11 @@ class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.ivoa.IvoaCreateResourceAc
 description=
 CONFIG
 END
-
+id=uk.ac.roe.wfau.firethorn.Callback
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackActivity
+description=
+CONFIG
+END
 id=uk.ac.roe.wfau.firethorn.CreateFireThornDQP
 class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.dqp.CreateFireThornDQPActivity
 description=

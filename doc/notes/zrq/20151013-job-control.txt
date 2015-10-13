@@ -21,11 +21,238 @@
 #
 
 # -----------------------------------------------------
-# Stop anu existing containers.
-#[root@virtual]
+# Stop existing containers.
+#[user@desktop]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1.1
+
+    sleep 1
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our source code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Create our secret function.
+#[user@desktop]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^[:space:]*${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'ping'
+
+# -----------------------------------------------------
+# Get our branch and version number.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        branch=$(hg branch)
+
+        source "bin/util.sh"
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Configure our docker chain.
+#[user@desktop]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    version=${branch:?}
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1.1
+
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1.1
+
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Begin REPEAT from here ....
+#
+
+    #
+    # do {
+    #    edit code
+    #    test run
+    #    }
+    # until (done)
+    # 
+
+# -----------------------------------------------------
+# Stop existing service containers.
+#[user@desktop]
 
     docker rm -fv "${ogsaname:?}"
     docker rm -fv "${firename:?}"
+
+# -----------------------------------------------------
+# remove existing service images.
+#[user@desktop]
+
+    docker rmi "firethorn/firethorn:${version:?}"
+    docker rmi "firethorn/ogsadai:${version:?}"
 
 # -----------------------------------------------------
 # Build our source code.
@@ -94,10 +321,11 @@
 # Check the logs ..
 #[user@desktop]
 
+# Separate terminal
 #   source "${HOME:?}/chain.properties"
 #   docker logs -f --tail 100 "${firename:?}"
 
-
+# Separate terminal
 #   source "${HOME:?}/chain.properties"
 #   docker logs -f --tail 100 "${ogsaname:?}"
 
@@ -192,7 +420,9 @@
                 atlasSource.dec BETWEEN -40 AND -39
             "
 
-#------------------------------------------------------------------
+# -----------------------------------------------------
+# Run a BlueQuery
+#[root@tester]
 
         #
         # Create BlueQuery with a valid input.
@@ -224,197 +454,13 @@
             "${endpointurl:?}/blue/query/${queryident:?}" \
             | bin/pp
 
+...
+
         #
-        # Complete the BlueQuery.
+        # Select the BlueQuery.
         curl \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.next.status=COMPLETED" \
-            "${endpointurl:?}/blue/query/callback/${queryident:?}" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
             | bin/pp
-
-    #
-    # Select the BlueQuery.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        "${endpointurl:?}/blue/query/${queryident:?}" \
-        | bin/pp
-
-#------------------------------------------------------------------
-
-    #
-    # Create BlueQuery with null input.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.other=other " \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
-        | bin/pp | tee blue-query.json
-
-    queryself=$(
-        cat blue-query.json | self
-        )
-
-    querynode=$(
-        cat blue-query.json | self | node
-        )
-
-    queryident=$(
-        cat blue-query.json | self | ident
-        )
-
-    #
-    # Set the query ADQL.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
-        "${endpointurl:?}/blue/query/${queryident:?}" \
-        | bin/pp
-
-    #
-    # Run the BlueQuery.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.next.status=RUNNING" \
-        "${endpointurl:?}/blue/query/${queryident:?}" \
-        | bin/pp
-
-    #
-    # Complete the BlueQuery.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.next.status=COMPLETED" \
-        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
-        | bin/pp
-
-#------------------------------------------------------------------
-
-    #
-    # Create BlueQuery with null input.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.other=other " \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
-        | bin/pp | tee blue-query.json
-
-    queryident=$(
-        cat blue-query.json | self | ident
-        )
-
-    #
-    # Set the query ADQL and set status to RUNNING.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.next.status=RUNNING" \
-        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
-        "${endpointurl:?}/blue/query/${queryident:?}" \
-        | bin/pp
-
-#------------------------------------------------------------------
-
-    #
-    # Create BlueQuery with null input.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.other=other " \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
-        | bin/pp | tee blue-query.json
-
-    queryident=$(
-        cat blue-query.json | self | ident
-        )
-
-    #
-    # Set the query ADQL and set status to COMPLETED.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.next.status=COMPLETED" \
-        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
-        "${endpointurl:?}/blue/query/${queryident:?}" \
-        | bin/pp
-
-#------------------------------------------------------------------
-
-    #
-    # Create BlueQuery with null input.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.other=other " \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
-        | bin/pp | tee blue-query.json
-
-    queryident=$(
-        cat blue-query.json | self | ident
-        )
-    echo "queryident=${queryident:?}"
-
-    #
-    # Set the query ADQL and set status to COMPLETED, and wait 60 sec.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.wait=60000" \
-        --data "blue.query.next.status=COMPLETED" \
-        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
-        "${endpointurl:?}/blue/query/${queryident:?}" \
-        | bin/pp
-
-    #
-    # Complete the BlueQuery.
-queryident=622605
-
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.next.status=COMPLETED" \
-        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
-        | bin/pp
-
-#------------------------------------------------------------------
-
-    #
-    # Create BlueQuery with vaild ADQL, status to COMPLETED, and wait 60 sec.
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.wait=120000" \
-        --data "blue.query.next.status=COMPLETED" \
-        --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
-        | bin/pp | tee blue-query.json
-
-    queryident=$(
-        cat blue-query.json | self | ident
-        )
-    echo "queryident=${queryident:?}"
-
-
-    #
-    # Select the BlueQuery.
-queryident=163853
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        "${endpointurl:?}/blue/query/${queryident:?}" \
-        | bin/pp
-
-    #
-    # Complete the BlueQuery.
-queryident=163853
-    curl \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "blue.query.next.status=COMPLETED" \
-        "${endpointurl:?}/blue/query/callback/${queryident:?}" \
-        | bin/pp
-
 

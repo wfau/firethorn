@@ -51,6 +51,16 @@
     <dependencies>
 
         <!--+
+            | OGSA-DAI FireThorn server classes.
+            | TODO - this just needs SecurityContext, which should probably be in a separate package.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
             | OGSA-DAI Astronomy extensions.
             +-->
         <dependency>

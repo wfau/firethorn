@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.LimitsParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.CallbackParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
@@ -28,13 +28,16 @@ import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
-import uk.org.ogsadai.data.LongData;
+import uk.org.ogsadai.data.IntegerData;
+import uk.org.ogsadai.data.StringData;
 
 /**
- * Client for our Limits Activity.
+ * Client for our CallbackActivity.
+ * @todo Move a lot of this to a generic TupleProcessingActivity base class.
+ * 
  *
  */
-public class LimitsClient
+public class CallbackClient
 extends BaseActivity implements Activity
     {
 
@@ -44,46 +47,19 @@ extends BaseActivity implements Activity
      */
     public static interface Param
         {
-        /**
-         * The row limit.
-         * @return The row limit.
-         *
-         */
-        public Long rows();
-
-        /**
-         * The cells limit.
-         * @return The cells limit.
-         *
-         */
-        public Long cells();
-
-        /**
-         * The time limit.
-         * @return The time limit.
-         *
-         */
-        public Long time();
+		/**
+		 * The query identifier.
+		 * 
+		 */
+        public String ident();
         }
 
     /**
-     * The row limit.
+     * The query identifier.
      *
      */
-    private final ActivityInput rows;
+    private final ActivityInput ident;
 
-    /**
-     * The cell limit.
-     *
-     */
-    private final ActivityInput cells;
-
-    /**
-     * The time limit.
-     *
-     */
-    private final ActivityInput time;
-    
     /**
      * The input tuples
      *
@@ -102,10 +78,11 @@ extends BaseActivity implements Activity
      * @param param The Activity parameters.
      * 
      */
-    public LimitsClient(final SingleActivityOutput source, final Param param)
+    public CallbackClient(final SingleActivityOutput source, final Param param)
         {
-        this(
-            param
+        this();
+        param(
+        	param
             );
         input(
             source
@@ -114,122 +91,57 @@ extends BaseActivity implements Activity
 
     /**
      * Public constructor.
-     * @param param The Activity parameters.
-     * 
-     */
-    public LimitsClient(final Param param)
-        {
-        this();
-        if (param != null)
-            {
-            this.rows(
-                param.rows()
-                );
-            this.cells(
-                param.cells()
-                );
-            this.time(
-                param.time()
-                );
-            }
-        }
-
-    /**
-     * Public constructor.
      *
      */
-    public LimitsClient()
+    public CallbackClient()
         {
         super(
             new ActivityName(
-                LimitsParam.ACTIVITY_NAME
+        		CallbackParam.ACTIVITY_NAME
                 )
             );
-        rows = new SimpleActivityInput(
-            LimitsParam.ROW_LIMIT,
-            true
-            );
-        cells = new SimpleActivityInput(
-            LimitsParam.CELL_LIMIT,
-            true
-            );
-        time = new SimpleActivityInput(
-            LimitsParam.TIME_LIMIT,
-            true
-            );
-        input = new SimpleActivityInput(
-            LimitsParam.TUPLE_INPUT,
+        this.ident = new SimpleActivityInput(
+    		CallbackParam.QUERY_IDENT,
             false
             );
-        output = new SimpleActivityOutput(
-            LimitsParam.TUPLE_OUTPUT,
+        this.input = new SimpleActivityInput(
+    		CallbackParam.TUPLE_INPUT,
+            false
+            );
+        this.output = new SimpleActivityOutput(
+    		CallbackParam.TUPLE_OUTPUT,
             false
             );
         }
 
     /**
-     * Set the row delay.
-     *
+     * Set the Activity parameters. 
+     * @param param The Activity parameters.
+     * 
      */
-    public void rows(final Long value)
+    public void param(final Param param)
         {
-        if (value != null)
-            {
-            rows.add(
-                new LongData(
-                    value
-                    )
-                );
-            }
+        ident.add(
+            new StringData(
+                param.ident()
+                )
+            );
         }
 
     /**
-     * Set the cells limit.
-     *
-     */
-    public void cells(final Long value)
-        {
-        if (value != null)
-            {
-            cells.add(
-                new LongData(
-                    value
-                    )
-                );
-            }
-        }
-
-    /**
-     * Set the time limit.
-     *
-     */
-    public void time(final Long value)
-        {
-        if (value != null)
-            {
-            time.add(
-                new LongData(
-                    value
-                    )
-                );
-            }
-        }
-
-    /**
-     * Connect the tuples input.
+     * Add the tuples input.
      * @param source The tuple input source.
      *
      */
     public void input(final SingleActivityOutput source)
         {
-        input.connect(
+        this.input.connect(
             source
             );
         }
 
     /**
      * Get the tuples output.
-     * @return The tuples output
      *
      */
     public SingleActivityOutput output()
@@ -241,9 +153,7 @@ extends BaseActivity implements Activity
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
-            rows,
-            cells,
-            time,
+            ident,
             input
             };
         }

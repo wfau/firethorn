@@ -111,7 +111,7 @@ implements OgsaBaseResource
         super();
         }
 
-    /**
+   /**
     *
     * Protected constructor.
     * @param service The parent {@link OgsaService}.

@@ -113,5 +113,15 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <filter>
+        <filter-name>ConnectionConfig</filter-name>
+        <filter-class>uk.ac.roe.wfau.firethorn.webapp.catalina.ConnectionConfigFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ConnectionConfig</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
 </web-app>
 

@@ -47,6 +47,7 @@
     </description>
     
     <properties>
+        <tomcat.version>8.0.27</tomcat.version>
     </properties>
 
     <repositories>
@@ -127,13 +128,13 @@
 	    <!--+
 	        | Servlet libraries.
             | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
-	        +-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+	        +-->
 
         <!--+
             | QRCode generator.
@@ -169,6 +170,22 @@
         <dependency>
             <groupId>org.jsoftbiz</groupId>
             <artifactId>os-platform-finder</artifactId>
+        </dependency>
+
+        <!--+
+            | Tomcat specific classes.
+            +-->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

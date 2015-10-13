@@ -21,7 +21,7 @@
 #
 
 # -----------------------------------------------------
-# Set branch and version.
+# Get our branch and version number.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -120,11 +120,11 @@
     pushd "${FIRETHORN_CODE:?}"
 
         pushd firethorn-ogsadai/webapp
-            mvn -D "docker.host=http://docker-proxy:2375" docker:package
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
         popd
         
         pushd firethorn-webapp
-            mvn -D "docker.host=http://docker-proxy:2375" docker:package
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
         popd
 
     popd
@@ -247,26 +247,6 @@ EOF
         postgres
 
 # -----------------------------------------------------
-# Create a function to manage directory permissions.
-#[user@desktop]
-
-    # This has problems if the UID inside and outside don't match.
-    # Do we need this ?
-
-    datadir()
-        {
-        local target=${1:?}
-
-        mkdir --parents "${target:?}"
-
-        chown 995:994 "${target:?}"
-        chmod u=rwxs  "${target:?}"
-        chmod g=rwxs  "${target:?}"
-
-        chcon -t svirt_sandbox_file_t "${target:?}"
-        }
-
-# -----------------------------------------------------
 # Start our OGSA-DAI container.
 #[root@virtual]
 
@@ -334,7 +314,6 @@ EOF
 
     source "${HOME:?}/chain.properties"
     docker logs -f --tail 100 "${firename:?}"
-
 
     source "${HOME:?}/chain.properties"
     docker logs -f --tail 100 "${ogsaname:?}"
@@ -558,7 +537,7 @@ EOF
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "blue.query.other=other " \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        "${endpointurl:?}/${queryspace:?}/blue/create" \
         | bin/pp | tee blue-query.json
 
     queryself=$(
@@ -608,7 +587,7 @@ EOF
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "blue.query.other=other " \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        "${endpointurl:?}/${queryspace:?}/blue/create" \
         | bin/pp | tee blue-query.json
 
     queryident=$(
@@ -633,7 +612,7 @@ EOF
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "blue.query.other=other " \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        "${endpointurl:?}/${queryspace:?}/blue/create" \
         | bin/pp | tee blue-query.json
 
     queryident=$(
@@ -658,7 +637,7 @@ EOF
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "blue.query.other=other " \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        "${endpointurl:?}/${queryspace:?}/blue/create" \
         | bin/pp | tee blue-query.json
 
     queryident=$(
@@ -677,10 +656,9 @@ EOF
         "${endpointurl:?}/blue/query/${queryident:?}" \
         | bin/pp
 
+
     #
     # Complete the BlueQuery.
-queryident=622605
-
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
@@ -698,7 +676,7 @@ queryident=622605
         --data "blue.query.wait=120000" \
         --data "blue.query.next.status=COMPLETED" \
         --data "blue.query.input=SELECT count(ra) FROM atlas.atlasSource" \
-        "${endpointurl:?}/adql/resource/32772/blue/create" \
+        "${endpointurl:?}/${queryspace:?}/blue/create" \
         | bin/pp | tee blue-query.json
 
     queryident=$(
@@ -706,10 +684,8 @@ queryident=622605
         )
     echo "queryident=${queryident:?}"
 
-
     #
     # Select the BlueQuery.
-queryident=163853
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
@@ -718,7 +694,6 @@ queryident=163853
 
     #
     # Complete the BlueQuery.
-queryident=163853
     curl \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
@@ -726,4 +701,12 @@ queryident=163853
         "${endpointurl:?}/blue/query/callback/${queryident:?}" \
         | bin/pp
 
+
+    #
+    # Select the BlueQuery.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/blue/query/${queryident:?}" \
+        | bin/pp
 

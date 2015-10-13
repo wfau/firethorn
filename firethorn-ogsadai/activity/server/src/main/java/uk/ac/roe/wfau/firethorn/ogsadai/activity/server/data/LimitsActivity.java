@@ -100,7 +100,7 @@ extends MatchedIterativeActivity
                 LimitsParam.DEFAULT_TIME
                 ),
             new TupleListActivityInput(
-                DelaysParam.TUPLE_INPUT
+                LimitsParam.TUPLE_INPUT
                 )
             };
         }
@@ -118,10 +118,10 @@ extends MatchedIterativeActivity
         logger.debug("preprocess()");
     	try {
             validateOutput(
-                DelaysParam.TUPLE_OUTPUT
+                LimitsParam.TUPLE_OUTPUT
                 );
             writer = getOutput(
-                DelaysParam.TUPLE_OUTPUT
+                LimitsParam.TUPLE_OUTPUT
                 );
             }
         catch (final Exception ouch)

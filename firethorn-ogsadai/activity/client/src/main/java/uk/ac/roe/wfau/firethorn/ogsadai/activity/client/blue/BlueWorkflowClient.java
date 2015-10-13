@@ -23,7 +23,6 @@ import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleWorkflowResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
@@ -62,21 +61,6 @@ implements BlueWorkflow
     private final String drerid ;
 
     /**
-     * Deprecated constructor.
-     *
-     * @param endpoint The OGSA-DAI service endpoint URL.
-     *
-     */
-    @Deprecated
-    public BlueWorkflowClient(final String endpoint)
-        {
-    	this(
-			endpoint,
-			DEFAULT_DRER_IDENT
-			);
-        }
-
-    /**
      * Public constructor.
      *
      * @param endpoint The OGSA-DAI service endpoint URL.
@@ -99,7 +83,7 @@ implements BlueWorkflow
     public Result execute(final Param param)
         {
         //
-        // Our ogsadai server client.
+        // Our Jersey client.
         final Server server = new JerseyServer();
         try {
 			server.setDefaultBaseServicesURL(
@@ -139,26 +123,6 @@ implements BlueWorkflow
         select.addExpression(
             param.query()
             );
-        /*
-         * 
-        final JdbcSelectDataClient select = new JdbcSelectDataClient(
-            new ResourceID(
-                param.source()
-                ),
-            new JdbcSelectDataClient.Param()
-                {
-                @Override
-                public String query()
-                    {
-                    return param.query();
-                    }
-                }
-            );
-        pipeline.add(
-            select
-            );
-         * 
-         */
         //
         // Add our Delays Activity.
         final DelaysClient delay = new DelaysClient(
@@ -178,9 +142,18 @@ implements BlueWorkflow
             limits
             );
         //
+        // Add our Callback Activity.
+        final CallbackClient callback = new CallbackClient(
+    		limits.output(),
+    		param.callback()
+    		);
+        pipeline.add(
+            callback
+            );
+        //
         // Add our Insert Activity.
         final JdbcInsertDataClient insert = new JdbcInsertDataClient(
-            limits.output(),
+            callback.output(),
             param.insert()
             );
         pipeline.add(
