@@ -22,6 +22,7 @@ import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -38,8 +39,17 @@ public abstract class AbstractController
 
     /**
      * HTTP content type for JSON.
+     * @deprecated Use {@link MediaType.APPLICATION_JSON_VALUE}
+     * 
      */
-    public static final String JSON_MIME = "application/json" ;
+    public static final String JSON_MIME = MediaType.APPLICATION_JSON_VALUE ;
+
+    /**
+     * HTTP content type for JSON.
+     * @deprecated Use {@link MediaType.APPLICATION_FORM_URLENCODED_VALUE}
+     * 
+     */
+    public static final String FORM_MIME = MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
     /**
      * Request property for the copy depth.

@@ -22,8 +22,60 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue;
  * Parameter names for the CallbackActivity.
  *
  */
-public class CallbackParam
+public interface CallbackParam
     {
+    /**
+     * Public interface for the JSON request bean.
+     * 
+     */
+    public interface RequestBean
+    	{
+        /**
+    	 * Get the query identifier.
+    	 * 
+    	 */
+        public String getIdent();
+
+        /**
+    	 * Get the query status.
+    	 * 
+    	 */
+        public String getStatus();
+        
+    	}
+
+    /**
+     * Public interface for the JSON response bean.
+     * 
+     */
+    public interface ResponseBean
+    	{
+        /**
+    	 * Get the query identifier.
+    	 * 
+    	 */
+        public String getIdent();
+
+        /**
+    	 * Get the query name.
+    	 * 
+    	 */
+        public String getName();
+
+        /**
+    	 * Get the query status.
+    	 * 
+    	 */
+        public String getStatus();
+
+        /**
+    	 * Get the 'self' URL.
+    	 * 
+    	 */
+        public String getSelf();
+
+    	}
+    
     /**
      * Parameter name for the query identifier.
      * 

@@ -98,7 +98,7 @@ public interface BlueWorkflow
     		{}
 
     	/**
-    	 * The limits activity parameters.
+    	 * The callback activity parameters.
     	 * 
     	 */
         public CallbackParam callback();

@@ -388,6 +388,10 @@ implements SecureActivity
 			{
 			//
 			// The HTTP POST request params
+
+			/*
+			 * Without MediaType.MULTIPART_FORM_DATA the params get sent as a JSON map.
+			 * 
 			final Map<String, String> params = new HashMap<String, String>(); 
 			if (status != null)
 				{
@@ -403,6 +407,8 @@ implements SecureActivity
 					text
 					);
 				}
+			 */
+
 			//
 			// The URL template values
 			final Map<String, String> fields = new HashMap<String, String>(); 
@@ -430,12 +436,25 @@ implements SecureActivity
 	        logger.debug("Before callback");
 	        logger.debug("  Ident  [{}]", ident);
 	        logger.debug("  Base   [{}]", context.endpoint());
-	        logger.debug("  Params [{}]", params);
+	        //logger.debug("  Params [{}]", params);
 	        logger.debug("  Fields [{}]", fields);
 	        try {
 				final ResponseBean bean = rest().postForObject(
 					ENDPOINT_TEMPLATE,
-					params,
+					new RequestBean()
+						{
+						@Override
+						public String getIdent()
+							{
+							return CallbackActivity.this.ident();
+							}
+
+						@Override
+						public String getStatus()
+							{
+							return status;
+							}
+						},
 					ResponseBean.class,
 					fields
 					);
@@ -482,56 +501,70 @@ implements SecureActivity
         }
 
     /**
+     * JavaBean to handle the REST/JSON request.
+     *  
+     */
+    @JsonIgnoreProperties(ignoreUnknown=true)
+    public abstract static class RequestBean
+    implements CallbackParam.RequestBean
+    	{
+    	}
+
+    /**
      * JavaBean to handle the REST/JSON response.
      *  
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class ResponseBean
+    implements CallbackParam.ResponseBean
     	{
         protected ResponseBean()
         	{
         	}
 
     	private String ident;
-        public void setIdent(final String value)
-            {
-            this.ident = value;
-            }
+		@Override
         public String getIdent()
             {
             return this.ident;
             }
+        public void setIdent(final String value)
+            {
+            this.ident = value;
+            }
 
     	private String name;
-        public void setname(final String value)
-            {
-            this.name = value;
-            }
+		@Override
         public String getName()
             {
             return this.name;
             }
+        public void setName(final String value)
+            {
+            this.name = value;
+            }
         
     	private String self;
-        public void setSelf(final String value)
-            {
-            this.self = value;
-            }
+		@Override
         public String getSelf()
             {
             return this.self;
             }
+        public void setSelf(final String value)
+            {
+            this.self = value;
+            }
 
     	private String status;
-        public void setStatus(final String value)
-            {
-            this.status = value;
-            }
+		@Override
         public String getStatus()
             {
             return this.status;
             }
+        public void setStatus(final String value)
+            {
+            this.status = value;
+            }
     	}
-   
     }
 

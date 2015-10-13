@@ -26,9 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueQueryController;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-
+import uk.ac.roe.wfau.firethorn.webapp.blue.BlueQueryController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;

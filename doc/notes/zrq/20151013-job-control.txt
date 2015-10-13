@@ -454,7 +454,9 @@ EOF
             "${endpointurl:?}/blue/query/${queryident:?}" \
             | bin/pp
 
-...
+        #
+        # Wait for a bit ..
+        sleep 60
 
         #
         # Select the BlueQuery.

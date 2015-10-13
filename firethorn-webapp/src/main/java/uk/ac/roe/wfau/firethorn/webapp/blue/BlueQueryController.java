@@ -15,25 +15,34 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.blue;
+package uk.ac.roe.wfau.firethorn.webapp.blue;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask;
+import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
+import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.CallbackParam;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -346,7 +355,7 @@ public class BlueQueryController
      * 
      */
     @ResponseBody
-    @RequestMapping(value=BlueQuery.LinkFactory.CALLBACK_PATH, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=BlueQuery.LinkFactory.CALLBACK_PATH, method=RequestMethod.POST, consumes=FORM_MIME, produces=JSON_MIME)
     public BlueQueryBean callback(
         @PathVariable(value=IDENT_PARAM_NAME)
         final String ident,
@@ -380,6 +389,80 @@ public class BlueQueryController
                     public TaskState next()
                         {
                         return next;
+                        }
+                    }
+                )
+            );
+        }
+
+    public static class RequestBean
+    implements CallbackParam.RequestBean
+    	{
+        protected RequestBean()
+        	{
+        	}
+
+    	private String ident;
+		@Override
+        public String getIdent()
+            {
+            return this.ident;
+            }
+        public void setIdent(final String value)
+            {
+            this.ident = value;
+            }
+
+    	private String status;
+		@Override
+        public String getStatus()
+            {
+            return this.status;
+            }
+        public void setStatus(final String value)
+            {
+            this.status = value;
+            }
+        }
+    
+    /**
+     *
+     * 
+     */
+    @ResponseBody
+    @RequestMapping(value=BlueQuery.LinkFactory.CALLBACK_PATH, method=RequestMethod.POST, consumes=JSON_MIME, produces=JSON_MIME)
+    public BlueQueryBean jsoncallback(
+        @PathVariable(value=IDENT_PARAM_NAME)
+        final String ident,
+        @RequestBody
+        final RequestBean bean 
+        ) throws
+            IdentifierNotFoundException,
+            IdentifierFormatException,
+            InvalidRequestException,
+            InternalServerErrorException
+        {
+        log.debug("callback(String, TaskStatus, Long)");
+        log.debug("  ident [{}]", ident);
+        log.debug("  next  [{}]", bean.getStatus());
+        return bean(
+            services.entities().callback(
+                services.idents().ident(
+                    ident
+                    ),
+                new BlueQuery.Callback()
+                    {
+                    @Override
+                    public Long rowcount()
+                        {
+                        return null;
+                        }
+                    @Override
+                    public TaskState next()
+                        {
+                        return TaskState.valueOf(
+                    		bean.getStatus()
+                    		);
                         }
                     }
                 )
