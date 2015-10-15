@@ -303,7 +303,7 @@ implements OgsaBaseResource
      * Check our OGSA-DAI resource.
      *
      */
-    protected HttpStatus ping()
+    public HttpStatus ping()
    		{
         log.debug("ping()");
         log.debug("  name   [{}]", this.name());

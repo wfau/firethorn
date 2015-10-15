@@ -62,5 +62,15 @@
         # Commit the merge.
         hg commit -m "Merging [default] into [branch-${devbranch:?}]"
 
+        #
+        # Resolve merge issues.
+        hg resolve -l
+        ....        
+        hg resolve -m 
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [default] into [branch-${devbranch:?}]"
+
     popd
 

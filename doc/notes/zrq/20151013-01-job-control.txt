@@ -323,11 +323,12 @@ EOF
 
 # Separate terminal
 #   source "${HOME:?}/chain.properties"
-#   docker logs -f --tail 100 "${firename:?}"
+#   docker exec -it "${firename:?}" tail -f logs/firethorn.log 
+
 
 # Separate terminal
 #   source "${HOME:?}/chain.properties"
-#   docker logs -f --tail 100 "${ogsaname:?}"
+#   docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
 
 # -----------------------------------------------------
 # Start our test container.
@@ -456,7 +457,7 @@ EOF
 
         #
         # Wait for a bit ..
-        sleep 60
+        sleep 10
 
         #
         # Select the BlueQuery.
@@ -533,7 +534,7 @@ EOF
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --data "blue.query.next.status=COMPLETED" \
-            --data "blue.query.wait=10000" \
+            --data "blue.query.wait=500" \
             "${endpointurl:?}/blue/query/${queryident:?}" \
             | bin/pp
 

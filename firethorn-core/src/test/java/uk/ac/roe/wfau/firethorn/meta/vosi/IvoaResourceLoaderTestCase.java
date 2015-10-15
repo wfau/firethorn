@@ -57,7 +57,7 @@ public class IvoaResourceLoaderTestCase
             cadc
             );
         cadc.ogsa().primary().ogsaid(
-    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		OgsaIvoaResource.OgsaStatus.ACTIVE,
     		"cadc-tap"
     		);
 
@@ -74,7 +74,7 @@ public class IvoaResourceLoaderTestCase
             gaia
             );
         gaia.ogsa().primary().ogsaid(
-    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		OgsaIvoaResource.OgsaStatus.ACTIVE,
     		"gaia-tap"
     		);
 
@@ -91,7 +91,7 @@ public class IvoaResourceLoaderTestCase
             gavo
             );
         gavo.ogsa().primary().ogsaid(
-    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		OgsaIvoaResource.OgsaStatus.ACTIVE,
     		"gavo-tap"
     		);
 
@@ -108,7 +108,7 @@ public class IvoaResourceLoaderTestCase
             vizier
             );
         vizier.ogsa().primary().ogsaid(
-    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		OgsaIvoaResource.OgsaStatus.ACTIVE,
     		"vizier-tap"
     		);
 
