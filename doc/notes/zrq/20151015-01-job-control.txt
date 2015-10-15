@@ -24,10 +24,11 @@
     # Merge a development branch and test everything.
     #
 
+    devbranch=1.13.17-zrq-job-control
     newversion=2.0.0
 
 # -----------------------------------------------------
-# Merge the changes into main.
+# Merge the changes from main.
 # TODO Move this into the build container.
 #[user@desktop]
 
@@ -50,21 +51,12 @@
         # Push/pull the latest changes
 
         #
-        # Swap to the main branch and get the version.
-        hg update 'default'
-        oldversion=$(getversion)
-
-        echo "devbranch [${devbranch:?}]"
-        echo "oldversion [${oldversion:?}]"
-        echo "newversion [${newversion:?}]"
+        # Merge changes from the main branch.
+        hg merge "default"
 
         #
-        # Merge the dev branch.
-        hg merge "${devbranch:?}"
-
-        #
-        # Update the main version.
-        setversion "${newversion:?}"
+        # Reset the version.
+        setversion "${devbranch:?}"
 
     popd
 
