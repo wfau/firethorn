@@ -1,0 +1,626 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+CDS Changes
+-----------
+
+SearchTableApi change [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/40a54d10278d
+
+        protected SearchTableList lstTables;
+1.16 +	protected SearchTableApi lstTables;
+
+firethorn-cds/adql/src/main/java/adql/db/SearchTableApi.java
+
+--- a/firethorn-cds/adql/src/main/java/adql/db/SearchTableList.java	Wed Dec 03 17:31:41 2014 +0200
+     3.2 +++ b/firethorn-cds/adql/src/main/java/adql/db/SearchTableList.java	Wed Dec 03 17:39:32 2014 +0200
+     3.3 @@ -38,7 +38,7 @@
+     3.4   * @author Gr&eacute;gory Mantelet (CDS;ARI)
+     3.5   * @version 1.3 (08/2014)
+     3.6   */
+     3.7 -public class SearchTableList extends TextualSearchList<DBTable> {
+     3.8 +public class SearchTableList extends TextualSearchList<DBTable> implements SearchTableApi{
+     3.9  	private static final long serialVersionUID = 1L;
+    3.10  
+    3.11  	/** Indicates whether multiple occurrences are allowed. */
+
+
+
+--------------------
+
+Remove final from some CDS classes where needed for override [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/ff3ba2bc9b0e
+
+     1.7 -	public final void check(final ADQLQuery query) throws ParseException{
+     2.7 -	protected final String getDefaultADQLFunction(ADQLFunction fct) throws TranslationException{
+
+
+---------------------
+
+
+appendFullDBName() for PostgreSQLTranslator [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/542b52413e03
+
+1.15 +	
+    1.16 +	/**
+    1.17 +	 * Appends the full name of the given table to the given StringBuffer.
+    1.18 +	 * 
+    1.19 +	 * @param str		The string buffer.
+    1.20 +	 * @param dbTable	The table whose the full name must be appended.
+    1.21 +	 * 
+    1.22 +	 * @return			The string buffer + full table name.
+    1.23 +	 */
+    1.24 +	public final StringBuffer appendFullDBName(final StringBuffer str, final DBTable dbTable){
+    1.25 +		if (dbTable != null){
+    1.26 +			if (dbTable.getDBCatalogName() != null)
+    1.27 +				appendIdentifier(str, dbTable.getDBCatalogName(), IdentifierField.CATALOG).append('.');
+    1.28 +
+    1.29 +			if (dbTable.getDBSchemaName() != null)
+    1.30 +				appendIdentifier(str, dbTable.getDBSchemaName(), IdentifierField.SCHEMA).append('.');
+    1.31 +
+    1.32 +			appendIdentifier(str, dbTable.getDBName(), IdentifierField.TABLE);
+    1.33 +		}
+    1.34 +		return str;
+    1.35 +	}
+    1.36  
+
+---------------------
+
+Additional check(), putTableAlias() functions [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/4f2309d0c5f7
+
+
+
+--------------------
+
+Binary operator support [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/7acedfd37cb5
+
+files:	
+firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java 
+firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java 
+firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java 
+firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj
+
+
+   4.1 --- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Wed Dec 03 18:48:24 2014 +0200
+     4.2 +++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Wed Dec 03 20:51:36 2014 +0200
+     4.3 @@ -509,6 +509,16 @@
+     4.4  }
+     4.5  
+     4.6  /* ******************** */
+     4.7 +/* Binary operators     */
+     4.8 +/* ******************** */
+     4.9 +TOKEN : {
+    4.10 +	< BIT_AND: "&" >
+    4.11 +|	< BIT_OR:  "|" >
+    4.12 +|	< BIT_XOR: "^" >
+    4.13 +}
+    4.14 +
+    4.15 +
+    4.16 +/* ******************** */
+
+-------------------------
+
+% Operator support [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/5e5206c8b3fc
+
+
+  4.1 --- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Wed Dec 03 20:54:03 2014 +0200
+     4.2 +++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Wed Dec 03 22:07:16 2014 +0200
+     4.3 @@ -506,6 +506,7 @@
+     4.4  |	< MINUS: "-" >
+     4.5  |	< ASTERISK: "*" >
+     4.6  |	< DIVIDE: "/" >
+     4.7 +|	< MODULO: "%" >
+     4.8  }
+     4.9  
+    4.10  /* ******************** */\
+
+    5.1 --- a/firethorn-cds/adql/src/main/java/adql/query/operand/OperationType.java	Wed Dec 03 20:54:03 2014 +0200
+     5.2 +++ b/firethorn-cds/adql/src/main/java/adql/query/operand/OperationType.java	Wed Dec 03 22:07:16 2014 +0200
+     5.3 @@ -28,10 +28,10 @@
+     5.4   * @see Operation
+     5.5   */
+     5.6  public enum OperationType{
+     5.7 -	SUM, SUB, MULT, DIV;
+     5.8 +	SUM, SUB, MULT, DIV, MOD, BIT_OR, BIT_AND, BIT_XOR;
+     5.9  
+    5.10  	public static String[] getOperators(){
+    5.11 -		return new String[]{SUM.toString(),SUB.toString(),MULT.toString(),DIV.toString()};
+    5.12 +		return new String[]{SUM.toString(),SUB.toString(),MULT.toString(),DIV.toString(), MOD.toString(), BIT_OR.toString(), BIT_AND.toString(), BIT_XOR.toString() };
+    5.13  	}
+    5.14  
+    5.15  	public static OperationType getOperator(String str) throws UnsupportedOperationException{
+    5.16 @@ -43,6 +43,14 @@
+    5.17  			return MULT;
+    5.18  		else if (str.equalsIgnoreCase("/"))
+    5.19  			return DIV;
+    5.20 +	    else if (str.equalsIgnoreCase("%"))
+    5.21 +            return MOD;
+    5.22 +        else if (str.equalsIgnoreCase("|"))
+    5.23 +            return BIT_OR;
+    5.24 +        else if (str.equalsIgnoreCase("&"))
+    5.25 +            return BIT_AND;
+    5.26 +        else if (str.equalsIgnoreCase("^"))
+    5.27 +            return BIT_XOR;
+    5.28  		else
+    5.29  			throw new UnsupportedOperationException("Numeric operation unknown: \"" + str + "\" !");
+    5.30  	}
+    5.31 @@ -62,6 +70,14 @@
+    5.32  				return "*";
+    5.33  			case DIV:
+    5.34  				return "/";
+    5.35 +		   case MOD:
+    5.36 +	            return "%";
+    5.37 +	        case BIT_OR:
+    5.38 +	            return "|";
+    5.39 +	        case BIT_AND:
+    5.40 +	            return "&";
+    5.41 +	        case BIT_XOR:
+    5.42 +	            return "^";
+    5.43  			default:
+    5.44  				return "???";
+    5.45  		}
+
+
+--------------------------------
+
+SQUARE & SIGN Support [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/45432ac97209
+http://wfau.metagrid.co.uk/code/firethorn/rev/686a81136048
+
+files:
+	firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java 
+	firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java 
+	firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java 
+	firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj
+ 	firethorn-cds/adql/src/main/java/adql/query/operand/function/MathFunctionType.java
+
+-------------------------------
+
+HEX Support [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/fd800478ee49
+
+
+files: 	
+firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java 
+firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java 
+firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java 
+firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj
+
+  4.1 --- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Thu Dec 04 01:20:29 2014 +0200
+     4.2 +++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Thu Dec 04 01:40:35 2014 +0200
+     4.3 @@ -688,6 +688,16 @@
+     4.4  |	< #DIGIT: ["0"-"9"] >
+     4.5  }
+     4.6  
+     4.7 +/* *************** */
+     4.8 +/* Hexadecimal numbers */
+     4.9 +/* *************** */
+    4.10 +TOKEN : {
+    4.11 +	< HEX_PREFIX: "0x" >
+    4.12 +|	< HEX_INTEGER: (<HEX_PREFIX>(<HEX_DIGIT>)+) >
+    4.13 +|	< #HEX_DIGIT: ["0"-"9","a"-"f","A"-"F"] >
+    4.14 +}
+    4.15 +
+    4.16 +
+    4.17  							/* ########## */
+    4.18  							/* # SYNTAX # */
+    4.19  							/* ########## */
+    4.20 @@ -985,7 +995,8 @@
+    4.21  String UnsignedNumeric(): {Token t;} {
+    4.22  	(t=<SCIENTIFIC_NUMBER>
+    4.23  	| t=<UNSIGNED_FLOAT>
+    4.24 -	| t=<UNSIGNED_INTEGER>)
+    4.25 +	| t=<UNSIGNED_INTEGER>
+    4.26 +	| t=<HEX_INTEGER>)
+    4.27  	{return t.image;}
+    4.28  }
+   
+
+-------------------------------
+
+
+Modulo in NumericTerm() [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/1f995284bfbf
+
+     2.1 --- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Thu Dec 04 01:40:35 2014 +0200
+     2.2 +++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Thu Dec 04 02:21:42 2014 +0200
+     2.3 @@ -1073,8 +1073,9 @@
+     2.4  	}
+     2.5  }
+     2.6  
+     2.7 +
+     2.8  ADQLOperand NumericTerm(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
+     2.9 -	(leftOp=Factor() ((sign=<ASTERISK> | sign=<DIVIDE>) rightOp=NumericTerm())?)
+    2.10 +	(leftOp=Factor() ((sign=<ASTERISK> | sign=<DIVIDE> | sign=<MODULO>) rightOp=NumericTerm())?)
+    2.11  	{
+    2.12  	if (sign == null)
+    2.13  		return leftOp;
+
+
+------------------------------
+
+BinaryExpression as a NumericTerm() [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/77acd0a0fe3c
+
+   2.1 --- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Thu Dec 04 02:21:42 2014 +0200
+     2.2 +++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Thu Dec 04 02:34:05 2014 +0200
+     2.3 @@ -1073,9 +1073,23 @@
+     2.4  	}
+     2.5  }
+     2.6  
+     2.7 +ADQLOperand NumericTerm(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
+     2.8 +	(leftOp=BinaryExpression() ((sign=<ASTERISK> | sign=<DIVIDE> | sign=<MODULO>) rightOp=NumericTerm())?)
+     2.9 +	{
+    2.10 +	if (sign == null)
+    2.11 +		return leftOp;
+    2.12 +	else{
+    2.13 +		try{
+    2.14 +			return queryFactory.createOperation(leftOp, OperationType.getOperator(sign.image), rightOp);
+    2.15 +		}catch(Exception ex){
+    2.16 +			throw generateParseException(ex);
+    2.17 +		}
+    2.18 +	}
+    2.19 +	}
+    2.20 +}
+    2.21  
+    2.22 -ADQLOperand NumericTerm(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
+    2.23 -	(leftOp=Factor() ((sign=<ASTERISK> | sign=<DIVIDE> | sign=<MODULO>) rightOp=NumericTerm())?)
+    2.24 +ADQLOperand BinaryExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
+    2.25 +	(leftOp=Factor() ((sign=<BIT_AND> | sign=<BIT_OR> | sign=<BIT_XOR>) rightOp=BinaryExpression())?)
+    2.26  	{
+    2.27  	if (sign == null)
+    2.28  		return leftOp;
+
+-----------------------------------
+
+CAST() Support [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/26d783778c0d
+
+files:	
+firethorn-cds/adql/src/main/java/adql/parser/ADQLParser.java 
+firethorn-cds/adql/src/main/java/adql/parser/ADQLParserConstants.java 
+firethorn-cds/adql/src/main/java/adql/parser/ADQLParserTokenManager.java 
+firethorn-cds/adql/src/main/java/adql/parser/ADQLQueryFactory.java 
+firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj
+
+     5.1 --- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Thu Dec 04 02:34:05 2014 +0200
+     5.2 +++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Thu Dec 04 19:20:20 2014 +0200
+     5.3 @@ -652,6 +652,16 @@
+     5.4  |	< TAN: "TAN" >
+     5.5  }
+     5.6  
+     5.7 +
+     5.8 +/* *************** */
+     5.9 +/* CAST            */
+    5.10 +/* *************** */
+    5.11 +TOKEN : {
+    5.12 +    < CAST: "CAST" >
+    5.13 +|   < CAST_TYPE : "SMALLINT"| "SHORT" | "INT" | "INTEGER" | "BIGINT" | "LONG" | "FLOAT" | "DOUBLE" >
+    5.14 +}
+    5.15 +
+    5.16 +
+    5.17  /* ******* */
+    5.18  /* Comment */
+    5.19  /* ******* */
+    5.20 @@ -1022,6 +1032,7 @@
+    5.21  		| column=Column() {column.setExpectedType('N'); return column;}
+    5.22  		// set_function_specification
+    5.23  		| op=SqlFunction() {return op;}
+    5.24 +		| op=CastFunction() {return op;}
+    5.25  		// LEFT_PAR value_expression RIGHT_PAR
+    5.26  		| (<LEFT_PAR> op=NumericExpression() <RIGHT_PAR>) {return queryFactory.createWrappedOperand(op);})
+    5.27  	}catch(Exception ex){
+    5.28 @@ -1296,6 +1307,23 @@
+    5.29  	{ return funct; }
+    5.30  }
+    5.31  
+    5.32 +/* ************* */
+    5.33 +/* CAST FUNCTION */
+    5.34 +/* ************* */
+    5.35 +CastFunction CastFunction(): {Token type; ADQLOperand oper = null; CastFunction funct = null;}{
+    5.36 +    try {
+    5.37 +		(
+    5.38 +	        ( <CAST> <LEFT_PAR> oper = ValueExpression() <AS> type = <CAST_TYPE> <RIGHT_PAR>
+    5.39 +            { funct = queryFactory.createCastFunction(type, oper); } )
+    5.40 +		)
+    5.41 +	    }
+    5.42 +	catch(Exception ex)
+    5.43 +	    {
+    5.44 +		throw generateParseException(ex);
+    5.45 +	    }
+    5.46 +	{ return funct; }
+    5.47 +    }
+    5.48 +
+
+
+
+------------------------------------
+
+Remove final from NumericConstant() [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/d2b172c4d390
+
+     1.1 --- a/firethorn-cds/adql/src/main/java/adql/query/operand/NumericConstant.java	Thu Dec 04 19:20:20 2014 +0200
+     1.2 +++ b/firethorn-cds/adql/src/main/java/adql/query/operand/NumericConstant.java	Thu Dec 04 19:21:33 2014 +0200
+     1.3 @@ -30,7 +30,7 @@
+     1.4   * @author Gr&eacute;gory Mantelet (CDS;ARI)
+     1.5   * @version 1.3 (10/2014)
+     1.6   */
+     1.7 -public final class NumericConstant implements ADQLOperand {
+     1.8 +public class NumericConstant implements ADQLOperand {
+     1.9  
+    1.10  	private String value;
+    1.11  
+
+---------------------------------
+
+Remove final from some NumericConstant() methods & vars [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/042ba0959ef8
+
+     1.1 --- a/firethorn-cds/adql/src/main/java/adql/query/operand/NumericConstant.java	Thu Dec 04 19:21:33 2014 +0200
+     1.2 +++ b/firethorn-cds/adql/src/main/java/adql/query/operand/NumericConstant.java	Thu Dec 04 19:43:25 2014 +0200
+     1.3 @@ -32,7 +32,7 @@
+     1.4   */
+     1.5  public class NumericConstant implements ADQLOperand {
+     1.6  
+     1.7 -	private String value;
+     1.8 +	protected String value;
+     1.9  
+    1.10  	/**
+    1.11  	 * The numeric value is saved as a string so that the exact user format can be saved.
+    1.12 @@ -93,7 +93,7 @@
+    1.13  		return value;
+    1.14  	}
+    1.15  
+    1.16 -	public final double getNumericValue(){
+    1.17 +	public double getNumericValue(){
+    1.18  		try{
+    1.19  			return Double.parseDouble(value);
+    1.20  		}catch(NumberFormatException nfe){
+    1.21 @@ -106,7 +106,7 @@
+    1.22  	 * 
+    1.23  	 * @param value		The numeric value.
+    1.24  	 */
+    1.25 -	public final void setValue(long value){
+    1.26 +	public void setValue(long value){
+    1.27  		this.value = "" + value;
+    1.28  	}
+    1.29  
+    1.30 @@ -115,7 +115,7 @@
+    1.31  	 * 
+    1.32  	 * @param value		The numeric value.
+    1.33  	 */
+    1.34 -	public final void setValue(double value){
+    1.35 +	public void setValue(double value){
+    1.36  		this.value = "" + value;
+    1.37  	}
+    1.38  
+    1.39 @@ -140,7 +140,7 @@
+    1.40  	 * @param checkNumeric				<i>true</i> to check whether the given value is numeric, <i>false</i> otherwise.
+    1.41  	 * @throws NumberFormatException	If the given value can not be converted in a Double.
+    1.42  	 */
+    1.43 -	public final void setValue(String value, boolean checkNumeric) throws NumberFormatException{
+    1.44 +	public void setValue(String value, boolean checkNumeric) throws NumberFormatException{
+    1.45  		if (checkNumeric)
+    1.46  			Double.parseDouble(value);
+    1.47  
+
+
+
+-------------------------------
+
+SelectItem() getName fix for operations [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/1e61c53ea95b
+
+    1.15 -	public String getName(){
+    1.16 -		return hasAlias() ? alias : operand.getName();
+    1.17 -	}
+    1.18 +
+    1.19 +	public String getName() {
+    1.20 +
+    1.21 +    	if (hasAlias())
+    1.22 +    	    {
+    1.23 +    	    return getAlias();
+    1.24 +    	    }
+    1.25 +        else {
+    1.26 +            if (operand instanceof Operation)
+    1.27 +                {
+    1.28 +                Operation op = (Operation) operand;
+    1.29 +                return op.getOperation().name();
+    1.30 +                }
+    1.31 +            else {
+    1.32 +                return operand.getName();
+    1.33 +                }
+    1.34 +    	    }
+    1.35 +    	}
+    1.36 +
+    1.37  
+
+
+
+----------------------------
+
+Group by() fix - allow ADQLOperands(not just cols) [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/d14df8dee0cd
+http://wfau.metagrid.co.uk/code/firethorn/rev/adb1aeb5a873
+
+           " SELECT TOP 5" +
+    1.17              "    COUNT({ATLAS_VERSION}.dbo.atlassource.ra) AS binsize," +
+    1.18 -            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) / 6) AS binvalue" +
+    1.19 +            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra*6) AS INT) / 6) AS binvalue" +
+    1.20              " FROM" +
+    1.21              "    {ATLAS_VERSION}.dbo.atlassource" +
+    1.22              " GROUP BY" +
+    1.23 -            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra * 6) AS INT) / 6)",
+    1.24 +            "    (CAST(({ATLAS_VERSION}.dbo.atlassource.ra*6) AS INT) / 6)",
+    1.25  
+
+     2.1 --- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Fri Dec 05 01:37:46 2014 +0200
+     2.2 +++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Fri Dec 05 02:35:08 2014 +0200
+     2.3 @@ -835,9 +835,9 @@
+     2.4  	<WHERE> ConditionsList(where)
+     2.5  }
+     2.6  
+     2.7 -void GroupBy(): {ClauseADQL<ColumnReference> groupBy = query.getGroupBy(); ColumnReference colRef = null;} {
+     2.8 -	<GROUP_BY> colRef=ColumnRef() { groupBy.add(colRef); }
+     2.9 -	( <COMMA> colRef=ColumnRef() { groupBy.add(colRef); } )*
+    2.10 +void GroupBy(): {ClauseADQL<ADQLOperand> groupBy = query.getGroupBy(); ADQLOperand colRef = null;} {
+    2.11 +	<GROUP_BY> colRef=ValueExpression() { groupBy.add(colRef); }
+    2.12 +	( <COMMA> colRef=ValueExpression() { groupBy.add(colRef); } )*
+    2.13  }
+    2.14  
+    2.15  void Having(): {ClauseConstraints having = query.getHaving();} {
+
+----------------------------
+
+NumericConstant - getInteger() method [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/c7ca42676ab5
+
+     1.1 --- a/firethorn-cds/adql/src/main/java/adql/query/operand/NumericConstant.java	Fri Dec 05 14:28:32 2014 +0200
+     1.2 +++ b/firethorn-cds/adql/src/main/java/adql/query/operand/NumericConstant.java	Fri Dec 05 14:31:37 2014 +0200
+     1.3 @@ -180,7 +180,19 @@
+     1.4  	public String getName(){
+     1.5  		return value;
+     1.6  	}
+     1.7 -
+     1.8 +	
+     1.9 +    /**
+    1.10 +     * Get the Numeric Constant as LONG
+    1.11 +     * @return long LONG value of Numeric constant
+    1.12 +     */
+    1.13 +	public long getIntegerValue() {
+    1.14 +        try{
+    1.15 +            return Long.parseLong(value);
+    1.16 +        } catch(NumberFormatException nfe){
+    1.17 +            return 0L;
+    1.18 +        }
+    1.19 +    }
+    1.20 +	
+
+----------------------------
+
+Negative Operand fix [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/90a3a28e4f9f
+
+ 1.1 --- a/firethorn-cds/adql/src/main/java/adql/query/operand/NegativeOperand.java	Mon Dec 08 18:53:57 2014 +0200
+     1.2 +++ b/firethorn-cds/adql/src/main/java/adql/query/operand/NegativeOperand.java	Mon Dec 08 19:25:16 2014 +0200
+     1.3 @@ -96,7 +96,7 @@
+     1.4  
+     1.5  	@Override
+     1.6  	public String getName(){
+     1.7 -		return "-" + operand.getName();
+     1.8 +		return operand.getName();
+     1.9  	}
+    1.10  
+    1.11  	@Override
+
+
+---------------------------
+
+
+Fix Operand getOperand() and parenthesis around name of operand [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/414aa8b06b71
+
+     1.1 --- a/firethorn-cds/adql/src/main/java/adql/query/operand/Operation.java	Mon Dec 08 23:51:31 2014 +0200
+     1.2 +++ b/firethorn-cds/adql/src/main/java/adql/query/operand/Operation.java	Tue Dec 09 01:04:26 2014 +0200
+     1.3 @@ -187,9 +187,8 @@
+     1.4  		return new Operation(this);
+     1.5  	}
+     1.6  
+     1.7 -	@Override
+     1.8 -	public String getName(){
+     1.9 -		return operation.toString();
+    1.10 +	public String getName() {
+    1.11 +		return operation.name();
+    1.12  	}
+    1.13  
+    1.14  	@Override
+
+     2.1 --- a/firethorn-cds/adql/src/main/java/adql/query/operand/WrappedOperand.java	Mon Dec 08 23:51:31 2014 +0200
+     2.2 +++ b/firethorn-cds/adql/src/main/java/adql/query/operand/WrappedOperand.java	Tue Dec 09 01:04:26 2014 +0200
+     2.3 @@ -78,9 +78,8 @@
+     2.4  		return new WrappedOperand((ADQLOperand)operand.getCopy());
+     2.5  	}
+     2.6  
+     2.7 -	@Override
+     2.8 -	public String getName(){
+     2.9 -		return "(" + operand.getName() + ")";
+    2.10 +	public String getName() {
+    2.11 +		return operand.getName();
+    2.12  	}
+    2.13  
+    2.14  	@Override
+
+
+----------------------------
+
+
+Add BinaryOperation() as an option for NumericExpression() in ValueExpression method [CDS-patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/52fc62e522eb
+
+   2.1 --- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Tue Dec 09 14:15:20 2014 +0200
+     2.2 +++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Tue Dec 09 15:44:45 2014 +0200
+     2.3 @@ -1055,7 +1055,7 @@
+     2.4  
+     2.5  ADQLOperand ValueExpression(): {ADQLOperand valueExpr = null; } {
+     2.6  	try{
+     2.7 -		(LOOKAHEAD((<PLUS>|<MINUS>) | (Factor() (<PLUS>|<MINUS>|<ASTERISK>|<DIVIDE>))) valueExpr=NumericExpression()
+     2.8 +		(LOOKAHEAD((<PLUS>|<MINUS>) | (Factor() (<PLUS>|<MINUS>|<ASTERISK>|<DIVIDE>)) | (BinaryExpression())) valueExpr=NumericExpression()
+     2.9  		| LOOKAHEAD(<COORDSYS> | (StringFactor() <CONCAT>)) valueExpr=StringExpression()
+    2.10  		| LOOKAHEAD(<LEFT_PAR>) <LEFT_PAR> valueExpr=ValueExpression() <RIGHT_PAR> { valueExpr = queryFactory.createWrappedOperand(valueExpr); }
+    2.11  		| LOOKAHEAD(<REGULAR_IDENTIFIER> <LEFT_PAR>) valueExpr=UserDefinedFunction()
+
+
+----------------------------
+
+Allow Unknown UDFs [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/61db4afbd741
+
+files 	
+firethorn-cds/adql/src/main/java/adql/parser/ADQLQueryFactory.java
+
+----------------------------
+
+Allow empty params for MathFunction [CDS-Patch]
+http://wfau.metagrid.co.uk/code/firethorn/rev/59e929fc4ede
+
+   2.1 --- a/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Tue Dec 09 18:09:12 2014 +0200
+     2.2 +++ b/firethorn-cds/adql/src/main/java/adql/parser/adqlGrammar.jj	Tue Dec 09 19:30:31 2014 +0200
+     2.3 @@ -1476,10 +1476,7 @@
+     2.4  		| (fct=<SQRT> <LEFT_PAR> param1=NumericExpression() <RIGHT_PAR>)
+     2.5  		| (fct=<TRUNCATE> <LEFT_PAR> param1=NumericExpression() (<COMMA> integerValue=SignedInteger() {param2 = queryFactory.createNumericConstant(integerValue);})? <RIGHT_PAR>))
+     2.6  		{
+     2.7 -			if (param1 != null)
+     2.8 -				return queryFactory.createMathFunction(MathFunctionType.valueOf(fct.image.toUpperCase()), param1, param2);
+     2.9 -			else
+    2.10 -				return null;
+    2.11 +			return queryFactory.createMathFunction(MathFunctionType.valueOf(fct.image.toUpperCase()), param1, param2);
+    2.12  		}
+    2.13  	}catch(Exception ex){
+    2.14  		throw generateParseException(ex);
+
+----------------------------
+

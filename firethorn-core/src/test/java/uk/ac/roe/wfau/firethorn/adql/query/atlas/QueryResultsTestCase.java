@@ -52,21 +52,21 @@ public class QueryResultsTestCase
             "    ra," +
             "    dec" +
             " FROM" +
-            "    ATLASDR1.AtlasSource" +
+            "    ATLASDR1.atlasSource" +
             " WHERE" +
             "    ra  BETWEEN '56.0' AND '57.9'" +
             " AND" +
             "    dec BETWEEN '24.0' AND '24.2'",
 
             " SELECT" +
-            "    ATLASDR1.dbo.AtlasSource.ra  AS ra," +
-            "    ATLASDR1.dbo.AtlasSource.dec AS dec" +
+            "    ATLASDR1.dbo.atlasSource.ra  AS ra," +
+            "    ATLASDR1.dbo.atlasSource.dec AS dec" +
             " FROM" +
-            "    ATLASDR1.dbo.AtlasSource" +
+            "    ATLASDR1.dbo.atlasSource" +
             " WHERE" +
-            "    ATLASDR1.dbo.AtlasSource.ra BETWEEN '56.0' AND '57.9'" +
+            "    ATLASDR1.dbo.atlasSource.ra BETWEEN '56.0' AND '57.9'" +
             " AND" +
-            "    ATLASDR1.dbo.AtlasSource.dec BETWEEN '24.0' and '24.2'",
+            "    ATLASDR1.dbo.atlasSource.dec BETWEEN '24.0' and '24.2'",
 
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),

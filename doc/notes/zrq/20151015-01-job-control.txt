@@ -52,11 +52,15 @@
 
         #
         # Merge changes from the main branch.
-        hg merge "default"
+        hg merge 'default'
 
         #
         # Reset the version.
         setversion "${devbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [default] into [branch-${devbranch:?}]"
 
     popd
 

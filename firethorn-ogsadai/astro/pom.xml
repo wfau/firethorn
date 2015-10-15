@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | Maven parent project.
+        | Maven parent/child inheritance.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <parent>

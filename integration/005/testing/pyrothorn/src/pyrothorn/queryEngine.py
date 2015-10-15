@@ -25,6 +25,28 @@ from firethorn_config import *
 from time import gmtime,  strftime
 import logging
 
+
+class Timeout():
+    """Timeout class using ALARM signal."""
+    class Timeout(Exception):
+        pass
+
+    def __init__(self, sec):
+        self.sec = sec
+
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(self.sec)
+
+    def __exit__(self, *args):
+        signal.alarm(0)    # disable alarm
+
+    def raise_timeout(self, *args):
+        raise Timeout.Timeout()
+
+
+
+
 class QueryEngine(object):
     '''
     Query Engine
@@ -129,6 +151,8 @@ class QueryEngine(object):
         except Exception as e:
             logging.exception('Exception caught in run query:')
             logging.exception(e) 
+            if (type(e).__name__=="Timeout"):
+                raise
             return (-1, e)
         
         if f!='':
@@ -199,7 +223,10 @@ class QueryEngine(object):
         
         except Exception as e:
             logging.exception('Exception caught in start query loop:')  
-            logging.exception(e)     
+            logging.exception(e)
+            if (type(e).__name__=="Timeout"):
+                raise
+     
             return {'Code' :-1,  'Content' : 'Query error: A problem occurred while running your query' }
 
     

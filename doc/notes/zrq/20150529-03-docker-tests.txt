@@ -42,7 +42,6 @@
         --env "datadriver=${datadriver:?}" \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
-        --volume /etc/localtime:/etc/localtime:ro \
         "firethorn/tester:${version:?}" \
         bash
 
@@ -205,6 +204,7 @@
                 twomass_psc.dec BETWEEN -40 AND -39
             "
 
+        # fails :-(
         source "bin/05-03-execute-query.sh" \
             "AUTO" \
             "
@@ -234,9 +234,54 @@
                 twomass_psc.dec BETWEEN -40 AND -39
             "
 
+        for i in {0..1000}
+            do
+                source "bin/05-03-execute-query.sh" \
+                    "AUTO" \
+                    "
+                    SELECT
+                        atlasSource.ra,
+                        atlasSource.dec
+                    FROM
+                        atlas.atlasSource
+                    WHERE
+                        atlasSource.ra  BETWEEN 354 AND 355
+                    AND
+                        atlasSource.dec BETWEEN -40 AND -39
+                    "
+
+                source "bin/05-03-execute-query.sh" \
+                    "AUTO" \
+                    "
+                    SELECT
+                        twomass_psc.ra,
+                        twomass_psc.dec
+                    FROM
+                        twomass.twomass_psc
+                    WHERE
+                        twomass_psc.ra  BETWEEN 354 AND 355
+                    AND
+                        twomass_psc.dec BETWEEN -40 AND -39
+
+                    "
+            done
+
 # -------------------------------------------------------------------------------------------
 # Exit our tester.
 #[root@tester]
 
         exit
+
+
+
+
+    6:30    4064
+    6:35    4100
+    6:50    4156
+
+
+
+    14:30   2480
+    
+
 

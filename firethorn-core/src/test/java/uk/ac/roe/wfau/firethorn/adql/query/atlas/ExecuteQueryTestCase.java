@@ -36,7 +36,7 @@ public class ExecuteQueryTestCase
     {
     
     //@Test
-    public void test000()
+    public void notTest000()
     throws Exception
         {
         final AdqlQuery query = testschema().queries().create(

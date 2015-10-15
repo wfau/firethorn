@@ -1,0 +1,434 @@
+---+ Volute transfer
+
+Options for transferring [[https://volute.googlecode.com][Volute]] from
+[[https://code.google.com/][GoogleCode]] to [[https://github.com/][GitHub]].
+
+---+ Headline figures, based on disc usage
+
+---+++ volute-complete - 825M
+
+Svn checkout of everything in the repository.
+
+<verbatim>
+    svn checkout https://volute.googlecode.com/svn/trunk/ volute-complete
+    du -h volute-complete > complete-original.txt
+</verbatim>
+
+---+++ volute-noextern - 764M
+
+Svn checkout, without resolving the extern references.
+
+<verbatim>
+    svn checkout --ignore-externals https://volute.googlecode.com/svn/trunk/ volute-noextern
+    du -h volute-noextern > noextern-original.txt
+</verbatim>
+
+---+++ volute-export - 391M
+
+Svn export, a snapshot of the current state with no commit history.
+
+<verbatim>
+    svn export --ignore-externals https://volute.googlecode.com/svn/trunk/ volute-export
+    du -h volute-export > export-original.txt
+</verbatim>
+
+Of the 391M in the exported snapshot, the top 8 projects are :
+
+   * theory 220M
+   * dm 126M
+   * registry 26M
+   * grid 6M
+   * vocabularies 3M
+   * samp 3M
+   * votable 2M
+   * ivoapub 2M
+
+---+ Maximal transfer
+
+If we just press the 'export to !GitHub' button, then everything will get
+transferred, including the commit history.
+
+I have seen this work on a __small__ project, and everything just worked.
+On a large project like ours the process will probably take a while.
+
+I have not heard of any reports of anything going wrong with the automatic
+transfer process.
+
+With a total size of 825M we are close to the !GitHub 1Gbyte per repository
+limit, which may cause problems later on.
+
+The only unusual thing I found was that the email telling you the process has
+completed will be sent to the email address linked to your !GitHub account,
+not to your Google account.
+
+See: [[https://code.google.com/export-to-github/][GitHubExporter]]
+
+---+ IVOA organization
+
+If we want our !GitHub repository to be owned by the
+[[https://github.com/ivoa][IVOA organization]] in !GitHub, you can do the
+transfer to a private account, and then transfer ownership to the IVOA
+organization afterwards.
+
+See: [[https://code.google.com/p/support-tools/wiki/GitHubExporterFAQ#Can_I_migrate_a_Google_Code_repository_to_a_GitHub_Organization?][Migrate to an Organization]]
+
+---+ Minimal snapshot transfer
+
+If we skip the svn history and just take a snapshot of where we are now,
+then we have less than 400M to transfer.
+
+We would have to do the transfer manually, exporting a local copy from svn,
+and then importing it into a new !GitHub repository.
+
+<verbatim>
+    git clone https://github.com/YOUR-USERNAME/YOUR-REPOSITORY local-repo
+    svn export --ignore-externals https://volute.googlecode.com/svn/trunk/ local-repo
+    pushd local-repo
+        git add .
+        git commit -m 'Initial import from svn'
+        git push
+    popd
+</verbatim>
+
+---+ Space limits
+
+!GitHub doesn't have a hard limit on the size of a repository, but they do
+recomend a limit of 1GB per repository.
+
+<verbatim>
+    We recommend repositories be kept under 1GB each. This limit is easy
+    to stay within if large files are kept out of the repository. If your
+    repository exceeds 1GB, you might receive a polite email from GitHub
+    Support requesting that you reduce the size of the repository to bring
+    it back down.
+</verbatim>
+
+See: [[https://help.github.com/articles/what-is-my-disk-quota/][What is my disk quota ?]]
+
+I contacted !GitHub to see if there would be an issue with us using more
+than 1Gbyte of space.
+
+I got the following reply from a member of their team :
+<verbatim>
+    Hi Dave,
+
+    Thanks for reaching out! We strongly recommend keeping repositories under
+    1GB in size. Additionally, to ensure that repository performance is optimal,
+    only files less than 100MB in size can be pushed to GitHub.com.
+
+    More information about this can be found here:
+    https://help.github.com/articles/what-is-my-disk-quota
+
+    The good news is that in order to make working with large files better,
+    we recently published an extension to Git called Git Large File Storage,
+    and support for Git LFS is currently in early access on GitHub.com.
+
+    You can check it out at http://git-lfs.github.com and sign up for early
+    access at https://github.com/early_access/large_file_storage
+
+    I hope this information helps, please let us know if you have any questions!
+
+    Cheers,
+    Rachel
+</verbatim>
+
+---+ Large files
+
+I suspect that due to the way that we use volute, the
+[[https://git-lfs.github.com/][Large File Storage]] extension will be of
+limited value to us.
+
+In the current version of the Git LFS extension you can't select which
+files should be stored separately based on file size. The file selection
+criteria is based purely on file path and type.
+
+A number of people have been asking for selection by size, but it does not
+look like it will be available soon.
+
+   * [[https://github.com/github/git-lfs/issues/125][Add files to git-media by attribute such as size?]]
+   * [[https://github.com/github/git-lfs/issues/282][Support tracking by file size]]
+   
+This means that in order for it to be useful in reducing the size of our
+repository, we would need to identify which files we wanted to be handles
+using the LFS extension *before* they were added to the repositiory.
+
+In reality, some of our users would be extremely careful about making sure
+every =pdf= and =doc= file in their project was listed, even the ones that
+were less than 1Mbyte.
+Other users would just want to be able to commit and push a whole directory
+tree and leave it up to the software to sort out which files need to be
+handled differently.
+
+The LFS extension was designed to enable Git to handle things like binary
+image files, e.g. =jpeg=, =png=, =svg=, using the file path and type to
+identify which files should be stored externally.
+
+Looking the files in our current volute repository, we have a wide variety
+of different file types and sizes, and it would be difficlut to define a
+reliable selection criteria to identify which files should be handled by LFS.
+
+   * !GitHub has a maximum file size limit of 100M per file.
+
+   * We have no files larger than 100M bytes.
+
+   * We have no files larger than 50M bytes.
+
+   * We have four files larger than 10M bytes, all of them in the theory project.
+      * projects/theory/snap/simtap/PDR143/PDR143-2.vo-urp
+      * projects/theory/snap/simtap/PDR143/html/PDR143-2.html
+      * projects/theory/snap/simtap/PDR143/tap/PDR143-2_tap_tableset.xml
+      * projects/theory/snap/simtap/PDR143/tap/PDR143-2_votable.xml
+
+   * We have a few files larger than 5M bytes.
+      * projects/dm/vo-dml/libs/eclipselink.jar
+      * projects/theory/snap/simtap/PDR143/PDR143-2.vo-urp
+      * projects/theory/snap/simtap/PDR143/html/PDR143-2.html
+      * projects/theory/snap/simtap/PDR143/tap/PDR143-2_tap_tableset.xml
+      * projects/theory/snap/simtap/PDR143/tap/postgres/PDR143-2_create_tap_schema.sql
+      * projects/theory/snap/simtap/PDR143/tap/mssqlserver/PDR143-2_create_tap_schema.sql
+      * projects/theory/snap/simtap/PDR143/tap/PDR143-2_votable.xml
+      * projects/theory/snap/simtap/PDR143/tap/PDR143-2_vodataservice.xml
+      * projects/theory/snapdm/input/other/sourceDM/IVOACatalogueDataModel.pdf
+
+   * We have 70 files larger than 1M bytes.
+
+   * Everything else is smaller than 1M byte.
+
+Note that many of our largest files are =html= and =xml= files, generated
+by our modelling tools. Equally, some of our smallest files are also =html=
+and =xml= files.
+
+We would need to be careful to ensure that none of the =html= or =xml=
+source files for our documents ended up being stored as binary files rather
+than version controlled text files.
+
+---+ Space constraints
+
+The reason for trying to minimize the space required for our documents
+repository is not just due to the !GitHub recommendation to limit
+repositories to 1G byte.
+
+Due to the way that git itself works, it is better to have many small
+repositories rather than one large one.
+
+With the current svn repository we can selectively check out just a small
+part of the overall repository.
+
+For eaxample, if we want to edit one of the text files for the current TAP
+specification, then we only need to check out just that small section of
+the repository that contains those files.
+
+   * projects/dal/TAP - 124k
+
+Git does not have an equivalent ability to check out just part of the
+repository.
+
+So to edit the text files using a git repository, you would have to checkout
+(clone) the whole 391M, increasing to 764M if we include the full commit
+history in our transfer.
+
+   * projects - 391M (764M inc. history)
+      * dal - 576k
+         * TAP - 124k
+
+Once you have a full clone of the repository, then subsequent updates will
+only transfer the differences.
+However, that may be of little consolation to someone who is having to
+download 764M via a conference hotel wifi network just to edit one text file.
+
+It is also important to note that using the LFS extension would not change
+the size of the cloned copy of the repository on your local disk, nor would
+it change the time taken to download the files.
+The LFS extension just changes the way that large files are stored on the
+!GitHub server.
+
+---+ Project types
+
+Looking at the current contents volute, we have several different project types.
+
+---++ Theory projects
+ 
+It looks like the theory projects contain a relativley small number of
+human edited source files, and the majority of the space is taken up by
+machine generated files.
+
+   * projects/theory - 220M
+      * snap - 108M
+      * snapdm - 109M
+      * simdal - 3.3M
+
+There is a good case for exporting each of the three theory projects as
+separate !GitHub repositories.
+
+Even without using the LFS extension, these projects would be easier to
+manage as separate !GitHub repositories.
+
+---++ Data models
+
+Four of the data model projects are directly related to the standard
+documents defining the corresponding data model.
+
+   * projects/dm
+      * CubeDM-1.0 - 8.1M
+      * ImageDM - 3.6M
+      * provenance - 5.8M
+      * SpectralDM-2.0 - 7.3M
+
+The majority of the space is taken up by a mixture of medium sized (1M <
+s < 10M) =doc=, =pdf= and =png= files.
+
+The fith data model project is for the VO Data Modelling Language, VO-DML.
+
+This project accounts for over 100M of the 126M of space used by the data
+model projects, and is the third largest project in the volute repository.
+
+   * projects/dm - 126M
+      * ....
+      * vo-dml - 101M
+
+Again, the majority of the space is taken up by a mixture of medium sized
+(1M < s < 10M) =doc=, =pdf= and =png= files.
+
+Although this project is related to the VO-DML and UTYPE specifications,
+there is a case for exporting it as a separate separate !GitHub repository.
+
+In addition to the documents for the VO-DML and UTYPE specifications the
+vo-dml project also contains definitions of the models plus the source
+code for the tools for validating the models and for building derived data
+products from them.
+
+---++ VOSpace service
+
+We have one project that contains code for a program, donated by Rick Wagner
+at UC San Diego.
+
+   * projects/grid/vospace/php_endpoint
+      * size : 1.5M
+      * type : PHP web service
+      * lang : php
+
+From the project README file:
+<verbatim>
+    = PHP VOSpace Endpoint =
+    VOSpace endpoint building on top of the [http://www.irods.org iRODS] client, Prods.
+    Requires Prods, which is part of the iRODS distributions (under clients). Also uses
+    [http://simpletest.sf.net SimpleTest] for unit tests. Configure the locations in config.inc.
+    Rick Wagner
+    http://lca.ucsd.edu/projects/rpwagner
+    rwagner@physics.ucsd.edu
+</verbatim>
+
+As a self-contained source code project there is a case good case for
+exporting this as a separate !GitHub repository.
+
+---++ Vocabularies
+
+The vocabularies project contains the build tree for the IVOA vocabulary
+SKOS files.
+
+Although this project is relatively small, 3.4M, it is not directly related
+to an IVOA document or standard.
+
+As a self-contained source code project there is a case good case for
+exporting this as a separate !GitHub repository.
+
+---++ Documents and standards
+
+Everything else in our repository are either source text for our documents
+or tools for creating documents.
+
+---+ Proposed structure
+
+If we take a copy of the exported snapshot and split out the projects
+identified as candidates for separate !GitHub repositories.
+
+The we get the following set of candidate !GitHub repositories:
+
+   * github-repos - 391M
+      * php-vospace - 1.5M
+      * ivoa-vocabularies - 3.4M
+      * ivoa-documents - 66M
+      * ivoa-dml - 101M
+      * ivoa-theory - 220M
+
+If we split the three theory projects into separate !GitHub repositories,
+then we get the following:
+
+   * github-repos - 391M
+      * php-vospace - 1.5M
+      * ivoa-vocabularies - 3.4M
+      * ivoa-documents - 66M
+      * ivoa-dml - 101M
+      * ivoa-snap - 108M
+      * ivoa-snapdm - 109M
+      * ivoa-simdal - 3.3M
+
+---+ Historical versions
+
+It would be possible to further reduce the size of the ivoa-documents
+repository by excluding some of the the historical versions of documents
+currently stored in our repository.
+
+Several of our IVOA standards store collections of previous versions of
+the document as binary files.
+
+   * registry/SimpleDALRegExt/rc - 12M
+   * registry/StandardsRegExt/rc - 5.3M
+   * registry/VODataService/rc -1.5M
+   * dm/ImageDM/doc/rc - 1.8M
+   * dm/SpectralDM-2.0/doc/rc - 4.9M
+
+Removing these historical versions would save around 25M, reducing the size
+of the ivoa-documents repository by a third, from 66M to 40M.
+
+It is worth asking - is a source control system the right place to store
+historical versions of a document as individual binary files.
+
+It may make sense to store some of the final published versions of the
+documents for future reference, but we may not need to store as many of
+the pre-release and working draft versions that we currently store.
+
+---+ Commit history
+
+The automated 'export everything to !GitHub' button will preserve the svn
+commit history.
+
+The simple 'snapshot transfer' of a svn export will not preserve the svn
+commit history.
+
+There are a number of tools that should enable us to preserve the svn commit
+history intact during the transfer.
+
+The two main examples are :
+
+   * [[https://git-scm.com/docs/git-svn][git-svn]] - Supports bidirectional operation between a Subversion repository and Git
+   * [[http://www.subgit.com/][SubGit]] - is a tool for SVN to Git migration
+
+We are currently evaluating these to see how well they cope with exporting
+parts of a svn repository into separate git repositories.
+
+However, it is worth asking how valuable the svn commit history is to us.
+
+If we do not need to preserve the svn commit history, then it may be easier
+and safer to just transfer a snapshot of the current state.
+
+I know the commit history is part of the whole reason for using source
+control systems like svn and git, but for our use case it is normally just
+the recent history that is important, not the whole history chain.
+
+How likely is it that we will need to identify out what changes were made to
+one of our documents two years ago ?
+
+---+ References
+
+   * [[http://google-opensource.blogspot.co.uk/2015/03/farewell-to-google-code.html][Farewell to google code]]
+   * [[https://code.google.com/export-to-github/][GitHubExporter]]
+   * [[https://code.google.com/p/support-tools/wiki/GitHubExporterFAQ][GitHubExporter FAQ]]
+   * [[https://code.google.com/p/support/wiki/ReadOnlyTransition][ReadOnly transition]]
+
+   * [[https://git-lfs.github.com/][Git Large File Storage]]
+   * [[https://github.com/github/git-lfs/blob/master/docs/spec.md][Git LFS Specification]]
+
+   * [[https://git-scm.com/docs/git-svn][git-svn]]
+   * [[http://www.subgit.com/][SubGit]]
+

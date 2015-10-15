@@ -1,0 +1,393 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# From earlier notes (20130722-roe-deploy.txt)
+#
+
+#
+# Configure jmxremote in the Tomcat VM.
+# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+# http://blog.cantremember.com/debugging-with-jconsole-jmx-ssh-tunnels/
+
+        cat > "${HOME}/tomcat/bin/setenv.sh" << 'EOF'
+CATALINA_OPTS="${CATALINA_OPTS} -Xmx128m"
+CATALINA_OPTS="${CATALINA_OPTS} -XX:MaxPermSize=128m"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=8081"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.local.only=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.server.hostname=$(hostname -s)"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.activation.port=8082"
+EOF
+
+#
+# Route JConsole via ssh socks tunnel.
+# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+# http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
+
+    jmxport=8081
+    jmxhost=localhost
+    proxyport=8083
+    proxyhost=localhost
+
+    ssh -N -f -D ${proxyport:?} "${firelogin:?}"
+    ssh_pid=$(ps ax | grep "[s]sh -N -f -D ${proxyport:?}" | awk '{print $1}')
+
+    jconsole -J-DsocksProxyHost=${proxyhost:?} -J-DsocksProxyPort=${proxyport:?} service:jmx:rmi:///jndi/rmi://${jmxhost:?}:${jmxport:?}/jmxrmi &
+
+    kill $ssh_pid
+
+
+# -----------------------------------------
+# Create a new virtual machine
+#[user@shep]
+
+    createvm
+
+        ....
+        ....
+        
+        INFO : Node name [edfu]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [edfu.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------
+# Update the local SSH fingerprint.
+# TODO automate the IP address selection.
+#[user@shep]
+
+    # http://linux.die.net/man/1/ssh-keygen
+    # http://linux.die.net/man/1/ssh-keyscan
+
+    ssh-keygen -f "${HOME:?}/.ssh/known_hosts" -R "192.168.122.13"
+
+# -----------------------------------------
+# Login to the new virtual machine
+#[user@shep]
+
+    ssh edfu
+
+# -----------------------------------------
+# Install missing tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    yum install -y haveged
+    systemctl start haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    yum -y install docker-io
+
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Create our secret function.
+#[root@virtual]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'firethorn.user.host'
+
+# -----------------------------------------------------
+# Configure our docker chain.
+#[root@virtual]
+
+    version=1.13.17
+
+    cat > /tmp/chain.properties << EOF
+
+    version=${version:?}
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+    source /tmp/chain.properties
+
+# -----------------------------------------------------
+# Shutdown and remove any existing containers.
+#[root@virtual]
+
+    source /tmp/chain.properties
+
+    docker rm -f "${firename}"
+    docker rm -f "${ogsaname}"
+    docker rm -f "${metaname}"
+    docker rm -f "${username}"
+    docker rm -f "${dataname}"
+
+# -----------------------------------------------------
+# Run our userdata ambassador.
+#[root@virtual]
+
+    source /tmp/chain.properties
+
+    docker run \
+        --detach \
+        --name "${username:?}" \
+        --env  "target=${userhost:?}" \
+        firethorn/sql-proxy:1
+
+# -----------------------------------------------------
+# Run our science data ambassador.
+#[root@virtual]
+
+    source /tmp/chain.properties
+
+    docker run \
+        --detach \
+        --name "${dataname:?}" \
+        --env  "target=${datahost:?}" \
+        firethorn/sql-proxy:1
+
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[root@virtual]
+
+    source /tmp/chain.properties
+
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[root@virtual]
+
+    source /tmp/chain.properties
+
+    mkdir --parents "/var/logs/${ogsaname:?}"
+    mkdir --parents "/var/temp/${ogsaname:?}"
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "/var/temp/${ogsaname:?}:/temp" \
+        --volume "/var/logs/${ogsaname:?}:/var/tomcat/logs" \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[root@virtual]
+
+    source /tmp/chain.properties
+
+    properties=$(mktemp)
+    cat > "${properties:?}" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+EOF
+
+    chmod a+r "${properties:?}" 
+    chcon -t svirt_sandbox_file_t "${properties:?}" 
+
+
+# -----------------------------------------------------
+# Create our Tomcat setenv script.
+#[root@virtual]
+
+    source /tmp/chain.properties
+
+    setenv=$(mktemp)
+    cat > "${setenv:?}" << 'EOF'
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=8085"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.rmi.port=8085"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.local.only=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.server.hostname=192.168.122.13"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.activation.port=8086"
+EOF
+
+    chmod a+r "${setenv:?}" 
+    chcon -t svirt_sandbox_file_t "${setenv:?}" 
+
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[root@virtual]
+
+    source /tmp/chain.properties
+
+    mkdir --parents "/var/logs/${firename:?}"
+    mkdir --parents "/var/temp/${firename:?}"
+
+    # Tomcat uid and gid
+    chown 995:994 "/var/logs/${firename:?}"
+    chmod u=rwxs  "/var/logs/${firename:?}"
+    chmod g=rwxs  "/var/logs/${firename:?}"
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --publish 8085:8085 \
+        --publish 8086:8086 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "/var/temp/${firename:?}:/temp" \
+        --volume "/var/logs/${firename:?}:/var/local/tomcat/logs" \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        --volume "${setenv:?}:/var/local/tomcat/bin/setenv.sh" \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Tail the firethorn logs (in a separate terminal).
+#[root@virtual]
+
+    source /tmp/chain.properties
+
+    docker logs -f --tail 100 "${firename:?}"
+
+# -----------------------------------------------------
+# Get the firethorn container IP address.
+#[root@virtual]
+
+    #docker inspect --format '{{ .NetworkSettings.IPAddress }}'  "${firename:?}"
+    #docker exec -it "${firename:?}" bash
+
+# -----------------------------------------------------
+# Create a ssh socks tunnel for JConsole.
+# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+# http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
+#[user@laptop]
+
+    cat > /tmp/jmx.properties << EOF
+
+    jmxremoteport=8085
+    jmxremotehost=192.168.122.13
+
+    jxmproxyhost=shep
+    jxmproxyport=9090
+
+EOF
+
+    source /tmp/jmx.properties
+
+    ssh -v -v -D "${jxmproxyport}" "${jxmproxyhost}"
+
+# -----------------------------------------------------
+# Run JConsole connected to the tunneled ports.
+# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+# http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
+#[user@laptop]
+
+    source /tmp/jmx.properties
+
+    jconsole -J-DsocksProxyHost=localhost -J-DsocksProxyPort="${jxmproxyport}" \
+        service:jmx:rmi:///jndi/rmi://${jmxremotehost:?}:${jmxremoteport:?}/jmxrmi
+    
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Run our test container.
+#[root@virtual]
+
+    20150529-03-docker-tests.txt
+
+

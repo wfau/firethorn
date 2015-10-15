@@ -110,7 +110,6 @@ implements OgsaJdbcResource
     implements OgsaJdbcResource.EntityFactory
         {
 /*
- *
         @Override
         @Value("${firethorn.ogsa.jdbc.resource.scan:PT1M}")
         public void scanperiod(final String value)
@@ -121,7 +120,6 @@ implements OgsaJdbcResource
                 value
                 );
             }
- *
  */
         @Override
         public Class<?> etype()

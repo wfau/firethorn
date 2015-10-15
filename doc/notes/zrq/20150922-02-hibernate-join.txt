@@ -1,0 +1,129 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # PASS
+    SELECT TOP 5
+        ra,
+        dec
+    FROM
+        TWOMASS.twomass_psc
+
+    #
+    # PASS
+    SELECT TOP 5
+        TWOMASS.twomass_psc.ra,
+        TWOMASS.twomass_psc.dec
+    FROM
+        TWOMASS.twomass_psc
+
+    #
+    # PASS
+    SELECT TOP 5
+        glon,
+        glat
+    FROM
+        GACS.twomass_psc
+
+    #
+    # FAIL
+    SELECT TOP 5
+        GACS.twomass_psc.glon,
+        GACS.twomass_psc.glat
+    FROM
+        GACS.twomass_psc
+
+    #
+    # Hibernate error in FireThorn logs.
+    2015-09-22 09:33:45,973 DEBUG [http-bio-8080-exec-7] [HibernateInterceptor] onLoad(....) 
+    2015-09-22 09:33:45,974 DEBUG [http-bio-8080-exec-7] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@24a16909] 
+    2015-09-22 09:33:45,974 DEBUG [http-bio-8080-exec-7] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumnEntity] 
+    2015-09-22 09:33:45,974 DEBUG [http-bio-8080-exec-7] [AdqlColumnProxy] ProxyIterable(Iterable<BaseColumn<?>>, AdqlTable) 
+    2015-09-22 09:33:45,974 DEBUG [http-bio-8080-exec-7] [AdqlColumnProxy] ProxyIterable(Iterable<BaseColumn<?>>, AdqlTable) 
+    2015-09-22 09:33:45,979 WARN  [http-bio-8080-exec-7] [SqlExceptionHelper] SQL Error: 207, SQLState: 42S22 
+    2015-09-22 09:33:45,979 ERROR [http-bio-8080-exec-7] [SqlExceptionHelper] Invalid column name 'parentAdql'. 
+    2015-09-22 09:33:45,979 DEBUG [http-bio-8080-exec-7] [HibernateThingsImpl] convert(HibernateException) 
+    2015-09-22 09:33:45,979 DEBUG [http-bio-8080-exec-7] [HibernateThingsImpl] Hibernate excepion [org.hibernate.exception.SQLGrammarException][could not extract
+     ResultSet] 
+    2015-09-22 09:33:45,982 DEBUG [http-bio-8080-exec-7] [HibernateThingsImpl]   excepion  
+    org.hibernate.exception.SQLGrammarException: could not extract ResultSet
+            at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:123) ~[hibernate-core-4.3.8.Final.jar:4.3.8.Final]
+            at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:49) ~[hibernate-core-4.3.8.Final.jar:4.3.Final]
+            at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:126) ~[hibernate-core-4.3.8.Final.jar:4.3.8.Final]
+            at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:112) ~[hibernate-core-4.3.8.Final.jar:4.3.8.Final]
+            at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.extract(ResultSetReturnImpl.java:91) ~[hibernate-core-4.3.8.Final.jar:4.3.8.Final]
+ 
+
+    #
+    # Google-foo found a StackOverflow post that looks similar. 
+    # http://stackoverflow.com/questions/29165688/org-hibernate-exception-sqlgrammarexception-invalid-column-name
+
+    #
+    # Interesting comment at the end.
+    # 'It worked. I had to also add updatable = false, insertable = false. Thanks a lot.'
+    # http://stackoverflow.com/questions/29165688/org-hibernate-exception-sqlgrammarexception-invalid-column-name#comment46551770_29166050
+
+    #
+    # Compare parent table in JdbcColumnEntity and IvoaColumnEntity.
+    # The only difference is that updatable is true for IvoaColumnEntity.
+
+        @ManyToOne(
+            fetch = FetchType.LAZY,
+            targetEntity = IvoaTableEntity.class
+            )
+        @JoinColumn(
+            name = DB_PARENT_COL,
+            unique = false,
+            nullable = false,
+            updatable = true
+            )
+        private IvoaTable table;
+
+
+        @ManyToOne(
+            fetch = FetchType.LAZY,
+            targetEntity = JdbcTableEntity.class
+            )
+        @JoinColumn(
+            name = DB_PARENT_COL,
+            unique = false,
+            nullable = false,
+            updatable = false
+            )
+        private JdbcTable table;
+
+    #
+    # Odd, because the field name doesn't match, the column name reported in the Hibernate exception.
+
+    2015-09-22 09:33:45,979 WARN  [http-bio-8080-exec-7] [SqlExceptionHelper] SQL Error: 207, SQLState: 42S22 
+    2015-09-22 09:33:45,979 ERROR [http-bio-8080-exec-7] [SqlExceptionHelper] Invalid column name 'parentAdql'. 
+
+    #
+    # Comparing JdbcColumnEntity and IvoaColumnEntity and JdbcTableEntity and IvoaTableEntity.
+    # The only one with updatable set to true is IvoaColumnEntity.
+
+    #
+    # Experimental fix - change updatable to false and see if the problem goes away.
+    # 
+
+
+

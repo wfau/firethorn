@@ -45,115 +45,115 @@ public class UserQueriesTestCase
             State.VALID,
 
             "SELECT\n" + 
-            "    atlas.upetromag as upetromag,\n" + 
-            "    atlas.gpetromag as gpetromag,\n" + 
-            "    atlas.rpetromag as rpetromag,\n" + 
-            "    atlas.ipetromag as ipetromag,\n" + 
-            "    atlas.zpetromag as zpetromag,\n" + 
-            "    photoobj.petromag_u ,\n" + 
-            "    photoobj.petromag_g ,\n" + 
-            "    photoobj.petromag_r ,\n" + 
-            "    photoobj.petromag_i ,\n" + 
-            "    photoobj.petromag_z\n" + 
+            "    atlas.uPetroMag as uPetroMag,\n" + 
+            "    atlas.gPetroMag as gPetroMag,\n" + 
+            "    atlas.rPetroMag as rPetroMag,\n" + 
+            "    atlas.iPetroMag as iPetroMag,\n" + 
+            "    atlas.zPetroMag as zPetroMag,\n" + 
+            "    PhotoObj.petromag_u ,\n" + 
+            "    PhotoObj.petromag_g ,\n" + 
+            "    PhotoObj.petromag_r ,\n" + 
+            "    PhotoObj.petromag_i ,\n" + 
+            "    PhotoObj.petromag_z\n" + 
             "FROM\n" + 
-            "    atlassource as atlas,\n" + 
-            "    bestdr9..photoobj as photoobj,\n" + 
-            "    bestdr9..photozrf as photozrf,\n" + 
-            "    atlassourcexdr9photoobj as X\n" + 
+            "    atlasSource as atlas,\n" + 
+            "    bestdr9..PhotoObj as PhotoObj,\n" + 
+            "    bestdr9..PhotozRF as PhotozRF,\n" + 
+            "    atlasSourceXDR9PhotoObj as X\n" + 
             "WHERE\n" + 
             "    X.masterobjID = atlas.sourceID\n" + 
             "AND\n" + 
-            "    photozrf.objid = photoobj.objid\n" + 
+            "    PhotozRF.objid = PhotoObj.objid\n" + 
             "AND\n" + 
-            "    photozrf.objid = X.slaveobjid\n" + 
+            "    PhotozRF.objid = X.slaveobjid\n" + 
             "AND\n" + 
-            "    atlas.gpetromag > 0 and atlas.rpetromag > 0 and atlas.ipetromag > 0 and atlas.zpetromag > 0\n" + 
+            "    atlas.gPetroMag > 0 and atlas.rPetroMag > 0 and atlas.iPetroMag > 0 and atlas.zPetroMag > 0\n" + 
             "AND\n" + 
-            "    gpperrbits = 0 AND rpperrbits = 0 AND ipperrbits = 0 AND zpperrbits = 0\n" + 
+            "    gppErrBits = 0 AND rppErrBits = 0 AND ippErrBits = 0 AND zppErrBits = 0\n" + 
             "AND\n" + 
-            "    photoobj.clean = 1\n" + 
+            "    PhotoObj.clean = 1\n" + 
             "AND\n" + 
-            "    atlas.mergedclass = 1\n" + 
+            "    atlas.mergedClass = 1\n" + 
             "AND\n" + 
             "    X.distanceMins < 1/60.0\n" + 
             "AND\n" + 
-            "    X.sdssprimary = 1\n" + 
+            "    X.sdssPrimary = 1\n" + 
             "AND\n" + 
-            "    X.sdsstype = 3\n" + 
+            "    X.sdssType = 3\n" + 
             "AND\n" + 
             "    X.distanceMins IN (\n" + 
             "        SELECT\n" + 
             "            MIN (distanceMins)\n" + 
             "        FROM\n" + 
-            "            atlassourcexdr9photoobj\n" + 
+            "            atlasSourceXDR9PhotoObj\n" + 
             "        WHERE\n" + 
-            "            masterobjid = X.masterobjid\n" + 
+            "            masterObjID = X.masterObjID\n" + 
             "        )",
 
             "select\n" + 
-            "    atlas.upetromag as upetromag,\n" + 
-            "    atlas.gpetromag as gpetromag,\n" + 
-            "    atlas.rpetromag as rpetromag,\n" + 
-            "    atlas.ipetromag as ipetromag,\n" + 
-            "    atlas.zpetromag as zpetromag,\n" + 
-            "    photoobj.petromag_u as petromag_u,\n" + 
-            "    photoobj.petromag_g as petromag_g,\n" + 
-            "    photoobj.petromag_r as petromag_r,\n" + 
-            "    photoobj.petromag_i as petromag_i,\n" + 
-            "    photoobj.petromag_z as petromag_z\n" + 
+            "    atlas.uPetroMag as uPetroMag,\n" + 
+            "    atlas.gPetroMag as gPetroMag,\n" + 
+            "    atlas.rPetroMag as rPetroMag,\n" + 
+            "    atlas.iPetroMag as iPetroMag,\n" + 
+            "    atlas.zPetroMag as zPetroMag,\n" + 
+            "    PhotoObj.petromag_u as petromag_u,\n" + 
+            "    PhotoObj.petromag_g as petromag_g,\n" + 
+            "    PhotoObj.petromag_r as petromag_r,\n" + 
+            "    PhotoObj.petromag_i as petromag_i,\n" + 
+            "    PhotoObj.petromag_z as petromag_z\n" + 
             "from\n" + 
-            "    atlasdr1.dbo.atlassource as atlas,\n" + 
-            "    bestdr9.dbo.photoobj as photoobj,\n" + 
-            "    bestdr9.dbo.photozrf as photozrf,\n" + 
-            "    atlasdr1.dbo.atlassourcexdr9photoobj as x\n" + 
+            "    atlasdr1.dbo.atlasSource as atlas,\n" + 
+            "    bestdr9.dbo.PhotoObj as PhotoObj,\n" + 
+            "    bestdr9.dbo.PhotozRF as PhotozRF,\n" + 
+            "    atlasdr1.dbo.atlasSourceXDR9PhotoObj as x\n" + 
             "where\n" + 
-            "    x.masterobjid = atlas.sourceid\n" + 
+            "    x.masterObjID = atlas.sourceID\n" + 
             "and\n" + 
-            "    photozrf.objid = photoobj.objid\n" + 
+            "    PhotozRF.objid = PhotoObj.objid\n" + 
             "and\n" + 
-            "    photozrf.objid = x.slaveobjid\n" + 
+            "    PhotozRF.objid = x.slaveobjid\n" + 
             "and\n" + 
-            "    atlas.gpetromag > 0\n" + 
+            "    atlas.gPetroMag > 0\n" + 
             "and\n" + 
-            "    atlas.rpetromag > 0\n" + 
+            "    atlas.rPetroMag > 0\n" + 
             "and\n" + 
-            "    atlas.ipetromag > 0\n" + 
+            "    atlas.iPetroMag > 0\n" + 
             "and\n" + 
-            "    atlas.zpetromag > 0\n" + 
+            "    atlas.zPetroMag > 0\n" + 
             "and\n" + 
-            "    atlas.gpperrbits = 0\n" + 
+            "    atlas.gppErrBits = 0\n" + 
             "and\n" + 
-            "    atlas.rpperrbits = 0\n" + 
+            "    atlas.rppErrBits = 0\n" + 
             "and\n" + 
-            "    atlas.ipperrbits = 0\n" + 
+            "    atlas.ippErrBits = 0\n" + 
             "and\n" + 
-            "    atlas.zpperrbits = 0\n" + 
+            "    atlas.zppErrBits = 0\n" + 
             "and\n" + 
-            "    photoobj.clean = 1\n" + 
+            "    PhotoObj.clean = 1\n" + 
             "and\n" + 
-            "    atlas.mergedclass = 1\n" + 
+            "    atlas.mergedClass = 1\n" + 
             "and\n" + 
-            "    x.distancemins < 1 / 60.0\n" + 
+            "    x.distanceMins < 1 / 60.0\n" + 
             "and\n" + 
-            "    x.sdssprimary = 1\n" + 
+            "    x.sdssPrimary = 1\n" + 
             "and\n" + 
-            "    x.sdsstype = 3\n" + 
+            "    x.sdssType = 3\n" + 
             "and\n" + 
-            "    x.distancemins in (\n" + 
+            "    x.distanceMins in (\n" + 
             "        select\n" + 
-            "            min(atlasdr1.dbo.atlassourcexdr9photoobj.distancemins)as min\n" + 
+            "            min(atlasdr1.dbo.atlasSourceXDR9PhotoObj.distanceMins)as min\n" + 
             "        from\n" + 
-            "            atlasdr1.dbo.atlassourcexdr9photoobj\n" + 
+            "            atlasdr1.dbo.atlasSourceXDR9PhotoObj\n" + 
             "        where\n" + 
-            "            atlasdr1.dbo.atlassourcexdr9photoobj.masterobjid = x.masterobjid\n" + 
+            "            atlasdr1.dbo.atlasSourceXDR9PhotoObj.masterObjID = x.masterObjID\n" + 
             "        )",
 
             new ExpectedField[] {
-                new ExpectedField("upetromag",  AdqlColumn.AdqlType.FLOAT, 0),
-                new ExpectedField("gpetromag",  AdqlColumn.AdqlType.FLOAT, 0),
-                new ExpectedField("rpetromag",  AdqlColumn.AdqlType.FLOAT, 0),
-                new ExpectedField("ipetromag",  AdqlColumn.AdqlType.FLOAT, 0),
-                new ExpectedField("zpetromag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("uPetroMag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("gPetroMag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("rPetroMag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("iPetroMag",  AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("zPetroMag",  AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("petromag_u", AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("petromag_g", AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("petromag_r", AdqlColumn.AdqlType.FLOAT, 0),
@@ -178,28 +178,28 @@ public class UserQueriesTestCase
 
             "SELECT\n" + 
             "    TOP 10 \n" + 
-            "    atlas.upetromag AS g, \n" + 
-            "    photoobj.petromag_u\n" + 
+            "    atlas.uPetroMag AS g, \n" + 
+            "    PhotoObj.petromag_u\n" + 
             "FROM\n" + 
-            "    atlassource AS atlas,\n" + 
-            "    bestdr9.photoobj AS photoobj,\n" + 
-            "    atlassourcexdr9photoobj AS x \n" + 
+            "    atlasSource AS atlas,\n" + 
+            "    bestdr9.PhotoObj AS PhotoObj,\n" + 
+            "    atlasSourceXDR9PhotoObj AS x \n" + 
             "WHERE\n" + 
             "    x.masterobjID = atlas.sourceID\n" + 
             "AND\n" + 
-            "    x.slaveobjID = photoobj.objID",
+            "    x.slaveobjID = PhotoObj.objID",
             
             "select\n" + 
-            "    top 10 atlas.upetromag as g,\n" + 
-            "    photoobj.petromag_u as petromag_u\n" + 
+            "    top 10 atlas.uPetroMag as g,\n" + 
+            "    PhotoObj.petromag_u as petromag_u\n" + 
             "from\n" + 
-            "    atlasdr1.dbo.atlassource as atlas,\n" + 
-            "    bestdr9.dbo.photoobj as photoobj,\n" + 
-            "    atlasdr1.dbo.atlassourcexdr9photoobj as x\n" + 
+            "    atlasdr1.dbo.atlasSource as atlas,\n" + 
+            "    bestdr9.dbo.PhotoObj as PhotoObj,\n" + 
+            "    atlasdr1.dbo.atlasSourceXDR9PhotoObj as x\n" + 
             "where\n" + 
-            "    x.masterobjid = atlas.sourceid\n" + 
+            "    x.masterObjID = atlas.sourceID\n" + 
             "and\n" + 
-            "    x.slaveobjid = photoobj.objid",
+            "    x.slaveobjid = PhotoObj.objid",
 
             new ExpectedField[] {
                 new ExpectedField("g",  AdqlColumn.AdqlType.FLOAT, 0),
@@ -222,33 +222,33 @@ public class UserQueriesTestCase
             State.VALID,
             "SELECT\n" + 
             "    TOP 100000\n" + 
-            "    photoobj.dered_u,\n" + 
-            "    photoobj.dered_g, \n" + 
-            "    photoobj.dered_r,\n" + 
-            "    photoobj.dered_i,\n" + 
-            "    photoobj.dered_z, \n" + 
-            "    photoobj.z\n" + 
+            "    PhotoObj.dered_u,\n" + 
+            "    PhotoObj.dered_g, \n" + 
+            "    PhotoObj.dered_r,\n" + 
+            "    PhotoObj.dered_i,\n" + 
+            "    PhotoObj.dered_z, \n" + 
+            "    PhotoObj.z\n" + 
             "FROM\n" + 
-            "    bestdr9.photozrf AS photozrf\n" + 
+            "    bestdr9.PhotozRF AS PhotozRF\n" + 
             "LEFT JOIN\n" + 
-            "    bestdr9.photoobj AS photoobj\n" + 
+            "    bestdr9.PhotoObj AS PhotoObj\n" + 
             "ON\n" + 
-            "    photozrf.objID = photoobj.objID",
+            "    PhotozRF.objID = PhotoObj.objID",
 
             "select\n" + 
             "    top 100000\n" + 
-            "    photoobj.dered_u as dered_u,\n" + 
-            "    photoobj.dered_g as dered_g,\n" + 
-            "    photoobj.dered_r as dered_r,\n" + 
-            "    photoobj.dered_i as dered_i,\n" + 
-            "    photoobj.dered_z as dered_z,\n" + 
-            "    photoobj.z as z\n" + 
+            "    PhotoObj.dered_u as dered_u,\n" + 
+            "    PhotoObj.dered_g as dered_g,\n" + 
+            "    PhotoObj.dered_r as dered_r,\n" + 
+            "    PhotoObj.dered_i as dered_i,\n" + 
+            "    PhotoObj.dered_z as dered_z,\n" + 
+            "    PhotoObj.z as z\n" + 
             "from\n" + 
-            "    bestdr9.dbo.photozrf as photozrf\n" + 
+            "    bestdr9.dbo.PhotozRF as PhotozRF\n" + 
             "left outer join\n" + 
-            "    bestdr9.dbo.photoobj as photoobj\n" + 
+            "    bestdr9.dbo.PhotoObj as PhotoObj\n" + 
             "on\n" + 
-            "    photozrf.objid = photoobj.objid",
+            "    PhotozRF.objid = PhotoObj.objid",
 
             new ExpectedField[] {
                 new ExpectedField("dered_u", AdqlColumn.AdqlType.FLOAT, 0),
@@ -275,152 +275,152 @@ public class UserQueriesTestCase
             State.VALID,
             "SELECT\n" + 
             "    TOP 5\n" + 
-            "    atlas.upetromag AS upetromag,\n" + 
-            "    atlas.gpetromag AS gpetromag,    \n" + 
-            "    atlas.rpetromag AS rpetromag,\n" + 
-            "    atlas.ipetromag AS ipetromag,\n" + 
-            "    atlas.zpetromag AS zpetromag,\n" + 
-            "    atlas.au AS uatlasextinction ,\n" + 
-            "    atlas.ag AS gatlasextinction ,\n" + 
-            "    atlas.ar AS ratlasextinction,\n" + 
-            "    atlas.ai AS iatlasextinction,\n" + 
-            "    atlas.az AS zatlasextinction,\n" + 
-            "    photoobj.petromag_u ,\n" + 
-            "    photoobj.petromag_g ,\n" + 
-            "    photoobj.petromag_r ,\n" + 
-            "    photoobj.petromag_i ,\n" + 
-            "    photoobj.petromag_z ,\n" + 
-            "    photoobj.petromagerr_u,\n" + 
-            "    photoobj.petromagerr_g,\n" + 
-            "    photoobj.petromagerr_r,\n" + 
-            "    photoobj.petromagerr_i,\n" + 
-            "    photoobj.petromagerr_z,\n" + 
-            "    photoobj.extinction_u, \n" + 
-            "    photoobj.extinction_g,\n" + 
-            "    photoobj.extinction_r,\n" + 
-            "    photoobj.extinction_i,\n" + 
-            "    photoobj.extinction_z,\n" + 
-            "    photozrf.z, \n" + 
+            "    atlas.uPetroMag AS uPetroMag,\n" + 
+            "    atlas.gPetroMag AS gPetroMag,    \n" + 
+            "    atlas.rPetroMag AS rPetroMag,\n" + 
+            "    atlas.iPetroMag AS iPetroMag,\n" + 
+            "    atlas.zPetroMag AS zPetroMag,\n" + 
+            "    atlas.au AS uAtlasExtinction ,\n" + 
+            "    atlas.ag AS gAtlasExtinction ,\n" + 
+            "    atlas.ar AS rAtlasExtinction,\n" + 
+            "    atlas.ai AS iAtlasExtinction,\n" + 
+            "    atlas.az AS zAtlasExtinction,\n" + 
+            "    PhotoObj.petromag_u ,\n" + 
+            "    PhotoObj.petromag_g ,\n" + 
+            "    PhotoObj.petromag_r ,\n" + 
+            "    PhotoObj.petromag_i ,\n" + 
+            "    PhotoObj.petromag_z ,\n" + 
+            "    PhotoObj.petromagerr_u,\n" + 
+            "    PhotoObj.petromagerr_g,\n" + 
+            "    PhotoObj.petromagerr_r,\n" + 
+            "    PhotoObj.petromagerr_i,\n" + 
+            "    PhotoObj.petromagerr_z,\n" + 
+            "    PhotoObj.extinction_u, \n" + 
+            "    PhotoObj.extinction_g,\n" + 
+            "    PhotoObj.extinction_r,\n" + 
+            "    PhotoObj.extinction_i,\n" + 
+            "    PhotoObj.extinction_z,\n" + 
+            "    PhotozRF.z, \n" + 
             "    atlas.ra       AS ATLAS_RA ,\n" + 
             "    atlas.dec      AS ATLAS_DEC ,\n" + 
-            "    photoobj.ra    AS PHOTOOBJ_RA ,\n" + 
-            "    photoobj.dec   AS PHOTOOBJ_DEC , \n" + 
+            "    PhotoObj.ra    AS PHOTOOBJ_RA ,\n" + 
+            "    PhotoObj.dec   AS PHOTOOBJ_DEC , \n" + 
             "    atlas.sourceId AS ATLAS_ID ,\n" + 
-            "    photoobj.objID AS SDSS_ID \n" + 
+            "    PhotoObj.objID AS SDSS_ID \n" + 
             "FROM\n" + 
-            "    atlassource AS atlas,\n" + 
-            "    bestdr9.photoobj AS photoobj,\n" + 
-            "    bestdr9.photozrf AS photozrf,\n" + 
-            "    atlassourcexdr9photoobj AS x\n" + 
+            "    atlasSource AS atlas,\n" + 
+            "    bestdr9.PhotoObj AS PhotoObj,\n" + 
+            "    bestdr9.PhotozRF AS PhotozRF,\n" + 
+            "    atlasSourceXDR9PhotoObj AS x\n" + 
             "WHERE\n" + 
             "    x.masterobjID = atlas.sourceID\n" + 
             "AND\n" + 
-            "    photozrf.objid = photoobj.objid\n" + 
+            "    PhotozRF.objid = PhotoObj.objid\n" + 
             "AND\n" + 
-            "    photozrf.objid = x.slaveobjid\n" + 
+            "    PhotozRF.objid = x.slaveobjid\n" + 
             "AND\n" + 
-            "    atlas.gpetromag > 0 AND atlas.rpetromag > 0 AND atlas.ipetromag > 0 AND atlas.zpetromag > 0\n" + 
+            "    atlas.gPetroMag > 0 AND atlas.rPetroMag > 0 AND atlas.iPetroMag > 0 AND atlas.zPetroMag > 0\n" + 
             "AND\n" + 
-            "    gpperrbits = 0 AND rpperrbits = 0 AND ipperrbits = 0 AND zpperrbits = 0\n" + 
+            "    gppErrBits = 0 AND rppErrBits = 0 AND ippErrBits = 0 AND zppErrBits = 0\n" + 
             "AND\n" + 
-            "    photoobj.clean = 1\n" + 
+            "    PhotoObj.clean = 1\n" + 
             "AND\n" + 
-            "    atlas.mergedclass = 1\n" + 
+            "    atlas.mergedClass = 1\n" + 
             "AND\n" + 
             "    x.distanceMins < 1/60.0 \n" + 
             "AND\n" + 
-            "    x.sdssprimary = 1 \n" + 
+            "    x.sdssPrimary = 1 \n" + 
             "AND\n" + 
-            "    x.sdsstype = 3 \n" + 
+            "    x.sdssType = 3 \n" + 
             "AND\n" + 
             "    x.distanceMins IN ( \n" + 
             "        SELECT MIN (distanceMins) \n" + 
             "            FROM\n" + 
-            "                atlassourcexdr9photoobj\n" + 
+            "                atlasSourceXDR9PhotoObj\n" + 
             "            WHERE\n" + 
-            "                masterobjid = x.masterobjid \n" + 
+            "                masterObjID = x.masterObjID \n" + 
             "        )",
 
             "select\n" + 
             "    top 5\n" + 
-            "    atlas.upetromag as upetromag,\n" + 
-            "    atlas.gpetromag as gpetromag,\n" + 
-            "    atlas.rpetromag as rpetromag,\n" + 
-            "    atlas.ipetromag as ipetromag,\n" + 
-            "    atlas.zpetromag as zpetromag,\n" + 
-            "    atlas.au as uatlasextinction,\n" + 
-            "    atlas.ag as gatlasextinction,\n" + 
-            "    atlas.ar as ratlasextinction,\n" + 
-            "    atlas.ai as iatlasextinction,\n" + 
-            "    atlas.az as zatlasextinction,\n" + 
-            "    photoobj.petromag_u as petromag_u,\n" + 
-            "    photoobj.petromag_g as petromag_g,\n" + 
-            "    photoobj.petromag_r as petromag_r,\n" + 
-            "    photoobj.petromag_i as petromag_i,\n" + 
-            "    photoobj.petromag_z as petromag_z,\n" + 
-            "    photoobj.petromagerr_u as petromagerr_u,\n" + 
-            "    photoobj.petromagerr_g as petromagerr_g,\n" + 
-            "    photoobj.petromagerr_r as petromagerr_r,\n" + 
-            "    photoobj.petromagerr_i as petromagerr_i,\n" + 
-            "    photoobj.petromagerr_z as petromagerr_z,\n" + 
-            "    photoobj.extinction_u as extinction_u,\n" + 
-            "    photoobj.extinction_g as extinction_g,\n" + 
-            "    photoobj.extinction_r as extinction_r,\n" + 
-            "    photoobj.extinction_i as extinction_i,\n" + 
-            "    photoobj.extinction_z as extinction_z,\n" + 
-            "    photozrf.z as z,\n" + 
+            "    atlas.uPetroMag as uPetroMag,\n" + 
+            "    atlas.gPetroMag as gPetroMag,\n" + 
+            "    atlas.rPetroMag as rPetroMag,\n" + 
+            "    atlas.iPetroMag as iPetroMag,\n" + 
+            "    atlas.zPetroMag as zPetroMag,\n" + 
+            "    atlas.au as uAtlasExtinction,\n" + 
+            "    atlas.ag as gAtlasExtinction,\n" + 
+            "    atlas.ar as rAtlasExtinction,\n" + 
+            "    atlas.ai as iAtlasExtinction,\n" + 
+            "    atlas.az as zAtlasExtinction,\n" + 
+            "    PhotoObj.petromag_u as petromag_u,\n" + 
+            "    PhotoObj.petromag_g as petromag_g,\n" + 
+            "    PhotoObj.petromag_r as petromag_r,\n" + 
+            "    PhotoObj.petromag_i as petromag_i,\n" + 
+            "    PhotoObj.petromag_z as petromag_z,\n" + 
+            "    PhotoObj.petromagerr_u as petromagerr_u,\n" + 
+            "    PhotoObj.petromagerr_g as petromagerr_g,\n" + 
+            "    PhotoObj.petromagerr_r as petromagerr_r,\n" + 
+            "    PhotoObj.petromagerr_i as petromagerr_i,\n" + 
+            "    PhotoObj.petromagerr_z as petromagerr_z,\n" + 
+            "    PhotoObj.extinction_u as extinction_u,\n" + 
+            "    PhotoObj.extinction_g as extinction_g,\n" + 
+            "    PhotoObj.extinction_r as extinction_r,\n" + 
+            "    PhotoObj.extinction_i as extinction_i,\n" + 
+            "    PhotoObj.extinction_z as extinction_z,\n" + 
+            "    PhotozRF.z as z,\n" + 
             "    atlas.ra as atlas_ra,\n" + 
             "    atlas.dec as atlas_dec,\n" + 
-            "    photoobj.ra as photoobj_ra,\n" + 
-            "    photoobj.dec as photoobj_dec,\n" + 
-            "    atlas.sourceid as atlas_id,\n" + 
-            "    photoobj.objid as sdss_id\n" + 
+            "    PhotoObj.ra as PhotoObj_ra,\n" + 
+            "    PhotoObj.dec as PhotoObj_dec,\n" + 
+            "    atlas.sourceID as atlas_id,\n" + 
+            "    PhotoObj.objid as sdss_id\n" + 
             "from\n" + 
-            "    atlasdr1.dbo.atlassource as atlas,\n" + 
-            "    bestdr9.dbo.photoobj as photoobj,\n" + 
-            "    bestdr9.dbo.photozrf as photozrf,\n" + 
-            "    atlasdr1.dbo.atlassourcexdr9photoobj as x\n" + 
+            "    atlasdr1.dbo.atlasSource as atlas,\n" + 
+            "    bestdr9.dbo.PhotoObj as PhotoObj,\n" + 
+            "    bestdr9.dbo.PhotozRF as PhotozRF,\n" + 
+            "    atlasdr1.dbo.atlasSourceXDR9PhotoObj as x\n" + 
             "where\n" + 
-            "    x.masterobjid = atlas.sourceid\n" + 
+            "    x.masterObjID = atlas.sourceID\n" + 
             "and\n" + 
-            "    photozrf.objid = photoobj.objid\n" + 
+            "    PhotozRF.objid = PhotoObj.objid\n" + 
             "and\n" + 
-            "    photozrf.objid = x.slaveobjid\n" + 
+            "    PhotozRF.objid = x.slaveobjid\n" + 
             "and\n" + 
-            "    atlas.gpetromag > 0 and atlas.rpetromag > 0 and atlas.ipetromag > 0 and atlas.zpetromag > 0\n" + 
+            "    atlas.gPetroMag > 0 and atlas.rPetroMag > 0 and atlas.iPetroMag > 0 and atlas.zPetroMag > 0\n" + 
             "and\n" + 
-            "    atlas.gpperrbits = 0 and atlas.rpperrbits = 0 and atlas.ipperrbits = 0 and atlas.zpperrbits = 0\n" + 
+            "    atlas.gppErrBits = 0 and atlas.rppErrBits = 0 and atlas.ippErrBits = 0 and atlas.zppErrBits = 0\n" + 
             "and\n" + 
-            "    photoobj.clean = 1\n" + 
+            "    PhotoObj.clean = 1\n" + 
             "and\n" + 
-            "    atlas.mergedclass = 1\n" + 
+            "    atlas.mergedClass = 1\n" + 
             "and\n" + 
-            "    x.distancemins < 1 / 60.0\n" + 
+            "    x.distanceMins < 1 / 60.0\n" + 
             "and\n" + 
-            "    x.sdssprimary = 1\n" + 
+            "    x.sdssPrimary = 1\n" + 
             "and\n" + 
-            "    x.sdsstype = 3\n" + 
+            "    x.sdssType = 3\n" + 
             "and\n" + 
-            "    x.distancemins in (\n" + 
+            "    x.distanceMins in (\n" + 
             "        select\n" + 
-            "            min(atlasdr1.dbo.atlassourcexdr9photoobj.distancemins) as min\n" + 
+            "            min(atlasdr1.dbo.atlasSourceXDR9PhotoObj.distanceMins) as min\n" + 
             "        from\n" + 
-            "            atlasdr1.dbo.atlassourcexdr9photoobj\n" + 
+            "            atlasdr1.dbo.atlasSourceXDR9PhotoObj\n" + 
             "        where\n" + 
-            "            atlasdr1.dbo.atlassourcexdr9photoobj.masterobjid = x.masterobjid\n" + 
+            "            atlasdr1.dbo.atlasSourceXDR9PhotoObj.masterObjID = x.masterObjID\n" + 
             "            )",
 
             new ExpectedField[] {
-                new ExpectedField("upetromag",          AdqlColumn.AdqlType.FLOAT,  0),
-                new ExpectedField("gpetromag",          AdqlColumn.AdqlType.FLOAT,  0),
-                new ExpectedField("rpetromag",          AdqlColumn.AdqlType.FLOAT,  0),
-                new ExpectedField("ipetromag",          AdqlColumn.AdqlType.FLOAT,  0),
-                new ExpectedField("zpetromag",          AdqlColumn.AdqlType.FLOAT,  0),
-                new ExpectedField("uatlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
-                new ExpectedField("gatlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
-                new ExpectedField("ratlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
-                new ExpectedField("iatlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
-                new ExpectedField("zatlasextinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("uPetroMag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("gPetroMag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("rPetroMag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("iPetroMag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("zPetroMag",          AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("uAtlasExtinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("gAtlasExtinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("rAtlasExtinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("iAtlasExtinction",   AdqlColumn.AdqlType.FLOAT,  0),
+                new ExpectedField("zAtlasExtinction",   AdqlColumn.AdqlType.FLOAT,  0),
                 new ExpectedField("petromag_u",         AdqlColumn.AdqlType.FLOAT,  0),
                 new ExpectedField("petromag_g",         AdqlColumn.AdqlType.FLOAT,  0),
                 new ExpectedField("petromag_r",         AdqlColumn.AdqlType.FLOAT,  0),
@@ -460,85 +460,85 @@ public class UserQueriesTestCase
             Level.LEGACY,
             State.VALID,
             "SELECT\n" + 
-            "    atlas.framesetID,\n" + 
-            "    atlas.sourceid,\n" + 
-            "    atlas.gpetromag,\n" + 
+            "    atlas.frameSetID,\n" + 
+            "    atlas.sourceID,\n" + 
+            "    atlas.gPetroMag,\n" + 
             "    atlas.ag,\n" + 
-            "    photoobj.objID,\n" + 
-            "    photoobj.petromag_g ,\n" + 
-            "    photoobj.extinction_g\n" + 
+            "    PhotoObj.objID,\n" + 
+            "    PhotoObj.petromag_g ,\n" + 
+            "    PhotoObj.extinction_g\n" + 
             "FROM\n" + 
-            "    atlasSourceXDr9photoobj as x\n" + 
+            "    atlasSourceXDr9PhotoObj as x\n" + 
             "LEFT JOIN\n" + 
-            "    atlassource AS atlas\n" + 
+            "    atlasSource AS atlas\n" + 
             "ON\n" + 
             "    x.masterobjID = atlas.sourceID\n" + 
             "LEFT JOIN\n" + 
-            "    bestdr9.photoobj AS photoobj\n" + 
+            "    bestdr9.PhotoObj AS PhotoObj\n" + 
             "ON\n" + 
-            "    x.slaveobjID = photoobj.objID\n" + 
+            "    x.slaveobjID = PhotoObj.objID\n" + 
             "WHERE\n" + 
-            "    atlas.gpperrbits = 0 AND atlas.gerrbits = 0\n" + 
+            "    atlas.gppErrBits = 0 AND atlas.gerrbits = 0\n" + 
             "AND\n" + 
-            "    photoobj.clean = 1\n" + 
+            "    PhotoObj.clean = 1\n" + 
             "AND\n" + 
             "    x.distanceMins < 1/60.0\n" + 
             "AND\n" + 
-            "    atlas.mergedclass = -1\n" + 
+            "    atlas.mergedClass = -1\n" + 
             "AND\n" + 
-            "    x.sdsstype = 6\n" + 
+            "    x.sdssType = 6\n" + 
             "AND\n" + 
             "    x.distanceMins IN (\n" + 
             "        SELECT\n" + 
             "            MIN (distanceMins)\n" + 
             "        FROM\n" + 
-            "            atlassourcexdr9photoobj\n" + 
+            "            atlasSourceXDR9PhotoObj\n" + 
             "        WHERE\n" + 
-            "            masterobjid = x.masterobjid\n" + 
+            "            masterObjID = x.masterObjID\n" + 
             "      )",
             
             "select\n" + 
-            "    atlas.framesetid as framesetid,\n" + 
-            "    atlas.sourceid as sourceid,\n" + 
-            "    atlas.gpetromag as gpetromag,\n" + 
+            "    atlas.frameSetID as frameSetID,\n" + 
+            "    atlas.sourceID as sourceID,\n" + 
+            "    atlas.gPetroMag as gPetroMag,\n" + 
             "    atlas.ag as ag,\n" + 
-            "    photoobj.objid as objid,\n" + 
-            "    photoobj.petromag_g as petromag_g,\n" + 
-            "    photoobj.extinction_g as extinction_g\n" + 
+            "    PhotoObj.objid as objid,\n" + 
+            "    PhotoObj.petromag_g as petromag_g,\n" + 
+            "    PhotoObj.extinction_g as extinction_g\n" + 
             "from\n" + 
-            "    atlasdr1.dbo.atlassourcexdr9photoobj as x\n" + 
+            "    atlasdr1.dbo.atlasSourceXDR9PhotoObj as x\n" + 
             "left outer join\n" + 
-            "    atlasdr1.dbo.atlassource as atlas\n" + 
+            "    atlasdr1.dbo.atlasSource as atlas\n" + 
             "on\n" + 
-            "    x.masterobjid = atlas.sourceid\n" + 
+            "    x.masterObjID = atlas.sourceID\n" + 
             "left outer join\n" + 
-            "    bestdr9.dbo.photoobj as photoobj\n" + 
+            "    bestdr9.dbo.PhotoObj as PhotoObj\n" + 
             "on\n" + 
-            "    x.slaveobjid = photoobj.objid\n" + 
+            "    x.slaveobjid = PhotoObj.objid\n" + 
             "where\n" + 
-            "    atlas.gpperrbits = 0 and atlas.gerrbits = 0\n" + 
+            "    atlas.gppErrBits = 0 and atlas.gerrbits = 0\n" + 
             "and\n" + 
-            "    photoobj.clean = 1\n" + 
+            "    PhotoObj.clean = 1\n" + 
             "and\n" + 
-            "    x.distancemins < 1 / 60.0\n" + 
+            "    x.distanceMins < 1 / 60.0\n" + 
             "and\n" + 
-            "    atlas.mergedclass = -1\n" + 
+            "    atlas.mergedClass = -1\n" + 
             "and\n" + 
-            "    x.sdsstype = 6\n" + 
+            "    x.sdssType = 6\n" + 
             "and\n" + 
-            "    x.distancemins in (\n" + 
+            "    x.distanceMins in (\n" + 
             "        select\n" + 
-            "            min(atlasdr1.dbo.atlassourcexdr9photoobj.distancemins) as min\n" + 
+            "            min(atlasdr1.dbo.atlasSourceXDR9PhotoObj.distanceMins) as min\n" + 
             "        from\n" + 
-            "            atlasdr1.dbo.atlassourcexdr9photoobj\n" + 
+            "            atlasdr1.dbo.atlasSourceXDR9PhotoObj\n" + 
             "        where\n" + 
-            "            atlasdr1.dbo.atlassourcexdr9photoobj.masterobjid = x.masterobjid\n" + 
+            "            atlasdr1.dbo.atlasSourceXDR9PhotoObj.masterObjID = x.masterObjID\n" + 
             "            )",
 
             new ExpectedField[] {
-                new ExpectedField("framesetID",     AdqlColumn.AdqlType.LONG,  0),
-                new ExpectedField("sourceid",       AdqlColumn.AdqlType.LONG,  0),
-                new ExpectedField("gpetromag",      AdqlColumn.AdqlType.FLOAT, 0),
+                new ExpectedField("frameSetID",     AdqlColumn.AdqlType.LONG,  0),
+                new ExpectedField("sourceID",       AdqlColumn.AdqlType.LONG,  0),
+                new ExpectedField("gPetroMag",      AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("ag",             AdqlColumn.AdqlType.FLOAT, 0),
                 new ExpectedField("objID",          AdqlColumn.AdqlType.LONG,  0),
                 new ExpectedField("petromag_g",     AdqlColumn.AdqlType.FLOAT, 0),
@@ -550,6 +550,7 @@ public class UserQueriesTestCase
     /**
      * User reported query.
      * http://redmine.roe.ac.uk/issues/321
+     * Why should this fail ?
      *
      */
     @Test
@@ -561,14 +562,14 @@ public class UserQueriesTestCase
             State.PARSE_ERROR,
             "SELECT\n" + 
             "    TOP 100000\n" + 
-            "    photozrf.dered_u,\n" + 
-            "    photozrf.dered_g, \n" + 
-            "    photozrf.dered_r,\n" + 
-            "    photozrf.dered_i,\n" + 
-            "    photozrf.dered_z, \n" + 
-            "    photozrf.z\n" + 
+            "    PhotozRF.dered_u,\n" + 
+            "    PhotozRF.dered_g, \n" + 
+            "    PhotozRF.dered_r,\n" + 
+            "    PhotozRF.dered_i,\n" + 
+            "    PhotozRF.dered_z, \n" + 
+            "    PhotozRF.z\n" + 
             "FROM\n" + 
-            "    bestdr9.photozrf AS photozrf"
+            "    bestdr9.PhotozRF AS PhotozRF"
             );
         }
     }

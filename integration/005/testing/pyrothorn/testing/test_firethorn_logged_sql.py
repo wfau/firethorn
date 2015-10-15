@@ -34,7 +34,8 @@ try:
     import base64
     import collections
     import hashlib
-    
+    sys.stdout = open('logs/logfile.txt', 'w')
+
     # get a UUID - URL safe, Base64
     def get_a_uuid():
         '''
@@ -205,6 +206,7 @@ class test_firethorn(unittest.TestCase):
 		    sql_duration = 0
 		    firethorn_duration = 0
 		    test_passed = -1
+                    test_skipped = False
  		    sql_start_time = time.time()
                     query_timestamp = datetime.datetime.fromtimestamp(sql_start_time).strftime('%Y-%m-%d %H:%M:%S')
                     sql_row_length = -1
@@ -225,8 +227,9 @@ class test_firethorn(unittest.TestCase):
                         sql_duration = float(time.time() - sql_start_time)
 
                     except Exception as e:
+                        if (type(e).__name__=="Timeout"):
+                            test_skipped = True
                         logging.info("Error caught while running sql query")
-                        logging.info(e)
 
                     
 		    logging.info("")
@@ -244,8 +247,10 @@ class test_firethorn(unittest.TestCase):
                         logging.info("")
                     
                     except Exception as e:
-	                logging.info("Error caught while running the firethorn query")
-                        logging.info(e)
+                        if (type(e).__name__=="Timeout"):
+                            test_skipped = True
+                            logging.info("Timeout reached..Skipping test")
+                        logging.info("Error caught while running firethorn query..")
 
 
                     test_passed = (sql_row_length == firethorn_row_length)
@@ -255,7 +260,7 @@ class test_firethorn(unittest.TestCase):
                     else:
 		        logging.info("Query Failed..")
 
-                    if (not test_passed):
+                    if (not test_passed and (not test_skipped)):
                         self.total_failed = self.total_failed + 1
 		    logging.info("")
 		    logging.info("")

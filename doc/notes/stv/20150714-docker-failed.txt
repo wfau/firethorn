@@ -1,0 +1,176 @@
+kerma (1000 query test)
+------------------------------------------------
+
+Services where memory constrained as follows:
+
+docker run \
+--detach \
+--publish 8080:8080 \
+--name "${firename:?}" \
+--memory 128M \
+--memory-swap 256M \
+--link "${ogsaname:?}:${ogsalink:?}" \
+--link "${dataname:?}:${datalink:?}" \
+--link "${username:?}:${userlink:?}" \
+--volume "${properties:?}:/etc/firethorn.properties" \
+"firethorn/firethorn:${version:?}" 
+
+docker run \
+--detach \
+--memory 128M \
+--memory-swap 256M \
+--name "${ogsaname:?}" \
+--link "${dataname:?}:${datalink:?}" \
+--link "${username:?}:${userlink:?}" \
+"firethorn/ogsadai:${version:?}"
+
+
+
+
+[root@kerma ~]# docker ps
+CONTAINER ID        IMAGE                        COMMAND                CREATED             STATUS              PORTS                    NAMES
+ba0068c7a264        firethorn/pyrothorn:latest   "bash"                 21 hours ago        Up 18 hours                                  pyrothorn           
+a892939d4e24        firethorn/pyrosql:latest     "mysqld --datadir=/v   21 hours ago        Up 21 hours         0.0.0.0:3306->3306/tcp   mikaela             
+c060f4f98ae6        firethorn/sql-proxy:1        "/bin/sh -c /bin/sql   21 hours ago        Up 21 hours         1433/tcp                 maria               
+1438f8dbc64f        firethorn/ogsadai:1.13.17    "/bin/sh -c '/var/lo   21 hours ago        Up 21 hours         8080/tcp                 jarmila             
+faa1cd8c4a9d        firethorn/sql-proxy:1        "/bin/sh -c /bin/sql   22 hours ago        Up 22 hours         1433/tcp                 elayne              
+1ac1039ef350        firethorn/sql-proxy:1        "/bin/sh -c /bin/sql   22 hours ago        Up 22 hours         1433/tcp                 patricia            
+6bd03cd2fe5f        firethorn/docker-proxy:1     "/bin/sh -c 'socat T   22 hours ago        Up 22 hours         2375/tcp                 docker-proxy  
+
+# !! Gillian seems to have crashed
+
+- tail gillian
+2015-07-13 15:47:55,024 DEBUG [http-nio-8080-exec-8] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://edward/FirethornUserdataZRQ20150319DEV][1] 
+2015-07-13 15:47:55,024 DEBUG [http-nio-8080-exec-8] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://edward/FirethornUserdataZRQ20150319DEV] 
+2015-07-13 15:47:55,024 DEBUG [http-nio-8080-exec-8] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://edward/FirethornUserdataZRQ20150319DEV] 
+2015-07-13 15:47:55,024 DEBUG [http-nio-8080-exec-8] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://edward/FirethornUserdataZRQ20150319DEV] 
+2015-07-13 15:47:55,024 DEBUG [http-nio-8080-exec-8] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2015-07-13 15:47:55,024 DEBUG [http-nio-8080-exec-8] [JdbcConnectionEntity] State is READY, initialising Connection 
+2015-07-13 15:47:55,024 DEBUG [http-nio-8080-exec-8] [JdbcConnectionEntity] With user/pass 
+2015-07-13 15:47:55,024 DEBUG [http-nio-8080-exec-8] [JdbcConnectionEntity] connecting .... 
+2015-07-13 15:47:55,031 DEBUG [http-nio-8080-exec-8] [JdbcConnectionEntity] .... connected 
+
+
+
+- pyrothorn
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "testing/test_firethorn_logged_txt.py", line 295, in test_logged_queries
+    self.assertEqual(self.total_failed , 0, "Total queries failed: " + str(self.total_failed) + " (out of " + str(self.total_queries) +  ")" )
+AssertionError: Total queries failed: 745 (out of 1000)
+
+----------------------------------------------------------------------
+
+- journalctl -n 5000 -f
+
+Jul 13 14:48:19 kerma docker[22099]: time="2015-07-13T14:48:19+01:00" level=info msg="-job start(5406e21c4fe011cdaf975593a64793b81ab58a24cbc7e715d1256eecbccf7ba7) = OK (0)"
+Jul 13 14:48:19 kerma dbus[451]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+Jul 13 14:48:19 kerma nm-dispatcher[3575]: Dispatching action 'up' for vetha988d60
+Jul 13 14:48:34 kerma kernel: docker0: port 4(vetha988d60) entered forwarding state
+Jul 13 14:48:35 kerma kernel: java invoked oom-killer: gfp_mask=0xd0, order=0, oom_score_adj=0
+Jul 13 14:48:35 kerma kernel: java cpuset=docker-5406e21c4fe011cdaf975593a64793b81ab58a24cbc7e715d1256eecbccf7ba7.scope mems_allowed=0
+Jul 13 14:48:35 kerma kernel: CPU: 1 PID: 3572 Comm: java Not tainted 3.17.4-301.fc21.x86_64 #1
+Jul 13 14:48:35 kerma kernel: Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+Jul 13 14:48:35 kerma kernel:  0000000000000000 000000008386e4eb ffff88002245fc00 ffffffff8173f929
+Jul 13 14:48:35 kerma kernel:  00000000000000d0 ffff88002245fc70 ffffffff8173e4d5 0000000000000000
+Jul 13 14:48:35 kerma kernel:  ffff88002245fc48 ffffffff81194c11 ffff8800488a5ca8 000000008386e4eb
+Jul 13 14:48:35 kerma kernel: Call Trace:
+Jul 13 14:48:35 kerma kernel:  [<ffffffff8173f929>] dump_stack+0x45/0x56
+Jul 13 14:48:35 kerma kernel:  [<ffffffff8173e4d5>] dump_header+0xa7/0x21f
+Jul 13 14:48:35 kerma kernel:  [<ffffffff81194c11>] ? find_lock_task_mm+0x51/0xc0
+Jul 13 14:48:35 kerma kernel:  [<ffffffff811950e7>] oom_kill_process+0x247/0x3a0
+Jul 13 14:48:35 kerma kernel:  [<ffffffff81202199>] mem_cgroup_oom_synchronize+0x5c9/0x610
+Jul 13 14:48:35 kerma kernel:  [<ffffffff812015c0>] ? memcg_charge_kmem+0xe0/0xe0
+Jul 13 14:48:35 kerma kernel:  [<ffffffff811959e4>] pagefault_out_of_memory+0x14/0x80
+Jul 13 14:48:35 kerma kernel:  [<ffffffff810606fe>] mm_fault_error+0x12e/0x210
+Jul 13 14:48:35 kerma kernel:  [<ffffffff81060c80>] __do_page_fault+0x4a0/0x580
+Jul 13 14:48:35 kerma kernel:  [<ffffffff810c7658>] ? __enqueue_entity+0x78/0x80
+Jul 13 14:48:35 kerma kernel:  [<ffffffff810cda0b>] ? put_prev_entity+0x5b/0x400
+Jul 13 14:48:35 kerma kernel:  [<ffffffff810c861f>] ? set_next_entity+0x5f/0x80
+Jul 13 14:48:35 kerma kernel:  [<ffffffff810d0f29>] ? pick_next_task_fair+0x6c9/0x8c0
+Jul 13 14:48:35 kerma kernel:  [<ffffffff810126d6>] ? __switch_to+0x1d6/0x5f0
+Jul 13 14:48:35 kerma kernel:  [<ffffffff81060e11>] trace_do_page_fault+0x41/0x100
+Jul 13 14:48:35 kerma kernel:  [<ffffffff8105b099>] do_async_page_fault+0x29/0xe0
+Jul 13 14:48:35 kerma kernel:  [<ffffffff81748ab8>] async_page_fault+0x28/0x30
+Jul 13 14:48:35 kerma kernel: Task in /system.slice/docker-5406e21c4fe011cdaf975593a64793b81ab58a24cbc7e715d1256eecbccf7ba7.scope
+Jul 13 14:48:35 kerma kernel:  killed as a result of limit of 
+Jul 13 14:48:35 kerma kernel: /system.slice/docker-5406e21c4fe011cdaf975593a64793b81ab58a24cbc7e715d1256eecbccf7ba7.scope
+Jul 13 14:48:35 kerma kernel: 
+Jul 13 14:48:35 kerma kernel: memory: usage 130972kB, limit 131072kB, failcnt 63045
+Jul 13 14:48:35 kerma kernel: memory+swap: usage 262144kB, limit 262144kB, failcnt 218
+Jul 13 14:48:35 kerma kernel: kmem: usage 0kB, limit 18014398509481983kB, failcnt 0
+Jul 13 14:48:35 kerma kernel: Memory cgroup stats for /system.slice/docker-5406e21c4fe011cdaf975593a64793b81ab58a24cbc7e715d1256eecbccf7ba7.scope: cache:44KB rss:130928KB rss_huge:0KB mapped_file:0KB writeback:0KB swap:131172KB inactive_anon:65648KB active_anon:65272KB inactive_file:36KB active_file:8KB unevictable:0KB
+Jul 13 14:48:35 kerma kernel: [ pid ]   uid  tgid total_vm      rss nr_ptes swapents oom_score_adj name
+Jul 13 14:48:35 kerma kernel: [ 3518]   995  3518   740610    36039     201    33119             0 java
+Jul 13 14:48:35 kerma kernel: Memory cgroup out of memory: Kill process 3518 (java) score 1058 or sacrifice child
+Jul 13 14:48:35 kerma kernel: Killed process 3518 (java) total-vm:2962440kB, anon-rss:132788kB, file-rss:11368kB
+Jul 13 14:48:35 kerma docker[22099]: time="2015-07-13T14:48:35+01:00" level=info msg="+job log(oom, 5406e21c4fe011cdaf975593a64793b81ab58a24cbc7e715d1256eecbccf7ba7, docker.io/firethorn/ogsadai:1.13.17)"
+Jul 13 14:48:35 kerma docker[22099]: time="2015-07-13T14:48:35+01:00" level=info msg="-job log(oom, 5406e21c4fe011cdaf975593a64793b81ab58a24cbc7e715d1256eecbccf7ba7, docker.io/firethorn/ogsadai:1.13.17) = OK (0)"
+Jul 13 14:48:35 kerma docker[22099]: time="2015-07-13T14:48:35+01:00" level=info msg="+job log(die, 5406e21c4fe011cdaf975593a64793b81ab58a24cbc7e715d1256eecbccf7ba7, docker.io/firethorn/ogsadai:1.13.17)"
+Jul 13 14:48:35 kerma docker[22099]: time="2015-07-13T14:48:35+01:00" level=info msg="-job log(die, 5406e21c4fe011cdaf975593a64793b81ab58a24cbc7e715d1256eecbccf7ba7, docker.io/firethorn/ogsadai:1.13.17) = OK (0)"
+Jul 13 14:48:35 kerma kernel: docker0: port 4(vetha988d60) entered disabled state
+Jul 13 14:48:35 kerma kernel: device vetha988d60 left promiscuous mode
+Jul 13 14:48:35 kerma kernel: docker0: port 4(vetha988d60) entered disabled state
+Jul 13 14:48:35 kerma NetworkManager[1303]: <info> (vetha988d60): device state change: activated -> unmanaged (reason 'removed') [100 10 36]
+Jul 13 14:48:35 kerma NetworkManager[1303]: <info> (vetha988d60): deactivating device (reason 'removed') [36]
+Jul 13 14:48:35 kerma NetworkManager[1303]: <warn> (docker0): failed to detach bridge port vetha988d60
+Jul 13 14:48:35 kerma NetworkManager[1303]: nm_device_get_iface: assertion 'self != NULL' failed
+Jul 13 14:48:35 kerma NetworkManager[1303]: <info> (vetha988d60): released from master (null)
+Jul 13 14:48:35 kerma systemd-machined[3571]: Machine jarmila terminated.
+
+
+
+hebenu (1000 query test)
+------------------------------------------------
+No memory constraints on services
+
+[root@hebenu ~]#   journeyctl -f -n 1000
+.... 
+Jul 14 22:46:43 hebenu docker[21796]: fatal error: runtime: out of memory
+...
+
+
+
+[root@hebenu ~]#  systemctl status docker -l
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled)
+   Active: failed (Result: signal) since Tue 2015-07-14 22:46:56 BST; 16h ago
+     Docs: http://docs.docker.com
+  Process: 21796 ExecStart=/usr/bin/docker -d $OPTIONS $DOCKER_STORAGE_OPTIONS $DOCKER_NETWORK_OPTIONS $INSECURE_REGISTRY (code=killed, signal=ABRT)
+ Main PID: 21796 (code=killed, signal=ABRT)
+
+Jul 14 22:46:45 hebenu docker[21796]: /builddir/build/BUILD/docker-350a63698a9a548e7ea1e957425da501490703ce/_build/src/github.com/docker/docker/pkg/jsonlog/jsonlog.go:39 +0x114 fp=0xc209553f48 sp=0xc209553e68
+Jul 14 22:46:45 hebenu docker[21796]: github.com/docker/docker/daemon.func·031()
+Jul 14 22:46:45 hebenu docker[21796]: /builddir/build/BUILD/docker-350a63698a9a548e7ea1e957425da501490703ce/_build/src/github.com/docker/docker/daemon/logs.go:136 +0xd2 fp=0xc209553fe0 sp=0xc209553f48
+Jul 14 22:46:45 hebenu docker[21796]: runtime.goexit()
+Jul 14 22:46:45 hebenu docker[21796]: /usr/lib/golang/src/runtime/asm_amd64.s:2232 +0x1 fp=0xc209553fe8 sp=0xc209553fe0
+Jul 14 22:46:45 hebenu docker[21796]: created by github.com/docker/docker/daemon.(*Daemon).ContainerLogs
+Jul 14 22:46:45 hebenu docker[21796]: /builddir/build/BUILD/docker-350a63698a9a548e7ea1e957425da501490703ce/_build/src/github.com/docker/docker/daemon/logs.go:138 +0xd05
+Jul 14 22:46:56 hebenu systemd[1]: docker.service: main process exited, code=killed, status=6/ABRT
+Jul 14 22:46:56 hebenu systemd[1]: Unit docker.service entered failed state.
+Jul 14 22:46:56 hebenu systemd[1]: docker.service failed.
+
+
+-pyrothorn
+
+2015-07-14 21:46:42,325 - root - INFO - Started Firethorn job :::2015-07-14 21:46:42
+2015-07-14 21:46:43,196 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/7342508
+2015-07-14 21:46:47,255 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/7342508
+2015-07-14 21:46:47,475 - root - INFO - Finished Firethorn job :::2015-07-14 21:46:47
+2015-07-14 21:46:47,476 - root - INFO - Firethorn Query: 22 row(s) returned. 
+2015-07-14 21:46:47,476 - root - INFO - 
+2015-07-14 21:46:47,476 - root - INFO - ---------------------- End Query Test ----------------------
+2015-07-14 21:46:47,476 - root - INFO - Query Successful !!
+2015-07-14 21:46:47,476 - root - INFO - 
+2015-07-14 21:46:47,476 - root - INFO - 
+2015-07-14 21:46:47,476 - root - INFO - 
+2015-07-14 21:46:49,444 - root - INFO - Total queries: 2466
+2015-07-14 21:46:49,444 - root - INFO - Total unique queries: 2466
+2015-07-14 21:46:49,445 - root - INFO - Total failed: 136
+2015-07-14 21:46:49,459 - root - INFO - Coverage percentage: 90.0%
+2015-07-14 21:46:49,459 - root - INFO - Success percentage: 94.48%
+2015-07-14 21:46:49,459 - root - INFO - Query : SELECT ra as r,dec as dec FROM   ( SELECT * FROM ATLASdetection WHERE dec > -3.2 AND dec < -2.1)   AS query ORDER BY r
+2015-07-14 21:46:49,463 - root - INFO - ---------------------- Starting Query Test ----------------------
+2015-07-14 21:46:49,463 - root - INFO - Starting sql query :::2015-07-14 21:46:49
+
+

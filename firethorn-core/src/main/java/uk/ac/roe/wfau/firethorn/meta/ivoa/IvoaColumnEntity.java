@@ -79,7 +79,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
             ),
         @NamedQuery(
             name  = "IvoaColumn-select-parent.name",
-            query = "FROM IvoaColumnEntity WHERE ((parentAdql = :parent) AND (name = :name)) ORDER BY ident desc"
+            query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "IvoaColumn-search-parent.name",
@@ -463,7 +463,7 @@ public class IvoaColumnEntity
         name = DB_PARENT_COL,
         unique = false,
         nullable = false,
-        updatable = true
+        updatable = false
         )
     private IvoaTable table;
     @Override

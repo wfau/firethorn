@@ -69,12 +69,12 @@ public class MathFunctionTestCase
             " SELECT" +
             "    pi()" +
             " FROM" +
-            "    atlassource",
+            "    atlasSource",
 
             " SELECT" +
             "    PI() AS PI" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("PI", AdqlColumn.AdqlType.DOUBLE, 0)
@@ -101,9 +101,9 @@ public class MathFunctionTestCase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    POWER({ATLAS_VERSION}.dbo.atlassource.ra, 2) AS POWER" +
+            "    POWER({ATLAS_VERSION}.dbo.atlasSource.ra, 2) AS POWER" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("POWER", AdqlColumn.AdqlType.DOUBLE, 0)
@@ -129,9 +129,9 @@ public class MathFunctionTestCase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    LOG({ATLAS_VERSION}.dbo.atlassource.ra) AS LOG" +
+            "    LOG({ATLAS_VERSION}.dbo.atlasSource.ra) AS LOG" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("LOG", AdqlColumn.AdqlType.DOUBLE, 0)
@@ -157,9 +157,9 @@ public class MathFunctionTestCase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    LOG10({ATLAS_VERSION}.dbo.atlassource.ra) AS LOG10" +
+            "    LOG10({ATLAS_VERSION}.dbo.atlasSource.ra) AS LOG10" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("LOG10", AdqlColumn.AdqlType.DOUBLE, 0)
@@ -205,9 +205,9 @@ public class MathFunctionTestCase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.ra, 2, 0) AS ROUND" +
+            "    ROUND({ATLAS_VERSION}.dbo.atlasSource.ra, 2, 0) AS ROUND" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("ROUND", AdqlColumn.AdqlType.DOUBLE, 0)
@@ -252,9 +252,9 @@ public class MathFunctionTestCase
             "    atlasSource",
 
             " SELECT TOP 5" +
-            "    ROUND({ATLAS_VERSION}.dbo.atlassource.ra, 2, 1) AS TRUNCATE" +
+            "    ROUND({ATLAS_VERSION}.dbo.atlasSource.ra, 2, 1) AS TRUNCATE" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("TRUNCATE", AdqlColumn.AdqlType.DOUBLE, 0)
@@ -277,7 +277,7 @@ public class MathFunctionTestCase
             " SELECT" +
             "    rand()" +
             " FROM" +
-            "    atlassource"
+            "    atlasSource"
             );
         }
 
@@ -296,12 +296,12 @@ public class MathFunctionTestCase
             " SELECT" +
             "    rand(2)" +
             " FROM" +
-            "    atlassource",
+            "    atlasSource",
 
             " SELECT" +
             "    RAND(2) AS RAND" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("RAND", AdqlColumn.AdqlType.DOUBLE, 0)
@@ -325,7 +325,7 @@ public class MathFunctionTestCase
             " SELECT" +
             "    sign(ra)" +
             " FROM" +
-            "    atlassource"
+            "    atlasSource"
             );
         }
 
@@ -344,12 +344,12 @@ public class MathFunctionTestCase
             " SELECT" +
             "    sign(ra)" +
             " FROM" +
-            "    atlassource",
+            "    atlasSource",
 
             " SELECT" +
-            "    SIGN({ATLAS_VERSION}.dbo.atlassource.ra) AS SIGN" +
+            "    SIGN({ATLAS_VERSION}.dbo.atlasSource.ra) AS SIGN" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("SIGN", AdqlColumn.AdqlType.INTEGER, 0)
@@ -372,7 +372,7 @@ public class MathFunctionTestCase
             " SELECT" +
             "    square(ra)" +
             " FROM" +
-            "    atlassource"
+            "    atlasSource"
             );
         }
 
@@ -391,12 +391,12 @@ public class MathFunctionTestCase
             " SELECT" +
             "    square(ra)" +
             " FROM" +
-            "    atlassource",
+            "    atlasSource",
 
             " SELECT" +
-            "    SQUARE({ATLAS_VERSION}.dbo.atlassource.ra) AS SQUARE" +
+            "    SQUARE({ATLAS_VERSION}.dbo.atlasSource.ra) AS SQUARE" +
             " FROM" +
-            "    {ATLAS_VERSION}.dbo.atlassource",
+            "    {ATLAS_VERSION}.dbo.atlasSource",
 
             new ExpectedField[] {
                 new ExpectedField("SQUARE", AdqlColumn.AdqlType.DOUBLE, 0)

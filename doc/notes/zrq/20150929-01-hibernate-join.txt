@@ -1,0 +1,2616 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+        2015-09-29 16:15:14,043 DEBUG [http-nio-8080-exec-7] [HibernateInterceptor] onLoad(....) 
+        2015-09-29 16:15:14,043 DEBUG [http-nio-8080-exec-7] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@5c8fe1d7] 
+        2015-09-29 16:15:14,043 DEBUG [http-nio-8080-exec-7] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumnEntity] 
+        2015-09-29 16:15:14,043 DEBUG [http-nio-8080-exec-7] [AdqlColumnProxy] ProxyIterable(Iterable<BaseColumn<?>>, AdqlTable) 
+        2015-09-29 16:15:14,043 DEBUG [http-nio-8080-exec-7] [AdqlColumnProxy] ProxyIterable(Iterable<BaseColumn<?>>, AdqlTable) 
+        2015-09-29 16:15:14,209 WARN  [http-nio-8080-exec-7] [SqlExceptionHelper] SQL Error: 207, SQLState: 42S22 
+        2015-09-29 16:15:14,210 ERROR [http-nio-8080-exec-7] [SqlExceptionHelper] Invalid column name 'parentAdql'. 
+        2015-09-29 16:15:14,213 DEBUG [http-nio-8080-exec-7] [HibernateThingsImpl] convert(HibernateException) 
+        2015-09-29 16:15:14,213 DEBUG [http-nio-8080-exec-7] [HibernateThingsImpl] Hibernate excepion [org.hibernate.exception.SQLGrammarException][could not extract ResultSet] 
+        2015-09-29 16:15:14,226 DEBUG [http-nio-8080-exec-7] [HibernateThingsImpl]   excepion  
+        org.hibernate.exception.SQLGrammarException: could not extract ResultSet
+	        at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:123) ~[SQLStateConversionDelegate.class:4.3.8.Final]
+	        at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:49) ~[StandardSQLExceptionConverter.class:4.3.8.Final]
+	        at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:126) ~[SqlExceptionHelper.class:4.3.8.Final]
+	        at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:112) ~[SqlExceptionHelper.class:4.3.8.Final]
+	        at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.extract(ResultSetReturnImpl.java:91) ~[ResultSetReturnImpl.class:4.3.8.Final]
+	        at org.hibernate.loader.Loader.getResultSet(Loader.java:2066) ~[Loader.class:4.3.8.Final]
+	        at org.hibernate.loader.Loader.executeQueryStatement(Loader.java:1863) ~[Loader.class:4.3.8.Final]
+	        at org.hibernate.loader.Loader.executeQueryStatement(Loader.java:1839) ~[Loader.class:4.3.8.Final]
+	        at org.hibernate.loader.Loader.doQuery(Loader.java:910) ~[Loader.class:4.3.8.Final]
+	        at org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:355) ~[Loader.class:4.3.8.Final]
+	        at org.hibernate.loader.Loader.doList(Loader.java:2554) ~[Loader.class:4.3.8.Final]
+	        at org.hibernate.loader.Loader.doList(Loader.java:2540) ~[Loader.class:4.3.8.Final]
+	        at org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2370) ~[Loader.class:4.3.8.Final]
+	        at org.hibernate.loader.Loader.list(Loader.java:2365) ~[Loader.class:4.3.8.Final]
+	        at org.hibernate.loader.hql.QueryLoader.list(QueryLoader.java:497) ~[QueryLoader.class:4.3.8.Final]
+	        at org.hibernate.hql.internal.ast.QueryTranslatorImpl.list(QueryTranslatorImpl.java:387) ~[QueryTranslatorImpl.class:4.3.8.Final]
+	        at org.hibernate.engine.query.spi.HQLQueryPlan.performList(HQLQueryPlan.java:236) ~[HQLQueryPlan.class:4.3.8.Final]
+	        at org.hibernate.internal.SessionImpl.list(SessionImpl.java:1264) ~[SessionImpl.class:4.3.8.Final]
+	        at org.hibernate.internal.QueryImpl.list(QueryImpl.java:103) ~[QueryImpl.class:4.3.8.Final]
+	        at org.hibernate.internal.AbstractQueryImpl.uniqueResult(AbstractQueryImpl.java:966) ~[AbstractQueryImpl.class:4.3.8.Final]
+	        at uk.ac.roe.wfau.firethorn.hibernate.HibernateThingsImpl.single(HibernateThingsImpl.java:296) ~[HibernateThingsImpl.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.single(AbstractEntityFactory.java:139) [AbstractEntityFactory.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumnEntity$EntityFactory.select(IvoaColumnEntity.java:259) [IvoaColumnEntity$EntityFactory.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumnEntity$EntityFactory.select(IvoaColumnEntity.java:214) [IvoaColumnEntity$EntityFactory.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumnEntity$EntityFactory$$FastClassBySpringCGLIB$$a658859f.invoke(<generated>) [ReflectUtils.class:1.13.18-zrq-hibernate-join]
+	        at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204) [MethodProxy.class:4.1.6.RELEASE]
+	        at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:717) [CglibAopProxy$CglibMethodInvocation.class:4.1.6.RELEASE]
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157) [ReflectiveMethodInvocation.class:4.1.6.RELEASE]
+	        at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:99) [TransactionInterceptor$1.class:4.1.6.RELEASE]
+	        at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:281) [TransactionAspectSupport.class:4.1.6.RELEASE]
+	        at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96) [TransactionInterceptor.class:4.1.6.RELEASE]
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) [ReflectiveMethodInvocation.class:4.1.6.RELEASE]
+	        at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:653) [CglibAopProxy$DynamicAdvisedInterceptor.class:4.1.6.RELEASE]
+	        at uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumnEntity$EntityFactory$$EnhancerBySpringCGLIB$$c655c44f.select(<generated>) [ReflectUtils.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTableEntity$1.select(IvoaTableEntity.java:424) [IvoaTableEntity$1.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTableEntity$1.select(IvoaTableEntity.java:411) [IvoaTableEntity$1.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableProxy$1.select(AdqlTableProxy.java:356) [AdqlTableProxy$1.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableProxy$1.select(AdqlTableProxy.java:326) [AdqlTableProxy$1.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableProxy$1.select(AdqlTableProxy.java:356) [AdqlTableProxy$1.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableProxy$1.select(AdqlTableProxy.java:326) [AdqlTableProxy$1.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTableImpl.getColumn(AdqlParserTableImpl.java:293) [AdqlParserTableImpl.class:1.13.18-zrq-hibernate-join]
+	        at adql.db.SearchColumnList.search(SearchColumnList.java:335) [SearchColumnList.class:1.13.18-zrq-hibernate-join]
+	        at adql.db.SearchColumnList.search(SearchColumnList.java:230) [SearchColumnList.class:1.13.18-zrq-hibernate-join]
+	        at adql.db.DBChecker.resolveColumn(DBChecker.java:773) [DBChecker.class:1.13.18-zrq-hibernate-join]
+	        at adql.db.DBChecker.resolveColumns(DBChecker.java:722) [DBChecker.class:1.13.18-zrq-hibernate-join]
+	        at adql.db.DBChecker.checkDBItems(DBChecker.java:568) [DBChecker.class:1.13.18-zrq-hibernate-join]
+	        at adql.db.DBChecker.check(DBChecker.java:403) [DBChecker.class:1.13.18-zrq-hibernate-join]
+	        at adql.db.DBChecker.check(DBChecker.java:368) [DBChecker.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryChecker.check(MyQueryChecker.java:79) [MyQueryChecker.class:1.13.18-zrq-hibernate-join]
+	        at adql.parser.ADQLParser.Query(ADQLParser.java:464) [ADQLParser.class:1.13.18-zrq-hibernate-join]
+	        at adql.parser.ADQLParser.parseQuery(ADQLParser.java:283) [ADQLParser.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserImpl.process(AdqlParserImpl.java:486) [AdqlParserImpl.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity.prepare(AdqlQueryEntity.java:988) [AdqlQueryEntity.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity.input(AdqlQueryEntity.java:548) [AdqlQueryEntity.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity.<init>(AdqlQueryEntity.java:499) [AdqlQueryEntity.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity$Factory.create(AdqlQueryEntity.java:371) [AdqlQueryEntity$Factory.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity$Factory$$FastClassBySpringCGLIB$$bff9193b.invoke(<generated>) [ReflectUtils.class:1.13.18-zrq-hibernate-join]
+	        at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204) [MethodProxy.class:4.1.6.RELEASE]
+	        at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:717) [CglibAopProxy$CglibMethodInvocation.class:4.1.6.RELEASE]
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157) [ReflectiveMethodInvocation.class:4.1.6.RELEASE]
+	        at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:99) [TransactionInterceptor$1.class:4.1.6.RELEASE]
+	        at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:281) [TransactionAspectSupport.class:4.1.6.RELEASE]
+	        at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96) [TransactionInterceptor.class:4.1.6.RELEASE]
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) [ReflectiveMethodInvocation.class:4.1.6.RELEASE]
+	        at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:653) [CglibAopProxy$DynamicAdvisedInterceptor.class:4.1.6.RELEASE]
+	        at uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity$Factory$$EnhancerBySpringCGLIB$$a7ce06b.create(<generated>) [ReflectUtils.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity$2.create(AdqlSchemaEntity.java:710) [AdqlSchemaEntity$2.class:1.13.18-zrq-hibernate-join]
+	        at uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchemaQueryController.create(AdqlSchemaQueryController.java:180) [AdqlSchemaQueryController.class:1.13.18-zrq-hibernate-join]
+	        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_40]
+	        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_40]
+	        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_40]
+	        at java.lang.reflect.Method.invoke(Method.java:497) ~[na:1.8.0_40]
+	        at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:221) [InvocableHandlerMethod.class:4.1.6.RELEASE]
+	        at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:137) [InvocableHandlerMethod.class:4.1.6.RELEASE]
+	        at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:110) [ServletInvocableHandlerMethod.class:4.1.6.RELEASE]
+	        at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandleMethod(RequestMappingHandlerAdapter.java:776) [RequestMappingHandlerAdapter.class:4.1.6.RELEASE]
+	        at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:705) [RequestMappingHandlerAdapter.class:4.1.6.RELEASE]
+	        at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85) [AbstractHandlerMethodAdapter.class:4.1.6.RELEASE]
+	        at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:959) [DispatcherServlet.class:4.1.6.RELEASE]
+	        at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:893) [DispatcherServlet.class:4.1.6.RELEASE]
+	        at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:966) [FrameworkServlet.class:4.1.6.RELEASE]
+	        at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:868) [FrameworkServlet.class:4.1.6.RELEASE]
+	        at javax.servlet.http.HttpServlet.service(HttpServlet.java:644) [servlet-api.jar:na]
+	        at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:842) [FrameworkServlet.class:4.1.6.RELEASE]
+	        at javax.servlet.http.HttpServlet.service(HttpServlet.java:725) [servlet-api.jar:na]
+	        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:291) [catalina.jar:8.0.14]
+	        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206) [catalina.jar:8.0.14]
+	        at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52) [tomcat-websocket.jar:8.0.14]
+	        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:239) [catalina.jar:8.0.14]
+	        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206) [catalina.jar:8.0.14]
+	        at uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58) [GnuTerryPratchett.class:1.13.18-zrq-hibernate-join]
+	        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:239) [catalina.jar:8.0.14]
+	        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206) [catalina.jar:8.0.14]
+	        at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:219) [catalina.jar:8.0.14]
+	        at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:106) [catalina.jar:8.0.14]
+	        at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:506) [catalina.jar:8.0.14]
+	        at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:142) [catalina.jar:8.0.14]
+	        at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:79) [catalina.jar:8.0.14]
+	        at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:610) [catalina.jar:8.0.14]
+	        at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:88) [catalina.jar:8.0.14]
+	        at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:537) [catalina.jar:8.0.14]
+	        at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1081) [tomcat-coyote.jar:8.0.14]
+	        at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:658) [tomcat-coyote.jar:8.0.14]
+	        at org.apache.coyote.http11.Http11NioProtocol$Http11ConnectionHandler.process(Http11NioProtocol.java:222) [tomcat-coyote.jar:8.0.14]
+	        at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1566) [tomcat-coyote.jar:8.0.14]
+	        at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.run(NioEndpoint.java:1523) [tomcat-coyote.jar:8.0.14]
+	        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_40]
+	        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_40]
+	        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-util.jar:8.0.14]
+	        at java.lang.Thread.run(Thread.java:745) [na:1.8.0_40]
+        Caused by: java.sql.SQLException: Invalid column name 'parentAdql'.
+	        at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372) ~[SQLDiagnostic.class:1.3.1]
+	        at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988) ~[TdsCore.class:1.3.1]
+	        at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421) ~[TdsCore.class:1.3.1]
+	        at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:671) ~[TdsCore.class:1.3.1]
+	        at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:505) ~[JtdsStatement.class:1.3.1]
+	        at net.sourceforge.jtds.jdbc.JtdsPreparedStatement.executeQuery(JtdsPreparedStatement.java:1029) ~[JtdsPreparedStatement.class:1.3.1]
+	        at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.executeQuery(NewProxyPreparedStatement.java:76) ~[NewProxyPreparedStatement.class:0.9.1.2]
+	        at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.extract(ResultSetReturnImpl.java:82) ~[ResultSetReturnImpl.class:4.3.8.Final]
+	        ... 105 common frames omitted
+
+
+
+
+
+
+
+    devname=zrq-hibernate-join
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Pull the latest changes
+        hg pull
+        hg update 'default'
+
+        #
+        # Create the new branch name
+        source "bin/util.sh"
+        devbranch="$(getversion)-${devname:?}"
+
+        #
+        # Create the new branch.
+        hg branch "${devbranch:?}"
+
+        #
+        # Set the project version.
+        source 'bin/util.sh'
+        setversion "${devbranch:?}"
+
+        #
+        # Commit and push the new branch.
+        hg commit -m "Creating [branch-${devbranch:?}]"
+        hg push --new-branch
+
+    popd
+
+# -----------------------------------------------------
+# Shutdown any existing containers.
+#[user@desktop]
+
+    docker rm -fv $(docker ps -aq)
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    sleep 5
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+    
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Clean build
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Build our sqsh container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/sqsh:1.1 \
+            firethorn-sqlserver/src
+
+    popd
+
+# -----------------------------------------------------
+# Create our secret function.
+#[user@desktop]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'ping'
+
+# -----------------------------------------------------
+# Get our build version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@desktop]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    version=${version:?}
+    
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+    chmod a+r \
+        "${HOME:?}/chain.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/chain.properties" 
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create our sqsh config.
+#[user@desktop]
+
+
+    cat > "${HOME:?}/sqsh.properties" << EOF
+
+    sqlname=nastja
+    sqllink=nerijus
+
+    sqlhost=$(secret 'sqlserver.admin.host')
+    sqlpath=$(secret 'sqlserver.admin.path')
+
+    sqldata=$(secret 'sqlserver.admin.data')
+    sqluser=$(secret 'sqlserver.admin.user')
+    sqlpass=$(secret 'sqlserver.admin.pass')
+
+    basename=ZRQ$(date '+%Y%m%d')DEV
+    metaname="FirethornMetadata\${basename:?}"
+    username="FirethornUserdata\${basename:?}"
+
+EOF
+
+# -----------------------------------------------------
+# Start our SQLServer tunnel.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/sqsh.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${sqlname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${sqlhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Create our metadata and userdata databases.
+#[user@desktop]
+
+    touch  "${HOME:?}/data.properties"
+    chmod a+rw \
+        "${HOME:?}/data.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/data.properties" 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/sqsh.properties"
+    
+    docker run \
+        --rm -it \
+        --link "${sqlname:?}:${sqllink:?}" \
+        --volume "${HOME:?}/chain.properties":/chain.properties \
+        --volume "${HOME:?}/sqsh.properties":/sqsh.properties \
+        --volume "${HOME:?}/data.properties":/data.properties \
+        firethorn/sqsh:1.1 \
+        bash
+
+        #
+        # Load the SQLServer properties
+        source "/sqsh.properties"
+
+        #
+        # Test connection to SQLServer
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%'"
+        
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${metaname:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+        cat > "/data.properties" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.host=${databasehost:?}
+firethorn.meta.data=${databasename:?}
+firethorn.meta.path=${databasepath:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+        #
+        # Delete our old metadata database.
+        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Create our new metadata database.
+        sqlsed 'create-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${username:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+        cat >> "/data.properties" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.host=${databasehost:?}
+firethorn.user.data=${databasename:?}
+firethorn.user.path=${databasepath:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+        #
+        # Delete our old userdata database.
+        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Create our new userdata database (including empty table).
+        sqlsed 'create-database.sql'   | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'      | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'       | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Check the created databases
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%${basename:?}'"
+
+    exit
+
+# -----------------------------------------------------
+# Check our database properties.
+#[user@desktop]
+
+    cat  "${HOME:?}/data.properties"
+
+        #
+        # Metadata database
+        firethorn.meta.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornMetadataXXXX
+        firethorn.meta.host=xxxx
+        firethorn.meta.path=xxxx
+        firethorn.meta.user=xxxx
+        firethorn.meta.pass=xxxx
+        #
+        # Userdata database
+        firethorn.user.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornUserdataXXXX
+        firethorn.user.host=xxxx
+        firethorn.user.path=xxxx
+        firethorn.user.user=xxxx
+        firethorn.user.pass=xxxx
+
+# -----------------------------------------------------
+# Modify our secret function to use the new properties.
+#[user@desktop]
+
+    secretfile=${HOME:?}/data.properties
+
+    secret()
+        {
+        local key=${1:?}
+        sed -n 's/^ *'"${key}"'=\(.*\)/\1/p' "${secretfile:?}"
+        }
+
+    secret 'firethorn.meta.host'
+
+# -----------------------------------------------------
+# Update our chain properties.
+#[user@desktop]
+
+    cat >> "${HOME:?}/chain.properties" << EOF
+
+    metatype=mssql
+    metahost=$(secret 'firethorn.meta.host')
+    metadata=$(secret 'firethorn.meta.data')
+    metauser=$(secret 'firethorn.meta.user')
+    metapass=$(secret 'firethorn.meta.pass')
+    metadriver=net.sourceforge.jtds.jdbc.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+EOF
+
+    gedit "${HOME:?}/data.properties"  &
+    gedit "${HOME:?}/chain.properties" &
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Start our metadata ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${metaname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${metahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Get our container IP addresses.
+#[user@desktop]
+
+    metalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${metaname:?})
+    userlink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${username:?})
+    datalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${dataname:?})
+    ogsalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${ogsaname:?})
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:jtds:sqlserver://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.atlas.type=${datatype:?}
+firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}/${datadata:?}
+firethorn.atlas.user=${datauser:?}
+firethorn.atlas.pass=${datapass:?}
+firethorn.atlas.driver=${datadriver:?}
+
+EOF
+
+    chmod a+r \
+        "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Load the IVOA metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-core
+
+            mvn -D skipTests=false -D test=IvoaResourceLoaderTestCase test
+
+        popd
+    popd
+
+    ....
+    ....
+    [IvoaResourceLoaderTestCase] Resource [gaia-tap][32770] 
+    [IvoaResourceLoaderTestCase]   Schema [public][163845] 
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][163846] 
+    [IvoaResourceLoaderTestCase] Resource [gavo-tap][32771] 
+    [IvoaResourceLoaderTestCase]   Schema [icecube][163868] 
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][163894] 
+    [IvoaResourceLoaderTestCase]   Schema [twomass][163897] 
+    ....
+    ....
+
+# -----------------------------------------------------
+# Create our OGSA-DAI resources.
+#[user@desktop]
+
+    docker exec -it "${ogsaname}" bash 
+
+        gaiauid=gaia-tap
+        gaiaurl=http://geadev.esac.esa.int/tap-dev/tap/
+        
+cat > webapps/ogsadai/WEB-INF/etc/dai/resources/gaia-tap << EOF
+id=${gaiauid:?}
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=${gaiaurl:?}
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+        gavouid=gavo-tap
+        gavourl=http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/
+
+cat > webapps/ogsadai/WEB-INF/etc/dai/resources/gavo-tap << EOF
+id=${gavouid:?}
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=${gavourl:?}
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+    exit
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${HOME:?}/firethorn.properties:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+    docker inspect -f '{{.NetworkSettings.IPAddress}}' ${firename:?}
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our tests.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Load our ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+# -----------------------------------------------------
+# Run an ATLASDR1 query
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+
+# -----------------------------------------------------
+# Load our TAP resources.
+#[root@tester]
+
+        ivoaname=GACS
+        ivoaschema=/ivoa/schema/163845
+
+	    curl  \
+	        --header "firethorn.auth.identity:${identity:?}" \
+	        --header "firethorn.auth.community:${community:?}" \
+	        --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	        --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	        --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	        "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	        | bin/pp | tee ${ivoaname:?}-schema.json
+
+
+	    ivoaname=ICECUBE
+	    ivoaschema=/ivoa/schema/163868
+
+	    curl  \
+	        --header "firethorn.auth.identity:${identity:?}" \
+	        --header "firethorn.auth.community:${community:?}" \
+	        --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	        --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	        --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	        "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	        | bin/pp | tee ${ivoaname:?}-schema.json
+
+# -----------------------------------------------------
+# Run our test queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'GACS'    'GACS'
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'ICECUBE' 'ICECUBE'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        #
+        # PASS
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                nualpha,
+                nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+        #
+        # FAIL
+        # java.sql.SQLException: Invalid column name 'parentAdql'.
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                ICECUBE.nucand.nualpha,
+                ICECUBE.nucandnudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+        #
+        # FAIL
+        # java.sql.SQLException: Invalid column name 'parentAdql'.
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                nucand.nualpha,
+                nucandnudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+        exit
+
+# -----------------------------------------------------
+# Fix the Hibernate join.
+#[root@tester]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core
+
+            gedit src/main/java/uk/ac/roe/wfau/firethorn/meta/ivoa/IvoaColumnEntity.java
+
+                ....
+                ....
+
+                @NamedQuery(
+                    name  = "IvoaColumn-select-parent.name",
+            -       query = "FROM IvoaColumnEntity WHERE ((parentAdql = :parent) AND (name = :name)) ORDER BY ident desc"
+            +       query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+                    ),
+
+                ....
+                ....
+                ....
+
+                @JoinColumn(
+                    name = DB_PARENT_COL,
+                    unique = false,
+                    nullable = false,
+            -       updatable = false
+            +       updatable = false
+                    )
+                private IvoaTable table;
+
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Shutdown any existing containers.
+#[user@desktop]
+
+    docker rm -fv $(docker ps -aq)
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    sleep 5
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+    
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Clean build
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Build our sqsh container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/sqsh:1.1 \
+            firethorn-sqlserver/src
+
+    popd
+
+# -----------------------------------------------------
+# Create our secret function.
+#[user@desktop]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'ping'
+
+# -----------------------------------------------------
+# Get our build version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@desktop]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    version=${version:?}
+    
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+    chmod a+r \
+        "${HOME:?}/chain.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/chain.properties" 
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create our sqsh config.
+#[user@desktop]
+
+
+    cat > "${HOME:?}/sqsh.properties" << EOF
+
+    sqlname=nastja
+    sqllink=nerijus
+
+    sqlhost=$(secret 'sqlserver.admin.host')
+    sqlpath=$(secret 'sqlserver.admin.path')
+
+    sqldata=$(secret 'sqlserver.admin.data')
+    sqluser=$(secret 'sqlserver.admin.user')
+    sqlpass=$(secret 'sqlserver.admin.pass')
+
+    basename=ZRQ$(date '+%Y%m%d')DEV
+    metaname="FirethornMetadata\${basename:?}"
+    username="FirethornUserdata\${basename:?}"
+
+EOF
+
+# -----------------------------------------------------
+# Start our SQLServer tunnel.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/sqsh.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${sqlname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${sqlhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Create our metadata and userdata databases.
+#[user@desktop]
+
+    touch  "${HOME:?}/data.properties"
+    chmod a+rw \
+        "${HOME:?}/data.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/data.properties" 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/sqsh.properties"
+    
+    docker run \
+        --rm -it \
+        --link "${sqlname:?}:${sqllink:?}" \
+        --volume "${HOME:?}/chain.properties":/chain.properties \
+        --volume "${HOME:?}/sqsh.properties":/sqsh.properties \
+        --volume "${HOME:?}/data.properties":/data.properties \
+        firethorn/sqsh:1.1 \
+        bash
+
+        #
+        # Load the SQLServer properties
+        source "/sqsh.properties"
+
+        #
+        # Test connection to SQLServer
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%'"
+        
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${metaname:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+        cat > "/data.properties" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.host=${databasehost:?}
+firethorn.meta.data=${databasename:?}
+firethorn.meta.path=${databasepath:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+        #
+        # Delete our old metadata database.
+        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Create our new metadata database.
+        sqlsed 'create-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${username:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+        cat >> "/data.properties" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.host=${databasehost:?}
+firethorn.user.data=${databasename:?}
+firethorn.user.path=${databasepath:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+        #
+        # Delete our old userdata database.
+        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Create our new userdata database (including empty table).
+        sqlsed 'create-database.sql'   | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'      | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'       | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Check the created databases
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%${basename:?}'"
+
+    exit
+
+# -----------------------------------------------------
+# Check our database properties.
+#[user@desktop]
+
+    cat  "${HOME:?}/data.properties"
+
+        #
+        # Metadata database
+        firethorn.meta.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornMetadataXXXX
+        firethorn.meta.host=xxxx
+        firethorn.meta.path=xxxx
+        firethorn.meta.user=xxxx
+        firethorn.meta.pass=xxxx
+        #
+        # Userdata database
+        firethorn.user.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornUserdataXXXX
+        firethorn.user.host=xxxx
+        firethorn.user.path=xxxx
+        firethorn.user.user=xxxx
+        firethorn.user.pass=xxxx
+
+# -----------------------------------------------------
+# Modify our secret function to use the new properties.
+#[user@desktop]
+
+    secretfile=${HOME:?}/data.properties
+
+    secret()
+        {
+        local key=${1:?}
+        sed -n 's/^ *'"${key}"'=\(.*\)/\1/p' "${secretfile:?}"
+        }
+
+    secret 'firethorn.meta.host'
+
+# -----------------------------------------------------
+# Update our chain properties.
+#[user@desktop]
+
+    cat >> "${HOME:?}/chain.properties" << EOF
+
+    metatype=mssql
+    metahost=$(secret 'firethorn.meta.host')
+    metadata=$(secret 'firethorn.meta.data')
+    metauser=$(secret 'firethorn.meta.user')
+    metapass=$(secret 'firethorn.meta.pass')
+    metadriver=net.sourceforge.jtds.jdbc.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+EOF
+
+    gedit "${HOME:?}/data.properties"  &
+    gedit "${HOME:?}/chain.properties" &
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Start our metadata ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${metaname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${metahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Get our container IP addresses.
+#[user@desktop]
+
+    metalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${metaname:?})
+    userlink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${username:?})
+    datalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${dataname:?})
+    ogsalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${ogsaname:?})
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:jtds:sqlserver://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.atlas.type=${datatype:?}
+firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}/${datadata:?}
+firethorn.atlas.user=${datauser:?}
+firethorn.atlas.pass=${datapass:?}
+firethorn.atlas.driver=${datadriver:?}
+
+EOF
+
+    chmod a+r \
+        "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Load the IVOA metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-core
+
+            mvn -D skipTests=false -D test=IvoaResourceLoaderTestCase test
+
+        popd
+    popd
+
+    ....
+    ....
+    [IvoaResourceLoaderTestCase] Resource [gaia-tap][32770] 
+    [IvoaResourceLoaderTestCase]   Schema [public][163845] 
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][163846] 
+    [IvoaResourceLoaderTestCase] Resource [gavo-tap][32771] 
+    [IvoaResourceLoaderTestCase]   Schema [icecube][163868] 
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][163894] 
+    [IvoaResourceLoaderTestCase]   Schema [twomass][163897] 
+    ....
+    ....
+
+# -----------------------------------------------------
+# Create our OGSA-DAI resources.
+#[user@desktop]
+
+    docker exec -it "${ogsaname}" bash 
+
+        gaiauid=gaia-tap
+        gaiaurl=http://geadev.esac.esa.int/tap-dev/tap/
+        
+cat > webapps/ogsadai/WEB-INF/etc/dai/resources/gaia-tap << EOF
+id=${gaiauid:?}
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=${gaiaurl:?}
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+        gavouid=gavo-tap
+        gavourl=http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/
+
+cat > webapps/ogsadai/WEB-INF/etc/dai/resources/gavo-tap << EOF
+id=${gavouid:?}
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=${gavourl:?}
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+    exit
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${HOME:?}/firethorn.properties:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+    docker inspect -f '{{.NetworkSettings.IPAddress}}' ${firename:?}
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our tests.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Load our ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+# -----------------------------------------------------
+# Run an ATLASDR1 query
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+
+# -----------------------------------------------------
+# Load our TAP resources.
+#[root@tester]
+
+    ivoaname=GACS
+    ivoaschema=/ivoa/schema/163845
+
+	curl  \
+	    --header "firethorn.auth.identity:${identity:?}" \
+	    --header "firethorn.auth.community:${community:?}" \
+	    --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	    --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	    --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	    "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	    | bin/pp | tee ${ivoaname:?}-schema.json
+
+
+	ivoaname=ICECUBE
+	ivoaschema=/ivoa/schema/163868
+
+	curl  \
+	    --header "firethorn.auth.identity:${identity:?}" \
+	    --header "firethorn.auth.community:${community:?}" \
+	    --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	    --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	    --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	    "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	    | bin/pp | tee ${ivoaname:?}-schema.json
+
+# -----------------------------------------------------
+# Run our test queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'GACS'    'GACS'
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'ICECUBE' 'ICECUBE'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        #
+        # PASS
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                nualpha,
+                nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+        #
+        # PASS
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                ICECUBE.nucand.nualpha,
+                ICECUBE.nucand.nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+        #
+        # PASS
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                nucand.nualpha,
+                nucand.nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+    exit
+    
+# -----------------------------------------------------
+# Set the new version
+#[user@desktop]
+
+    newversion=1.13.20
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Get the current version
+        devbranch=$(getversion)
+        echo "devbranch [${devbranch:?}]"
+
+        #
+        # Check for changes
+        hg status
+
+        #
+        # Commit local changes
+        # Push/pull the latest changes
+
+        #
+        # Swap to the main branch and get the version.
+        hg update 'default'
+        oldversion=$(getversion)
+
+        echo "devbranch [${devbranch:?}]"
+        echo "oldversion [${oldversion:?}]"
+        echo "newversion [${newversion:?}]"
+
+        #
+        # Merge the dev branch.
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Shutdown and remove any existing containers.
+#[user@desktop]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    sleep 1
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our webapps.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+
+# -----------------------------------------------------
+# Build our sqsh container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/sqsh:1.1 \
+            firethorn-sqlserver/src
+
+    popd
+
+# -----------------------------------------------------
+# Create our secret function.
+#[user@desktop]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'ping'
+
+# -----------------------------------------------------
+# Get our build version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@desktop]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    version=${version:?}
+    
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+    chmod a+r \
+        "${HOME:?}/chain.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/chain.properties" 
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create our sqsh config.
+#[user@desktop]
+
+
+    cat > "${HOME:?}/sqsh.properties" << EOF
+
+    sqlname=nastja
+    sqllink=nerijus
+
+    sqlhost=$(secret 'sqlserver.admin.host')
+    sqlpath=$(secret 'sqlserver.admin.path')
+
+    sqldata=$(secret 'sqlserver.admin.data')
+    sqluser=$(secret 'sqlserver.admin.user')
+    sqlpass=$(secret 'sqlserver.admin.pass')
+
+    basename=ZRQ$(date '+%Y%m%d')DEV
+    metaname="FirethornMetadata\${basename:?}"
+    username="FirethornUserdata\${basename:?}"
+
+EOF
+
+# -----------------------------------------------------
+# Start our SQLServer tunnel.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/sqsh.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${sqlname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${sqlhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Create our metadata and userdata databases.
+#[user@desktop]
+
+    touch  "${HOME:?}/data.properties"
+    chmod a+rw \
+        "${HOME:?}/data.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/data.properties" 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/sqsh.properties"
+    
+    docker run \
+        --rm -it \
+        --link "${sqlname:?}:${sqllink:?}" \
+        --volume "${HOME:?}/chain.properties":/chain.properties \
+        --volume "${HOME:?}/sqsh.properties":/sqsh.properties \
+        --volume "${HOME:?}/data.properties":/data.properties \
+        firethorn/sqsh:1.1 \
+        bash
+
+        #
+        # Load the SQLServer properties
+        source "/sqsh.properties"
+
+        #
+        # Test connection to SQLServer
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%'"
+        
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${metaname:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+        cat > "/data.properties" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.host=${databasehost:?}
+firethorn.meta.data=${databasename:?}
+firethorn.meta.path=${databasepath:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+        #
+        # Delete our old metadata database.
+        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Create our new metadata database.
+        sqlsed 'create-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${username:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+        cat >> "/data.properties" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.host=${databasehost:?}
+firethorn.user.data=${databasename:?}
+firethorn.user.path=${databasepath:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+        #
+        # Delete our old userdata database.
+        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Create our new userdata database (including empty table).
+        sqlsed 'create-database.sql'   | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'      | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'       | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+
+        #
+        # Check the created databases
+        sqsh \
+            -S "${sqllink:?}" \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%${basename:?}'"
+
+    exit
+
+# -----------------------------------------------------
+# Check our database properties.
+#[user@desktop]
+
+    cat  "${HOME:?}/data.properties"
+
+        #
+        # Metadata database
+        firethorn.meta.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornMetadataXXXX
+        firethorn.meta.host=xxxx
+        firethorn.meta.path=xxxx
+        firethorn.meta.user=xxxx
+        firethorn.meta.pass=xxxx
+        #
+        # Userdata database
+        firethorn.user.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornUserdataXXXX
+        firethorn.user.host=xxxx
+        firethorn.user.path=xxxx
+        firethorn.user.user=xxxx
+        firethorn.user.pass=xxxx
+
+# -----------------------------------------------------
+# Modify our secret function to use the new properties.
+#[user@desktop]
+
+    secretfile=${HOME:?}/data.properties
+
+    secret()
+        {
+        local key=${1:?}
+        sed -n 's/^ *'"${key}"'=\(.*\)/\1/p' "${secretfile:?}"
+        }
+
+    secret 'firethorn.meta.host'
+
+# -----------------------------------------------------
+# Update our chain properties.
+#[user@desktop]
+
+    cat >> "${HOME:?}/chain.properties" << EOF
+
+    metatype=mssql
+    metahost=$(secret 'firethorn.meta.host')
+    metadata=$(secret 'firethorn.meta.data')
+    metauser=$(secret 'firethorn.meta.user')
+    metapass=$(secret 'firethorn.meta.pass')
+    metadriver=net.sourceforge.jtds.jdbc.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+EOF
+
+#   gedit "${HOME:?}/data.properties"  &
+#   gedit "${HOME:?}/chain.properties" &
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Start our metadata ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${metaname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${metahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Get our container IP addresses.
+#[user@desktop]
+
+    metalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${metaname:?})
+    userlink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${username:?})
+    datalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${dataname:?})
+    ogsalink=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' ${ogsaname:?})
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:jtds:sqlserver://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.atlas.type=${datatype:?}
+firethorn.atlas.url=jdbc:jtds:sqlserver://${datalink:?}/${datadata:?}
+firethorn.atlas.user=${datauser:?}
+firethorn.atlas.pass=${datapass:?}
+firethorn.atlas.driver=${datadriver:?}
+
+EOF
+
+    chmod a+r \
+        "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t \
+        "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Load the IVOA metadata.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd firethorn-core
+
+            mvn -D skipTests=false -D test=IvoaResourceLoaderTestCase test
+
+        popd
+    popd
+
+    ....
+    ....
+    [IvoaResourceLoaderTestCase] Resource [gaia-tap][32770] 
+    [IvoaResourceLoaderTestCase]   Schema [public][163845] 
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][163846] 
+    [IvoaResourceLoaderTestCase] Resource [gavo-tap][32771] 
+    [IvoaResourceLoaderTestCase]   Schema [icecube][163868] 
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][163894] 
+    [IvoaResourceLoaderTestCase]   Schema [twomass][163897] 
+    ....
+    ....
+
+# -----------------------------------------------------
+# Create our OGSA-DAI resources.
+#[user@desktop]
+
+    docker exec -it "${ogsaname}" bash 
+
+        gaiauid=gaia-tap
+        gaiaurl=http://geadev.esac.esa.int/tap-dev/tap/
+        
+cat > webapps/ogsadai/WEB-INF/etc/dai/resources/gaia-tap << EOF
+id=${gaiauid:?}
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=${gaiaurl:?}
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+        gavouid=gavo-tap
+        gavourl=http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/
+
+cat > webapps/ogsadai/WEB-INF/etc/dai/resources/gavo-tap << EOF
+id=${gavouid:?}
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=${gavourl:?}
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+    exit
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${HOME:?}/firethorn.properties:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+    docker inspect -f '{{.NetworkSettings.IPAddress}}' ${firename:?}
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our tests.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Load our ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+# -----------------------------------------------------
+# Run an ATLASDR1 query
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+
+# -----------------------------------------------------
+# Load our TAP resources.
+#[root@tester]
+
+    ivoaname=GACS
+    ivoaschema=/ivoa/schema/163845
+
+	curl  \
+	    --header "firethorn.auth.identity:${identity:?}" \
+	    --header "firethorn.auth.community:${community:?}" \
+	    --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	    --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	    --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	    "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	    | bin/pp | tee ${ivoaname:?}-schema.json
+
+
+	ivoaname=ICECUBE
+	ivoaschema=/ivoa/schema/163868
+
+	curl  \
+	    --header "firethorn.auth.identity:${identity:?}" \
+	    --header "firethorn.auth.community:${community:?}" \
+	    --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	    --data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	    --data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	    "${endpointurl:?}${adqlspace:?}/schemas/import" \
+	    | bin/pp | tee ${ivoaname:?}-schema.json
+
+# -----------------------------------------------------
+# Run our test queries
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'GACS'    'GACS'
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'ICECUBE' 'ICECUBE'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        #
+        # PASS
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                nualpha,
+                nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+        #
+        # PASS
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                ICECUBE.nucand.nualpha,
+                ICECUBE.nucand.nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+        #
+        # PASS
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                nucand.nualpha,
+                nucand.nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Commit our changes into the main branch.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Tag our images as latest.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+
+        docker tag -f "firethorn/firethorn:$(getversion)" "firethorn/firethorn:latest"
+        docker tag -f "firethorn/ogsadai:$(getversion)"   "firethorn/ogsadai:latest"
+        docker tag -f "firethorn/tester:$(getversion)"    "firethorn/tester:latest"
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our containers to our Docker repo.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    docker login
+
+        Username: xxxx
+        Password: yyyy
+        Email:    zzzz
+        Login Succeeded
+
+    docker push "firethorn/firethorn:${version}"
+    docker push "firethorn/ogsadai:${version}"
+    docker push "firethorn/tester:${version}"
+
+    docker push "firethorn/firethorn:latest"
+    docker push "firethorn/ogsadai:latest"
+    docker push "firethorn/tester:latest"
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    #
+    # ** needs SSH access to our Maven repo **
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Mercurial repo.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    #
+    # ** needs SSH access to our Hg repo **
+    # Use SSH to clone the Hg repo in VM, before we run the build container.
+    # SSH access means we can push changes back later
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg push
+
+    popd
+
+
+

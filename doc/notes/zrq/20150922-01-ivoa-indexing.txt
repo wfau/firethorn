@@ -1,0 +1,135 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#----------------------------------------------------------------
+#
+#
+
+        #
+        # FAST
+        SELECT TOP 5
+            glon,
+            glat
+        FROM
+            GACS.twomass_psc
+
+        #
+        # SLOW 
+        SELECT 
+            glon,
+            glat
+        FROM
+            GACS.twomass_psc
+        WHERE
+            glat BETWEEN -3.7 AND -3.6
+        AND
+            glon BETWEEN 27.3 AND 27.4
+
+
+        #
+        # FAIL - COUNT needs an alias 
+        SELECT
+            count(glon)
+        FROM
+            GACS.twomass_psc
+        WHERE
+            glat BETWEEN -3.7 AND -3.6
+        AND
+            glon BETWEEN 27.3 AND 27.4
+
+        #
+        # SLOW 
+        SELECT
+            count(glon) AS fred
+        FROM
+            GACS.twomass_psc
+        WHERE
+            glat BETWEEN -3.7 AND -3.6
+        AND
+            glon BETWEEN 27.3 AND 27.4
+
+
+#----------------------------------------------------------------
+#
+#
+
+        #
+        # FAST
+        SELECT TOP 5
+            ra,
+            decl
+        FROM
+            GACS.twomass_psc
+
+        #
+        # SLOW 
+        SELECT 
+            ra,
+            decl
+        FROM
+            GACS.twomass_psc
+        WHERE
+            ra BETWEEN -3.7 AND -3.6
+        AND
+            decl BETWEEN 27.3 AND 27.4
+
+
+#----------------------------------------------------------------
+#
+#
+
+        #
+        # 
+        SELECT 
+            ra,
+            dec
+        FROM
+            ATLASDR1.atlasSource
+        WHERE
+            ra BETWEEN -3.7 AND -3.6
+        AND
+            dec BETWEEN 27.3 AND 27.4
+
+        # zero results ?
+
+
+
+        SELECT 
+            atlasSource.ra,
+            atlasSource.dec
+        FROM
+            ATLASDR1.atlasSource
+        JOIN
+            ATLASDR1.atlasSourceXtwomass_psc 
+        ON
+            atlasSource.sourceID = atlasXtwomass_psc.masterObjectID
+        WHERE
+            ra BETWEEN -3.7 AND -3.6
+
+
+        AND
+            dec BETWEEN 27.3 AND 27.4
+
+
+
+
+    Genius spliter at 7am on 7th floor .... 

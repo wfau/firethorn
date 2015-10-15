@@ -26,13 +26,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | Maven parent/child projects.
+        | Maven parent/child inheritance.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-	<version project='firethorn'>1.13.17-zrq-job-control</version>
+        <version project='firethorn'>1.13.17-zrq-job-control</version>
     </parent>
 
     <artifactId>firethorn-annotations</artifactId>

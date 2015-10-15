@@ -1,0 +1,159 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Problem: hebenu not responding to ssh requests
+
+- Test started on 1.13.22 full atlas test (run.sh 02 1.13.22)
+- Checked on Oct 13 and it everything was running fine (Success 92%, coverage:60%)
+
+- Checked again on Oct 14 from around 3pm,get the following error:
+ssh_exchange_identification: Connection closed by remote host
+
+- Restarted hebenu VM
+
+$ journalctl 
+
+..
+Oct 13 16:19:53 hebenu dbus[448]: [system] Failed to activate service 'org.freedesktop.nm_dispatcher': timed out
+Oct 13 16:19:56 hebenu NetworkManager[1340]: <warn> (180) failed to call dispatcher scripts: (dbus-glib-error-quark:20) Activation of org.freedesktop.nm_dispatcher timed out
+Oct 13 16:25:18 hebenu systemd[1]: NetworkManager-dispatcher.service start operation timed out. Terminating.
+Oct 13 16:25:25 hebenu systemd[1]: Failed to start Network Manager Script Dispatcher Service.
+..
+Oct 13 16:35:06 hebenu systemd-journal[23911]: Journal started
+Oct 13 16:35:06 hebenu systemd-journal[23911]: Journal stopped
+Oct 13 16:38:20 hebenu systemd-journal[23913]: Permanent journal is using 48.0M (max allowed 1.4G, trying to leave 2.1G free of 4.0G available → current limit 1.4G).
+...
+
+ct 13 18:01:26 hebenu crond[25012]: pam_systemd(crond:session): Failed to create session: Connection timed out
+Oct 13 18:01:26 hebenu CROND[25018]: (root) CMD (run-parts /etc/cron.hourly)
+Oct 13 18:01:26 hebenu run-parts[25023]: (/etc/cron.hourly) starting 0anacron
+Oct 13 18:01:26 hebenu systemd[25019]: pam_unix(systemd-user:session): session opened for user root by (uid=0)
+Oct 13 18:01:27 hebenu systemd[25019]: Starting Paths.
+Oct 13 18:01:27 hebenu systemd[25019]: Reached target Paths.
+Oct 13 18:01:27 hebenu systemd[25019]: Starting Timers.
+Oct 13 18:01:27 hebenu systemd[25019]: Reached target Timers.
+Oct 13 18:01:27 hebenu systemd[25019]: Starting Sockets.
+Oct 13 18:01:27 hebenu systemd[25019]: Reached target Sockets.
+Oct 13 18:01:27 hebenu systemd[25019]: Starting Basic System.
+Oct 13 18:01:27 hebenu systemd[25019]: Reached target Basic System.
+Oct 13 18:01:27 hebenu systemd[25019]: Starting Default.
+Oct 13 18:01:27 hebenu systemd[25019]: Reached target Default.
+Oct 13 18:01:27 hebenu systemd[25019]: Startup finished in 371ms.
+Oct 13 18:01:27 hebenu run-parts[25032]: (/etc/cron.hourly) finished 0anacron
+Oct 13 18:01:27 hebenu run-parts[25034]: (/etc/cron.hourly) starting mcelog.cron
+Oct 13 18:01:27 hebenu run-parts[25038]: (/etc/cron.hourly) finished mcelog.cron
+Oct 13 18:04:22 hebenu systemd-logind[447]: Failed to abandon session scope: Connection timed out
+Oct 13 19:01:27 hebenu crond[26076]: pam_systemd(crond:session): Failed to create session: Connection timed out
+Oct 13 19:01:27 hebenu CROND[26085]: (root) CMD (run-parts /etc/cron.hourly)
+Oct 13 19:01:27 hebenu systemd-logind[447]: Failed to start session scope session-34.scope: Connection timed out (null)
+Oct 13 19:01:28 hebenu run-parts[26089]: (/etc/cron.hourly) starting 0anacron
+Oct 13 19:01:28 hebenu run-parts[26095]: (/etc/cron.hourly) finished 0anacron
+Oct 13 19:01:28 hebenu run-parts[26097]: (/etc/cron.hourly) starting mcelog.cron
+Oct 13 19:01:28 hebenu run-parts[26101]: (/etc/cron.hourly) finished mcelog.cron
+Oct 13 20:01:02 hebenu systemd[25019]: Stopping Default.
+Oct 13 20:01:02 hebenu systemd[25019]: Stopped target Default.
+Oct 13 20:01:02 hebenu systemd[25019]: Stopping Basic System.
+Oct 13 20:01:02 hebenu systemd[25019]: Stopped target Basic System.
+Oct 13 20:01:02 hebenu systemd[25019]: Stopping Paths.
+Oct 13 20:01:02 hebenu systemd[25019]: Stopped target Paths.
+Oct 13 20:01:02 hebenu systemd[25019]: Stopping Timers.
+Oct 13 20:01:02 hebenu systemd[25019]: Stopped target Timers.
+Oct 13 20:01:02 hebenu systemd[25019]: Stopping Sockets.
+Oct 13 20:01:02 hebenu systemd[25019]: Stopped target Sockets.
+Oct 13 20:01:02 hebenu systemd[25019]: Starting Shutdown.
+Oct 13 20:01:02 hebenu systemd[25019]: Reached target Shutdown.
+Oct 13 20:01:02 hebenu systemd[25019]: Starting Exit the Session...
+Oct 13 20:01:03 hebenu systemd[25019]: Received SIGRTMIN+24 from PID 27065 (kill).
+Oct 13 20:01:03 hebenu systemd[25024]: pam_unix(systemd-user:session): session closed for user root
+Oct 13 20:01:04 hebenu CROND[27072]: (root) CMD (run-parts /etc/cron.hourly)
+Oct 13 20:01:04 hebenu run-parts[27075]: (/etc/cron.hourly) starting 0anacron
+Oct 13 20:01:04 hebenu run-parts[27081]: (/etc/cron.hourly) finished 0anacron
+Oct 13 20:01:05 hebenu run-parts[27083]: (/etc/cron.hourly) starting mcelog.cron
+Oct 13 20:01:05 hebenu run-parts[27087]: (/etc/cron.hourly) finished mcelog.cron
+Oct 13 21:01:01 hebenu kernel: SELinux: initialized (dev tmpfs, type tmpfs), uses transition SIDs
+Oct 13 21:01:02 hebenu systemd[28106]: pam_unix(systemd-user:session): session opened for user root by (uid=0)
+Oct 13 21:01:03 hebenu systemd[28106]: Starting Paths.
+Oct 13 21:01:03 hebenu systemd[28106]: Reached target Paths.
+Oct 13 21:01:03 hebenu systemd[28106]: Starting Timers.
+Oct 13 21:01:03 hebenu systemd[28106]: Reached target Timers.
+Oct 13 21:01:03 hebenu systemd[28106]: Starting Sockets.
+Oct 13 21:01:03 hebenu systemd[28106]: Reached target Sockets.
+Oct 13 21:01:03 hebenu systemd[28106]: Starting Basic System.
+Oct 13 21:01:03 hebenu systemd[28106]: Reached target Basic System.
+Oct 13 21:01:03 hebenu systemd[28106]: Starting Default.
+Oct 13 21:01:03 hebenu systemd[28106]: Reached target Default.
+Oct 13 21:01:03 hebenu systemd[28106]: Startup finished in 128ms.
+Oct 13 21:01:03 hebenu CROND[28110]: (root) CMD (run-parts /etc/cron.hourly)
+Oct 13 21:01:04 hebenu run-parts[28113]: (/etc/cron.hourly) starting 0anacron
+Oct 13 21:01:04 hebenu run-parts[28119]: (/etc/cron.hourly) finished 0anacron
+Oct 13 21:01:04 hebenu run-parts[28121]: (/etc/cron.hourly) starting mcelog.cron
+Oct 13 21:01:04 hebenu run-parts[28125]: (/etc/cron.hourly) finished mcelog.cron
+Oct 13 21:01:04 hebenu systemd[28106]: Stopping Default.
+Oct 13 21:01:04 hebenu systemd[28106]: Stopped target Default.
+Oct 13 21:01:04 hebenu systemd[28106]: Stopping Basic System.
+Oct 13 21:01:04 hebenu systemd[28106]: Stopped target Basic System.
+Oct 13 21:01:04 hebenu systemd[28106]: Stopping Paths.
+Oct 13 21:01:04 hebenu systemd[28106]: Stopped target Paths.
+Oct 13 21:01:04 hebenu systemd[28106]: Stopping Timers.
+Oct 13 21:01:04 hebenu systemd[28106]: Stopped target Timers.
+Oct 13 21:01:04 hebenu systemd[28106]: Stopping Sockets.
+Oct 13 21:01:04 hebenu systemd[28106]: Stopped target Sockets.
+Oct 13 21:01:04 hebenu systemd[28106]: Starting Shutdown.
+Oct 13 21:01:04 hebenu systemd[28106]: Reached target Shutdown.
+Oct 13 21:01:04 hebenu systemd[28106]: Starting Exit the Session...
+Oct 13 21:01:04 hebenu systemd[28106]: Received SIGRTMIN+24 from PID 28129 (kill).
+Oct 13 21:01:04 hebenu systemd[28108]: pam_unix(systemd-user:session): session closed for user root
+Oct 13 22:01:01 hebenu kernel: SELinux: initialized (dev tmpfs, type tmpfs), uses transition SIDs
+Oct 13 22:01:26 hebenu crond[29183]: pam_systemd(crond:session): Failed to create session: Connection timed out
+Oct 13 22:01:26 hebenu CROND[29191]: (root) CMD (run-parts /etc/cron.hourly)
+Oct 13 22:01:26 hebenu systemd-logind[447]: Failed to start user service: Connection timed out
+Oct 13 22:01:31 hebenu run-parts[29196]: (/etc/cron.hourly) starting 0anacron
+Oct 13 22:01:31 hebenu systemd[29192]: pam_unix(systemd-user:session): session opened for user root by (uid=0)
+Oct 13 22:01:31 hebenu run-parts[29204]: (/etc/cron.hourly) finished 0anacron
+Oct 13 22:01:31 hebenu run-parts[29206]: (/etc/cron.hourly) starting mcelog.cron
+Oct 13 22:01:31 hebenu run-parts[29210]: (/etc/cron.hourly) finished mcelog.cron
+Oct 13 22:01:32 hebenu systemd[29192]: Starting Paths.
+Oct 13 22:01:32 hebenu systemd[29192]: Reached target Paths.
+Oct 13 22:01:32 hebenu systemd[29192]: Starting Timers.
+Oct 13 22:01:32 hebenu systemd[29192]: Reached target Timers.
+Oct 13 22:01:32 hebenu systemd[29192]: Starting Sockets.
+Oct 13 22:01:32 hebenu systemd[29192]: Reached target Sockets.
+Oct 13 22:01:32 hebenu systemd[29192]: Starting Basic System.
+Oct 13 22:01:32 hebenu systemd[29192]: Reached target Basic System.
+Oct 13 22:01:32 hebenu systemd[29192]: Starting Default.
+Oct 13 22:01:32 hebenu systemd[29192]: Reached target Default.
+Oct 13 22:01:32 hebenu systemd[29192]: Startup finished in 261ms.
+Oct 13 22:03:37 hebenu systemd-logind[447]: Failed to abandon session scope: Connection timed out
+........
+
+
+
+Oct 14 15:52:27 hebenu NetworkManager[1340]: <error> [1444834347.915431] [platform/nm-linux-platform.c:1714] add_object(): Netlink error adding 0.0.0.0/0 via 192.168.122.1 dev eth0 metric 1024 mss 0 src user: Unspecific failure
+Oct 14 15:52:27 hebenu NetworkManager[1340]: <warn> (docker0): failed to detach bridge port vethca733ce
+Oct 14 15:52:27 hebenu NetworkManager[1340]: nm_device_get_iface: assertion 'self != NULL' failed
+Oct 14 15:52:27 hebenu NetworkManager[1340]: <info> (vethca733ce): released from master (null)
+Oct 14 15:52:34 hebenu NetworkManager[1340]: <warn> disconnected by the system bus.
+Oct 14 15:52:34 hebenu NetworkManager[1340]: <info> (veth9ea3b02): device state change: activated -> unmanaged (reason 'removed') [100 10 36]
+Oct 14 15:52:34 hebenu NetworkManager[1340]: <info> (veth9ea3b02): deactivating device (reason 'removed') [36]
+Oct 14 15:52:35 hebenu NetworkManager[1340]: <warn> (docker0): failed to detach bridge port veth9ea3b02
+Oct 14 15:52:35 hebenu NetworkManager[1340]: nm_device_get_iface: assertion 'self != NULL' failed
+

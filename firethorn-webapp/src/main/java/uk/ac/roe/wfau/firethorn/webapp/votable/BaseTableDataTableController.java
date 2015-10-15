@@ -92,11 +92,17 @@ extends AbstractTableController
         public String format(final ResultSet results)
         throws SQLException
             {
-            return StringEscapeUtils.escapeJson(
-                results.getString(
-                    index()
-                    )
-                );
+    		
+	        	if (results.getObject(index())!=null){
+	        		return StringEscapeUtils.escapeJson(
+	                        results.getString(
+	                            index()
+	                            )
+	                        );
+		   		} else {
+		   			return "\"\"";
+		   		}
+            
             }
         }
     
@@ -310,7 +316,7 @@ extends AbstractTableController
                     );
     
             default :
-                return new SimpleFormatter(
+                return new DatatableFormatter(
                     column
                     );
             }

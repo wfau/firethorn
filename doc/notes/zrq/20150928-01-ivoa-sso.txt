@@ -1,0 +1,74 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+On 2015-09-24 14:46, giuliano taffoni wrote:
+> 
+> Do you think it is useful to extract a piece of the Resource Schema
+> and paste it in appendix?
+> I rather prefer to introduce a reference to the schema in the relevant
+> section (section2) that points to the actual xsd (V1.0).
+>
+
+A link to the definition of the security method element in the schema would be fine.
+
+Is there a preferred best practice for IVOA documents for referring to schema ?
+ 
+> 
+> The security method element is actually defined as anyURI. 
+
+If it is anyURI, then that implies that I can use the security method element to register a service that uses a different security mechanism, simply by adding security method element with a URI or URL that identifies the security mechanism I am using.
+
+Which is good, and provides a flexible route for adding new mechanisms in the future.
+
+However, the wording of the text appears to exclude anything other than the approved methods, which is not so good. 
+
+In particular, the following sentence appears to limit all VOResource webservices to using OAuth, TLS or no authentication.
+
+"Services that are registered with a IVOA registry as having a WebService type interface [VOResource] shall support OAuth, or shall support cookies or shallsupport TLS with client certificates or shall require no authentication."
+
+
+It might be good to update the text to describe how this would work for both standard and non-standard security methods.
+
+Suggestion :
+
+  * The security method element may contain any URI.
+  * This document defines the following standard security methods which are identified by IVOA standard registry URIs.
+  * For security methods which do not have a standard URI
+     * The security method element should contain some form of unique URI that identifies the security method in some way.
+     * The security method element should preferably contain some form of URL that points to a resource that describes the security method.
+
+
+
+Thanks,
+Dave
+
+--------
+Dave Morris
+Software Developer
+Wide Field Astronomy Unit
+Institute for Astronomy
+University of Edinburgh
+--------
+
