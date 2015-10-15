@@ -60,6 +60,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
@@ -82,6 +83,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent.CopyDepth;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
@@ -1391,9 +1393,10 @@ implements BlueQuery
         final OgsaBaseResource dest = BlueQueryEntity.this.jdbctable.resource().ogsa().primary() ; 
         log.debug("Found target OgsaBaseResource [{}]", dest.name());
 
-      //TODO Check all the resources are available through the same OgsaService.         
+        //TODO Check all the resources are available through the same OgsaService.         
 
-        
+        //TODO push the state here
+
         //
         // Execute our workflow.
         final BlueWorkflow workflow = new BlueWorkflowClient(
@@ -1436,77 +1439,58 @@ implements BlueQuery
 						@Override
 						public Integer first()
 							{
-							// TODO Auto-generated method stub
 							return null;
 							}
 
 						@Override
 						public Integer block()
 							{
-							// TODO Auto-generated method stub
 							return null;
 							}
 						};
 					}
 
 				@Override
-				public LimitsParam limits()
+				public AdqlQuery.Limits limits()
 					{
-					return new LimitsParam()
-						{
-						@Override
-						public Long rows()
-							{
-							// TODO Auto-generated method stub
-							return null;
-							}
-
-						@Override
-						public Long cells()
-							{
-							// TODO Auto-generated method stub
-							return null;
-							}
-
-						@Override
-						public Long time()
-							{
-							// TODO Auto-generated method stub
-							return null;
-							}
-						};
+					return BlueQueryEntity.this.limits;
 					}
 					
 				@Override
-				public DelaysParam delays()
+				public AdqlQuery.Delays delays()
 					{
-					return new DelaysParam()
-						{
-						@Override
-						public Integer first()
-							{
-							return new Integer(10000);
-							}
-
-						@Override
-						public Integer last()
-							{
-							return new Integer(10000);
-							}
-
-						@Override
-						public Integer every()
-							{
-							return null;
-							}
-						};
+					return BlueQueryEntity.this.delays ;
 					}
 
 				@Override
-				public CallbackParam callback()
+				public ContextParam context()
 					{
-					return new CallbackParam()
+					return new ContextParam()
 						{
+						@Override
+						public String protocol()
+							{
+							return null;
+							}
+
+						@Override
+						public String host()
+							{
+							return null;
+							}
+
+						@Override
+						public String port()
+							{
+							return null;
+							}
+
+						@Override
+						public String base()
+							{
+							return null;
+							}
+
 						@Override
 						public String ident()
 							{
@@ -1516,6 +1500,10 @@ implements BlueQuery
 					}
 				}
     		); 
+
+        //TODO pull the state here
+        //BUG We can have already received a callback by this point.
+        //BUG Need to close and reopen the session to collect the callback results.
         
         //
         // Check the return status.
@@ -1681,6 +1669,7 @@ implements BlueQuery
 
         this.jdbctable = jdbcspace.tables().create();
         this.adqltable = adqlspace.tables().create(
+    		CopyDepth.PARTIAL,
     		jdbctable
             );
 

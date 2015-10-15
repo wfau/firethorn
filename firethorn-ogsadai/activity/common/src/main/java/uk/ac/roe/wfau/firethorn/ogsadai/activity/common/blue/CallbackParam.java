@@ -18,14 +18,29 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.base.TuplesParam;
+
 /**
- * Parameter names for the CallbackActivity.
+ * Common interface for the CallbackActivity.
  *
  */
 public interface CallbackParam
+extends TuplesParam
     {
     /**
-     * Public interface for the JSON request bean.
+     * The default Activity name, {@value}.
+     * 
+     */
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Callback" ;
+
+    /**
+     * Activity input name for the query identifier.
+     * 
+     */
+    public static final String QUERY_IDENT = "query.ident" ;
+
+    /**
+     * Public interface for a callback request bean.
      * 
      */
     public interface RequestBean
@@ -41,11 +56,17 @@ public interface CallbackParam
     	 * 
     	 */
         public String getStatus();
-        
+
+        /**
+    	 * Get the query row count.
+    	 * 
+    	 */
+        public Long getCount();
+
     	}
 
     /**
-     * Public interface for the JSON response bean.
+     * Public interface for a callback response bean.
      * 
      */
     public interface ResponseBean
@@ -75,32 +96,5 @@ public interface CallbackParam
         public String getSelf();
 
     	}
-    
-    /**
-     * Parameter name for the query identifier.
-     * 
-     */
-    public static final String QUERY_IDENT = "query.ident" ;
-
-    /**
-     * Parameter name for the input tuples.
-     * @todo Move this to a generic TupleProcessingActivity base class.
-     * 
-     */
-    public static final String TUPLE_INPUT  = "tuples" ;
-
-    /**
-     * Parameter name for the output tuples.
-     * @todo Move this to a generic TupleProcessingActivity base class.
-     * 
-     */
-    public static final String TUPLE_OUTPUT = "tuples" ;
-    
-    /**
-     * Default Activity name.
-     * 
-     */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Callback" ;
-
     }
 

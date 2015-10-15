@@ -16,33 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.base;
 
 /**
- * Common interface for the IvoaSelectData Activity.
+ * Common interface for a tuple processing Activity.
  *
  */
-public interface IvoaSelectDataParam
-extends IvoaResourceParam
+public interface TuplesParam
     {
-    /**
-     * The default Activity name, {@value}.
-     * 
-     */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.IvoaSelectData" ;
 
     /**
-     * Activity input name for the TAP service ADQL query, {@value}.
+     * Activity input name for the input tuples.
      * 
      */
-    public static final String IVOA_TAP_ADQL_QUERY_PARAM = "ivoa.tap.adql.query"  ;
+    public static final String TUPLE_INPUT  = "tuples" ;
 
     /**
-     * Activity output name for the output tuples, {@value}.
+     * Activity output name for the output tuples.
      * 
      */
     public static final String TUPLE_OUTPUT = "tuples" ;
-    
-    
+
     }
 

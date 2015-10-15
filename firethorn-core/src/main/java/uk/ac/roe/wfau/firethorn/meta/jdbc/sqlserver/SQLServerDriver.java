@@ -75,7 +75,7 @@ implements JdbcResource.JdbcDriver
         	{
         	if (comma)
         		{
-                statement.append(",");
+                statement.append(" , ");
         		}
         	else {
             	comma = true ;
@@ -134,6 +134,23 @@ implements JdbcResource.JdbcDriver
 			);
         }
     
+    @UpdateMethod
+    public void truncate(final JdbcTable table)
+        {
+        log.debug("Truncate JdbcTable [{}]", table.name());
+        final StringBuilder statement = new StringBuilder(
+    		"TRUNCATE "
+    		); 
+		fullname(
+			statement,
+			table
+			);
+		execute(
+			table.resource().connection(),
+			statement.toString()
+			);
+        }
+
     protected void execute(final JdbcConnector connection, final String statement)
         {
         try {
@@ -145,36 +162,8 @@ implements JdbcResource.JdbcDriver
             }
         catch (final SQLException ouch)
             {
-            log.warn("SQLException while attempting to delete table data [{}]", ouch.getMessage());
-            log.warn("SQL statement [{}]", statement);
-            }
-        finally {
-            connection.close();
-            }
-        }
-    
-    @UpdateMethod
-    public void truncate(final JdbcTable table)
-        {
-        log.debug("Truncate JdbcTable [{}]", table.name());
-        final StringBuilder statement = new StringBuilder(
-    		"TRUNCATE "
-    		); 
-		fullname(statement,
-			table
-			);
-        final JdbcConnector connection = table.resource().connection();
-        try {
-            log.debug("SQL statement [{}]", statement);
-            final int result = connection.open().createStatement().executeUpdate(
-                statement.toString()
-                );
-            log.debug("SQL result [{}]", result);
-            }
-        catch (final SQLException ouch)
-            {
-            log.warn("SQLException while attempting to truncate table data [{}]", ouch.getMessage());
-            log.warn("SQL statement [{}]", statement);
+            log.warn("SQL Exception [{}]", ouch.getMessage());
+            log.warn("SQL Statement [{}]", statement);
             }
         finally {
             connection.close();
@@ -201,7 +190,17 @@ implements JdbcResource.JdbcDriver
 	        case TIME :
 	        case TIMESTAMP :
 	            builder.append(
-	                "DATETIME"
+	                "datetime"
+	                );
+	            break ;
+	        case REAL:
+	        	builder.append(
+	                "real"
+	                );
+	            break ;
+	        case DOUBLE:
+	        	builder.append(
+	                "float"
 	                );
 	            break ;
 	        default :

@@ -19,29 +19,29 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
 
 /**
- * Parameter names for the JdbcSelectData Activity.
+ * Common interface for the JdbcSelectData Activity.
  *
  */
 public interface JdbcSelectDataParam
 extends JdbcResourceParam
     {
     /**
-     * The Activity name, {@value}.
+     * The default Activity name, {@value}.
      * 
      */
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.JdbcSelectData" ;
 
     /**
-     * Parameter name for the Activity results, {@value}.
+     * Activity input name for the SQL query, {@value}.
      * 
      */
-    public static final String ACTIVITY_RESULTS = "jdbc.select.results" ;
+    public static final String DATABASE_QUERY = "jdbc.select.query"  ;
 
     /**
-     * Parameter name for the SQL query, {@value}.
+     * Activity output name for the output tuples, {@value}.
      * 
      */
-    public static final String DATABASE_QUERY = "jdbc.database.query"  ;
+    public static final String TUPLE_OUTPUT = "tuples" ;
 
     }
 

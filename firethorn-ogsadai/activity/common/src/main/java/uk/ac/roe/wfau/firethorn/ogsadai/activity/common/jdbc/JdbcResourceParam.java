@@ -19,41 +19,41 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
 
 /**
- * Parameter names for JdbcResources.
+ * Common interface for JdbcResource activities.
  *
  */
 public interface JdbcResourceParam
     {
 
     /**
-     * Parameter name for the database URL, {@value}.
+     * Activity input name for the database URL, {@value}.
      * 
      */
-    public static final String DATABASE_URL = "jdbc.database.url"  ;
+    public static final String JDBC_DATABASE_URL = "jdbc.database.url"  ;
 
     /**
-     * Parameter name for the database user name, {@value}.
+     * Activity input name for the database user name, {@value}.
      * 
      */
-    public static final String DATABASE_USERNAME = "jdbc.database.username"  ;
+    public static final String JDBC_DATABASE_USERNAME = "jdbc.database.username"  ;
 
     /**
-     * Parameter name for the database password, {@value}.
+     * Activity input name for the database password, {@value}.
      * 
      */
-    public static final String DATABASE_PASSWORD = "jdbc.database.password"  ;
+    public static final String JDBC_DATABASE_PASSWORD = "jdbc.database.password"  ;
 
     /**
-     * Parameter name for the database driver name, {@value}.
+     * Activity input name for the database driver name, {@value}.
      * 
      */
-    public static final String DATABASE_DRIVER = "jdbc.database.driver"  ;
+    public static final String JDBC_DATABASE_DRIVER = "jdbc.database.driver"  ;
 
     /**
-     * Parameter name for the writable flag, {@value}.
+     * Activity input name for the writable flag, {@value}.
      * 
      */
-    public static final String DATABASE_WRITABLE = "jdbc.database.writable"  ;
+    public static final String JDBC_DATABASE_WRITABLE = "jdbc.database.writable"  ;
 
     }
 

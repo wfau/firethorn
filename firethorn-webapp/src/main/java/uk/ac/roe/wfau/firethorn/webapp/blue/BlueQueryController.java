@@ -17,11 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.blue;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,12 +27,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.blue.InvalidStateTransitionException;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -356,7 +355,7 @@ public class BlueQueryController
      */
     @ResponseBody
     @RequestMapping(value=BlueQuery.LinkFactory.CALLBACK_PATH, method=RequestMethod.POST, consumes=FORM_MIME, produces=JSON_MIME)
-    public BlueQueryBean callback(
+    public BlueQueryBean formCallback(
         @PathVariable(value=IDENT_PARAM_NAME)
         final String ident,
         @RequestParam(value=NEXT_STATUS_PARAM_NAME, required=false)
@@ -395,6 +394,11 @@ public class BlueQueryController
             );
         }
 
+    /*
+     * Ignore unknown fields. 
+     * http://codingexplained.com/coding/java/ignoring-unrecognized-json-fields-spring-jackson
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class RequestBean
     implements CallbackParam.RequestBean
     	{
@@ -423,6 +427,17 @@ public class BlueQueryController
             {
             this.status = value;
             }
+
+        private Long count;
+		@Override
+		public Long getCount()
+			{
+			return this.count;
+			}
+        public void setCount(final Long value)
+            {
+            this.count = value;
+            }
         }
     
     /**
@@ -431,7 +446,7 @@ public class BlueQueryController
      */
     @ResponseBody
     @RequestMapping(value=BlueQuery.LinkFactory.CALLBACK_PATH, method=RequestMethod.POST, consumes=JSON_MIME, produces=JSON_MIME)
-    public BlueQueryBean jsoncallback(
+    public BlueQueryBean jsonCallback(
         @PathVariable(value=IDENT_PARAM_NAME)
         final String ident,
         @RequestBody

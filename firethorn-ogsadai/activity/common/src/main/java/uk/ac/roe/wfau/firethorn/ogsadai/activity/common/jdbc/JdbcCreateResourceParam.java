@@ -19,23 +19,23 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
 
 /**
- * Parameter names for the JdbcCreateResource Activity.
+ * Common interface for the JdbcCreateResource Activity.
  *
  */
 public interface JdbcCreateResourceParam
 extends JdbcResourceParam
     {
     /**
-     * The Activity name, {@value}.
+     * The default Activity name, {@value}.
      * 
      */
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.JdbcCreateResource" ;
 
     /**
-     * Parameter name for the Activity results, {@value}.
+     * Activity output name for the Activity result, {@value}.
      * 
      */
-    public static final String ACTIVITY_RESULTS = "jdbc.create.resultS"  ;
+    public static final String ACTIVITY_RESULT = "jdbc.create.resource.result"  ;
 
     }
 

@@ -341,7 +341,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
     throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException 
         {
         validateOutput(
-            IvoaSelectDataParam.ACTIVITY_RESULTS
+            IvoaSelectDataParam.TUPLE_OUTPUT
             );
         //
         // Read our Activity properties.

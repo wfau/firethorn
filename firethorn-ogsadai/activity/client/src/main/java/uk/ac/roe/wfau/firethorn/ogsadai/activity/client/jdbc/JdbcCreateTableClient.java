@@ -120,7 +120,7 @@ implements ResourceActivity
             }
 
         this.results = new SimpleActivityOutput(
-            JdbcCreateTableParam.ACTIVITY_RESULTS
+            JdbcCreateTableParam.ACTIVITY_RESULT
             );
 
         }

@@ -39,14 +39,12 @@ public abstract class AbstractController
 
     /**
      * HTTP content type for JSON.
-     * @deprecated Use {@link MediaType.APPLICATION_JSON_VALUE}
      * 
      */
     public static final String JSON_MIME = MediaType.APPLICATION_JSON_VALUE ;
 
     /**
-     * HTTP content type for JSON.
-     * @deprecated Use {@link MediaType.APPLICATION_FORM_URLENCODED_VALUE}
+     * HTTP content type for URL encoded form fields.
      * 
      */
     public static final String FORM_MIME = MediaType.APPLICATION_FORM_URLENCODED_VALUE;

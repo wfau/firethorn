@@ -239,7 +239,7 @@ extends BaseActivity implements Activity
             }
         
         this.results = new SimpleActivityOutput(
-            IvoaCreateResourceParam.ACTIVITY_RESULTS
+            IvoaCreateResourceParam.ACTIVITY_RESULT
             );
         }
     

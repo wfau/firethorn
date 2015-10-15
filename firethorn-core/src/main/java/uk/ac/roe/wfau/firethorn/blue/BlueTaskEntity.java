@@ -1097,54 +1097,82 @@ implements BlueTask<TaskType>
 
         if (wait == null)
             {
-            log.debug("Wait is null - no wait");
+            log.debug("Wait is null - skipping wait");
             }
         else if (wait <= 0)
 			{
-			log.debug("Wait is zero - no wait");
+			log.debug("Wait is zero - skipping wait");
 			}
 		else {
-            //
-            // Get the task handle.
-            log.debug("Getting task handle");
-            final BlueTaskEntity.Handle handle = handle();
-            log.debug("  ident [{}]", handle.ident());
-            log.debug("  state [{}]", handle.state());
+			if (this.state().active())
+				{
+	            log.debug("State is active - getting handle");
+	            final BlueTaskEntity.Handle handle = handle();
+	            if (handle != null)
+	            	{
+		            log.debug("  ident [{}]", handle.ident());
+		            log.debug("  state [{}]", handle.state());
+		
+		            log.debug("Before listener.waitfor()");
+		            log.debug("  ident [{}]", this.ident());
+		            log.debug("  ident [{}]", handle.ident());
+		            log.debug("  state [{}]", this.state());
+		            log.debug("  state [{}]", handle.state());
 
-            log.debug("Before listener.waitfor()");
-            log.debug("  ident [{}]", this.ident());
-            log.debug("  ident [{}]", handle.ident());
-            log.debug("  prev  [{}]", prev);
-            log.debug("  state [{}]", this.state());
-            log.debug("  state [{}]", handle.state());
-            log.debug("  next  [{}]", next);
-            // Wait until the next state is achieved.
-            Handle.Listener listener = new StatusEventListener(
-    			prev,
-    			next,
-    			wait
-                );
-            listener.waitfor(
-        		handle
-        		);
-            log.debug("After listener.waitfor()");
-            log.debug("  ident [{}]", this.ident());
-            log.debug("  ident [{}]", handle.ident());
-            log.debug("  prev  [{}]", prev);
-            log.debug("  state [{}]", this.state());
-            log.debug("  state [{}]", handle.state());
-            log.debug("  next  [{}]", next);
+		            //
+		            // Wait for a state change event.
+					if ((prev != null) || (next != null))
+						{
+			            log.debug("Waiting for state change event");
+			            log.debug("  prev  [{}]", prev);
+			            log.debug("  next  [{}]", next);
+					    final Handle.Listener listener = new StatusEventListener(
+							prev,
+							next,
+							wait
+					        );
+					    listener.waitfor(
+							handle
+							);
+						}
+		            //
+		            // Wait any event.
+					else {
+		            	log.debug("Waiting for any event");
+					    final Handle.Listener listener = new AnyEventListener(
+							wait
+					        );
+					    listener.waitfor(
+							handle
+							);
+						}
 
-            //
-            // Update our entity from the DB.
-            log.debug("Before refresh()");
-            log.debug("  ident [{}]", this.ident());
-            log.debug("  state [{}]", this.state());
-            refresh();
-            log.debug("After refresh()");
-            log.debug("  ident [{}]", this.ident());
-            log.debug("  state [{}]", this.state());
+					log.debug("After listener.waitfor()");
+		            log.debug("  ident [{}]", this.ident());
+		            log.debug("  ident [{}]", handle.ident());
+		            log.debug("  prev  [{}]", prev);
+		            log.debug("  state [{}]", this.state());
+		            log.debug("  state [{}]", handle.state());
+		            log.debug("  next  [{}]", next);
+		
+		            //
+		            // Update our entity from the DB.
+		            log.debug("Before refresh()");
+		            log.debug("  ident [{}]", this.ident());
+		            log.debug("  state [{}]", this.state());
+		            refresh();
+		            log.debug("After refresh()");
+		            log.debug("  ident [{}]", this.ident());
+		            log.debug("  state [{}]", this.state());
 
+    				}
+	            else {
+	                log.debug("Null handle - skipping wait");
+	            	}
+				}
+			else {
+				log.debug("State is not active - skipping wait");
+				}
 			}
     	}
     

@@ -110,6 +110,17 @@ implements BlueWorkflow
         // Create our pipeline.
         final PipelineWorkflow pipeline = new PipelineWorkflow();
         //
+        // Add our context Activity.
+        final ContextClient context = new ContextClient(
+    		param.context()
+    		);
+        pipeline.add(
+            context
+            );
+        context.input(
+    		param.query()
+    		);
+        //
         // Add our SQLQuery Activity.
         final SQLQuery select = new SQLQuery();
         pipeline.add(
@@ -120,8 +131,8 @@ implements BlueWorkflow
                 param.source()
                 )
             );
-        select.addExpression(
-            param.query()
+        select.connectExpressionInput(
+            context.output()
             );
         //
         // Add our Delays Activity.
@@ -142,18 +153,9 @@ implements BlueWorkflow
             limits
             );
         //
-        // Add our Callback Activity.
-        final CallbackClient callback = new CallbackClient(
-    		limits.output(),
-    		param.callback()
-    		);
-        pipeline.add(
-            callback
-            );
-        //
         // Add our Insert Activity.
         final JdbcInsertDataClient insert = new JdbcInsertDataClient(
-            callback.output(),
+            limits.output(),
             param.insert()
             );
         pipeline.add(

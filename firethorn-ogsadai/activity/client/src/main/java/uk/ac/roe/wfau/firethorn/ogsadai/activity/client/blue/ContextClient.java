@@ -18,7 +18,7 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.CallbackParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
@@ -28,16 +28,17 @@ import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
+import uk.org.ogsadai.data.IntegerData;
 import uk.org.ogsadai.data.StringData;
 
 /**
- * Client for our CallbackActivity.
- * @todo Move a lot of this to a generic TupleProcessingActivity base class.
+ * Client for our ContextActivity.
  * 
  *
  */
-public class CallbackClient
-extends BaseActivity implements Activity
+public class ContextClient
+extends BaseActivity
+implements Activity
     {
 
     /**
@@ -46,69 +47,132 @@ extends BaseActivity implements Activity
      */
     public static interface Param
         {
-		/**
+        /**
+         * Get the protocol name.
+         *
+         */
+        public String protocol();
+
+    	/**
+         * Get the host name.
+         *
+         */
+        public String host();
+
+        /**
+         * Get the port number.
+         *
+         */
+        public String port();
+        
+        /**
+         * Get the base URL path.
+         *
+         */
+        public String base();
+        
+        /**
 		 * The query identifier.
 		 * 
 		 */
         public String ident();
+        
         }
 
     /**
-     * The query identifier.
+     * The protocol input.
+     *
+     */
+    private final ActivityInput protocol;
+
+    /**
+     * The host name input.
+     *
+     */
+    private final ActivityInput host;
+
+    /**
+     * The port number input.
+     *
+     */
+    private final ActivityInput port;
+
+    /**
+     * The base URL path input.
+     *
+     */
+    private final ActivityInput base;
+
+    /**
+     * The query identifier input.
+     * 
      *
      */
     private final ActivityInput ident;
 
     /**
-     * The input tuples
+     * The pipeline input.
+     * 
      *
      */
     private final ActivityInput input;
 
     /**
-     * The output tuples
+     * The pipeline output.
      *
      */
     private final ActivityOutput output;
 
     /**
      * Public constructor.
-     * @param source The tuple input source.
      * @param param The Activity parameters.
      * 
      */
-    public CallbackClient(final SingleActivityOutput source, final Param param)
+    public ContextClient(final Param param)
         {
         this();
-        param(
-        	param
-            );
-        input(
-            source
-            );
+        this.param(
+    		param
+    		);
         }
 
     /**
      * Public constructor.
      *
      */
-    public CallbackClient()
+    public ContextClient()
         {
         super(
             new ActivityName(
-        		CallbackParam.ACTIVITY_NAME
+        		ContextParam.ACTIVITY_NAME
                 )
             );
+        this.protocol = new SimpleActivityInput(
+    		ContextParam.CALLBACK_PROTOCOL_INPUT,
+            true
+            );
+        this.host = new SimpleActivityInput(
+    		ContextParam.CALLBACK_HOST_INPUT,
+            true
+            );
+        this.port = new SimpleActivityInput(
+    		ContextParam.CALLBACK_PORT_INPUT,
+            true
+            );
+        this.base = new SimpleActivityInput(
+    		ContextParam.CALLBACK_BASE_INPUT,
+            true
+            );
         this.ident = new SimpleActivityInput(
-    		CallbackParam.QUERY_IDENT,
+    		ContextParam.CONTEXT_IDENT_INPUT,
             false
             );
         this.input = new SimpleActivityInput(
-    		CallbackParam.TUPLE_INPUT,
+    		ContextParam.CONTEXT_PIPELINE_INPUT,
             false
             );
         this.output = new SimpleActivityOutput(
-    		CallbackParam.TUPLE_OUTPUT,
+    		ContextParam.CONTEXT_PIPELINE_OUTPUT,
             false
             );
         }
@@ -120,6 +184,41 @@ extends BaseActivity implements Activity
      */
     public void param(final Param param)
         {
+		if (param.protocol() != null)
+			{
+	        protocol.add(
+	            new StringData(
+	                param.protocol()
+	                )
+	            );
+			}
+		if (param.host() != null)
+			{
+	        host.add(
+	            new StringData(
+	                param.host()
+	                )
+	            );
+			
+			}
+		if (param.port() != null)
+			{
+	        port.add(
+	            new StringData(
+	                param.port()
+	                )
+	            );
+			
+			}
+		if (param.base() != null)
+			{
+	        base.add(
+	            new StringData(
+	                param.base()
+	                )
+	            );
+			
+			}
         ident.add(
             new StringData(
                 param.ident()
@@ -128,19 +227,20 @@ extends BaseActivity implements Activity
         }
 
     /**
-     * Add the tuples input.
-     * @param source The tuple input source.
-     *
+     * Set the pipeline inout. 
+     * 
      */
-    public void input(final SingleActivityOutput source)
-        {
-        this.input.connect(
-            source
-            );
-        }
+    public void input(final String value)
+    	{
+    	input.add(
+            new StringData(
+                value
+                )
+			);
+    	}
 
     /**
-     * Get the tuples output.
+     * Get the pipeline output.
      *
      */
     public SingleActivityOutput output()
@@ -152,6 +252,10 @@ extends BaseActivity implements Activity
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
+            protocol,
+            host,
+            port,
+            base,
             ident,
             input
             };
@@ -165,10 +269,9 @@ extends BaseActivity implements Activity
             };
         }
 
-    @Override
-    protected void validateIOState()
-    throws ActivityIOIllegalStateException
-        {
-        }
+	@Override
+	protected void validateIOState() throws ActivityIOIllegalStateException
+		{
+		}
     }
 

@@ -19,31 +19,31 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa;
 
 /**
- * Parameter names for IvoaResources.
+ * Common interface for IvoaResource activities.
  *
  */
 public interface IvoaResourceParam
     {
     /**
-     * Parameter name for the TAP endpoint URL, {@value}.
+     * Activity input name for the TAP endpoint URL, {@value}.
      * 
      */
     public static final String IVOA_TAP_ENDPOINT = "ivoa.tap.endpoint"  ;
 
     /**
-     * Parameter name for the UWS service polling interval, {@value}.
+     * Activity input name for the UWS service polling interval, {@value}.
      * 
      */
     public static final String IVOA_UWS_INTERVAL = "ivoa.uws.interval"  ;
     
     /**
-     * Parameter name for the UWS service polling timeout, {@value}.
+     * Activity input name for the UWS service polling timeout, {@value}.
      * 
      */
     public static final String IVOA_UWS_TIMEOUT = "ivoa.uws.timeout"  ;
 
     /**
-     * Parameter name for the UWS quickstart flag, {@value}.
+     * Activity input name for the UWS quickstart flag, {@value}.
      * 
      */
     public static final String IVOA_UWS_QUICKSTART = "ivoa.uws.quickstart"  ;

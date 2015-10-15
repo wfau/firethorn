@@ -18,36 +18,27 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.base.TuplesParam;
+
 /**
- * Parameter names for the RownumActivity.
+ * Common interface for the RownumActivity.
+ * @deprecated Do we use this anywhere ?
  *
  */
-public class RownumParam
+public interface RownumParam
+extends TuplesParam
     {
-
     /**
-     * Parameter name for the row number column name.
-     * 
-     */
-    public static final String COLUMN_NAME = "colname" ;
-
-    /**
-     * Parameter name for the input tuples.
-     * 
-     */
-    public static final String TUPLE_INPUT  = "tuples" ;
-
-    /**
-     * Parameter name for the output tuples.
-     * 
-     */
-    public static final String TUPLE_OUTPUT = "tuples" ;
-
-    /**
-     * Default Activity name.
+     * The default Activity name, {@value}.
      * 
      */
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Rownum" ;
+
+    /**
+     * Activity input name for the row number column name.
+     * 
+     */
+    public static final String COLUMN_NAME = "rownum.colname" ;
 
     }
 

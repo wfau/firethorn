@@ -25,15 +25,11 @@ import java.util.Map;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-//import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.CallbackParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.DelaysParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.security.FirethornSecurityContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
@@ -49,7 +45,6 @@ import uk.org.ogsadai.activity.io.PipeTerminatedException;
 import uk.org.ogsadai.activity.io.TupleListActivityInput;
 import uk.org.ogsadai.activity.io.TupleListIterator;
 import uk.org.ogsadai.activity.io.TypedActivityInput;
-import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.tuple.Tuple;
@@ -436,7 +431,6 @@ implements SecureActivity
 	        logger.debug("Before callback");
 	        logger.debug("  Ident  [{}]", ident);
 	        logger.debug("  Base   [{}]", context.endpoint());
-	        //logger.debug("  Params [{}]", params);
 	        logger.debug("  Fields [{}]", fields);
 	        try {
 				final ResponseBean bean = rest().postForObject(
@@ -453,6 +447,12 @@ implements SecureActivity
 						public String getStatus()
 							{
 							return status;
+							}
+
+						@Override
+						public Long getCount()
+							{
+							return null;
 							}
 						},
 					ResponseBean.class,

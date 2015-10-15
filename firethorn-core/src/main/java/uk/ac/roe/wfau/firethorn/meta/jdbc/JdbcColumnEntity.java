@@ -453,6 +453,7 @@ public class JdbcColumnEntity
             return this.entities;
             }
 
+        @Autowired
 		private JdbcColumn.AliasFactory aliases;
 		@Override
 		public JdbcColumn.AliasFactory aliases()

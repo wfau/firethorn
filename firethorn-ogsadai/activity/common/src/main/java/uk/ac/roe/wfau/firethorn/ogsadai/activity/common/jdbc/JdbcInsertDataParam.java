@@ -19,25 +19,19 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
 
 /**
- * Parameter names for the JdbcInsertData Activity.
+ * Common interface for the JdbcInsertData Activity.
  *
  */
-public class JdbcInsertDataParam
+public interface JdbcInsertDataParam
     {
     /**
-     * The Activity name, {@value}.
+     * The default Activity name, {@value}.
      * 
      */
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.JdbcInsertData" ;
 
     /**
-     * Parameter name for the Activity results, {@value}.
-     * 
-     */
-    public static final String ACTIVITY_RESULTS = "jdbc.insert.results" ;
-
-    /**
-     * Parameter name for the size of the first block, {@value}.
+     * Activity input name for the size of the first block, {@value}.
      * 
      */
     public static final String JDBC_INSERT_FIRST_SIZE = "jdbc.insert.first.size" ;
@@ -46,10 +40,10 @@ public class JdbcInsertDataParam
      * Default value for the first block size, {@value}.
      * 
      */
-    public static final Integer JDBC_INSERT_FIRST_DEFAULT = new Integer(100);
+    public static final Integer JDBC_INSERT_FIRST_DEFAULT = new Integer(0x01);
     
     /**
-     * Parameter name for the main block size, {@value}.
+     * Activity input name for the main block size, {@value}.
      * 
      */
     public static final String JDBC_INSERT_BLOCK_SIZE = "jdbc.insert.block.size"  ;
@@ -58,19 +52,34 @@ public class JdbcInsertDataParam
      * Default value for the main block size, {@value}.
      * 
      */
-    public static final Integer JDBC_INSERT_BLOCK_DEFAULT_BLOCK = new Integer(1000);
+    public static final Integer JDBC_INSERT_BLOCK_DEFAULT = new Integer(0x10000);
 
     /**
-     * Parameter name for the table name, {@value}.
+     * Activity input name for the table name, {@value}.
      * 
      */
     public static final String JDBC_INSERT_TABLE_NAME = "jdbc.insert.table.name"  ;
     
     /**
-     * Parameter name for the input tuples, {@value}.
+     * Activity output name for the Activity results, {@value}.
+     * @todo replace this with a tuples output.
      * 
      */
-    public static final String JDBC_INSERT_TUPLE_INPUT  = "jdbc.insert.input.tuples" ;
+    public static final String ACTIVITY_RESULTS = "jdbc.insert.results" ;
+
+    /**
+     * Activity input name for the input tuples, {@value}.
+     * @todo inherit this from TuplesCommon
+     * 
+     */
+    public static final String TUPLE_INPUT = "tuples" ;
+
+    /**
+     * Activity output name for the output tuples.
+     * @todo inherit this from TuplesCommon
+     * 
+     */
+    public static final String TUPLE_OUTPUT = "tuples" ;
 
     }
 

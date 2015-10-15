@@ -185,7 +185,7 @@ implements ResourceActivity
             );
         
         this.input = new SimpleActivityInput(
-            JdbcInsertDataParam.JDBC_INSERT_TUPLE_INPUT
+            JdbcInsertDataParam.TUPLE_INPUT
             );
         this.input.connect(
             source

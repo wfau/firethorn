@@ -18,15 +18,23 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.base.TuplesParam;
+
 /**
- * Parameter names for the LimitsActivity.
+ * Common interface for the LimitsActivity.
  *
  */
-public class LimitsParam
+public interface LimitsParam
+extends TuplesParam
     {
+    /**
+     * The default Activity name, {@value}.
+     * 
+     */
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Limits" ;
 
     /**
-     * Parameter name for the row limit.
+     * Activity input name for the row limit.
      * 
      */
     public static final String ROW_LIMIT  = "limit.rows"  ;
@@ -38,7 +46,7 @@ public class LimitsParam
     public static final Long DEFAULT_ROWS = new Long(0);
     
     /**
-     * Parameter name for the cell limit.
+     * Activity input name for the cell limit.
      * 
      */
     public static final String CELL_LIMIT = "limit.cells" ;
@@ -50,7 +58,7 @@ public class LimitsParam
     public static final Long DEFAULT_CELLS = new Long(0);
     
     /**
-     * Parameter name for the time limit.
+     * Activity input name for the time limit.
      * 
      */
     public static final String TIME_LIMIT = "limit.time"  ;
@@ -60,24 +68,6 @@ public class LimitsParam
      * 
      */
     public static final Long DEFAULT_TIME = new Long(0);
-    
-    /**
-     * Parameter name for the input tuples.
-     * 
-     */
-    public static final String TUPLE_INPUT  = "tuples" ;
-    
-    /**
-     * Parameter name for the output tuples.
-     * 
-     */
-    public static final String TUPLE_OUTPUT = "tuples" ;
-
-    /**
-     * Default Activity name.
-     * 
-     */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Limits" ;
     
     }
 
