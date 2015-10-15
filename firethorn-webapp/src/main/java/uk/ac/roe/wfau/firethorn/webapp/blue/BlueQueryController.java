@@ -296,8 +296,9 @@ public class BlueQueryController
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
 
-     * @param next The next {@link BlueTask} {@link TaskState} status, [{@value }].
-     * @param wait The wait timeout, zero for synchronous no wait, null for maximum wait.
+     * @param prev The previous {@link TaskState} t wait from.
+     * @param next The next {@link TaskState} to wait for.
+     * @param wait The wait timeout, zero for no wait, null for maximum wait.
 
      * @return The updated {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.

@@ -54,7 +54,7 @@ import uk.org.ogsadai.tuple.Tuple;
  * Toolkit for sending a callback message to FireThorn. 
  *
  */
-public class CallbackTool
+public class CallbackHandler
     {
 
     /**
@@ -62,14 +62,14 @@ public class CallbackTool
      *
      */
     private static Logger logger = LoggerFactory.getLogger(
-        CallbackTool.class
+        CallbackHandler.class
         );
 
     /**
      * Public constructor.
      *
      */
-    public CallbackTool(final RequestContext context)
+    public CallbackHandler(final RequestContext context)
         {
         super();
         this.context = context;
@@ -135,55 +135,64 @@ public class CallbackTool
         logger.debug("  status [" + status + "]");
         logger.debug("  count  [" + count + "]");
         
-		if (context != null)
+		if (context == null)
 			{
-			//
-			// Build our callback endpoint.
-			final StringBuilder endpoint = context.callback().endpoint();
-			endpoint.append(
-				"/blue/query/callback/"
-				);
-			endpoint.append(
-				context.ident()
-				);
-			
-	        logger.debug("Before callback");
-	        logger.debug("  Ident    [{}]", context.ident());
-	        logger.debug("  Endpoint [{}]", endpoint.toString());
-	        try {
-				final ResponseBean bean = rest().postForObject(
-					endpoint.toString(),
-					new RequestBean()
-						{
-						@Override
-						public String getIdent()
-							{
-							return context.ident();
-							}
-						@Override
-						public String getStatus()
-							{
-							return status;
-							}
-						@Override
-						public Long getCount()
-							{
-							return count;
-							}
-						},
-					ResponseBean.class
+	        logger.debug("null context - skipping callback");
+			}
+		else {
+			if (context.ident() == null)
+				{
+		        logger.debug("null ident - skipping callback");
+				}
+			else {
+				//
+				// Build our callback endpoint.
+				final StringBuilder endpoint = context.callback().endpoint();
+				endpoint.append(
+					"/blue/query/callback/"
 					);
-	        	logger.debug("Response bean");
-	        	logger.debug("  Ident [{}]", bean.getIdent());
-	        	logger.debug("  Name  [{}]", bean.getName());
-	        	logger.debug("  Self  [{}]", bean.getSelf());
-        		}
-	        catch (Exception ouch)
-	        	{
-		        logger.debug("Exception during callback", ouch);
-	        	}
-	        finally {
-	        	logger.debug("After callback");
+				endpoint.append(
+					context.ident()
+					);
+				
+		        logger.debug("Before callback");
+		        logger.debug("  Ident    [{}]", context.ident());
+		        logger.debug("  Endpoint [{}]", endpoint.toString());
+		        try {
+					final ResponseBean bean = rest().postForObject(
+						endpoint.toString(),
+						new RequestBean()
+							{
+							@Override
+							public String getIdent()
+								{
+								return context.ident();
+								}
+							@Override
+							public String getStatus()
+								{
+								return status;
+								}
+							@Override
+							public Long getCount()
+								{
+								return count;
+								}
+							},
+						ResponseBean.class
+						);
+		        	logger.debug("Response bean");
+		        	logger.debug("  Ident [{}]", bean.getIdent());
+		        	logger.debug("  Name  [{}]", bean.getName());
+		        	logger.debug("  Self  [{}]", bean.getSelf());
+	        		}
+		        catch (Exception ouch)
+		        	{
+			        logger.debug("Exception during callback", ouch);
+		        	}
+		        finally {
+		        	logger.debug("After callback");
+		        	}
 	        	}
 			}
 		}

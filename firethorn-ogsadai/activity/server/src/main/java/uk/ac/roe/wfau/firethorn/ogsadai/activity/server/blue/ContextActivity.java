@@ -142,7 +142,7 @@ implements SecureActivity
         try {
         	//
         	// Initialise our callback tool.
-        	final CallbackTool callback = new CallbackTool(
+        	final CallbackHandler callback = new CallbackHandler(
 				context
 				); 	        
             //

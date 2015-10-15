@@ -1,0 +1,70 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Merge a development branch and test everything.
+    #
+
+    newversion=2.0.0
+
+# -----------------------------------------------------
+# Merge the changes into main.
+# TODO Move this into the build container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Get the current version
+        devbranch=$(getversion)
+        echo "devbranch [${devbranch:?}]"
+
+        #
+        # Check for changes
+        hg status
+
+        #
+        # Commit local changes
+        # Push/pull the latest changes
+
+        #
+        # Swap to the main branch and get the version.
+        hg update 'default'
+        oldversion=$(getversion)
+
+        echo "devbranch [${devbranch:?}]"
+        echo "oldversion [${oldversion:?}]"
+        echo "newversion [${newversion:?}]"
+
+        #
+        # Merge the dev branch.
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+    popd
+

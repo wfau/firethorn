@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackTool;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
 import uk.ac.roe.wfau.firethorn.ogsadai.server.blue.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
@@ -220,7 +220,7 @@ implements ResourceActivity, SecureActivity
         {
     	//
     	// Initialise our callback handler.
-		final CallbackTool callback = new CallbackTool(
+		final CallbackHandler callback = new CallbackHandler(
 			context
 			); 	        
     	//
