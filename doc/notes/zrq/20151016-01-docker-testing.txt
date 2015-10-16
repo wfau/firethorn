@@ -448,7 +448,7 @@
         2015-10-16 13:42:06,601 - root - INFO - Firethorn Query: -1 row(s) returned. 
 
     #
-    # If this is the 100 know good, then should we get any errors ?
+    # If this is the 1000 know good, then should we get any errors ?
     # This should be fixed - so the merge has bugs.
 
         2015-10-16 14:35:10,364 - root - INFO - Query : SELECT  ATLASsource.*,2*DEGREES(ASIN(sqrt(power(0.9840636176359533-cx,2)+power(0.014415438540307739-cy,2)+power(-0.17723146328158249-cz,2))/2))*60 as distance  FROM ATLASsource WHERE dec > -10.210208382555109 and dec < -10.206875049221775 and RA >= 0.8375659913439305 and RA <= 0.8409529605826224 and ((cx * 0.9840636176359533 + cy * 0.014415438540307739 + cz * -0.17723146328158249 ) >= 0.9999999995769202)

@@ -118,10 +118,6 @@ EOF
 # Fix the test script location.
 #[root@virtual]
 
-    # /root/.. is hard coded
-    # source /root/chain.properties
-    # chmod a+r "/root/tests/test01-nohup.sh" 
-
     mv scripts/tests    /root/
     mv scripts/setup    /root/
     mv scripts/run.sh   /root/
@@ -131,7 +127,7 @@ EOF
 #[root@virtual]
 
     source run.sh 01 "${version:?}"
-
+    
 # -----------------------------------------
 # Tail the Pyrothorn log file.
 #[root@virtual]
