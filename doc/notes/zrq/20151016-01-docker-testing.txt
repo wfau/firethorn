@@ -47,7 +47,7 @@
     #
     # Secret function needs update to handle commented out values.
     # Adding ^ ensures it looks for a line that starts with the key.
-    # Alloing the user to comment out old values with a #
+    # which allows the user to comment out old values with a #
 
         secret()
             {
@@ -55,19 +55,31 @@
     -       ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/[:space:]*${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
     +       ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^[:space:]*${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
             }
+
+    #
+    # Example
+
+        ssh shep 'cat secret.store'
         
+            #firethorn.user.host=ramses9
+            firethorn.user.host=ramses2
+
+        secret firethorn.user.host
+
+            ramses2
+            
     # 
     # Logging
 
         No logging during the build process makes it hard to monitor.
-        Simple echo statements would be fine.
         One line describing what it is about to do at each step.
+        Simple echo statements would be fine.
     
     #
     # Error checking
     
         No error checking means it continues after an error.
-        It should stop when the Mavan build fails.
+        It should stop when the Maven build fails.
 
     #
     # Variables set in one script and used in another. 
@@ -87,7 +99,6 @@
         or perhaps have a separate test properties file
         
             test.properties
-
 
     #
     # Undetected bug in build.sh causes errors later on.
@@ -198,7 +209,12 @@
         [ERROR] Failed to execute goal com.alexecollins.docker:docker-maven-plugin:2.3.1:package (default-cli) on project firethorn-webapp: {"errorDetail":{"message":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"},"error":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"} -> [Help 1]
 
     #
-    # Build should exit when the Maven build fails.
+    # Entire test should exit when the Maven build fails.
+
+        build.sh is running inside the container
+            pass a result back to setup.sh
+                pass a result back to run.sh
+                    stop the test when a failure occurs
 
 
     #
