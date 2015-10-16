@@ -21,6 +21,30 @@
 #
 
 
+# -----------------------------------------
+# Package the scripts as a zipfile
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+
+            mvn clean install
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
 # -----------------------------------------------------
 # Create a new set of databases.
 #[user@desktop]
@@ -47,30 +71,6 @@
             INFO : Disc size [16GiB]
 
     exit
-
-# -----------------------------------------
-# Package the scripts as a zipfile
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-        pushd integration/005
-
-            mvn clean install
-
-        popd
-    popd
-
-# -------------------------------------------------------------------------------------------
-# Push our artifacts to our Maven repo.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        ./bin/rsync-repo.sh
-
-    popd
 
 # -----------------------------------------
 # Configure our test VM
@@ -145,21 +145,6 @@ EOF
 
 
 
-
-
-
-
-# -----------------------------------------
-# Copy scripts from local to VM
-#
-   source "${HOME:?}/firethorn.settings"
-   pushd "${FIRETHORN_CODE:?}"
-
-       scp -r integration/005/scripts/* root@hebenu:/root/
-
-   popd
-
-
-
-
+    dbo.atlasSource_1_256
+    
 

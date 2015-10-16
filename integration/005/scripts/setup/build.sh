@@ -66,23 +66,23 @@ EOF
             docker/postgres/9
 
         docker build \
-            --tag firethorn/builder:1 \
+            --tag firethorn/builder:1.1 \
             docker/builder
 
         docker build \
-            --tag firethorn/docker-proxy:1 \
+            --tag firethorn/docker-proxy:1.1 \
             docker/docker-proxy
 
         docker build \
-            --tag firethorn/sql-proxy:1 \
+            --tag firethorn/sql-proxy:1.1 \
             docker/sql-proxy
 
         docker build \
-            --tag firethorn/sql-tunnel:1 \
+            --tag firethorn/sql-tunnel:1.1 \
             docker/sql-tunnel
 
         docker build \
-            --tag firethorn/ssh-client:1 \
+            --tag firethorn/ssh-client:1.1 \
             docker/ssh-client
 
     popd

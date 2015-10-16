@@ -10,7 +10,7 @@
         --detach \
         --name "${username:?}" \
         --env  "target=${userhost:?}" \
-        firethorn/sql-proxy:1
+        firethorn/sql-proxy:1.1
 
 # -----------------------------------------------------
 # Run our science data ambassador.
@@ -21,7 +21,7 @@
         --detach \
         --name "${dataname:?}" \
         --env  "target=${datahost:?}" \
-        firethorn/sql-proxy:1
+        firethorn/sql-proxy:1.1
 
 # -----------------------------------------------------
 # Start our PostgreSQL metadata container.
