@@ -38,17 +38,6 @@
         # source /root/chain.properties
         # chmod a+r "/root/tests/test01-nohup.sh" 
 
-        Unpacking the zip file to a different location caused problems.
-        No error checking meak the script carried on.
-
-        Zipfile unpacked to
-
-            /root/scripts/tests
-
-        rather than
-        
-            /root/tests
-
         Using $0 to detect where the script is helps to make things portable.
         http://stackoverflow.com/a/242550
 
