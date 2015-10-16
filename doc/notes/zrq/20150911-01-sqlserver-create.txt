@@ -199,12 +199,11 @@ EOF
 
         exit
 
-
-    cat "${HOME:?}/data.properties"
-
 # -----------------------------------------------------
 # Update our secret store.
 #[user@desktop]
+
+    cat "${HOME:?}/data.properties"
 
     ....
 

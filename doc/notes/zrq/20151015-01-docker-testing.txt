@@ -1,0 +1,169 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create a new set of databases.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        gedit "doc/notes/zrq/20150911-01-sqlserver-create.txt" &
+
+    popd
+
+# -----------------------------------------
+# Create a new VM
+#[user@desktop]
+
+    ssh shep
+
+        createvm
+
+            INFO : Node name [edfu]
+            INFO : Base name [fedora-21-16G-20150407.qcow]
+            INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+            INFO : Disc name [edfu.qcow]
+            INFO : Disc size [16GiB]
+
+    exit
+
+# -----------------------------------------
+# Package the scripts as a zipfile
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+
+            mvn clean install
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -----------------------------------------
+# Configure our test VM
+#[user@desktop]
+
+    ssh edfu "cat > \"\${HOME:?}/test.properties\" << EOF
+branch=${branch:?}
+version=${version:?}
+EOF
+"
+
+# -----------------------------------------
+# Login to the VM.
+#[user@desktop]
+
+    ssh edfu
+
+# -----------------------------------------------------
+# Create our secret function.
+#[root@virtual]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^[:space:]*${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'ping'
+
+# -----------------------------------------
+# Install our test scripts.
+#[root@virtual]
+
+    source "${HOME:?}/test.properties"
+
+    base=http://data.metagrid.co.uk/wfau/maven/firethorn/uk/ac/roe/wfau/
+    wget "${base:?}/firethorn-integration-tests/${version:?}/firethorn-integration-tests-${version:?}.zip"
+
+    unzip "firethorn-integration-tests-${version:?}.zip"
+
+# -----------------------------------------
+# Fix the test script location.
+#[root@virtual]
+
+    # /root/.. is hard coded
+    # source /root/chain.properties
+    # chmod a+r "/root/tests/test01-nohup.sh" 
+
+    mv scripts/tests    /root/
+    mv scripts/setup    /root/
+    mv scripts/run.sh   /root/
+
+# -----------------------------------------
+# Run our test scripts.
+#[root@virtual]
+
+    source run.sh 01 "${version:?}"
+
+# -----------------------------------------
+# Tail the Pyrothorn log file.
+#[root@virtual]
+
+
+    #
+    # * pyrologs is set in create-chain.sh
+
+    tail -f "${pyrologs}/logfile.txt" 
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------
+# Copy scripts from local to VM
+#
+   source "${HOME:?}/firethorn.settings"
+   pushd "${FIRETHORN_CODE:?}"
+
+       scp -r integration/005/scripts/* root@hebenu:/root/
+
+   popd
+
+
+
+
+

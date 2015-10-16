@@ -1,0 +1,481 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------
+# Automated build
+#
+
+    #
+    # Missing licence
+    
+        http://osswatch.jiscinvolve.org/wp/2013/05/21/unlicensed-code-movement-or-madness/
+
+    #
+    # Fragile
+    
+        Hard coded paths make things fragile.
+
+        # /root/.. is hard coded
+        # source /root/chain.properties
+        # chmod a+r "/root/tests/test01-nohup.sh" 
+
+        Unpacking the zip file to a different location caused problems.
+        No error checking meak the script carried on.
+
+        Zipfile unpacked to
+
+            /root/scripts/tests
+
+        rather than
+        
+            /root/tests
+
+        Using $0 to detect where the script is helps to make things portable.
+        http://stackoverflow.com/a/242550
+
+        Using $HOME helps to make things portable.
+
+
+    #
+    # Secret function needs update to handle commented out values.
+    # Adding ^ ensures it looks for a line that starts with the key.
+    # Alloing the user to comment out old values with a #
+
+        secret()
+            {
+            local key=${1:?}
+    -       ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/[:space:]*${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+    +       ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^[:space:]*${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+            }
+        
+    # 
+    # Logging
+
+        No logging during the build process makes it hard to monitor.
+        Simple echo statements would be fine.
+        One line describing what it is about to do at each step.
+    
+    #
+    # Error checking
+    
+        No error checking means it continues after an error.
+        It should stop when the Mavan build fails.
+
+    #
+    # Variables set in one script and used in another. 
+
+        pyrologs is set in
+        
+            create-chain.sh
+
+        but is used in 
+
+            test01-integration.sh
+
+        probably best to set it chain properties file
+        
+            chain.properties
+
+        or perhaps have a separate test properties file
+        
+            test.properties
+
+
+    #
+    # Undetected bug in build.sh causes errors later on.
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            docker build \
+                --tag firethorn/fedora:21 \     <-- tagged as fedora:21
+                docker/fedora/21
+
+            docker build \
+                --tag firethorn/java:8 \       <-- depends on fedora:21.1
+                docker/java/8
+
+    #
+    # Maven Java build works
+
+        [INFO] 
+        [INFO] FireThorn project .................................. SUCCESS [01:55 min]
+        [INFO] FireThorn JDBC database drivers .................... SUCCESS [  4.727 s]
+        [INFO] FireThorn Spring ................................... SUCCESS [02:11 min]
+        [INFO] FireThorn logging .................................. SUCCESS [  3.053 s]
+        [INFO] FireThorn testing .................................. SUCCESS [  0.421 s]
+        [INFO] FireThorn CDS components ........................... SUCCESS [  0.393 s]
+        [INFO] FireThorn CDS dependencies ......................... SUCCESS [  0.388 s]
+        [INFO] FireThorn CDS ADQL library ......................... SUCCESS [01:14 min]
+        [INFO] FireThorn OGSA-DAI ................................. SUCCESS [  0.390 s]
+        [INFO] FireThorn OGSA-DAI astronomy extensions ............ SUCCESS [  0.389 s]
+        [INFO] FireThorn OGSA-DAI astronomy extensions (client) ... SUCCESS [  8.613 s]
+        [INFO] Firethorn OGSA-DAI dependencies .................... SUCCESS [  1.263 s]
+        [INFO] FireThorn OGSA-DAI distributed queries ............. SUCCESS [  0.390 s]
+        [INFO] FireThorn OGSA-DAI distributed queries (common) .... SUCCESS [  0.446 s]
+        [INFO] FireThorn OGSA-DAI distributed queries (server) .... SUCCESS [ 12.210 s]
+        [INFO] FireThorn OGSA-DAI metadata ........................ SUCCESS [  0.399 s]
+        [INFO] FireThorn OGSA-DAI metadata service (client) ....... SUCCESS [  2.794 s]
+        [INFO] FireThorn OGSA-DAI astronomy extensions (server) ... SUCCESS [  2.042 s]
+        [INFO] FireThorn OGSA-DAI activity ........................ SUCCESS [  0.396 s]
+        [INFO] FireThorn OGSA-DAI activity (common) ............... SUCCESS [  0.431 s]
+        [INFO] FireThorn OGSA-DAI activity (client) ............... SUCCESS [  4.564 s]
+        [INFO] OGSA-DAI FireThorn components ...................... SUCCESS [  0.388 s]
+        [INFO] OGSA-DAI FireThorn components (common) ............. SUCCESS [  0.432 s]
+        [INFO] OGSA-DAI FireThorn components (server) ............. SUCCESS [  1.667 s]
+        [INFO] FireThorn OGSA-DAI activity (server) ............... SUCCESS [  0.919 s]
+        [INFO] FireThorn OGSA-DAI distributed queries (client) .... SUCCESS [  0.535 s]
+        [INFO] OGSA-DAI FireThorn components (client) ............. SUCCESS [  1.739 s]
+        [INFO] FireThorn OGSA-DAI webapp .......................... SUCCESS [ 19.296 s]
+        [INFO] FireThorn core ..................................... SUCCESS [ 11.249 s]
+        [INFO] FireThorn webapp ................................... SUCCESS [01:00 min]
+        [INFO] ------------------------------------------------------------------------
+        [INFO] BUILD SUCCESS
+        [INFO] ------------------------------------------------------------------------
+        [INFO] Total time: 07:41 min
+        [INFO] Finished at: 2015-10-16T08:03:24-04:00
+        [INFO] Final Memory: 60M/264M
+        [INFO] ------------------------------------------------------------------------
+
+
+    #
+    # Maven download issue ?
+    # Probably not a proble .. but worth investigating if it reoccurs.
+
+        Downloading: https://oss.sonatype.org/content/repositories/snapshots/com/github/jnr/jffi/1.3.0-SNAPSHOT/maven-metadata.xml
+        Downloaded: https://oss.sonatype.org/content/repositories/snapshots/com/github/jnr/jffi/1.3.0-SNAPSHOT/maven-metadata.xml (981 B at 0.8 KB/sec)
+        [WARNING] Could not transfer metadata com.github.jnr:jffi:1.3.0-SNAPSHOT/maven-metadata.xml from/to apache-snapshot (https://repository.apache.org/content/groups/snapshots/): java.lang.RuntimeException: Could not generate DH keypair
+        [WARNING] Failure to transfer com.github.jnr:jffi:1.3.0-SNAPSHOT/maven-metadata.xml from https://repository.apache.org/content/groups/snapshots/ was cached in the local repository, resolution will not be reattempted until the update interval of apache-snapshot has elapsed or updates are forced. Original error: Could not transfer metadata com.github.jnr:jffi:1.3.0-SNAPSHOT/maven-metadata.xml from/to apache-snapshot (https://repository.apache.org/content/groups/snapshots/): java.lang.RuntimeException: Could not generate DH keypair
+        Downloading: https://repository.apache.org/content/groups/snapshots/com/github/jnr/jffi/1.3.0-SNAPSHOT/jffi-1.3.0-20150423.192720-1.pom
+        Downloading: https://oss.sonatype.org/content/repositories/snapshots/com/github/jnr/jffi/1.3.0-SNAPSHOT/jffi-1.3.0-20150423.192720-1.pom
+        Downloaded: https://oss.sonatype.org/content/repositories/snapshots/com/github/jnr/jffi/1.3.0-SNAPSHOT/jffi-1.3.0-20150423.192720-1.pom (8 KB at 4.9 KB/sec)
+        [WARNING] Failure to transfer com.github.jnr:jffi/maven-metadata.xml from https://repository.apache.org/content/groups/snapshots/ was cached in the local repository, resolution will not be reattempted until the update interval of apache-snapshot has elapsed or updates are forced. Original error: Could not transfer metadata com.github.jnr:jffi/maven-metadata.xml from/to apache-snapshot (https://repository.apache.org/content/groups/snapshots/): java.lang.RuntimeException: Could not generate DH keypair
+        [WARNING] Failure to transfer com.github.jnr:jffi:1.3.0-SNAPSHOT/maven-metadata.xml from https://repository.apache.org/content/groups/snapshots/ was cached in the local repository, resolution will not be reattempted until the update interval of apache-snapshot has elapsed or updates are forced. Original error: Could not transfer metadata com.github.jnr:jffi:1.3.0-SNAPSHOT/maven-metadata.xml from/to apache-snapshot (https://repository.apache.org/content/groups/snapshots/): java.lang.RuntimeException: Could not generate DH keypair
+        Downloading: https://repository.apache.org/content/groups/snapshots/org/ow2/asm/asm/4.0/asm-4.0.pom
+        Downloading: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/4.0/asm-4.0.pom
+        Downloaded: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/4.0/asm-4.0.pom (2 KB at 21.2 KB/sec)
+        Downloading: https://repository.apache.org/content/groups/snapshots/org/ow2/asm/asm-parent/4.0/asm-parent-4.0.pom
+        Downloading: https://repo.maven.apache.org/maven2/org/ow2/asm/asm-parent/4.0/asm-parent-4.0.pom
+
+
+    #
+    # Maven Docker build fails, unable to find precursor container.
+    # Caused by a bug in the initial container build sequence.
+        
+        [INFO] {"stream":"Step 0 : FROM firethorn/tomcat:8.1\n"}
+        [INFO] {"stream":"Trying to pull repository docker.io/firethorn/tomcat ..."}
+        [INFO] {"status":" not found"}
+        [INFO] {"errorDetail":{"message":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"},"error":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"}
+        [INFO] ------------------------------------------------------------------------
+        [INFO] BUILD FAILURE
+        [INFO] ------------------------------------------------------------------------
+        [INFO] Total time: 01:34 min
+        [INFO] Finished at: 2015-10-16T08:05:00-04:00
+        [INFO] Final Memory: 19M/267M
+        [INFO] ------------------------------------------------------------------------
+        [ERROR] Failed to execute goal com.alexecollins.docker:docker-maven-plugin:2.3.1:package (default-cli) on project firethorn-ogsadai-webapp: {"errorDetail":{"message":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"},"error":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"} -> [Help 1]
+
+
+        [INFO] {"stream":"Step 0 : FROM firethorn/tomcat:8.1\n"}
+        [INFO] {"stream":"Trying to pull repository docker.io/firethorn/tomcat ..."}
+        [INFO] {"status":" not found"}
+        [INFO] {"errorDetail":{"message":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"},"error":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"}
+        [INFO] ------------------------------------------------------------------------
+        [INFO] BUILD FAILURE
+        [INFO] ------------------------------------------------------------------------
+        [INFO] Total time: 7.633 s
+        [INFO] Finished at: 2015-10-16T08:05:10-04:00
+        [INFO] Final Memory: 20M/212M
+        [INFO] ------------------------------------------------------------------------
+        [ERROR] Failed to execute goal com.alexecollins.docker:docker-maven-plugin:2.3.1:package (default-cli) on project firethorn-webapp: {"errorDetail":{"message":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"},"error":"Tag 8.1 not found in repository docker.io/firethorn/tomcat"} -> [Help 1]
+
+    #
+    # Build should exit when the Maven build fails.
+
+
+    #
+    # Bug in the build process means it ends up ignoring all the local builds and
+    # resorts to downloading all of the containers from the main Docker registry.
+
+        Unable to find image 'firethorn/sql-proxy:1' locally
+        Trying to pull repository docker.io/firethorn/sql-proxy ...
+        7eb7563eb21b: Download complete 
+        ....
+        ....
+        5b766a2ff975: Download complete 
+        Status: Downloaded newer image for docker.io/firethorn/sql-proxy:1
+        26743edcffb45a82036381d7047881fda848515c65c12421ef98399603a5cd7f
+        e7a28a7367bc5c8adfd06bc5c41db3c12563f98fb8593a9cfc8465c9f69b14d1
+
+        Unable to find image 'firethorn/ogsadai:1.13.17-zrq-job-control' locally
+        1.13.17-zrq-job-control: Pulling from docker.io/firethorn/ogsadai
+        e26efd418c48: Pull complete 
+        ....
+        ....
+        4443136c2c39: Pull complete 
+        48ecf305d2cf: Already exists 
+        Digest: sha256:de8cc5ce19d52907e6fbaeac7b48a578fb360a8a8d82d38db3f6cb52f468d67d
+        Status: Downloaded newer image for docker.io/firethorn/ogsadai:1.13.17-zrq-job-control
+        7b020fe3a3f74b241d57a2b4a96043e2c38bef7a87b42c9e2ff47696ec836b1c
+
+        Unable to find image 'firethorn/firethorn:1.13.17-zrq-job-control' locally
+        1.13.17-zrq-job-control: Pulling from docker.io/firethorn/firethorn
+        00e77f3b672f: Pull complete 
+        ....
+        ....
+        27919939b93d: Already exists 
+        Digest: sha256:3546296ec211531662789b39bf74e2efdb2ba93d6f25f71f760d6f8e188bd954
+        Status: Downloaded newer image for docker.io/firethorn/firethorn:1.13.17-zrq-job-control
+        6aeb418aba9080694b21b8d7cb56fd3b0c6105fe3afa5c56606f4b4b1050c30b
+        515c4a2efe84400cee003f0319922c9a908413d6559d8115a542e185e00116c8
+
+        Unable to find image 'firethorn/pyrosql:latest' locally
+        Trying to pull repository docker.io/firethorn/pyrosql ...
+        30c726953ba1: Download complete 
+        ....
+        ....
+        5b97662734c0: Download complete 
+        Status: Downloaded newer image for docker.io/firethorn/pyrosql:latest
+        8ba8fdd8b42a59533bddc715162ebf4d3aecf43545d72cd173077b1274fe039c
+
+        Unable to find image 'firethorn/pyrothorn:latest' locally
+        latest: Pulling from docker.io/firethorn/pyrothorn
+        f3c84ac3a053: Pull complete 
+        ....
+        ....
+        511136ea3c5a: Already exists 
+        Digest: sha256:66e58fb9da77c99040acefa9b6fb3ae7b1ab265643c5d4debfb84d4909f4cea1
+        Status: Downloaded newer image for docker.io/firethorn/pyrothorn:latest
+        59f152965a4f25158628cb5e9cf6897e3672b7585c41e4f01bf7a977efb16b13
+
+# -----------------------------------------
+# Pyrothorn testong
+#
+
+
+    #
+    # User instructions ?
+
+        I figured out how to monitor what it was doing by reading the source code
+        to find out where the logfile was mapped to.
+
+        Is this right ?
+
+            #
+            # Follow the Pyrothorn log        
+            tail -f "${pyrologs}/logfile.txt" 
+
+    #
+    # Executable properties file
+    
+        Using executable Python for the configuration file feels icky
+        .. is this best practice ?
+
+        Perhaps JSON or YAML ?
+        https://stackoverflow.com/questions/5055042/whats-the-best-practice-using-a-settings-file-in-python
+
+
+        
+    #
+    # Complex config file
+    
+        The Pyrothon propeties file combines lots of complex rarely changed values
+        and the few specific values we do need to change.
+        
+        Perhaps have the majority of the properties set in a defaults file and the
+        local config only has the specific values we need change for this test.
+
+    #
+    # Displaying the execution time (end - start) for each query would be useful. 
+    # Comparing the execution time for Pyrothorn and Firethorn would be interesting. 
+
+        2015-10-16 12:44:26,844 - root - INFO - ---------------------- Starting Query Test ----------------------
+        2015-10-16 12:44:26,845 - root - INFO - Starting sql query :::2015-10-16 12:44:26
+        2015-10-16 12:44:54,842 - root - INFO - Completed sql query :::2015-10-16 12:44:54
+        2015-10-16 12:44:54,842 - root - INFO - SQL Query: 1000 row(s) returned. 
+    +   2015-10-16 12:44:54,842 - root - INFO - SQL Query: 28s execution time. 
+        2015-10-16 12:44:54,842 - root - INFO - 
+        2015-10-16 12:44:54,842 - root - INFO - Started Firethorn job :::2015-10-16 12:44:54
+        2015-10-16 12:44:55,155 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/262152
+        2015-10-16 12:44:59,232 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/262152
+        2015-10-16 12:44:59,358 - root - INFO - Finished Firethorn job :::2015-10-16 12:44:59
+        2015-10-16 12:44:59,359 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+    +   2015-10-16 12:44:59,359 - root - INFO - Firethorn Query: 5s execution time. 
+        2015-10-16 12:44:59,359 - root - INFO - 
+    +   2015-10-16 12:44:59,359 - root - INFO - Query execution time (SQL):  5s
+    +   2015-10-16 12:44:59,359 - root - INFO - Query execution time (FT) : 28s
+        2015-10-16 12:44:59,359 - root - INFO - ---------------------- End Query Test ----------------------
+        2015-10-16 12:44:59,359 - root - INFO - Query Successful !!
+
+    #
+    # Displaying the elapsed time and average execution time would be useful.
+
+        2015-10-16 13:08:44,745 - root - INFO - Total queries: 18
+        2015-10-16 13:08:44,745 - root - INFO - Total unique queries: 15
+        2015-10-16 13:08:44,746 - root - INFO - Total failed: 0
+
+    +   2015-10-16 13:08:44,746 - root - INFO - Total test runtime: xxxh xxxm xxxs
+    +   2015-10-16 13:08:44,746 - root - INFO - Average query execution time (SQL) : xxxs 
+    +   2015-10-16 13:08:44,746 - root - INFO - Average query execution time (FT)  : xxxs
+
+
+    #
+    # Is everything either 0 or 1000 rows ?
+    grep 'row(s) returned'  "${pyrologs}/logfile.txt"
+
+        2015-10-16 12:14:26,169 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 12:17:30,517 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 12:20:13,601 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 12:22:48,678 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 12:25:29,784 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 12:28:04,574 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 12:30:01,792 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 12:30:08,387 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 12:31:45,313 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 12:31:51,927 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 12:34:57,846 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 12:35:04,397 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 12:36:50,764 - root - INFO - SQL Query: 0 row(s) returned. 
+        2015-10-16 12:39:10,593 - root - INFO - Firethorn Query: 0 row(s) returned. 
+        2015-10-16 12:42:05,198 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 12:44:26,674 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 12:44:54,842 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 12:44:59,359 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 12:44:59,537 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 12:45:04,625 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+
+    #
+    # Does SQL take 2m41s and Firethorn take just 42s to run the same query ?
+    # Note - executing the same query on the live system takes several minuites.
+
+
+        2015-10-16 13:01:38,328 - root - INFO - Query : select   ra as radeg,dec as decdeg,framesetid,gpetromag,rpetromag,gapermag4,rapermag4,gppErrBits, rpperrbits  from atlasSource where gpetromag>0 and   gpetromag<22 and ra>180 and ra<230 and dec>-8 and dec<-4
+        2015-10-16 13:01:38,331 - root - INFO - ---------------------- Starting Query Test ----------------------
+        2015-10-16 13:01:38,331 - root - INFO - Starting sql query :::2015-10-16 13:01:38
+        2015-10-16 13:04:43,392 - root - INFO - Completed sql query :::2015-10-16 13:04:43
+        2015-10-16 13:04:43,393 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 13:04:43,393 - root - INFO - 
+        2015-10-16 13:04:43,393 - root - INFO - Started Firethorn job :::2015-10-16 13:04:43
+        2015-10-16 13:04:46,979 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/262157
+        2015-10-16 13:05:21,169 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/262157
+        2015-10-16 13:05:21,334 - root - INFO - Finished Firethorn job :::2015-10-16 13:05:21
+        2015-10-16 13:05:21,335 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 13:05:21,335 - root - INFO - 
+        2015-10-16 13:05:21,335 - root - INFO - ---------------------- End Query Test ----------------------
+        2015-10-16 13:05:21,335 - root - INFO - Query Successful !!
+
+            13:01:38
+          - 13:04:43
+               03:05
+
+            13:04:43
+          - 13:05:21
+               00:38
+    
+        2015-10-16 13:05:21,477 - root - INFO - Query : select   ra,dec,gpetromag,rpetromag,ipetromag,zpetromag,gapermag4,rapermag4,   iapermag4,zapermag4,mergedclass from atlasSource where gpetromag>0 and   gpetromag<22 and ra>180 and ra<230 and dec>-8 and dec<-4
+        2015-10-16 13:05:21,480 - root - INFO - ---------------------- Starting Query Test ----------------------
+        2015-10-16 13:05:21,480 - root - INFO - Starting sql query  :::2015-10-16 13:05:21
+        2015-10-16 13:08:02,449 - root - INFO - Completed sql query :::2015-10-16 13:08:02
+        2015-10-16 13:08:02,450 - root - INFO - SQL Query: 1000 row(s) returned. 
+        2015-10-16 13:08:02,450 - root - INFO - 
+        2015-10-16 13:08:02,450 - root - INFO - Started Firethorn job :::2015-10-16 13:08:02
+        2015-10-16 13:08:02,853 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/262158
+        2015-10-16 13:08:44,512 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/262158
+        2015-10-16 13:08:44,664 - root - INFO - Finished Firethorn job :::2015-10-16 13:08:44
+        2015-10-16 13:08:44,665 - root - INFO - Firethorn Query: 1000 row(s) returned. 
+        2015-10-16 13:08:44,665 - root - INFO - 
+        2015-10-16 13:08:44,665 - root - INFO - ---------------------- End Query Test ----------------------
+        2015-10-16 13:08:44,665 - root - INFO - Query Successful !!
+
+            13:08:02
+          - 13:05:21
+               02:41
+
+            13:08:02
+          - 13:08:44
+               00:42
+
+    #
+    # Minor semantics - both queries failed, which means the *test* passes.
+
+        2015-10-16 13:42:05,513 - root - INFO - SQL Query: -1 row(s) returned. 
+        ....
+        2015-10-16 13:42:06,601 - root - INFO - Firethorn Query: -1 row(s) returned. 
+        2015-10-16 13:42:06,602 - root - INFO - 
+        2015-10-16 13:42:06,602 - root - INFO - ---------------------- End Query Test ----------------------
+    -   2015-10-16 13:42:06,602 - root - INFO - Query Successful !!
+    +   2015-10-16 13:42:06,602 - root - INFO - Test Successful !!
+
+
+    #
+    # Confusing for the end user - different error types.
+    # SQL fails with a timeout and FT fails with a parser error.
+    # Or should this be listed as a test fail ?
+
+          File "testing/test_firethorn_logged_txt.py", line 64, in raise_timeout
+            raise Timeout.Timeout()
+        Timeout
+        2015-10-16 13:42:05,513 - root - INFO - Completed sql query :::2015-10-16 13:42:05
+        2015-10-16 13:42:05,513 - root - INFO - SQL Query: -1 row(s) returned. 
+
+
+        2015-10-16 13:42:06,601 - root - ERROR - PARSE_ERROR -  Encountered "/". Was expecting one of: "(" "NOT" "COORDSYS" <REGULAR_IDENTIFIER> "\'" "\"" "+" "-" "ABS" "CEILING" "DEGREES" "EXP" "FLOOR" "LOG" "LOG10" "MOD" "PI" "SQUARE" "SIGN" "POWER" "RADIANS" "RAND" "ROUND" "SQRT" "TRUNCATE" "ACOS" "ASIN" "ATAN" "ATAN2" "COS" "COT" "SIN" "TAN" "CONTAINS" "INTERSECTS" "AREA" "COORD1" "COORD2" "DISTANCE" <SCIENTIFIC_NUMBER> <UNSIGNED_FLOAT> <UNSIGNED_INTEGER> <HEX_INTEGER> "COUNT" "AVG" "MAX" "MIN" "SUM" "CAST" "BOX" "CENTROID" "CIRCLE" "POINT" "POLYGON" "REGION" "EXISTS" 
+        2015-10-16 13:42:06,601 - root - INFO - Finished Firethorn job :::2015-10-16 13:42:06
+        2015-10-16 13:42:06,601 - root - INFO - Firethorn Query: -1 row(s) returned. 
+
+    #
+    # If this is the 100 know good, then should we get any errors ?
+    # This should be fixed - so the merge has bugs.
+
+        2015-10-16 14:35:10,364 - root - INFO - Query : SELECT  ATLASsource.*,2*DEGREES(ASIN(sqrt(power(0.9840636176359533-cx,2)+power(0.014415438540307739-cy,2)+power(-0.17723146328158249-cz,2))/2))*60 as distance  FROM ATLASsource WHERE dec > -10.210208382555109 and dec < -10.206875049221775 and RA >= 0.8375659913439305 and RA <= 0.8409529605826224 and ((cx * 0.9840636176359533 + cy * 0.014415438540307739 + cz * -0.17723146328158249 ) >= 0.9999999995769202)
+        2015-10-16 14:35:10,366 - root - INFO - ---------------------- Starting Query Test ----------------------
+        2015-10-16 14:35:10,366 - root - INFO - Starting sql query :::2015-10-16 14:35:10
+        2015-10-16 14:35:10,640 - root - INFO - Completed sql query :::2015-10-16 14:35:10
+        2015-10-16 14:35:10,640 - root - INFO - SQL Query: 1 row(s) returned. 
+        2015-10-16 14:35:10,640 - root - INFO - 
+        2015-10-16 14:35:10,640 - root - INFO - Started Firethorn job :::2015-10-16 14:35:10
+        2015-10-16 14:35:10,793 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/262182
+        2015-10-16 14:35:10,793 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/262182
+        2015-10-16 14:35:10,793 - root - ERROR - PARSE_ERROR -  Encountered "distance". Was expecting one of: "\"" <REGULAR_IDENTIFIER> 
+        Traceback (most recent call last):
+          File "testing/test_firethorn_logged_txt.py", line 247, in test_logged_queries
+            firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
+          File "/home/pyrothorn/src/pyrothorn/queryEngine.py", line 119, in run_query
+            query_loop_results = self.start_query_loop(query_identity)
+          File "/home/pyrothorn/src/pyrothorn/queryEngine.py", line 203, in start_query_loop
+            time.sleep(delay)
+          File "testing/test_firethorn_logged_txt.py", line 64, in raise_timeout
+            raise Timeout.Timeout()
+        Timeout
+        2015-10-16 14:35:10,794 - root - INFO - Finished Firethorn job :::2015-10-16 14:35:10
+        2015-10-16 14:35:10,794 - root - INFO - Firethorn Query: -1 row(s) returned. 
+        2015-10-16 14:35:10,794 - root - INFO - 
+        2015-10-16 14:35:10,794 - root - INFO - ---------------------- End Query Test ----------------------
+        2015-10-16 14:35:10,794 - root - INFO - Query Failed..
+
+
+
+
+
+SELECT     dbo.atlasSource.*
+FROM         dbo.atlasSource
+WHERE     (sourceID & 0xFF = 0x01)
