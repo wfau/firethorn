@@ -50,7 +50,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         docker build \
-            --tag firethorn/fedora:21 \
+            --tag firethorn/fedora:21.1 \
             docker/fedora/21
 
         docker build \
