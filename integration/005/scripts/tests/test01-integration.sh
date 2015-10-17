@@ -132,7 +132,7 @@ docker run -i -t \
     --link "${ogsaname:?}:${ogsalink:?}" \
     --link "${dataname:?}:${datalink:?}" \
     --link "${username:?}:${userlink:?}" \
-       firethorn/pyrothorn bash -c  '/scripts/test01-nohup.sh'
+       firethorn/pyrothorn:${version} bash -c  '/scripts/test01-nohup.sh'
 
 
 

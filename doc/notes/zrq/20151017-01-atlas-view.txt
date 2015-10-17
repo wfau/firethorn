@@ -143,7 +143,6 @@
         popd
     popd
 
-
 # -----------------------------------------
 # Package the scripts as a zipfile
 #[user@desktop]
@@ -176,7 +175,7 @@
     pushd "${FIRETHORN_CODE:?}"
 
         hg add
-        hg comit -m "...."
+        hg commit -m "...."
         hg push
 
     popd

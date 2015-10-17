@@ -82,6 +82,13 @@ version=${version:?}
 EOF
 "
 
+    ssh tau "cat > \"\${HOME:?}/test.properties\" << EOF
+branch=${branch:?}
+version=${version:?}
+EOF
+"
+
+
 # -----------------------------------------
 # Login to the VM.
 #[user@desktop]
@@ -116,6 +123,7 @@ EOF
 
 # -----------------------------------------
 # Fix the test script location.
+# *hard coded location for some of them
 #[root@virtual]
 
     mv scripts/tests    /root/
@@ -126,14 +134,14 @@ EOF
 # Run our test scripts.
 #[root@virtual]
 
+    source "${HOME:?}/test.properties"
+
     source run.sh 01 "${version:?}"
     
 # -----------------------------------------
 # Tail the Pyrothorn log file.
 #[root@virtual]
 
-
-    #
     # * pyrologs is set in create-chain.sh
 
     tail -f "${pyrologs}/logfile.txt" 

@@ -95,7 +95,7 @@ EOF
         --detach \
         --name "docker-proxy" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/docker-proxy:1
+        firethorn/docker-proxy:1.1
 
     dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
 
@@ -144,6 +144,19 @@ EOF
         docker build \
            --tag firethorn/tester:$(getversion) \
            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Build our pyrothorn container.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/pyrothorn:$(getversion) \
+            integration/005/testing/pyrothorn
 
     popd
 
