@@ -72,8 +72,8 @@
     # matter how long the query takes or how many results are returned
     # as long as they are the same. 
 
-    #
-    # Created a view using the SQLServer management tool.
+# -----------------------------------------------------
+# Created a view using the SQLServer management tool.
 
     dbo.atlasSource_1_256
 
@@ -85,4 +85,99 @@
             (sourceID & 0xFF = 0x01)
 
 # -----------------------------------------------------
+# Added the view to the metada.
+# Duplicating the existing table entry and changeing the table name.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+            pushd testing/pyrothorn
+                pushd testing/metadocs
+
+                    gedit ATLASDR1_TablesSchema.xml
+
+                    +   <Table ID="atlasSource_1_256">
+                    +       ....
+                    +       ....
+                    +   </Table>
+
+                popd
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Created an alternative list of queries    
+#[user@desktop]
     
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+            pushd testing/pyrothorn
+                pushd testing/query_logs
+
+                    cp integration_list.txt integration_view.txt
+                    sed -i 's/from *atlassource/from atlassource_1_256/I' integration_view.txt 
+
+                popd
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Modify the config to use the new list
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+            pushd scripts/tests
+
+                gedit test01-integration.sh
+
+                -   logged_queries_txt_file = "testing/query_logs/integration_list.txt" 
+                +   logged_queries_txt_file = "testing/query_logs/integration_view.txt" 
+
+            popd
+        popd
+    popd
+
+
+# -----------------------------------------
+# Package the scripts as a zipfile
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+
+            mvn clean install
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -----------------------------------------
+# Push our changes to Mercurial
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg add
+        hg comit -m "...."
+        hg push
+
+    popd
+
