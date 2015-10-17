@@ -34,7 +34,6 @@ try:
     import base64
     import collections
     import hashlib
-    sys.stdout = open('logs/logfile.txt', 'w')
     
     # get a UUID - URL safe, Base64
     def get_a_uuid():
@@ -44,7 +43,7 @@ try:
         r_uuid = base64.urlsafe_b64encode(uuid.uuid4().bytes)
         return r_uuid.replace('=', '')
 except Exception as e:
-    logging.exception(e)
+    logging.info(e)
 
 class Timeout():
     """Timeout class using ALARM signal."""
@@ -63,7 +62,6 @@ class Timeout():
  
     def raise_timeout(self, *args):
         raise Timeout.Timeout()
-
 
 class test_firethorn(unittest.TestCase):
             
@@ -156,7 +154,7 @@ class test_firethorn(unittest.TestCase):
                 sys_timestamp = ""
                 firethorn_changeset = ""
                 firethorn_version = ""
-	        logging.exception(e)
+	        logging.info(e)
             logging.info("")
        
 
@@ -203,7 +201,7 @@ class test_firethorn(unittest.TestCase):
                         queryid = query_duplicates_found_row[1]
                         query_count = query_duplicates_found_row[2]
                     except Exception as e:
-                        logging.exception(e)
+                        logging.info(e)
                         query_duplicates_found = 0
                         queryid = None
                         query_count = 0
@@ -236,7 +234,9 @@ class test_firethorn(unittest.TestCase):
 	                except Exception as e:
                             if (type(e).__name__=="Timeout"):
                                 test_skipped = True
-                            logging.info("Error caught while running sql query")
+                                logging.info("Timeout reached while running sql query..")
+                            else :
+                                logging.info("Error caught while running sql query")
 
                         
                         logging.info("")
@@ -255,9 +255,10 @@ class test_firethorn(unittest.TestCase):
                         
                         except Exception as e:
                            if (type(e).__name__=="Timeout"):
-                                test_skipped = True
-                                logging.info("Timeout reached..Skipping test")
-                           logging.info("Error caught while running firethorn query..")
+                               test_skipped = True
+                               logging.info("Timeout reached while running firethorn query..")
+                           else :
+                               logging.info("Error caught while running firethorn query..")
 
 
 
@@ -296,8 +297,7 @@ class test_firethorn(unittest.TestCase):
 
 
         except Exception as e:
-            logging.exception(e)    
-        
+            logging.info("..")
         # Test if total queries failed > 0            
         self.assertEqual(self.total_failed , 0, "Total queries failed: " + str(self.total_failed) + " (out of " + str(self.total_queries) +  ")" )
    

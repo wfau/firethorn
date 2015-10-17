@@ -122,7 +122,7 @@ class QueryEngine(object):
             if query_loop_results.get("Code", "") !="":
                 if query_loop_results.get("Code", "") ==-1:
                     error_message = query_loop_results.get("Content", "Error")
-                    logging.exception(error_message)
+                    logging.info(error_message)
                     return (-1,error_message)
             
             if results_adql_url!=None:
@@ -139,20 +139,22 @@ class QueryEngine(object):
                     
                     
                     if len(f.read())>0:
-                       logging.exception('Query exceeded byte size limit.. ')
+                       logging.info('Query exceeded byte size limit.. ')
                        f.close()
                        return (-1,error_message)   
                    
                     f.close()
             else :
-                logging.exception('Query returned an error.. ')
+                logging.info('Query returned an error.. ')
                 return (-1,error_message)
                 
         except Exception as e:
-            logging.exception('Exception caught in run query:')
-            logging.exception(e) 
             if (type(e).__name__=="Timeout"):
                 raise
+            else:
+                logging.info('Exception caught in run query:')
+                logging.info(e)
+
             return (-1, e)
         
         if f!='':
@@ -222,11 +224,10 @@ class QueryEngine(object):
             
         
         except Exception as e:
-            logging.exception('Exception caught in start query loop:')  
-            logging.exception(e)
             if (type(e).__name__=="Timeout"):
                 raise
-     
+            else:
+                logging.info("Exception caught while running Firethorn query")
             return {'Code' :-1,  'Content' : 'Query error: A problem occurred while running your query' }
 
     

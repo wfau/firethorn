@@ -34,8 +34,7 @@ try:
     import base64
     import collections
     import hashlib
-    sys.stdout = open('logs/logfile.txt', 'w')
-
+    
     # get a UUID - URL safe, Base64
     def get_a_uuid():
         '''
@@ -63,7 +62,6 @@ class Timeout():
  
     def raise_timeout(self, *args):
         raise Timeout.Timeout()
-
 
 class test_firethorn(unittest.TestCase):
             
