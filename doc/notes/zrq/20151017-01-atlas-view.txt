@@ -1,0 +1,88 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Integration tests take way too much time.
+    # Need to speed up both SQL and FireThorn queries.
+    
+    #
+    # Experiment - using a view to reduce the row count.
+
+    #
+    # Tested ADQL queries via the live OSA interface.
+
+    #
+    # Example query - takes several minuites
+
+        select
+            ra,
+            dec,
+            gpetromag,
+            rpetromag,
+            ipetromag,
+            zpetromag,
+            gapermag4,
+            rapermag4,
+            iapermag4,
+            zapermag4,
+            mergedclass
+        from
+            atlasSource
+        where
+            gpetromag > 0 and gpetromag < 22
+        and
+            ra > 180 and ra < 230
+        and
+            dec > -8 and dec < -4
+
+    #
+    # Adding an extra 'filter' th the WHERE clause 
+    # significantly reduces execution time.
+    
+        and
+            ((sourceId & 0xFF) = 0x01 )
+
+    #
+    # What are we testing ?
+    # That FireThorn can handle long runnign queires ?
+    # or
+    # That the FireThorn engine behaves the same way as the SQL engine ?
+
+    # If the second case, then as long as *both* engines run the same query
+    # on the same data, and get the same results, then it doesn't
+    # matter how long the query takes or how many results are returned
+    # as long as they are the same. 
+
+    #
+    # Created a view using the SQLServer management tool.
+
+    dbo.atlasSource_1_256
+
+        SELECT
+            dbo.atlasSource.*
+        FROM
+            dbo.atlasSource
+        WHERE
+            (sourceID & 0xFF = 0x01)
+
+# -----------------------------------------------------
+    

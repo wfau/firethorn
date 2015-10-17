@@ -481,6 +481,3 @@
 
 
 
-SELECT     dbo.atlasSource.*
-FROM         dbo.atlasSource
-WHERE     (sourceID & 0xFF = 0x01)
