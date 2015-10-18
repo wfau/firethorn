@@ -110,7 +110,10 @@ class test_firethorn(unittest.TestCase):
                                 data = json.load(data_file)
                             if ('jdbcspace' in data) and ('query_schema' in data) and ('adqlspace' in data):
                                 fEng = pyrothorn.firethornEngine.FirethornEngine(jdbcspace=data['jdbcspace'], adqlspace=data['adqlspace'], query_schema = data['query_schema'], driver= config.driver )
-                                queryrunID = data['queryrunID']
+                                if (config.test_is_continuation):
+                                    queryrunID = data['queryrunID']
+                                else :
+                                    queryrunID = get_a_uuid()
 				logging.info("Firethorn Environment loaded from cached config file: " + config.stored_env_config)
                                 valid_config_found = True
                             else :
