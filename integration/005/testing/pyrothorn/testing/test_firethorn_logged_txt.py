@@ -264,6 +264,8 @@ class test_firethorn(unittest.TestCase):
 
                         test_passed = (sql_row_length == firethorn_row_length)
                         logging.info("---------------------- End Query Test ----------------------")
+                        if test_skipped:
+                            logging.info("Query skipped..")
                         if test_passed:                    
 			    logging.info("Query Successful !!")
 		        else:
@@ -272,8 +274,6 @@ class test_firethorn(unittest.TestCase):
                         if (not test_passed and (not test_skipped)):
 			    self.total_failed = self.total_failed + 1
 
-                        logging.info("")
-                        logging.info("")
                         logging.info("")
 
                         params = (query, queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, firethorn_changeset, sys_platform, sys_timestamp )
@@ -292,7 +292,8 @@ class test_firethorn(unittest.TestCase):
                     logging.info("Total queries: "  + str(self.total_queries))
                     logging.info("Total unique queries: "  + str(self.total_unique_queries))
                     logging.info("Total failed: " + str(self.total_failed))
-
+                    logging.info("")
+                    logging.info("")
 		logging.info("Success percentage: " +  str(round(100-(float(self.total_failed)/float(self.total_unique_queries))*100,2)) + "%")
 
 
