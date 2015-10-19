@@ -55,50 +55,21 @@
     -       ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/[:space:]*${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
     +       ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^[:space:]*${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
             }
-
-    #
-    # Example
-
-        ssh shep 'cat secret.store'
-        
-            #firethorn.user.host=ramses9
-            firethorn.user.host=ramses2
-
-        secret firethorn.user.host
-
-            ramses2
             
     # 
     # Logging
 
         No logging during the build process makes it hard to monitor.
+        The output from the program is fine, but nothing from the test script that cals them.
         One line describing what it is about to do at each step.
         Simple echo statements would be fine.
+    
     
     #
     # Error checking
     
         No error checking means it continues after an error.
         It should stop when the Maven build fails.
-
-    #
-    # Variables set in one script and used in another. 
-
-        pyrologs is set in
-        
-            create-chain.sh
-
-        but is used in 
-
-            test01-integration.sh
-
-        probably best to set it chain properties file
-        
-            chain.properties
-
-        or perhaps have a separate test properties file
-        
-            test.properties
 
     #
     # Undetected bug in build.sh causes errors later on.
@@ -221,69 +192,46 @@
     # Bug in the build process means it ends up ignoring all the local builds and
     # resorts to downloading all of the containers from the main Docker registry.
 
-        Unable to find image 'firethorn/sql-proxy:1' locally
-        Trying to pull repository docker.io/firethorn/sql-proxy ...
-        7eb7563eb21b: Download complete 
-        ....
-        ....
-        5b766a2ff975: Download complete 
-        Status: Downloaded newer image for docker.io/firethorn/sql-proxy:1
-        26743edcffb45a82036381d7047881fda848515c65c12421ef98399603a5cd7f
-        e7a28a7367bc5c8adfd06bc5c41db3c12563f98fb8593a9cfc8465c9f69b14d1
-
         Unable to find image 'firethorn/ogsadai:1.13.17-zrq-job-control' locally
         1.13.17-zrq-job-control: Pulling from docker.io/firethorn/ogsadai
         e26efd418c48: Pull complete 
         ....
         ....
-        4443136c2c39: Pull complete 
-        48ecf305d2cf: Already exists 
-        Digest: sha256:de8cc5ce19d52907e6fbaeac7b48a578fb360a8a8d82d38db3f6cb52f468d67d
-        Status: Downloaded newer image for docker.io/firethorn/ogsadai:1.13.17-zrq-job-control
-        7b020fe3a3f74b241d57a2b4a96043e2c38bef7a87b42c9e2ff47696ec836b1c
 
         Unable to find image 'firethorn/firethorn:1.13.17-zrq-job-control' locally
         1.13.17-zrq-job-control: Pulling from docker.io/firethorn/firethorn
         00e77f3b672f: Pull complete 
         ....
         ....
-        27919939b93d: Already exists 
-        Digest: sha256:3546296ec211531662789b39bf74e2efdb2ba93d6f25f71f760d6f8e188bd954
-        Status: Downloaded newer image for docker.io/firethorn/firethorn:1.13.17-zrq-job-control
-        6aeb418aba9080694b21b8d7cb56fd3b0c6105fe3afa5c56606f4b4b1050c30b
-        515c4a2efe84400cee003f0319922c9a908413d6559d8115a542e185e00116c8
+
+
+    #
+    # Pyrosql and pyrothorn use the 'latest' rather than a specifc tagged version.
 
         Unable to find image 'firethorn/pyrosql:latest' locally
         Trying to pull repository docker.io/firethorn/pyrosql ...
         30c726953ba1: Download complete 
         ....
         ....
-        5b97662734c0: Download complete 
-        Status: Downloaded newer image for docker.io/firethorn/pyrosql:latest
-        8ba8fdd8b42a59533bddc715162ebf4d3aecf43545d72cd173077b1274fe039c
 
         Unable to find image 'firethorn/pyrothorn:latest' locally
         latest: Pulling from docker.io/firethorn/pyrothorn
         f3c84ac3a053: Pull complete 
         ....
         ....
-        511136ea3c5a: Already exists 
-        Digest: sha256:66e58fb9da77c99040acefa9b6fb3ae7b1ab265643c5d4debfb84d4909f4cea1
-        Status: Downloaded newer image for docker.io/firethorn/pyrothorn:latest
-        59f152965a4f25158628cb5e9cf6897e3672b7585c41e4f01bf7a977efb16b13
 
 # -----------------------------------------
-# Pyrothorn testong
+# Pyrothorn testing
 #
 
 
     #
-    # User instructions ?
+    # User instructions  - perhaps a wiki page ?
 
         I figured out how to monitor what it was doing by reading the source code
         to find out where the logfile was mapped to.
 
-        Is this right ?
+        Did I guess right ?
 
             #
             # Follow the Pyrothorn log        
@@ -297,8 +245,6 @@
 
         Perhaps JSON or YAML ?
         https://stackoverflow.com/questions/5055042/whats-the-best-practice-using-a-settings-file-in-python
-
-
         
     #
     # Complex config file
@@ -338,9 +284,9 @@
         2015-10-16 13:08:44,745 - root - INFO - Total unique queries: 15
         2015-10-16 13:08:44,746 - root - INFO - Total failed: 0
 
-    +   2015-10-16 13:08:44,746 - root - INFO - Total test runtime: xxxh xxxm xxxs
-    +   2015-10-16 13:08:44,746 - root - INFO - Average query execution time (SQL) : xxxs 
-    +   2015-10-16 13:08:44,746 - root - INFO - Average query execution time (FT)  : xxxs
+    +   2015-10-16 13:08:44,746 - root - INFO - Total runtime: xxxh xxxm xxxs
+    +   2015-10-16 13:08:44,746 - root - INFO - Average execution time (SQL) : xxxs 
+    +   2015-10-16 13:08:44,746 - root - INFO - Average execution time (FT)  : xxxs
 
 
     #
@@ -446,38 +392,5 @@
         2015-10-16 13:42:06,601 - root - ERROR - PARSE_ERROR -  Encountered "/". Was expecting one of: "(" "NOT" "COORDSYS" <REGULAR_IDENTIFIER> "\'" "\"" "+" "-" "ABS" "CEILING" "DEGREES" "EXP" "FLOOR" "LOG" "LOG10" "MOD" "PI" "SQUARE" "SIGN" "POWER" "RADIANS" "RAND" "ROUND" "SQRT" "TRUNCATE" "ACOS" "ASIN" "ATAN" "ATAN2" "COS" "COT" "SIN" "TAN" "CONTAINS" "INTERSECTS" "AREA" "COORD1" "COORD2" "DISTANCE" <SCIENTIFIC_NUMBER> <UNSIGNED_FLOAT> <UNSIGNED_INTEGER> <HEX_INTEGER> "COUNT" "AVG" "MAX" "MIN" "SUM" "CAST" "BOX" "CENTROID" "CIRCLE" "POINT" "POLYGON" "REGION" "EXISTS" 
         2015-10-16 13:42:06,601 - root - INFO - Finished Firethorn job :::2015-10-16 13:42:06
         2015-10-16 13:42:06,601 - root - INFO - Firethorn Query: -1 row(s) returned. 
-
-    #
-    # If this is the 1000 know good, then should we get any errors ?
-    # This should be fixed - so the merge has bugs.
-
-        2015-10-16 14:35:10,364 - root - INFO - Query : SELECT  ATLASsource.*,2*DEGREES(ASIN(sqrt(power(0.9840636176359533-cx,2)+power(0.014415438540307739-cy,2)+power(-0.17723146328158249-cz,2))/2))*60 as distance  FROM ATLASsource WHERE dec > -10.210208382555109 and dec < -10.206875049221775 and RA >= 0.8375659913439305 and RA <= 0.8409529605826224 and ((cx * 0.9840636176359533 + cy * 0.014415438540307739 + cz * -0.17723146328158249 ) >= 0.9999999995769202)
-        2015-10-16 14:35:10,366 - root - INFO - ---------------------- Starting Query Test ----------------------
-        2015-10-16 14:35:10,366 - root - INFO - Starting sql query :::2015-10-16 14:35:10
-        2015-10-16 14:35:10,640 - root - INFO - Completed sql query :::2015-10-16 14:35:10
-        2015-10-16 14:35:10,640 - root - INFO - SQL Query: 1 row(s) returned. 
-        2015-10-16 14:35:10,640 - root - INFO - 
-        2015-10-16 14:35:10,640 - root - INFO - Started Firethorn job :::2015-10-16 14:35:10
-        2015-10-16 14:35:10,793 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/262182
-        2015-10-16 14:35:10,793 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/262182
-        2015-10-16 14:35:10,793 - root - ERROR - PARSE_ERROR -  Encountered "distance". Was expecting one of: "\"" <REGULAR_IDENTIFIER> 
-        Traceback (most recent call last):
-          File "testing/test_firethorn_logged_txt.py", line 247, in test_logged_queries
-            firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
-          File "/home/pyrothorn/src/pyrothorn/queryEngine.py", line 119, in run_query
-            query_loop_results = self.start_query_loop(query_identity)
-          File "/home/pyrothorn/src/pyrothorn/queryEngine.py", line 203, in start_query_loop
-            time.sleep(delay)
-          File "testing/test_firethorn_logged_txt.py", line 64, in raise_timeout
-            raise Timeout.Timeout()
-        Timeout
-        2015-10-16 14:35:10,794 - root - INFO - Finished Firethorn job :::2015-10-16 14:35:10
-        2015-10-16 14:35:10,794 - root - INFO - Firethorn Query: -1 row(s) returned. 
-        2015-10-16 14:35:10,794 - root - INFO - 
-        2015-10-16 14:35:10,794 - root - INFO - ---------------------- End Query Test ----------------------
-        2015-10-16 14:35:10,794 - root - INFO - Query Failed..
-
-
-
 
 
