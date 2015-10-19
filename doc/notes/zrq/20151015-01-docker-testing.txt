@@ -148,10 +148,9 @@ EOF
 
 
 
-
-
-
-
+https://blog.docker.com/2015/10/registry-proxy-cache-docker-open-source/
 
     
+
+
 

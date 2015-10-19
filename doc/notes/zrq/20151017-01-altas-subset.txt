@@ -1,0 +1,113 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+Total row counts
+
+    atlasSource     57488641
+    atlasMergeLog      74751
+    atlasDetection 418715469
+
+
+Existing indexes
+
+    ra          ra  asc
+    dec         dec asc
+    extSeq      extNum asc, seqNum asc
+    htmid       htmid asc
+    objid       objid asc
+    pk          multiframeid asc, extnum asc, seqnum asc
+
+
+Bin the values based on objId.
+
+    SELECT
+        (objId & 0xFFFF),
+        count(*)
+    FROM
+        ATLASDR1.dbo.atlasDetection
+    WHERE
+        objid > 0
+    GROUP BY
+        (objId & 0xFFFF)
+
+    Looks like a fairly even spread across all the boxes ..
+
+        60616	6372
+        59027	6372
+        57438	6372
+        50537	6372
+        48948	6371
+        23478	6372
+        8087	6375
+        6498	6376
+        16577	6374
+        40458	6370
+        33557	6371
+        31968	6371
+        25067	6371
+        42047	6370
+        14988	6374
+        61967	6372
+        58125	6372
+        58340	6372
+        53477	6372
+        49635	6371
+        49850	6372
+        41145	6370
+
+
+We can't index by a bit wise operation.
+
+    http://sqlperformance.com/2012/08/t-sql-queries/dry-principle-bitwise-operations
+
+Creating a random number for each column is a lot of work :-(
+
+    https://stackoverflow.com/questions/1045138/how-do-i-generate-random-number-for-each-row-in-a-tsql-select
+    http://blogs.lessthandot.com/index.php/DataMgmt/DataDesign/sql-server-set-based-random-numbers/
+
+Create an index by spreading an integer value across the set evenly
+
+    objId & 0xFF would repeat every 256 rows
+    
+Create a new 8 bit column
+
+    mask = (objId & 0xFF)
+
+Selecting a particular value would get 1/256 of the data
+
+    select .. AND (bitmask = 0x01)
+
+Selecting a particular range should be fast
+    4/256 of the data
+
+    select .. AND (bitmask < 4)
+
+So what would the cost be ?
+
+
+
+
+
+
+
+
