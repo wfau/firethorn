@@ -31,14 +31,14 @@ public interface AdqlParserQuery
     /**
      * Get the cleaned input text.
      *
-     */
     public String input();
+     */
 
     /**
      * Get the cleaned text.
      *
-    public String cleaned();
      */
+    public String cleaned();
 
     /**
      * Reset the query state.

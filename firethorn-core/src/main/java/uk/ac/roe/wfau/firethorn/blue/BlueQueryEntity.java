@@ -842,7 +842,7 @@ implements BlueQuery
         return new AdqlParserQuery()
             {
             @Override
-            public String input()
+            public String cleaned()
                 {
                 //
                 // Get the original input.

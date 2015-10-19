@@ -458,7 +458,7 @@ implements AdqlParser
         // Parse the query.
         try {
             final ADQLQuery object = this.parser.parseQuery(
-                subject.input()
+                subject.cleaned()
                 );
             //
             // Reset the query state.

@@ -80,8 +80,7 @@ stored_queries_dbserver_password = "${storedqueriespass:?}"
 stored_queries_dbserver_port = "${storedqueriesport:?}" 
 stored_queries_database = "${storedqueriesdata:?}" 
 stored_queries_query = "select * from webqueries where dbname like 'ATLAS%' and query not like '%dr%' and query not like '%best%'" 
-#logged_queries_txt_file = "testing/query_logs/integration_list.txt" 
-logged_queries_txt_file = "testing/query_logs/integration_view.txt" 
+logged_queries_txt_file = "testing/query_logs/integration_list.txt" 
 
 ### Firethorn Live test Configuration ###
 
