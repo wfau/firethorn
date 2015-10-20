@@ -252,12 +252,14 @@ FROM atlasSource, (SELECT sourceId FROM /**/ atlasSource /**/ WHERE sourceId BET
 from atlasSource as s
 from /**/ (SELECT * FROM /**/ atlasSource /**/ WHERE sourceId BETWEEN 730144440000 AND 730144540000) /**/ as s
 
+FROM atlasSource as a
+from /**/ (SELECT * FROM /**/ atlasSource /**/ WHERE sourceId BETWEEN 730144440000 AND 730144540000) /**/ as a
 
 
 from atlasDetection as d
 from /**/ (SELECT * FROM atlasDetection WHERE objID BETWEEN 0 AND 10000000) /**/ as d
 
-1000000
+select distinct ppErrBits from atlasDetection
 
 
 
@@ -273,4 +275,7 @@ from /**/ (SELECT * FROM atlasDetection WHERE objID BETWEEN 0 AND 10000000) /**/
         CAST((objID / 10000) AS BIGINT)
     ORDER BY
         objID
+
+
+
 
