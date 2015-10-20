@@ -49,41 +49,86 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        docker build \
-            --tag firethorn/fedora:21.1 \
-            docker/fedora/21
+        if [ $(docker images | grep -c '^firethorn/fedora') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Fedora image"
+            docker build \
+                --tag firethorn/fedora:21.1 \
+                docker/fedora/21
+        fi
 
-        docker build \
-            --tag firethorn/java:8.1 \
-            docker/java/8
+        if [ $(docker images | grep -c '^firethorn/java') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Java image"
+            docker build \
+                --tag firethorn/java:8.1 \
+                docker/java/8
+        fi
 
-        docker build \
-            --tag firethorn/tomcat:8.1 \
-            docker/tomcat/8
+        if [ $(docker images | grep -c '^firethorn/tomcat') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Tomcat image"
+            docker build \
+                --tag firethorn/tomcat:8.1 \
+                docker/tomcat/8
+        fi
 
-        docker build \
-            --tag firethorn/postgres:9 \
-            docker/postgres/9
+        if [ $(docker images | grep -c '^firethorn/postgres') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Postgres image"
+            docker build \
+                --tag firethorn/postgres:9 \
+                docker/postgres/9
+        fi
 
-        docker build \
-            --tag firethorn/builder:1.1 \
-            docker/builder
+        if [ $(docker images | grep -c '^firethorn/builder') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Builder image"
+            docker build \
+                --tag firethorn/builder:1.1 \
+                docker/builder
+        fi
 
-        docker build \
-            --tag firethorn/docker-proxy:1.1 \
-            docker/docker-proxy
+        if [ $(docker images | grep -c '^firethorn/docker-proxy') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building docker-proxy image"
+            docker build \
+                --tag firethorn/docker-proxy:1.1 \
+                docker/docker-proxy
+        fi
 
-        docker build \
-            --tag firethorn/sql-proxy:1.1 \
-            docker/sql-proxy
+        if [ $(docker images | grep -c '^firethorn/sql-proxy') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building sql-proxy image"
+            docker build \
+                --tag firethorn/sql-proxy:1.1 \
+                docker/sql-proxy
+        fi
 
-        docker build \
-            --tag firethorn/sql-tunnel:1.1 \
-            docker/sql-tunnel
+        if [ $(docker images | grep -c '^firethorn/sql-tunnel') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building sql-tunnel image"
+            docker build \
+                --tag firethorn/sql-tunnel:1.1 \
+                docker/sql-tunnel
+        fi
 
-        docker build \
-            --tag firethorn/ssh-client:1.1 \
-            docker/ssh-client
+        if [ $(docker images | grep -c '^firethorn/ssh-client') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building ssh-client image"
+            docker build \
+                --tag firethorn/ssh-client:1.1 \
+                docker/ssh-client
+        fi
 
     popd
 
@@ -98,8 +143,9 @@ EOF
         firethorn/docker-proxy:1.1
 
     dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+    echo "docker-proxy [${dockerip:?}]"
 
-    echo "${dockerip:?}"
+    sleep 1
     curl "http://${dockerip:?}:2375/version"
 
 # -----------------------------------------------------
@@ -141,10 +187,14 @@ EOF
 
         source "bin/util.sh"
 
-        docker build \
-           --tag firethorn/tester:$(getversion) \
-           integration/tester
-
+        if [ $(docker images | grep -c '^firethorn/tester') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building tester image"
+            docker build \
+               --tag firethorn/tester:$(getversion) \
+               integration/tester
+        fi
     popd
 
 # -----------------------------------------------------
@@ -154,10 +204,15 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        docker build \
-            --tag firethorn/pyrothorn:$(getversion) \
-            integration/005/testing/pyrothorn
+        if [ $(docker images | grep -c '^firethorn/pyrothorn') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building pyrothorn image"
+            docker build \
+                --tag firethorn/pyrothorn:$(getversion) \
+                integration/005/testing/pyrothorn
 
+        fi
     popd
 
 # -----------------------------------------------------

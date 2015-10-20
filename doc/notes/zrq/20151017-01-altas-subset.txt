@@ -106,8 +106,171 @@ So what would the cost be ?
 
 
 
+Experiments ....
+
+
+    SELECT
+        (sourceId & 0xFFFF),
+        count(*)
+    FROM
+        atlasSource
+    WHERE
+        sourceId > 0
+    GROUP BY
+        (sourceId & 0xFFFF)
 
 
 
 
+
+    SELECT
+        MIN(sourceId),
+        MAX(sourceId),
+        COUNT(sourceId)
+    FROM
+        atlasSource
+    WHERE
+        sourceId BETWEEN 0 AND 1000
+        
+        730144440321
+        730201928961
+            57488641
+
+    SELECT
+        CAST((sourceId / 10000) AS BIGINT) * 10000 AS ident,
+        COUNT(*) AS num
+    FROM
+        atlasSource
+    WHERE
+        sourceId > 0
+    GROUP BY
+        CAST((sourceId / 10000) AS BIGINT)
+
+
+
+    SELECT
+        CAST(ROUND(l*6.0,0) AS INT)/6.0 AS lon,
+        CAST(ROUND(b*6.0,0) AS INT)/6.0 AS lat,
+        COUNT(*) AS num
+    FROM
+        atlasSource,
+        (
+        SELECT
+            CAST((sourceId / 10000) AS BIGINT) * 10000 AS sourceId
+        FROM
+            atlasSource
+        WHERE
+            sourceId > 0
+        GROUP BY
+            CAST((sourceId / 10000) AS BIGINT)
+        ) AS sampled
+    WHERE
+        (priOrSec=0 OR priOrSec=frameSetID)
+    AND
+        atlasSource.sourceId = sampled.sourceId
+    GROUP BY
+        CAST(ROUND(l*6.0,0) AS INT)/6.0,
+        CAST(ROUND(b*6.0,0) AS INT)/6.0
+
+
+    SELECT
+        CAST(ROUND(l*6.0,0) AS INT)/6.0 AS lon,
+        CAST(ROUND(b*6.0,0) AS INT)/6.0 AS lat,
+        COUNT(*) AS num
+    FROM
+        atlasSource,
+        (
+        SELECT
+            CAST((sourceId / 10000) AS BIGINT) * 10000 AS sourceId
+        FROM
+            atlasSource
+        WHERE
+            sourceId > 0
+        GROUP BY
+            CAST((sourceId / 10000) AS BIGINT)
+        ) AS sampled
+    WHERE
+        atlasSource.sourceId = sampled.sourceId
+    AND
+        (priOrSec=0 OR priOrSec=frameSetID)
+    GROUP BY
+        CAST(ROUND(l*6.0,0) AS INT)/6.0,
+        CAST(ROUND(b*6.0,0) AS INT)/6.0
+    ORDER BY
+        lon,
+        lat
+
+
+    SELECT
+        CAST((sourceId / 10000) AS BIGINT) * 10000 AS sourceId,
+        count(*) AS count
+    FROM
+        atlasSource
+    WHERE
+        sourceId > 0
+    GROUP BY
+        CAST((sourceId / 10000) AS BIGINT)
+    ORDER BY
+        sourceId
+
+
+
+    SELECT
+        CAST(ROUND(l*6.0,0) AS INT)/6.0 AS lon,
+        CAST(ROUND(b*6.0,0) AS INT)/6.0 AS lat,
+        COUNT(*) AS num
+    FROM
+        atlasSource,
+        (
+        SELECT
+            sourceId
+        FROM
+            atlasSource
+        WHERE
+            sourceId BETWEEN 730144440000 AND 730144540000
+        ) AS sampled
+    WHERE
+        atlasSource.sourceId = sampled.sourceId
+    AND
+        (priOrSec=0 OR priOrSec=frameSetID)
+    GROUP BY
+        CAST(ROUND(l*6.0,0) AS INT)/6.0,
+        CAST(ROUND(b*6.0,0) AS INT)/6.0
+    ORDER BY
+        lon,
+        lat
+
+
+
+FROM atlasSource WHERE
+FROM atlasSource, (SELECT sourceId FROM /**/ atlasSource /**/ WHERE sourceId BETWEEN 730144440000 AND 730144540000) AS sampled WHERE atlasSource.sourceId = sampled.sourceId AND
+
+
+
+/**/ (SELECT * FROM /**/ atlasSource /**/ WHERE sourceId BETWEEN 730144440000 AND 730144540000) as atlasSource /**/
+
+from atlasSource as s
+from /**/ (SELECT * FROM /**/ atlasSource /**/ WHERE sourceId BETWEEN 730144440000 AND 730144540000) /**/ as s
+
+
+
+from atlasDetection as d
+from /**/ (SELECT * FROM atlasDetection WHERE objID BETWEEN 0 AND 10000000) /**/ as d
+
+1000000
+
+
+
+
+    SELECT
+        CAST((objID / 10000) AS BIGINT) * 10000 AS objID,
+        count(*) AS count
+    FROM
+        atlasDetection
+    WHERE
+        objID > 0
+    GROUP BY
+        CAST((objID / 10000) AS BIGINT)
+    ORDER BY
+        objID
 

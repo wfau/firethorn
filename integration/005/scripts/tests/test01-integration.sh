@@ -80,7 +80,7 @@ stored_queries_dbserver_password = "${storedqueriespass:?}"
 stored_queries_dbserver_port = "${storedqueriesport:?}" 
 stored_queries_database = "${storedqueriesdata:?}" 
 stored_queries_query = "select * from webqueries where dbname like 'ATLAS%' and query not like '%dr%' and query not like '%best%'" 
-logged_queries_txt_file = "testing/query_logs/integration_list.txt" 
+logged_queries_txt_file = "/queries.txt" 
 
 ### Firethorn Live test Configuration ###
 
@@ -95,7 +95,8 @@ jdbccatalogname = '${testrundatabase:?}'
 jdbcschemaname = 'dbo'
 jdbc_resource_user = '${datauser:?}'
 jdbc_resource_pass = '${datapass:?}'
-metadocfile = "testing/metadocs/${testrundatabase:?}_TablesSchema.xml" 
+#metadocfile = "testing/metadocs/${testrundatabase:?}_TablesSchema.xml" 
+metadocfile = "/metadoc.xml" 
 metadocdirectory = "testing/metadocs/" 
 stored_env_config = 'conf/pyrothorn-stored.js'
 
@@ -110,20 +111,30 @@ schema_alias = "${testrundatabase:?}"
 
 EOF
 
-chmod a+r "/root/tests/test01-nohup.sh" 
-chcon -t svirt_sandbox_file_t "/root/tests/test01-nohup.sh" 
+testbase="${HOME:?}/tests"
+testdata="${HOME:?}/tests/test-001"
+
+chmod a+r "${testbase:?}/test01-nohup.sh" 
+chcon -t svirt_sandbox_file_t "${testbase:?}/test01-nohup.sh" 
 
 chmod a+r "${pyroproperties:?}" 
 chcon -t svirt_sandbox_file_t "${pyroproperties:?}" 
 
 mkdir -p /var/logs/${pyroname:?}
 
+chmod a+r "${testdata:?}/metadoc.xml" 
+chmod a+r "${testdata:?}/queries.txt" 
+chcon -t svirt_sandbox_file_t "${testdata:?}/metadoc.xml" 
+chcon -t svirt_sandbox_file_t "${testdata:?}/queries.txt" 
+
 docker run -i -t \
     --name ${pyroname:?} \
     --detach \
     --memory 512M \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
-    --volume /root/tests/test01-nohup.sh:/scripts/test01-nohup.sh \
+    --volume "${testbase:?}/test01-nohup.sh:/scripts/test01-nohup.sh" \
+    --volume "${testdata:?}/metadoc.xml:/metadoc.xml" \
+    --volume "${testdata:?}/queries.txt:/queries.txt" \
     --volume "${pyrologs}:/home/pyrothorn/logs" \
     --link "${firename:?}:${firelink:?}" \
     --link "${pyrosqlname:?}:${pyrosqllink:?}" \

@@ -89,7 +89,10 @@
 # Configure our test VM
 #[user@desktop]
 
-    ssh edfu "cat > \"\${HOME:?}/test.properties\" << EOF
+    vmname=desouk
+    vmname=edfu
+    
+    ssh "${vmname:?}" "cat > \"\${HOME:?}/test.properties\" << EOF
 branch=${branch:?}
 version=${version:?}
 EOF
@@ -99,7 +102,7 @@ EOF
 # Login to the VM.
 #[user@desktop]
 
-    ssh edfu
+    ssh "${vmname:?}"
 
 # -----------------------------------------------------
 # Create our secret function.
@@ -132,9 +135,8 @@ EOF
 # *hard coded location for some of them
 #[root@virtual]
 
-    mv scripts/tests    /root/
-    mv scripts/setup    /root/
-    mv scripts/run.sh   /root/
+    cp -r scripts/*  /root/
+    rm -rf scripts
 
 # -----------------------------------------
 # Run our test scripts.
@@ -150,7 +152,10 @@ EOF
 
     # * pyrologs is set in create-chain.sh
 
+    pyrologs=/var/logs/pyrothorn
     tail -f "${pyrologs}/logfile.txt" 
+
+
 
 
 
