@@ -1,7 +1,8 @@
+echo "*** Initialising test03 script [test03-hist-catalogue.sh] ***"
 
+source ${HOME:?}/chain.properties
 
-source /root/chain.properties
-
+echo "*** Creating pyrothorn properties file [test03-hist-catalogue.sh] ***"
 
 pyroproperties=$(mktemp)
 cat > "${pyroproperties:?}" << EOF
@@ -113,16 +114,18 @@ EOF
 
 chmod a+r "${pyroproperties:?}" 
 chcon -t svirt_sandbox_file_t "${pyroproperties:?}" 
-chmod a+r "/root/tests/test03-nohup.sh"
-chcon -t svirt_sandbox_file_t "/root/tests/test03-nohup.sh"
+chmod a+r "${HOME:?}/tests/test03-nohup.sh"
+chcon -t svirt_sandbox_file_t "${HOME:?}/tests/test03-nohup.sh"
 
 mkdir -p /var/logs/${pyroname:?}
+
+echo "*** Run pyrothorn [test03-hist-catalogue.sh] ***"
 
 docker run -i -t \
     --name ${pyroname:?} \
     --detach \
     --memory 512M \
-    --volume /root/tests/test03-nohup.sh:/scripts/test03-nohup.sh \
+    --volume ${HOME:?}/tests/test03-nohup.sh:/scripts/test03-nohup.sh \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
     --volume "${pyrologs}:/home/pyrothorn/logs" \
     --link "${firename:?}:${firelink:?}" \

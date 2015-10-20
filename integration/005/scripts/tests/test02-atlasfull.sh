@@ -1,7 +1,9 @@
 
+echo "*** Initialising test02 script [test02-atlasfull.sh] ***"
 
-source /root/chain.properties
+source ${HOME:?}/chain.properties
 
+echo "*** Creating pyrothorn properties file [test02-atlasfull.sh] ***"
 
 pyroproperties=$(mktemp)
 cat > "${pyroproperties:?}" << EOF
@@ -113,8 +115,10 @@ EOF
 
 chmod a+r "${pyroproperties:?}" 
 chcon -t svirt_sandbox_file_t "${pyroproperties:?}" 
-chmod a+r "/root/tests/test02-nohup.sh" 
-chcon -t svirt_sandbox_file_t "/root/tests/test02-nohup.sh" 
+chmod a+r "${HOME:?}/tests/test02-nohup.sh" 
+chcon -t svirt_sandbox_file_t "${HOME:?}/tests/test02-nohup.sh" 
+
+echo "*** Run pyrothorn [test02-atlasfull.sh] ***"
 
 docker run -i -t \
     --name ${pyroname:?} \
@@ -122,7 +126,7 @@ docker run -i -t \
     --memory 512M \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
     --volume "${pyrologs}:/home/pyrothorn/logs" \
-    --volume /root/tests/test02-nohup.sh:/scripts/test02-nohup.sh \
+    --volume ${HOME:?}/tests/test02-nohup.sh:/scripts/test02-nohup.sh \
     --link "${firename:?}:${firelink:?}" \
     --link "${pyrosqlname:?}:${pyrosqllink:?}" \
     --link "${storedqueriesname:?}:${storedquerieslink:?}" \

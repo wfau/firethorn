@@ -1,6 +1,8 @@
-    source /root/chain.properties
+    echo "*** Initialising create-chain script [create-chain.sh] ***"
+    source ${HOME:?}/chain.properties
 
 
+    echo "*** Run our userdata ambassador. [create-chain.sh] ***"
 # -----------------------------------------------------
 # Run our userdata ambassador.
 #[root@virtual]
@@ -12,6 +14,7 @@
         --env  "target=${userhost:?}" \
         firethorn/sql-proxy:1
 
+    echo "*** Run our science data ambassador. [create-chain.sh] ***"
 # -----------------------------------------------------
 # Run our science data ambassador.
 #[root@virtual]
@@ -36,6 +39,8 @@
 #        --env "POSTGRES_PASSWORD=${metapass:?}" \
 #       postgres
 
+
+
 # -----------------------------------------------------
 # Create our directory function.
 #[root@virtual]
@@ -54,11 +59,12 @@
 
         }
 
+
+    echo "*** Start our OGSA-DAI container. [create-chain.sh] ***"
 # -----------------------------------------------------
 # Start our OGSA-DAI container.
 #[root@virtual]
 
-    source /root/chain.properties
 
     ogsatemp="/var/temp/${ogsaname:?}"
     ogsalogs="/var/logs/${ogsaname:?}"
@@ -77,11 +83,12 @@
         --volume "${ogsalogs:?}:/var/local/tomcat/logs" \
         firethorn/ogsadai:${version:?}
 
+
+    echo "*** Create our FireThorn config. [create-chain.sh] ***"
 # -----------------------------------------------------
 # Create our FireThorn config.
 #[root@virtual]
 
-    source /root/chain.properties
 
 
 properties=$(mktemp)
@@ -111,7 +118,6 @@ EOF
 # Create our Tomcat setenv script.
 #[root@virtual]
 
-    source /root/chain.properties
 
     setenv=$(mktemp)
     cat > "${setenv:?}" << 'EOF'
@@ -128,11 +134,12 @@ EOF
     chmod a+r "${setenv:?}" 
     chcon -t svirt_sandbox_file_t "${setenv:?}" 
 
+
+    echo "*** Start our FireThorn container. [create-chain.sh] ***"
 # -----------------------------------------------------
 # Start our FireThorn container.
 #[root@virtual]
 
-    source /root/chain.properties
 
     firetemp="/var/temp/${firename:?}"
     firelogs="/var/logs/${firename:?}"

@@ -1,4 +1,4 @@
-
+    echo "*** Initialising build script [build.sh] ***"
 # -----------------------------------------------------
 # Update our path.
 #[root@builder]
@@ -9,6 +9,7 @@
 # -----------------------------------------------------
 # Checkout a copy of our source code.
 #[root@builder]
+    echo "*** Checkout a copy of our source code. [build.sh] ***"
 
     #
     # Set the project path.
@@ -42,6 +43,7 @@ EOF
     
     popd
 
+    echo "*** Build our toolkit containers. [build.sh] ***"
 # -----------------------------------------------------
 # Build our toolkit containers.
 #[root@builder]
@@ -92,6 +94,7 @@ EOF
             integration/005/testing/pyrothorn
     popd
 
+    echo "*** Start docker-proxy container. [build.sh] ***"
 # -----------------------------------------------------
 # Start our docker-proxy container.
 #[root@builder]
@@ -107,6 +110,8 @@ EOF
     echo "${dockerip:?}"
     curl "http://${dockerip:?}:2375/version"
 
+
+    echo "*** Build our webapp services. [build.sh] ***"
 # -----------------------------------------------------
 # Build our webapp services.
 #[root@builder]
@@ -120,6 +125,8 @@ EOF
 
     popd
 
+
+    echo "*** Build our webapp containers. [build.sh] ***"
 # -----------------------------------------------------
 # Build our webapp containers.
 #[root@builder]
@@ -137,6 +144,8 @@ EOF
 
     popd
 
+
+    echo "*** Build our tester container. [build.sh] ***"
 # -----------------------------------------------------
 # Build our tester container.
 #[root@builder]

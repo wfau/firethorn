@@ -1,4 +1,8 @@
 
+  echo "*** Initialising build scripts [setup.sh] ***"
+
+  echo "*** Installing tools [setup.sh] ***"
+   
 # -----------------------------------------
 # Install admin tools.
 #
@@ -14,6 +18,7 @@
     yum install -y haveged
     systemctl start haveged.service
 
+    echo "*** Installing & starting docker [setup.sh] ***"
 # -----------------------------------------------------
 # Install and start Docker.
 #
@@ -29,12 +34,12 @@
 # Remove existing docker containers and images
 #
 
-# Delete all containers
-docker rm -f -v $(docker ps -a -q)
-# Delete all images
-docker rmi -f $(docker images -q)
+    # Delete all containers
+    docker rm -f -v $(docker ps -a -q) 
+    # Delete all images
+    docker rmi -f $(docker images -q)
 
-
+    echo "*** Creating projects & cache directories [setup.sh] ***"
 # -----------------------------------------------------
 # Create our projects directory.
 #
@@ -87,16 +92,16 @@ docker rmi -f $(docker images -q)
         popd
     popd
 
-    chmod a+r "/root/setup/build.sh" 
-    chcon -t svirt_sandbox_file_t "/root/setup/build.sh" 
+    chmod a+r "${HOME:?}/setup/build.sh" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/setup/build.sh" 
  
-    touch /root/chain.properties
-    chmod a+r "/root/chain.properties"
-    chcon -t svirt_sandbox_file_t "/root/chain.properties"
+    touch ${HOME:?}/chain.properties
+    chmod a+r "${HOME:?}/chain.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/chain.properties"
 
+    echo "*** Creating docker chain properties file [setup.sh] ***"
 
-
-    cat > /root/chain.properties << EOF
+    cat > ${HOME:?}/chain.properties << EOF
 
     version=${version:?}
 
@@ -155,10 +160,10 @@ docker rmi -f $(docker images -q)
 
 EOF
 
-    source /root/chain.properties
+    source ${HOME:?}/chain.properties
 
 
-
+    echo "*** Running build container [setup.sh] ***"
 # -----------------------------------------------------
 # Run our build container.
 #
@@ -170,6 +175,6 @@ EOF
         --volume /var/local/cache:/cache \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        --volume /root/setup/build.sh:/build.sh \
+        --volume ${HOME:?}/setup/build.sh:/build.sh \
         firethorn/builder:1 \
         bash ./build.sh

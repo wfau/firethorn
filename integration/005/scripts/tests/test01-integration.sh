@@ -1,7 +1,9 @@
 
+echo "*** Initialising test001 script [test01-integration.sh] ***"
 
-source /root/chain.properties
+source ${HOME:?}/chain.properties
 
+echo "*** Creating pyrothorn properties file [test01-integration.sh] ***"
 
 pyroproperties=$(mktemp)
 cat > "${pyroproperties:?}" << EOF
@@ -110,20 +112,22 @@ schema_alias = "${testrundatabase:?}"
 
 EOF
 
-chmod a+r "/root/tests/test01-nohup.sh" 
-chcon -t svirt_sandbox_file_t "/root/tests/test01-nohup.sh" 
+chmod a+r "${HOME:?}/tests/test01-nohup.sh" 
+chcon -t svirt_sandbox_file_t "${HOME:?}/tests/test01-nohup.sh" 
 
 chmod a+r "${pyroproperties:?}" 
 chcon -t svirt_sandbox_file_t "${pyroproperties:?}" 
 
 mkdir -p /var/logs/${pyroname:?}
 
+echo "*** Run pyrothorn  [test01-integration.sh] ***"
+
 docker run -i -t \
     --name ${pyroname:?} \
     --detach \
     --memory 512M \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
-    --volume /root/tests/test01-nohup.sh:/scripts/test01-nohup.sh \
+    --volume ${HOME:?}/tests/test01-nohup.sh:/scripts/test01-nohup.sh \
     --volume "${pyrologs}:/home/pyrothorn/logs" \
     --link "${firename:?}:${firelink:?}" \
     --link "${pyrosqlname:?}:${pyrosqllink:?}" \
