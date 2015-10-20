@@ -76,15 +76,15 @@ EOF
         source "bin/util.sh"
 
         docker build \
-            --tag firethorn/fedora:21 \
+            --tag firethorn/fedora:21.1\
             docker/fedora/21
 
         docker build \
-            --tag firethorn/java:8 \
+            --tag firethorn/java:8.1 \
             docker/java/8
 
         docker build \
-            --tag firethorn/tomcat:8 \
+            --tag firethorn/tomcat:8.1 \
             docker/tomcat/8
 
         docker build \
