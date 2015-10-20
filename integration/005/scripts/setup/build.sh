@@ -49,6 +49,8 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
+        source "bin/util.sh"
+
         docker build \
             --tag firethorn/fedora:21 \
             docker/fedora/21
@@ -85,6 +87,9 @@ EOF
             --tag firethorn/ssh-client:1 \
             docker/ssh-client
 
+	docker build \
+            --tag firethorn/pyrothorn:$(getversion) \
+            integration/005/testing/pyrothorn
     popd
 
 # -----------------------------------------------------
