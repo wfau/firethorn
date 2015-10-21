@@ -1,0 +1,156 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        devname=zrq-ivoa-resource
+        gedit "doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Code changes ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1.1
+
+    sleep 1
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our source code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Run our tests ....
+#[root@tester]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        gedit "doc/notes/zrq/20150911-03-ivoa-metadata.txt" &
+
+    popd
+
+
+
+# -------------------------------------------------------------------------------------------
+# Test BlueQueries on IvoaResources ....
+#[root@tester]
+
+
+
+
+        #
+        # Create BlueQuery with a valid input and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=
+                SELECT
+                    nualpha,
+                    nudelta
+                FROM
+                    ICECUBE.nucand
+                WHERE
+                    nualpha BETWEEN 263.0 AND 263.9
+                AND
+                    nudelta BETWEEN 19.0 AND 19.9
+                " \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+
+
+
+
+        #
+        # Create BlueQuery with a valid input and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=
+                SELECT
+                    count(*)
+                FROM
+                    GACS.igsl_source
+                WHERE
+                    galactic_lat BETWEEN -3.7 AND -3.6
+                AND
+                    galactic_lon BETWEEN 27.3 AND 27.4
+                " \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+
+

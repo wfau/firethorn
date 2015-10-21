@@ -213,6 +213,10 @@ EOF
     [IvoaResourceLoaderTestCase]   Schema [tap_schema][163894]
     ....
 
+2015-10-21 19:12:27,665 DEBUG [main] [IvoaResourceLoaderTestCase]   Schema [public][163845] 
+2015-10-21 19:12:27,680 DEBUG [main] [IvoaResourceLoaderTestCase]   Schema [icecube][163868] 
+
+
 # -----------------------------------------------------
 # Create our OGSA-DAI resources.
 #[user@desktop]
@@ -284,6 +288,21 @@ EOF
     echo "Info [${fireinfo:?}]"
 
 # -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:1.1 \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
 # Start our test container.
 #[user@desktop]
 
@@ -300,7 +319,7 @@ EOF
         --env "datadriver=${datadriver:?}" \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
-        "firethorn/tester:${version:?}" \
+        "firethorn/tester:1.1" \
         bash
 
 # -----------------------------------------------------

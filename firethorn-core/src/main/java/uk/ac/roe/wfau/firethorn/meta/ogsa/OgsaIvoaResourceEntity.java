@@ -100,7 +100,7 @@ public class OgsaIvoaResourceEntity
     @Component
     @Repository
     public static class OgsaIvoaResourceEntityFactory
-    extends AbstractEntityFactory<OgsaIvoaResource>
+    extends OgsaBaseResourceEntity.EntityFactory<OgsaIvoaResource>
     implements OgsaIvoaResource.EntityFactory
         {
 
