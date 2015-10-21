@@ -1,0 +1,272 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Merge a development branch and test the resulting containers.
+    #
+
+    newversion=2.0.0
+
+# -----------------------------------------------------
+# Merge the changes into main.
+# TODO Move this into the build container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Get the current version
+        devbranch=$(getversion)
+        echo "devbranch [${devbranch:?}]"
+
+        #
+        # Check for changes
+        hg status
+
+        #
+        # Commit local changes
+        # Push/pull the latest changes
+
+        #
+        # Swap to the main branch and get the version.
+        hg update 'default'
+        oldversion=$(getversion)
+
+        echo "devbranch [${devbranch:?}]"
+        echo "oldversion [${oldversion:?}]"
+        echo "newversion [${newversion:?}]"
+
+        #
+        # Merge the dev branch.
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Shutdown and remove any existing containers.
+#[user@desktop]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    sleep 1
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our webapps.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Get our build version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        version=$(getversion)
+        
+    popd
+
+    echo "Version [${version:?}]"
+    
+# -------------------------------------------------------------------------------------------
+# Run our tests ....
+#[root@tester]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        gedit "doc/notes/zrq/20150911-03-ivoa-metadata.txt" &
+
+    popd
+    
+# -------------------------------------------------------------------------------------------
+# Commit our changes into the main branch.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Tag our images as latest.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+
+        docker tag -f "firethorn/firethorn:$(getversion)" "firethorn/firethorn:latest"
+        docker tag -f "firethorn/ogsadai:$(getversion)"   "firethorn/ogsadai:latest"
+        docker tag -f "firethorn/tester:$(getversion)"    "firethorn/tester:latest"
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our containers to our Docker repo.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    docker login
+
+        Username: xxxx
+        Password: yyyy
+        Email:    zzzz
+        Login Succeeded
+
+    docker push "firethorn/firethorn:${version}"
+    docker push "firethorn/ogsadai:${version}"
+    docker push "firethorn/tester:${version}"
+
+    docker push "firethorn/firethorn:latest"
+    docker push "firethorn/ogsadai:latest"
+    docker push "firethorn/tester:latest"
+
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    #
+    # ** needs SSH access to our Maven repo **
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Mercurial repo.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    #
+    # ** needs SSH access to our Hg repo **
+    # Use SSH to clone the Hg repo in VM, before we run the build container.
+    # SSH access means we can push changes back later
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg push
+
+    popd
+
+

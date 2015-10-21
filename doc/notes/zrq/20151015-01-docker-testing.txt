@@ -150,8 +150,6 @@ EOF
 # Tail the Pyrothorn log file.
 #[root@virtual]
 
-    # * pyrologs is set in create-chain.sh
-
     pyrologs=/var/logs/pyrothorn
     tail -f "${pyrologs}/logfile.txt" 
 

@@ -52,7 +52,7 @@
     sqluser=$(secret 'sqlserver.admin.user')
     sqlpass=$(secret 'sqlserver.admin.pass')
 
-    basename=ZRQ$(date '+%Y%m%d')DEV
+    basename=ZRQ$(date '+%Y%m%d%H%M%S')DEV
     metaname="FirethornMetadata\${basename:?}"
     username="FirethornUserdata\${basename:?}"
 
