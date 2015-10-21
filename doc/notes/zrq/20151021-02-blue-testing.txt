@@ -348,6 +348,21 @@ EOF
 #   docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
 
 # -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:1.1 \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
 # Start our test container.
 #[user@desktop]
 
@@ -364,7 +379,7 @@ EOF
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
         --volume /etc/localtime:/etc/localtime:ro \
-        "firethorn/tester:${version:?}" \
+        "firethorn/tester:1.1" \
         bash
 
 # -----------------------------------------------------
