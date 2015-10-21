@@ -35,6 +35,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaResourceLinkFactory;
 
 /**
  * Spring MVC controller for <code>IvoaResource</code>.
@@ -108,7 +109,7 @@ public class IvoaResourceController
         final String ident
         ) throws EntityNotFoundException  {
         log.debug("entity() [{}]", ident);
-        final IvoaResource entity = factories().ivoa().resources().select(
+        final IvoaResource entity = factories().ivoa().resources().entities().select(
             factories().ivoa().resources().idents().ident(
                 ident
                 )

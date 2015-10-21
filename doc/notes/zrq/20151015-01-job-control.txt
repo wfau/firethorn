@@ -1,0 +1,169 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Merge a development branch and test everything.
+    #
+
+    devbranch=1.13.17-zrq-job-control
+
+# -----------------------------------------------------
+# Merge the changes from main.
+# TODO Move this into the build container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Get the current version
+        devbranch=$(getversion)
+        echo "devbranch [${devbranch:?}]"
+
+        #
+        # Check for changes
+        hg status
+
+        #
+        # Commit local changes
+        # Push/pull the latest changes
+
+        #
+        # Merge changes from the main branch.
+        hg merge 'default'
+
+        #
+        # Reset the version.
+        setversion "${devbranch:?}"
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [default] into [branch-${devbranch:?}]"
+
+        #
+        # Resolve merge issues.
+        hg resolve -l
+        ....        
+        hg resolve -m 
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [default] into [branch-${devbranch:?}]"
+
+    popd
+
+# -----------------------------------------------------
+# Get our branch and version number.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        branch=$(hg branch)
+
+        source "bin/util.sh"
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Build our source code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Stop existing containers.
+#[user@desktop]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1.1
+
+    sleep 1
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our containers to our Docker repo.
+#[user@desktop]
+
+    # DO NOT DO THIS
+    # Changes to the main Docker repository means we can no longer delete tags.
+    # Only push release versions, not branch versions.
+#    
+#    docker login
+#
+#        Username: xxxx
+#        Password: yyyy
+#        Email:    zzzz
+#        Login Succeeded
+#
+#    docker push "firethorn/firethorn:${version}"
+#    docker push "firethorn/ogsadai:${version}"
+#    docker push "firethorn/tester:${version}"
+#

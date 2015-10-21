@@ -32,7 +32,6 @@
 
     <!--+
         | MetaData database.
-    <bean id="FireThornMetaData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         +-->
     <bean id="FireThornMetaData" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <!--+
@@ -54,32 +53,5 @@
         <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
 
     </bean>
-
-    <!--+
-        | UserData database.
-    <bean id="FireThornUserData" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <property name="jdbcUrl"     value="${firethorn.user.url}"/>
-        <property name="user"        value="${firethorn.user.user}"/>
-        <property name="password"    value="${firethorn.user.pass}"/>
-        <property name="driverClass" value="${firethorn.user.driver}"/>
-        <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
-        <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:20}" />
-        <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
-    </bean>
-        +-->
-
-    <!--+
-        | SSH tunnel to ROE database server.
-        | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
-    <bean id="RoeATLAS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <property name="jdbcUrl"     value="${firethorn.atlas.url}"/>
-        <property name="user"        value="${firethorn.atlas.user}"/>
-        <property name="password"    value="${firethorn.atlas.pass}"/>
-        <property name="driverClass" value="${firethorn.atlas.driver}"/>
-        <property name="minPoolSize"   value="${firethorn.atlas.c3p0.min.size:5}" />
-        <property name="maxPoolSize"   value="${firethorn.atlas.c3p0.max.size:20}" />
-        <property name="maxIdleTime"   value="${firethorn.atlas.c3p0.max.idle:300}" />
-    </bean>
-        +-->
 </beans>
 

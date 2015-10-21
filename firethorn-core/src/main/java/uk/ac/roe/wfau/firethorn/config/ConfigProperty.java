@@ -29,7 +29,7 @@ public interface ConfigProperty
 extends Entity
     {
     /**
-     * Link factory interface.
+     * {@link Entity.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
@@ -38,7 +38,7 @@ extends Entity
         }
 
     /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -47,7 +47,7 @@ extends Entity
         }
 
     /**
-     * A ConfigProperty factory.
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
@@ -56,28 +56,37 @@ extends Entity
 
         /**
          * Create or update a ConfigProperty.
-         * @param key
-         *      The property key.
-         * @param value
-         *      The property value.
-         * @return
-         *      The corresponding ConfigProperty.
+         * @param key The property key.
+         * @param value The property value.
+         * @return The corresponding ConfigProperty.
          *
          */
         public ConfigProperty create(final URI key, final String value);
 
         /**
          * Select a specific ConfigProperty by key.
-         * @param key
-         *      The property key.
-         * @return
-         *      The corresponding ConfigProperty, or null if none found.
+         * @param key The property key.
+         * @return The corresponding ConfigProperty, or null if none found.
          *
          */
         public ConfigProperty select(final URI key);
 
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends Entity.EntityServices<ConfigProperty>
+        {
+        /**
+         * Our {@link ConfigProperty.EntityFactory} instance.
+         *
+         */
+        public ConfigProperty.EntityFactory entities();
+        }
+    
     /**
      * The property key.
      *

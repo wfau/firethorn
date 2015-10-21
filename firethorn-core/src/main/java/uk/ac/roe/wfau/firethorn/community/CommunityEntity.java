@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.community;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -32,6 +33,7 @@ import javax.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -128,7 +130,7 @@ implements Community
                 return create(
                     uri,
                     name,
-                    factories().jdbc().resources().userdata()
+                    factories().jdbc().resources().entities().userdata()
                     );
                 }
             }
@@ -172,9 +174,62 @@ implements Community
                     )
                 );
             }
+        }
+    
+    /**
+     * {@link AbstractThing.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements Community.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static EntityServices instance ; 
 
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return CommunityEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (CommunityEntity.EntityServices.instance == null)
+                {
+                CommunityEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected Community.IdentFactory idents;
+        private Community.IdentFactory idents;
         @Override
         public Community.IdentFactory idents()
             {
@@ -182,7 +237,7 @@ implements Community
             }
 
         @Autowired
-        protected Community.LinkFactory links;
+        private Community.LinkFactory links;
         @Override
         public Community.LinkFactory links()
             {
@@ -190,12 +245,50 @@ implements Community
             }
 
         @Autowired
-        protected Identity.EntityFactory members;
+        private Community.NameFactory names;
         @Override
-        public Identity.EntityFactory members()
+        public Community.NameFactory names()
             {
-            return members;
+            return this.names;
             }
+
+        @Autowired
+        private Community.EntityFactory entities;
+        @Override
+        public Community.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+        protected Identity.EntityFactory identities;
+        @Override
+        public Identity.EntityFactory identities()
+            {
+            return identities;
+            }
+        }
+
+    @Override
+    protected Community.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return CommunityEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected Community.EntityServices services()
+        {
+        log.debug("services()");
+        return CommunityEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
         }
 
     /**
@@ -246,7 +339,7 @@ implements Community
             @Override
             public Identity create(final String name)
                 {
-                return factories().communities().members().create(
+                return services().identities().create(
                     CommunityEntity.this,
                     name
                     );
@@ -255,20 +348,12 @@ implements Community
             @Override
             public Identity select(final String name)
                 {
-                return factories().communities().members().select(
+                return services().identities().select(
                     CommunityEntity.this,
                     name
                     );
                 }
             };
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().communities().links().link(
-            this
-            );
         }
 
     @ManyToOne(
@@ -293,7 +378,7 @@ implements Community
         log.debug("space(boolean) [{}]", create);
         if ((create) && (this.space == null))
             {
-            this.space = factories().jdbc().resources().userdata() ;
+            this.space = factories().jdbc().resources().entities().userdata() ;
             }
         return this.space;
         }

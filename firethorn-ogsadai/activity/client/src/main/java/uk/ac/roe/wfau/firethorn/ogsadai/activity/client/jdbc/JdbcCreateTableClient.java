@@ -52,7 +52,7 @@ implements ResourceActivity
          * @return The target resource ID.
          *
          */
-        public String ogsaid();
+        public String resource();
 
         /**
          * The table name.
@@ -96,7 +96,7 @@ implements ResourceActivity
             );
         this.setResourceID(
             new ResourceID(
-                param.ogsaid()
+                param.resource()
                 )
             );
 
@@ -120,7 +120,7 @@ implements ResourceActivity
             }
 
         this.results = new SimpleActivityOutput(
-            JdbcCreateTableParam.ACTIVITY_RESULTS
+            JdbcCreateTableParam.ACTIVITY_RESULT
             );
 
         }

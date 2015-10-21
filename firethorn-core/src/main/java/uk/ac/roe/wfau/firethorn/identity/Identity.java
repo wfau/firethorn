@@ -19,7 +19,9 @@ package uk.ac.roe.wfau.firethorn.identity;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
@@ -30,16 +32,7 @@ public interface Identity
 extends Entity, NamedEntity
     {
     /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<Identity>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -48,7 +41,25 @@ extends Entity, NamedEntity
         }
 
     /**
-     * Factory interface.
+     * {@link Entity.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<Identity>
+        {
+        }
+
+    /**
+     * {@link Entity.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends NamedEntity.NameFactory<Identity>
+        {
+        }
+
+    /**
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
@@ -56,13 +67,13 @@ extends Entity, NamedEntity
         {
 
         /**
-         * Create a new Identity.
+         * Create a new {@link Identity}.
          *
          */
         public Identity create(final Community community, final String name);
 
         /**
-         * Select a Identity.
+         * Select a {@link Identity}.
          *
          */
         public Identity select(final Community community, final String name);
@@ -70,22 +81,98 @@ extends Entity, NamedEntity
         }
 
     /**
-     * The parent Community.
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<Identity>
+        {
+        /**
+         * Our {@link Identity.EntityFactory} instance.
+         *
+         */
+        public Identity.EntityFactory entities();
+        }
+
+    /**
+     * The parent {@link Community}.
      *
      */
     public Community community();
 
     /**
-     *  The storage space for this Identity.
-     *
+     * The ADQL spaces for this {@link Identity}.
+     * 
      */
-    public JdbcSchema space();
+    public static interface AdqlSpaces
+    	{
+        /**
+         * The {@link AdqlSchema} spaces for this {@link Identity}.
+         * 
+         */
+        public Iterable<AdqlSchema> select();
+
+        /**
+         * The current {@link AdqlSchema} space for this {@link Identity}.
+         * 
+         */
+        public AdqlSchema current();
+    	
+    	}
 
     /**
-     *  The storage space for this Identity.
-     *
+     * The Jdbc spaces for this {@link Identity}.
+     * 
      */
-    public JdbcSchema space(final boolean create);
+    public static interface JdbcSpaces
+    	{
+        /**
+         * The {@link JdbcSchema} spaces for this {@link Identity}.
+         * 
+         */
+        public Iterable<JdbcSchema> select();
 
+        /**
+         * The current {@link JdbcSchema} space for this {@link Identity}.
+         * 
+         */
+        public JdbcSchema current();
+    	
+    	}
+    
+    /**
+     * The storage spaces for this {@link Identity}.
+     * 
+     */
+    public static interface Spaces
+    	{
+        /**
+         * The ADQL spaces for this {@link Identity}.
+         * 
+         */
+        public AdqlSpaces adql();
+
+        /**
+         * The JDBC spaces for this {@link Identity}.
+         * 
+         */
+        public JdbcSpaces jdbc();
+
+    	}
+
+    /**
+     * The storage spaces for this {@link Identity}.
+     * 
+     */
+    public Spaces spaces();
+
+    /**
+     * Get the {@link Entity} instance linked to the current {@link Thread}.
+     * @todo Move this to a base class.
+     * 
+     */
+    public Identity rebase()
+	throws HibernateConvertException;
+    
     }
 

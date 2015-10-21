@@ -130,19 +130,21 @@ extends AbstractController
         /**
          * Get a URL for the {@link Identity} space.
          * @return A URL for the {@link Identity} space, or null if it does not have space allocated.
-         * @see Identity#space()
+         * @see Identity#jdbcschema()
          *
-         */
-        public String getSpace()
+        public String getSpaces()
             {
-            if (entity().space() != null)
+
+            
+            if (entity().jdbcschema() != null)
                 {
-                return entity().space().link();
+                return entity().jdbcschema().link();
                 }
             else {
                 return null ;
                 }
             }
+         */
         }
 
     /**
@@ -160,7 +162,7 @@ extends AbstractController
         final String ident
         ) throws EntityNotFoundException  {
         return new IdentityBean(
-            factories().identities().select(
+            factories().identities().entities().select(
                 factories().identities().idents().ident(
                     ident
                     )

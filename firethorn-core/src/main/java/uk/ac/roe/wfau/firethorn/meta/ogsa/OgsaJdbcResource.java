@@ -26,41 +26,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  *
  */
 public interface OgsaJdbcResource
-    extends OgsaBaseResource
+extends OgsaBaseResource
     {
-    /**
-     * Factories interface.
-     * 
-     */
-    public static interface Factories
-        {
-
-        /**
-         * Our {@link OgsaJdbcResource.IdentFactory}.
-         *
-         */
-        public OgsaJdbcResource.IdentFactory idents();
-
-        /**
-         * Our {@link OgsaJdbcResource.NameFactory}.
-         *
-        public OgsaJdbcResource.NameFactory names();
-         */
-
-        /**
-         * Our {@link OgsaJdbcResource.LinkFactory}.
-         *
-         */
-        public OgsaJdbcResource.LinkFactory links();
-
-        /**
-         * Our {@link OgsaJdbcResource.EntityFactory}.
-         *
-         */
-        public OgsaJdbcResource.EntityFactory entities();
-        
-        }
-        
     /**
      * {@link Entity.IdentFactory} interface.
      *
@@ -161,6 +128,20 @@ public interface OgsaJdbcResource
          */
         public OgsaJdbcResource primary(final OgsaService service, final JdbcResource source);
         
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<OgsaJdbcResource>
+        {
+        /**
+         * Our {@link OgsaJdbcResource.EntityFactory} instance.
+         *
+         */
+        public OgsaJdbcResource.EntityFactory entities();
         }
     
     /**

@@ -30,7 +30,7 @@ public interface WorkflowResult
      *
      */
     public enum Status {
-        CREATED(),
+        //CREATED(),
         RUNNING(),
         COMPLETED(),
         CANCELLED(),

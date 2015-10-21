@@ -142,7 +142,7 @@ extends AbstractController
         final String ident
         ) throws EntityNotFoundException  {
         return new CommunityBean(
-            factories().communities().select(
+            factories().communities().entities().select(
                 factories().communities().idents().ident(
                     ident
                     )

@@ -22,6 +22,8 @@ import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaTableIdentFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaTableLinkFactory;
 
 /**
  * Bean wrapper for <code>IvoaTable</code>.

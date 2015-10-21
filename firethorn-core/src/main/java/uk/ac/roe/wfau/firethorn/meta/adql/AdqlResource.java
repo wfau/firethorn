@@ -17,6 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -68,27 +73,41 @@ extends BaseResource<AdqlSchema>
          * Create a new {@link AdqlResource}.
          *
          */
-        public AdqlResource create(final String name);
+        public AdqlResource create();
 
         /**
-         * Our local {@link AdqlSchema.EntityFactory} implementation.
-         * @todo - move to services
+         * Create a new {@link AdqlResource}.
+         *
+         */
+        public AdqlResource create(final String name);
+
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<AdqlResource>
+        {
+        /**
+         * Our {@link AdqlResource.EntityFactory} instance.
+         *
+         */
+        public AdqlResource.EntityFactory entities();
+
+        /**
+         * {@link BlueQuery.EntityFactory} instance.
+         *
+         */
+        public BlueQuery.EntityFactory blues();
+
+        /**
+         * {@link AdqlSchema.EntityFactory} instance.
          *
          */
         public AdqlSchema.EntityFactory schemas();
 
-        //TODO - move to services
-        @Override
-        public AdqlResource.IdentFactory idents();
-
-        //TODO - move to services
-        //@Override
-        //public AdqlSchema.NameFactory names();
-
-        //TODO - move to services
-        @Override
-        public AdqlResource.LinkFactory links();
-        
         }
 
     /**
@@ -162,5 +181,39 @@ extends BaseResource<AdqlSchema>
 
     @Override
     public AdqlResource.Metadata meta();
+
+    /**
+     * The {@link BlueQuery}s associated with this {@link AdqlResource}.
+     * 
+     */
+    public interface Blues
+        {
+        /**
+         * Select all the {@link BlueQuery}s.
+         * 
+         */
+        public Iterable<BlueQuery> select();
+
+        /**
+         * Create a new {@link BlueQuery}.
+         * 
+         */
+        public BlueQuery create(final String input)
+        throws InvalidRequestException, InternalServerErrorException;
+
+        /**
+         * Create a new {@link BlueQuery}.
+         * 
+         */
+        public BlueQuery create(final String input, final TaskState next, final Long wait)
+        throws InvalidRequestException, InternalServerErrorException;
+
+        }
+
+    /**
+     * The {@link BlueQuery}s associated with this {@link AdqlResource}.
+     * 
+     */
+    public Blues blues();
     
     }

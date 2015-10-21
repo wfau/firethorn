@@ -63,15 +63,15 @@ implements ConfigProperty.LinkFactory
         }
 
     @Autowired
-    private ConfigProperty.EntityFactory factory ;
+    private ConfigProperty.EntityServices services ;
     @Override
     public ConfigProperty resolve(String link)
         throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
         {
         if (this.matches(link))
             {
-            return factory.select(
-                factory.idents().ident(
+            return services.entities().select(
+                services.idents().ident(
                     link
                     )
                 );

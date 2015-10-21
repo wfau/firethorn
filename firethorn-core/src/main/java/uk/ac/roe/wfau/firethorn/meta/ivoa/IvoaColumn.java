@@ -102,22 +102,26 @@ extends BaseColumn<IvoaColumn>
          */
         public IvoaColumn create(final IvoaTable parent, final IvoaColumn.Metadata meta);
 
-        //TODO - move to services
-        @Override
-        public IvoaColumn.IdentFactory idents();
+        }
 
-        //TODO - move to services
-        //@Override
-        //public IvoaColumn.NameFactory names();
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<IvoaColumn>
+        {
+        /**
+         * Our {@link IvoaColumn.EntityFactory} instance.
+         *
+         */
+        public IvoaColumn.EntityFactory entities();
 
-        //TODO - move to services
-        @Override
+        /**
+         * Our {@link IvoaColumn.AliasFactory} instance.
+         *
+         */
         public IvoaColumn.AliasFactory aliases();
-        
-        //TODO - move to services
-        @Override
-        public IvoaColumn.LinkFactory links();
-
         }
 
     @Override
@@ -128,14 +132,14 @@ extends BaseColumn<IvoaColumn>
     public IvoaResource resource();
 
     /**
-     * The column metadata.
+     * The {@link IvoaColumn} metadata interface.
      *
      */
     public interface Metadata
     extends AdqlColumn.Metadata
         {
         /**
-         * The IVOA metadata.
+         * The IVOA metadata interface.
          * 
          */
         public interface Ivoa
@@ -197,18 +201,42 @@ extends BaseColumn<IvoaColumn>
         public Ivoa ivoa();
         }
 
+    /**
+     * The {@link IvoaColumn} modifier interface.
+     *
+     */
+    public interface Modifier
+    extends AdqlColumn.Modifier
+        {
+        /**
+         * The IVOA modifier interface.
+         *
+         */
+        public interface Ivoa
+        extends IvoaColumn.Metadata.Ivoa
+            {
+            }
+
+        /**
+         * The IVOA modifier.
+         *
+         */
+        public Ivoa ivoa();
+        
+        }
+    
     @Override
-    public IvoaColumn.Metadata meta();
+    public IvoaColumn.Modifier meta();
 
     /**
-     * Update the column properties.
+     * Update the {@link IvoaColumn} properties.
      * 
-     */
     public void update(final IvoaColumn.Metadata meta);
+     */
     
     /**
-     * Update the column properties.
+     * Update the {@link IvoaColumn} properties.
      * 
      */
-    public void update(final IvoaColumn.Metadata.Ivoa ivoa);
+    public void update(final IvoaColumn.Metadata.Ivoa meta);
     }

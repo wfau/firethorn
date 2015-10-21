@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.spring;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
@@ -30,7 +31,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaFactories;
 
 
@@ -83,54 +83,59 @@ public interface ComponentFactories
     public OgsaFactories ogsa();
     
     /**
-     * Our local Identity factory.
+     * Our {@link Identity.EntityServices} instance.
      *
      */
-    public Identity.EntityFactory identities();
+    public Identity.EntityServices identities();
 
     /**
-     * Our local Community factory.
+     * Our {@link Community.EntityServices} instance.
      *
      */
-    public Community.EntityFactory communities();
+    public Community.EntityServices communities();
 
     /**
-     * Our local Operation factory.
+     * Our {@link Operation.EntityServices} instance.
      *
      */
-    public Operation.EntityFactory operations();
+    public Operation.EntityServices operations();
 
     /**
-     * Our local Authentication factory.
+     * Our {@link Authentication.EntityServices} instance.
      *
      */
-    public Authentication.EntityFactory authentications();
+    public Authentication.EntityServices authentication();
 
     /**
-     * Our local ConfigProperty factory.
+     * Our {@link ConfigProperty.EntityServices} instance.
      *
      */
-    public ConfigProperty.EntityFactory config();
+    public ConfigProperty.EntityServices config();
 
     /**
-     * Our generic Job<?> factories.
+     * Our {@link Job.EntityServices} instance.
      *
      */
-    @Deprecated
-    public Job.Services jobs();
+    public Job.EntityServices jobs();
 
     /**
-     * Our TestJob factories.
+     * Our {@link TestJob.EntityServices} instance.
      *
      */
-    public TestJob.Services tests();
+    public TestJob.EntityServices tests();
 
     /**
-     * Our Query factories.
+     * Our {@link AdqlQuery.EntityServices} instance.
      *
      */
-    public AdqlQuery.Services queries();
+    public AdqlQuery.EntityServices queries();
 
+    /**
+     * Our {@link BlueQuery.EntityServices} instance.
+     *
+     */
+    public BlueQuery.EntityServices blues();
+    
     /**
      * Access to the current Context factory.
      *

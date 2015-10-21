@@ -87,26 +87,30 @@ extends BaseColumn<AdqlColumn>
          *
          */
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name);
-
-        
-        //TODO - move to services
-        @Override
-        public AdqlColumn.IdentFactory idents();
-
-        //TODO - move to services
-        //@Override
-        //public AdqlColumn.NameFactory names();
-
-        //TODO - move to services
-        @Override
-        public AdqlColumn.AliasFactory aliases();
-        
-        //TODO - move to services
-        @Override
-        public AdqlColumn.LinkFactory links();
         
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<AdqlColumn>
+        {
+        /**
+         * Our {@link AdqlColumn.EntityFactory} instance.
+         *
+         */
+        public AdqlColumn.EntityFactory entities();
+
+        /**
+         * {@link AdqlColumn.AliasFactory} instance.
+         *
+         */
+        public AdqlColumn.AliasFactory aliases();
+
+        }
+    
     @Override
     public AdqlTable table();
     @Override
@@ -310,16 +314,16 @@ extends BaseColumn<AdqlColumn>
                 }
             }
         }
-    
+
     /**
-     * The {@link AdqlColumn} metadata.
+     * The {@link AdqlColumn} metadata interface.
      *
      */
     public interface Metadata
     extends BaseColumn.Metadata
         {
         /**
-         * The ADQL metadata.
+         * The ADQL metadata interface.
          *
          */
         public interface Adql
@@ -343,17 +347,57 @@ extends BaseColumn<AdqlColumn>
             public Integer arraysize();
 
             /**
-             * The array size (element count).
-             *
-             */
-            public void arraysize(final Integer size);
-            
-            /**
              * The ADQL type.
              *
              */
             public AdqlColumn.AdqlType type();
 
+            /**
+             * The ADQL units.
+             *
+             */
+            public String units();
+
+            /**
+             * The ADQL utype.
+             *
+             */
+            public String utype();
+
+            /**
+             * The column UCD.
+             *
+             */
+            public String ucd();
+
+            }
+        /**
+         * The ADQL metadata.
+         *
+         */
+        public Adql adql();
+        }
+
+    /**
+     * The {@link AdqlColumn} modifier interface.
+     *
+     */
+    public interface Modifier
+    extends AdqlColumn.Metadata
+        {
+        /**
+         * The ADQL modifier interface.
+         *
+         */
+        public interface Adql
+        extends AdqlColumn.Metadata.Adql
+            {
+            /**
+             * The array size (element count).
+             *
+             */
+            public void arraysize(final Integer size);
+            
             /**
              * Set the ADQL type.
              *
@@ -367,40 +411,16 @@ extends BaseColumn<AdqlColumn>
             public void type(final String dtype);
 
             /**
-             * The ADQL units.
-             *
-             */
-            public String units();
-
-            /**
-             * Set the ADQL units.
-             *
-             */
-            public void units(final String unit);
-
-            /**
-             * The ADQL utype.
-             *
-             */
-            public String utype();
-
-            /**
              * Set the ADQL utype.
              *
              */
             public void utype(final String utype);
 
             /**
-             * The ADQL dtype.
-             *
-            public String dtype();
-             */
-
-            /**
-             * The column UCD.
+             * Set the ADQL units.
              *
              */
-            public String ucd();
+            public void units(final String unit);
 
             /**
              * Set the column UCD.
@@ -414,15 +434,22 @@ extends BaseColumn<AdqlColumn>
              */
             @Deprecated
             public void ucd(final String type, final String value);
-            
+
             }
         /**
-         * The ADQL metadata.
+         * The ADQL modifier.
          *
          */
         public Adql adql();
         }
 
     @Override
-    public AdqlColumn.Metadata meta();
+    public AdqlColumn.Modifier meta();
+
+    /**
+     * Update the {@link AdqlColumn} properties.
+     * 
+     */
+    public void update(final AdqlColumn.Metadata.Adql meta);
+
     }

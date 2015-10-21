@@ -176,7 +176,7 @@ extends AbstractComponent
                             period
                             );
                         log.debug("  cutoff   [{}]", date);
-                        final JdbcResource resource = factories().jdbc().resources().userdata();
+                        final JdbcResource resource = factories().jdbc().resources().entities().userdata();
                         log.debug("  resource [{}][{}]", resource.ident(), resource.name());
 
                         for (final JdbcSchema schema : resource.schemas().select())

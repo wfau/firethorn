@@ -1,0 +1,182 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Integration tests take way too much time.
+    # Need to speed up both SQL and FireThorn queries.
+    
+    #
+    # Experiment - using a view to reduce the row count.
+
+    #
+    # Tested ADQL queries via the live OSA interface.
+
+    #
+    # Example query - takes several minuites
+
+        select
+            ra,
+            dec,
+            gpetromag,
+            rpetromag,
+            ipetromag,
+            zpetromag,
+            gapermag4,
+            rapermag4,
+            iapermag4,
+            zapermag4,
+            mergedclass
+        from
+            atlasSource
+        where
+            gpetromag > 0 and gpetromag < 22
+        and
+            ra > 180 and ra < 230
+        and
+            dec > -8 and dec < -4
+
+    #
+    # Adding an extra 'filter' th the WHERE clause 
+    # significantly reduces execution time.
+    
+        and
+            ((sourceId & 0xFF) = 0x01 )
+
+    #
+    # What are we testing ?
+    # That FireThorn can handle long runnign queires ?
+    # or
+    # That the FireThorn engine behaves the same way as the SQL engine ?
+
+    # If the second case, then as long as *both* engines run the same query
+    # on the same data, and get the same results, then it doesn't
+    # matter how long the query takes or how many results are returned
+    # as long as they are the same. 
+
+# -----------------------------------------------------
+# Created a view using the SQLServer management tool.
+
+    dbo.atlasSource_1_256
+
+        SELECT
+            dbo.atlasSource.*
+        FROM
+            dbo.atlasSource
+        WHERE
+            (sourceID & 0xFF = 0x01)
+
+# -----------------------------------------------------
+# Added the view to the metada.
+# Duplicating the existing table entry and changeing the table name.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+            pushd testing/pyrothorn
+                pushd testing/metadocs
+
+                    gedit ATLASDR1_TablesSchema.xml
+
+                    +   <Table ID="atlasSource_1_256">
+                    +       ....
+                    +       ....
+                    +   </Table>
+
+                popd
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Created an alternative list of queries    
+#[user@desktop]
+    
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+            pushd testing/pyrothorn
+                pushd testing/query_logs
+
+                    cp integration_list.txt integration_view.txt
+                    sed -i 's/from *atlassource/from atlassource_1_256/I' integration_view.txt 
+
+                popd
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Modify the config to use the new list
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+            pushd scripts/tests
+
+                gedit test01-integration.sh
+
+                -   logged_queries_txt_file = "testing/query_logs/integration_list.txt" 
+                +   logged_queries_txt_file = "testing/query_logs/integration_view.txt" 
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------
+# Package the scripts as a zipfile
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+
+            mvn clean install
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -----------------------------------------
+# Push our changes to Mercurial
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg add
+        hg commit -m "...."
+        hg push
+
+    popd
+

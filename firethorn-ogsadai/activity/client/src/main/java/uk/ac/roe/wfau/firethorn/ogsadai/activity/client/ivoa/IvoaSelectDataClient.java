@@ -98,7 +98,7 @@ implements ResourceActivity
             }
 
         this.results = new SimpleActivityOutput(
-            IvoaSelectDataParam.ACTIVITY_RESULTS
+            IvoaSelectDataParam.TUPLE_OUTPUT
             );
         }
 

@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -64,6 +65,15 @@ extends BaseSchema<IvoaSchema, IvoaTable>
         }
 
     /**
+     * {@link BaseSchema.NameFactory} interface.
+     *
+     */
+    public static interface NameFactory
+    extends NamedEntity.NameFactory<IvoaSchema>
+        {
+        }
+    
+    /**
      * {@link BaseSchema.EntityFactory} interface.
      *
      */
@@ -76,14 +86,28 @@ extends BaseSchema<IvoaSchema, IvoaTable>
          */
         public IvoaSchema create(final IvoaResource parent, final IvoaSchema.Metadata param);
         
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<IvoaSchema>
+        {
         /**
-         * Our local {@link IvoaTable.EntityFactory} implementation.
-         * @todo Move to services
+         * Our {@link IvoaSchema.EntityFactory} instance.
+         *
+         */
+        public IvoaSchema.EntityFactory entities();
+
+        /**
+         * Our {@link IvoaTable.EntityFactory} instance.
          *
          */
         public IvoaTable.EntityFactory tables();
         }
-
+    
     @Override
     public IvoaResource resource();
 

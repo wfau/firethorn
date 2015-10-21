@@ -28,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
  *   and quota etc.
  *
  */
+@Deprecated
 public interface DataSpace
 //extends Entity
     {

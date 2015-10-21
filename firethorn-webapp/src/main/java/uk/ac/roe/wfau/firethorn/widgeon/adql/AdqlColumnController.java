@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlColumnLinkFactory;
 
 /**
  * Spring MVC controller to handle {@link AdqlColumn} entities.
@@ -104,7 +105,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         final String ident
         ) throws IdentifierNotFoundException {
         log.debug("entity() [{}]", ident);
-        return factories().adql().columns().select(
+        return factories().adql().columns().entities().select(
             factories().adql().columns().idents().ident(
                 ident
                 )

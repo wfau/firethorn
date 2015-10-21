@@ -31,6 +31,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcSchemaLinkFactory;
 
 /**
  * Spring MVC controller for <code>JdbcSchema</code>.
@@ -99,7 +100,7 @@ public class JdbcSchemaController
         final String ident
         ) throws EntityNotFoundException {
         log.debug("schema() [{}]", ident);
-        return factories().jdbc().schemas().select(
+        return factories().jdbc().schemas().entities().select(
             factories().jdbc().schemas().idents().ident(
                 ident
                 )

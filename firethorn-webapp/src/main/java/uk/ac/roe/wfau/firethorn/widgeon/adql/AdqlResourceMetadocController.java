@@ -43,6 +43,7 @@ import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
 
 /**
  *
@@ -116,7 +117,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final String ident
         ) throws IdentifierNotFoundException {
         log.debug("parent() [{}]", ident);
-        return factories().adql().resources().select(
+        return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
                 ident
                 )

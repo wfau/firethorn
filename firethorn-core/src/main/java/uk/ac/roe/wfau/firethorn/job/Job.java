@@ -32,45 +32,7 @@ public interface Job
 extends Entity
     {
     /**
-     * Our local service implementations.
-     *
-     */
-    public interface Services
-        {
-        /**
-         * Our LinkFactory.
-         *
-         */
-        public LinkFactory links();
-
-        /**
-         * Our IdentFactory.
-         *
-         */
-        public IdentFactory idents();
-
-        /**
-         * Our Job resolver.
-         *
-         */
-        public Resolver resolver();
-
-        /**
-         * Our Job executor.
-         *
-         */
-        public Executor executor();
-
-        }
-
-    /**
-     * Our local service implementations.
-     *
-    public Services services();
-     */
-
-    /**
-     * Link factory interface.
+     * {@link Entity.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
@@ -79,17 +41,16 @@ extends Entity
         }
 
     /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
-    @Deprecated
     public static interface IdentFactory
     extends Entity.IdentFactory<Job>
         {
         }
 
     /**
-     * Job resolver interface.
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface Resolver
@@ -160,6 +121,26 @@ extends Entity
 
         }
 
+    /**
+     * {@link Job.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    	{
+		/**
+		 * Our {@link Job.Resolver} instance.
+		 *
+		 */
+		public Resolver resolver();
+		
+		/**
+		 * Our {@link Job.Executor} instance.
+		 *
+		 */
+		public Executor executor();
+
+    	}
+    
     /**
      * Job status indicator.
      *
@@ -248,10 +229,10 @@ extends Entity
     public DateTime started();
 
     /**
-     * The date/time the Job was finished.
+     * The date/time the Job was completed.
      *
      */
-    public DateTime finished();
+    public DateTime completed();
 
     /**
      * Validate the Job parameters.

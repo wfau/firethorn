@@ -39,31 +39,24 @@ public interface OgsaFactories
      * Our {@link OgsaService} factory.
      * 
      */
-    public OgsaService.EntityFactory services();
+    public OgsaService.EntityServices services();
 
     /**
-     * Our resource factories.
+     * Our {@link OgsaJdbcResource} factory.
      * 
      */
-    public interface Factories
-        {
-        /**
-         * Our {@link OgsaJdbcResource} factory.
-         * 
-         */
-        public OgsaJdbcResource.EntityFactory jdbc();
-
-        /**
-         * Our {@link OgsaIvoaResource} factory.
-         * 
-         */
-        public OgsaIvoaResource.EntityFactory ivoa();
-        }
+    public OgsaJdbcResource.EntityServices jdbc();
 
     /**
-     * Our resource factories.
+     * Our {@link OgsaIvoaResource} factory.
      * 
      */
-    public Factories factories();
+    public OgsaIvoaResource.EntityServices ivoa();
+
+    /**
+     * Our {@link OgsaExecResource} factory.
+     * 
+     */
+    public OgsaExecResource.EntityServices exec();
     
     }

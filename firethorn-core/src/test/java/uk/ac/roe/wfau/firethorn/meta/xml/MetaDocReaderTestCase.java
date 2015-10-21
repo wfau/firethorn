@@ -54,14 +54,14 @@ extends TestBase
         {
         //
         // Create our JDBC resources.
-        resource = factories().jdbc().resources().create(
+        resource = factories().jdbc().resources().entities().create(
             "TWOMASS",
             "twomass",
             "spring:RoeTWOMASS"
             );
         //
         // Create our ADQL workspace.
-        workspace = factories().adql().resources().create(
+        workspace = factories().adql().resources().entities().create(
             "workspace"
             );
         }

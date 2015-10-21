@@ -26,9 +26,6 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
@@ -36,6 +33,7 @@ import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -85,7 +83,7 @@ implements BaseComponent
         public Period scanperiod()
             {
             log.debug("scanperiod()");
-            log.debug("  scanperiod [{}]", scanperiod);
+            log.debug("  value [{}]", this.scanperiod);
             return scanperiod ;
             }
 
@@ -93,12 +91,12 @@ implements BaseComponent
          * The default re-scan period.
          * 
          */
-        public void scanperiod(final Period value)
+        public void scanperiod(final Period next)
             {
             log.debug("scanperiod(Period)");
-            log.debug("  value      [{}]", value);
-            log.debug("  scanperiod [{}]", scanperiod);
-            this.scanperiod = value;
+            log.debug("  prev [{}]", this.scanperiod);
+            log.debug("  next [{}]", next);
+            this.scanperiod = next;
             }
 
         /**
@@ -106,15 +104,17 @@ implements BaseComponent
          * 
          */
         @Value("${firethorn.meta.scan:PT25H}")
-        public void scanperiod(final String value)
+        public void scanperiod(final String next)
             {
             log.debug("scanperiod(String)");
-            log.debug("  value      [{}]", value);
-            log.debug("  scanperiod [{}]", scanperiod);
-            if (value != null)
+            log.debug("  prev [{}]", this.scanperiod);
+            log.debug("  next [{}]", next);
+            if (next != null)
                 {
-                this.scanperiod = new Period(
-                    value
+                this.scanperiod(
+                    new Period(
+                        next
+                        )
                     );
                 }
             else {
@@ -374,15 +374,19 @@ implements BaseComponent
         {
         if (this.scanperiod != null)
             {
+            log.debug("Entity scanperiod  [{}]", this.scanperiod);
             return this.scanperiod;
             }
         else {
             BaseComponent.EntityFactory<?> factory = (BaseComponent.EntityFactory<?>) this.factory();
             if (factory != null)
                 {
-                return factory.scanperiod();
+                final Period result = factory.scanperiod();
+                log.debug("Factory scanperiod  [{}]", result);
+                return result ;
                 }
             else {
+                log.error("Null factory - null scanperiod");
                 return null ;
                 }
             }
@@ -401,8 +405,8 @@ implements BaseComponent
         log.debug("scantest for [{}][{}]", this.ident(), this.name());
 
         boolean result = false ;
-        DateTime prev   = scandate()   ; 
-        Period   period = scanperiod() ;
+        DateTime prev   = this.scandate()   ; 
+        Period   period = this.scanperiod() ;
 
         log.debug("prevscan   [{}]", prev);
         log.debug("scanperiod [{}]", period);

@@ -42,10 +42,10 @@ implements AdqlQuery.Timings
     {
 
     /**
-     * Protected constructor.
+     * Public constructor.
      * 
      */
-    protected AdqlQueryTimings()
+    public AdqlQueryTimings()
         {
         log.debug("AdqlQueryStats()");
         }

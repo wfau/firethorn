@@ -46,7 +46,7 @@ public class JdbcResourceInportTestCase
         {
         log.debug("Catalog [{}]",catalog);
 
-        final JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().entities().create(
             "test:ogsa",
             "test:resource",
             "spring:RoeATLAS"
@@ -114,7 +114,7 @@ public class JdbcResourceInportTestCase
     public void test003()
     throws Exception
         {
-        final JdbcResource created = factories().jdbc().resources().create(
+        final JdbcResource created = factories().jdbc().resources().entities().create(
             "TWOMASS",
             "test:atlas",
             "spring:RoeATLAS"

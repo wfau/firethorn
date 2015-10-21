@@ -33,9 +33,9 @@ extends AbstractLinkFactory<EntityType>
 implements Entity.LinkFactory<EntityType>
     {
 
-    public static final String IDENT_FIELD = "ident" ;
-    public static final String IDENT_TOKEN = "{ident}" ;
-    public static final String IDENT_REGEX = "\\{ident\\}" ;
+    //public static final String IDENT_FIELD = "ident" ;
+    //public static final String IDENT_TOKEN = "{ident}" ;
+    //public static final String IDENT_REGEX = "\\{ident\\}" ;
 
     @Value("${firethorn.webapp.baseurl:null}")
     private String baseurl ;

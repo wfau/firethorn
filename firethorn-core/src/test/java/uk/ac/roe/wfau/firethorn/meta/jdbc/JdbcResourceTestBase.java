@@ -54,12 +54,11 @@ extends TestBase
     public void before()
     throws Exception
         {
-        this.jdbcResource = factories().jdbc().resources().create(
+        this.jdbcResource = factories().jdbc().resources().entities().create(
             "test:catalog",
             "test:resource",
             "test:database"
             );
         }
-
     }
 

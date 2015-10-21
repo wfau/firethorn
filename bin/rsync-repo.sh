@@ -28,7 +28,7 @@
 source "${HOME:?}/firethorn.settings"
 
 #
-# Update the Maven repo location.
+# Set the Maven repo location.
 MAVEN_REPO=${MAVEN_REPO:-"${HOME:?}/.m2/repository"}
 
 #

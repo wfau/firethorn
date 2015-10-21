@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -30,8 +31,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +38,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
@@ -173,30 +174,6 @@ public class JdbcResourceEntity
                 );
             }
 
-        @Autowired
-        protected JdbcSchema.EntityFactory schemas;
-        @Override
-        public JdbcSchema.EntityFactory schemas()
-            {
-            return this.schemas;
-            }
-
-        @Autowired
-        protected JdbcResource.IdentFactory idents ;
-        @Override
-        public JdbcResource.IdentFactory idents()
-            {
-            return this.idents ;
-            }
-
-        @Autowired
-        protected JdbcResource.LinkFactory links;
-        @Override
-        public JdbcResource.LinkFactory links()
-            {
-            return this.links;
-            }
-
         /**
          * The default 'userdata' JDBC URL.
          *
@@ -276,6 +253,121 @@ public class JdbcResourceEntity
         }
 
     /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements JdbcResource.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static JdbcResourceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return JdbcResourceEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (JdbcResourceEntity.EntityServices.instance == null)
+                {
+                JdbcResourceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private JdbcResource.IdentFactory idents;
+        @Override
+        public JdbcResource.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private JdbcResource.LinkFactory links;
+        @Override
+        public JdbcResource.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private JdbcResource.NameFactory names;
+        @Override
+        public JdbcResource.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private JdbcResource.EntityFactory entities;
+        @Override
+        public JdbcResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+        protected JdbcSchema.EntityFactory schemas;
+        @Override
+        public JdbcSchema.EntityFactory schemas()
+            {
+            return this.schemas;
+            }
+        }
+
+    @Override
+    protected JdbcResource.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return JdbcResourceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected JdbcResource.EntityServices services()
+        {
+        log.debug("services()");
+        return JdbcResourceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
+    /**
      * Protected constructor. 
      *
      */
@@ -352,7 +444,7 @@ public class JdbcResourceEntity
             @Override
             public Iterable<JdbcSchema> select()
                 {
-                return factories().jdbc().schemas().select(
+                return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this
                     );
                 }
@@ -360,7 +452,7 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema create(final Identity identity)
                 {
-                return factories().jdbc().schemas().build(
+                return factories().jdbc().schemas().entities().build(
                     JdbcResourceEntity.this,
                     identity
                     );
@@ -369,7 +461,7 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema create(final JdbcSchema.Metadata meta)
                 {
-                return factories().jdbc().schemas().create(
+                return factories().jdbc().schemas().entities().create(
                     JdbcResourceEntity.this,
                     meta
                     );
@@ -379,7 +471,7 @@ public class JdbcResourceEntity
             @Deprecated
             public JdbcSchema create(final String catalog, final String schema)
                 {
-                return factories().jdbc().schemas().create(
+                return factories().jdbc().schemas().entities().create(
                     JdbcResourceEntity.this,
                     catalog,
                     schema
@@ -389,7 +481,7 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema search(final String name)
                 {
-                return factories().jdbc().schemas().search(
+                return factories().jdbc().schemas().entities().search(
                     JdbcResourceEntity.this,
                     name
                     );
@@ -399,7 +491,7 @@ public class JdbcResourceEntity
             public JdbcSchema select(final String name)
             throws NameNotFoundException
                 {
-                return factories().jdbc().schemas().select(
+                return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this,
                     name
                     );
@@ -409,7 +501,7 @@ public class JdbcResourceEntity
             public JdbcSchema select(final String catalog, final String schema)
             throws NameNotFoundException
                 {
-                return factories().jdbc().schemas().select(
+                return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this,
                         catalog,
                         schema
@@ -419,7 +511,7 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema search(final String catalog, final String schema)
                 {
-                return factories().jdbc().schemas().search(
+                return factories().jdbc().schemas().entities().search(
                     JdbcResourceEntity.this,
                     catalog,
                     schema
@@ -431,7 +523,7 @@ public class JdbcResourceEntity
             throws EntityNotFoundException
                 {
                 try {
-                    return factories().jdbc().schemas().select(
+                    return factories().jdbc().schemas().entities().select(
                         JdbcResourceEntity.this,
                         connection().catalog(),
                         connection().type().schema()
@@ -455,7 +547,7 @@ public class JdbcResourceEntity
                     protected JdbcSchema create(final JdbcSchema.Metadata meta)
                         throws DuplicateEntityException
                         {
-                        return factories().jdbc().schemas().create(
+                        return factories().jdbc().schemas().entities().create(
                             JdbcResourceEntity.this,
                             meta
                             );
@@ -507,14 +599,6 @@ public class JdbcResourceEntity
             );
         }
 
-    @Override
-    public String link()
-        {
-        return factories().jdbc().resources().links().link(
-            this
-            );
-        }
-
     private String keyname(final JdbcSchema schema )
         {
         return keyname(
@@ -545,7 +629,7 @@ public class JdbcResourceEntity
     @Override
     protected void scanimpl()
         {
-        log.debug("schemas() scan for [{}][{}]", this.ident(), this.namebuilder());
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         //
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = connection().scanner();
@@ -553,7 +637,7 @@ public class JdbcResourceEntity
         // Load our Map of known schema.
         Map<String, JdbcSchema> known = new HashMap<String, JdbcSchema>();
         Map<String, JdbcSchema> matching = new HashMap<String, JdbcSchema>();
-        for (JdbcSchema schema : factories().jdbc().schemas().select(JdbcResourceEntity.this))
+        for (JdbcSchema schema : factories().jdbc().schemas().entities().select(JdbcResourceEntity.this))
             {
             final String key = keyname(
                 schema
@@ -690,7 +774,7 @@ public class JdbcResourceEntity
             log.debug("Cacheing new schema [{}]", key);
             matching.put(
                 key,
-                factories().jdbc().schemas().create(
+                factories().jdbc().schemas().entities().create(
                     JdbcResourceEntity.this,
                     schema.catalog().name(),
                     schema.name()
@@ -731,7 +815,7 @@ public class JdbcResourceEntity
             @Override
             public OgsaJdbcResource primary()
                 {
-                return factories().ogsa().factories().jdbc().primary(
+                return factories().ogsa().jdbc().entities().primary(
                     JdbcResourceEntity.this
                     );
                 }
@@ -739,10 +823,17 @@ public class JdbcResourceEntity
             @Override
             public Iterable<OgsaJdbcResource> select()
                 {
-                return factories().ogsa().factories().jdbc().select(
+                return factories().ogsa().jdbc().entities().select(
                     JdbcResourceEntity.this
                     );
                 }
             };
         }
+
+	@Override
+	public JdbcResource.JdbcDriver jdbcdriver()
+		{
+        log.debug("jdbcdriver() for [{}]", this.name());
+		return this.connection.jdbcdriver();
+		}
     }

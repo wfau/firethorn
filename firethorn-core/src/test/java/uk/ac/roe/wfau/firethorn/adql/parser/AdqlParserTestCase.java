@@ -311,7 +311,7 @@ extends TestBase
     public DBTable adqlTable()
     throws Exception
         {
-    	final JdbcResource jdbcResource = factories().jdbc().resources().create(
+    	final JdbcResource jdbcResource = factories().jdbc().resources().entities().create(
             "test:catalog",
 			"test:resource",
 			"test:database"
@@ -361,7 +361,7 @@ extends TestBase
 
         //
         // Create our ADQL resource.
-        final AdqlResource adqlResource = factories().adql().resources().create("test");
+        final AdqlResource adqlResource = factories().adql().resources().entities().create("test");
         adqlResource.schemas().create(
                 "adql_schema",
         		jdbcResource.schemas().select(

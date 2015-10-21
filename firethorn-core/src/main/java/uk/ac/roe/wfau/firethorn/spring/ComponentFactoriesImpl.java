@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
@@ -162,65 +163,57 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
-    protected Community.EntityFactory communities;
+    protected Community.EntityServices communities;
     @Override
-    public Community.EntityFactory communities()
+    public Community.EntityServices communities()
         {
         return this.communities;
         }
 
     @Autowired
-    protected Identity.EntityFactory identities;
+    protected Identity.EntityServices identities;
     @Override
-    public Identity.EntityFactory identities()
+    public Identity.EntityServices identities()
         {
         return this.identities;
         }
 
     @Autowired
-    protected ConfigProperty.EntityFactory config ;
+    protected ConfigProperty.EntityServices config ;
     @Override
-    public ConfigProperty.EntityFactory config()
+    public ConfigProperty.EntityServices config()
         {
         return this.config ;
         }
 
     @Autowired
-    protected Job.Services jobs;
+    protected Job.EntityServices jobs;
     @Override
-    public Job.Services jobs()
-        {
-        return this.jobs;
-        }
+    public Job.EntityServices jobs()
+    	{
+    	return this.jobs;
+    	}
 
     @Autowired
-    protected TestJob.Services tests;
+    protected TestJob.EntityServices tests;
     @Override
-    public TestJob.Services tests()
+    public TestJob.EntityServices tests()
         {
         return this.tests;
         }
 
     @Autowired
-    protected AdqlQuery.Services queries;
+    protected Operation.EntityServices operations;
     @Override
-    public AdqlQuery.Services queries()
-        {
-        return this.queries;
-        }
-
-    @Autowired
-    protected Operation.EntityFactory operations;
-    @Override
-	public Operation.EntityFactory operations()
+	public Operation.EntityServices operations()
         {
         return this.operations ;
         }
 
     @Autowired
-    protected Authentication.EntityFactory authentications;
+    protected Authentication.EntityServices authentications;
     @Override
-	public Authentication.EntityFactory authentications()
+	public Authentication.EntityServices authentication()
         {
         return this.authentications;
         }
@@ -231,5 +224,21 @@ public class ComponentFactoriesImpl
     public Context.Factory contexts()
         {
         return this.contexts;
+        }
+
+    @Autowired
+    protected AdqlQuery.EntityServices queries;
+    @Override
+    public AdqlQuery.EntityServices queries()
+        {
+        return this.queries;
+        }
+
+    @Autowired
+    protected BlueQuery.EntityServices blues;
+    @Override
+    public BlueQuery.EntityServices blues()
+        {
+        return this.blues;
         }
     }

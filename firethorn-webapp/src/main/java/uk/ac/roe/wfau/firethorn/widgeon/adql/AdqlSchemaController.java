@@ -36,6 +36,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
 
 /**
  * Spring MVC controller to handle {@link AdqlSchema} entities.
@@ -108,7 +109,7 @@ public class AdqlSchemaController
         final String ident
         ) throws IdentifierNotFoundException {
         log.debug("entity() [{}]", ident);
-        return factories().adql().schemas().select(
+        return factories().adql().schemas().entities().select(
             factories().adql().schemas().idents().ident(
                 ident
                 )

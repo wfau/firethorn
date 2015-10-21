@@ -24,7 +24,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 
 /**
  * Common interface for a persistent Entity.
@@ -34,12 +33,30 @@ public interface Entity
     {
 
     /**
-     * Common interface for a name factory.
+     * Access to our service instances.
      *
-    public interface NameFactory<EntityType extends Entity>
-        {
-        }
      */
+    public interface EntityServices<EntityType extends Entity>
+        {
+        /**
+         * Our {@link Entity.IdentFactory} instance.
+         *
+         */
+        public Entity.IdentFactory<EntityType> idents();
+
+        /**
+         * Our {@link Entity.LinkFactory} instance.
+         *
+         */
+        public LinkFactory<EntityType> links();
+
+        /**
+         * Our {@link Entity.EntityFactory} instance.
+         *
+         */
+        public EntityFactory<EntityType> entities();
+
+        }
 
     /**
      * Common interface for an alias factory.
@@ -74,6 +91,24 @@ public interface Entity
      */
     public interface LinkFactory<EntityType extends Entity>
         {
+        /**
+         * The name for an identifier field.
+         * 
+         */
+        public static final String IDENT_FIELD = "ident" ;
+
+        /**
+         * The token to match an identifier field.
+         * 
+         */
+        public static final String IDENT_TOKEN = "{ident}" ;
+
+        /**
+         * The regular expression pattern to match an identifier field.
+         * 
+         */
+        public static final String IDENT_REGEX = "\\{ident\\}" ;
+        
         /**
          * Create an link (as a string).
          *
@@ -149,25 +184,7 @@ public interface Entity
          */
         public EntityType search(final Identifier ident);
 
-        /**
-         * Our local Identifier factory.
-         *
-         */
-        public Entity.IdentFactory<EntityType> idents();
-
-        /**
-         * Our local link factory.
-         *
-         */
-        public LinkFactory<EntityType> links();
-
         }
-
-    /**
-     * Our parent {@link Entity.EntityFactory}.
-     *
-     */
-    public Entity.EntityFactory<?> factory();
 
     /**
      * The Entity Identifier.

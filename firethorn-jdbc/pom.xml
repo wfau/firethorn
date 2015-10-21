@@ -25,10 +25,14 @@
     >
     <modelVersion>4.0.0</modelVersion>
 
+    <!--+
+        | Maven parent/child inheritance.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>1.13.22</version>
+        <version project='firethorn'>2.0.0</version>
     </parent>
 
     <artifactId>firethorn-jdbc</artifactId>

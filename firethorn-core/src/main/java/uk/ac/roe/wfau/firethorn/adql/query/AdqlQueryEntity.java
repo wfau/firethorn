@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -187,10 +188,6 @@ implements AdqlQuery, AdqlParserQuery
     public static class ParamFactory
     implements AdqlQuery.ParamFactory
         {
-        /*
-         * Spring expression language property placeholders.
-         * https://stackoverflow.com/questions/2041558/how-does-spring-3-expression-language-interact-with-property-placeholders
-         */
         @Value("${firethorn.adql.level:LEGACY}")
         private Level level ;
 
@@ -263,75 +260,13 @@ implements AdqlQuery, AdqlParserQuery
             }
         }
 
-    /**
-     * Our local service implementations.
-     *
-     */
-    @Component
-    public static class Services
-    implements AdqlQuery.Services
-        {
-        @Autowired
-        public AdqlQuery.NameFactory names;
-        @Override
-        public AdqlQuery.NameFactory names()
-            {
-            return this.names;
-            }
-
-        @Autowired
-        private AdqlQuery.LinkFactory links;
-        @Override
-        public AdqlQuery.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private AdqlQuery.IdentFactory idents;
-        @Override
-        public AdqlQuery.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private AdqlQuery.EntityFactory factory;
-        @Override
-        public AdqlQuery.EntityFactory factory()
-            {
-            return this.factory;
-            }
-
-        @Autowired
-        private Job.Executor executor;
-        @Override
-        public Job.Executor executor()
-            {
-            return this.executor;
-            }
-
-        @Autowired
-        private AdqlQuery.ParamFactory params;
-        @Override
-        public AdqlQuery.ParamFactory params()
-            {
-            return this.params;
-            }
-        }
-
-    @Override
-    public AdqlQuery.Services services()
-        {
-        return factories().queries();
-        }
 
     /**
-     * Factory implementation.
+     * {@link AdqlQuery.EntityFactory} implementation.
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractEntityFactory<AdqlQuery>
     implements AdqlQuery.EntityFactory
         {
@@ -394,38 +329,6 @@ implements AdqlQuery, AdqlParserQuery
             return this.names;
             }
 
-        @Autowired
-        private AdqlQuery.LinkFactory links;
-        @Override
-        public AdqlQuery.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private AdqlQuery.IdentFactory idents;
-        @Override
-        public AdqlQuery.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private AdqlQuery.ParamFactory params;
-        @Override
-        public AdqlQuery.ParamFactory params()
-            {
-            return this.params;
-            }
-
-        @Autowired
-        private AdqlQuery.Limits.Factory limits ;
-        @Override
-        public AdqlQuery.Limits.Factory limits()
-            {
-            return this.limits;
-            }
-
         @Override
         @SelectMethod
         public Iterable<AdqlQuery> select()
@@ -472,6 +375,137 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     /**
+     * {@link AdqlQuery.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements AdqlQuery.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return AdqlQueryEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (AdqlQueryEntity.EntityServices.instance == null)
+                {
+                AdqlQueryEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private AdqlQuery.IdentFactory idents;
+        @Override
+        public AdqlQuery.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private AdqlQuery.LinkFactory links;
+        @Override
+        public AdqlQuery.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private AdqlQuery.NameFactory names;
+        @Override
+        public AdqlQuery.NameFactory names()
+            {
+            return this.names;
+            }
+        
+        @Autowired
+        private AdqlQuery.EntityFactory entities;
+        @Override
+        public AdqlQuery.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+        private Job.Executor executor;
+        @Override
+        public Job.Executor executor()
+            {
+            return this.executor;
+            }
+
+        @Autowired
+        private AdqlQuery.ParamFactory params;
+        @Override
+        public AdqlQuery.ParamFactory params()
+            {
+            return this.params;
+            }
+
+        @Autowired
+        private AdqlQuery.Limits.Factory limits ;
+        @Override
+        public AdqlQuery.Limits.Factory limits()
+            {
+            return this.limits;
+            }
+        }
+
+    @Override
+    protected AdqlQuery.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return AdqlQueryEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected AdqlQuery.EntityServices services()
+        {
+        log.debug("services()");
+        return AdqlQueryEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
+    /**
      * Protected constructor, used by Hibernate.
      *
      */
@@ -498,14 +532,6 @@ implements AdqlQuery, AdqlParserQuery
             );
         this.input(
             input
-            );
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().adql().queries().links().link(
-            this
             );
         }
 
@@ -952,11 +978,11 @@ implements AdqlQuery, AdqlParserQuery
                 // TODO - The parsers should be part of the resource/schema.
                 final AdqlParser direct = this.factories().adql().parsers().create(
                     Mode.DIRECT,
-                    this.schema
+                    this.schema.resource()
                     );
                 final AdqlParser distrib = this.factories().adql().parsers().create(
                     Mode.DISTRIBUTED,
-                    this.schema
+                    this.schema.resource()
                     );
 
                 log.debug("Query mode [{}]", this.mode);
@@ -1088,7 +1114,6 @@ implements AdqlQuery, AdqlParserQuery
         {
         log.debug("prepare(boolean)");
         log.debug(" ident [{}]", ident());
-
         //
         // Validate the query.
         Status result = prepare();
@@ -1100,29 +1125,6 @@ implements AdqlQuery, AdqlParserQuery
             //
             // Is this where we create the table ?
             //
-
-/*
- *
-            //
-            // Load these here (in transaction/session)
-            // Use them in later execute Thread.
-            String ogsourceid ;
-            String ogtargetid ; 
-            
-            // Get the OGSA-DAI ident from our primary resource.
-            log.debug("++++++++ Checking source OgsaBaseResource ++++++++");
-            BaseResource<?> base = primary();
-            OgsaBaseResource ogsa = base.ogsa().primary();
-            ogsourceid = ogsa.ogsaid();
-            log.debug("++ Query source [{}]", ogsourceid );
-
-            log.debug("++++++++ Checking target OgsaJdbcResource ++++++++");
-            BaseResource<?> aaa = jdbctable.resource();
-            OgsaBaseResource bbb = aaa.ogsa().primary() ;
-            ogtargetid = bbb.ogsaid() ;
-            log.debug("++ Query target [{}]", ogtargetid);
- *
- */
 
             if (this.mode == Mode.DIRECT)
                 {
@@ -1161,7 +1163,6 @@ implements AdqlQuery, AdqlParserQuery
                     );
                 }
             }
-        
         return result ;
         }
     
@@ -1191,7 +1192,7 @@ implements AdqlQuery, AdqlParserQuery
                 try {
                 
                     log.debug("-- AdqlQuery resolving [{}]", ident());
-                    final AdqlQuery query = services().factory().select(
+                    final AdqlQuery query = services().entities().select(
                             ident()
                             );
                     //
@@ -1271,7 +1272,7 @@ implements AdqlQuery, AdqlParserQuery
                                 {
                                 return new JdbcInsertDataClient.Param()
                                     {
-                                    public String ogsaid()
+                                    public String resource()
                                         {
                                         return AdqlQueryEntity.this.target;
                                         }
@@ -1305,7 +1306,7 @@ implements AdqlQuery, AdqlParserQuery
                             @Override
                             public LimitsClient.Param limits()
                                 {
-                                return factories().adql().queries().limits().runtime(
+                                return services().limits().runtime(
                                     query.limits()
                                     );
                                 }
@@ -1455,9 +1456,7 @@ implements AdqlQuery, AdqlParserQuery
             final Identity identity = this.owner();
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
-            JdbcSchema space = identity.space(
-                true
-                );
+            JdbcSchema space = identity.spaces().jdbc().current();
             log.debug(" Identity space [{}][{}]", space.ident(), space.name());
 
 //TODO
@@ -1517,7 +1516,6 @@ implements AdqlQuery, AdqlParserQuery
 
     @Embedded
     private AdqlQueryLimits limits;
-
     
     @Override
     public ModifiableLimits limits()

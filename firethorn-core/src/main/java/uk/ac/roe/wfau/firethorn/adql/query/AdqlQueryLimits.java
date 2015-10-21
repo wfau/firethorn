@@ -39,18 +39,18 @@ implements AdqlQuery.ModifiableLimits
     {
     
     /**
-     * Protected constructor.
+     * Public constructor.
      * 
      */
-    protected AdqlQueryLimits()
+    public AdqlQueryLimits()
         {
         }
 
     /**
-     * Protected constructor.
+     * Public constructor.
      * 
      */
-    protected AdqlQueryLimits(final AdqlQuery.Limits limits)
+    public AdqlQueryLimits(final AdqlQuery.Limits limits)
         {
         this(
             ((limits != null) ? limits.rows()  : null), 
@@ -60,10 +60,10 @@ implements AdqlQuery.ModifiableLimits
         }
 
     /**
-     * Protected constructor.
+     * Public constructor.
      * 
      */
-    protected AdqlQueryLimits(final Long rows, final Long cells, final Long time)
+    public AdqlQueryLimits(final Long rows, final Long cells, final Long time)
         {
         this.ogsarows = rows  ;
         this.ogsacell = cells ;

@@ -75,16 +75,29 @@ extends BaseResource<IvoaSchema>
          */
         public IvoaResource create(final String ivoaid, final String name);
 
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<IvoaResource>
+        {
         /**
-         * Our local {@link IvoaSchema.EntityFactory} implementation.
-         * @todo - move to services
+         * Our {@link IvoaResource.EntityFactory} instance.
          *
          */
-        @Deprecated
+        public IvoaResource.EntityFactory entities();
+
+        /**
+         * Our {@link IvoaSchema.EntityFactory} instance.
+         *
+         */
         public IvoaSchema.EntityFactory schemas();
 
         }
-
+    
     /**
      * The resource {@link IvoaSchema schema}.
      *

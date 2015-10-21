@@ -19,23 +19,23 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa;
 
 /**
- * Parameter names for the IvoaCreateResource Activity.
+ * Common interface for the IvoaCreateResource Activity.
  *
  */
 public interface IvoaCreateResourceParam
 extends IvoaResourceParam
     {
     /**
-     * The Activity name, {@value}.
+     * The default Activity name, {@value}.
      * 
      */
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.IvoaCreateResource" ;
 
     /**
-     * Parameter name for the Activity results, {@value}.
+     * Activity output name for the Activity result, {@value}.
      * 
      */
-    public static final String ACTIVITY_RESULTS = "ivoa.create.results"  ;
+    public static final String ACTIVITY_RESULT = "ivoa.create.resource.result"  ;
     
     }
 

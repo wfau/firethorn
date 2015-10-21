@@ -118,10 +118,10 @@ implements ResourceManagerActivity, ResourceFactoryActivity
     throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException
         {
         validateOutput(
-            IvoaCreateResourceParam.ACTIVITY_RESULTS
+            IvoaCreateResourceParam.ACTIVITY_RESULT
             );
         this.writer = this.getOutput(
-            IvoaCreateResourceParam.ACTIVITY_RESULTS
+            IvoaCreateResourceParam.ACTIVITY_RESULT
             );
         }
 

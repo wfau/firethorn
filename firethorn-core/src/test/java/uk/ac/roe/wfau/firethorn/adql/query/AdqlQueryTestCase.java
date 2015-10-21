@@ -54,12 +54,12 @@ extends TestBase
         {
         //
         // Create our JDBC resources.
-        this.twomass = factories().jdbc().resources().create(
+        this.twomass = factories().jdbc().resources().entities().create(
             "twomass",
             "test:twomass",
             "spring:RoeTWOMASS"
             );
-        this.wfau = factories().jdbc().resources().create(
+        this.wfau = factories().jdbc().resources().entities().create(
             JdbcResource.ALL_CATALOGS,
             "test:wfau",
             "spring:RoeWFAU"
@@ -120,7 +120,7 @@ extends TestBase
         {
         //
         // Create our ADQL workspace.
-        final AdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().entities().create(
             "adql-workspace"
             );
         //
@@ -186,7 +186,7 @@ extends TestBase
         {
         //
         // Create our ADQL workspace.
-        final AdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().entities().create(
             "adql-workspace"
             );
         //
@@ -267,7 +267,7 @@ extends TestBase
         {
         //
         // Create our ADQL workspace.
-        final AdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().entities().create(
             "adql-workspace"
             );
         //
@@ -350,7 +350,7 @@ extends TestBase
         {
         //
         // Create our ADQL workspace.
-        final AdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().entities().create(
             "adql-workspace"
             );
         //

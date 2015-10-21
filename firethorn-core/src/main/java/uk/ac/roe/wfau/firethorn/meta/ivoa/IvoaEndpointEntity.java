@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NamedQueries;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 
 /**
  * {@link IvoaResource.Endpoint} implementation.
@@ -85,6 +86,21 @@ implements IvoaResource.Endpoint
     @Override
     public String link()
         {
-        return null;
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
         }
+
+	@Override
+	protected EntityFactory<?> factory()
+		{
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
+		}
+
+	@Override
+	protected EntityServices<?> services()
+		{
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
+		}
     }

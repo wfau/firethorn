@@ -34,9 +34,9 @@ extends TestBase
     public void testCreate001()
     throws Exception
         {
-        final OgsaService service = factories().ogsa().services().primary();
+        final OgsaService service = factories().ogsa().services().entities().primary();
 
-        final IvoaResource resource = factories().ivoa().resources().create(
+        final IvoaResource resource = factories().ivoa().resources().entities().create(
             "ogsa:ident",
             "ivoa:ident"
             );
@@ -57,9 +57,9 @@ extends TestBase
     public void testCreate002()
     throws Exception
         {
-        final OgsaService service = factories().ogsa().services().primary();
+        final OgsaService service = factories().ogsa().services().entities().primary();
 
-        final IvoaResource resource = factories().ivoa().resources().create(
+        final IvoaResource resource = factories().ivoa().resources().entities().create(
             "ogsa:ident",
             "ivoa:ident"
             );

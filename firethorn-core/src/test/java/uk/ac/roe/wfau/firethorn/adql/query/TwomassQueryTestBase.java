@@ -56,7 +56,7 @@ extends TestBase
         {
         //
         // Create our JDBC resources.
-        this.twomass = factories().jdbc().resources().create(
+        this.twomass = factories().jdbc().resources().entities().create(
             "TWOMASS",
             "twomass",
             config().property(
@@ -74,7 +74,7 @@ extends TestBase
             );
         //
         // Create our ADQL workspace.
-        this.workspace = factories().adql().resources().create(
+        this.workspace = factories().adql().resources().entities().create(
             "adql-workspace"
             );
         //

@@ -44,7 +44,7 @@ public class IvoaResourceLoaderTestCase
         {
         final VosiTableSetReader reader = new VosiTableSetReader(); 
 
-        final IvoaResource cadc = factories().ivoa().resources().create(
+        final IvoaResource cadc = factories().ivoa().resources().entities().create(
             "cadc-tap",
             "cadc-tap"
             );
@@ -57,11 +57,11 @@ public class IvoaResourceLoaderTestCase
             cadc
             );
         cadc.ogsa().primary().ogsaid(
-    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		OgsaIvoaResource.OgsaStatus.ACTIVE,
     		"cadc-tap"
     		);
-        
-        IvoaResource gaia = factories().ivoa().resources().create(
+
+        IvoaResource gaia = factories().ivoa().resources().entities().create(
             "gaia-tap",
             "gaia-tap"
             );
@@ -74,11 +74,11 @@ public class IvoaResourceLoaderTestCase
             gaia
             );
         gaia.ogsa().primary().ogsaid(
-    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		OgsaIvoaResource.OgsaStatus.ACTIVE,
     		"gaia-tap"
     		);
 
-        IvoaResource gavo = factories().ivoa().resources().create(
+        IvoaResource gavo = factories().ivoa().resources().entities().create(
             "gavo-tap",
             "gavo-tap"
             );
@@ -91,11 +91,11 @@ public class IvoaResourceLoaderTestCase
             gavo
             );
         gavo.ogsa().primary().ogsaid(
-    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		OgsaIvoaResource.OgsaStatus.ACTIVE,
     		"gavo-tap"
     		);
 
-        IvoaResource vizier = factories().ivoa().resources().create(
+        IvoaResource vizier = factories().ivoa().resources().entities().create(
             "vizier-tap",
             "vizier-tap"
             );
@@ -108,7 +108,7 @@ public class IvoaResourceLoaderTestCase
             vizier
             );
         vizier.ogsa().primary().ogsaid(
-    		OgsaIvoaResource.OgStatus.ACTIVE,
+    		OgsaIvoaResource.OgsaStatus.ACTIVE,
     		"vizier-tap"
     		);
 

@@ -40,7 +40,6 @@ extends BaseActivity implements Activity
 
     /**
      * Public interface for the Activity parameters.
-     * @todo Move this to the common package.
      *
      */
     public static interface Param

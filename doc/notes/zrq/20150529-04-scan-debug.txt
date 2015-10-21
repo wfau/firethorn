@@ -296,7 +296,7 @@ Caused by: uk.org.ogsadai.resource.ResourceUnknownException: The resource ogsada
 # Stop our FireThorn container.
 #[user@desktop]
 
-    docker rm $(docker stop "${firename:?}")
+    docker rm -v $(docker stop "${firename:?}")
 
 # -----------------------------------------------------
 # Start a new FireThorn container.

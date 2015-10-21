@@ -38,15 +38,16 @@ pushd /toolkits
         tar -xvzf "${tarfile:?}"
         ln -s "${current:?}" current
 
-        mkdir /cache/maven
-        chgrp users /cache/maven
-        chmod g+rws /cache/maven
+        # This doesn't work because it uses a volume which gets created at runtime. 
+        mkdir /var/local/cache/maven
+        chgrp users /var/local/cache/maven
+        chmod g+rws /var/local/cache/maven
 
         #
         # Set the repository path.
         # This doesn't work .. need to uncomment the element.
         sed -n '
-            s|<localRepository>.*</localRepository>|<localRepository>/cache/maven</localRepository>|
+            s|<localRepository>.*</localRepository>|<localRepository>/var/local/cache/maven</localRepository>|
             ' "${current:?}/conf/settings.xml"
 
 #
@@ -59,7 +60,7 @@ cat > /root/.m2/settings.xml<< 'EOF'
         http://maven.apache.org/SETTINGS/1.0.0
         http://maven.apache.org/xsd/settings-1.0.0.xsd
         ">
-    <localRepository>/cache/maven</localRepository>
+    <localRepository>/var/local/cache/maven</localRepository>
 </settings>
 EOF
 

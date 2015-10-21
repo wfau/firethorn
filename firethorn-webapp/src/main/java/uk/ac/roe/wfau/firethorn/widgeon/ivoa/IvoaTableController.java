@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaTableLinkFactory;
 
 /**
  * Spring MVC controller for <code>IvoaTables</code>.
@@ -114,7 +115,7 @@ public class IvoaTableController
         final String ident
         ) throws EntityNotFoundException {
         log.debug("table() [{}]", ident);
-        return factories().ivoa().tables().select(
+        return factories().ivoa().tables().entities().select(
             factories().ivoa().tables().idents().ident(
                 ident
                 )

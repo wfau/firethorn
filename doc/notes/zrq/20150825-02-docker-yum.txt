@@ -1,0 +1,100 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# Adding the following to our Fedora Dockerfile sigificantly reduced the size of our images.
+# Skip the global update and results are even smaller.
+
+
+vi docker/fedora/8/Dockerfile
+
+    #
+    # Declare the system cache as a volume.
+    VOLUME /var/cache/
+
+    #
+    # Clear the cache.
+    RUN yum -y clean all
+
+    #
+    # Update (almost) everything (excluding filesystem).
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1171928
+    #RUN yum -y -x filesystem update
+
+
+#
+# Before/after comparisin of image sizes.
+
+
+    REPOSITORY                    TAG                 IMAGE ID            CREATED              VIRTUAL SIZE
+
+    firethorn/tomcat              8.1                 dc606a781b9f        21 minutes ago       550.4 MB
+    firethorn/tomcat              8.1                 2fc908fadc01        13 minutes ago       870.5 MB
+    firethorn/tomcat              8                   3484715fa48d        About an hour ago    1.236 GB
+
+    firethorn/java                8.1                 f8e2c4ecaf10        26 minutes ago       512.9 MB
+    firethorn/java                8.1                 fc071ec51e60        21 minutes ago       833 MB
+    firethorn/java                8                   2b9c02cbfaba        About an hour ago    1.185 GB
+
+    firethorn/fedora              21.1                d48577975c8c        27 minutes ago       327.1 MB
+    firethorn/fedora              21.1                3c9b023505d1        24 minutes ago       642.4 MB
+    firethorn/fedora              21                  32617c2cad43        4 months ago         805.9 MB
+
+    firethorn/ssh-client          1.1                 e109eab4e0b2        7 minutes ago        341.7 MB
+    firethorn/ssh-client          1.1                 95cf11ab45ca        2 minutes ago        662.2 MB
+    firethorn/ssh-client          1                   945ccb6e483e        About an hour ago    1.014 GB
+
+    firethorn/sql-proxy           1.1                 d923edfbc90b        9 minutes ago        355.2 MB
+    firethorn/sql-proxy           1.1                 04aeae9e4eef        4 minutes ago        680.8 MB
+
+    firethorn/sql-tunnel          1.1                 d0305c94642c        8 minutes ago        341.7 MB
+    firethorn/sql-tunnel          1.1                 6cccd8a86755        About a minute ago   662.2 MB
+    firethorn/sql-tunnel          1                   456cd8446854        About an hour ago    1.014 GB
+
+    firethorn/docker-proxy        1.1                 ff91ce0035f8        11 minutes ago       338.4 MB
+    firethorn/docker-proxy        1.1                 cbb0798c97fd        6 minutes ago        659 MB
+    firethorn/docker-proxy        1                   07a0a0ad8918        About an hour ago    1.011 GB
+
+    firethorn/builder             1.1                 10a78b8922c7        12 minutes ago       662.9 MB
+    firethorn/builder             1.1                 ceee6db4a2c0        7 minutes ago        1.002 GB
+    firethorn/builder             1                   defedec45fc6        About an hour ago    1.331 GB
+
+    firethorn/postgres            9.1                 a3dbe0e54f68        19 minutes ago       265.3 MB
+    firethorn/postgres            9.1                 e6f00d6ff23f        About an hour ago    265.3 MB
+    firethorn/postgres            9                   e6f00d6ff23f        About an hour ago    265.3 MB
+    docker.io/postgres            9                   830e5e6fd0ac        25 hours ago         265.3 MB
+
+    docker.io/fedora              21                  e26efd418c48        3 months ago         241.3 MB
+    docker.io/firethorn/builder   1                   48f56e022f71        4 months ago         1.331 GB
+
+
+    firethorn/tester                1.13.17-zrq-job-control   0f64030e21d7        13 seconds ago      410.1 MB
+    firethorn/tester                1.13.17-zrq-job-control   cace4e216d45        3 minutes ago       734.1 MB
+
+    firethorn/firethorn             1.13.17-zrq-job-control   226628e573a6        3 minutes ago       587 MB
+    firethorn/firethorn             1.13.17-zrq-job-control   3c051d4d0937        6 minutes ago       907.1 MB
+
+    firethorn/ogsadai               1.13.17-zrq-job-control   9dba42690448        3 minutes ago       594.7 MB
+    firethorn/ogsadai               1.13.17-zrq-job-control   f3728947931a        9 minutes ago       914.8 MB
+
+
+

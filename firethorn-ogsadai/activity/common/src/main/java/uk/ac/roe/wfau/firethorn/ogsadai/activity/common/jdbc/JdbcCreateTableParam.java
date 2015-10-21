@@ -19,34 +19,35 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc;
 
 /**
- * Common parameter names for the JdbcCreateResource Activity.
+ * Common interface for the JdbcCreateTable Activity.
+ * @deprecated Do we use this anywhere ?
  *
  */
 public interface JdbcCreateTableParam
     {
     /**
-     * The Activity name, {@value}.
+     * The default Activity name, {@value}.
      * 
      */
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.JdbcCreateTable" ;
 
     /**
-     * Parameter name for the Activity results, {@value}.
-     * 
-     */
-    public static final String ACTIVITY_RESULTS = "jdbc.create.results" ;
-
-    /**
-     * Parameter name for the table name, {@value}.
+     * Activity input name for the table name, {@value}.
      * 
      */
     public static final String JDBC_CREATE_TABLE_NAME = "jdbc.create.table.name"  ;
     
     /**
-     * Parameter name for the input tuples, {@value}.
+     * Activity input name for the input tuples, {@value}.
      * 
      */
-    public static final String JDBC_CREATE_TUPLE_INPUT  = "jdbc.create.input.tuples" ;
+    public static final String JDBC_CREATE_TUPLE_INPUT  = "jdbc.create.table.tuples" ;
+
+    /**
+     * Activity output name for the Activity result, {@value}.
+     * 
+     */
+    public static final String ACTIVITY_RESULT = "jdbc.create.table.result" ;
 
     }
 

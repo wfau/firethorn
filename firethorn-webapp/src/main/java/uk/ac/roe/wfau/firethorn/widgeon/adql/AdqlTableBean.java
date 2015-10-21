@@ -23,6 +23,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableIdentFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
 
 /**
  * An {@link EntityBean} wrapper for an {@link AdqlTable}.

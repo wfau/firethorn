@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import java.net.MalformedURLException;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -109,21 +110,6 @@ public class OgsaIvoaResourceEntity
             return OgsaIvoaResourceEntity.class;
             }
 
-        @Autowired
-        private OgsaIvoaResource.IdentFactory idents;
-        @Override
-        public OgsaIvoaResource.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        private OgsaIvoaResource.LinkFactory links;
-        @Override
-        public OgsaIvoaResource.LinkFactory links()
-            {
-            return this.links;
-            }
-        
         @Override
         @SelectMethod
         public Iterable<OgsaIvoaResource> select()
@@ -196,7 +182,7 @@ public class OgsaIvoaResourceEntity
         public OgsaIvoaResource primary(IvoaResource resource)
             {
             return this.primary(
-                factories().ogsa().services().primary(),
+                factories().ogsa().services().entities().primary(),
                 resource
                 );
             }
@@ -227,6 +213,105 @@ public class OgsaIvoaResourceEntity
                 }
             return found ;
             }
+        }
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements OgsaIvoaResource.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static OgsaIvoaResourceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return OgsaIvoaResourceEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (OgsaIvoaResourceEntity.EntityServices.instance == null)
+                {
+                OgsaIvoaResourceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private OgsaIvoaResource.IdentFactory idents;
+        @Override
+        public OgsaIvoaResource.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private OgsaIvoaResource.LinkFactory links;
+        @Override
+        public OgsaIvoaResource.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private OgsaIvoaResource.EntityFactory entities;
+        @Override
+        public OgsaIvoaResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
+    @Override
+    protected OgsaIvoaResource.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return OgsaIvoaResourceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected OgsaIvoaResource.EntityServices services()
+        {
+        log.debug("services()");
+        return OgsaIvoaResourceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
         }
     
     /**
@@ -271,21 +356,17 @@ public class OgsaIvoaResourceEntity
         }
 
     @Override
-    public String link()
+    public OgsaStatus init()
         {
-        return factories().ogsa().factories().ivoa().links().link(
-            this
-            );
-        }
-
-    @Override
-    public OgStatus init()
-        {
+        log.debug("init()");
+        log.debug("  name   [{}]", this.name());
+        log.debug("  ident  [{}]", this.ident());
+        log.debug("  ogsaid [{}]", this.ogsaid);
         //
         // If we already have an ODSA-DAI resource ID.
         if (ogsaid() != null)
             {
-            return ogStatus() ;
+            return ogstatus() ;
             }
         //
         // If we don't have an ODSA-DAI resource ID.
@@ -298,8 +379,8 @@ public class OgsaIvoaResourceEntity
                 }
             catch (MalformedURLException ouch)
                 {
-                return ogStatus(
-                    OgStatus.ERROR
+                return ogstatus(
+                    OgsaStatus.ERROR
                     );
                 }
 
@@ -339,14 +420,14 @@ public class OgsaIvoaResourceEntity
             if (response.status() == WorkflowResult.Status.COMPLETED)
                 {
                 return ogsaid(
-                    OgStatus.ACTIVE,
+                    OgsaStatus.ACTIVE,
                     response.result().toString()
                     );
                 }
     
             else {
-                return ogStatus(
-                    OgStatus.ERROR
+                return ogstatus(
+                    OgsaStatus.ERROR
                     );
                 }
             }

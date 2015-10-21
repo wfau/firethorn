@@ -33,6 +33,22 @@ public interface JdbcResource
 extends BaseResource<JdbcSchema>
     {
     /**
+     * JDBC driver interface.
+     *
+     */
+    public static interface JdbcDriver
+    extends JdbcSchema.JdbcDriver
+        {
+        
+        }
+
+    /**
+     * The {@link JdbcDriver} for this {@link JdbcResource}.
+     *
+     */
+    public JdbcDriver jdbcdriver();
+
+    /**
      * {@link BaseResource.IdentFactory} interface.
      *
      */
@@ -98,19 +114,33 @@ extends BaseResource<JdbcSchema>
         public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver);
 
         /**
-         * Our local {@link JdbcSchema.EntityFactory} implementation.
-         * @todo - move to services
-         *
-         */
-        public JdbcSchema.EntityFactory schemas();
-
-        /**
          * Select the default 'userdata' Resource.
          * @todo Move this to a data space interface.
          *
          */
         @Deprecated
         public JdbcResource userdata();
+
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<JdbcResource>
+        {
+        /**
+         * Our {@link JdbcResource.EntityFactory} instance.
+         *
+         */
+        public JdbcResource.EntityFactory entities();
+
+        /**
+         * Our {@link JdbcSchema.EntityFactory} instance.
+         *
+         */
+        public JdbcSchema.EntityFactory schemas();
 
         }
 
@@ -241,7 +271,7 @@ extends BaseResource<JdbcSchema>
     }
 
     /**
-     * Access to the {@link OgsaJdbcResource} OGSA-DAI resources.
+     * Access to the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.
      * 
      */
     public OgsaJdbcResources ogsa();

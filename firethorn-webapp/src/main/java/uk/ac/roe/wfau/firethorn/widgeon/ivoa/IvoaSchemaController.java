@@ -31,6 +31,7 @@ import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaSchemaLinkFactory;
 
 /**
  * Spring MVC controller for <code>IvoaSchema</code>.
@@ -99,7 +100,7 @@ public class IvoaSchemaController
         final String ident
         ) throws EntityNotFoundException {
         log.debug("schema() [{}]", ident);
-        return factories().ivoa().schemas().select(
+        return factories().ivoa().schemas().entities().select(
             factories().ivoa().schemas().idents().ident(
                 ident
                 )

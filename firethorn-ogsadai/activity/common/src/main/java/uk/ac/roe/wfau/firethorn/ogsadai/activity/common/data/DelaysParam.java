@@ -18,15 +18,23 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.base.TuplesParam;
+
 /**
- * Parameter names for the DelayActivity.
+ * Common interface for the DelayActivity.
  *
  */
-public class DelaysParam
+public interface DelaysParam
+extends TuplesParam
     {
+    /**
+     * The default Activity name, {@value}.
+     * 
+     */
+    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Delays" ;
 
     /**
-     * Parameter name for the delay before the first row.
+     * Activity input name for the delay before the first row.
      * 
      */
     public static final String FIRST_DELAY = "delay.first" ;
@@ -38,7 +46,7 @@ public class DelaysParam
     public static final Integer DEFAULT_FIRST = new Integer(0);
 
     /**
-     * Parameter name for the delay after the last row.
+     * Activity input name for the delay after the last row.
      * 
      */
     public static final String LAST_DELAY  = "delay.last"  ;
@@ -50,7 +58,7 @@ public class DelaysParam
     public static final Integer DEFAULT_LAST = new Integer(0);
     
     /**
-     * Parameter name for the delay between every row.
+     * Activity input name for the delay between every row.
      * 
      */
     public static final String EVERY_DELAY = "delay.every" ;
@@ -60,24 +68,6 @@ public class DelaysParam
      * 
      */
     public static final Integer DEFAULT_EVERY = new Integer(0);
-
-    /**
-     * Parameter name for the input tuples.
-     * 
-     */
-    public static final String TUPLE_INPUT  = "tuples" ;
-
-    /**
-     * Parameter name for the output tuples.
-     * 
-     */
-    public static final String TUPLE_OUTPUT = "tuples" ;
-
-    /**
-     * Default Activity name.
-     * 
-     */
-    public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.Delays" ;
 
     }
 

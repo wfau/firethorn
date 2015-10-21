@@ -15,20 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21
+FROM firethorn/fedora:21.1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Create our projects directory.
-VOLUME /projects
-RUN chgrp users /projects
-RUN chmod g+rwx /projects
+RUN mkdir /var/local/projects
+#RUN chgrp users /var/local/projects
+#RUN chmod g+rwx /var/local/projects
+VOLUME /var/local/projects
 
 #
 # Create our cache directory.
-VOLUME /cache
-RUN chgrp users /cache
-RUN chmod g+rwx /cache
+RUN mkdir /var/local/cache
+#RUN chgrp users /var/local/cache
+#RUN chmod g+rwx /var/local/cache
+VOLUME /var/local/cache
 
 #
 # Install system tools.

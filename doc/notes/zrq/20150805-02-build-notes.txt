@@ -1,0 +1,383 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#--------------------------------------------------------
+# Configure our system.
+#[user@desktop]
+
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+    cat > "${HOME:?}/firethorn.settings" << 'EOF'
+
+FIRETHORN_BASE=/var/local/projects/edinburgh/firethorn
+FIRETHORN_CODE=${FIRETHORN_BASE:?}/devel
+
+MAVEN_REPO=/var/local/cache/maven
+    
+EOF
+    fi
+    
+#--------------------------------------------------------
+# Clone our sourec code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    mkdir --parents "${FIRETHORN_BASE:?}"
+    pushd "${FIRETHORN_BASE:?}"
+        if [ ! -e devel ]
+        then
+            hg clone http://wfau.metagrid.co.uk/code/firethorn devel
+        else
+            pushd devel
+                hg pull
+                hg update default
+            popd
+        fi
+    popd
+
+# -----------------------------------------------------
+# Build our Java code
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update default
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Build our support tools.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/fedora:21 \
+            docker/fedora/21
+
+        docker build \
+            --tag firethorn/java:8 \
+            docker/java/8
+
+        docker build \
+            --tag firethorn/tomcat:8 \
+            docker/tomcat/8
+
+        docker build \
+            --tag firethorn/postgres:9 \
+            docker/postgres/9
+
+        docker build \
+            --tag firethorn/docker-proxy:1 \
+            docker/docker-proxy
+
+        docker build \
+            --tag firethorn/sql-tunnel:1 \
+            docker/sql-tunnel
+
+        docker build \
+            --tag firethorn/sql-proxy:1 \
+            docker/sql-proxy
+
+        docker build \
+            --tag firethorn/builder:1 \
+            docker/builder
+
+    popd
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    sleep 1
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our service containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Get the build version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Create our secret function.
+#[user@desktop]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret ping
+
+# -----------------------------------------------------
+# Configure our docker chain.
+#[user@desktop]
+
+    cat > /tmp/chain.properties << EOF
+
+    version=${version:?}
+    
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+    source /tmp/chain.properties
+
+# -----------------------------------------------------
+# Shutdown and remove any existing containers.
+#[user@desktop]
+
+#   docker rm -f "${firename}"
+#   docker rm -f "${ogsaname}"
+#   docker rm -f "${metaname}"
+#   docker rm -f "${username}"
+#   docker rm -f "${dataname}"
+
+    docker rm $(docker stop $(docker ps -aq))
+
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        postgres
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    properties=$(mktemp)
+    cat > "${properties:?}" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+EOF
+
+    chmod a+r "${properties:?}" 
+    chcon -t svirt_sandbox_file_t "${properties:?}" 
+
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Tail the firethorn logs (in a separate terminal).
+#[user@desktop]
+
+    source /tmp/chain.properties
+
+    docker logs -f --tail 100 "${firename:?}"
+
+# -----------------------------------------------------
+# Run our test container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pluma "${FIRETHORN_CODE:?}/doc/notes/zrq/20150529-03-docker-tests.txt" &
+
+
+# -----------------------------------------------------
+# Update our Mercurial settings.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pluma "${FIRETHORN_CODE:?}/.hg/hgrc" &
+    
+        [paths]
+    -   default = http://wfau.metagrid.co.uk/code/firethorn
+    +   default = ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+
+        # path aliases to other clones of this repo in URLs or filesystem paths
+        # (see "hg help config.paths" for more info)
+        #
+        # default-push = ssh://jdoe@example.net/hg/jdoes-fork
+        # my-fork      = ssh://jdoe@example.net/hg/jdoes-fork
+        # my-clone     = /home/jdoe/jdoes-clone
+
+        [ui]
+    +   username = Dave Morris <dmr@roe.ac.uk>
+
+    
+
+

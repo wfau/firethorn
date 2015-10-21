@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.springframework.http.HttpStatus;
-
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
@@ -35,9 +33,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 public interface OgsaService
 extends BaseComponent
     {
-
     /**
-     * An endpoint URL factory.
+     * An endpoint URL factory interface.
      * 
      */
     public static interface EndpointFactory
@@ -152,6 +149,21 @@ extends BaseComponent
         }
 
     /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<OgsaService>
+        {
+        /**
+         * Our {@link OgsaService.EntityFactory} instance.
+         *
+         */
+        public OgsaService.EntityFactory entities();
+        
+        }
+    
+    /**
      * Enum for the service status.
      * 
      */
@@ -197,20 +209,6 @@ extends BaseComponent
      *
      */
     public String version();
-
-    /**
-     * Get the latest HTTP status code.
-     * @return The HTTP status code.
-     *
-    public HttpStatus http();
-     */
-
-    /**
-     * Check the HTTP status.
-     * @return The HTTP status code.
-     *
-    public HttpStatus ping();
-     */
 
     /**
      * Access to the {@link OgsaIvoaResource}(s) provided by this {@link OgsaService}.
@@ -284,4 +282,37 @@ extends BaseComponent
      */
     public OgsaJdbcResources jdbc();
 
+    /**
+     * Access to the {@link OgsaExecutionResource}(s) provided by this {@link OgsaService}.
+     *
+     */
+    interface OgsaExecResources
+        {
+
+        /**
+         * Create a new {@link OgsaExecResources}
+         *
+         */
+        public OgsaExecResource create();
+
+        /**
+         * List all the {@link OgsaExecResource}(s) for this {@link OgsaService}.
+         *
+         */
+        public Iterable<OgsaExecResource> select();
+
+        /**
+         * Get the primary {@link OgsaExecResource} for this {@link OgsaService}.
+         *
+         */
+        public OgsaExecResource primary();
+        
+        }
+
+    /**
+     * Access to the {@link OgsaExecResource}(s) provided by this {@link OgsaService}.
+     *
+     */
+    public OgsaExecResources exec();
+    
     }

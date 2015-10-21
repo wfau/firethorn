@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
@@ -216,30 +218,121 @@ public class IvoaSchemaEntity
                     )
                 );
             }
+        }
 
-        @Autowired
-        protected IvoaTable.EntityFactory tables;
-        @Override
-        public IvoaTable.EntityFactory tables()
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements IvoaSchema.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static IvoaSchemaEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
             {
-            return this.tables;
+            return IvoaSchemaEntity.EntityServices.instance ;
             }
 
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (IvoaSchemaEntity.EntityServices.instance == null)
+                {
+                IvoaSchemaEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected IvoaSchema.IdentFactory idents ;
+        private IvoaSchema.IdentFactory idents;
         @Override
         public IvoaSchema.IdentFactory idents()
             {
-            return this.idents ;
+            return this.idents;
             }
 
         @Autowired
-        protected IvoaSchema.LinkFactory links;
+        private IvoaSchema.LinkFactory links;
         @Override
         public IvoaSchema.LinkFactory links()
             {
             return this.links;
             }
+
+        @Autowired
+        private IvoaSchema.NameFactory names;
+        @Override
+        public IvoaSchema.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private IvoaSchema.EntityFactory entities;
+        @Override
+        public IvoaSchema.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+		private IvoaTable.EntityFactory tables;
+		@Override
+		public IvoaTable.EntityFactory tables()
+			{
+			return this.tables;
+			}
+        }
+
+    @Override
+    protected IvoaSchema.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return IvoaSchemaEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected IvoaSchema.EntityServices services()
+        {
+        log.debug("services()");
+        return IvoaSchemaEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
         }
 
     protected IvoaSchemaEntity()
@@ -290,12 +383,14 @@ public class IvoaSchemaEntity
     @Override
     public IvoaSchema.Tables tables()
         {
+        log.debug("tables() for [{}][{}]", ident(), namebuilder());
+        scan();
         return new IvoaSchema.Tables()
             {
             @Override
             public Iterable<IvoaTable> select()
                 {
-                return factories().ivoa().tables().select(
+                return factories().ivoa().tables().entities().select(
                     IvoaSchemaEntity.this
                     );
                 }
@@ -303,7 +398,7 @@ public class IvoaSchemaEntity
             public IvoaTable select(final String name)
             throws NameNotFoundException
                 {
-                return factories().ivoa().tables().select(
+                return factories().ivoa().tables().entities().select(
                     IvoaSchemaEntity.this,
                     name
                     );
@@ -311,7 +406,7 @@ public class IvoaSchemaEntity
             @Override
             public IvoaTable search(final String name)
                 {
-                return factories().ivoa().tables().search(
+                return factories().ivoa().tables().entities().search(
                     IvoaSchemaEntity.this,
                     name
                     );
@@ -320,7 +415,7 @@ public class IvoaSchemaEntity
             public IvoaTable select(final Identifier ident)
             throws IdentifierNotFoundException
                 {
-                return factories().ivoa().tables().select(
+                return factories().ivoa().tables().entities().select(
                     ident
                     );
                 }
@@ -334,7 +429,7 @@ public class IvoaSchemaEntity
                     public IvoaTable create(final IvoaTable.Metadata meta)
                     throws DuplicateEntityException
                         {
-                        return factories().ivoa().tables().create(
+                        return factories().ivoa().tables().entities().create(
                             IvoaSchemaEntity.this,
                             meta
                             );
@@ -345,16 +440,9 @@ public class IvoaSchemaEntity
         }
 
     @Override
-    public String link()
-        {
-        return factories().ivoa().schemas().links().link(
-            this
-            );
-        }
-
-    @Override
     protected void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
 

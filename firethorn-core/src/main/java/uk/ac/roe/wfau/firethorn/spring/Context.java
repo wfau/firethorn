@@ -3,7 +3,6 @@ package uk.ac.roe.wfau.firethorn.spring;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.meta.DataSpace;
 
 /**
  * The current context.
@@ -33,8 +32,8 @@ public interface Context
     /**
      * The data storage space.
      * 
-     */
     public DataSpace space();
+     */
     
     /**
      * Factory interface.
@@ -47,6 +46,6 @@ public interface Context
          * 
          */
         public Context current();
-        
+
         }
     }

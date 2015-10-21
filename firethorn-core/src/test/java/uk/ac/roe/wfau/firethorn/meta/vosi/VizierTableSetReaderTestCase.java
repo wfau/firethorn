@@ -38,7 +38,7 @@ public class VizierTableSetReaderTestCase
     public void test001()
     throws Exception
         {
-        IvoaResource resource = factories().ivoa().resources().create(
+        IvoaResource resource = factories().ivoa().resources().entities().create(
             "urn:test-1",
             "urn:test-1"
             );

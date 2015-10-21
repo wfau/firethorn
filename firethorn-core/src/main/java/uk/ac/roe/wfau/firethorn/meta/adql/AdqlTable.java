@@ -109,31 +109,28 @@ extends BaseTable<AdqlTable, AdqlColumn>
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query);
 
+        }
+
+    /**
+     * {@link BaseTable.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends BaseTable.EntityServices<AdqlTable>
+        {
         /**
-         * Our local {@link AdqlColumn.EntityFactory} implementation.
-         * @todo - move to services
+         * Our {@link AdqlTable.EntityFactory} instance.
+         *
+         */
+        public AdqlTable.EntityFactory entities();
+
+        /**
+         * {@link AdqlColumn.EntityFactory} instance.
          *
          */
         public AdqlColumn.EntityFactory columns();
-
-        //TODO - move to services
-        @Override
-        public AdqlTable.IdentFactory idents();
-
-        //TODO - move to services
-        @Override
-        public AdqlTable.NameFactory names();
-
-        //TODO - move to services
-        @Override
-        public AdqlTable.AliasFactory aliases();
-        
-        //TODO - move to services
-        @Override
-        public AdqlTable.LinkFactory links();
-
         }
-
+    
     @Override
     public AdqlResource resource();
 

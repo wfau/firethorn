@@ -36,26 +36,26 @@ extends TestBase
     @Test
     public void test000()
         {
-        final Operation operation = factories().operations().create(
+        final Operation operation = factories().operations().entities().create(
             "target",
             "method",
             "source"
             );
         log.debug("Oper [{}]", operation.ident());
 
-        final Community community = factories().communities().create(
+        final Community community = factories().communities().entities().create(
             "urn:community",
             "community-name"
             );
 
-        operation.auth().create(
+        operation.authentications().create(
             community.members().create(
                 "identity-name"
                 ),
             "urn:authentication"
             );
 
-        for (final Authentication auth : operation.auth().select())
+        for (final Authentication auth : operation.authentications().select())
             {
             log.debug("Auth [{}]", auth.ident());
             }

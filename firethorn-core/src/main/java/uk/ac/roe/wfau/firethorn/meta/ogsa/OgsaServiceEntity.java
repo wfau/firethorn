@@ -23,6 +23,7 @@ import java.io.LineNumberReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -34,8 +35,6 @@ import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +48,8 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
@@ -58,7 +57,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.OgStatus;
 
 /**
  * {@link OgsaService} implementation.
@@ -140,22 +138,6 @@ implements OgsaService
             return OgsaServiceEntity.class ;
             }
 
-        @Autowired
-        private OgsaService.IdentFactory idents;
-        @Override
-        public OgsaService.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private OgsaService.LinkFactory links;
-        @Override
-        public OgsaService.LinkFactory links()
-            {
-            return this.links;
-            }
-
         @Override
         @SelectMethod
         public Iterable<OgsaService> select()
@@ -213,7 +195,7 @@ implements OgsaService
                     }
                 else {
                     try {
-                        service = factories().ogsa().services().create(
+                        service = factories().ogsa().services().entities().create(
                             endpoint
                             );
                         }
@@ -376,7 +358,113 @@ implements OgsaService
                 }
             }
         }
-    
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements OgsaService.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static OgsaServiceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return OgsaServiceEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (OgsaServiceEntity.EntityServices.instance == null)
+                {
+                OgsaServiceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private OgsaService.IdentFactory idents;
+        @Override
+        public OgsaService.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private OgsaService.LinkFactory links;
+        @Override
+        public OgsaService.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private OgsaService.NameFactory names;
+        @Override
+        public OgsaService.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private OgsaService.EntityFactory entities;
+        @Override
+        public OgsaService.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
+    @Override
+    protected OgsaService.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return OgsaServiceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected OgsaService.EntityServices services()
+        {
+        log.debug("services()");
+        return OgsaServiceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
     
     /**
      * Protected constructor. 
@@ -482,14 +570,6 @@ implements OgsaService
         }
 
     @Override
-    public String link()
-        {
-        return factories().ogsa().services().links().link(
-            this
-            );
-        }
-
-    @Override
     public URI baseuri()
     throws URISyntaxException
         {
@@ -567,7 +647,7 @@ implements OgsaService
             @Override
             public OgsaIvoaResource create(IvoaResource source)
                 {
-                return factories().ogsa().factories().ivoa().create(
+                return factories().ogsa().ivoa().entities().create(
                     OgsaServiceEntity.this,
                     source
                     );
@@ -576,7 +656,7 @@ implements OgsaService
             @Override
             public Iterable<OgsaIvoaResource> select()
                 {
-                return factories().ogsa().factories().ivoa().select(
+                return factories().ogsa().ivoa().entities().select(
                     OgsaServiceEntity.this
                     );
                 }
@@ -584,7 +664,7 @@ implements OgsaService
             @Override
             public Iterable<OgsaIvoaResource> select(IvoaResource source)
                 {
-                return factories().ogsa().factories().ivoa().select(
+                return factories().ogsa().ivoa().entities().select(
                     OgsaServiceEntity.this,
                     source
                     );
@@ -600,7 +680,7 @@ implements OgsaService
             @Override
             public OgsaJdbcResource create(JdbcResource source)
                 {
-                return factories().ogsa().factories().jdbc().create(
+                return factories().ogsa().jdbc().entities().create(
                     OgsaServiceEntity.this,
                     source
                     );
@@ -609,7 +689,7 @@ implements OgsaService
             @Override
             public Iterable<OgsaJdbcResource> select()
                 {
-                return factories().ogsa().factories().jdbc().select(
+                return factories().ogsa().jdbc().entities().select(
                     OgsaServiceEntity.this
                     );
                 }
@@ -617,7 +697,7 @@ implements OgsaService
             @Override
             public Iterable<OgsaJdbcResource> select(JdbcResource source)
                 {
-                return factories().ogsa().factories().jdbc().select(
+                return factories().ogsa().jdbc().entities().select(
                     OgsaServiceEntity.this,
                     source
                     );
@@ -626,7 +706,7 @@ implements OgsaService
             @Override
             public OgsaJdbcResource primary(JdbcResource source)
                 {
-                return factories().ogsa().factories().jdbc().primary(
+                return factories().ogsa().jdbc().entities().primary(
                     OgsaServiceEntity.this,
                     source
                     );
@@ -650,4 +730,35 @@ implements OgsaService
                 break ;
             }
         }
+
+	@Override
+	public OgsaExecResources exec()
+		{
+		return new OgsaExecResources()
+			{
+			@Override
+			public OgsaExecResource create()
+				{
+                return factories().ogsa().exec().entities().create(
+                    OgsaServiceEntity.this
+                    );
+				}
+
+			@Override
+			public Iterable<OgsaExecResource> select()
+				{
+                return factories().ogsa().exec().entities().select(
+                    OgsaServiceEntity.this
+                    );
+				}
+
+			@Override
+			public OgsaExecResource primary()
+				{
+                return factories().ogsa().exec().entities().primary(
+                    OgsaServiceEntity.this
+                    );
+				}
+			};
+		}
     }

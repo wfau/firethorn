@@ -19,24 +19,30 @@ FROM fedora:21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Update (almost) everything (excluding filesystem).
-# https://bugzilla.redhat.com/show_bug.cgi?format=multiple&id=1171928
-RUN yum -y -x filesystem update
+# Declare the system cache as a volume.
+VOLUME /var/cache/
+
+#
+# Clear the cache.
+RUN yum -y clean all
 
 #
 # Enable delta rpms.
 RUN yum -y install deltarpm
 
 #
+# Update (almost) everything (excluding filesystem).
+# https://bugzilla.redhat.com/show_bug.cgi?id=1171928
+#RUN yum -y -x filesystem update
+
+#
 # Add common tools.
 RUN yum -y install sed
 RUN yum -y install tar
 RUN yum -y install wget
+RUN yum -y install nano
 RUN yum -y install gzip
 RUN yum -y install pwgen
 
-#
-# Clear the cache.
-RUN yum -y clean all
 
 

@@ -16,6 +16,7 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -25,13 +26,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -39,9 +40,15 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
+import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
 
 /**
  * Hibernate based entity implementation.
@@ -88,7 +95,10 @@ implements Identity
      *
      */
     protected static final String DB_COMMUNITY_COL = "community" ;
-    protected static final String DB_CURRENT_SCHEMA_COL = "currentschema" ;
+    protected static final String DB_JDBC_SCHEMA_COL = "jdbcschema" ;
+
+    protected static final String DB_ADQL_SCHEMA_COL = "adqlschema" ;
+    protected static final String DB_ADQL_RESOURCE_COL = "adqlresource" ;
 
     /**
      * Factory implementation.
@@ -144,9 +154,62 @@ implements Identity
                         )
                 );
             }
+        }
 
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements Identity.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static IdentityEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return IdentityEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (IdentityEntity.EntityServices.instance == null)
+                {
+                IdentityEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected Identity.IdentFactory idents;
+        private Identity.IdentFactory idents;
         @Override
         public Identity.IdentFactory idents()
             {
@@ -154,14 +217,44 @@ implements Identity
             }
 
         @Autowired
-        protected Identity.LinkFactory links;
+        private Identity.LinkFactory links;
         @Override
         public Identity.LinkFactory links()
             {
             return this.links;
             }
+
+        @Autowired
+        private Identity.NameFactory names;
+        @Override
+        public Identity.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private Identity.EntityFactory entities;
+        @Override
+        public Identity.EntityFactory entities()
+            {
+            return this.entities;
+            }
         }
 
+    @Override
+    protected Identity.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return IdentityEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected Identity.EntityServices services()
+        {
+        log.debug("services()");
+        return IdentityEntity.EntityServices.instance() ; 
+        }
+    
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -182,6 +275,14 @@ implements Identity
         this.community = community;
         }
 
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     /**
      * Return this Identity as the owner.
      *
@@ -216,12 +317,48 @@ implements Identity
         return this.community ;
         }
 
-    @Override
-    public String link()
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = AdqlResourceEntity.class
+        )
+    @JoinColumn(
+        name = DB_ADQL_RESOURCE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private AdqlResource adqlresource ;
+    
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = AdqlSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_ADQL_SCHEMA_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private AdqlSchema adqlschema ;
+
+    protected AdqlSchema adqlschema()
         {
-        return factories().communities().members().links().link(
-            this
-            );
+        log.debug("adqlschema()");
+        if (this.adqlschema == null)
+        	{
+        	if (this.adqlresource == null)
+        		{
+// TODO better name generator.
+        		this.adqlresource = factories().adql().resources().entities().create(
+        			"user space"
+        			);        	
+        		}
+// TODO better name generator.
+        	this.adqlschema = adqlresource.schemas().create(
+    			"temp"
+    			);
+        	}
+        return this.adqlschema;
         }
 
     @ManyToOne(
@@ -229,22 +366,17 @@ implements Identity
         targetEntity = JdbcSchemaEntity.class
         )
     @JoinColumn(
-        name = DB_CURRENT_SCHEMA_COL,
+        name = DB_JDBC_SCHEMA_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
     private JdbcSchema jdbcschema ;
-    @Override
-    public JdbcSchema space()
+
+    protected JdbcSchema jdbcschema()
         {
-        return this.jdbcschema;
-        }
-    @Override
-    public JdbcSchema space(final boolean create)
-        {
-        log.debug("space(boolean) [{}]", create);
-        if ((create) && (this.jdbcschema == null))
+        log.debug("jdbcschema()");
+        if (this.jdbcschema == null)
             {
             if (community() != null)
                 {
@@ -269,6 +401,78 @@ implements Identity
                 }
             }
         return this.jdbcschema;
+        }
+
+	@Override
+	public Spaces spaces()
+		{
+		return new Spaces()
+			{
+			@Override
+			public AdqlSpaces adql()
+				{
+				return new AdqlSpaces()
+					{
+					@Override
+					public Iterable<AdqlSchema> select()
+						{
+						// TODO .. 
+						return new EmptyIterable<AdqlSchema>();
+						}
+					@Override
+					public AdqlSchema current()
+						{
+						return adqlschema();
+						}
+					};
+				}
+
+			@Override
+			public JdbcSpaces jdbc()
+				{
+				return new JdbcSpaces()
+					{
+					@Override
+					public Iterable<JdbcSchema> select()
+						{
+						// TODO .. 
+						return new EmptyIterable<JdbcSchema>();
+						}
+
+					@Override
+					public JdbcSchema current()
+						{
+						return jdbcschema();
+						}
+					};
+				}
+			};
+		}
+
+    /**
+     * Get the corresponding Hibernate entity for the current thread.
+     * @throws HibernateConvertException 
+     * @todo Move to a generic base class. 
+     *
+     */
+    @Override
+    public Identity rebase()
+    throws HibernateConvertException
+    	{
+        log.debug("Converting current instance [{}]", ident());
+        try {
+			return services().entities().select(
+			    ident()
+			    );
+        	}
+        catch (final IdentifierNotFoundException ouch)
+        	{
+        	log.error("IdentifierNotFound selecting instance [{}][{}]", this.getClass().getName(), ident());
+        	throw new HibernateConvertException(
+    			ident(),
+    			ouch
+    			);
+        	}
         }
     }
 

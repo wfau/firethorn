@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnBean;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean;
 import uk.ac.roe.wfau.firethorn.widgeon.ivoa.IvoaTableBean.MetadataBean.IvoaMetadataBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaColumnIdentFactory;
 
 /**
  * Bean wrapper for <code>IvoaColumn</code>.

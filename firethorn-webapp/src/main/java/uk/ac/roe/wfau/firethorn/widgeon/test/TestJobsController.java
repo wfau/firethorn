@@ -102,7 +102,7 @@ extends AbstractController
     public Iterable<TestJobController.Bean> select(
         ){
         return TestJobController.bean(
-            factories().tests().factory().select()
+            factories().tests().entities().select()
             );
         }
 
@@ -118,7 +118,7 @@ extends AbstractController
         final Integer pause
         ){
         final TestJobController.Bean bean = TestJobController.bean(
-            factories().tests().factory().create(
+            factories().tests().entities().create(
                 name,
                 pause
                 )

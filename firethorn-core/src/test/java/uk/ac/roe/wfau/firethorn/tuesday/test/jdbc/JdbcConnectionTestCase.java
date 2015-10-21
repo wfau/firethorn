@@ -45,7 +45,7 @@ public class JdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        final JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().entities().create(
             "test:catalog",
             "test:resource",
             "test:uri"
@@ -89,7 +89,7 @@ public class JdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        final JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().entities().create(
             "test:catalog",
             "test:resource",
             "test:uri"
@@ -133,7 +133,7 @@ public class JdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        final JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().entities().create(
             "test:catalog",
             "test:resource",
             "test:uri"

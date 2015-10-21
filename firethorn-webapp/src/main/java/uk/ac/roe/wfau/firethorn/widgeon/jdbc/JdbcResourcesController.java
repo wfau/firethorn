@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceLinkFactory;
 
 /**
  * Spring MVC controller for <code>JdbcResource</code>.
@@ -133,7 +134,7 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
         final ModelAndView model
         ){
         return bean(
-            factories().jdbc().resources().select()
+            factories().jdbc().resources().entities().select()
             );
         }
 
@@ -158,7 +159,7 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
         final String catalog
         ){
         return created(
-            factories().jdbc().resources().create(
+            factories().jdbc().resources().entities().create(
                 catalog,
                 name,
                 url,

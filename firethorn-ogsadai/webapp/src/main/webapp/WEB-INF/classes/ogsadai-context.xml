@@ -117,8 +117,10 @@
     OPTIONAL-GT-BEANS -->
     
     <!-- OPTIONAL SECURITY CONTEXT FACTORY FOR JERSEY -->
+    <!--bean id="uk.org.ogsadai.jersey.SecurityContextFactory"
+          class="uk.ac.roe.wfau.firethorn.ogsadai.security.FirethornSecurityContextFactory"/-->
     <bean id="uk.org.ogsadai.jersey.SecurityContextFactory"
-          class="uk.ac.roe.wfau.firethorn.ogsadai.security.FirethornSecurityContextFactory"/>
+          class="uk.ac.roe.wfau.firethorn.ogsadai.server.blue.RequestContextFactory"/>
     
     <!-- OPTIONAL RESOURCE AUTHORIZATION FOR JERSEY
     <bean id="uk.org.ogsadai.ResourceAuthorisation"

@@ -17,18 +17,23 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -104,16 +109,76 @@ implements AdqlResource
                 );
             }
 
-        @Autowired
-        protected AdqlSchema.EntityFactory schemas;
         @Override
-        public AdqlSchema.EntityFactory schemas()
+        @CreateMethod
+        public AdqlResource  create()
             {
-            return this.schemas;
+            return super.insert(
+                new AdqlResourceEntity(
+                    names.name()
+                    )
+                );
             }
 
         @Autowired
-        protected AdqlResource.IdentFactory idents;
+        private AdqlResource.NameFactory names;
+
+        }
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements AdqlResource.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static AdqlResourceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return AdqlResourceEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (AdqlResourceEntity.EntityServices.instance == null)
+                {
+                AdqlResourceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private AdqlResource.IdentFactory idents;
         @Override
         public AdqlResource.IdentFactory idents()
             {
@@ -121,14 +186,68 @@ implements AdqlResource
             }
 
         @Autowired
-        protected AdqlResource.LinkFactory links;
+        private AdqlResource.LinkFactory links;
         @Override
         public AdqlResource.LinkFactory links()
             {
             return this.links;
             }
+
+        @Autowired
+        private AdqlResource.NameFactory names;
+        @Override
+        public AdqlResource.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private AdqlResource.EntityFactory entities;
+        @Override
+        public AdqlResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+        private BlueQuery.EntityFactory blues;
+        @Override
+        public BlueQuery.EntityFactory blues()
+            {
+            return this.blues;
+            }
+
+        @Autowired
+		private AdqlSchema.EntityFactory schemas;
+		@Override
+		public AdqlSchema.EntityFactory schemas()
+			{
+			return this.schemas;
+			}
         }
 
+    @Override
+    protected AdqlResource.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return AdqlResourceEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected AdqlResource.EntityServices services()
+        {
+        log.debug("services()");
+        return AdqlResourceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     protected AdqlResourceEntity()
         {
         super();
@@ -144,12 +263,14 @@ implements AdqlResource
     @Override
     public AdqlResource.Schemas schemas()
         {
+        log.debug("schemas() for [{}][{}]", ident(), namebuilder());
+        scan();
         return new AdqlResource.Schemas()
             {
             @Override
             public Iterable<AdqlSchema> select()
                 {
-                return factories().adql().schemas().select(
+                return factories().adql().schemas().entities().select(
                     AdqlResourceEntity.this
                     );
                 }
@@ -157,7 +278,7 @@ implements AdqlResource
             @Override
             public AdqlSchema search(final String name)
                 {
-                return factories().adql().schemas().search(
+                return factories().adql().schemas().entities().search(
                     AdqlResourceEntity.this,
                     name
                     );
@@ -167,7 +288,7 @@ implements AdqlResource
             public AdqlSchema select(final String name)
             throws NameNotFoundException
                 {
-                return factories().adql().schemas().select(
+                return factories().adql().schemas().entities().select(
                     AdqlResourceEntity.this,
                     name
                     );
@@ -176,7 +297,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final String name)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
                     name
                     );
@@ -185,7 +306,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final String name, final BaseTable<?, ?> base)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
                     name,
                     base
@@ -195,7 +316,7 @@ implements AdqlResource
             @Override
 			public AdqlSchema create(final BaseSchema<?,?> base)
 			    {
-			    return factories().adql().schemas().create(
+			    return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
                     base.name(),
                     base
@@ -204,7 +325,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final CopyDepth depth, final BaseSchema<?, ?> base)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     depth,
                     AdqlResourceEntity.this,
                     base.name(),
@@ -215,7 +336,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final String name, final BaseSchema<?,?> base)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
                     name,
                     base
@@ -225,7 +346,7 @@ implements AdqlResource
             @Override
             public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?, ?> base)
                 {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().entities().create(
                     depth,
                     AdqlResourceEntity.this,
                     name,
@@ -260,16 +381,9 @@ implements AdqlResource
         }
 
     @Override
-    public String link()
-        {
-        return factories().adql().resources().links().link(
-            this
-            );
-        }
-
-    @Override
     protected void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", ident(), namebuilder());
         // TODO Auto-generated method stub
         }
 
@@ -292,5 +406,42 @@ implements AdqlResource
         throw new UnsupportedOperationException(
             "AdqlResource does not support OgsaBaseResources"
             );
+        }
+
+    @Override
+    public Blues blues()
+        {
+        return new Blues()
+            {
+            @Override
+            public Iterable<BlueQuery> select()
+                {
+                return services().blues().select(
+                    AdqlResourceEntity.this
+                    );
+                }
+            @Override
+            public BlueQuery create(final String input)
+            throws InvalidRequestException, InternalServerErrorException
+                {
+                return services().blues().create(
+                    AdqlResourceEntity.this,
+                    input,
+                    null,
+                    null
+                    );
+                }
+            @Override
+            public BlueQuery create(String input, TaskState next, Long wait)
+                throws InvalidRequestException, InternalServerErrorException
+                {
+                return services().blues().create(
+                    AdqlResourceEntity.this,
+                    input,
+                    next,
+                    wait
+                    );
+                }
+            };
         }
     }

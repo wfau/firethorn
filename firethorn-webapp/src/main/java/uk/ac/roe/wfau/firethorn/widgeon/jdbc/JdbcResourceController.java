@@ -36,6 +36,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceLinkFactory;
 
 /**
  * Spring MVC controller for <code>JdbcResource</code>.
@@ -133,7 +134,7 @@ public class JdbcResourceController
         final String ident
         ) throws EntityNotFoundException  {
         log.debug("entity() [{}]", ident);
-        final JdbcResource entity = factories().jdbc().resources().select(
+        final JdbcResource entity = factories().jdbc().resources().entities().select(
             factories().jdbc().resources().idents().ident(
                 ident
                 )

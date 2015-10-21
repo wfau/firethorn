@@ -55,21 +55,21 @@ implements HandlerInterceptor
         {
         log.debug("preHandle()");
 
-        final Operation operation =  factories.operations().current();
+        final Operation operation =  factories.operations().entities().current();
 
         if (operation != null)
             {
             log.debug(" Oper [{}]", operation.ident());
 
-            final Authentication primary = operation.auth().primary();
+            final Authentication primary = operation.authentications().primary();
             if (primary != null)
                 {
                 log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());
                 }
             else {
                 log.debug(" No primary - anon");
-                operation.auth().create(
-                        factories.communities().create(
+                operation.authentications().create(
+                        factories.communities().entities().create(
                             ANON_COMMUNITY_NAME,
                             ANON_COMMUNITY_URI
                         ).members().create(

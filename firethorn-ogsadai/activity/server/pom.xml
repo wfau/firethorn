@@ -26,13 +26,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | Maven parent project.
+        | Maven parent/child inheritance.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-activity</artifactId>
-        <version project='firethorn'>1.13.22</version>
+        <version project='firethorn'>2.0.0</version>
 	</parent>
 	
     <artifactId>firethorn-ogsadai-activity-server</artifactId>
@@ -49,6 +49,16 @@
     </properties>
 
     <dependencies>
+
+        <!--+
+            | OGSA-DAI FireThorn server classes.
+            | TODO - this just needs SecurityContext, which should probably be in a separate package.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-firethorn-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!--+
             | OGSA-DAI Astronomy extensions.

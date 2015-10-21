@@ -37,45 +37,33 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 public interface JdbcTable
 extends BaseTable<JdbcTable, JdbcColumn>
     {
-
     /**
-     * Factories interface.
-     * 
+     * Physical JDBC driver interface.
+     *
      */
-    public static interface Factories
+    public static interface JdbcDriver
+    extends JdbcColumn.JdbcDriver
         {
         /**
-         * Our {@link JdbcTable.IdentFactory}.
+         * Create (CREATE) a JDBC table.
          *
          */
-        public JdbcTable.IdentFactory idents();
+        public void create(final JdbcTable table);
 
         /**
-         * Our {@link JdbcTable.NameFactory}.
+         * Delete (DELETE) the contents of JDBC data.
          *
          */
-        public JdbcTable.NameFactory names();
+        public void delete(final JdbcTable table);
 
         /**
-         * Our {@link JdbcTable.AliasFactory}.
+         * Delete (DROP) a JDBC table.
          *
          */
-        public JdbcTable.AliasFactory aliases();
-
-        /**
-         * Our {@link JdbcTable.LinkFactory}.
-         *
-         */
-        public JdbcTable.LinkFactory links();
-
-        /**
-         * Our {@link JdbcTable.EntityFactory}.
-         *
-         */
-        public JdbcTable.EntityFactory entities();
+        public void drop(final JdbcTable table);
 
         }
-    
+
     /**
      * {@link EntityBuilder} interface.
      * 
@@ -140,37 +128,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public void delete(final JdbcTable table);
 
         }
-
-    /**
-     * Physical JDBC factory interface.
-     * @todo Move this up to resource ?
-     *
-     */
-    public static interface JdbcDriver
-        {
-        /**
-         * Create a 'physical' JDBC table.
-         * *This should only be reachable via a transactional method on our parent resource.
-         *
-         */
-        public void create(final JdbcTable table);
-
-        /**
-         * Delete (DELETE) a JDBC data.
-         * *This should only be reachable via a transactional method on our parent resource.
-         *
-         */
-        public void delete(final JdbcTable table);
-
-        /**
-         * Delete (DROP) a JDBC table.
-         * *This should only be reachable via a transactional method on our parent resource.
-         *
-         */
-        public void drop(final JdbcTable table);
-
-        }
-
+    
     /**
      * {@link BaseTable.EntityFactory} interface.
      *
@@ -178,6 +136,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
     public static interface EntityFactory
     extends BaseTable.EntityFactory<JdbcSchema, JdbcTable>
         {
+        /**
+         * Create a new {@link JdbcTable} with a generated name.
+         *
+         */
+        public JdbcTable create(final JdbcSchema parent);
+
         /**
          * Create a new {@link JdbcTable}.
          *
@@ -206,52 +170,54 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public JdbcTable create(final JdbcSchema parent, final AdqlQuery query);
 
         /**
-         * Our {@link JdbcColumn.EntityFactory} factory.
-         *
-         */
-        public JdbcColumn.EntityFactory columns();
-
-        /**
-         * OldBuilder implementation.
-         *
-        @Deprecated
-        public JdbcTable.OldBuilder builder();
-         */
-
-        /**
-         * Our physical JDBC factory.
-         *
-         */
-        public JdbcTable.JdbcDriver driver();
-
-        /**
          * Get the next set of tables for garbage collection ..
          * @Move this to the data space interface.
          *
          */
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page);
-        
-        //TODO - move to services
-        @Override
-        public JdbcTable.IdentFactory idents();
 
-        //TODO - move to services
-        @Override
-        public JdbcTable.NameFactory names();
-
-        //TODO - move to services
-        @Override
-        public JdbcTable.AliasFactory aliases();
-
-        //TODO - move to services
-        @Override
-        public JdbcTable.LinkFactory links();
+        /**
+         * Our physical JDBC factory.
+         *
+        public JdbcTable.JdbcDriver driver();
+         */
         
         }
 
-    @Override
-    public JdbcTable.EntityFactory factory();
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<JdbcTable>
+        {
+        /**
+         * Our {@link JdbcTable.EntityFactory} instance.
+         *
+         */
+        public JdbcTable.EntityFactory entities();
 
+        /**
+         * Our {@link JdbcTable.AliasFactory} instance.
+         *
+         */
+        public JdbcTable.AliasFactory aliases();
+
+        /**
+         * Our {@link JdbcColumn.EntityFactory} instance.
+         *
+         */
+        public JdbcColumn.EntityFactory columns();
+
+        /**
+         * The physical JDBC factory implementation.
+         * @todo This should depend on the local database dialect.
+         *
+        public JdbcTable.JdbcDriver driver()
+         */
+        
+        }
+    
     @Override
     public JdbcResource resource();
 
@@ -264,7 +230,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
      */
     public interface Columns extends BaseTable.Columns<JdbcColumn>
         {
-
         /**
          * Create a new {@link JdbcColumn}.
          * Used by JdbcColumn.Builder
@@ -413,5 +378,5 @@ extends BaseTable<JdbcTable, JdbcColumn>
      * 
      */
     public void update(final JdbcTable.Metadata meta);
-    
+
     }

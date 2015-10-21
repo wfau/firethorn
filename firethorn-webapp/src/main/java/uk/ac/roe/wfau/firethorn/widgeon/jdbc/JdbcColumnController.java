@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcColumnLinkFactory;
 
 /**
  * Spring MVC controller for <code>JdbcColumn</code>.
@@ -98,7 +99,7 @@ public class JdbcColumnController
         final String ident
         ) throws EntityNotFoundException {
         log.debug("table() [{}]", ident);
-        return factories().jdbc().columns().select(
+        return factories().jdbc().columns().entities().select(
             factories().jdbc().columns().idents().ident(
                 ident
                 )

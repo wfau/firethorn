@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -203,7 +204,10 @@ public class JdbcColumnEntity
         protected void update(final JdbcColumn column, final JdbcColumn.Metadata meta)
             {
             column.update(
-                meta
+                meta.jdbc()
+                );
+            column.update(
+                meta.adql()
                 );
             }
         }
@@ -285,7 +289,7 @@ public class JdbcColumnEntity
             {
             return create(
                 parent,
-                meta.name(),
+                meta.jdbc().name(),
                 meta.jdbc().jdbctype(),
                 meta.jdbc().arraysize()
                 );
@@ -304,7 +308,7 @@ public class JdbcColumnEntity
                     )
                 );
             }
-
+        
         @Override
         @SelectMethod
         public Iterable<JdbcColumn> select(final JdbcTable parent)
@@ -363,9 +367,62 @@ public class JdbcColumnEntity
                     )
                 );
             }
+        }
 
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements JdbcColumn.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static JdbcColumnEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return JdbcColumnEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (JdbcColumnEntity.EntityServices.instance == null)
+                {
+                JdbcColumnEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
         @Autowired
-        protected JdbcColumn.IdentFactory idents;
+        private JdbcColumn.IdentFactory idents;
         @Override
         public JdbcColumn.IdentFactory idents()
             {
@@ -373,7 +430,7 @@ public class JdbcColumnEntity
             }
 
         @Autowired
-        protected JdbcColumn.LinkFactory links;
+        private JdbcColumn.LinkFactory links;
         @Override
         public JdbcColumn.LinkFactory links()
             {
@@ -381,14 +438,59 @@ public class JdbcColumnEntity
             }
 
         @Autowired
-        protected JdbcColumn.AliasFactory aliases;
+        private JdbcColumn.NameFactory names;
         @Override
-        public JdbcColumn.AliasFactory aliases()
+        public JdbcColumn.NameFactory names()
             {
-            return this.aliases;
+            return this.names;
             }
+
+        @Autowired
+        private JdbcColumn.EntityFactory entities;
+        @Override
+        public JdbcColumn.EntityFactory entities()
+            {
+            return this.entities;
+            }
+
+        @Autowired
+		private JdbcColumn.AliasFactory aliases;
+		@Override
+		public JdbcColumn.AliasFactory aliases()
+			{
+			return this.aliases;
+			}
         }
 
+    @Override
+    protected JdbcColumn.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return JdbcColumnEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected JdbcColumn.EntityServices services()
+        {
+        log.debug("services()");
+        return JdbcColumnEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+
+    @Override
+    public String alias()
+        {
+        return services().aliases().alias(
+            this
+            );
+        }
     
     /**
      * Protected constructor.
@@ -412,7 +514,7 @@ public class JdbcColumnEntity
             meta.jdbc().arraysize()
             );
         this.update(
-            meta
+            meta.adql()
             );
         }
 
@@ -551,30 +653,15 @@ public class JdbcColumnEntity
         }
 
     @Override
-    public String link()
-        {
-        return factories().jdbc().columns().links().link(
-            this
-            );
-        }
-
-    @Override
-    public String alias()
-        {
-        return factories().jdbc().columns().aliases().alias(
-            this
-            );
-        }
-
-    @Override
     public void scanimpl()
         {
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
     
-    protected JdbcColumn.Metadata.Jdbc jdbcmeta()
+    protected JdbcColumn.Modifier.Jdbc jdbcmeta()
         {
-        return new JdbcColumn.Metadata.Jdbc()
+        return new JdbcColumn.Modifier.Jdbc()
             {
             @Override
             public String name()
@@ -591,6 +678,8 @@ public class JdbcColumnEntity
                 {
                 return JdbcColumnEntity.this.jdbctype();
                 }
+/*
+ * 
             @Override
             public CreateSql create()
                 {
@@ -663,13 +752,15 @@ public class JdbcColumnEntity
                         }
                     };
                 }
+ *
+ */
             };
         }
 
     @Override
-    public JdbcColumn.Metadata meta()
+    public JdbcColumn.Modifier meta()
         {
-        return new JdbcColumn.Metadata()
+        return new JdbcColumn.Modifier()
             {
             @Override
             public String name()
@@ -678,13 +769,13 @@ public class JdbcColumnEntity
                 }
 
             @Override
-            public AdqlColumn.Metadata.Adql adql()
+            public AdqlColumn.Modifier.Adql adql()
                 {
                 return adqlmeta();
                 }
 
             @Override
-            public JdbcColumn.Metadata .Jdbc jdbc()
+            public JdbcColumn.Modifier.Jdbc jdbc()
                 {
                 return jdbcmeta();
                 }
@@ -692,17 +783,8 @@ public class JdbcColumnEntity
         }
 
     @Override
-    public void update(final JdbcColumn.Metadata update)
-        {
-        if (update.adql() != null)
-            {
-            if (update.adql().text() != null)
-                {
-                this.text(update.adql().text());
-                }
-            //
-            //TODO Check the type and size - warn/fail if they have changed ?
-            //
-            }
-        }
+    public void update(final JdbcColumn.Metadata.Jdbc meta)
+    	{
+    	// TODO What do we do if these values change ?    	
+    	}
     }

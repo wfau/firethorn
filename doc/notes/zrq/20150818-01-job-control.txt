@@ -1,0 +1,122 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+
+    // Advance is a push by the user
+    POST /blue/query/{ident} blue.query.status=RUNNING
+
+    // Event is an update from OGSA-DAI
+    POST /blue/event/{ident} blue.query.status=RUNNING
+
+
+# -----------------------------------------------------
+
+    POST /blue/query/{ident} blue.query.status=RUNNING
+
+    BlueQueryController.advance()
+        return bean(
+            services.entities().advance(
+                services.idents().ident(
+                    ident
+                    ),
+                RUNNING,
+                30000L
+                )
+            );
+
+    BlueQueryController.services()
+        => BlueQuery.Services
+
+        BlueQuery.Services.entities()
+            => BlueQuery.EntityFactory
+
+            BlueTaskEntity.EntityFactory.advance(
+                Identifier ident,
+                TaskState  next,
+                timeout
+                )
+
+                BlueTaskEntity.advance(
+                    next,
+                    timeout
+                    );
+
+                    BlueTaskEntity.running();
+
+                        BlueTaskEntity.TaskRunner.thread(
+                            new BlueTask.TaskRunner.Updator<BlueTaskEntity<?>>
+                            )
+
+                            BlueTaskEntity.TaskRunner.future()
+                            
+                                Updator.execute()
+
+                                    BlueQueryEntity.prepare();
+
+                                        BlueTaskEntity.transition(
+                                            TaskState.EDITING
+                                            );
+                                            BlueTaskEntity.accept(
+                                                TaskState.EDITING
+                                                )
+                                        BlueTaskEntity.transition(
+                                            TaskState.READY
+                                            );
+                                            BlueTaskEntity.accept(
+                                                TaskState.READY
+                                                )
+
+                                    BlueQueryEntity.execute();
+
+                                        BlueTaskEntity.transition(
+                                            TaskState.QUEUED
+                                            );
+                                            BlueTaskEntity.accept(
+                                                TaskState.QUEUED
+                                                )
+                                        BlueTaskEntity.transition(
+                                            TaskState.RUNNING
+                                            );
+                                            BlueTaskEntity.accept(
+                                                TaskState.RUNNING
+                                                )
+
+                    BlueTaskEntity.waitfor(
+                        null,
+                        TaskState.RUNNING,
+                        timeout
+                        );
+
+                        StatusEventListener.waitfor(
+                            Handle
+                            );
+
+                            this.wait(
+                                remaining()
+                                );
+
+                    BlueTaskEntity.event(
+                        this.state()
+                        );
+
+

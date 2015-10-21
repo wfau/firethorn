@@ -101,7 +101,7 @@ extends TestRoot
     @Before
     public final void oper()
         {
-        final Operation operation = factories().operations().create(
+        final Operation operation = factories().operations().entities().create(
             TEST_OPER_TARGET,
             TEST_OPER_METHOD,
             TEST_OPER_SOURCE
@@ -109,12 +109,12 @@ extends TestRoot
 
         log.debug(" Oper [{}][{}][{}][{}]", operation.ident(), operation.target(), operation.method(), operation.source());
 
-        Authentication primary = operation.auth().primary();
+        Authentication primary = operation.authentications().primary();
         if (primary == null)
             {
             
-            primary = operation.auth().create(
-                factories().communities().create(
+            primary = operation.authentications().create(
+                factories().communities().entities().create(
                     config().property(
                         "junit.community.uri",
                         TEST_COMMUNITY_URI

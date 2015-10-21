@@ -17,9 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,15 +35,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import adql.db.DBChecker;
 import adql.db.DBColumn;
-import adql.db.DBTable;
-import adql.db.SearchTableApi;
 import adql.parser.ADQLParser;
 import adql.parser.ADQLQueryFactory;
 import adql.parser.ParseException;
@@ -60,9 +51,9 @@ import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
 import adql.query.operand.NegativeOperand;
 import adql.query.operand.NumericConstant;
+import adql.query.operand.Operation;
 import adql.query.operand.OperationType;
 import adql.query.operand.StringConstant;
-import adql.query.operand.Operation;
 import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
@@ -90,12 +81,12 @@ implements AdqlParser
     implements AdqlParser.Factory
         {
         @Override
-        public AdqlParser create(final AdqlQuery.Mode mode, final AdqlSchema schema)
+        public AdqlParser create(final AdqlQuery.Mode mode, final AdqlResource resource)
             {
             return new AdqlParserImpl(
                 this.tables,
                 mode,
-                schema
+                resource
                 );
             }
 
@@ -112,7 +103,7 @@ implements AdqlParser
      * Protected constructor.
      *
      */
-    protected AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode, final AdqlSchema schema)
+    protected AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode, final AdqlResource resource)
         {
         this.mode = mode ;
         //
@@ -120,7 +111,7 @@ implements AdqlParser
         this.parser = new ADQLParser(
             new MyQueryChecker(
                 new MySearchTableList(
-                    schema.resource(),
+                    resource,
                     factory,
                     mode
                     )
@@ -459,23 +450,6 @@ implements AdqlParser
     protected AdqlQuery.Mode mode ;
 
     protected ADQLParser parser ;
-
-    protected String fudge(final AdqlParserQuery subject)
-        {
-        //
-        // Trim leading/trailing spaces.
-        final String s1 = subject.input().trim();
-        //
-        // Skip /* comments */
-        final Pattern p1 = Pattern.compile(
-            "/\\*.*?\\*/",
-            Pattern.DOTALL
-            );
-        final Matcher m1 = p1.matcher(s1);
-        final String  s2 = m1.replaceAll("");
-
-        return s2 ;
-        }
 
     @Override
     public void process(final AdqlParserQuery subject)

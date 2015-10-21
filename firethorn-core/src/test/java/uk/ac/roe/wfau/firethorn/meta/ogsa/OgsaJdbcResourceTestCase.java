@@ -37,9 +37,9 @@ extends TestBase
     public void testCreate001()
     throws Exception
         {
-        final OgsaService service = factories().ogsa().services().primary();
+        final OgsaService service = factories().ogsa().services().entities().primary();
 
-        final JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().entities().create(
             "ATLASDR1",
             "atlas",
             config().property(
@@ -61,8 +61,8 @@ extends TestBase
             );
 
         assertEquals(
-            OgsaBaseResource.OgStatus.CREATED,
-            target.ogStatus()
+            OgsaBaseResource.OgsaStatus.CREATED,
+            target.ogstatus()
             );
 
         assertNotNull(
@@ -70,8 +70,8 @@ extends TestBase
             );
 
         assertEquals(
-            OgsaBaseResource.OgStatus.ACTIVE,
-            target.ogStatus()
+            OgsaBaseResource.OgsaStatus.ACTIVE,
+            target.ogstatus()
             );
         
         }
@@ -80,7 +80,7 @@ extends TestBase
     public void testCreate002()
     throws Exception
         {
-        final JdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().entities().create(
             "ATLASDR1",
             "atlas",
             config().property(
@@ -100,8 +100,8 @@ extends TestBase
         final OgsaJdbcResource target = resource.ogsa().primary();
 
         assertEquals(
-            OgsaBaseResource.OgStatus.CREATED,
-            target.ogStatus()
+            OgsaBaseResource.OgsaStatus.CREATED,
+            target.ogstatus()
             );
 
         assertNotNull(
@@ -109,8 +109,8 @@ extends TestBase
             );
 
         assertEquals(
-            OgsaBaseResource.OgStatus.ACTIVE,
-            target.ogStatus()
+            OgsaBaseResource.OgsaStatus.ACTIVE,
+            target.ogstatus()
             );
         }
     }

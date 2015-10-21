@@ -98,7 +98,7 @@ implements ResourceActivity
             }
 
         this.results = new SimpleActivityOutput(
-            JdbcSelectDataParam.ACTIVITY_RESULTS
+            JdbcSelectDataParam.TUPLE_OUTPUT
             );
         }
 

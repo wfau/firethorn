@@ -46,7 +46,7 @@ implements Context.Factory
             @Override
             public Operation oper()
                 {
-                return factories().operations().current();
+                return factories().operations().entities().current();
                 }
 
             @Override
@@ -55,7 +55,7 @@ implements Context.Factory
                 Operation oper = this.oper();
                 if (oper != null)
                     {
-                    return oper.auth().primary();
+                    return oper.authentications().primary();
                     }
                 return null ;
                 }
@@ -71,6 +71,9 @@ implements Context.Factory
                 return null ;
                 }
 
+            
+/*
+ * 
             @Override
             public DataSpace space()
                 {
@@ -80,7 +83,7 @@ implements Context.Factory
                     @Override
                     public JdbcSchema jdbc()
                         {
-                        return identity().space();
+                        return identity().spaces().jdbc().current();
                         }
                     //TODO .... fix this
                     @Override
@@ -90,6 +93,9 @@ implements Context.Factory
                         }
                     };
                 }
+ *             
+ */
+
             };
         }
     }

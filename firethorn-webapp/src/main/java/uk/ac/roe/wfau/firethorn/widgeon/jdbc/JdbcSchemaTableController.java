@@ -32,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcSchemaLinkFactory;
 
 /**
  * Spring MVC controller for <code>JdbcSchema</code> tables.
@@ -111,7 +112,7 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
         final String ident
         ) throws EntityNotFoundException {
         log.debug("parent() [{}]", ident);
-        return factories().jdbc().schemas().select(
+        return factories().jdbc().schemas().entities().select(
             factories().jdbc().schemas().idents().ident(
                 ident
                 )

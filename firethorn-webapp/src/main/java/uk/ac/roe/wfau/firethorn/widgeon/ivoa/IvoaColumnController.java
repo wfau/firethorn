@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaColumnLinkFactory;
 
 /**
  * Spring MVC controller for <code>IvoaColumn</code>.
@@ -98,7 +99,7 @@ public class IvoaColumnController
         final String ident
         ) throws EntityNotFoundException {
         log.debug("table() [{}]", ident);
-        return factories().ivoa().columns().select(
+        return factories().ivoa().columns().entities().select(
             factories().ivoa().columns().idents().ident(
                 ident
                 )

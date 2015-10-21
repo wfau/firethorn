@@ -22,14 +22,9 @@ import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
 
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -44,8 +39,15 @@ public abstract class AbstractController
 
     /**
      * HTTP content type for JSON.
+     * 
      */
-    public static final String JSON_MIME = "application/json" ;
+    public static final String JSON_MIME = MediaType.APPLICATION_JSON_VALUE ;
+
+    /**
+     * HTTP content type for URL encoded form fields.
+     * 
+     */
+    public static final String FORM_MIME = MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
     /**
      * Request property for the copy depth.
@@ -127,7 +129,7 @@ public abstract class AbstractController
             {
             //
             // TODO wrap this into a config service API.
-            final ConfigProperty prop = factories().config().select(
+            final ConfigProperty prop = factories().config().entities().select(
                 BASE_URI_CONFIG_KEY
                 );
             if (prop != null)

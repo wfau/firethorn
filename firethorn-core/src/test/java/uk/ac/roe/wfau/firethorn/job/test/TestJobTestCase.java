@@ -39,45 +39,35 @@ import uk.ac.roe.wfau.firethorn.test.TestRoot;
 public class TestJobTestCase
 extends TestRoot
     {
-    /**
-     * Our local service implementations.
-     *
-     */
-    protected TestJob.Services services()
-        {
-        return factories().tests();
-        }
-
 
     @Test
     public void test000()
     throws Exception
         {
         log.debug("-- Creating test --");
-        final Identifier ident  = services().factory().create(
+        final Identifier ident  = factories().tests().entities().create(
             "fred",
             new Integer(
                 20
                 )
             ).ident();
 
-        log.debug("Status [{}]", services().executor().status(ident));
+        log.debug("Status [{}]", factories().tests().executor().status(ident));
 
-        final TestJob job = services().factory().select(
+        final TestJob job = factories().tests().entities().select(
             ident
             );
         log.debug("Status  [{}]", job.status());
         log.debug("Length  [{}]", job.length());
-        log.debug("Factory [{}]", job.factory());
 
         log.debug("-- Preparing test --");
-        log.debug("Result [{}]", services().executor().prepare(ident));
+        log.debug("Result [{}]", factories().tests().executor().prepare(ident));
 
         log.debug("-- Executing test --");
-        final Future<Status> future = services().executor().execute(ident);
-        log.debug("  Status [{}]", services().executor().status(ident));
+        final Future<Status> future = factories().tests().executor().execute(ident);
+        log.debug("  Status [{}]", factories().tests().executor().status(ident));
 
-        Status result = services().executor().status(ident);
+        Status result = factories().tests().executor().status(ident);
         while ((result != Status.ERROR) && (future.isDone() == false))
             {
             try {
@@ -87,7 +77,7 @@ extends TestRoot
                     TimeUnit.SECONDS
                     );
                 log.debug("Result [{}]", result);
-                log.debug("Status [{}]", services().executor().status(ident));
+                log.debug("Status [{}]", factories().tests().executor().status(ident));
                 }
             catch (final TimeoutException ouch)
                 {
@@ -104,7 +94,7 @@ extends TestRoot
                 }
             }
         log.debug("-- Test completed --");
-        log.debug("Status [{}]", services().executor().status(ident));
+        log.debug("Status [{}]", factories().tests().executor().status(ident));
         }
 
     @Test
@@ -112,7 +102,7 @@ extends TestRoot
     throws Exception
         {
         log.debug("-- Creating test --");
-        final TestJob job = services().factory().create(
+        final TestJob job = factories().tests().entities().create(
             "fred",
             new Integer(
                 5
@@ -121,7 +111,6 @@ extends TestRoot
 
         log.debug("Status  [{}]", job.status());
         log.debug("Length  [{}]", job.length());
-        log.debug("Factory [{}]", job.factory());
 
         factories().tests().executor().update(
             job.ident(),

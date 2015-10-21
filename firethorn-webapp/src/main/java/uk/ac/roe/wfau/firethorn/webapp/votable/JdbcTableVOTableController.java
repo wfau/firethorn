@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTableLinkFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcTableLinkFactory;
 
 /**
  * Spring MVC controller to format a {@link JdbcTable} as a <a href='http://www.ivoa.net/documents/VOTable/'>VOTable</a>.
@@ -84,7 +84,7 @@ extends BaseTableVOTableController
             );
 		write(
 		    response.getWriter(),
-	        factories().jdbc().tables().select(
+	        factories().jdbc().tables().entities().select(
 	            factories().jdbc().tables().idents().ident(
 	                ident
 	                )

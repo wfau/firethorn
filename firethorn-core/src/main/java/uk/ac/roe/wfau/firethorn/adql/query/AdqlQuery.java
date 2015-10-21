@@ -37,7 +37,6 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 public interface AdqlQuery
 extends NamedEntity, Job
     {
-
     /**
      * Query timing statistics.
      * 
@@ -307,57 +306,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Our local service implementations.
-     *
-     */
-    public static interface Services
-        {
-        /**
-         * Our Name factory.
-         *
-         */
-        public NameFactory names();
-
-        /**
-         * Our Link factory.
-         *
-         */
-        public LinkFactory links();
-
-        /**
-         * Our Ident factory.
-         *
-         */
-        public IdentFactory idents();
-
-        /**
-         * Our Query Factory.
-         *
-         */
-        public EntityFactory factory();
-
-        /**
-         * Our Query executor.
-         *
-         */
-        public Job.Executor executor();
-
-        /**
-         * OGSA-DAI param factory.
-         *
-         */
-        public ParamFactory params();
-
-        }
-
-    /**
-     * Our local service implementations.
-     *
-     */
-    public Services services();
-
-    /**
-     * Name factory interface.
+     * {@link NamedEntity.NameFactory} interface.
      *
      */
     public static interface NameFactory
@@ -366,7 +315,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Link factory interface.
+     * {@link Entity.LinkFactory} interface.
      *
      */
     public static interface LinkFactory
@@ -375,7 +324,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -384,7 +333,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Factory interface.
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public static interface EntityFactory
@@ -416,23 +365,42 @@ extends NamedEntity, Job
          *
          */
         public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text);
+        
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<AdqlQuery>
+        {
+        /**
+         * Our {@link AdqlQuery.EntityFactory} instance.
+         *
+         */
+        public AdqlQuery.EntityFactory entities();
 
         /**
-         * Our OGSA-DAI param factory.
-         * @todo Move this to Services interface
+         * Our {@link Job.Executor} instance.
+         *
+         */
+        public Job.Executor executor();
+
+        /**
+         * Our OGSA-DAI param factory instance.
          *
          */
         public ParamFactory params();
 
         /**
          * Our query limits factory.
-         * @todo Move this to Services interface
          *
          */
         public Limits.Factory limits();
         
         }
-
+    
     /**
      * QueryTable builder interface.
      *
@@ -467,7 +435,7 @@ extends NamedEntity, Job
     public String cleaned();
 
     /**
-     * Query syntax validation status.
+     * ADQL syntax status.
      *
      */
     public interface Syntax
@@ -493,19 +461,19 @@ extends NamedEntity, Job
             }
 
         /**
-         * Get the syntax validation status.
+         * Get the syntax level.
          *
          */
         public Level level();
 
         /**
-         * Set the syntax validation status.
+         * Set the syntax level.
          *
          */
         public void level(final Level level);
 
         /**
-         * The validation status.
+         * The validation state.
          *
          */
         public enum State
@@ -536,19 +504,19 @@ extends NamedEntity, Job
             }
 
         /**
-         * The validation status.
+         * The validation sate.
          *
          */
         public State state();
 
         /**
-         * The original parser error message.
+         * The ADQL parser error message.
          *
          */
         public String message();
 
         /**
-         * A user friendly version of the erro message.
+         * A user friendly error message.
          *
          */
         public String friendly();
@@ -562,7 +530,7 @@ extends NamedEntity, Job
         }
 
     /**
-     * Get the syntax validation status.
+     * The ADQL syntax status.
      *
      */
     public Syntax syntax();
@@ -676,6 +644,7 @@ extends NamedEntity, Job
          */
         public abstract AdqlColumn.AdqlType type();
 
+        
         }
 
     /**

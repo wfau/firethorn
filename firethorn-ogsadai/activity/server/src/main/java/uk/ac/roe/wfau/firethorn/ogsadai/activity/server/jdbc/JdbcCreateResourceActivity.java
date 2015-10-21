@@ -92,19 +92,19 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         return new ActivityInput[]
              {
              new TypedOptionalActivityInput(
-                 JdbcCreateResourceParam.DATABASE_URL,
+                 JdbcCreateResourceParam.JDBC_DATABASE_URL,
                  String.class
                  ),
              new TypedOptionalActivityInput(
-                 JdbcCreateResourceParam.DATABASE_USERNAME,
+                 JdbcCreateResourceParam.JDBC_DATABASE_USERNAME,
                  String.class
                  ),
              new TypedOptionalActivityInput(
-                 JdbcCreateResourceParam.DATABASE_PASSWORD,
+                 JdbcCreateResourceParam.JDBC_DATABASE_PASSWORD,
                  String.class
                  ),
              new TypedOptionalActivityInput(
-                 JdbcCreateResourceParam.DATABASE_DRIVER,
+                 JdbcCreateResourceParam.JDBC_DATABASE_DRIVER,
                  String.class
                  ),
              };
@@ -121,10 +121,10 @@ implements ResourceManagerActivity, ResourceFactoryActivity, SecureActivity
         throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException
         {
         validateOutput(
-            JdbcCreateResourceParam.ACTIVITY_RESULTS
+            JdbcCreateResourceParam.ACTIVITY_RESULT
             );
         this.writer = this.getOutput(
-            JdbcCreateResourceParam.ACTIVITY_RESULTS
+            JdbcCreateResourceParam.ACTIVITY_RESULT
             );
         }
 

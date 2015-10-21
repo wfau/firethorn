@@ -30,20 +30,15 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
@@ -103,86 +98,6 @@ implements OgsaJdbcResource
      *
      */
     protected static final String DB_RESOURCE_RESOURCE_COL = "resource";
-
-    /**
-     * {@link OgsaJdbcResource.Factories} implementation.
-     * 
-     */
-    @Slf4j
-    @Repository
-    public static class Factories
-    implements OgsaJdbcResource.Factories
-        {
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        private static Factories instance ; 
-
-        /**
-         * Our singleton instance.
-         * 
-         */
-        public static Factories instance()
-            {
-            log.debug("instance()");
-            return OgsaJdbcResourceEntity.Factories.instance ;
-            }
-
-        /**
-         * Protected constructor.
-         * 
-         */
-        protected Factories()
-            {
-            log.debug("Factories()");
-            }
-        
-        /**
-         * Protected initialiser.
-         * 
-         */
-        @PostConstruct
-        protected void init()
-            {
-            log.debug("init()");
-            if (OgsaJdbcResourceEntity.Factories.instance == null)
-                {
-                OgsaJdbcResourceEntity.Factories.instance = this ;
-                }
-            else {
-                log.error("Setting Factories.instance more than once");
-                throw new IllegalStateException(
-                    "Setting Factories.instance more than once"
-                    );
-                }
-            }
-        
-        @Autowired
-        private OgsaJdbcResource.IdentFactory idents;
-        @Override
-        public OgsaJdbcResource.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private OgsaJdbcResource.LinkFactory links;
-        @Override
-        public OgsaJdbcResource.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        private OgsaJdbcResource.EntityFactory entities;
-        @Override
-        public OgsaJdbcResource.EntityFactory entities()
-            {
-            return this.entities;
-            }
-        }
     
     /**
      * {@link OgsaJdbcResource.EntityFactory} implementation.
@@ -212,22 +127,6 @@ implements OgsaJdbcResource
             return OgsaJdbcResourceEntity.class;
             }
 
-        @Autowired
-        private OgsaJdbcResource.IdentFactory idents;
-        @Override
-        public OgsaJdbcResource.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
-        @Autowired
-        private OgsaJdbcResource.LinkFactory links;
-        @Override
-        public OgsaJdbcResource.LinkFactory links()
-            {
-            return this.links;
-            }
-        
         @Override
         @SelectMethod
         public Iterable<OgsaJdbcResource> select()
@@ -290,7 +189,7 @@ implements OgsaJdbcResource
             {
             log.debug("create(JdbcResource) [{}]", resource.ident());
             return create(
-                factories().ogsa().services().primary(),
+                factories().ogsa().services().entities().primary(),
                 resource
                 );
             }
@@ -299,7 +198,7 @@ implements OgsaJdbcResource
         @CreateMethod
         public OgsaJdbcResource create(final OgsaService service, final JdbcResource resource)
             {
-            log.debug("create(OgsaService , JdbcResource) [{}][{}]", service.ident(), resource.ident());
+            log.debug("create(OgsaService, JdbcResource) [{}][{}]", service.ident(), resource.ident());
             return super.insert(
                 new OgsaJdbcResourceEntity(
                     service,
@@ -314,7 +213,7 @@ implements OgsaJdbcResource
             {
             log.debug("primary(JdbcResource) [{}]", resource.ident());
             return primary(
-                factories().ogsa().services().primary(),
+                factories().ogsa().services().entities().primary(),
                 resource
                 );
             }
@@ -323,7 +222,7 @@ implements OgsaJdbcResource
         @CreateMethod
         public OgsaJdbcResource primary(OgsaService service, JdbcResource resource)
             {
-            log.debug("primary(OgsaService , JdbcResource) [{}][{}]", service.ident(), resource.ident());
+            log.debug("primary(OgsaService, JdbcResource) [{}][{}]", service.ident(), resource.ident());
             // Really really simple - just get the first. 
             OgsaJdbcResource found = super.first(
                 super.query(
@@ -336,13 +235,32 @@ implements OgsaJdbcResource
                         resource
                     ).setString(
                         "ogstatus",
-                        OgStatus.ACTIVE.name()
+                        OgsaStatus.ACTIVE.name()
                     )
                 );
             if (found != null)
                 {
                 log.debug("Found primary OgsaJdbcResource [{}]", found.ident());
-                return found ;
+
+// Temp fix to force a scan.
+// TODO Add a verify method ?
+                log.debug("Checking ogsaid ...");
+                final String ogsaid = found.ogsaid();
+                log.debug("Found ogsaid [{}][{}]", ogsaid, found.ogstatus());
+                if (found.ogstatus() == OgsaStatus.ACTIVE)
+                	{
+                    return found ;
+                	}
+                else {
+// Assume this is because the scan failed.
+// TODO Better error handling.
+// TODO Prevent runaway errors creating a new resource a on every call
+	                log.debug("Primary OgsaJdbcResource failed ping test, creating a new one");
+	                return create(
+	                    service,
+	                    resource
+	                    );
+                	}
                 }
             else {
                 log.debug("No primary OgsaJdbcResource, creating a new one");
@@ -354,13 +272,113 @@ implements OgsaJdbcResource
             }
         }
 
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements OgsaJdbcResource.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static OgsaJdbcResourceEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return OgsaJdbcResourceEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (OgsaJdbcResourceEntity.EntityServices.instance == null)
+                {
+                OgsaJdbcResourceEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private OgsaJdbcResource.IdentFactory idents;
+        @Override
+        public OgsaJdbcResource.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private OgsaJdbcResource.LinkFactory links;
+        @Override
+        public OgsaJdbcResource.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private OgsaJdbcResource.NameFactory names;
+        @Override
+        public OgsaJdbcResource.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private OgsaJdbcResource.EntityFactory entities;
+        @Override
+        public OgsaJdbcResource.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
     @Override
-    public OgsaJdbcResource.EntityFactory factory()
+    protected OgsaJdbcResource.EntityFactory factory()
         {
         log.debug("factory()");
-        return OgsaJdbcResourceEntity.Factories.instance().entities() ; 
+        return OgsaJdbcResourceEntity.EntityServices.instance().entities() ; 
         }
-    
+
+    @Override
+    protected OgsaJdbcResource.EntityServices services()
+        {
+        log.debug("services()");
+        return OgsaJdbcResourceEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+
     /**
      * Protected constructor. 
      *
@@ -403,34 +421,12 @@ implements OgsaJdbcResource
         }
 
     @Override
-    public String link()
+    protected OgsaStatus init()
         {
-        return factories().ogsa().factories().jdbc().links().link(
-            this
-            );
-        }
-
-    @Override
-    public String ogsaid()
-        {
-        log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);
-        if (this.ogstatus.active()) 
-            {
-            if (this.ogsaid == null) 
-                {
-                this.init();
-                }
-            else {
-                // Recursion danger ..
-                // Need to ensure scan() does not call ogsaid()  
-                this.scan();
-                }
-            }
-        return this.ogsaid;
-        }
-
-    protected OgStatus init()
-        {
+        log.debug("init()");
+        log.debug("  name   [{}]", this.name());
+        log.debug("  ident  [{}]", this.ident());
+        log.debug("  ogsaid [{}]", this.ogsaid);
         JdbcCreateResourceWorkflow workflow = null;
         try {
             workflow = new JdbcCreateResourceWorkflow(
@@ -439,8 +435,8 @@ implements OgsaJdbcResource
             }
         catch (MalformedURLException ouch)
             {
-            return ogStatus(
-                OgStatus.ERROR
+            return ogstatus(
+                OgsaStatus.ERROR
                 );
             }
 
@@ -484,14 +480,14 @@ implements OgsaJdbcResource
         if (response.status() == WorkflowResult.Status.COMPLETED)
             {
             return ogsaid(
-                OgStatus.ACTIVE,
+                OgsaStatus.ACTIVE,
                 response.result().toString()
                 );
             }
 
         else {
-            return ogStatus(
-                OgStatus.ERROR
+            return ogstatus(
+                OgsaStatus.ERROR
                 );
             }
         }

@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.identity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -38,9 +40,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 
 /**
  *
@@ -107,22 +112,6 @@ implements Operation
                 );
             }
 
-        @Autowired
-        protected Operation.LinkFactory links;
-        @Override
-        public Operation.LinkFactory links()
-            {
-            return this.links;
-            }
-
-        @Autowired
-        protected Operation.IdentFactory idents;
-        @Override
-        public Operation.IdentFactory idents()
-            {
-            return this.idents;
-            }
-
         /*
          * ThreadLocal Operation.
          *
@@ -146,6 +135,105 @@ implements Operation
         }
 
     /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements Operation.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static OperationEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return OperationEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (OperationEntity.EntityServices.instance == null)
+                {
+                OperationEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private Operation.IdentFactory idents;
+        @Override
+        public Operation.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private Operation.LinkFactory links;
+        @Override
+        public Operation.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private Operation.EntityFactory entities;
+        @Override
+        public Operation.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
+    @Override
+    protected Operation.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return OperationEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected Operation.EntityServices services()
+        {
+        log.debug("services()");
+        return OperationEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
+    /**
      * Protected constructor.
      *
      */
@@ -156,12 +244,13 @@ implements Operation
 
     /**
      * Protected constructor.
-     * @todo remove name
      *
      */
     protected OperationEntity(final String target, final String method, final String source)
         {
         super(true);
+	    // Question - how can Operation get an owner, when we haven't handled the authentication yet. 
+        // Because the ThreadLocal Operation does not get cleared when a Thread from a ThreadPool is re-used ? 
         this.target = target ;
         this.method = method ;
         this.source = source ;
@@ -238,13 +327,13 @@ implements Operation
 
     private void primary(final Authentication auth)
         {
-        if (this.primary == null)
-            {
-            this.primary = auth ;
-            this.owner(
-                auth.identity()
-                ) ;
-            }
+        log.debug("primary(Authentication)");
+        log.debug("  Authentication [{}]", auth);
+        log.debug("  Identity [{}]", auth.identity());
+        this.primary = auth ;
+        this.owner(
+            auth.identity()
+            ) ;
         }
 
     /**
@@ -267,7 +356,7 @@ implements Operation
         log.debug("create(Identity, String)");
         log.debug("  Identity [{}]", identity.name());
         log.debug("  Method   [{}]", method);
-        final Authentication auth = factories().authentications().create(
+        final Authentication auth = factories().authentication().entities().create(
             this,
             identity,
             method
@@ -282,7 +371,7 @@ implements Operation
         }
 
     @Override
-    public Authentications auth()
+    public Authentications authentications()
         {
         return new Authentications()
             {
@@ -309,10 +398,49 @@ implements Operation
             };
         }
 
+	@Override
+	public Identities identities()
+		{
+		return new Identities()
+			{
+			@Override
+			public Identity primary()
+				{
+				final Authentication auth = OperationEntity.this.primary();
+				if (auth != null)
+					{
+					return auth.identity();
+					}
+				else {
+					return null;
+					}
+				}
+			};
+		}
+    
+    /**
+     * Get the corresponding Hibernate entity for the current thread.
+     * @throws HibernateConvertException 
+     * @todo Move to a generic base class. 
+     *
+     */
     @Override
-    public String link()
-        {
-        // TODO Auto-generated method stub
-        return null;
+    public Operation rebase()
+    throws HibernateConvertException
+    	{
+        log.debug("Converting current instance [{}]", ident());
+        try {
+			return services().entities().select(
+			    ident()
+			    );
+        	}
+        catch (final IdentifierNotFoundException ouch)
+        	{
+        	log.error("IdentifierNotFound selecting instance [{}][{}]", this.getClass().getName(), ident());
+        	throw new HibernateConvertException(
+    			ident(),
+    			ouch
+    			);
+        	}
         }
     }

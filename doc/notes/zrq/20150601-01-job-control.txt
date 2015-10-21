@@ -1,0 +1,488 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-job-control
+    
+    # Copy paste instructions
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+# -----------------------------------------------------
+# Get the branch version.
+#[user@desktop]
+
+    version=${devbranch:?}
+
+# -----------------------------------------------------
+# Build our webapp services.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Get the branch version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        version=$(getversion)
+
+    popd
+    
+# -----------------------------------------------------
+# Build our webapp services.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Shutdown and remove existing containers.
+#[user@desktop]
+
+    docker rm -v -f $(docker ps -aq)
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1
+
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    echo "${dockerip:?}"
+    sleep 1
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Create our secret function.
+#[user@desktop]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+# -----------------------------------------------------
+# Configure our docker chain.
+#[user@desktop]
+
+    cat > /tmp/chain.properties << EOF
+
+    version=${version:?}
+    
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+    cat    /tmp/chain.properties
+    source /tmp/chain.properties
+
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1
+
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        postgres
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    properties=$(mktemp)
+    cat > "${properties:?}" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+EOF
+
+    chmod a+r "${properties:?}" 
+    chcon -t svirt_sandbox_file_t "${properties:?}" 
+
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Check the logs ..
+#[user@desktop]
+
+    source /tmp/chain.properties
+    docker logs -f --tail 100 "${firename:?}"
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Stop our firethorn container.
+#[user@desktop]
+
+    docker rm -v $(docker stop ${firename:?})
+
+# -----------------------------------------------------
+# re-build our firethorn container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core
+            mvn clean install
+        popd
+        
+        pushd firethorn-webapp
+            mvn clean install
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Re-start our FireThorn container.
+#[user@desktop]
+
+    source /tmp/chain.properties
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        "firethorn/firethorn:${version:?}"
+
+
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source /tmp/chain.properties
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+    identity=${identity:-$(date '+%H:%M:%S')}
+    community=${community:-$(date '+%A %-d %B %Y')}
+
+    source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Create and run a query.
+#[root@tester]
+
+    #
+    # List all our queries.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/blue/query/select" \
+        | bin/pp
+
+    #
+    # Create a workspace.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "adql.resource.create.name=Albert" \
+        "${endpointurl:?}/adql/resource/create" \
+        | bin/pp | tee workspace.json
+
+    workspace=$(
+        cat workspace.json | self | node
+        )
+
+    #
+    # Create a query.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "blue.query.input=SELECT version()" \
+        "${endpointurl:?}/${workspace}/blue/create" \
+        | bin/pp | tee bluequery.json
+
+    bluequery=$(
+        cat bluequery.json | self | node
+        )
+
+    #
+    # List our query.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        "${endpointurl:?}/${bluequery}" \
+        | bin/pp
+
+    #
+    # Run our query.
+    curl \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "blue.query.status=RUNNING" \
+        "${endpointurl:?}/${bluequery}" \
+        | bin/pp | tee bluequery.json
+
+
+# RUN and WAIT
+
+# RUN then WAIT
+
+
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source /tmp/chain.properties
+    docker run \
+         --rm \
+         --tty \
+         --interactive \
+         --env "datadata=${datadata:?}" \
+         --env "datalink=${datalink:?}" \
+         --env "datauser=${datauser:?}" \
+         --env "datapass=${datapass:?}" \
+         --env "datadriver=${datadriver:?}" \
+         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+         --link "${firename:?}:${firelink:?}" \
+         --volume /etc/localtime:/etc/localtime:ro \
+         "firethorn/tester:${version:?}" \
+         bash
+ 
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+ 
+    identity=${identity:-$(date '+%H:%M:%S')}
+    community=${community:-$(date '+%A %-d %B %Y')}
+
+    source "bin/01-01-init-rest.sh"
+ 
+# -----------------------------------------------------
+# Complete our query.
+#[root@tester]
+ 
+    bluequery=blue/query/360448
+
+    #
+    # Complete our query.
+    curl \
+         --header "firethorn.auth.identity:${identity:?}" \
+         --header "firethorn.auth.community:${community:?}" \
+         --data   "blue.query.status=COMPLETED" \
+         "${endpointurl:?}/${bluequery}" \
+         | bin/pp | tee bluequery.json
+

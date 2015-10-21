@@ -19,29 +19,30 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.ivoa;
 
 /**
- * Parameter names for the IvoaSelectData Activity.
+ * Common interface for the IvoaSelectData Activity.
  *
  */
 public interface IvoaSelectDataParam
 extends IvoaResourceParam
     {
     /**
-     * The Activity name, {@value}.
+     * The default Activity name, {@value}.
      * 
      */
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.IvoaSelectData" ;
 
     /**
-     * Parameter name for the Activity results, {@value}.
-     * 
-     */
-    public static final String ACTIVITY_RESULTS = "ivoa.select.results"  ;
-
-    /**
-     * Parameter name for the TAP service ADQL query, {@value}.
+     * Activity input name for the TAP service ADQL query, {@value}.
      * 
      */
     public static final String IVOA_TAP_ADQL_QUERY_PARAM = "ivoa.tap.adql.query"  ;
 
+    /**
+     * Activity output name for the output tuples, {@value}.
+     * 
+     */
+    public static final String TUPLE_OUTPUT = "tuples" ;
+    
+    
     }
 

@@ -1,0 +1,196 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Template code to refactor factories.
+#
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<Thing>
+        {
+        /**
+         * Our {@link Thing.EntityFactory} instance.
+         *
+         */
+        public Thing.EntityFactory entities();
+        }
+
+
+    /**
+     * {@link Entity.EntityServices} implementation.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class EntityServices
+    implements Thing.EntityServices
+        {
+        /**
+         * Our singleton instance.
+         * 
+         */
+        private static ThingEntity.EntityServices instance ; 
+
+        /**
+         * Our singleton instance.
+         * 
+         */
+        public static EntityServices instance()
+            {
+            return ThingEntity.EntityServices.instance ;
+            }
+
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected EntityServices()
+            {
+            }
+        
+        /**
+         * Protected initialiser.
+         * 
+         */
+        @PostConstruct
+        protected void init()
+            {
+            log.debug("init()");
+            if (ThingEntity.EntityServices.instance == null)
+                {
+                ThingEntity.EntityServices.instance = this ;
+                }
+            else {
+                log.error("Setting instance more than once");
+                throw new IllegalStateException(
+                    "Setting instance more than once"
+                    );
+                }
+            }
+        
+        @Autowired
+        private Thing.IdentFactory idents;
+        @Override
+        public Thing.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private Thing.LinkFactory links;
+        @Override
+        public Thing.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private Thing.NameFactory names;
+        @Override
+        public Thing.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private Thing.EntityFactory entities;
+        @Override
+        public Thing.EntityFactory entities()
+            {
+            return this.entities;
+            }
+        }
+
+    @Override
+    protected Thing.EntityFactory factory()
+        {
+        log.debug("factory()");
+        return ThingEntity.EntityServices.instance().entities() ; 
+        }
+
+    @Override
+    protected Thing.EntityServices services()
+        {
+        log.debug("services()");
+        return ThingEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+
+# -----------------------------------------------------
+# Prototype scan for ADQL schema.
+#
+
+    protected void prototype()
+        {
+        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
+        if (this.base != null)
+            {
+        	final Map<Identifier, AdqlTable> thistodo = new HashMap<Identifier, AdqlTable>();  
+        	final Map<Identifier, AdqlTable> thisdone = new HashMap<Identifier, AdqlTable>();  
+
+        	final Map<Identifier, BaseTable<?,?> > basetodo = new HashMap<Identifier, BaseTable<?,?> >();  
+        	final Map<Identifier, BaseTable<?,?> > basedone = new HashMap<Identifier, BaseTable<?,?> >();  
+
+        	//
+        	// Build a Map of our tables.
+            final Iterable<AdqlTable> iter = factories().adql().tables().entities().select(
+                AdqlSchemaEntity.this
+                );
+        	for (AdqlTable table : iter)
+        		{
+        		basetodo.put(
+    				table.ident(),
+    				table
+    				);
+        		}
+        	
+        	for (BaseTable<?,?> table : base.tables().select())
+        		{
+				// Check for a match
+				// Create and move
+        		
+        		basedone.put(
+    				table.ident(),
+    				table
+    				);
+
+        		}
+        	
+            
+            
+            }
+        else {
+        
+        	}
+        }
+

@@ -24,6 +24,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceIdentFactory;
 
 /**
  * An {@link EntityBean} wrapper for an {@link AdqlResource}.

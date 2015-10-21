@@ -163,10 +163,10 @@ implements ResourceActivity
         try {
             logger.debug("Validating outputs");
             validateOutput(
-                JdbcCreateTableParam.ACTIVITY_RESULTS
+                JdbcCreateTableParam.ACTIVITY_RESULT
                 );
             this.writer = this.getOutput(
-                JdbcCreateTableParam.ACTIVITY_RESULTS
+                JdbcCreateTableParam.ACTIVITY_RESULT
                 );
             }
         catch (final Exception ouch)

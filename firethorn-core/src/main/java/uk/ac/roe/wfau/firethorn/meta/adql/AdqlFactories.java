@@ -27,34 +27,34 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 public interface AdqlFactories
     {
     /**
-     * Our resource factory.
+     * Our {@link AdqlResource.EntityServices} instance.
      *
      */
-    public AdqlResource.EntityFactory resources();
+    public AdqlResource.EntityServices resources();
 
     /**
-     * Our schema factory.
+     * Our {@link AdqlSchema.EntityServices} instance.
      *
      */
-    public AdqlSchema.EntityFactory schemas();
+    public AdqlSchema.EntityServices schemas();
 
     /**
-     * Our table factory.
+     * Our {@link AdqlTable.EntityServices} instance.
      *
      */
-    public AdqlTable.EntityFactory tables();
+    public AdqlTable.EntityServices tables();
 
     /**
-     * Our column factory.
+     * Our {@link AdqlColumn.EntityServices} instance.
      *
      */
-    public AdqlColumn.EntityFactory columns();
+    public AdqlColumn.EntityServices columns();
 
     /**
-     * Our query factory.
+     * Our {@link AdqlQuery.EntityServices} instance.
      *
      */
-    public AdqlQuery.EntityFactory queries();
+    public AdqlQuery.EntityServices queries();
 
     /**
      * The local ADQL parser factory.

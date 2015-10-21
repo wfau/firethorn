@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcTableLinkFactory;
 
 /**
  * Spring MVC controller for <code>JdbcTables</code>.
@@ -114,7 +115,7 @@ public class JdbcTableController
         final String ident
         ) throws EntityNotFoundException {
         log.debug("table() [{}]", ident);
-        return factories().jdbc().tables().select(
+        return factories().jdbc().tables().entities().select(
             factories().jdbc().tables().idents().ident(
                 ident
                 )

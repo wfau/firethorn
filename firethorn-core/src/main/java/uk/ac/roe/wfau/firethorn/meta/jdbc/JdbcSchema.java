@@ -37,6 +37,27 @@ public interface JdbcSchema
 extends BaseSchema<JdbcSchema, JdbcTable>
     {
     /**
+     * Physical JDBC driver interface.
+     *
+     */
+    public static interface JdbcDriver
+    extends JdbcTable.JdbcDriver
+        {
+        /**
+         * Create (CREATE) a JDBC schema.
+         *
+         */
+        public void create(final JdbcSchema schema);
+
+        /**
+         * Delete (DROP) a JDBC schema.
+         *
+         */
+        public void drop(final JdbcSchema schema);
+        
+        }
+
+    /**
      * {@link EntityBuilder} interface.
      * 
      */
@@ -123,8 +144,8 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          * Our local {@link JdbcSchema.OldBuilder} implementation.
          * @todo Move this to data space interface.
          *
-         */
         public JdbcSchema.OldBuilder oldbuilder();
+         */
         
         /**
          * Select a {@link JdbcSchema} based on catalog and schema name.
@@ -139,20 +160,26 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          */
         public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema);
 
+        }
+
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends NamedEntity.EntityServices<JdbcSchema>
+        {
         /**
-         * Our local {@link JdbcTable.EntityFactory} implementation.
-         * @todo Move to services
+         * Our {@link JdbcSchema.EntityFactory} instance.
+         *
+         */
+        public JdbcSchema.EntityFactory entities();
+
+        /**
+         * Our {@link JdbcTable.EntityFactory} instance.
          *
          */
         public JdbcTable.EntityFactory tables();
-
-        /**
-         * Our local {@link JdbcSchema.NameFactory} implementation.
-         * @todo Move to services
-         *
-         */
-        public JdbcSchema.NameFactory names();
-
         }
 
     /**
@@ -185,6 +212,12 @@ extends BaseSchema<JdbcSchema, JdbcTable>
      */
     public interface Tables extends BaseSchema.Tables<JdbcTable>
         {
+        /**
+         *  Create a new {@link JdbcTable} with a generated name.
+         *
+         */
+        public JdbcTable create();
+
         /**
          *  Create a new {@link JdbcTable table}.
          *

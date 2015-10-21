@@ -40,7 +40,7 @@ public class VosiTableSetReaderTestCase
     public void test001()
     throws Exception
         {
-        IvoaResource resource = factories().ivoa().resources().create(
+        IvoaResource resource = factories().ivoa().resources().entities().create(
             "cadc-tap",
             "cadc-tap"
             );
@@ -61,7 +61,7 @@ public class VosiTableSetReaderTestCase
     public void test002()
     throws Exception
         {
-        IvoaResource resource = factories().ivoa().resources().create(
+        IvoaResource resource = factories().ivoa().resources().entities().create(
             "gaia-tap",
             "gaia-tap"
             );
@@ -82,7 +82,7 @@ public class VosiTableSetReaderTestCase
     public void test003()
     throws Exception
         {
-        IvoaResource resource = factories().ivoa().resources().create(
+        IvoaResource resource = factories().ivoa().resources().entities().create(
             "gavo-tap",
             "gavo-tap"
             );
@@ -103,7 +103,7 @@ public class VosiTableSetReaderTestCase
     public void test004()
     throws Exception
         {
-        IvoaResource resource = factories().ivoa().resources().create(
+        IvoaResource resource = factories().ivoa().resources().entities().create(
             "urn:test-4",
             "urn:test-4"
             );
@@ -121,7 +121,7 @@ public class VosiTableSetReaderTestCase
     public void test005()
     throws Exception
         {
-        IvoaResource resource = factories().ivoa().resources().create(
+        IvoaResource resource = factories().ivoa().resources().entities().create(
             "vizier-tap",
             "vizier-tap"
             );
@@ -141,7 +141,7 @@ public class VosiTableSetReaderTestCase
     public void test006()
     throws Exception
         {
-        IvoaResource resource = factories().ivoa().resources().create(
+        IvoaResource resource = factories().ivoa().resources().entities().create(
             "urn:test-6",
             "urn:test-6"
             );

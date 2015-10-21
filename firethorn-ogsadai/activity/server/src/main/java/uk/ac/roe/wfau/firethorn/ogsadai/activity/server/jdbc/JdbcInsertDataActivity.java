@@ -26,11 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
+import uk.ac.roe.wfau.firethorn.ogsadai.server.blue.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
 import uk.org.ogsadai.activity.MatchedIterativeActivity;
 import uk.org.ogsadai.activity.extension.ResourceActivity;
+import uk.org.ogsadai.activity.extension.SecureActivity;
 import uk.org.ogsadai.activity.io.ActivityInput;
 import uk.org.ogsadai.activity.io.ActivityPipeProcessingException;
 import uk.org.ogsadai.activity.io.BlockWriter;
@@ -46,6 +49,7 @@ import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
 import uk.org.ogsadai.activity.sql.SQLBulkLoadTupleActivity;
 import uk.org.ogsadai.activity.sql.SQLUtilities;
+import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.metadata.MetadataWrapper;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionProvider;
@@ -61,7 +65,7 @@ import uk.org.ogsadai.tuple.TupleMetadata;
  */
 public class JdbcInsertDataActivity
 extends MatchedIterativeActivity
-implements ResourceActivity
+implements ResourceActivity, SecureActivity
     {
 
     /**
@@ -88,6 +92,21 @@ implements ResourceActivity
     private PreparedStatement statement;
 
     /**
+     * Our request context.
+     * 
+     */
+	private RequestContext context ;
+
+	@Override
+	public void setSecurityContext(SecurityContext context)
+		{
+        if ((context != null) && (context instanceof RequestContext))
+            {
+            this.context = (RequestContext) context; 
+            }
+		}
+    
+    /**
      * Our results writer.
      * 
      */
@@ -112,12 +131,6 @@ implements ResourceActivity
     private boolean autochanged = false;
     
     /**
-     * Our target Resource accessor.
-     * 
-     */
-    private ResourceAccessor accessor;
-
-    /**
      * Our JDBC connection provider
      * 
      */
@@ -126,7 +139,6 @@ implements ResourceActivity
     @Override
     public void setTargetResourceAccessor(final ResourceAccessor accessor)
         {
-        this.accessor = accessor;
         this.provider = (JDBCConnectionProvider) accessor;
         }
 
@@ -147,10 +159,10 @@ implements ResourceActivity
             new TypedOptionalActivityInput(
                 JdbcInsertDataParam.JDBC_INSERT_BLOCK_SIZE,
                 Integer.class,
-                JdbcInsertDataParam.JDBC_INSERT_BLOCK_DEFAULT_BLOCK
+                JdbcInsertDataParam.JDBC_INSERT_BLOCK_DEFAULT
                 ),
             new TupleListActivityInput(
-                JdbcInsertDataParam.JDBC_INSERT_TUPLE_INPUT
+                JdbcInsertDataParam.TUPLE_INPUT
                 )
             };
         }
@@ -161,7 +173,6 @@ implements ResourceActivity
         ActivityProcessingException,
         ActivityTerminatedException
         {
-
         try {
             validateOutput(
                 JdbcInsertDataParam.ACTIVITY_RESULTS
@@ -207,61 +218,126 @@ implements ResourceActivity
         ActivityTerminatedException,
         ActivityUserException
         {
-        final String table = (String)  inputs[0];
-        final long   first = (Integer) inputs[1];
-        final long   block = (Integer) inputs[2];
+    	//
+    	// Initialise our callback handler.
+		final CallbackHandler callback = new CallbackHandler(
+			context
+			); 	        
+    	//
+    	// Initialise our table name.
+        final String table = (String) inputs[0];
+    	//
+    	// Initialise our tuple counters.
+        long block = (Integer) inputs[1];
+        long large = (Integer) inputs[2];
+        long slot = 100 ;
+        long prev = System.currentTimeMillis();
+        long next = prev;
+
+        long count = 0 ;
+        long total = 0 ;
+
+        boolean done = false ;
         
+    	//
+    	// Initialise our tuple iterator.
         final TupleListIterator tuples = (TupleListIterator) inputs[3];
 
+    	//
+    	// Initialise our tuple metadata.
         final MetadataWrapper wrapper  = tuples.getMetadataWrapper();
         final TupleMetadata   metadata = (TupleMetadata) wrapper.getMetadata();
-        final String insert = SQLUtilities.createInsertStatementSQL(table, metadata);
+        final String insert = SQLUtilities.createInsertStatementSQL(
+    		table,
+    		metadata
+    		);
 
         try {
-        	statement = connection.prepareStatement(insert);
-
-            long count = 0 ;
-            long total = 0 ;
+        	statement = connection.prepareStatement(
+    			insert
+    			);
 
             try {
                 for (Tuple tuple = null; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
                     {
-                    SQLUtilities.setStatementParameters(statement, tuple, metadata);
+
+                    SQLUtilities.setStatementParameters(
+                		statement,
+                		tuple,
+                		metadata
+                		);
+
+                    count++;
+                    total++;
+                    
+                    /*
+                     * 
+                    logger.debug("Loop ----");
+                    logger.debug("  total [" + total +"]");
+                    logger.debug("  count [" + count +"]");
+                    logger.debug("  block [" + block +"]");
+                    logger.debug("  large [" + large +"]");
+                     * 
+                     */
+
                     //
-                    // Write the first few rows individually.
-                    if (++total <= first)
-                        {
-                        statement.executeUpdate();
-                        //logger.debug("Data first [" + total + "]");
-                        }
+                    // Add the statement to our batch.
+                    statement.addBatch();
+
                     //
-                    // Write the rest in batches.
-                    else {
-                        statement.addBatch();
-                        if (++count >= block)
-                        	{
-                        	statement.executeBatch();
-                        	//logger.debug("Data block [" + count + "][" + total + "]");
-                            count = 0;
-                        	}
-                        }
+                    // If we have reached the block size.
+                    if (count >= block)
+                    	{
+                    	//
+                    	// Execute the current batch.
+                    	statement.executeBatch();
+                    	count = 0 ;
+
+                    	//
+                    	// Double the block size
+                    	if (block < large)
+                    		{
+                    		block <<= 1 ;
+                    		}
+
+                    	//
+                    	// Check to see when the last callback was. 
+                    	next = System.currentTimeMillis();
+                    	long diff = next - prev ;
+                        //logger.debug("  slot  [" + slot +"]");
+                        //logger.debug("  diff  [" + diff +"]");
+                    	//
+                    	// Callback if not within the same time slot.
+                    	if (diff > slot)
+    						{
+    	        			callback.running(
+	        					total
+	        					);
+    	        			prev = next ;
+    						}
+                    	}
                     }
                 }
-            //
-            // Error reading the tuples.
-            catch (final DataError ouch)
-                {
-                logger.debug("DataError reading tuples [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
-                }
             finally {
-                //
-                // Write any remaining rows.
+
+            	/*
+            	 * 
+            	logger.debug("finally");
+	            logger.debug("total [" + total +"]");
+	            logger.debug("count [" + count +"]");
+	            logger.debug("block [" + block +"]");
+	            logger.debug("large [" + large +"]");
+            	 * 
+            	 */
+            
+	            //
+                // Write the final batch.
                 if (count != 0)
                     {
                     statement.executeBatch();
-                    //logger.debug("Data last [" + count + "][" + total + "]");
-                    logger.debug("Data done [" + total + "]");
                     }
+                //
+                // Close our connection.
                 connection.commit();
                 statement.close();
                 //
@@ -272,10 +348,20 @@ implements ResourceActivity
                         )
                     );
                 }
+            //
+            // Set the flag to say we are done.
+        	done = true ;
             }
-
+        catch (final DataError ouch)
+            {
+            logger.debug("DataError reading tuples [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
         catch (final SQLException ouch)
             {
+            logger.warn("SQLException during processing", ouch.getMessage());
             throw new ActivitySQLUserException(
                 ouch
                 );
@@ -318,8 +404,21 @@ implements ResourceActivity
                 ouch
                 );
             }
+		//
+		// Callback to say we are done.
         finally
             {
+            if (done)
+            	{
+    			callback.completed(
+					total
+					);
+            	}
+            else {
+				callback.failed(
+					total
+					);
+            	}
             iterativeStageComplete();
             }
         }

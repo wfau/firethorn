@@ -1,0 +1,441 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@shep]
+
+    createvm
+    
+        INFO : Node name [desouk]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [desouk.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install nano
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@edfu]
+
+    yum -y install haveged
+    systemctl start haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    #yum -y install docker-io
+    #20150903-01-docker-fedora.txt
+
+    yum -y install https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
+
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Create our projects directory.
+#[root@virtual]
+
+    if [ ! -e /var/local/projects ]
+    then
+        mkdir -p /var/local/projects
+        chgrp -R users /var/local/projects
+        chmod -R g+rwx /var/local/projects
+    fi
+
+# -----------------------------------------------------
+# Create our cache directory.
+#[root@virtual]
+
+    if [ ! -e /var/local/cache ]
+    then
+        mkdir -p /var/local/cache
+        chgrp -R users /var/local/cache
+        chmod -R g+rwx /var/local/cache
+    fi
+
+# -----------------------------------------------------
+# Allow access to Docker containers.
+#[root@virtual]
+
+    chcon -t svirt_sandbox_file_t "/var/local/projects" 
+    chcon -t svirt_sandbox_file_t "/var/local/cache" 
+    chcon -t svirt_sandbox_file_t "/var/cache" 
+
+# -----------------------------------------------------
+# Install the selinux-dockersock SELinux policy.
+# https://github.com/dpw/selinux-dockersock
+#[root@virtual]
+
+    # Test if present
+    # semodule -l | grep dockersock
+
+    yum install -y git
+    yum install -y make
+    yum install -y checkpolicy
+    yum install -y policycoreutils policycoreutils-python
+    
+    pushd /var/local/projects
+
+        git clone https://github.com/dpw/selinux-dockersock
+
+        pushd selinux-dockersock
+
+            make dockersock.pp
+
+            semodule -i dockersock.pp
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Set our target branch.
+#[root@virtual]
+
+    branch=1.13.17-zrq-job-control
+    version=${branch:?}
+    
+# -----------------------------------------------------
+# Run our build container.
+# Using builder-1 to create builder-1.1
+#[root@virtual]
+
+    docker run \
+        -it --rm \
+        --name builder \
+        --env "branch=${branch:?}" \
+        --env "version=${version:?}" \
+        --volume /var/local/cache:/var/local/cache \
+        --volume /var/local/projects:/var/local/projects \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/builder:1 \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Set our project path.
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/projects/firethorn
+EOF
+    fi
+
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    if [ ! -e "${FIRETHORN_CODE:?}" ]
+    then
+        pushd "$(dirname ${FIRETHORN_CODE:?})"
+
+            hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
+
+        popd
+    else
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update
+        
+        popd
+    fi
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${branch:?}"
+    
+    popd
+
+# -----------------------------------------------------
+# Build our toolkit containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/fedora:21.1 \
+            docker/fedora/21
+
+        docker build \
+            --tag firethorn/java:8.1 \
+            docker/java/8
+
+        docker build \
+            --tag firethorn/tomcat:8.1 \
+            docker/tomcat/8
+
+        docker build \
+            --tag firethorn/postgres:9.1 \
+            docker/postgres/9
+
+        docker build \
+            --tag firethorn/builder:1.1 \
+            docker/builder
+
+        docker build \
+            --tag firethorn/docker-proxy:1.1 \
+            docker/docker-proxy
+
+        docker build \
+            --tag firethorn/sql-proxy:1.1 \
+            docker/sql-proxy
+
+        docker build \
+            --tag firethorn/sql-tunnel:1.1 \
+            docker/sql-tunnel
+
+        docker build \
+            --tag firethorn/ssh-client:1.1 \
+            docker/ssh-client
+
+    popd
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[root@builder]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1.1
+
+    sleep 5
+
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our source code.
+#[root@builder]
+
+    #
+    # Build our webapp services.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester container.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:$(getversion) \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Exit our builder.
+#[root@builder]
+
+    exit
+
+# -----------------------------------------------------
+# Create our secret function.
+#[root@virtual]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'ping'
+
+# -----------------------------------------------------
+# Configure our docker chain.
+#[root@virtual]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    version=${branch:?}
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Run our userdata ambassador.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --name "${username:?}" \
+        --env  "target=${userhost:?}" \
+        firethorn/sql-proxy:1.1
+
+# -----------------------------------------------------
+# Run our science data ambassador.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --name "${dataname:?}" \
+        --env  "target=${datahost:?}" \
+        firethorn/sql-proxy:1.1
+
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Create a function to manage permissions on our data directories.
+#[root@virtual]
+
+    directory()
+        {
+        local target=${1:?}
+
+        mkdir --parents "${target:?}"
+
+        chown 995:994 "${target:?}"
+        chmod u=rwxs  "${target:?}"
+        chmod g=rwxs  "${target:?}"
+
+        chcon -t svirt_sandbox_file_t "${target:?}"
+
+        }
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    ogsatemp="/var/temp/${ogsaname:?}"
+    ogsalogs="/var/logs/${ogsaname:?}"
+
+    directory "${ogsatemp:?}"
+    directory "${ogsalogs:?}"
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${ogsatemp:?}:/temp" \
+        --volume "${ogsalogs:?}:/var/tomcat/logs" \
+        "firethorn/ogsadai:${version:?}"
+
+

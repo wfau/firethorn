@@ -18,6 +18,8 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  * Public interface for an operation.
@@ -27,16 +29,7 @@ public interface Operation
 extends Entity
     {
     /**
-     * Link factory interface.
-     *
-     */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<Operation>
-        {
-        }
-
-    /**
-     * Identifier factory interface.
+     * {@link Entity.IdentFactory} interface.
      *
      */
     public static interface IdentFactory
@@ -45,7 +38,16 @@ extends Entity
         }
 
     /**
-     * Factory interface.
+     * {@link Entity.LinkFactory} interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<Operation>
+        {
+        }
+
+    /**
+     * {@link Entity.EntityFactory} interface.
      *
      */
     public interface EntityFactory
@@ -65,6 +67,20 @@ extends Entity
 
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices
+    extends Entity.EntityServices<Operation>
+        {
+        /**
+         * Our {@link Operation.EntityFactory} instance.
+         *
+         */
+        public Operation.EntityFactory entities();
+        }
+    
     /**
      * The target URL for the operation.
      *
@@ -106,12 +122,41 @@ extends Entity
          *
          */
         public Iterable<Authentication> select();
+
         }
 
     /**
-     * Access to the list of Authentication(s) for this operation.
+     * The list of Authentication(s) for this operation.
      *
      */
-    public Authentications auth();
+    public Authentications authentications();
 
+    /**
+     * The list of Identity(s) for this operation.
+     *
+     */
+    public static interface Identities
+        {
+        /**
+         * The primary Identity for this operation.
+         *
+         */
+        public Identity primary();
+
+        }
+
+    /**
+     * The list of Identity(s) for this operation.
+     *
+     */
+    public Identities identities();
+    
+    /**
+     * Get the {@link Entity} instance linked to the current {@link Thread}.
+     * @todo Move this to a base class.
+     * 
+     */
+    public Operation rebase()
+	throws HibernateConvertException;
+    
     }

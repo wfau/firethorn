@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 public class AbstractIdentFactoryTestCase
     {
 
-    private final Entity.IdentFactory factory = new AbstractIdentFactory();
+    private final Entity.IdentFactory<Entity> factory = new AbstractIdentFactory<Entity>();
 
     @Test
     public void test000()

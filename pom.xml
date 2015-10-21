@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>1.13.22</version>
+    <version project='firethorn'>2.0.0</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -1026,7 +1026,7 @@
         </profile>
 
         <!--+
-            | Build the databases.
+            | Just the databases.
             +-->
         <profile>
             <id>database</id>
@@ -1036,7 +1036,7 @@
         </profile>
 
         <!--+
-            | Build the webapps.
+            | Just the webapps.
             +-->
         <profile>
             <id>webapps</id>

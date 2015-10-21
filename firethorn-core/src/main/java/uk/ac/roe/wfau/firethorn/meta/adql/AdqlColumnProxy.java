@@ -18,20 +18,18 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import java.util.Iterator;
-import javax.persistence.Transient;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.joda.time.DateTime;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
 /**
  *
@@ -41,42 +39,27 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 public class AdqlColumnProxy
 implements AdqlColumn
     {
+    protected AdqlColumn.EntityServices services()
+        {
+        log.debug("services()");
+        return AdqlColumnEntity.EntityServices.instance() ; 
+        }
+
+    @Override
+    public String link()
+        {
+        return services().links().link(
+            this
+            );
+        }
+    
     /**
-     * TODO Move to proxy base class
+     * TODO Move to proxy base class.
+     * 
      */
     public AdqlColumn self()
         {
         return this;
-        }
-
-    /**
-     * TODO Move to proxy base class.
-     * 
-     */
-    @Transient
-    protected AdqlColumn.EntityFactory factory;
-    public AdqlColumn.EntityFactory factory()
-        {
-        return this.factory;
-        }
-
-    /**
-     * TODO Move to proxy base class.
-     * 
-     */
-    @Transient
-    protected ComponentFactories factories ;
-
-    /**
-     * TODO Move to proxy base class
-     */
-    protected ComponentFactories factories()
-        {
-        if (this.factories == null)
-            {
-            this.factories = ComponentFactoriesImpl.instance();
-            }
-        return this.factories;
         }
 
     /**
@@ -189,14 +172,6 @@ implements AdqlColumn
         }
 
     @Override
-    public String link()
-        {
-        return factories().adql().columns().links().link(
-            this
-            );
-        }
-
-    @Override
     public Identity owner()
         {
         return table().owner();
@@ -289,7 +264,7 @@ implements AdqlColumn
         }
 
     @Override
-    public AdqlColumn.Metadata meta()
+    public AdqlColumn.Modifier meta()
         {
         return base().meta();
         }
@@ -315,8 +290,14 @@ implements AdqlColumn
     @Override
     public EntityProtector protector()
         {
-        // TODO Auto-generated method stub
-        // A combination of protection from base and parent ? 
-        return null ;
+        throw new NotImplementedException(); 
         }
+
+	@Override
+	public void update(Adql meta)
+		{
+        throw new UnsupportedOperationException(
+            "Can't change a read only copy"
+            );
+		}
     }

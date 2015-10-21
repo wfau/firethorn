@@ -196,7 +196,7 @@ implements ResourceActivity, ServiceAddressesActivity
     throws ActivityUserException, ActivityProcessingException, ActivityTerminatedException
         {
         validateOutput(
-            JdbcSelectDataParam.ACTIVITY_RESULTS
+            JdbcSelectDataParam.TUPLE_OUTPUT
             );
         try {
             this.connection = this.provider.getConnection();

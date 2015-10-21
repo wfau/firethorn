@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
@@ -94,15 +95,22 @@ extends TreeComponent
          */
         public ColumnType search(final TableType parent, final String name);
 
-        /**
-         * Our local {@link BaseColumn.AliasFactory} implementation.
-         * @todo Move to services.
-         *
-         */
-        public AliasFactory<ColumnType> aliases();
-
         }
 
+    /**
+     * {@link Entity.EntityServices} interface.
+     * 
+     */
+    public static interface EntityServices<ColumnType extends BaseColumn<ColumnType>>
+    extends NamedEntity.EntityServices<ColumnType>
+        {
+        /**
+         * {@link BaseColumn.AliasFactory} instance.
+         *
+         */
+        public BaseColumn.AliasFactory<ColumnType> aliases();
+        }
+    
     /**
      * The {@link BaseColumn} this column is derived from.
      *
@@ -152,7 +160,7 @@ extends TreeComponent
     public String fullname();
 
     /**
-     * The {@link BaseColumn} metadata.
+     * The {@link BaseColumn} metadata interface.
      *
      */
     public interface Metadata
@@ -161,14 +169,21 @@ extends TreeComponent
          * The column name.
          * 
          */
+        @Deprecated
         public String name();
 
         }
 
     /**
-     * The {@link BaseColumn} metadata.
+     * The {@link AdqlColumn} metadata.
      *
      */
-    public AdqlColumn.Metadata meta();
+    public AdqlColumn.Modifier meta();
 
+    /**
+     * Update the {@link AdqlColumn} properties.
+     * 
+     */
+    public void update(final AdqlColumn.Metadata.Adql meta);
+    
     }
