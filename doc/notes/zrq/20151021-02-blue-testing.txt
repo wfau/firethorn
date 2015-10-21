@@ -193,8 +193,6 @@
 
     cat > "${HOME:?}/chain.properties" << EOF
 
-    version=${branch:?}
-
     metaname=bethany
     username=patricia
     dataname=elayne
