@@ -56,6 +56,10 @@ else
     elif [ $testname -eq 04 ];
     then
         source tests/test04-query-loop.sh
+    elif [ $testname -eq 05 ];
+    then
+        source tests/test05-integration-json.sh
+
     else 
         source setup/setup-pyro.sh
         source tests/$testname

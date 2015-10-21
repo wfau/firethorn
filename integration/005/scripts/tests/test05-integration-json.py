@@ -19,12 +19,12 @@
 #
 #
 
-echo "*** Initialising test05 script [test05-integration.sh] ***"
+echo "*** Initialising test05 script [test05-integration-json.sh] ***"
 
 source ${HOME:?}/chain.properties
 
 
-echo "*** Creating pyrothorn properties file [test05-integration.sh] ***"
+echo "*** Creating pyrothorn properties file [test05-integration-json.sh] ***"
 
 pyroproperties=$(mktemp)
 cat > "${pyroproperties:?}" << EOF
@@ -142,7 +142,7 @@ chcon -t svirt_sandbox_file_t "${pyroproperties:?}"
 
 mkdir -p /var/logs/${pyroname:?}
 
-echo "*** Run pyrothorn [test05-integration.sh] ***"
+echo "*** Run pyrothorn [test05-integration-json.sh] ***"
 
 docker run -i -t \
     --name ${pyroname:?} \
