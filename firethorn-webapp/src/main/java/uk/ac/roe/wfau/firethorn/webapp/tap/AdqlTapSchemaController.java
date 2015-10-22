@@ -91,7 +91,7 @@ public class AdqlTapSchemaController extends AbstractController {
 	public AdqlResource entity(@PathVariable("ident") final String ident)
 			throws IdentifierNotFoundException {
 		log.debug("entity() [{}]", ident);
-		return factories().adql().resources()
+		return factories().adql().resources().entities()
 				.select(factories().adql().resources().idents().ident(ident));
 	}
 
@@ -122,7 +122,7 @@ public class AdqlTapSchemaController extends AbstractController {
 			throws IdentifierNotFoundException, IOException, SQLException,
 			ClassNotFoundException {
 		JDBCParams params = new JDBCParams(url, user, pass, driver, catalog);
-		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "WEB-INF/data/sqlserver_tap_schema.sql");
+		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "/WEB-INF/data/sqlserver_tap_schema.sql");
 		generator.createTapSchema();
 		
 	}

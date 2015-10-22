@@ -62,7 +62,7 @@ public class AdqlTapAvailabilityController extends AbstractController {
         final String ident
         ) throws IdentifierNotFoundException  {
         log.debug("entity() [{}]", ident);
-        return factories().adql().resources().select(
+        return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
                 ident
                 )

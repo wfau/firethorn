@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -201,8 +203,11 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 			ScriptRunner runner = new ScriptRunner(con, false, false);
 
-			runner.runScript(new BufferedReader(new FileReader(this.servletContext
-					.getRealPath(this.tapSchemaScript))), getTapSchemaJDBCName());
+			ServletContext context = this.servletContext;
+			InputStream is = context.getResourceAsStream(this.tapSchemaScript);
+			InputStreamReader r = new InputStreamReader(is);
+
+			runner.runScript(r , getTapSchemaJDBCName());
 
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
@@ -353,7 +358,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		this.insertMetadata();
 		AdqlResource resource = this.resource;
 		
-		JdbcResource tap_schema_resource = this.factories.jdbc().resources().create(params.getCatalogue(), this.tapSchemaResourceJDBCName, params.getConnectionURL(), params.getUsername(), params.getPassword(),params.getDriver());
+		JdbcResource tap_schema_resource = this.factories.jdbc().resources().entities().create(params.getCatalogue(), this.tapSchemaResourceJDBCName, params.getConnectionURL(), params.getUsername(), params.getPassword(),params.getDriver());
 		JdbcSchema tap_schema;
 		try {
 			tap_schema = tap_schema_resource.schemas().select(params.getCatalogue()  + "." + this.tapSchemaJDBCName);

@@ -62,7 +62,7 @@ public class AdqlTapAsyncController extends AbstractController {
         ) throws IdentifierNotFoundException  {
         log.debug("entity() [{}]", ident);
       
-        return factories().adql().resources().select(
+        return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
                 ident
                 )
@@ -79,7 +79,7 @@ public class AdqlTapAsyncController extends AbstractController {
         ) throws IdentifierNotFoundException  {
         log.debug("query() [{}]", jobid);
      
-		return factories().adql().queries().select(
+		return factories().adql().queries().entities().select(
 		            factories().adql().queries().idents().ident(
 		            		jobid
 		                )
