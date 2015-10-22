@@ -585,7 +585,7 @@ public class AdqlQueryVOTableController
                 writer.append("</TABLE>");
             writer.append("</RESOURCE>");
         writer.append("</vot:VOTABLE>");
-
+    }
 
     /**
      * Generate a VOTable from query results.
