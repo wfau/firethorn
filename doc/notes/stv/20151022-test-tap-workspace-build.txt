@@ -123,6 +123,13 @@
     popd
 
 # -----------------------------------------------------
+# Create our secret function.
+#[user@desktop]
+
+    source "${HOME:?}/secret.sh"
+    secret 'ping'
+
+# -----------------------------------------------------
 # Start our docker-proxy container.
 #[user@desktop]
 
@@ -166,12 +173,7 @@
 
     popd
 
-# -----------------------------------------------------
-# Create our secret function.
-#[user@desktop]
 
-    source "${HOME:?}/secret.sh"
-    secret 'ping'
 
 # -----------------------------------------------------
 # Get our branch and version number.
@@ -205,11 +207,12 @@
     ogsalink=timothy
     firelink=peter
 
-    metatype=pgsql
-    metadata=postgres
-    metauser=$(pwgen 20 1)
-    metapass=$(pwgen 20 1)
-    metadriver=org.postgresql.Driver
+    metatype=mssql
+    metadata=$(secret 'firethorn.meta.data')
+    metauser=$(secret 'firethorn.meta.user')
+    metapass=$(secret 'firethorn.meta.pass')
+    metaport=1433
+    metadriver=net.sourceforge.jtds.jdbc.Driver
 
     usertype=mssql
     userhost=$(secret 'firethorn.user.host')
@@ -240,19 +243,22 @@ EOF
 
 firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
 
-firethorn.meta.type=${metatype:?}
-firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.url=jdbc:jtds:sqlserver://${userlink:?}/${metadata:?}
 firethorn.meta.user=${metauser:?}
 firethorn.meta.pass=${metapass:?}
-firethorn.meta.driver=${metadriver:?}
+firethorn.meta.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.meta.type=mssql
 
-firethorn.user.type=${usertype:?}
 firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
 firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
-firethorn.user.driver=${userdriver:?}
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.type=mssql
 
 EOF
+
+
+
 
     chmod a+r "${HOME:?}/firethorn.properties" 
     chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
@@ -291,13 +297,13 @@ EOF
 # Start our PostgreSQL metadata container.
 #[user@desktop]
 
-    source "${HOME:?}/chain.properties"
-    docker run \
-        --detach \
-        --name "${metaname:?}" \
-        --env "POSTGRES_USER=${metauser:?}" \
-        --env "POSTGRES_PASSWORD=${metapass:?}" \
-        postgres
+#    source "${HOME:?}/chain.properties"
+#    docker run \
+#        --detach \
+#        --name "${metaname:?}" \
+#        --env "POSTGRES_USER=${metauser:?}" \
+#        --env "POSTGRES_PASSWORD=${metapass:?}" \
+#        postgres
 
 # -----------------------------------------------------
 # Start our OGSA-DAI container.
@@ -327,7 +333,6 @@ EOF
         --publish 8080:8080 \
         --name "${firename:?}" \
         --link "${ogsaname:?}:${ogsalink:?}" \
-        --link "${metaname:?}:${metalink:?}" \
         --link "${dataname:?}:${datalink:?}" \
         --link "${username:?}:${userlink:?}" \
         --volume "${properties:?}:/etc/firethorn.properties" \
@@ -340,12 +345,12 @@ EOF
 
 # Separate terminal
 #   source "${HOME:?}/chain.properties"
-#   docker exec -it "${firename:?}" tail -f logs/firethorn.log 
+#   docker exec -it gillian tail -f logs/firethorn.log 
 
 
 # Separate terminal
 #   source "${HOME:?}/chain.properties"
-#   docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
+#   docker exec -it  jarmila tail -f logs/ogsadai.log 
 
 # -----------------------------------------------------
 # Build our tester container.
@@ -376,9 +381,10 @@ EOF
         --env "datauser=${datauser:?}" \
         --env "datapass=${datapass:?}" \
         --env "datadriver=${datadriver:?}" \
-        --env "metadataurl=jdbc:postgresql://${metalink:?}" \
-        --env "POSTGRES_USER=${metauser:?}" \
-        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        --env "metadataurl=jdbc:jtds:sqlserver://${userlink:?}" \
+        --env "metauser=${metauser:?}" \
+        --env "metapass=${metapass:?}" \
+        --env "metadata=${metadata?}" \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
         --volume /etc/localtime:/etc/localtime:ro \
@@ -473,18 +479,18 @@ EOF
 	
         # Run synchronous query
 	curl -X GET -G \
-	'${endpointurl:?}/tap/${resourceid:?}/sync' \
+	${endpointurl:?}/tap/${resourceid:?}/sync \
 	-d QUERY=${query:?} \
 	-d LANG=${lang:?} \
 	-d REQUEST=${request:?}
 
 
 
-	tap_schema_user=${POSTGRES_USER:?}
-	tap_schema_pass=${POSTGRES_PASSWORD:?}
-	tap_schema_url=${metadataurl:?}/${tap_schema_user:?} 
-	tap_schema_driver=org.postgresql.Driver
-	tap_schema_db=${POSTGRES_USER:?}
+	tap_schema_user=${metauser:?}
+	tap_schema_pass=${metapass:?}
+	tap_schema_url=${metadataurl:?}/${metadata?} 
+	tap_schema_driver=net.sourceforge.jtds.jdbc.Driver
+	tap_schema_db=${metadata?}
 
         # Generate TAP_SCHEMA
 	curl --data "url=${tap_schema_url:?}&user=${tap_schema_user:?}&pass=${tap_schema_pass:?}&driver=${tap_schema_driver:?}&catalog=${tap_schema_db:?}" ${endpointurl:?}/tap/${resourceid:?}/generateTapSchema
@@ -510,17 +516,20 @@ EOF
 
 
 
-query001=$(mktemp)
-cat > "${query001:?}" << EOF
-    SELECT
-      * from TAP_SCHEMA.tables
-EOF
+	source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+	      * from TAP_SCHEMA.tables
+            "
 
-query002=$(mktemp)
-cat > "${query002:?}" << EOF
-    SELECT
-      * from TAP_SCHEMA.schemas
-EOF
+	source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+	      * from TAP_SCHEMA.schemas
+            "
+	
 
 
 

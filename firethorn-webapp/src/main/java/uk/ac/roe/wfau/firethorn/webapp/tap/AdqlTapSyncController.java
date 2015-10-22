@@ -51,6 +51,8 @@ import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CapabilitiesGenerator;
+import uk.ac.roe.wfau.firethorn.blue.*;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 
    
 @Slf4j
@@ -139,22 +141,31 @@ public class AdqlTapSyncController extends AbstractController {
 					
 					try {
 						
-						//Create initial query element
-						AdqlQuery query = schema.queries().create(
-					                factories().adql().queries().params().create(
-					                    ),
-					                    QUERY
-					                );
 					
-						if (query!=null){
+						 BlueQuery query = resource.blues().create(
+				                		QUERY,
+				                		TaskState.COMPLETED,
+				                		Long.valueOf(600000)
+				                    );
+				           
+				            /*
+							//Create initial query element
+							AdqlQuery query = schema.queries().create(
+						                factories().adql().queries().params().create(
+						                    ),
+						                    QUERY
+						                );
 						
-							// Prepare and execute query 
-							Status jobstatus = query.prepare();
-							if (jobstatus == Status.READY){
-								jobstatus = query.execute();
-							}
 							
-							// Write results t VOTable using AdqlQueryVOTableController					
+							
+								// Prepare and execute query 
+								Status jobstatus = query.prepare();
+								if (jobstatus == Status.READY){
+									jobstatus = query.execute();
+								}*/
+							
+							// Write results t VOTable using AdqlQueryVOTableController	
+						 if (query!=null){
 							AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
 							adqvotable.generateTAPVotable(writer,query);
 
