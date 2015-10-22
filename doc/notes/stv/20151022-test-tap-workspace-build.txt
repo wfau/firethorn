@@ -1,0 +1,737 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Remove existing containers.
+#[user@desktop]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove existing images.
+#[user@desktop]
+
+    docker rmi $(docker images -q)
+
+# -----------------------------------------------------
+# Build our toolkit containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        if [ $(docker images | grep -c '^firethorn/fedora') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Fedora image"
+            docker build \
+                --tag firethorn/fedora:21.1 \
+                docker/fedora/21
+        fi
+
+        if [ $(docker images | grep -c '^firethorn/java') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Java image"
+            docker build \
+                --tag firethorn/java:8.1 \
+                docker/java/8
+        fi
+
+        if [ $(docker images | grep -c '^firethorn/tomcat') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Tomcat image"
+            docker build \
+                --tag firethorn/tomcat:8.1 \
+                docker/tomcat/8
+        fi
+
+        if [ $(docker images | grep -c '^firethorn/postgres') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Postgres image"
+            docker build \
+                --tag firethorn/postgres:9 \
+                docker/postgres/9
+        fi
+
+        if [ $(docker images | grep -c '^firethorn/builder') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building Builder image"
+            docker build \
+                --tag firethorn/builder:1.1 \
+                docker/builder
+        fi
+
+        if [ $(docker images | grep -c '^firethorn/docker-proxy') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building docker-proxy image"
+            docker build \
+                --tag firethorn/docker-proxy:1.1 \
+                docker/docker-proxy
+        fi
+
+        if [ $(docker images | grep -c '^firethorn/sql-proxy') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building sql-proxy image"
+            docker build \
+                --tag firethorn/sql-proxy:1.1 \
+                docker/sql-proxy
+        fi
+
+        if [ $(docker images | grep -c '^firethorn/sql-tunnel') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building sql-tunnel image"
+            docker build \
+                --tag firethorn/sql-tunnel:1.1 \
+                docker/sql-tunnel
+        fi
+
+        if [ $(docker images | grep -c '^firethorn/ssh-client') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building ssh-client image"
+            docker build \
+                --tag firethorn/ssh-client:1.1 \
+                docker/ssh-client
+        fi
+
+    popd
+
+# -----------------------------------------------------
+# Start our docker-proxy container.
+#[user@desktop]
+
+    docker run \
+        --detach \
+        --name "docker-proxy" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        firethorn/docker-proxy:1.1
+
+    sleep 1
+    dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
+
+    echo "${dockerip:?}"
+    curl "http://${dockerip:?}:2375/version"
+
+# -----------------------------------------------------
+# Build our source code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Create our secret function.
+#[user@desktop]
+
+    source "${HOME:?}/secret.sh"
+    secret 'ping'
+
+# -----------------------------------------------------
+# Get our branch and version number.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        branch=$(hg branch)
+
+        source "bin/util.sh"
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Configure our docker chain.
+#[user@desktop]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1.1
+
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        firethorn/sql-tunnel:1.1
+
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    properties=${HOME:?}/firethorn.properties
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Check the logs ..
+#[user@desktop]
+
+# Separate terminal
+#   source "${HOME:?}/chain.properties"
+#   docker exec -it "${firename:?}" tail -f logs/firethorn.log 
+
+
+# Separate terminal
+#   source "${HOME:?}/chain.properties"
+#   docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
+
+# -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:1.1 \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "metadataurl=jdbc:postgresql://${metalink:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/tester:1.1" \
+        bash
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | bin/pp | tee system-info.json
+
+# -----------------------------------------------------
+# Load the ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasTwomass.xml"
+
+
+
+# -----------------------------------------------------
+# Create our workspace
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+
+
+# -----------------------------------------------------
+# Run an ATLASDR1 query
+#[root@tester]
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                atlasSource.ra,
+                atlasSource.dec
+            FROM
+                atlas.atlasSource
+            WHERE
+                atlasSource.ra  BETWEEN 354 AND 355
+            AND
+                atlasSource.dec BETWEEN -40 AND -39
+            "
+
+
+
+	# -----------------------------------------------------
+	# Testing TAP
+
+	resourceid=$(basename ${queryspace:?}) 
+
+	query="SELECT+top+5+ra+from+atlasSource"
+	format=VOTABLE
+	lang=ADQL
+	request=doQuery
+
+        # Get VOSI
+	curl ${endpointurl:?}/tap/${resourceid:?}/tables
+	
+        # Run synchronous query
+	curl -X GET -G \
+	'${endpointurl:?}/tap/${resourceid:?}/sync' \
+	-d QUERY=${query:?} \
+	-d LANG=${lang:?} \
+	-d REQUEST=${request:?}
+
+
+
+	tap_schema_user=${POSTGRES_USER:?}
+	tap_schema_pass=${POSTGRES_PASSWORD:?}
+	tap_schema_url=${metadataurl:?}/${tap_schema_user:?} 
+	tap_schema_driver=org.postgresql.Driver
+	tap_schema_db=${POSTGRES_USER:?}
+
+        # Generate TAP_SCHEMA
+	curl --data "url=${tap_schema_url:?}&user=${tap_schema_user:?}&pass=${tap_schema_pass:?}&driver=${tap_schema_driver:?}&catalog=${tap_schema_db:?}" ${endpointurl:?}/tap/${resourceid:?}/generateTapSchema
+
+
+	source "bin/02-02-create-jdbc-space.sh" \
+            'TAP_SCHEMA conection' \
+            "${tap_schema_url:?}" \
+            "${tap_schema_user:?}" \
+            "${tap_schema_pass:?}" \
+            "${tap_schema_driver:?}" \
+            '*' \
+            'nilbert'
+
+
+        cat >  "${HOME:?}/firethorn.spaces" << EOF
+tapschemajdbc=${jdbcspace:?}
+EOF
+
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" "${tap_schema_db:?}" "TAP_SCHEMA_"${resourceid:?} "meta/TAP_SCHEMA.xml"
+      
+
+
+
+query001=$(mktemp)
+cat > "${query001:?}" << EOF
+    SELECT
+      * from TAP_SCHEMA.tables
+EOF
+
+query002=$(mktemp)
+cat > "${query002:?}" << EOF
+    SELECT
+      * from TAP_SCHEMA.schemas
+EOF
+
+
+
+
+
+# -----------------------------------------------------
+# Run a BlueQuery
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+        queryself=$(
+            cat blue-query.json | self
+            )
+
+        querynode=$(
+            cat blue-query.json | self | node
+            )
+
+        queryident=$(
+            cat blue-query.json | self | ident
+            )
+
+        #
+        # Run the BlueQuery.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.next.status=RUNNING" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Wait for a bit ..
+        sleep 10
+
+        #
+        # Select the BlueQuery.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+
+# -----------------------------------------------------
+# Run a BlueQuery
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+        queryself=$(
+            cat blue-query.json | self
+            )
+
+        querynode=$(
+            cat blue-query.json | self | node
+            )
+
+        queryident=$(
+            cat blue-query.json | self | ident
+            )
+
+        #
+        # Run the BlueQuery and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+# -----------------------------------------------------
+# Run a BlueQuery
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+        queryself=$(
+            cat blue-query.json | self
+            )
+
+        querynode=$(
+            cat blue-query.json | self | node
+            )
+
+        queryident=$(
+            cat blue-query.json | self | ident
+            )
+
+        #
+        # Run the BlueQuery and wait (0.5s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.wait=500" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+
+# -----------------------------------------------------
+# Run a BlueQuery
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+# -----------------------------------------------------
+# Run a BlueQuery
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input and wait (60s) for it to start.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            --data "blue.query.next.status=RUNNING" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+
+        queryself=$(
+            cat blue-query.json | self
+            )
+
+        querynode=$(
+            cat blue-query.json | self | node
+            )
+
+        queryident=$(
+            cat blue-query.json | self | ident
+            )
+
+        #
+        # Select the BlueQuery and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/blue/query/${queryident:?}?blue.query.next.status=COMPLETED&blue.query.wait=60000" \
+            | bin/pp
+
+# -----------------------------------------------------
+# Run a BlueQuery
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input and wait for it to start.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=
+                SELECT
+                    atlasSource.ra,
+                    atlasSource.dec
+                FROM
+                    atlas.atlasSource
+                WHERE
+                    atlasSource.ra  BETWEEN 354 AND 355
+                AND
+                    atlasSource.dec BETWEEN -40 AND -39
+                " \
+            --data "blue.query.next.status=RUNNING" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+        queryident=$(
+            cat blue-query.json | self | ident
+            )
+
+        #
+        # Select the BlueQuery and wait for an event.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/blue/query/${queryident:?}?blue.query.wait=60000" \
+            | bin/pp
+
+
+
+
