@@ -45,6 +45,18 @@ public class UWSJob {
 	/** Value of the parameter <i>phase</i> which aborts the job. */
 	public static final String PHASE_ABORT = "ABORT";
 
+	/** Value of the parameter <i>phase</i> when executing  */
+	public static final String PHASE_EXECUTING = "EXECUTING";
+
+	/** Value of the parameter <i>phase</i> when completed */
+	public static final String PHASE_COMPLETED = "COMPLETED";
+	
+	/** Value of the parameter <i>phase</i> when aborted */
+	public static final String PHASE_ABORTED = "ABORTED";	
+	
+	/** Value of the parameter <i>phase</i> when query produced an error  */
+	public static final String PHASE_ERROR = "ERROR";
+		
 	/** Name of the parameter <i>quote</i>. */
 	public static final String PARAM_QUOTE = "quote";
 
@@ -91,6 +103,7 @@ public class UWSJob {
 	private Date endTime = null;
 	
 	private final String jobId;
+	private final String jobURL;
 	private final String ownerId;
 	private long quote = QUOTE_NOT_KNOWN;
 	private String phase = null;
@@ -111,7 +124,14 @@ public class UWSJob {
 	 */
 	private UWSJobFactory myFactory;
 
-	protected UWSJob(UWSJobFactory f, AdqlResource resource) throws Exception {
+	/**
+	 * UWSJob Constructor 
+	 * @param f
+	 * @param resource
+	 * @param jobType
+	 * @throws Exception
+	 */
+	protected UWSJob(UWSJobFactory f, AdqlResource resource, String jobType) throws Exception {
 		    myFactory = f ;
 		    this.jobId = "";
 			this.phase = PHASE_INITIAL;
@@ -123,17 +143,32 @@ public class UWSJob {
 			errorSummary = new TapError();
 			this.resource = resource;
 			this.query = f.createNewQuery(resource);
+			this.jobURL = generateJobURL(jobType);
 	}
 	
+	/**
+	 * 
+	 * @param jobType
+	 * @return
+	 */
+	private String generateJobURL(String jobType) {
+		
+		if (jobType=="ASYNC"){
+			return myFactory.getBaseurl() + "/tap/" + resource.ident() + "/async/" + this.getJobId() ;
+		}
+		
+		return "";
+	}
+
 	/* ************ */
 	/* CONSTRUCTORS */
 	/* ************ */
 
 	
-	public UWSJob(UWSJobFactory f, AdqlResource resource,  BlueQuery query) throws Exception {
+	public UWSJob(UWSJobFactory f, AdqlResource resource,  BlueQuery query, String jobType) throws Exception {
 		myFactory = f ;
 		this.jobId = query.ident().toString();
-		this.phase = PHASE_INITIAL;
+		this.phase = getPhasefromState(query.state());
 		this.ownerId = null;
 		this.quote = QUOTE_NOT_KNOWN;
 		/*this.destructionTime = destruction;
@@ -142,7 +177,48 @@ public class UWSJob {
 		errorSummary = new TapError();
 		this.resource = resource;
 		this.query = query;
+		this.jobURL = generateJobURL(jobType);
 		
+	}
+
+	/**
+	 * Get the async job Phase from a TaskState
+	 * @param state
+	 * @return
+	 */
+	private String getPhasefromState(TaskState state) {
+
+		String phase = "";
+		switch (state) {
+        case CANCELLED :  
+        	phase = PHASE_ABORTED;
+        	break;
+		case COMPLETED:
+			phase = PHASE_COMPLETED;
+        	break;
+		case EDITING:
+			phase = PHASE_ERROR;
+        	break;
+		case ERROR:
+			phase = PHASE_ERROR;
+        	break;
+		case FAILED:
+			phase = PHASE_ERROR;
+        	break;
+		case QUEUED:
+			phase = PHASE_INITIAL;
+        	break;
+		case READY:
+			phase = PHASE_INITIAL;
+        	break;
+		case RUNNING:
+			phase = PHASE_EXECUTING;
+        	break;
+		default:
+			phase = PHASE_INITIAL;
+			break;
+		}
+		return phase;
 	}
 
 	public long getQuote() {
@@ -192,7 +268,11 @@ public class UWSJob {
 	public String getJobId() {
 		return jobId;
 	}
-
+	
+	public String getJobURL() {
+		return jobURL;
+	}
+	
 	public String getExecutionDuration(){
 		return null;
 	}
@@ -214,8 +294,7 @@ public class UWSJob {
 	}
 	
 	public String getResults() {
-		String id = query.ident().toString();
-		String url = myFactory.getBaseurl() + query.ident().toString() + "/votable";
+		String url = myFactory.getBaseurl() + getJobId() + "/votable";
 		return url;
 	}
 	
@@ -254,12 +333,17 @@ public class UWSJob {
 			}  catch (Exception ouch) {
 				ouch.printStackTrace();
 			}
-		} 
+		} else if (this.phase.equalsIgnoreCase(PHASE_ABORT)){
+			try {
+				myFactory.setQueryJob(this.query, TaskState.CANCELLED);
+			}  catch (Exception ouch) {
+				ouch.printStackTrace();
+			}
+		}
 	}
 	
 	public String getFullQueryURL() {
-		String id = this.query.ident().toString();
-		String url = myFactory.getBaseurl() + query.ident().toString();
+		String url = myFactory.getBaseurl() + getQueryId();
 		return url;
 	}
 	
@@ -267,7 +351,6 @@ public class UWSJob {
 	public String getQueryId() {
 		return this.query.ident().toString();
 	}
-
 	
 	/**
 	 * This function lets generating a unique ID.
@@ -307,6 +390,15 @@ public class UWSJob {
 		else {
 			return null;
 		}
+	}
+	
+	
+	/**
+	 * Get UWS results url
+	 * @return
+	 */
+	public String getJobURLResults() {
+		return this.getJobURL() + "/results/result";
 	}
 
 

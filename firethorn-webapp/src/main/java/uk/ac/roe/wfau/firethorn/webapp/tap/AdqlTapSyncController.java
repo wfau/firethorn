@@ -118,7 +118,7 @@ public class AdqlTapSyncController extends AbstractController {
 	            );
         
 			PrintWriter writer = response.getWriter();
-			AdqlSchema schema;
+
 			// Check input parameters and return VOTable with appropriate message if any errors found
 			boolean check = checkParams(writer, REQUEST, LANG, QUERY);
 			
@@ -128,12 +128,6 @@ public class AdqlTapSyncController extends AbstractController {
 					capgenerator.generateCapabilities(writer,resource);
 				} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)){ 
 				
-					// Look for default query schema, if none found create one
-					try {
-						schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
-					} catch (final NameNotFoundException ouch) {
-						schema = resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
-					}
 					
 					try {
 						

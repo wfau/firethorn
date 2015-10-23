@@ -75,8 +75,8 @@ class UWSJobFactory extends AbstractComponent{
      * @return UWSJob
      * @throws Exception
      */
-    public UWSJob create(AdqlResource resource) throws Exception {
-       return new UWSJob(this, resource);
+    public UWSJob create(AdqlResource resource, String jobType) throws Exception {
+       return new UWSJob(this, resource, jobType);
       }
     
     /**
@@ -85,8 +85,8 @@ class UWSJobFactory extends AbstractComponent{
      * @return UWSJob
      * @throws Exception
      */
-    public UWSJob create(AdqlResource resource, BlueQuery query) throws Exception {
-       return new UWSJob(this, resource, query);
+    public UWSJob create(AdqlResource resource, BlueQuery query, String jobType) throws Exception {
+       return new UWSJob(this, resource, query, jobType);
       }
     
 
@@ -136,7 +136,52 @@ class UWSJobFactory extends AbstractComponent{
 				
        }
     
-    
+    /**
+     * 
+     * Set a state for an query job
+     * 
+     */
+     @UpdateAtomicMethod
+    	public void setQueryJob(final BlueQuery query, final TaskState state) throws IdentifierNotFoundException, IOException {
+ 			
+ 			try {
+ 			
+ 				if (query!=null){
+ 					 
+ 					this.factories().spring().transactor().update(
+ 					           
+ 			                new Runnable()
+ 			                    {
+ 			                    @Override
+ 			                    public void run()
+ 			                        {
+ 			                      
+ 			                    	try {
+ 										query.advance(
+ 										        query.state(),
+ 										        state,
+ 												Long.valueOf(0)
+ 										        );
+ 									} catch (InvalidStateRequestException e) {
+ 										// TODO Auto-generated catch block
+ 										e.printStackTrace();
+ 									}
+ 			                      
+ 			                        }
+ 			                    }
+ 			               
+ 				    );
+ 			
+ 		
+ 				}
+ 			
+ 			} catch (final Exception ouch) {
+ 				ouch.printStackTrace();
+
+ 	        }
+ 				
+        }
+         
     /**
      * 
      * Create a query job
@@ -167,9 +212,7 @@ class UWSJobFactory extends AbstractComponent{
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @UpdateAtomicMethod
     public BlueQuery createNewQuery(AdqlResource resource, String querystring) throws IdentifierNotFoundException, IOException {
-			AdqlSchema schema;
 			BlueQuery query = null;
-		
 			
 			try {
 				query = resource.blues().create(querystring);
@@ -237,12 +280,23 @@ class UWSJobFactory extends AbstractComponent{
 				
         } 
     
-	/**
-	 * Write UWSJob in XML format
-	 * @param errorMessage
+    /**
+	 * Write UWS Job results
+	 * @param uwsjob
 	 * @param writer
 	 */
-	public static void writeUWSJobToXML (UWSJob uwsjob, PrintWriter writer){
+	public void writeUWSResultToXML (UWSJob uwsjob, PrintWriter writer){
+		String resultsUrl = uwsjob.getJobURLResults();
+		writer.append("<uws:results xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd http://www.w3.org/1999/xlink http://vo.ari.uni-heidelberg.de/docs/schemata/xlink.xsd'>");
+		writer.append("<uws:result id='result' xlink:href='" + resultsUrl +"'/></uws:results>");
+    
+	}
+	/**
+	 * Write UWSJob in XML format
+	 * @param uwsjob
+	 * @param writer
+	 */
+	public void writeUWSJobToXML (UWSJob uwsjob, PrintWriter writer){
 		
 	        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
 	        writer.append("	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd'>");
