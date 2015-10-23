@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -19,7 +19,10 @@ import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
+import uk.ac.roe.wfau.firethorn.blue.*;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 
+   
 @Slf4j
 @Component
 @Transactional(
@@ -82,7 +85,7 @@ class UWSJobFactory extends AbstractComponent{
      * @return UWSJob
      * @throws Exception
      */
-    public UWSJob create(AdqlResource resource, AdqlQuery query) throws Exception {
+    public UWSJob create(AdqlResource resource, BlueQuery query) throws Exception {
        return new UWSJob(this, resource, query);
       }
     
@@ -93,7 +96,7 @@ class UWSJobFactory extends AbstractComponent{
     * 
     */
     @UpdateAtomicMethod
-   	public void runQueryJob(final AdqlQuery query) throws IdentifierNotFoundException, IOException {
+   	public void runQueryJob(final BlueQuery query) throws IdentifierNotFoundException, IOException {
 			
 			try {
 			
@@ -107,7 +110,16 @@ class UWSJobFactory extends AbstractComponent{
 			                    public void run()
 			                        {
 			                      
-			                    	query.execute();
+			                    	try {
+										query.advance(
+										        query.state(),
+										        TaskState.RUNNING,
+												Long.valueOf(0)
+										        );
+									} catch (InvalidStateRequestException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
 			                      
 			                        }
 			                    }
@@ -132,18 +144,11 @@ class UWSJobFactory extends AbstractComponent{
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @UpdateAtomicMethod
-    public AdqlQuery createNewQuery(AdqlResource resource) throws IdentifierNotFoundException, IOException {
-			AdqlSchema schema;
-			AdqlQuery query = null;
+    public BlueQuery createNewQuery(AdqlResource resource) throws IdentifierNotFoundException, IOException {
+			BlueQuery query = null;
 			
 			try {
-				schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
-			} catch (final NameNotFoundException ouch) {
-				schema = resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
-			}
-			
-			try {
-				query = schema.queries().create(null, null);
+				query = resource.blues().create("");
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();
@@ -161,18 +166,14 @@ class UWSJobFactory extends AbstractComponent{
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @UpdateAtomicMethod
-    public AdqlQuery createNewQuery(AdqlResource resource, String querystring) throws IdentifierNotFoundException, IOException {
+    public BlueQuery createNewQuery(AdqlResource resource, String querystring) throws IdentifierNotFoundException, IOException {
 			AdqlSchema schema;
-			AdqlQuery query = null;
+			BlueQuery query = null;
+		
 			
 			try {
-				schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
-			} catch (final NameNotFoundException ouch) {
-				schema = resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
-			}
-			
-			try {
-				query = schema.queries().create(null, querystring);
+				query = resource.blues().create(querystring);
+				// query = schema.queries().create(null, querystring);
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();
@@ -190,18 +191,9 @@ class UWSJobFactory extends AbstractComponent{
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @UpdateAtomicMethod
-	public void prepareQueryJob(AdqlResource resource, final AdqlQuery query, final String querystring) throws IdentifierNotFoundException, IOException {
+	public void prepareQueryJob(AdqlResource resource, final BlueQuery query, final String querystring) throws IdentifierNotFoundException, IOException {
 			
-    		AdqlSchema schema;
-
 			if (resource!=null){
-				
-				try {
-					schema = resource.schemas().select(TapJobParams.DEFAULT_QUERY_SCHEMA);
-				} catch (final NameNotFoundException ouch) {
-					schema = resource.schemas().create(TapJobParams.DEFAULT_QUERY_SCHEMA);
-					ouch.printStackTrace();
-				}
 				
 				try {
 					this.factories().spring().transactor().update(
@@ -214,9 +206,14 @@ class UWSJobFactory extends AbstractComponent{
 			                      
 			                        if (querystring != null)
 			                            {
-			                        	query.input(
-			                        			querystring
-			                                );
+			                        	try {
+											query.update(
+													querystring
+											    );
+										} catch (InvalidStateRequestException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
 			                            }
 			                        }
 			                    }
@@ -225,7 +222,11 @@ class UWSJobFactory extends AbstractComponent{
 				
 				
 					if (query!=null){
-						Status jobstatus = query.prepare();
+						query.advance(
+						        query.state(),
+						        TaskState.RUNNING,
+								Long.valueOf(0)
+						        );
 					}
 				
 				} catch (final Exception ouch) {

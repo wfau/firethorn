@@ -35,11 +35,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.mysql.jdbc.Connection;
-
 import uk.ac.roe.wfau.firethorn.webapp.votable.*;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -147,24 +143,8 @@ public class AdqlTapSyncController extends AbstractController {
 				                		TaskState.COMPLETED,
 				                		Long.valueOf(600000)
 				                    );
-				           
-				            /*
-							//Create initial query element
-							AdqlQuery query = schema.queries().create(
-						                factories().adql().queries().params().create(
-						                    ),
-						                    QUERY
-						                );
-						
-							
-							
-								// Prepare and execute query 
-								Status jobstatus = query.prepare();
-								if (jobstatus == Status.READY){
-									jobstatus = query.execute();
-								}*/
-							
-							// Write results t VOTable using AdqlQueryVOTableController	
+				 
+						// Write results to VOTable using AdqlQueryVOTableController	
 						 if (query!=null){
 							AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
 							adqvotable.generateTAPVotable(writer,query);

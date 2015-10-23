@@ -29,14 +29,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
-
+import uk.ac.roe.wfau.firethorn.blue.*;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 @Slf4j
 @Controller
 @RequestMapping("/tap/{ident}/async")
@@ -50,6 +52,9 @@ public class AdqlTapAsyncController extends AbstractController {
 	
 	@Autowired
 	private UWSJobFactory uwsfactory;
+	
+	@Autowired
+    private BlueQuery.EntityServices services ;
 	
 	/**
      * Get the target workspace based on the ident in the path. 
@@ -69,23 +74,28 @@ public class AdqlTapAsyncController extends AbstractController {
             );
         }
    
-
-	/**
-     * Get the target workspace based on the query in the path. 
-     *
+    /**
+     * Get query entity by Ident
+     * @param jobid
+     * @return
+     * @throws IdentifierFormatException
+     * @throws IdentifierNotFoundException
+     * @throws EntityNotFoundException
      */
-    public AdqlQuery getqueryentity(
-        final String jobid
-        ) throws IdentifierNotFoundException  {
-        log.debug("query() [{}]", jobid);
-     
-		return factories().adql().queries().entities().select(
-		            factories().adql().queries().idents().ident(
-		            		jobid
-		                )
-		            );
-    }
-		
+    public BlueQuery getqueryentity(final String jobid)
+            throws IdentifierFormatException, IdentifierNotFoundException,
+            EntityNotFoundException
+            {
+        		log.debug("query() [{}]", jobid);
+                return services.entities().select(
+                	services.idents().ident(
+                		jobid
+                			)
+                	);
+         
+            }
+    
+
       @ResponseBody
       @RequestMapping(method = RequestMethod.POST, produces="text/plain")
       public void initAsyncJob (
@@ -99,7 +109,7 @@ public class AdqlTapAsyncController extends AbstractController {
 	    	   
     	  		UWSJob uwsjob;
 	    		PrintWriter writer = response.getWriter();
-	    		AdqlQuery qry;
+	    		BlueQuery qry;
 				if ( resource!=null){
 				
 				
@@ -142,7 +152,7 @@ public class AdqlTapAsyncController extends AbstractController {
     		
     		PrintWriter writer = response.getWriter();
     		UWSJob uwsjob;
-    		final AdqlQuery queryentity = getqueryentity(jobid);
+    		final BlueQuery queryentity = getqueryentity(jobid);
     	
 			if ( queryentity!=null){
 				uwsjob = uwsfactory.create(resource,queryentity);
@@ -172,7 +182,7 @@ public class AdqlTapAsyncController extends AbstractController {
     	
     	PrintWriter writer = response.getWriter();
     	UWSJob uwsjob;
-    	AdqlQuery queryentity = getqueryentity(jobid);
+    	BlueQuery queryentity = getqueryentity(jobid);
     	
     	try{
 
@@ -209,7 +219,7 @@ public class AdqlTapAsyncController extends AbstractController {
   		  @ModelAttribute("urn:adql.resource.entity")
   	        AdqlResource resource) throws  IdentifierNotFoundException, Exception  {
 
-    	AdqlQuery queryentity = getqueryentity(jobid);
+    	BlueQuery queryentity = getqueryentity(jobid);
         return "quote";
     }
     
@@ -219,7 +229,7 @@ public class AdqlTapAsyncController extends AbstractController {
     	  @PathVariable String jobid,
   	      @ModelAttribute("urn:adql.resource.entity")
     		AdqlResource resource) throws  IdentifierNotFoundException, Exception  {
-    	AdqlQuery queryentity = getqueryentity(jobid);
+    	BlueQuery queryentity = getqueryentity(jobid);
         return "executionduration";
     }
  
@@ -231,7 +241,7 @@ public class AdqlTapAsyncController extends AbstractController {
   		  	@ModelAttribute("urn:adql.resource.entity")
   	        	AdqlResource resource)  throws  IdentifierNotFoundException, Exception {
     	
-    	   AdqlQuery queryentity = getqueryentity(jobid);
+    	   BlueQuery queryentity = getqueryentity(jobid);
            return "destruction";
        }
     
@@ -241,7 +251,7 @@ public class AdqlTapAsyncController extends AbstractController {
     		@PathVariable String jobid,
   		  	@ModelAttribute("urn:adql.resource.entity")
   	        	AdqlResource resource) throws  IdentifierNotFoundException, Exception  {
-    	AdqlQuery queryentity = getqueryentity(jobid);
+    	BlueQuery queryentity = getqueryentity(jobid);
         return "error";
     }
     
@@ -255,7 +265,7 @@ public class AdqlTapAsyncController extends AbstractController {
     	
 	    	String queryid = "";
 	    	UWSJob uwsjob;
-	    	AdqlQuery queryentity = getqueryentity(jobid);
+	    	BlueQuery queryentity = getqueryentity(jobid);
 
 	    	try{
 				

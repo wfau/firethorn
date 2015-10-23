@@ -4,11 +4,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
+import uk.ac.roe.wfau.firethorn.blue.*;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+
 
 @Slf4j
 public class UWSJob {
@@ -97,7 +99,7 @@ public class UWSJob {
 	private String results = null;
 	private AdqlResource resource = null;
 	private AdqlSchema schema = null;
-	private AdqlQuery query = null;
+	private BlueQuery query = null;
 	
 	/** <p>This error summary gives a human-readable error message for the underlying job.</p>
 	 * <i><u>Note:</u> This object is intended to be a detailed error message, and consequently,
@@ -128,7 +130,7 @@ public class UWSJob {
 	/* ************ */
 
 	
-	public UWSJob(UWSJobFactory f, AdqlResource resource,  AdqlQuery query) throws Exception {
+	public UWSJob(UWSJobFactory f, AdqlResource resource,  BlueQuery query) throws Exception {
 		myFactory = f ;
 		this.jobId = query.ident().toString();
 		this.phase = PHASE_INITIAL;
@@ -217,7 +219,7 @@ public class UWSJob {
 		return url;
 	}
 	
-	public AdqlQuery getQuery() {
+	public BlueQuery getQuery() {
 		return query;
 	}
 
