@@ -37,6 +37,10 @@ public class CommonParams  {
 	 */
     public static final String CAPABILITIES_XML_VIEW = "adql/capabilities-xml" ;
 
+	/**
+	 * Blue Query path
+	 */
+	static final String BLUE_QUERY_PATH = "blue/query";
 
 
 }

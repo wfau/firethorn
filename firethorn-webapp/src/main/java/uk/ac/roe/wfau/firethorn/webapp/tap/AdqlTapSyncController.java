@@ -135,7 +135,7 @@ public class AdqlTapSyncController extends AbstractController {
 						 BlueQuery query = resource.blues().create(
 				                		QUERY,
 				                		TaskState.COMPLETED,
-				                		Long.valueOf(600000)
+				                		Long.valueOf(TapJobParams.EXECUTION_DURATION)
 				                    );
 				 
 						// Write results to VOTable using AdqlQueryVOTableController	

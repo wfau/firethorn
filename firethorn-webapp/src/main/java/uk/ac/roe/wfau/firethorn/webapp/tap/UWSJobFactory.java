@@ -264,14 +264,6 @@ class UWSJobFactory extends AbstractComponent{
 				    );
 				
 				
-					if (query!=null){
-						query.advance(
-						        query.state(),
-						        TaskState.RUNNING,
-								Long.valueOf(0)
-						        );
-					}
-				
 				} catch (final Exception ouch) {
 					ouch.printStackTrace();
 	

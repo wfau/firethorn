@@ -183,6 +183,10 @@ public class UWSJob {
 		
 	}
 
+	public void setQuery(BlueQuery query) {
+		this.query = query;
+	}
+
 	/**
 	 * Get the async job Phase from a TaskState
 	 * @param state
@@ -199,7 +203,7 @@ public class UWSJob {
 			phase = PHASE_COMPLETED;
         	break;
 		case EDITING:
-			phase = PHASE_ERROR;
+			phase = PHASE_INITIAL;
         	break;
 		case ERROR:
 			phase = PHASE_ERROR;
@@ -345,7 +349,7 @@ public class UWSJob {
 	}
 	
 	public String getFullQueryURL() {
-		String url = myFactory.getBaseurl() + getQueryId();
+		String url = getQuery().adql();  
 		return url;
 	}
 	
