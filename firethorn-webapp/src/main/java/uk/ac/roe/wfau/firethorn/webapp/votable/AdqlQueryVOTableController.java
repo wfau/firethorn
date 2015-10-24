@@ -626,6 +626,10 @@ public class AdqlQueryVOTableController
             writer.append("'");
             writer.append(" content-role='metadata'");
             writer.append(" href='");
+            if (query.link() != null)
+            	{
+	            writer.append(query.link());
+            	}
             writer.append(query.link());
             writer.append("'");
             writer.append("/>");
@@ -634,7 +638,9 @@ public class AdqlQueryVOTableController
                 writer.append("<INFO name='QUERY_STATUS' value='OK'>");
             } else  {
                 writer.append("<INFO name='QUERY_STATUS' value='ERROR'>");
-                writer.append(query.syntax().friendly());
+                if (query.syntax().friendly() != null){
+                	writer.append(query.syntax().friendly());
+                }
             }
             writer.append("</INFO>");
             if (query.input() != null)
@@ -667,7 +673,10 @@ public class AdqlQueryVOTableController
 	                writer.append("'");
 	                writer.append(" content-role='metadata'");
 	                writer.append(" href='");
-	                writer.append(table.link());
+	                if (table.link()!= null)
+                    {
+	                    writer.append(table.link());
+                    }
 	                writer.append("'");
 	                writer.append("/>");
 	                if (table.text() != null)
@@ -686,7 +695,9 @@ public class AdqlQueryVOTableController
 	                    cols.add(column);
 	
 	                    writer.append("<FIELD ID='column.");
-	                    writer.append(column.ident().toString());
+	                    if (column.ident()!=null){
+	                        writer.append(column.ident().toString());
+	                    }
 	                    writer.append("'");
 	                    if (column.name() != null)
 	                        {
@@ -765,12 +776,14 @@ public class AdqlQueryVOTableController
 	
 	                    writer.append(">");
 	
-	                    writer.append("<LINK");
-	                    writer.append(" content-type='" + JSON_MIME + "'");
-	                    writer.append(" content-role='metadata'");
-	                    writer.append(" href='" + column.link() + "'");
-	                    writer.append("/>");
-	
+	                    if (column.link() != null)
+	                    	{
+		                    writer.append("<LINK");
+		                    writer.append(" content-type='" + JSON_MIME + "'");
+		                    writer.append(" content-role='metadata'");
+		                    writer.append(" href='" + column.link() + "'");
+		                    writer.append("/>");
+	                    	}
 	                    if (column.text() != null)
 	                        {
 	                        writer.append("<DESCRIPTION>");
@@ -785,7 +798,10 @@ public class AdqlQueryVOTableController
 	               
 	                    writer.append("<DATA>");
 	                    writer.append("<TABLEDATA>");
-	                    log.error("In Votable [{}]", query.link());
+	                    if (query.link() != null)
+                            {
+	                        log.error("In Votable [{}]", query.link());
+                            }
 	                    final JdbcProductType type  = jdbc.resource().connection().type();
 	                    final Connection connection = jdbc.resource().connection().open();
 	                    int isolation = Connection.TRANSACTION_NONE;
@@ -817,29 +833,31 @@ public class AdqlQueryVOTableController
 	                        for (int colnum = 0 ; colnum < colcount ; colnum++)
 	                            {
 	                            final AdqlColumn adql = cols.get(colnum);
-	                            switch(adql.meta().adql().type())
-	                                {
-	                                case CHAR :
-	                                case UNICODE:
-	                                    handlers.add(
-	                                        new StringFieldHandler(
-	                                            results,
-	                                            colmeta,
-	                                            colnum
-	                                            )
-	                                        );
-	                                    break ;
-	
-	                                default :
-	                                    handlers.add(
-	                                        new ObjectFieldHandler(
-	                                            results,
-	                                            colmeta,
-	                                            colnum
-	                                            )
-	                                        );
-	                                    break ;
-	                                }
+	                            if (adql.meta().adql().type() != null){
+		                            switch(adql.meta().adql().type())
+		                                {
+		                                case CHAR :
+		                                case UNICODE:
+		                                    handlers.add(
+		                                        new StringFieldHandler(
+		                                            results,
+		                                            colmeta,
+		                                            colnum
+		                                            )
+		                                        );
+		                                    break ;
+		
+		                                default :
+		                                    handlers.add(
+		                                        new ObjectFieldHandler(
+		                                            results,
+		                                            colmeta,
+		                                            colnum
+		                                            )
+		                                        );
+		                                    break ;
+		                                }
+	                            }
 	                            }
 	
 	                        while (results.next())

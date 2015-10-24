@@ -38,6 +38,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
+import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryVOTableController;
 import uk.ac.roe.wfau.firethorn.blue.*;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 
@@ -93,11 +94,18 @@ public class AdqlTapAsyncController extends AbstractController {
 			@RequestParam(value = "REQUEST", required = false) String REQUEST,
 			@RequestParam(value = "QUERY", required = false) String QUERY, final HttpServletResponse response)
 					throws Exception {
-
+		
+		response.setContentType(
+				CommonParams.TEXT_XML_MIME
+		);
+		response.setCharacterEncoding(
+				"UTF-8"
+	    );
+		
 		UWSJob uwsjob;
 		PrintWriter writer = response.getWriter();
 		BlueQuery qry;
-
+		
 		if (resource != null) {
 
 			// Check input parameters and return VOTable with appropriate
@@ -125,7 +133,6 @@ public class AdqlTapAsyncController extends AbstractController {
 			}
 
 		} else {
-
 			TapError.writeErrorToVotable(TapJobErrors.RESOURCE_MISSING, writer);
 		}
 
@@ -139,7 +146,15 @@ public class AdqlTapAsyncController extends AbstractController {
 			@RequestParam(value = "REQUEST", required = false) String REQUEST,
 			@RequestParam(value = "QUERY", required = false) final String QUERY, final HttpServletResponse response)
 					throws IdentifierNotFoundException, Exception {
-
+		
+		response.setContentType(
+				CommonParams.TEXT_XML_MIME
+		);
+		response.setCharacterEncoding(
+				"UTF-8"
+	    );
+		
+		
 		PrintWriter writer = response.getWriter();
 		UWSJob uwsjob;
 		final BlueQuery queryentity = getqueryentity(jobid);
@@ -167,7 +182,14 @@ public class AdqlTapAsyncController extends AbstractController {
 	public void phase(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response, @RequestParam(value = "PHASE", required = true) String PHASE)
 					throws IdentifierNotFoundException, Exception {
-
+		
+		response.setContentType(
+				CommonParams.TEXT_XML_MIME
+		);
+		response.setCharacterEncoding(
+				"UTF-8"
+	    );
+		
 		PrintWriter writer = response.getWriter();
 		UWSJob uwsjob;
 		BlueQuery queryentity = getqueryentity(jobid);
@@ -189,6 +211,7 @@ public class AdqlTapAsyncController extends AbstractController {
 			uwsfactory.writeUWSJobToXML(uwsjob, writer);
 
 		} catch (Exception e) {
+			log.debug(e.getMessage());
 			TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR, writer);
 		}
 
@@ -274,17 +297,23 @@ public class AdqlTapAsyncController extends AbstractController {
 	public void results(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
 
+		
+		response.setContentType(
+				CommonParams.TEXT_XML_MIME
+		);
+		response.setCharacterEncoding(
+				"UTF-8"
+	    );
+		
 		UWSJob uwsjob;
 		BlueQuery queryentity = getqueryentity(jobid);
 		PrintWriter writer = response.getWriter();
 
 		try {
-
 			uwsjob = uwsfactory.create(resource, queryentity, jobType);
 			uwsfactory.writeUWSResultToXML(uwsjob, writer);
-
 		} catch (Exception e) {
-
+			TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR, writer);
 		}
 
 	}
@@ -294,15 +323,28 @@ public class AdqlTapAsyncController extends AbstractController {
 	public void result(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
 
-		UWSJob uwsjob;
-		BlueQuery queryentity = getqueryentity(jobid);
+		response.setContentType(
+				CommonParams.TEXT_XML_MIME
+		);
+		response.setCharacterEncoding(
+				"UTF-8"
+	    );
 		PrintWriter writer = response.getWriter();
 
+		
 		try {
-			uwsjob = uwsfactory.create(resource, queryentity, jobType);
-			writer.append(uwsjob.getResults());
-		} catch (Exception e) {
+			UWSJob uwsjob;
+			BlueQuery queryentity = getqueryentity(jobid);
+			if (queryentity != null) {
+				AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
+				adqvotable.generateTAPVotable(writer, queryentity);
 
+			}
+
+			//uwsjob = uwsfactory.create(resource, queryentity, jobType);
+			//writer.append(uwsjob.getResults());
+		} catch (Exception e) {
+			TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR, writer);
 		}
 
 	}

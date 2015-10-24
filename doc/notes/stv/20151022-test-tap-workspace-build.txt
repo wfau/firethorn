@@ -560,7 +560,45 @@ EOF
 
 	
 
-	# ----------------------Query test4: Test GAVO-------------------------------
+	# ----------------------Query test4: Invalid input asynchronous-------------------------------
+
+	invalidquery="SELECT+invalid"
+
+	data="$( curl -X POST -G \
+	${endpointurl:?}/tap/${resourceid:?}/async \
+	-d LANG=${lang:?} \
+	-d REQUEST=${request:?})"
+
+	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
+	 
+	curl -X POST -G \
+	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/parameters \
+	-d QUERY=${invalidquery:?}
+
+	curl -X POST -G \
+	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
+	-d PHASE=RUN 
+
+	curl -X POST -G \
+	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results/result
+
+
+	curl ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/error
+
+
+
+	# ----------------------Query test5: Invalid input synchronous-------------------------------
+        # Run a synchronous query
+
+	curl -X GET -G \
+	${endpointurl:?}/tap/${resourceid:?}/sync \
+	-d QUERY=${invalidquery:?} \
+	-d LANG=${lang:?} \
+	-d REQUEST=${request:?}
+
+
+
+	# ----------------------Query test5: Test GAVO-------------------------------
 
 	gavoquery="SELECT+top+5+*+from+amanda.nucanddd"
 	curl -X POST -G \
@@ -643,6 +681,24 @@ EOF
 
 
 
+	# ----------------------Query test6: Test TAP_SCHEMA using TAP-------------------------------
+
+	query="SELECT+*+from+TAP_SCHEMA.tables"
+	data="$( curl -X POST -G \
+	${endpointurl:?}/tap/${resourceid:?}/async \
+	-d LANG=${lang:?} \
+	-d REQUEST=${request:?} \
+	-d QUERY=${query:?})"
+
+	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
+
+	curl -X POST -G \
+	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
+	-d PHASE=RUN 
+
+
+	curl ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results/result
+	
 
 # -----------------------------------------------------
 # Run a BlueQuery

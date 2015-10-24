@@ -50,17 +50,16 @@ import uk.ac.roe.wfau.firethorn.webapp.tap.CapabilitiesGenerator;
 import uk.ac.roe.wfau.firethorn.blue.*;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 
-   
 @Slf4j
 @Controller
 @RequestMapping("/tap/{ident}/")
 public class AdqlTapSyncController extends AbstractController {
-	
+
 	/**
 	 * Timeout for query job in miliseconds
 	 */
 	static final Integer TIMEOUT = 600000;
-	
+
 	/**
 	 * Param to start a job
 	 */
@@ -68,134 +67,110 @@ public class AdqlTapSyncController extends AbstractController {
 
 	@Autowired
 	private CapabilitiesGenerator capgenerator;
-	
+
 	@Override
 	public Path path() {
 		// TODO Auto-generated method stub
-		return path("/tap/{ident}/") ;
+		return path("/tap/{ident}/");
 	}
-	
+
 	/**
-     * Get the target workspace based on the ident in the path. 
-     *
-     */
-    @ModelAttribute("urn:adql.resource.entity")
-    public AdqlResource entity(
-        @PathVariable("ident")
-        final String ident
-        ) throws IdentifierNotFoundException  {
-        log.debug("entity() [{}]", ident);
-        return factories().adql().resources().entities().select(
-            factories().adql().resources().idents().ident(
-                ident
-                )
-            );
-        }
- 
+	 * Get the target workspace based on the ident in the path.
+	 *
+	 */
+	@ModelAttribute("urn:adql.resource.entity")
+	public AdqlResource entity(@PathVariable("ident") final String ident) throws IdentifierNotFoundException {
+		log.debug("entity() [{}]", ident);
+		return factories().adql().resources().entities().select(factories().adql().resources().idents().ident(ident));
+	}
 
-    /**
-     * Web service method
-     * Create a Synchronous query job
-     * 
-     */
-	@RequestMapping(value="sync",  method = { RequestMethod.POST, RequestMethod.GET }, produces=CommonParams.TEXT_XML_MIME)
-	public void createSyncJob(
-        @ModelAttribute("urn:adql.resource.entity")
-        AdqlResource resource,
-        final HttpServletResponse response,
-        @RequestParam(value="QUERY", required = false) String QUERY,
-        @RequestParam(value="LANG", required = false) String LANG,
-        @RequestParam(value="REQUEST", required = false) String REQUEST,    
-        BindingResult result
-        ) throws  IdentifierNotFoundException, IOException {
-			
+	/**
+	 * Web service method Create a Synchronous query job
+	 * 
+	 */
+	@RequestMapping(value = "sync", method = { RequestMethod.POST,
+			RequestMethod.GET }, produces = CommonParams.TEXT_XML_MIME)
+	public void createSyncJob(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+			final HttpServletResponse response, @RequestParam(value = "QUERY", required = false) String QUERY,
+			@RequestParam(value = "LANG", required = false) String LANG,
+			@RequestParam(value = "REQUEST", required = false) String REQUEST, BindingResult result)
+					throws IdentifierNotFoundException, IOException {
 
-	        response.setContentType(
-	        		CommonParams.TEXT_XML_MIME
-	            );
-	        response.setCharacterEncoding(
-	            "UTF-8"
-	            );
-        
-			PrintWriter writer = response.getWriter();
+		response.setContentType(CommonParams.TEXT_XML_MIME);
+		response.setCharacterEncoding("UTF-8");
 
-			// Check input parameters and return VOTable with appropriate message if any errors found
-			boolean check = checkParams(writer, REQUEST, LANG, QUERY);
-			
-			if (check){
+		PrintWriter writer = response.getWriter();
 
-				if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)){
-					capgenerator.generateCapabilities(writer,resource);
-				} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)){ 
-				
-					
-					try {
-						
-					
-						 BlueQuery query = resource.blues().create(
-				                		QUERY,
-				                		TaskState.COMPLETED,
-				                		Long.valueOf(TapJobParams.EXECUTION_DURATION)
-				                    );
-				 
-						// Write results to VOTable using AdqlQueryVOTableController	
-						 if (query!=null){
-							AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
-							adqvotable.generateTAPVotable(writer,query);
+		// Check input parameters and return VOTable with appropriate message if
+		// any errors found
+		boolean check = checkParams(writer, REQUEST, LANG, QUERY);
 
-						}
-					
-		
-					} catch (final Exception ouch) {
-						log.error("Exception caught [{}]", ouch);
-						ouch.printStackTrace();
-			        }
-					
-				} 
+		if (check) {
+
+			if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
+				capgenerator.generateCapabilities(writer, resource);
+			} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)) {
+
+				try {
+
+					BlueQuery query = resource.blues().create(QUERY, TaskState.COMPLETED,
+							Long.valueOf(TapJobParams.EXECUTION_DURATION));
+
+					// Write results to VOTable using AdqlQueryVOTableController
+					if (query != null) {
+						AdqlQueryVOTableController adqvotable = new AdqlQueryVOTableController();
+						adqvotable.generateTAPVotable(writer, query);
+
+					}
+
+				} catch (final Exception ouch) {
+					log.error("Exception caught [{}]", ouch);
+					TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR, writer);
+				}
+
 			}
-			
-        }
-	
-		private boolean checkParams(PrintWriter writer, String REQUEST,String LANG,String QUERY){
+		}
 
-			String error_message;
-			boolean valid = true;
-			
-			// Check for errors and return appropriate VOTable error messages		
-			if (REQUEST==null){
-				TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING, writer);
-				valid = false;
-				return valid;
-			} else if (!REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY) && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)){
-				error_message = "Invalid REQUEST: " + REQUEST;
+	}
+
+	private boolean checkParams(PrintWriter writer, String REQUEST, String LANG, String QUERY) {
+
+		String error_message;
+		boolean valid = true;
+
+		// Check for errors and return appropriate VOTable error messages
+		if (REQUEST == null) {
+			TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING, writer);
+			valid = false;
+			return valid;
+		} else if (!REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)
+				&& !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
+			error_message = "Invalid REQUEST: " + REQUEST;
+			TapError.writeErrorToVotable(error_message, writer);
+			valid = false;
+			return valid;
+		}
+
+		if (LANG == null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
+			TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING, writer);
+			valid = false;
+			return valid;
+		} else if (LANG != null) {
+			if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")) {
+				error_message = "Invalid LANGUAGE: " + LANG;
 				TapError.writeErrorToVotable(error_message, writer);
 				valid = false;
-				return valid;
 			}
-			
-			
-			if (LANG==null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)){
-				TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING, writer);
-				valid = false;
-				return valid;
-			}  else if (LANG!=null){
-				if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")){
-					error_message = "Invalid LANGUAGE: " + LANG;
-					TapError.writeErrorToVotable(error_message, writer);
-					valid = false;
-				}
-			} 
-			
-			if (QUERY==null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)){
-				TapError.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING, writer);
-				valid = false;
-				return valid;
-			}
-
-		
-			
-			return valid;
-			
 		}
-	 
+
+		if (QUERY == null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
+			TapError.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING, writer);
+			valid = false;
+			return valid;
+		}
+
+		return valid;
+
+	}
+
 }

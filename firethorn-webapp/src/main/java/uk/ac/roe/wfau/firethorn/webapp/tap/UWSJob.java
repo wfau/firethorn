@@ -183,10 +183,6 @@ public class UWSJob {
 		
 	}
 
-	public void setQuery(BlueQuery query) {
-		this.query = query;
-	}
-
 	/**
 	 * Get the async job Phase from a TaskState
 	 * @param state
@@ -300,7 +296,7 @@ public class UWSJob {
 	}
 	
 	public String getResults() {
-		String url = myFactory.getBaseurl() + getJobId() + "/votable";
+		String url = this.query.results().jdbc().link() + "/votable";
 		return url;
 	}
 	
@@ -349,7 +345,7 @@ public class UWSJob {
 	}
 	
 	public String getFullQueryURL() {
-		String url = getQuery().adql();  
+		String url = myFactory.getBaseurl() + "/" + CommonParams.BLUE_QUERY_PATH + "/" + getQueryId();  
 		return url;
 	}
 	
