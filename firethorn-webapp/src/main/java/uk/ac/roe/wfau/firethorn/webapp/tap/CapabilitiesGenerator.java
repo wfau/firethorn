@@ -22,7 +22,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 @Component
 public class CapabilitiesGenerator{
 
-	 @Value("${firethorn.webapp.endpoint:null}")
+	 @Value("${firethorn.webapp.baseurl:null}")
 	 private String baseurl;
 
 	/**

@@ -155,9 +155,11 @@ public class UWSJob {
 		
 		if (jobType=="ASYNC"){
 			return myFactory.getBaseurl() + "/tap/" + resource.ident() + "/async/" + this.getJobId() ;
+		} else {
+			return myFactory.getBaseurl() + "/tap/" + resource.ident() + "/async/" + this.getJobId() ;
+		
 		}
 		
-		return "";
 	}
 
 	/* ************ */

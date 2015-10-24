@@ -36,7 +36,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 @Slf4j
 public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
-	@Value("${firethorn.webapp.endpoint:null}")
+	@Value("${firethorn.webapp.baseurl:null}")
 	private String baseurl;
 	
 	/**

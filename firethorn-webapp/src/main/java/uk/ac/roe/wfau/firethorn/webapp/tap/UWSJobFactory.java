@@ -40,7 +40,7 @@ class UWSJobFactory extends AbstractComponent{
         super();
         }
 
-    @Value("${firethorn.webapp.endpoint:null}")
+    @Value("${firethorn.webapp.baseurl:null}")
     private String baseurl;
     
     /**
