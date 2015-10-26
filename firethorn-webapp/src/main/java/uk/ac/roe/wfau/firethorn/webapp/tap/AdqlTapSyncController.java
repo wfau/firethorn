@@ -93,7 +93,12 @@ public class AdqlTapSyncController extends AbstractController {
 	public void createSyncJob(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response, @RequestParam(value = "QUERY", required = false) String QUERY,
 			@RequestParam(value = "LANG", required = false) String LANG,
-			@RequestParam(value = "REQUEST", required = false) String REQUEST, BindingResult result)
+			@RequestParam(value = "REQUEST", required = false) String REQUEST, 
+			@RequestParam(value = "FORMAT", required = false) String FORMAT, 
+			@RequestParam(value = "VERSION", required = false) String VERSION, 
+			@RequestParam(value = "MAXREC", required = false) String MAXREC, 
+
+			BindingResult result)
 					throws IdentifierNotFoundException, IOException {
 
 		response.setContentType(CommonParams.TEXT_XML_MIME);
@@ -103,7 +108,7 @@ public class AdqlTapSyncController extends AbstractController {
 
 		// Check input parameters and return VOTable with appropriate message if
 		// any errors found
-		boolean check = checkParams(writer, REQUEST, LANG, QUERY);
+		boolean check = checkParams(writer, REQUEST, LANG, QUERY, FORMAT, VERSION);
 
 		if (check) {
 
@@ -133,7 +138,7 @@ public class AdqlTapSyncController extends AbstractController {
 
 	}
 
-	private boolean checkParams(PrintWriter writer, String REQUEST, String LANG, String QUERY) {
+	private boolean checkParams(PrintWriter writer, String REQUEST, String LANG, String QUERY, String FORMAT, String VERSION) {
 
 		String error_message;
 		boolean valid = true;
@@ -169,6 +174,22 @@ public class AdqlTapSyncController extends AbstractController {
 			return valid;
 		}
 
+		if (FORMAT != null) {
+			if (!FORMAT.equalsIgnoreCase("votable")) {
+				error_message = "FORMAT '" + FORMAT + "'not supported" ;
+				TapError.writeErrorToVotable(error_message, writer);
+				valid = false;
+			}
+		}
+		
+		if (VERSION != null) {
+			if (!VERSION.equalsIgnoreCase("1.0") || !VERSION.equalsIgnoreCase("1")) {
+				error_message = "VERSION '" + VERSION + "'not supported" ;
+				TapError.writeErrorToVotable(error_message, writer);
+				valid = false;
+			}
+		}
+		
 		return valid;
 
 	}

@@ -310,6 +310,15 @@ class UWSJobFactory extends AbstractComponent{
 			        if (uwsjob.getQuery()!=null){
 		            	writer.append("<uws:parameter id='query'>" + uwsjob.getQuery().input() + "</uws:parameter>");
 			        }
+			        if (uwsjob.getFormat()!=null){
+		            	writer.append("<uws:parameter id='format'>" + uwsjob.getFormat() + "</uws:parameter>");
+			        }
+			        if (uwsjob.getVersion()!=null){
+		            	writer.append("<uws:parameter id='version'>" + uwsjob.getVersion() + "</uws:parameter>");
+			        }
+			        if (uwsjob.getMaxrec()!=null){
+		            	writer.append("<uws:parameter id='maxrec'>" + uwsjob.getMaxrec() + "</uws:parameter>");
+			        }
 		        writer.append("</uws:parameters>");
 		        
 		        writer.append("<uws:results>");

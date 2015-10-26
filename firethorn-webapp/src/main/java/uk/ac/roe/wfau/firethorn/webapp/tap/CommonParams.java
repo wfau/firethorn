@@ -41,6 +41,15 @@ public class CommonParams  {
 	 * Blue Query path
 	 */
 	static final String BLUE_QUERY_PATH = "blue/query";
+	
+	/**
+	 * Default format
+	 */
+	static final String DEFAULT_FORMAT = "VOTable";
 
+	/**
+	 * Default version
+	 */
+	static final String DEFAULT_VERSION = "1.0";
 
 }

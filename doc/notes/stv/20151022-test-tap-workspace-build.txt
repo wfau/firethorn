@@ -468,8 +468,8 @@ EOF
 	# -----------------------------------------------------
 	# Testing TAP
 
-	resourceid=$(basename ${queryspace:?}) 
-
+	#resourceid=$(basename ${queryspace:?}) 
+	resourceid=32771
 	query="SELECT+top+5+ra+from+atlasSource"
 	format=VOTABLE
 	lang=ADQL
@@ -590,6 +590,7 @@ EOF
 	# ----------------------Query test5: Invalid input synchronous-------------------------------
         # Run a synchronous query
 
+	invalidquery="SELECT+invalid"
 	curl -X GET -G \
 	${endpointurl:?}/tap/${resourceid:?}/sync \
 	-d QUERY=${invalidquery:?} \

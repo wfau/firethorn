@@ -109,10 +109,12 @@ public class UWSJob {
 	private String phase = null;
 	private String request = null;
 	private String lang = null;
-	private String results = null;
 	private AdqlResource resource = null;
-	private AdqlSchema schema = null;
 	private BlueQuery query = null;
+	private String format = null;
+	private String version = null;
+	private String maxrec = null;
+	
 	
 	/** <p>This error summary gives a human-readable error message for the underlying job.</p>
 	 * <i><u>Note:</u> This object is intended to be a detailed error message, and consequently,
@@ -136,6 +138,7 @@ public class UWSJob {
 		    this.jobId = "";
 			this.phase = PHASE_INITIAL;
 			this.ownerId = null;
+			this.maxrec = null;
 			this.quote = QUOTE_NOT_KNOWN;
 			/*this.destructionTime = destruction;
 			this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
@@ -143,6 +146,8 @@ public class UWSJob {
 			errorSummary = new TapError();
 			this.resource = resource;
 			this.query = f.createNewQuery(resource);
+			this.format = CommonParams.DEFAULT_FORMAT;
+			this.version = CommonParams.DEFAULT_VERSION;
 			this.jobURL = generateJobURL(jobType);
 	}
 	
@@ -172,7 +177,10 @@ public class UWSJob {
 		this.jobId = query.ident().toString();
 		this.phase = getPhasefromState(query.state());
 		this.ownerId = null;
+		this.maxrec = null;
 		this.quote = QUOTE_NOT_KNOWN;
+		this.format = CommonParams.DEFAULT_FORMAT;
+		this.version = CommonParams.DEFAULT_VERSION;
 		/*this.destructionTime = destruction;
 		this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
 		this.startTime = new Date();
@@ -295,14 +303,30 @@ public class UWSJob {
 		}
 	}
 	
-	public String getResults() {
-		String url = this.query.results().jdbc().link() + "/votable";
-		return url;
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
 	}
 	
-	public BlueQuery getQuery() {
-		return query;
+	public String getVersion() {
+		return version;
 	}
+
+	public void setVersion(String version) {
+		this.format = version;
+	}
+
+	public String getMaxrec() {
+		return maxrec;
+	}
+
+	public void setMaxrec(String maxrec) {
+		this.maxrec = maxrec;
+	}
+	
 
 	public void setQuery(String querystring) {
 	
@@ -343,7 +367,20 @@ public class UWSJob {
 			}
 		}
 	}
+
+	public String getResults() {
+		String url = "";
+		if ( this.query.results().adql()!=null){
+			 url = this.query.results().adql().link() + "/votable";
+		} 
+		log.debug("UWSJob Results:" + url);
+		return url;
+	}
 	
+	public BlueQuery getQuery() {
+		return query;
+	}
+
 	public String getFullQueryURL() {
 		String url = myFactory.getBaseurl() + "/" + CommonParams.BLUE_QUERY_PATH + "/" + getQueryId();  
 		return url;
@@ -402,9 +439,6 @@ public class UWSJob {
 	public String getJobURLResults() {
 		return this.getJobURL() + "/results/result";
 	}
-
-
-
 	
  
 }

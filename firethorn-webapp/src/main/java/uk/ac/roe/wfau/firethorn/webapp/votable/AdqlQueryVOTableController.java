@@ -608,11 +608,13 @@ public class AdqlQueryVOTableController
         writer.append(" xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3'");
         writer.append(" version='1.3'");
         writer.append(">");
-
+        	
             writer.append("<RESOURCE type='results'");
             writer.append(" ID='query.");
             writer.append(query.ident().toString());
             writer.append("'");
+            log.error("1");
+
             if (query.name() != null)
                 {
                 writer.append(" name='");
@@ -630,6 +632,8 @@ public class AdqlQueryVOTableController
             	{
 	            writer.append(query.link());
             	}
+            log.error("2");
+
             writer.append(query.link());
             writer.append("'");
             writer.append("/>");
@@ -642,6 +646,8 @@ public class AdqlQueryVOTableController
                 	writer.append(query.syntax().friendly());
                 }
             }
+            log.error("3");
+
             writer.append("</INFO>");
             if (query.input() != null)
             {
@@ -689,9 +695,12 @@ public class AdqlQueryVOTableController
 	                    }
 	
 	                final List<AdqlColumn> cols = new ArrayList<AdqlColumn>();
-	
+	                log.error("4");
+
 	                for (final AdqlColumn column : table.columns().select())
 	                    {
+		                log.error(column.name());
+
 	                    cols.add(column);
 	
 	                    writer.append("<FIELD ID='column.");
@@ -795,7 +804,8 @@ public class AdqlQueryVOTableController
 	
 	                    writer.append("</FIELD>");
 	                    }
-	               
+	                log.error("5");
+
 	                    writer.append("<DATA>");
 	                    writer.append("<TABLEDATA>");
 	                    if (query.link() != null)
@@ -825,43 +835,61 @@ public class AdqlQueryVOTableController
 	                                type
 	                                )
 	                            );
-	
+	    	                log.error("6");
+
 	                        final ResultSetMetaData colmeta = results.getMetaData();
 	                        final int colcount = colmeta.getColumnCount();
 	
 	                        final List<FieldHandler> handlers = new ArrayList<FieldHandler>();
 	                        for (int colnum = 0 ; colnum < colcount ; colnum++)
 	                            {
+		    	                log.error("7");
+		    	                log.error(cols.get(colnum).name());
+		    	                log.error(cols.get(colnum).name());
+
 	                            final AdqlColumn adql = cols.get(colnum);
-	                            if (adql.meta().adql().type() != null){
-		                            switch(adql.meta().adql().type())
-		                                {
-		                                case CHAR :
-		                                case UNICODE:
-		                                    handlers.add(
-		                                        new StringFieldHandler(
-		                                            results,
-		                                            colmeta,
-		                                            colnum
-		                                            )
-		                                        );
-		                                    break ;
+		    	                log.error("Colnum:" + colnum);
+		    	                if (adql.meta()!=null){
+		    	                	if (adql.meta().adql() != null){
+		    	                
+			                            if (adql.meta().adql().type() != null){
+				                            switch(adql.meta().adql().type())
+				                                {
+				                                case CHAR :
+				                                case UNICODE:
+				    		    	                log.error("9");
 		
-		                                default :
-		                                    handlers.add(
-		                                        new ObjectFieldHandler(
-		                                            results,
-		                                            colmeta,
-		                                            colnum
-		                                            )
-		                                        );
-		                                    break ;
-		                                }
-	                            }
+				                                    handlers.add(
+				                                        new StringFieldHandler(
+				                                            results,
+				                                            colmeta,
+				                                            colnum
+				                                            )
+				                                        );
+				                                    break ;
+				
+				                                default :
+				    		    	                log.error("10");
+		
+				                                    handlers.add(
+				                                        new ObjectFieldHandler(
+				                                            results,
+				                                            colmeta,
+				                                            colnum
+				                                            )
+				                                        );
+				                                    break ;
+				                                }
+			                            }
+		    	                	}
+		    	                }
+			                            
 	                            }
 	
 	                        while (results.next())
 	                            {
+		    	                log.error("8");
+
 	                            writer.append("<TR>");
 	                            for (final FieldHandler handler : handlers)
 	                                {
