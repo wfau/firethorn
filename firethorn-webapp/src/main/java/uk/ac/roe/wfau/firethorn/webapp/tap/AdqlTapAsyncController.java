@@ -89,8 +89,7 @@ public class AdqlTapAsyncController extends AbstractController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	@ResponseBody
-	public void async(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public String async(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@RequestParam(value = "LANG", required = false) String LANG,
 			@RequestParam(value = "REQUEST", required = false) String REQUEST,
 			@RequestParam(value = "QUERY", required = false) String QUERY, 
@@ -100,54 +99,47 @@ public class AdqlTapAsyncController extends AbstractController {
 			final HttpServletResponse response)
 					throws Exception {
 
-		//response.setContentType(CommonParams.TEXT_XML_MIME);
-		//response.setCharacterEncoding("UTF-8");
 
-		UWSJob uwsjob;
-		PrintWriter writer = response.getWriter();
+		UWSJob uwsjob = null;
 		BlueQuery qry;
 
 		if (resource != null) {
 
 			// Check input parameters and return VOTable with appropriate
 			// message if any errors found
-			boolean check = checkParams(writer, REQUEST, LANG, QUERY, FORMAT, VERSION);
+			//boolean check = checkParams(writer, REQUEST, LANG, QUERY, FORMAT, VERSION);
 
-			if (check) {
+			//if (check) {
 
-				if (QUERY != null) {
-					qry = uwsfactory.createNewQuery(resource, QUERY);
-					uwsjob = uwsfactory.create(resource, qry, jobType);
-					uwsjob.setQuery(QUERY);
-				} else {
-					qry = uwsfactory.createNewQuery(resource);
-					uwsjob = uwsfactory.create(resource, qry, jobType);
-				}
-
-				if (REQUEST != null)
-					uwsjob.setRequest(REQUEST);
-				if (LANG != null)
-					uwsjob.setLang(LANG);
-				if (VERSION != null)
-					uwsjob.setQuery(VERSION);
-				if (FORMAT != null)
-					uwsjob.setQuery(FORMAT);
-				if (MAXREC != null)
-					uwsjob.setQuery(MAXREC);
-				
-				//uwsfactory.writeUWSJobToXML(uwsjob, writer);
-				response.setStatus(303);
-				writer.append("Location:" + uwsjob.getJobURL());
-				log.debug("Location:" + uwsjob.getJobURL());
-				return;
+			if (QUERY != null) {
+				qry = uwsfactory.createNewQuery(resource, QUERY);
+				uwsjob = uwsfactory.create(resource, qry, jobType);
+				uwsjob.setQuery(QUERY);
+			} else {
+				qry = uwsfactory.createNewQuery(resource);
+				uwsjob = uwsfactory.create(resource, qry, jobType);
 			}
 
+			if (REQUEST != null)
+				uwsjob.setRequest(REQUEST);
+			if (LANG != null)
+				uwsjob.setLang(LANG);
+			if (VERSION != null)
+				uwsjob.setQuery(VERSION);
+			if (FORMAT != null)
+				uwsjob.setQuery(FORMAT);
+			if (MAXREC != null)
+				uwsjob.setQuery(MAXREC);
+			log.debug("Location:" + uwsjob.getJobURL());
+
+
 		} else {
-			TapError.writeErrorToVotable(TapJobErrors.RESOURCE_MISSING, writer);
-			return;
+			throw new IdentifierNotFoundException(null, "Resource not found");
+
 		}
 		
-		return;
+		return "redirect:async/" + uwsjob.getJobId();
+		
 	}
 
 
@@ -202,9 +194,7 @@ public class AdqlTapAsyncController extends AbstractController {
 			final HttpServletResponse response)
 					throws IdentifierNotFoundException, Exception {
 
-		//response.setContentType(CommonParams.TEXT_XML_MIME);
-		//response.setCharacterEncoding("UTF-8");
-
+	
 		PrintWriter writer = response.getWriter();
 		UWSJob uwsjob;
 		BlueQuery queryentity;
@@ -238,7 +228,7 @@ public class AdqlTapAsyncController extends AbstractController {
 			uwsjob.setQuery(MAXREC);
 		
 		response.setStatus(303);
-		writer.append("Location:" + uwsjob.getJobURL());
+		writer.append("Location: " + uwsjob.getJobURL());
 		
 		
 		return;
@@ -286,7 +276,7 @@ public class AdqlTapAsyncController extends AbstractController {
 		}
 		
 		response.setStatus(303);
-		writer.append("Location:" + uwsjob.getJobURL());
+		writer.append("Location: " + uwsjob.getJobURL());
 		return ;
 
 
@@ -445,7 +435,7 @@ public class AdqlTapAsyncController extends AbstractController {
 			}
 			results = uwsjob.getResults();
 			response.setStatus(303);
-			writer.append("Results:" + results);
+			writer.append("Results: " + results);
 			return;
 
 		} catch (Exception e) {

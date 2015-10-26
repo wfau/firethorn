@@ -479,6 +479,11 @@ EOF
 	curl ${endpointurl:?}/tap/${resourceid:?}/tables
 
 
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
 
 	# ----------------------Query test1: synchronous-------------------------------
         # Run a synchronous query
@@ -494,11 +499,11 @@ EOF
 	# ----------------------Query test2: asynchronous-------------------------------
 	# Run an asynchronous query
 
-	data="$( curl -X POST -G \
+	curl -L  \
 	${endpointurl:?}/tap/${resourceid:?}/async \
 	-d QUERY=${query:?} \
 	-d LANG=${lang:?} \
-	-d REQUEST=${request:?})"
+	-d REQUEST=${request:?}
 
 	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 	
@@ -602,11 +607,11 @@ EOF
 	# ----------------------Query test5: Test GAVO-------------------------------
 
 	gavoquery="SELECT+top+5+*+from+amanda.nucanddd"
-	curl -X POST -G \
+	curl -v \
 	"http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async" \
 	-d LANG=ADQL \
 	-d REQUEST=doQuery \
-	-d QUERY=${gavoquery:?} 
+	-d QUERY=qdwwqdwqdwqdwq 
 
 	# Go here: http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL
 	
