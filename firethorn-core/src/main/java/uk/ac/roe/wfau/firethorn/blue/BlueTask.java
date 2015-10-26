@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.blue;
 
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.hibernate.Session;
@@ -354,5 +355,24 @@ extends NamedEntity
      *
      */
     public DateTime completed();
+
+    /**
+     *  Public interface for the task parameters.
+     *  
+     */
+    public interface Param
+        {
+        /**
+         * A {@link Map} of task parameters.
+         * 
+         */
+        Map<String, String> map();
+        }
+
+    /**
+     *  Access to the task parameters.
+     *  
+     */
+    public Param param();
     
     }
