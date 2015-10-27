@@ -12,6 +12,10 @@ import uk.ac.roe.wfau.firethorn.blue.*;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 
 
+/**
+ * @author stelios
+ *
+ */
 @Slf4j
 public class UWSJob {
 
@@ -54,6 +58,9 @@ public class UWSJob {
 	/** Value of the parameter <i>phase</i> when aborted */
 	public static final String PHASE_ABORTED = "ABORTED";	
 	
+	/** Value of the parameter <i>phase</i> when queued */
+	private static final String PHASE_QUEUED = null;
+
 	/** Value of the parameter <i>phase</i> when query produced an error  */
 	public static final String PHASE_ERROR = "ERROR";
 		
@@ -95,6 +102,7 @@ public class UWSJob {
 	
 	/** The used date formatter. */
 	public static final DateFormat dateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+
 	
 	/** The time at which the job execution started. */
 	private Date startTime = null;
@@ -216,7 +224,7 @@ public class UWSJob {
 			phase = PHASE_ERROR;
         	break;
 		case QUEUED:
-			phase = PHASE_INITIAL;
+			phase = PHASE_QUEUED;
         	break;
 		case READY:
 			phase = PHASE_INITIAL;
@@ -387,6 +395,10 @@ public class UWSJob {
 	}
 	
 	
+	/**
+	 * Get the ID of the query
+	 * @return
+	 */
 	public String getQueryId() {
 		return this.query.ident().toString();
 	}

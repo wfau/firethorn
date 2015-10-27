@@ -48,7 +48,45 @@ public class TapError {
 		
 		
 		/**
-		 * Write Error message to writer in VOTable format
+		 * Write Error message to String in VOTable format
+		 * @param errorMessage
+		 * @param writer
+		 */
+		public static String writeErrorToVotable (String errorMessage){
+			
+				StringBuilder writer = new StringBuilder();
+
+		        // Based on VOTable-1.3 specification.
+		        // http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
+
+		        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
+		        writer.append("<vot:VOTABLE");
+		        writer.append(" xmlns:vot='http://www.ivoa.net/xml/VOTable/v1.3'");
+		        writer.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'");
+		        writer.append(" xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3'");
+		        writer.append(" version='1.3'");
+		        writer.append(">");
+
+		            writer.append("<RESOURCE");
+		            writer.append(" type='results'");
+		            writer.append(">");
+			            writer.append("<INFO");
+			            writer.append(" name='QUERY_STATUS'");
+			            writer.append(" value='ERROR' >");
+			            writer.append(errorMessage);
+			            writer.append("</INFO>");
+			            
+		            
+		            writer.append("</RESOURCE>");
+		        writer.append("</vot:VOTABLE>");
+		    	
+		        return writer.toString();
+			
+		}
+		
+		
+		/**
+		 * Write Error message to PrintWriter in VOTable format
 		 * @param errorMessage
 		 * @param writer
 		 */
@@ -79,7 +117,6 @@ public class TapError {
 		            writer.append("</RESOURCE>");
 		        writer.append("</vot:VOTABLE>");
 		    	
-		  
 			
 		}
 	 

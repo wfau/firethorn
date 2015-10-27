@@ -277,19 +277,23 @@ class UWSJobFactory extends AbstractComponent{
 	 * @param uwsjob
 	 * @param writer
 	 */
-	public void writeUWSResultToXML (UWSJob uwsjob, PrintWriter writer){
+	public String writeUWSResultToXML (UWSJob uwsjob){
+		StringBuilder writer = new StringBuilder();
 		String resultsUrl = uwsjob.getJobURLResults();
 		writer.append("<uws:results xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd http://www.w3.org/1999/xlink http://vo.ari.uni-heidelberg.de/docs/schemata/xlink.xsd'>");
 		writer.append("<uws:result id='result' xlink:href='" + resultsUrl +"'/></uws:results>");
-    
+		return writer.toString();
 	}
+	
 	/**
 	 * Write UWSJob in XML format
 	 * @param uwsjob
 	 * @param writer
 	 */
-	public void writeUWSJobToXML (UWSJob uwsjob, PrintWriter writer){
-		
+	public String writeUWSJobToXML (UWSJob uwsjob){
+
+			StringBuilder writer = new StringBuilder();
+			
 	        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
 	        writer.append("	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd'>");
 	     
@@ -330,6 +334,7 @@ class UWSJobFactory extends AbstractComponent{
 	       
 	        writer.append("</uws:job>");
 		
+	        return writer.toString();
 	}
 
 }

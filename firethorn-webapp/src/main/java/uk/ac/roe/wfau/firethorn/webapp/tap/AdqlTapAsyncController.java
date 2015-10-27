@@ -145,7 +145,7 @@ public class AdqlTapAsyncController extends AbstractController {
 
 	@RequestMapping(value="{jobid}", method = RequestMethod.GET)
 	@ResponseBody
-	public void getJobInfo(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public String getJobInfo(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@PathVariable("jobid") String jobid,
 			final HttpServletResponse response)
 					throws Exception {
@@ -154,27 +154,25 @@ public class AdqlTapAsyncController extends AbstractController {
 		response.setCharacterEncoding("UTF-8");
 
 		UWSJob uwsjob;
-		PrintWriter writer = response.getWriter();
 		BlueQuery queryentity;
 		
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {
-			TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND, writer);
-			return;
+			return TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND);
 		}
 		
 		if (resource != null) {
 			
 			if (queryentity != null) {
 				uwsjob = uwsfactory.create(resource, queryentity, jobType);
-				uwsfactory.writeUWSJobToXML(uwsjob, writer);
+				return uwsfactory.writeUWSJobToXML(uwsjob);
 			} else {
-				TapError.writeErrorToVotable(TapJobErrors.JOBID_MISSING, writer);
+				return TapError.writeErrorToVotable(TapJobErrors.JOBID_MISSING);
 			}
 
 		} else {
-			TapError.writeErrorToVotable(TapJobErrors.RESOURCE_MISSING, writer);
+			return TapError.writeErrorToVotable(TapJobErrors.RESOURCE_MISSING);
 		}
 		
 	}
@@ -182,8 +180,7 @@ public class AdqlTapAsyncController extends AbstractController {
 	
 	
 	@RequestMapping(value = "/{jobid}/parameters", method = RequestMethod.POST)
-	@ResponseBody
-	public void parameters(@PathVariable String jobid,
+	public String parameters(@PathVariable String jobid,
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@RequestParam(value = "LANG", required = false) String LANG,
 			@RequestParam(value = "REQUEST", required = false) String REQUEST,
@@ -195,15 +192,13 @@ public class AdqlTapAsyncController extends AbstractController {
 					throws IdentifierNotFoundException, Exception {
 
 	
-		PrintWriter writer = response.getWriter();
 		UWSJob uwsjob;
 		BlueQuery queryentity;
 		
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {
-			TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND, writer);
-			return;
+			return TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND);
 		}
 
 		if (queryentity != null) {
@@ -211,8 +206,7 @@ public class AdqlTapAsyncController extends AbstractController {
 		} else {
 			uwsjob = uwsfactory.create(resource, jobType);
 		}
-		// Check input parameters and return VOTable with appropriate
-		// message if any errors found
+		
 
 		if (REQUEST != null)
 			uwsjob.setRequest(REQUEST);
@@ -227,32 +221,25 @@ public class AdqlTapAsyncController extends AbstractController {
 		if (MAXREC != null)
 			uwsjob.setQuery(MAXREC);
 		
-		response.setStatus(303);
-		writer.append("Location: " + uwsjob.getJobURL());
+		return "redirect:" + uwsjob.getJobURL();
 		
 		
-		return;
 	}
 
 	@RequestMapping(value = "/{jobid}/phase", method = RequestMethod.POST)
 	@UpdateAtomicMethod
-	@ResponseBody
-	public void phase(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public String phase(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response, @RequestParam(value = "PHASE", required = true) String PHASE)
 					throws IdentifierNotFoundException, Exception {
 
-		//response.setContentType(CommonParams.TEXT_XML_MIME);
-		//response.setCharacterEncoding("UTF-8");
-
-		PrintWriter writer = response.getWriter();
 		UWSJob uwsjob;
 		BlueQuery queryentity;
 
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {
-			TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND, writer);
-			return ;
+			return TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND);
+			  
 		}
 
 		try {
@@ -264,20 +251,19 @@ public class AdqlTapAsyncController extends AbstractController {
 			}
 
 			if (PHASE == null) {
-				TapError.writeErrorToVotable(TapJobErrors.PARAM_PHASE_MISSING, writer);
+				return TapError.writeErrorToVotable(TapJobErrors.PARAM_PHASE_MISSING);
 			} else {
 				uwsjob.setPhase(PHASE);
 			}
 
 		} catch (Exception e) {
 			log.debug(e.getMessage());
-			TapError.writeErrorToVotable(e.getMessage(), writer);
-			return;
+			return TapError.writeErrorToVotable(e.getMessage());
+			
 		}
 		
-		response.setStatus(303);
-		writer.append("Location: " + uwsjob.getJobURL());
-		return ;
+		return "redirect:" + uwsjob.getJobURL();
+
 
 
 	}
@@ -285,18 +271,17 @@ public class AdqlTapAsyncController extends AbstractController {
 	@RequestMapping(value = "/{jobid}/phase", method = RequestMethod.GET)
 	@UpdateAtomicMethod
 	@ResponseBody
-	public void phaseGet(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public String phaseGet(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
 
-		PrintWriter writer = response.getWriter();
 		UWSJob uwsjob;
 		BlueQuery queryentity;
 
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {
-			TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND, writer);
-			return;
+			return TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND);
+			
 		}
 		
 		String phase = "";
@@ -312,11 +297,11 @@ public class AdqlTapAsyncController extends AbstractController {
 			phase = uwsjob.getPhase();
 
 		} catch (Exception e) {
-			TapError.writeErrorToVotable(e.getMessage(), writer);
-			return;
+			return TapError.writeErrorToVotable(e.getMessage());
+			
 		}
 
-		writer.append(phase);
+		return phase;
 	}
 
 	@RequestMapping(value = "/{jobid}/quote", method = { RequestMethod.POST, RequestMethod.GET })
@@ -353,21 +338,20 @@ public class AdqlTapAsyncController extends AbstractController {
 
 	@RequestMapping(value = "/{jobid}/error", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public void error(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public String error(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
 
-		PrintWriter writer = response.getWriter();
 		BlueQuery queryentity = getqueryentity(jobid);
 		if (queryentity.state() == TaskState.ERROR || queryentity.state() == TaskState.FAILED) {
-			TapError.writeErrorToVotable(queryentity.syntax().friendly(), writer);
+			return TapError.writeErrorToVotable(queryentity.syntax().friendly());
 		} else {
-			writer.append("");
+			return "";
 		}
 	}
 
 	@RequestMapping(value = "/{jobid}/results", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public void results(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public String results(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
 
 		response.setContentType(CommonParams.TEXT_XML_MIME);
@@ -375,35 +359,26 @@ public class AdqlTapAsyncController extends AbstractController {
 
 		UWSJob uwsjob;
 		BlueQuery queryentity;
-		PrintWriter writer = response.getWriter();
 		
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {
-			TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND, writer);
-			return;
+			return TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND);
 		}
 		
-		
-
 		try {
 			uwsjob = uwsfactory.create(resource, queryentity, jobType);
-			uwsfactory.writeUWSResultToXML(uwsjob, writer);
+			return uwsfactory.writeUWSResultToXML(uwsjob);
 		} catch (Exception e) {
-			TapError.writeErrorToVotable(e.getMessage(), writer);
+			return TapError.writeErrorToVotable(e.getMessage());
 		}
 
 	}
 
 	@RequestMapping(value = "/{jobid}/results/result", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public void result(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public String result(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
 
-		//response.setContentType(CommonParams.TEXT_XML_MIME);
-		//response.setCharacterEncoding("UTF-8");
-
-		PrintWriter writer = response.getWriter();
 		String results = "";
 		UWSJob uwsjob;
 
@@ -412,8 +387,8 @@ public class AdqlTapAsyncController extends AbstractController {
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {
-			TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND, writer);
-			return;
+			return TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND);
+			
 		}
 		
 		try {
@@ -429,57 +404,56 @@ public class AdqlTapAsyncController extends AbstractController {
 					queryentity.state() == TaskState.RUNNING || 
 					queryentity.state() == TaskState.CANCELLED
 					) {
-				TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND, writer);
-				return;
+				return TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND);
+				
 
 			}
+			
 			results = uwsjob.getResults();
-			response.setStatus(303);
-			writer.append("Results: " + results);
-			return;
+			return "redirect:" + results;
+			
 
 		} catch (Exception e) {
-			TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR, writer);
+			return TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR);
 		
 		}
 		
-		return;
 
 	}
 
 	
 	
-	private boolean checkParams(final PrintWriter writer, final String REQUEST, final String LANG, final String QUERY, final String FORMAT, final String VERSION) {
+	private boolean checkParams(final String REQUEST, final String LANG, final String QUERY, final String FORMAT, final String VERSION) {
 
 		String error_message;
 		boolean valid = true;
 
 		// Check for errors and return appropriate VOTable error messages
 		if (REQUEST == null) {
-			TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING, writer);
+			TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING);
 			valid = false;
 			return valid;
 		} else if (!REQUEST.equalsIgnoreCase("doQuery")) {
 			error_message = "Invalid REQUEST: " + REQUEST;
-			TapError.writeErrorToVotable(error_message, writer);
+			TapError.writeErrorToVotable(error_message);
 			valid = false;
 			return valid;
 		}
 
 		if (LANG == null) {
-			TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING, writer);
+			TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING);
 			valid = false;
 			return valid;
 		} else if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")) {
 			error_message = "Invalid LANGUAGE: " + LANG;
-			TapError.writeErrorToVotable(error_message, writer);
+			TapError.writeErrorToVotable(error_message);
 			valid = false;
 		}
 		
 		if (FORMAT != null) {
 			if (!FORMAT.equalsIgnoreCase("votable")) {
 				error_message = "FORMAT '" + FORMAT + "'not supported" ;
-				TapError.writeErrorToVotable(error_message, writer);
+				TapError.writeErrorToVotable(error_message);
 				valid = false;
 			}
 		}
@@ -487,7 +461,7 @@ public class AdqlTapAsyncController extends AbstractController {
 		if (VERSION != null) {
 			if (!VERSION.equalsIgnoreCase("1.0") || !VERSION.equalsIgnoreCase("1")) {
 				error_message = "VERSION '" + VERSION + "'not supported" ;
-				TapError.writeErrorToVotable(error_message, writer);
+				TapError.writeErrorToVotable(error_message);
 				valid = false;
 			}
 		}

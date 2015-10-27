@@ -130,7 +130,7 @@ public class AdqlTapSyncController extends AbstractController {
 
 				} catch (final Exception ouch) {
 					log.error("Exception caught [{}]", ouch);
-					TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR, writer);
+					TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR);
 				}
 
 			}
