@@ -89,6 +89,7 @@ public class AdqlTapAsyncController extends AbstractController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
+	@UpdateAtomicMethod
 	public String async(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@RequestParam(value = "LANG", required = false) String LANG,
 			@RequestParam(value = "REQUEST", required = false) String REQUEST,
@@ -119,6 +120,8 @@ public class AdqlTapAsyncController extends AbstractController {
 				qry = uwsfactory.createNewQuery(resource);
 				uwsjob = uwsfactory.create(resource, qry, jobType);
 			}
+
+			log.debug("Location:" + uwsjob.getJobURL());
 
 			if (REQUEST != null)
 				uwsjob.setRequest(REQUEST);
@@ -180,6 +183,7 @@ public class AdqlTapAsyncController extends AbstractController {
 	
 	
 	@RequestMapping(value = "/{jobid}/parameters", method = RequestMethod.POST)
+	@UpdateAtomicMethod
 	public String parameters(@PathVariable String jobid,
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@RequestParam(value = "LANG", required = false) String LANG,

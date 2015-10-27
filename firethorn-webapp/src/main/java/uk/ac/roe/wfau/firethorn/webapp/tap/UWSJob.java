@@ -3,6 +3,9 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.springframework.web.bind.annotation.RequestParam;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -115,15 +118,15 @@ public class UWSJob {
 	private final String ownerId;
 	private long quote = QUOTE_NOT_KNOWN;
 	private String phase = null;
-	private String request = null;
 	private String lang = null;
 	private AdqlResource resource = null;
 	private BlueQuery query = null;
 	private String format = null;
 	private String version = null;
 	private String maxrec = null;
-	
-	
+	private String request = null;
+
+
 	/** <p>This error summary gives a human-readable error message for the underlying job.</p>
 	 * <i><u>Note:</u> This object is intended to be a detailed error message, and consequently,
 	 * might be a large piece of text such as a stack trace.</i> */
@@ -134,6 +137,14 @@ public class UWSJob {
 	 */
 	private UWSJobFactory myFactory;
 
+
+	
+	
+	/* ************ */
+	/* CONSTRUCTORS */
+	/* ************ */
+	
+	
 	/**
 	 * UWSJob Constructor 
 	 * @param f
@@ -142,60 +153,50 @@ public class UWSJob {
 	 * @throws Exception
 	 */
 	protected UWSJob(UWSJobFactory f, AdqlResource resource, String jobType) throws Exception {
-		    myFactory = f ;
+		    this.myFactory = f;
 		    this.jobId = "";
 			this.phase = PHASE_INITIAL;
 			this.ownerId = null;
 			this.maxrec = null;
 			this.quote = QUOTE_NOT_KNOWN;
-			/*this.destructionTime = destruction;
-			this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
 			this.startTime = new Date();
-			errorSummary = new TapError();
+			this.errorSummary = new TapError();
 			this.resource = resource;
 			this.query = f.createNewQuery(resource);
 			this.format = CommonParams.DEFAULT_FORMAT;
 			this.version = CommonParams.DEFAULT_VERSION;
 			this.jobURL = generateJobURL(jobType);
+			/*this.destructionTime = destruction;
+			this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
 	}
 	
 	/**
-	 * 
+	 * UWSJob Constructor 
+	 * @param f
+	 * @param resource
+	 * @param query
 	 * @param jobType
-	 * @return
+	 * @throws Exception
 	 */
-	private String generateJobURL(String jobType) {
-		
-		if (jobType=="ASYNC"){
-			return myFactory.getBaseurl() + "/tap/" + resource.ident() + "/async/" + this.getJobId() ;
-		} else {
-			return myFactory.getBaseurl() + "/tap/" + resource.ident() + "/async/" + this.getJobId() ;
-		
-		}
-		
-	}
-
-	/* ************ */
-	/* CONSTRUCTORS */
-	/* ************ */
-
-	
 	public UWSJob(UWSJobFactory f, AdqlResource resource,  BlueQuery query, String jobType) throws Exception {
-		myFactory = f ;
+		this.myFactory = f ;
 		this.jobId = query.ident().toString();
 		this.phase = getPhasefromState(query.state());
 		this.ownerId = null;
-		this.maxrec = null;
+		this.maxrec = query.param().map().containsKey("maxrec") ? query.param().map().get("maxrec") : null;
 		this.quote = QUOTE_NOT_KNOWN;
-		this.format = CommonParams.DEFAULT_FORMAT;
-		this.version = CommonParams.DEFAULT_VERSION;
-		/*this.destructionTime = destruction;
-		this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
+		this.format = query.param().map().containsKey("format") ? query.param().map().get("format") : null;
+		this.version = query.param().map().containsKey("version") ? query.param().map().get("version") :null;
+		this.lang = query.param().map().containsKey("lang") ? query.param().map().get("lang") : null;
+		this.request = query.param().map().containsKey("request") ? query.param().map().get("request") : null;
 		this.startTime = new Date();
-		errorSummary = new TapError();
+		this.errorSummary = new TapError();
 		this.resource = resource;
 		this.query = query;
 		this.jobURL = generateJobURL(jobType);
+		
+		/*this.destructionTime = destruction;
+		this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
 		
 	}
 
@@ -300,22 +301,21 @@ public class UWSJob {
 	}
 	
 	public void setRequest(String request){
+		this.getQuery().param().map().put("request",request);
 		this.request = request;
 	}
 	
 	public String getRequest(){
-		if (request==null){
-			return "doQuery";
-		} else {
-			return request;
-		}
+		return request;
 	}
 	
+
 	public String getFormat() {
 		return format;
 	}
 
 	public void setFormat(String format) {
+		this.getQuery().param().map().put("format",format);
 		this.format = format;
 	}
 	
@@ -324,7 +324,8 @@ public class UWSJob {
 	}
 
 	public void setVersion(String version) {
-		this.format = version;
+		this.getQuery().param().map().put("version",version);
+		this.version = version;
 	}
 
 	public String getMaxrec() {
@@ -332,6 +333,7 @@ public class UWSJob {
 	}
 
 	public void setMaxrec(String maxrec) {
+		this.getQuery().param().map().put("maxrec",maxrec);
 		this.maxrec = maxrec;
 	}
 	
@@ -355,9 +357,14 @@ public class UWSJob {
 	}
 
 	public void setLang(String lang) {
+		this.getQuery().param().map().put("lang",lang);
 		this.lang = lang;
 	}
-
+	
+	/**
+	 * Set the query uwsjob phase
+	 * @param phase
+	 */
 	public void setPhase(String phase) {
 		this.phase = phase;
 		if (this.phase.equalsIgnoreCase(PHASE_RUN)){
@@ -376,6 +383,60 @@ public class UWSJob {
 		}
 	}
 
+	
+	/**
+	 * Get the BlueQuery
+	 * @return BlueQuery
+	 */
+	public BlueQuery getQuery() {
+		return query;
+	}
+	
+	/**
+	 * Set the Query 
+	 * @return
+	 */
+	public void setQuery(BlueQuery query) {
+		this.query = query;
+	}
+
+
+	/**
+	 * Return the full query URL
+	 * @return query URL
+	 */
+	public String getFullQueryURL() {
+		String url = myFactory.getBaseurl() + "/" + CommonParams.BLUE_QUERY_PATH + "/" + getQueryId();  
+		return url;
+	}
+
+	/**
+	 * Get UWS results url
+	 * @return
+	 */
+	public String getJobURLResults() {
+		return this.getJobURL() + "/results/result";
+	}
+	
+	/**
+	 * 
+	 * @param jobType
+	 * @return
+	 */
+	private String generateJobURL(String jobType) {
+		
+		if (jobType=="ASYNC"){
+			return myFactory.getBaseurl() + "/tap/" + resource.ident() + "/async/" + this.getJobId() ;
+		} else {
+			return myFactory.getBaseurl() + "/tap/" + resource.ident() + "/async/" + this.getJobId() ;
+		
+		}
+		
+	}
+	/**
+	 * Get the Query results URL (votable as string)
+	 * @return url
+	 */
 	public String getResults() {
 		String url = "";
 		if ( this.query.results().adql()!=null){
@@ -384,16 +445,6 @@ public class UWSJob {
 		log.debug("UWSJob Results:" + url);
 		return url;
 	}
-	
-	public BlueQuery getQuery() {
-		return query;
-	}
-
-	public String getFullQueryURL() {
-		String url = myFactory.getBaseurl() + "/" + CommonParams.BLUE_QUERY_PATH + "/" + getQueryId();  
-		return url;
-	}
-	
 	
 	/**
 	 * Get the ID of the query
@@ -441,15 +492,6 @@ public class UWSJob {
 		else {
 			return null;
 		}
-	}
-	
-	
-	/**
-	 * Get UWS results url
-	 * @return
-	 */
-	public String getJobURLResults() {
-		return this.getJobURL() + "/results/result";
 	}
 	
  

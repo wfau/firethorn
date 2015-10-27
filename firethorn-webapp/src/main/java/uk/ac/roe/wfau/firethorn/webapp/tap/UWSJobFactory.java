@@ -209,7 +209,6 @@ class UWSJobFactory extends AbstractComponent{
      * Create a query job
      * 
      */
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @UpdateAtomicMethod
     public BlueQuery createNewQuery(AdqlResource resource, String querystring) throws IdentifierNotFoundException, IOException {
 			BlueQuery query = null;
@@ -307,21 +306,29 @@ class UWSJobFactory extends AbstractComponent{
 	            writer.append("<uws:parameters>");
 			        if (uwsjob.getRequest()!=null){
 		            	writer.append("<uws:parameter id='request'>" + uwsjob.getRequest() + "</uws:parameter>");
+			        } else {
+		            	writer.append("<uws:parameter id='request'>None</uws:parameter>");
 			        }
 			        if (uwsjob.getLang()!=null){
 		            	writer.append("<uws:parameter id='lang'>" + uwsjob.getLang() + "</uws:parameter>");
+			        } else {
+		            	writer.append("<uws:parameter id='lang'>None</uws:parameter>");
 			        }
 			        if (uwsjob.getQuery()!=null){
 		            	writer.append("<uws:parameter id='query'>" + uwsjob.getQuery().input() + "</uws:parameter>");
 			        }
 			        if (uwsjob.getFormat()!=null){
 		            	writer.append("<uws:parameter id='format'>" + uwsjob.getFormat() + "</uws:parameter>");
+			        } else {
+		            	writer.append("<uws:parameter id='format'>None</uws:parameter>");
 			        }
 			        if (uwsjob.getVersion()!=null){
 		            	writer.append("<uws:parameter id='version'>" + uwsjob.getVersion() + "</uws:parameter>");
-			        }
+			        } 
 			        if (uwsjob.getMaxrec()!=null){
 		            	writer.append("<uws:parameter id='maxrec'>" + uwsjob.getMaxrec() + "</uws:parameter>");
+			        } else {
+		            	writer.append("<uws:parameter id='maxrec'>None</uws:parameter>");
 			        }
 		        writer.append("</uws:parameters>");
 		        

@@ -51,5 +51,15 @@ public class CommonParams  {
 	 * Default version
 	 */
 	static final String DEFAULT_VERSION = "1.0";
+	
+	/**
+	 * Default request
+	 */
+	public static final String DEFAULT_REQUEST = "doQuery";
+	
+	/**
+	 * Default request
+	 */
+	public static final String DEFAULT_LANG = "ADQL";
 
 }

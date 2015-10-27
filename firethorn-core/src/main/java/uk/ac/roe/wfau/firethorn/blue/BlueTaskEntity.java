@@ -1359,7 +1359,7 @@ implements BlueTask<TaskType>
      *
      */
     @ElementCollection(
-        fetch = FetchType.LAZY
+    		fetch = FetchType.EAGER
         )
     @MapKeyColumn(
         name="name"
