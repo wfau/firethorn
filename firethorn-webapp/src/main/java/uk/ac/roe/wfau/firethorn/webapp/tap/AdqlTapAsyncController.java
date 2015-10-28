@@ -128,11 +128,11 @@ public class AdqlTapAsyncController extends AbstractController {
 			if (LANG != null)
 				uwsjob.setLang(LANG);
 			if (VERSION != null)
-				uwsjob.setQuery(VERSION);
+				uwsjob.setVersion(VERSION);
 			if (FORMAT != null)
-				uwsjob.setQuery(FORMAT);
+				uwsjob.setFormat(FORMAT);
 			if (MAXREC != null)
-				uwsjob.setQuery(MAXREC);
+				uwsjob.setMaxrec(MAXREC);
 			log.debug("Location:" + uwsjob.getJobURL());
 
 
@@ -216,14 +216,12 @@ public class AdqlTapAsyncController extends AbstractController {
 			uwsjob.setRequest(REQUEST);
 		if (LANG != null)
 			uwsjob.setLang(LANG);
-		if (QUERY != null)
-			uwsjob.setQuery(QUERY);
 		if (VERSION != null)
-			uwsjob.setQuery(VERSION);
+			uwsjob.setVersion(VERSION);
 		if (FORMAT != null)
-			uwsjob.setQuery(FORMAT);
+			uwsjob.setFormat(FORMAT);
 		if (MAXREC != null)
-			uwsjob.setQuery(MAXREC);
+			uwsjob.setMaxrec(MAXREC);
 		
 		return "redirect:" + uwsjob.getJobURL();
 		
