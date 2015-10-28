@@ -211,7 +211,8 @@ public class AdqlTapAsyncController extends AbstractController {
 			uwsjob = uwsfactory.create(resource, jobType);
 		}
 		
-
+		if (QUERY != null)
+			uwsjob.setQuery(QUERY);
 		if (REQUEST != null)
 			uwsjob.setRequest(REQUEST);
 		if (LANG != null)
