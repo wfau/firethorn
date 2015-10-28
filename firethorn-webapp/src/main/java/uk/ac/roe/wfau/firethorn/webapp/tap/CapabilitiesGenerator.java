@@ -46,10 +46,12 @@ public class CapabilitiesGenerator{
      * Generate xml of capabilities into writer
      *
      */
-    public void generateCapabilities(
-        final PrintWriter writer,
+    public String generateCapabilities(
         AdqlResource resource
         ){
+    	
+		StringBuilder writer = new StringBuilder();
+		
     	writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 		    "<vosi:capabilities xmlns:vosi=\"http://www.ivoa.net/xml/VOSICapabilities/v1.0\" xmlns:vod=\"http://www.ivoa.net/xml/VODataService/v1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" +
 		    " <capability standardID=\"ivo://ivoa.net/std/VOSI#capabilities\">" +
@@ -85,7 +87,8 @@ public class CapabilitiesGenerator{
         // Based on VOTable-1.3 specification.
         // http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
 
-    
+    	return writer.toString();
+    	
     	}
 
 }
