@@ -25,13 +25,17 @@ import java.util.concurrent.Future;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,19 +48,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
  * {@link BlueTask} implementation. 
@@ -1354,4 +1353,52 @@ implements BlueTask<TaskType>
     		);
         }
 
+    /**
+     * Hibernate embedded map of Strings.
+     * http://stackoverflow.com/questions/3393649/storing-a-mapstring-string-using-jpa
+     *
+     */
+    @ElementCollection(
+        fetch = FetchType.EAGER
+        )
+    @MapKeyColumn(
+        name="name"
+        )
+    @Column(
+        name="value"
+        )
+    @CollectionTable(
+        name=DB_TABLE_PREFIX + "BlueTaskParam",
+        joinColumns= @JoinColumn(name="task")
+        )
+    private Map<String, String> params = new HashMap<String, String>();
+    
+    @Override
+    public Param param()
+        {
+        return new Param()
+            {
+            protected Map<String, String> map()
+                {
+                return BlueTaskEntity.this.params;
+                }
+
+            @Override
+            public String get(String key)
+                {
+                return map().get(
+                    key
+                    );
+                }
+
+            @Override
+            public void set(String key, String value)
+                {
+                map().put(
+                    key,
+                    value
+                    );
+                }
+            };
+        }
     }

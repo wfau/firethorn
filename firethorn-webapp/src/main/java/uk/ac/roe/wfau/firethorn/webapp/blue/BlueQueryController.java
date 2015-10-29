@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.blue;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -318,7 +321,8 @@ public class BlueQueryController
         @RequestParam(value=NEXT_STATUS_PARAM_NAME, required=false)
         final TaskState next,
         @RequestParam(value=WAIT_PARAM_NAME, required=false)
-        final Long wait
+        final Long wait,
+        final WebRequest request 
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
@@ -330,6 +334,15 @@ public class BlueQueryController
         log.debug("  prev  [{}]", prev);
         log.debug("  next  [{}]", next);
         log.debug("  wait  [{}]", wait);
+        
+        log.debug("-- params --");
+        Map<String, String[]> params = request.getParameterMap();
+        for (Map.Entry<String, String[]> entry : params.entrySet())
+            {
+            log.debug("[{}][{}]", entry.getKey(), entry.getValue()[0]);
+            }
+        log.debug("-- params --");
+        
         return bean(
             services.entities().update(
                 services.idents().ident(

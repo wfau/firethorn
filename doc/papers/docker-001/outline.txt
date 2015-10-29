@@ -1,0 +1,49 @@
+
+
+What is Docker
+
+    Lightweight virtualization.
+    No Hypervisor.
+    Not a virtual machine.
+
+    Linux namespaces create a bubble
+
+    Docker uses Linux namespaces to create 'containers'.
+    
+    Containers are a standard size and shape enabling the use of standard tools to manage
+    them irrespective of what they contain analogous to the way that shipping containers
+    have changed the transportation of physical goods. 
+    
+Why we wanted to use Docker
+
+    Repeatable rapid testing.
+    configuring external components e.g. databases etc.
+
+    Repeatable rapid deployment.
+    
+    Agile deployment and testing infrastructure components.
+    e.g - Java versions, Tomcat versions etc. 
+
+
+Basic deployment structure
+
+    Core webservices
+
+    Database ambasadors
+
+    SSH proxies
+
+Build components
+
+    Docker from Docker
+    
+Test system
+
+
+
+
+
+
+
+
+

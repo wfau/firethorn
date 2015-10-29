@@ -354,5 +354,33 @@ extends NamedEntity
      *
      */
     public DateTime completed();
+
+
+    /**
+     *  Public interface for the task parameters.
+     *  
+     */
+    public interface Param
+        {
+        /**
+         * Get a task parameter.
+         * @return The matching param value, or null if there is no match.
+         * 
+         */
+        public String get(final String key);
+
+        /**
+         * Set a task parameter.
+         * 
+         */
+        public void set(final String key, final String value);
+
+        }
+
+    /**
+     *  Access to the task parameters.
+     *  
+     */
+    public Param param();
     
     }
