@@ -1,0 +1,22 @@
+#!/bin/sh
+./insert-ucd1plus.py ../ucd1-metadocs/6df.metadoc.xml  6df.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/first.metadoc.xml  first.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/glimpse.metadoc.xml  glimpse.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/iras.metadoc.xml  iras.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/rosat.metadoc.xml  rosat.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/sdssdr1.metadoc.xml  sdssdr1.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/sdssdr3.metadoc.xml  sdssdr3.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/sdssdr5.metadoc.xml  sdssdr5.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/sdssdr7.metadoc.xml  sdssdr7.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/sdssDR7-test.xml  sdssDR7-test.xml
+./insert-ucd1plus.py ../ucd1-metadocs/ssa.metadoc.xml  ssa.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/twomass.metadoc.xml  twomass.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/UKIDSS_DR1_metadoc.xml  UKIDSS_DR1_metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/UKIDSS_DR2_metadoc.xml  UKIDSS_DR2_metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/UKIDSS_DR3_metadoc.xml  UKIDSS_DR3_metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/UKIDSS_DR4_metadoc.xml  UKIDSS_DR4_metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/UKIDSS_DR5_metadoc.xml  UKIDSS_DR5_metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/UKIDSS_DR6_metadoc-noGPS.xml  UKIDSS_DR6_metadoc-noGPS.xml
+./insert-ucd1plus.py ../ucd1-metadocs/ukidssWorld.metadoc.xml  ukidssWorld.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/usnob.metadoc.xml  usnob.metadoc.xml
+./insert-ucd1plus.py ../ucd1-metadocs/xmm.metadoc.xml	 xmm.metadoc.xml

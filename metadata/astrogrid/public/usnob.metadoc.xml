@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasetDescription xmlns='urn:astrogrid:schema:TableMetaDoc:v1' 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Catalog>
+    <Name>USNO-B</Name>
+    <Description><![CDATA[]]></Description>
+    <Table ID="usnob_psc">
+      <Name>usnob_psc</Name>
+    <Column ID="usnob_psc.zone" indexed="true">
+      <Name>zone</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[The USNO-B1.0 is arranged in zones of 0.1deg in Declination, from 0000 in South Pole to 1799 in North Pole.]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_MAIN_1</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.seqNo" indexed="true">
+      <Name>seqNo</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Sequence number of objects ordered by Right Ascension in the zone.]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_MAIN_2</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.cx" indexed="false">
+      <Name>cx</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
+      <Units></Units>
+      <UCD version="1">POS_EQ_X</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.cy" indexed="false">
+      <Name>cy</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
+      <Units></Units>
+      <UCD version="1">POS_EQ_Y</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.cz" indexed="false">
+      <Name>cz</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
+      <Units></Units>
+      <UCD version="1">POS_EQ_Z</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.htmID" indexed="false">
+      <Name>htmID</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[HTM index, 20 digits, for co-ordinate]]></Description>
+      <Units></Units>
+      <UCD version="1">POS_GENERAL</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.ra" indexed="false">
+      <Name>ra</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[J2000 Celestial Right Ascension]]></Description>
+      <Units>degrees</Units>
+      <UCD version="1">POS_EQ_RA_MAIN</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.dec" indexed="false">
+      <Name>dec</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[J2000 Celestial Declination]]></Description>
+      <Units>degrees</Units>
+      <UCD version="1">POS_EQ_DEC_MAIN</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.pmRA" indexed="false">
+      <Name>pmRA</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Proper motion in RA (relative to YS4.0)]]></Description>
+      <Units>mas/yr</Units>
+      <UCD version="1">POS_EQ_PMRA</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.pmDEC" indexed="false">
+      <Name>pmDEC</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Proper motion in DEC (relative to YS4.0)]]></Description>
+      <Units>mas/yr</Units>
+      <UCD version="1">POS_EQ_PMDEC</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.pmPr" indexed="false">
+      <Name>pmPr</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Total Proper Motion probability]]></Description>
+      <Units></Units>
+      <UCD version="1">STAT_PROBABILITY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.mcFlag" indexed="false">
+      <Name>mcFlag</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Motion catalogue flag, 0=no, 1=yes]]></Description>
+      <Units></Units>
+      <UCD version="1">CODE_MISC</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.e_pmRA" indexed="false">
+      <Name>e_pmRA</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Mean error on pmRA]]></Description>
+      <Units>mas/yr</Units>
+      <UCD version="1">ERROR</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.e_pmDEC" indexed="false">
+      <Name>e_pmDEC</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Mean error on pmDEC]]></Description>
+      <Units>mas/yr</Units>
+      <UCD version="1">ERROR</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.e_RAfit" indexed="false">
+      <Name>e_RAfit</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Mean error on RA fit]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">FIT_ERROR</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.e_DECfit" indexed="false">
+      <Name>e_DECfit</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Mean error on DEC fit]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">FIT_ERROR</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.Ndet" indexed="false">
+      <Name>Ndet</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Number of detections]]></Description>
+      <Units></Units>
+      <UCD version="1">NUMBER</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.difSp" indexed="false">
+      <Name>difSp</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Diffraction spike flag, 0=no, 1=yes]]></Description>
+      <Units></Units>
+      <UCD version="1">CODE_MISC</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.e_RA" indexed="false">
+      <Name>e_RA</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Mean error on ra*cos(dec) at Epoch]]></Description>
+      <Units>mas</Units>
+      <UCD version="1">ERROR</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.e_DEC" indexed="false">
+      <Name>e_DEC</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Mean error on dec at Epoch]]></Description>
+      <Units>mas</Units>
+      <UCD version="1">ERROR</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.Epoch" indexed="false">
+      <Name>Epoch</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Mean epoch of observation]]></Description>
+      <Units>yr</Units>
+      <UCD version="1">TIME_EPOCH</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.ys40" indexed="false">
+      <Name>ys40</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[YS4.0 correlation flag, 0=no, 1=yes]]></Description>
+      <Units></Units>
+      <UCD version="1">CODE_MISC</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B1Mag" indexed="false">
+      <Name>B1Mag</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[First blue magnitude]]></Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_PHG_B</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B1C" indexed="false">
+      <Name>B1C</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[source of photometric calibration]]></Description>
+      <Units></Units>
+      <UCD version="1">INST_CALIB_PARAM</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B1S" indexed="false">
+      <Name>B1S</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Survey number]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_SURVEY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B1F" indexed="false">
+      <Name>B1F</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Field number in survey]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_FIELD</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B1S_G" indexed="false">
+      <Name>B1S_G</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Star-galaxy separation]]></Description>
+      <Units></Units>
+      <UCD version="1">CLASS_STAR_GALAXY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B1Xi" indexed="false">
+      <Name>B1Xi</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in X direction]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B1Eta" indexed="false">
+      <Name>B1Eta</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in Y direction]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">POS_EQ_DEC_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R1Mag" indexed="false">
+      <Name>R1Mag</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[First red magnitude]]></Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_PHG_R</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R1C" indexed="false">
+      <Name>R1C</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[source of photometric calibration]]></Description>
+      <Units></Units>
+      <UCD version="1">INST_CALIB_PARAM</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R1S" indexed="false">
+      <Name>R1S</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Survey number]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_SURVEY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R1F" indexed="false">
+      <Name>R1F</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Field number in survey]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_FIELD</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R1S_G" indexed="false">
+      <Name>R1S_G</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Star-galaxy separation]]></Description>
+      <Units></Units>
+      <UCD version="1">CLASS_STAR_GALAXY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R1Xi" indexed="false">
+      <Name>R1Xi</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in X direction]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R1Eta" indexed="false">
+      <Name>R1Eta</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in Y direction]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">POS_EQ_DEC_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B2Mag" indexed="false">
+      <Name>B2Mag</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Second blue magnitude]]></Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_PHG_B</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B2C" indexed="false">
+      <Name>B2C</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[source of photometric calibration]]></Description>
+      <Units></Units>
+      <UCD version="1">INST_CALIB_PARAM</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B2S" indexed="false">
+      <Name>B2S</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Survey number]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_SURVEY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B2F" indexed="false">
+      <Name>B2F</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Field number in survey]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_FIELD</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B2S_G" indexed="false">
+      <Name>B2S_G</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Star-galaxy separation]]></Description>
+      <Units></Units>
+      <UCD version="1">CLASS_STAR_GALAXY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B2Xi" indexed="false">
+      <Name>B2Xi</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in X direction]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.B2Eta" indexed="false">
+      <Name>B2Eta</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in Y direction]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">POS_EQ_DEC_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R2Mag" indexed="false">
+      <Name>R2Mag</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Second red magnitude]]></Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_PHG_R</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R2C" indexed="false">
+      <Name>R2C</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[source of photometric calibration]]></Description>
+      <Units></Units>
+      <UCD version="1">INST_CALIB_PARAM</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R2S" indexed="false">
+      <Name>R2S</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Survey number]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_SURVEY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R2F" indexed="false">
+      <Name>R2F</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Field number in survey]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_FIELD</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R2S_G" indexed="false">
+      <Name>R2S_G</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Star-galaxy separation]]></Description>
+      <Units></Units>
+      <UCD version="1">CLASS_STAR_GALAXY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R2Xi" indexed="false">
+      <Name>R2Xi</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in X direction]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.R2Eta" indexed="false">
+      <Name>R2Eta</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in Y direction]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">POS_EQ_DEC_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.NMag" indexed="false">
+      <Name>NMag</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Infrared (N) magnitude]]></Description>
+      <Units>mag</Units>
+      <UCD version="1">PHOT_PHG_I</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.NC" indexed="false">
+      <Name>NC</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[source of photometric calibration]]></Description>
+      <Units></Units>
+      <UCD version="1">INST_CALIB_PARAM</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.NS" indexed="false">
+      <Name>NS</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Survey number]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_SURVEY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.NF" indexed="false">
+      <Name>NF</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Field number in survey]]></Description>
+      <Units></Units>
+      <UCD version="1">ID_FIELD</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.NS_G" indexed="false">
+      <Name>NS_G</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Star-galaxy separation]]></Description>
+      <Units></Units>
+      <UCD version="1">CLASS_STAR_GALAXY</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.NXi" indexed="false">
+      <Name>NXi</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in X direction]]></Description>
+      <Units>arcses</Units>
+      <UCD version="1">POS_EQ_RA_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.NEta" indexed="false">
+      <Name>NEta</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Residual in Y direction]]></Description>
+      <Units>arcsec</Units>
+      <UCD version="1">POS_EQ_DEC_OFF</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.lbIdxB1" indexed="false">
+      <Name>lbIdxB1</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[First blue look-back index into PMM scan file]]></Description>
+      <Units></Units>
+      <UCD version="1">CODE_MISC</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.lbIdxR1" indexed="false">
+      <Name>lbIdxR1</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[First red look-back index into PMM scan file]]></Description>
+      <Units></Units>
+      <UCD version="1">CODE_MISC</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.lbIdxB2" indexed="false">
+      <Name>lbIdxB2</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Second blue look-back index into PMM scan file]]></Description>
+      <Units></Units>
+      <UCD version="1">CODE_MISC</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.lbIdxR2" indexed="false">
+      <Name>lbIdxR2</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Second red look-back index into PMM scan file]]></Description>
+      <Units></Units>
+      <UCD version="1">CODE_MISC</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="usnob_psc.lbIdxN" indexed="false">
+      <Name>lbIdxN</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[N look-back index into PMM scan file]]></Description>
+      <Units></Units>
+      <UCD version="1">CODE_MISC</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    </Table>
+  </Catalog>
+</DatasetDescription>
