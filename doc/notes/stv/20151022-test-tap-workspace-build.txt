@@ -475,9 +475,6 @@ EOF
 	lang=ADQL
 	request=doQuery
 
-        # Get VOSI
-	curl ${endpointurl:?}/tap/${resourceid:?}/tables
-
 
         identity=${identity:-$(date '+%H:%M:%S')}
         community=${community:-$(date '+%A %-d %B %Y')}
@@ -485,40 +482,42 @@ EOF
         source "bin/01-01-init-rest.sh"
 
 
+        # Get VOSI
+	curl ${endpointurl:?}/tap/${resourceid:?}/tables
+
+
 	# ----------------------Query test1: synchronous-------------------------------
         # Run a synchronous query
 
-	curl -X GET -G \
+	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/sync \
 	-d QUERY=${query:?} \
 	-d LANG=${lang:?} \
 	-d REQUEST=${request:?}
 
-
-
 	# ----------------------Query test2: asynchronous-------------------------------
 	# Run an asynchronous query
 
-	curl -L  \
+	data="$( curl -v -L \
 	${endpointurl:?}/tap/${resourceid:?}/async \
 	-d QUERY=${query:?} \
 	-d LANG=${lang:?} \
-	-d REQUEST=${request:?}
+	-d REQUEST=${request:?})"
 
 	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 	
 	curl -X GET -G \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase
 
-	curl -X POST -G \
+	curl -v \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
 	-d PHASE=RUN 
 
-	curl -X GET -G \
-	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results
+	curl  ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results
 
-	curl -X GET -G \
+	curl -v -L \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results/result
+
 
 	curl -X GET -G \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/quote
@@ -539,14 +538,14 @@ EOF
 
 	# ----------------------Query test3: asynchronous, empty query to start-------------------------------
 
-	data="$( curl -X POST -G \
+	data="$( curl  -L\
 	${endpointurl:?}/tap/${resourceid:?}/async \
 	-d LANG=${lang:?} \
 	-d REQUEST=${request:?})"
 
 	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 
-	curl -X GET -G \
+	curl -L\
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase
 	 
 	curl -X POST -G \
@@ -557,10 +556,10 @@ EOF
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
 	-d PHASE=RUN 
 
-	curl -X POST -G \
+	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results
 
-	curl -X POST -G \
+	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results/result
 
 	
@@ -569,7 +568,7 @@ EOF
 
 	invalidquery="SELECT+invalid"
 
-	data="$( curl -X POST -G \
+	data="$( curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async \
 	-d LANG=${lang:?} \
 	-d REQUEST=${request:?})"
@@ -584,7 +583,7 @@ EOF
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
 	-d PHASE=RUN 
 
-	curl -X POST -G \
+	curl -l \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results/result
 
 
@@ -607,11 +606,12 @@ EOF
 	# ----------------------Query test5: Test GAVO-------------------------------
 
 	gavoquery="SELECT+top+5+*+from+amanda.nucanddd"
-	curl -v \
-	"http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async" \
+	data="$( curl -L \
+	"http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/" \
 	-d LANG=ADQL \
 	-d REQUEST=doQuery \
-	-d QUERY=qdwwqdwqdwqdwq 
+	-d QUERY=${gavoquery:?})"
+        jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 
 	# Go here: http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL
 	

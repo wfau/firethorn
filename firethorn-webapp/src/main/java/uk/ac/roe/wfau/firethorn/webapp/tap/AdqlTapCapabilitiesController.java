@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -79,7 +80,8 @@ public class AdqlTapCapabilitiesController extends AbstractController {
      * 
      */
 	@RequestMapping(value="capabilities", method = RequestMethod.GET, produces=CommonParams.TEXT_XML_MIME)
-	public void capabilities(
+	@ResponseBody
+	public String capabilities(
         @ModelAttribute(TARGET_ENTITY)
         AdqlResource resource,
         final HttpServletResponse response
@@ -95,7 +97,7 @@ public class AdqlTapCapabilitiesController extends AbstractController {
 	            );
 		
 			
-			capgenerator.generateCapabilities(writer,resource);
+			return capgenerator.generateCapabilities(resource);
 	}
 
 

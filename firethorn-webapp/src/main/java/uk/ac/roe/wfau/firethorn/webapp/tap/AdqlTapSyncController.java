@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,6 +36,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import uk.ac.roe.wfau.firethorn.webapp.votable.*;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
@@ -90,7 +93,8 @@ public class AdqlTapSyncController extends AbstractController {
 	 */
 	@RequestMapping(value = "sync", method = { RequestMethod.POST,
 			RequestMethod.GET }, produces = CommonParams.TEXT_XML_MIME)
-	public String sync(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	@ResponseStatus(value = HttpStatus.SEE_OTHER)
+	public void sync(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response, @RequestParam(value = "QUERY", required = false) String QUERY,
 			@RequestParam(value = "LANG", required = false) String LANG,
 			@RequestParam(value = "REQUEST", required = false) String REQUEST, 
@@ -102,10 +106,7 @@ public class AdqlTapSyncController extends AbstractController {
 					throws IdentifierNotFoundException, IOException {
 
 		String results = "";
-		UWSJob uwsjob;
-
-		BlueQuery queryentity;
-		
+		PrintWriter writer = response.getWriter();
 		// Check input parameters and return VOTable with appropriate message if
 		// any errors found
 		boolean valid = checkParams(REQUEST, LANG, QUERY, FORMAT, VERSION);
@@ -113,7 +114,8 @@ public class AdqlTapSyncController extends AbstractController {
 		if (valid) {
 
 			if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
-				return capgenerator.generateCapabilities(resource);
+				writer.append(capgenerator.generateCapabilities(resource));
+				return;
 			} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)) {
 
 				try {
@@ -123,6 +125,7 @@ public class AdqlTapSyncController extends AbstractController {
 
 					// Write results to VOTable using AdqlQueryVOTableController
 					if (query != null) {
+						
 						if (query.state() == TaskState.EDITING || 
 								query.state() == TaskState.QUEUED || 
 										query.state() == TaskState.READY || 
@@ -130,26 +133,41 @@ public class AdqlTapSyncController extends AbstractController {
 														query.state() == TaskState.CANCELLED
 								) {
 							
-							return TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND);
-						
+							writer.append(TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND));
+							return;
+							
+						} else if (query.state() == TaskState.FAILED || query.state() == TaskState.ERROR) {
+							
+							if (query.syntax().friendly()!=null){
+								writer.append(TapError.writeErrorToVotable(query.syntax().friendly()));
+							} else {
+								writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
+							}
+							return;
+							
+						} else {
+							results = query.results().adql().link() + "/votable";
+							response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+						    response.setHeader("Location", results);
+						    return;
+						    
 						}
-						
-						results = query.results().adql().link() + "/votable";
-						return "redirect:" + results;
+					
 
 					} 
 
 				} catch (final Exception ouch) {
 					log.error("Exception caught [{}]", ouch);
 					TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR);
+					return;
 				}
 
 			}
 		} else {
-			return  getErrorVOTable(REQUEST, LANG, QUERY, FORMAT, VERSION);
+			writer.append(getErrorVOTable(REQUEST, LANG, QUERY, FORMAT, VERSION));
 		}
 		
-		return  TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR);
+		writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 	}
 
 	private boolean checkParams(String REQUEST, String LANG, String QUERY, String FORMAT, String VERSION) {
