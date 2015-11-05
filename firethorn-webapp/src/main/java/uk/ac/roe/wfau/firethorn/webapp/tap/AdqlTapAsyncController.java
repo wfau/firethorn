@@ -108,7 +108,8 @@ public class AdqlTapAsyncController extends AbstractController {
 
 		UWSJob uwsjob = null;
 		BlueQuery qry;
-
+		PrintWriter writer = response.getWriter();
+		
 		if (resource != null) {
 
 			// Check input parameters and return VOTable with appropriate
@@ -146,7 +147,9 @@ public class AdqlTapAsyncController extends AbstractController {
 		}
 		
 		response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+		writer.append("Location: " + "async/" + uwsjob.getJobId());
 	    response.setHeader("Location",  "async/" + uwsjob.getJobId());
+	    
 	    return;
 		
 	}
@@ -288,6 +291,7 @@ public class AdqlTapAsyncController extends AbstractController {
 		
 		response.setStatus(HttpServletResponse.SC_SEE_OTHER);
 	    response.setHeader("Location", uwsjob.getJobURL());
+	    writer.append("Location: " + uwsjob.getJobURL());
 	    
 	    return;
 
@@ -438,7 +442,8 @@ public class AdqlTapAsyncController extends AbstractController {
 			results = uwsjob.getResults();
 			response.setStatus(HttpServletResponse.SC_SEE_OTHER);
 		    response.setHeader("Location", results);
-
+		    writer.append("Location: " + results);
+		    
 		} catch (Exception e) {
 			writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 		}

@@ -611,9 +611,15 @@ EOF
 	-d LANG=ADQL \
 	-d REQUEST=doQuery \
 	-d QUERY=${gavoquery:?})"
+
         jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 
 	# Go here: http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL
+
+	curl -X POST -G \
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/${jobid:?}/parameters \
+	-d MAXREC=1000
+
 	
 	curl -X POST -G \
 	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL/phase \

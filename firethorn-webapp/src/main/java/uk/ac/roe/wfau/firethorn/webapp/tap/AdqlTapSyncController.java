@@ -92,7 +92,7 @@ public class AdqlTapSyncController extends AbstractController {
 	 * 
 	 */
 	@RequestMapping(value = "sync", method = { RequestMethod.POST,
-			RequestMethod.GET }, produces = CommonParams.TEXT_XML_MIME)
+			RequestMethod.GET })
 	@ResponseStatus(value = HttpStatus.SEE_OTHER)
 	public void sync(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response, @RequestParam(value = "QUERY", required = false) String QUERY,
@@ -132,8 +132,14 @@ public class AdqlTapSyncController extends AbstractController {
 												query.state() == TaskState.RUNNING || 
 														query.state() == TaskState.CANCELLED
 								) {
-							
-							writer.append(TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND));
+							log.debug("****HERE*****");
+							if (query.state() == TaskState.FAILED)  log.debug("****FAILED");
+							if (query.state() == TaskState.RUNNING)  log.debug("****RUNNING");
+							results = query.results().adql().link() + "/votable";
+							response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+						    response.setHeader("Location", results);
+						    writer.append("Location: " + results);
+							//writer.append(TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND));
 							return;
 							
 						} else if (query.state() == TaskState.FAILED || query.state() == TaskState.ERROR) {
@@ -146,9 +152,12 @@ public class AdqlTapSyncController extends AbstractController {
 							return;
 							
 						} else {
+							log.debug("****HM?*****");
+							
 							results = query.results().adql().link() + "/votable";
 							response.setStatus(HttpServletResponse.SC_SEE_OTHER);
 						    response.setHeader("Location", results);
+						    writer.append("Location: " + results);
 						    return;
 						    
 						}
@@ -166,6 +175,7 @@ public class AdqlTapSyncController extends AbstractController {
 		} else {
 			writer.append(getErrorVOTable(REQUEST, LANG, QUERY, FORMAT, VERSION));
 		}
+		
 		
 		writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 	}
