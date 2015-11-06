@@ -147,8 +147,8 @@ public class AdqlTapAsyncController extends AbstractController {
 		}
 		
 		response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-		writer.append("Location: " + "async/" + uwsjob.getJobId());
-	    response.setHeader("Location",  "async/" + uwsjob.getJobId());
+		writer.append("Location: " + uwsjob.getJobURL());
+	    response.setHeader("Location",  uwsjob.getJobURL());
 	    
 	    return;
 		

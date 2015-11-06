@@ -142,6 +142,8 @@ public class AdqlTapSyncController extends AbstractController {
 							} else {
 								writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 							}
+							response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+							response.setContentType("text/xml");
 							return;
 							
 						} else {

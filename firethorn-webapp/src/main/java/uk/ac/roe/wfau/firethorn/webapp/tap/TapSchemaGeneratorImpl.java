@@ -267,7 +267,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"columns\" VALUES (";
 						String columnName = column.name();
 						String columnDescription = column.text();
-						sql += "'" + tableName + "',";
+						sql += "'" +  schemaName + "." + tableName + "',";
 						sql += "'" + columnName + "',";
 						sql += "'" + columnDescription + "',";
 
