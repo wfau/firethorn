@@ -613,7 +613,6 @@ public class AdqlQueryVOTableController
             writer.append(" ID='query.");
             writer.append(query.ident().toString());
             writer.append("'");
-            log.error("1");
 
             if (query.name() != null)
                 {
@@ -632,7 +631,6 @@ public class AdqlQueryVOTableController
             	{
 	            writer.append(query.link());
             	}
-            log.error("2");
 
             writer.append(query.link());
             writer.append("'");
@@ -646,7 +644,6 @@ public class AdqlQueryVOTableController
                 	writer.append(query.syntax().friendly());
                 }
             }
-            log.error("3");
 
             writer.append("</INFO>");
             if (query.input() != null)
@@ -695,11 +692,9 @@ public class AdqlQueryVOTableController
 	                    }
 	
 	                final List<AdqlColumn> cols = new ArrayList<AdqlColumn>();
-	                log.error("4");
 
 	                for (final AdqlColumn column : table.columns().select())
 	                    {
-		                log.error(column.name());
 
 	                    cols.add(column);
 	
@@ -804,7 +799,6 @@ public class AdqlQueryVOTableController
 	
 	                    writer.append("</FIELD>");
 	                    }
-	                log.error("5");
 
 	                    writer.append("<DATA>");
 	                    writer.append("<TABLEDATA>");
@@ -835,7 +829,6 @@ public class AdqlQueryVOTableController
 	                                type
 	                                )
 	                            );
-	    	                log.error("6");
 
 	                        final ResultSetMetaData colmeta = results.getMetaData();
 	                        final int colcount = colmeta.getColumnCount();
@@ -843,12 +836,8 @@ public class AdqlQueryVOTableController
 	                        final List<FieldHandler> handlers = new ArrayList<FieldHandler>();
 	                        for (int colnum = 0 ; colnum < colcount ; colnum++)
 	                            {
-		    	                log.error("7");
-		    	                log.error(cols.get(colnum).name());
-		    	                log.error(cols.get(colnum).name());
-
+		    	           
 	                            final AdqlColumn adql = cols.get(colnum);
-		    	                log.error("Colnum:" + colnum);
 		    	                if (adql.meta()!=null){
 		    	                	if (adql.meta().adql() != null){
 		    	                
@@ -857,7 +846,6 @@ public class AdqlQueryVOTableController
 				                                {
 				                                case CHAR :
 				                                case UNICODE:
-				    		    	                log.error("9");
 		
 				                                    handlers.add(
 				                                        new StringFieldHandler(
@@ -869,7 +857,6 @@ public class AdqlQueryVOTableController
 				                                    break ;
 				
 				                                default :
-				    		    	                log.error("10");
 		
 				                                    handlers.add(
 				                                        new ObjectFieldHandler(
@@ -888,7 +875,6 @@ public class AdqlQueryVOTableController
 	
 	                        while (results.next())
 	                            {
-		    	                log.error("8");
 
 	                            writer.append("<TR>");
 	                            for (final FieldHandler handler : handlers)

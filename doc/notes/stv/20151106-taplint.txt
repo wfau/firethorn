@@ -20,10 +20,18 @@
 #
 #
 
+# (In test container)
+
+# -----------------------------------------------------
+# Install Java 
+
+yum -y install java
+
 # -----------------------------------------------------
 # Download Stilts library
-
 wget http://www.star.bris.ac.uk/~mbt/stilts/stilts.jar
+
+
 
 java -jar stilts.jar taplint
 
@@ -37,7 +45,7 @@ I-TMV-VURL-1 Validating http://peter:8080/firethorn/tap/32771/tables as tableset
 E-TMV-ENFI-1 (l.14, c.14): cvc-complex-type.2.4.a: Invalid content was found starting with element 'schema'. One of '{schema}' is expected.
 S-TMV-VALI-1 SAX report: warnings 0, errors 1, fatal 0
 
-Section TME: Check content of tables metadata from /tables
+Section TME: Check content of tables metadata 	from /tables
 I-TME-TURL-1 Reading table metadata from http://peter:8080/firethorn/tap/32771/tables
 E-TME-CRSV-1 Column name is ADQL reserved word 'size' in table columns - should delimit like '"size"'
 S-TME-SUMM-1 Schemas: 3, Tables: 9, Columns: 215, Foreign Keys: 0

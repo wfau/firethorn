@@ -150,9 +150,9 @@ extends AbstractTableController
         // TODO Add the table query description and ADQL statement if available.
         
         writer.append("<RESOURCE");
-        writer.append(" ID='table.");
-        writer.append(table.ident().toString());
-        writer.append("'");
+        //writer.append(" ID='table.");
+        //writer.append(table.ident().toString());
+        //writer.append("'");
         if (table.name() != null)
             {
             writer.append(" name='");

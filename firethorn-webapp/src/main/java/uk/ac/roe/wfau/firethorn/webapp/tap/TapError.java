@@ -58,13 +58,13 @@ public class TapError {
 
 		        // Based on VOTable-1.3 specification.
 		        // http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
-
+				
 		        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
-		        writer.append("<vot:VOTABLE");
-		        writer.append(" xmlns:vot='http://www.ivoa.net/xml/VOTable/v1.3'");
-		        writer.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'");
-		        writer.append(" xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3'");
-		        writer.append(" version='1.3'");
+		        writer.append("<VOTABLE ");
+		        writer.append("version='1.3' ");
+		        writer.append("xmlns='http://www.ivoa.net/xml/VOTable/v1.3' ");
+		        writer.append("xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3' ");
+		        writer.append(" www.ivoa.net/xml/VOTable/v1.3");
 		        writer.append(">");
 
 		            writer.append("<RESOURCE");
@@ -78,7 +78,7 @@ public class TapError {
 			            
 		            
 		            writer.append("</RESOURCE>");
-		        writer.append("</vot:VOTABLE>");
+		        writer.append("</VOTABLE>");
 		    	
 		        return writer.toString();
 			
@@ -92,31 +92,31 @@ public class TapError {
 		 */
 		public static void writeErrorToVotable (String errorMessage, PrintWriter writer){
 			
+			
+			// Based on VOTable-1.3 specification.
+			// http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
+			
+			writer.append("<?xml version='1.0' encoding='UTF-8'?>");
+			writer.append("<VOTABLE ");
+			writer.append("version='1.3' ");
+			writer.append("xmlns='http://www.ivoa.net/xml/VOTable/v1.3' ");
+			writer.append("xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3' ");
+			writer.append(" www.ivoa.net/xml/VOTable/v1.3");
+			writer.append(">");
+			
+			writer.append("<RESOURCE");
+			writer.append(" type='results'");
+			writer.append(">");
+			    writer.append("<INFO");
+			    writer.append(" name='QUERY_STATUS'");
+			    writer.append(" value='ERROR' >");
+			    writer.append(errorMessage);
+			    writer.append("</INFO>");
+			    
+			
+			writer.append("</RESOURCE>");
+			writer.append("</VOTABLE>");
 
-		        // Based on VOTable-1.3 specification.
-		        // http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
-
-		        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
-		        writer.append("<vot:VOTABLE");
-		        writer.append(" xmlns:vot='http://www.ivoa.net/xml/VOTable/v1.3'");
-		        writer.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'");
-		        writer.append(" xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3'");
-		        writer.append(" version='1.3'");
-		        writer.append(">");
-
-		            writer.append("<RESOURCE");
-		            writer.append(" type='results'");
-		            writer.append(">");
-			            writer.append("<INFO");
-			            writer.append(" name='QUERY_STATUS'");
-			            writer.append(" value='ERROR' >");
-			            writer.append(errorMessage);
-			            writer.append("</INFO>");
-			            
-		            
-		            writer.append("</RESOURCE>");
-		        writer.append("</vot:VOTABLE>");
-		    	
 			
 		}
 	 

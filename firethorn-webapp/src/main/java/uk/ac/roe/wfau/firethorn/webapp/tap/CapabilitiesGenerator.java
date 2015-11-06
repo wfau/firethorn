@@ -52,37 +52,57 @@ public class CapabilitiesGenerator{
     	
 		StringBuilder writer = new StringBuilder();
 		
-    	writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-		    "<vosi:capabilities xmlns:vosi=\"http://www.ivoa.net/xml/VOSICapabilities/v1.0\" xmlns:vod=\"http://www.ivoa.net/xml/VODataService/v1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" +
-		    " <capability standardID=\"ivo://ivoa.net/std/VOSI#capabilities\">" +
-		    "    <interface xsi:type=\"vod:ParamHTTP\" role=\"std\" version=\"1.0\">" +
+    	writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
+    		"<cap:capabilities xmlns:cap=\"http://www.ivoa.net/xml/VOSICapabilities/v1.0\" " +
+			"xmlns:tr=\"http://www.ivoa.net/xml/TAPRegExt/v1.0\" " +
+			"xmlns:vg=\"http://www.ivoa.net/xml/VORegistry/v1.0\" " +
+			"xmlns:vr=\"http://www.ivoa.net/xml/VOResource/v1.0\" " +
+			"xmlns:vs=\"http://www.ivoa.net/xml/VODataService/v1.1\" " +
+			"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " + 
+			"xsi:schemaLocation=\"http://www.ivoa.net/xml/VOSICapabilities/v1.0 " +
+			"http://vo.ari.uni-heidelberg.de/docs/schemata/VOSICapabilities-v1.0.xsd " +
+			"http://www.ivoa.net/xml/TAPRegExt/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/TAPRegExt-v1.0.xsd " +
+			"http://www.ivoa.net/xml/VORegistry/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/VORegistry-v1.0.xsd " +
+			"http://www.ivoa.net/xml/VOResource/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/VOResource-v1.0.xsd " +
+			"http://www.ivoa.net/xml/VODataService/v1.1 http://vo.ari.uni-heidelberg.de/docs/schemata/VODataService-v1.1.xsd \">" +
+		    "<capability standardID=\"ivo://ivoa.net/std/VOSI#capabilities\">" +
+		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
 		    "      <accessURL use=\"full\">" + getBaseurl() + "/tap/" + resource.ident() + "/capabilities</accessURL>" +
 		    "    </interface>" +
 		    "  </capability>" +
 		    "  <capability standardID=\"ivo://ivoa.net/std/VOSI#availability\">" +
-		    "    <interface xsi:type=\"vod:ParamHTTP\" role=\"std\" version=\"1.0\">" +
+		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
 		    "      <accessURL use=\"full\">" + getBaseurl() + "/tap/" + resource.ident() + "/availability</accessURL>" +
 		    "    </interface>" +
 		    "  </capability>" +
 		    "  <capability standardID=\"ivo://ivoa.net/std/VOSI#tables\">" +
-		    "    <interface xsi:type=\"vod:ParamHTTP\" role=\"std\" version=\"1.0\">" +
+		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
 		    "      <accessURL use=\"full\">" + getBaseurl() + "/tap/" + resource.ident() + "/tables</accessURL>" +
 		    "    </interface>" +
 		    "    <!-- RESTful VOSI-tables-1.1 would be use=\"base\" -->" +
 		    "  </capability>" +
 		    "  <!-- TAP-1.1 sync -->" +
 		    "  <capability standardID=\"ivo://ivoa.net/std/TAP#sync-1.1\">" +
-		    "    <interface xsi:type=\"vod:ParamHTTP\" role=\"std\" version=\"1.0\">" +
+		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
 		    "      <accessURL use=\"base\">" + getBaseurl() + "/tap/" + resource.ident() + "/sync</accessURL>" +
 		    "    </interface>" +
 		    "   </capability>" +
+		    "   <capability standardID=\"ivo://ivoa.net/std/TAP\" xsi:type=\"tr:TableAccess\">" +
+		    "     <interface role=\"std\" xsi:type=\"vs:ParamHTTP\"><accessURL use=\"base\">" + getBaseurl() + "/tap \"</accessURL>" +
+    		"     </interface>" +
+	    	"     <retentionPeriod><default>172800</default></retentionPeriod>" +
+	    	"     <executionDuration><default>3600</default></executionDuration>" +
+	    	"     <outputLimit><default unit=\"row\">2000</default>" +
+	    	"     <hard unit=\"row\">1000000000</hard>" +
+	    	"      </outputLimit>" +
+	    	"    </capability>" +
 		    "  <!-- TAP-1.1 async -->" +
 		    "    <capability standardID=\"ivo://ivoa.net/std/TAP#async-1.1\">" +
-		    "      <interface xsi:type=\"vod:ParamHTTP\" role=\"std\" version=\"1.0\">" +
+		    "      <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
 		    "        <accessURL use=\"base\">" + getBaseurl() + "/tap/" + resource.ident() + "/async</accessURL>" +
 		    "      </interface>" +
 		    "     </capability>" +
-		    "  </vosi:capabilities>" 
+		    "  </cap:capabilities>" 
 		);
         // Based on VOTable-1.3 specification.
         // http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html

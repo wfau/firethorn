@@ -709,7 +709,7 @@ EOF
 	-d PHASE=RUN 
 
 
-	curl ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results/result
+	curl -L ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results/result
 	
 
 # -----------------------------------------------------

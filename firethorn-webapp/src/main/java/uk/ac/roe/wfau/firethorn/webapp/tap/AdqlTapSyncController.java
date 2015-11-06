@@ -93,7 +93,6 @@ public class AdqlTapSyncController extends AbstractController {
 	 */
 	@RequestMapping(value = "sync", method = { RequestMethod.POST,
 			RequestMethod.GET })
-	@ResponseStatus(value = HttpStatus.SEE_OTHER)
 	public void sync(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response, @RequestParam(value = "QUERY", required = false) String QUERY,
 			@RequestParam(value = "LANG", required = false) String LANG,
@@ -132,11 +131,15 @@ public class AdqlTapSyncController extends AbstractController {
 														query.state() == TaskState.CANCELLED
 								) {
 
-							if (query.state() == TaskState.RUNNING ) log.debug("**** RUNNING.." );
-							//results = query.results().adql().link() + "/votable";
-							//response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-						    //response.setHeader("Location", results);
-						    //writer.append("Location: " + results);
+							if (query.state() == TaskState.RUNNING ) {
+								log.debug("**** RUNNING.." );
+								results = query.results().adql().link() + "/votable";
+								response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+							    response.setHeader("Location", results);
+							    writer.append("Location: " + results);
+							    return;
+							}
+						
 							writer.append(TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND));
 							return;
 							
@@ -171,10 +174,12 @@ public class AdqlTapSyncController extends AbstractController {
 			}
 		} else {
 			writer.append(getErrorVOTable(REQUEST, LANG, QUERY, FORMAT, VERSION));
+			return;
 		}
 		
 		
 		writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
+		return;
 	}
 
 	private boolean checkParams(String REQUEST, String LANG, String QUERY, String FORMAT, String VERSION) {
