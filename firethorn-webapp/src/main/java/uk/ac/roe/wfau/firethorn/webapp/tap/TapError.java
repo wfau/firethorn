@@ -63,9 +63,7 @@ public class TapError {
 		        writer.append("<VOTABLE ");
 		        writer.append("version='1.3' ");
 		        writer.append("xmlns='http://www.ivoa.net/xml/VOTable/v1.3' ");
-		        writer.append("xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3' ");
-		        writer.append(" www.ivoa.net/xml/VOTable/v1.3");
-		        writer.append(">");
+		        writer.append("xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3'>");
 
 		            writer.append("<RESOURCE");
 		            writer.append(" type='results'");
@@ -100,9 +98,7 @@ public class TapError {
 			writer.append("<VOTABLE ");
 			writer.append("version='1.3' ");
 			writer.append("xmlns='http://www.ivoa.net/xml/VOTable/v1.3' ");
-			writer.append("xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3' ");
-			writer.append(" www.ivoa.net/xml/VOTable/v1.3");
-			writer.append(">");
+			writer.append("xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3'>");
 			
 			writer.append("<RESOURCE");
 			writer.append(" type='results'");

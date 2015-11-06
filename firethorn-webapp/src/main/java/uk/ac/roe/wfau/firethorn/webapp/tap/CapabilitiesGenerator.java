@@ -95,6 +95,11 @@ public class CapabilitiesGenerator{
 	    	//"     <outputLimit><default unit=\"row\">2000</default>" +
 	    	//"     <hard unit=\"row\">1000000000</hard>" +
 	    	//"      </outputLimit>" +
+	    	"     <language>" +
+	    	"       <name>ADQL</name>" +
+	    	"       <version ivo-id=\"ivo://ivoa.net/std/ADQL#v2.0\">2.0</version>" +
+	    	"       <description>ADQL-2.0</description>" +
+	    	"     </language>" +
 	    	"    </capability>" +
 		    "  <!-- TAP-1.1 async -->" +
 		    "    <capability standardID=\"ivo://ivoa.net/std/TAP#async-1.1\">" +

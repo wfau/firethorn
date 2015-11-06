@@ -259,7 +259,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					String tableDescription = table.text();
 
 					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
-							+ schemaName + "', '" + tableName + "', 'table', '"
+							+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
 							+ tableDescription + "', NULL, NULL);";
 					stmt.executeUpdate(sql);
 

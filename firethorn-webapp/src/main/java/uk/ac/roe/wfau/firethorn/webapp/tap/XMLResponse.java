@@ -55,8 +55,7 @@ public class XMLResponse {
 		        writer.append("<VOTABLE ");
 		        writer.append("version='1.3' ");
 		        writer.append("xmlns='http://www.ivoa.net/xml/VOTable/v1.3' ");
-		        writer.append("xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3' ");
-		        writer.append(" www.ivoa.net/xml/VOTable/v1.3");
+		        writer.append("xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3  http://www.ivoa.net/xml/VOTable/v1.3'");
 		        writer.append(">");
 
 		            writer.append("<RESOURCE");

@@ -469,12 +469,12 @@ EOF
 	# Testing TAP
 
 	#resourceid=$(basename ${queryspace:?}) 
-	resourceid=14123010
+	resourceid=15204353
 	query="SELECT+TOP+1+*+FROM+atlasSourceXtwomass_psc"
 	format=VOTABLE
 	lang=ADQL
 	request=doQuery
-
+	
 
         identity=${identity:-$(date '+%H:%M:%S')}
         community=${community:-$(date '+%A %-d %B %Y')}
@@ -616,7 +616,7 @@ EOF
         jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 
 	# Go here: http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL
-
+ 
 	curl -X POST -G \
 	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/${jobid:?}/parameters \
 	-d MAXREC=1000
