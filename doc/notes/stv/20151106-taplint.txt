@@ -94,7 +94,7 @@ E-TMS-CNID-9 Column name is not ADQL identifier 'ucd                            
 S-TMS-SUMM-1 Schemas: 2, Tables: 8, Columns: 27, Foreign Keys: 0
 S-TMS-FLGS-1 Standard column flags: indexed: 7, principal: 7, std: 27
 S-TMS-QNUM-1 Successful/submitted TAP queries: 11/11
-S-TMS-QTIM-1 Average successful query time: 18.4s
+S-TMS-QTIM-1 Average successful query time: 19.1s
 I-TMS-QSUB-x (2 more)
 I-TMS-QGET-x (2 more)
 E-TMS-CNID-x (18 more)
@@ -124,10 +124,9 @@ F-QGE-ZCOL-2 No columns known for ATLASDR1.atlasSourceXtwomass_xsc              
 F-QGE-ZCOL-3 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
 I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
 I-QGE-QGET-1 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
-W-QGE-NOCT-1 No Content-Type header for http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
 I-QGE-VVNL-1 Undeclared VOTable version; assuming v1.2
-E-QGE-VPYG-1 (l.1, c.202): The prefix "xsi" for attribute "xsi:schemaLocation" associated with an element type "VOTABLE" is not bound.
-E-QGE-DFSF-1 TAP result parse failed for "DUFF QUERY" [The prefix "xsi" for attribute "xsi:schemaLocation" associated with an element type "VOTABLE" is not bound.]
+E-QGE-LAEB-1 (l.1, c.62): Element type "VOTABLE" must be followed by either attribute specifications, ">" or "/>".
+E-QGE-DFSF-1 TAP result parse failed for "DUFF QUERY" [Element type "VOTABLE" must be followed by either attribute specifications, ">" or "/>".]
 S-QGE-QNUM-1 Successful/submitted TAP queries: 0/0
 
 Section QPO: Make ADQL queries in sync POST mode
@@ -135,10 +134,9 @@ F-QPO-ZCOL-1 No columns known for ATLASDR1.atlasSourceXtwomass_psc              
 F-QPO-ZCOL-2 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
 F-QPO-ZCOL-3 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
 I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
-W-QPO-NOCT-1 No Content-Type header for http://peter:8080/firethorn/tap/15204353/sync
 I-QPO-VVNL-1 Undeclared VOTable version; assuming v1.2
-E-QPO-VPYG-1 (l.1, c.202): The prefix "xsi" for attribute "xsi:schemaLocation" associated with an element type "VOTABLE" is not bound.
-E-QPO-DFSF-1 TAP result parse failed for "DUFF QUERY" [The prefix "xsi" for attribute "xsi:schemaLocation" associated with an element type "VOTABLE" is not bound.]
+E-QPO-LAEB-1 (l.1, c.62): Element type "VOTABLE" must be followed by either attribute specifications, ">" or "/>".
+E-QPO-DFSF-1 TAP result parse failed for "DUFF QUERY" [Element type "VOTABLE" must be followed by either attribute specifications, ">" or "/>".]
 S-QPO-QNUM-1 Successful/submitted TAP queries: 0/0
 
 Section QAS: Make ADQL queries in async mode
@@ -146,13 +144,35 @@ F-QAS-ZCOL-1 No columns known for ATLASDR1.atlasSourceXtwomass_psc              
 F-QAS-ZCOL-2 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
 F-QAS-ZCOL-3 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
 I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
-E-QAS-DFIO-1 TAP job failed for duff query [no protocol: async/15335438]
+I-QAS-QJOB-1 Submitted query at http://peter:8080/firethorn/tap/15204353/async/15663118
+E-QAS-VOCT-1 Bad content type text/html for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/15204353/async/15663118/error)
+I-QAS-VVNL-1 Undeclared VOTable version; assuming v1.2
+E-QAS-LAEB-1 (l.1, c.62): Element type "VOTABLE" must be followed by either attribute specifications, ">" or "/>".
+E-QAS-DFSF-1 TAP result parse failed for "DUFF QUERY" [Element type "VOTABLE" must be followed by either attribute specifications, ">" or "/>".]
 S-QAS-QNUM-1 Successful/submitted TAP queries: 0/0
 
 Section UWS: Test asynchronous UWS/TAP behaviour
-E-UWS-QFAA-1 Failed to submit TAP query SELECT TOP 100 * FROM ATLASDR1.atlasSource [no protocol: async/15335439]
-E-UWS-QFAA-2 Failed to submit TAP query SELECT TOP 100 * FROM ATLASDR1.atlasSource [no protocol: async/15335440]
-E-UWS-QFAA-3 Failed to submit TAP query SELECT TOP 100 * FROM ATLASDR1.atlasSource [no protocol: async/15335441]
+I-UWS-CJOB-1 Created new job http://peter:8080/firethorn/tap/15204353/async/15663119
+E-UWS-GMIM-1 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15663119/phase
+E-UWS-JBSP-1 Error parsing job info [The element type "uws:executionDuration" must be terminated by the matching end-tag "</uws:executionDuration>".]
+E-UWS-JBSP-2 Error parsing job info [The element type "uws:executionDuration" must be terminated by the matching end-tag "</uws:executionDuration>".]
+E-UWS-JBSP-3 Error parsing job info [The element type "uws:executionDuration" must be terminated by the matching end-tag "</uws:executionDuration>".]
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://peter:8080/firethorn/tap/15204353/async/15663119/parameters
+E-UWS-JBSP-4 Error parsing job info [The element type "uws:executionDuration" must be terminated by the matching end-tag "</uws:executionDuration>".]
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://peter:8080/firethorn/tap/15204353/async/15663119/phase
+E-UWS-GMIM-2 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15663119/phase
+E-UWS-JBSP-5 Error parsing job info [The element type "uws:executionDuration" must be terminated by the matching end-tag "</uws:executionDuration>".]
+E-UWS-PORE-1 Error response 405 Method Not Allowed for POST ACTION=DELETE to http://peter:8080/firethorn/tap/15204353/async/15663119
+I-UWS-CJOB-2 Created new job http://peter:8080/firethorn/tap/15204353/async/15663120
+E-UWS-GMIM-3 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15663120/phase
+E-UWS-JBSP-6 Error parsing job info [The element type "uws:executionDuration" must be terminated by the matching end-tag "</uws:executionDuration>".]
+E-UWS-DENO-1 Deleted job gives HTTP response 200 not 404 for http://peter:8080/firethorn/tap/15204353/async/15663120
+I-UWS-CJOB-3 Created new job http://peter:8080/firethorn/tap/15204353/async/15663121
+E-UWS-GMIM-4 Incorrect Content-Type "text/html;charset=UTF-8", should be one of [text/xml, application/xml] for http://peter:8080/firethorn/tap/15204353/async/15663121
+E-UWS-JDSX-1 Error parsing job document http://peter:8080/firethorn/tap/15204353/async/15663121 [The element type "uws:executionDuration" must be terminated by the matching end-tag "</uws:executionDuration>".]
+E-UWS-GMIM-5 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15663121/phase
+E-UWS-JBSP-7 Error parsing job info [The element type "uws:executionDuration" must be terminated by the matching end-tag "</uws:executionDuration>".]
+I-UWS-POPA-3 POSTed PHASE=RUN to http://peter:8080/firethorn/tap/15204353/async/15663121/phase
 
 Section MDQ: Check table query result columns against declared metadata
 I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM ATLASDR1.atlasSource
@@ -177,7 +197,7 @@ I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.tables
 E-MDQ-CLDR-5 SELECT * for table TAP_SCHEMA.tables                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ...
 E-MDQ-CLRD-8 SELECT * for table TAP_SCHEMA.tables                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ...
 S-MDQ-QNUM-1 Successful/submitted TAP queries: 8/8
-S-MDQ-QTIM-1 Average successful query time: 23.3s
+S-MDQ-QTIM-1 Average successful query time: 24.7s
 
 Section OBS: Test implementation of ObsCore Data Model
 I-OBS-NODM-1 Table capabilities lists no DataModel ivo://ivoa.net/std/ObsCore/v1.0 - no ObsCore tests
@@ -185,4 +205,5 @@ I-OBS-NODM-1 Table capabilities lists no DataModel ivo://ivoa.net/std/ObsCore/v1
 Section UPL: Make queries with table uploads
 F-UPL-NOUP-1 Table capabilities lists no upload methods - will not attempt upload tests
 
-Totals: Errors: 67; Warnings: 5; Infos: 42; Summaries: 15; Failures: 10
+Totals: Errors: 81; Warnings: 3; Infos: 50; Summaries: 15; Failures: 10
+
