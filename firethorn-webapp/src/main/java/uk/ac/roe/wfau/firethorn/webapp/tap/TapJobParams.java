@@ -34,7 +34,7 @@ public class TapJobParams  {
 	 */
 	public static final String DEFAULT_QUERY_SCHEMA = "query_schema";
 
-	public static final int EXECUTION_DURATION = 3600;
+	public static final int EXECUTION_DURATION = 180000;
 
 
 

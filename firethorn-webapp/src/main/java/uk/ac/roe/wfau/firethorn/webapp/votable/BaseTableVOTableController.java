@@ -27,6 +27,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -139,17 +140,17 @@ extends AbstractTableController
     public void head(final PrintWriter writer, final BaseTable<?,?> table)
         {
         writer.append("<?xml version='1.0' encoding='UTF-8'?>");
-        writer.append("<vot:VOTABLE");
-        writer.append(" xmlns:vot='http://www.ivoa.net/xml/VOTable/v1.3'");
+        writer.append("<VOTABLE");
+        writer.append(" xmlns='http://www.ivoa.net/xml/VOTable/v1.3'");
         writer.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'");
         writer.append(" xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3'");
         writer.append(" version='1.3'");
         writer.append(">");
-
+        
         //
         // TODO Add the table query description and ADQL statement if available.
         
-        writer.append("<RESOURCE");
+        writer.append("<RESOURCE type='results'");
         //writer.append(" ID='table.");
         //writer.append(table.ident().toString());
         //writer.append("'");
@@ -170,7 +171,22 @@ extends AbstractTableController
         writer.append(table.link());
         writer.append("'");
         writer.append("/>");
-        
+        if (table.query()!=null){
+	        if (table.query().status()==Status.COMPLETED) {
+	            writer.append("<INFO name='QUERY_STATUS' value='OK'>");
+	        } else  {
+	            writer.append("<INFO name='QUERY_STATUS' value='ERROR'>");
+	            writer.append(table.query().syntax().friendly());
+	        }
+	        writer.append("</INFO>");
+	        if (table.query().input() != null)
+	        {
+	        	writer.append("<INFO name='QUERY' value='" + table.query().input() + "' />");
+	        }
+        } else {
+        	writer.append("<INFO name='QUERY_STATUS' value='OK'></INFO>");
+        }
+     
         if (table.text() != null)
             {
             writer.append("<DESCRIPTION>");
@@ -343,7 +359,7 @@ extends AbstractTableController
         writer.append("</DATA>");
         writer.append("</TABLE>");
         writer.append("</RESOURCE>");
-        writer.append("</vot:VOTABLE>");
+        writer.append("</VOTABLE>");
         }
 
     @Override

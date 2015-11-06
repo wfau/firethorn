@@ -469,8 +469,8 @@ EOF
 	# Testing TAP
 
 	#resourceid=$(basename ${queryspace:?}) 
-	resourceid=32771
-	query="SELECT+top+5+ra+from+atlasSource"
+	resourceid=14123010
+	query="SELECT+TOP+1+*+FROM+atlasSourceXtwomass_psc"
 	format=VOTABLE
 	lang=ADQL
 	request=doQuery
@@ -488,7 +488,7 @@ EOF
 
 	# ----------------------Query test1: synchronous-------------------------------
         # Run a synchronous query
-
+	
 	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/sync \
 	-d QUERY=${query:?} \
@@ -611,6 +611,7 @@ EOF
 	-d LANG=ADQL \
 	-d REQUEST=doQuery \
 	-d QUERY=${gavoquery:?})"
+
 
         jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 

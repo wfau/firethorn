@@ -131,16 +131,8 @@ public class AdqlTapSyncController extends AbstractController {
 														query.state() == TaskState.CANCELLED
 								) {
 
-							if (query.state() == TaskState.RUNNING ) {
-								log.debug("**** RUNNING.." );
-								results = query.results().adql().link() + "/votable";
-								response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-							    response.setHeader("Location", results);
-							    writer.append("Location: " + results);
-							    return;
-							}
 						
-							writer.append(TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND));
+							writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 							return;
 							
 						} else if (query.state() == TaskState.FAILED || query.state() == TaskState.ERROR) {

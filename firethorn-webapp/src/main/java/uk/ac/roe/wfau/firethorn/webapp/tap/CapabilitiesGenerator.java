@@ -90,11 +90,11 @@ public class CapabilitiesGenerator{
 		    "   <capability standardID=\"ivo://ivoa.net/std/TAP\" xsi:type=\"tr:TableAccess\">" +
 		    "     <interface role=\"std\" xsi:type=\"vs:ParamHTTP\"><accessURL use=\"base\">" + getBaseurl() + "/tap \"</accessURL>" +
     		"     </interface>" +
-	    	"     <retentionPeriod><default>172800</default></retentionPeriod>" +
-	    	"     <executionDuration><default>3600</default></executionDuration>" +
-	    	"     <outputLimit><default unit=\"row\">2000</default>" +
-	    	"     <hard unit=\"row\">1000000000</hard>" +
-	    	"      </outputLimit>" +
+	    	//"     <retentionPeriod><default>172800</default></retentionPeriod>" +
+	    	//"     <executionDuration><default>3600</default></executionDuration>" +
+	    	//"     <outputLimit><default unit=\"row\">2000</default>" +
+	    	//"     <hard unit=\"row\">1000000000</hard>" +
+	    	//"      </outputLimit>" +
 	    	"    </capability>" +
 		    "  <!-- TAP-1.1 async -->" +
 		    "    <capability standardID=\"ivo://ivoa.net/std/TAP#async-1.1\">" +
