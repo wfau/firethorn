@@ -100,9 +100,8 @@ public class AdqlTapSyncController extends AbstractController {
 			@RequestParam(value = "REQUEST", required = false) String REQUEST, 
 			@RequestParam(value = "FORMAT", required = false) String FORMAT, 
 			@RequestParam(value = "VERSION", required = false) String VERSION, 
-			@RequestParam(value = "MAXREC", required = false) String MAXREC, 
-
-			BindingResult result)
+			@RequestParam(value = "MAXREC", required = false) String MAXREC
+            )
 					throws IdentifierNotFoundException, IOException {
 
 		String results = "";
@@ -132,14 +131,13 @@ public class AdqlTapSyncController extends AbstractController {
 												query.state() == TaskState.RUNNING || 
 														query.state() == TaskState.CANCELLED
 								) {
-							log.debug("****HERE*****");
-							if (query.state() == TaskState.FAILED)  log.debug("****FAILED");
-							if (query.state() == TaskState.RUNNING)  log.debug("****RUNNING");
-							results = query.results().adql().link() + "/votable";
-							response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-						    response.setHeader("Location", results);
-						    writer.append("Location: " + results);
-							//writer.append(TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND));
+
+							if (query.state() == TaskState.RUNNING ) log.debug("**** RUNNING.." );
+							//results = query.results().adql().link() + "/votable";
+							//response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+						    //response.setHeader("Location", results);
+						    //writer.append("Location: " + results);
+							writer.append(TapError.writeErrorToVotable(TapJobErrors.FILE_NOTFOUND));
 							return;
 							
 						} else if (query.state() == TaskState.FAILED || query.state() == TaskState.ERROR) {
@@ -152,7 +150,6 @@ public class AdqlTapSyncController extends AbstractController {
 							return;
 							
 						} else {
-							log.debug("****HM?*****");
 							
 							results = query.results().adql().link() + "/votable";
 							response.setStatus(HttpServletResponse.SC_SEE_OTHER);

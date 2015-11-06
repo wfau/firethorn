@@ -39,6 +39,10 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
+import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
+import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
+import uk.ac.roe.wfau.firethorn.webapp.tap.CapabilitiesGenerator;
 
 @Slf4j
 @Controller
@@ -87,7 +91,6 @@ public class AdqlTapCapabilitiesController extends AbstractController {
         final HttpServletResponse response
         ) throws  IdentifierNotFoundException, IOException {
 		
-			PrintWriter writer = response.getWriter();
 
 	        response.setContentType(
 	        		CommonParams.TEXT_XML_MIME
@@ -96,7 +99,6 @@ public class AdqlTapCapabilitiesController extends AbstractController {
 	            "UTF-8"
 	            );
 		
-			
 			return capgenerator.generateCapabilities(resource);
 	}
 

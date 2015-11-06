@@ -548,7 +548,7 @@ EOF
 	curl -L\
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase
 	 
-	curl -X POST -G \
+	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/parameters \
 	-d QUERY=${query:?}
 
@@ -575,7 +575,7 @@ EOF
 
 	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 	 
-	curl -X POST -G \
+	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/parameters \
 	-d QUERY=${invalidquery:?}
 
@@ -696,7 +696,7 @@ EOF
 	# ----------------------Query test6: Test TAP_SCHEMA using TAP-------------------------------
 
 	query="SELECT+*+from+TAP_SCHEMA.tables"
-	data="$( curl -X POST -G \
+	data="$( curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async \
 	-d LANG=${lang:?} \
 	-d REQUEST=${request:?} \
@@ -704,7 +704,7 @@ EOF
 
 	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 
-	curl -X POST -G \
+	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
 	-d PHASE=RUN 
 

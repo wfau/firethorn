@@ -1,0 +1,278 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Download Stilts library
+
+wget http://www.star.bris.ac.uk/~mbt/stilts/stilts.jar
+
+java -jar stilts.jar taplint
+
+
+tapurl - Base URL of TAP service: http://peter:8080/firethorn/tap/32771
+This is STILTS taplint, 3.0-5/55558a7 (2015-10-22)
+Static report types: ERROR(107), WARNING(37), INFO(16), SUMMARY(7), FAILURE(18)
+
+Section TMV: Validate table metadata against XML schema
+I-TMV-VURL-1 Validating http://peter:8080/firethorn/tap/32771/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+E-TMV-ENFI-1 (l.14, c.14): cvc-complex-type.2.4.a: Invalid content was found starting with element 'schema'. One of '{schema}' is expected.
+S-TMV-VALI-1 SAX report: warnings 0, errors 1, fatal 0
+
+Section TME: Check content of tables metadata from /tables
+I-TME-TURL-1 Reading table metadata from http://peter:8080/firethorn/tap/32771/tables
+E-TME-CRSV-1 Column name is ADQL reserved word 'size' in table columns - should delimit like '"size"'
+S-TME-SUMM-1 Schemas: 3, Tables: 9, Columns: 215, Foreign Keys: 0
+S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
+S-TME-FLGO-1 Other column flags: none
+
+Section TMS: Check content of tables metadata from TAP_SCHEMA
+I-TMS-QSUB-1 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.schemas
+I-TMS-QGET-1 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
+W-TMS-VOFP-1 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-TMS-VOCU-1 (l.1, c.513): ID table.12845061 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845061
+E-TMS-RRES-1 TAP response document RESOURCE element is not marked type='results'
+E-TMS-NOST-1 Missing <INFO name='QUERY_STATUS'> element before TABLE
+I-TMS-QSUB-2 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.tables
+I-TMS-QGET-2 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
+W-TMS-VOFP-2 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-TMS-VOEI-1 (l.1, c.513): ID table.12845063 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845063
+E-TMS-RRES-2 TAP response document RESOURCE element is not marked type='results'
+E-TMS-NOST-2 Missing <INFO name='QUERY_STATUS'> element before TABLE
+I-TMS-QSUB-3 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.columns
+I-TMS-QGET-3 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
+W-TMS-VOFP-3 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-TMS-VOGD-1 (l.1, c.513): ID table.12845065 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845065
+E-TMS-RRES-3 TAP response document RESOURCE element is not marked type='results'
+E-TMS-NOST-3 Missing <INFO name='QUERY_STATUS'> element before TABLE
+I-TMS-QSUB-4 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.keys
+I-TMS-QGET-4 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
+W-TMS-VOFP-4 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-TMS-VOBR-1 (l.1, c.513): ID table.12845067 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845067
+E-TMS-RRES-4 TAP response document RESOURCE element is not marked type='results'
+E-TMS-NOST-4 Missing <INFO name='QUERY_STATUS'> element before TABLE
+I-TMS-QSUB-5 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-5 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
+W-TMS-VOFP-5 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-TMS-VODF-1 (l.1, c.513): ID table.12845069 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845069
+E-TMS-RRES-5 TAP response document RESOURCE element is not marked type='results'
+E-TMS-NOST-5 Missing <INFO name='QUERY_STATUS'> element before TABLE
+I-TMS-QSUB-6 Submitting query: SELECT principal, indexed, std, "size" FROM TAP_SCHEMA.columns
+I-TMS-QGET-6 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=222
+W-TMS-VOFP-6 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-TMS-VOBC-1 (l.1, c.513): ID table.12845071 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845071
+E-TMS-RRES-6 TAP response document RESOURCE element is not marked type='results'
+E-TMS-NOST-6 Missing <INFO name='QUERY_STATUS'> element before TABLE
+E-TMS-CINT-1 Column principal in TAP_SCHEMA.columns has wrong type short not int
+E-TMS-CINT-2 Column indexed in TAP_SCHEMA.columns has wrong type short not int
+E-TMS-CINT-3 Column std in TAP_SCHEMA.columns has wrong type short not int
+I-TMS-QSUB-7 Submitting query: SELECT column_name, description, unit, ucd, utype, datatype, indexed, principal, std, table_name FROM TAP_SCHEMA.columns
+I-TMS-QGET-7 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+column_name%2C+description%2C+unit%2C+ucd%2C+utype%2C+datatype%2C+indexed%2C+principal%2C+std%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=222
+W-TMS-VOFP-7 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-TMS-VODP-1 (l.1, c.513): ID table.12845073 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845073
+E-TMS-RRES-7 TAP response document RESOURCE element is not marked type='results'
+E-TMS-NOST-7 Missing <INFO name='QUERY_STATUS'> element before TABLE
+I-TMS-QSUB-8 Submitting query: SELECT from_column, target_column, key_id FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-8 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=222
+W-TMS-VOFP-8 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-TMS-VOFD-1 (l.1, c.513): ID table.12845075 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845075
+E-TMS-RRES-8 TAP response document RESOURCE element is not marked type='results'
+E-TMS-NOST-8 Missing <INFO name='QUERY_STATUS'> element before TABLE
+I-TMS-QSUB-9 Submitting query: SELECT key_id, target_table, description, utype, from_table FROM TAP_SCHEMA.keys
+I-TMS-QGET-9 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+key_id%2C+target_table%2C+description%2C+utype%2C+from_table+FROM+TAP_SCHEMA.keys&MAXREC=222
+W-TMS-VOFP-9 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-TMS-VOAY-1 (l.1, c.513): ID table.12845077 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845077
+E-TMS-RRES-9 TAP response document RESOURCE element is not marked type='results'
+E-TMS-NOST-9 Missing <INFO name='QUERY_STATUS'> element before TABLE
+E-TMS-VOCM-1 (l.1, c.513): ID table.12845079 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845079
+E-TMS-VOAC-1 (l.1, c.513): ID table.12845081 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845081
+E-TMS-TNTN-1 Bad ADQL table name 'atlasSource                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ...
+E-TMS-TNTN-2 Bad ADQL table name 'atlasSourceXtwomass_psc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ...
+E-TMS-TNTN-3 Bad ADQL table name 'atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ...
+E-TMS-TNTN-4 Bad ADQL table name 'QUERY_20151026_124421642                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ...
+E-TMS-TNTN-5 Bad ADQL table name 'TAP_SCHEMA.columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ...
+E-TMS-TNTN-6 Bad ADQL table name 'TAP_SCHEMA.key_columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ...
+E-TMS-TNTN-7 Bad ADQL table name 'TAP_SCHEMA.keys                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ...
+E-TMS-TNTN-8 Bad ADQL table name 'TAP_SCHEMA.schemas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ...
+E-TMS-TNTN-9 Bad ADQL table name 'TAP_SCHEMA.tables                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+E-TMS-CNID-1 Column name is not ADQL identifier 'aG                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+E-TMS-CNID-2 Column name is not ADQL identifier 'aI                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+E-TMS-CNID-3 Column name is not ADQL identifier 'aR                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+E-TMS-CNID-4 Column name is not ADQL identifier 'aU                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+E-TMS-CNID-5 Column name is not ADQL identifier 'aZ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+E-TMS-CNID-6 Column name is not ADQL identifier 'b                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+E-TMS-CNID-7 Column name is not ADQL identifier 'cuEventID                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ...
+S-TMS-SUMM-1 Schemas: 3, Tables: 9, Columns: 7, Foreign Keys: 0
+S-TMS-FLGS-1 Standard column flags: indexed: 0, principal: 0, std: 0
+S-TMS-QNUM-1 Successful/submitted TAP queries: 11/11
+S-TMS-QTIM-1 Average successful query time: 17.2s
+I-TMS-QSUB-x (2 more)
+I-TMS-QGET-x (2 more)
+W-TMS-VOFP-x (2 more)
+E-TMS-RRES-x (2 more)
+E-TMS-NOST-x (2 more)
+
+Section TMC: Compare table metadata from /tables and TAP_SCHEMA
+E-TMC-SM12-1 Schema atlas exists in /tables but not in TAP_SCHEMA
+E-TMC-SM12-2 Schema query-20151026184421.232473495 exists in /tables but not in TAP_SCHEMA
+E-TMC-SM12-3 Schema TAP_SCHEMA exists in /tables but not in TAP_SCHEMA
+E-TMC-SM21-1 Schema atlas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ...
+E-TMC-SM21-2 Schema query-20151026184421.232473495                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+E-TMC-SM21-3 Schema TAP_SCHEMA                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ...
+
+Section CPV: Validate capabilities against XML schema
+I-CPV-VURL-1 Validating http://peter:8080/firethorn/tap/32771/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+E-CPV-DCER-1 Error reading document [Server returned HTTP response code: 500 for URL: http://peter:8080/firethorn/tap/32771/capabilities]
+
+Section CAP: Check content of TAPRegExt capabilities record
+I-CAP-CURL-1 Reading capability metadata from http://peter:8080/firethorn/tap/32771/capabilities
+E-CAP-CPIO-1 Error reading capabilities metadata [Server returned HTTP response code: 500 for URL: http://peter:8080/firethorn/tap/32771/capabilities]
+
+Section AVV: Validate availability against XML schema
+I-AVV-VURL-1 Validating http://peter:8080/firethorn/tap/32771/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section QGE: Make ADQL queries in sync GET mode
+F-QGE-ZCOL-1 No columns known for QUERY_20151026_124421642                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ...
+I-QGE-QSUB-1 Submitting query: SELECT TOP 8 cuEventID                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ...
+I-QGE-QGET-1 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+cuEventID++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++...
+W-QGE-NOCT-1 No Content-Type header for http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+cuEventID++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++...
+I-QGE-VVNL-1 Undeclared VOTable version; assuming v1.2
+E-QGE-DQLD-1 (l.1, c.1): Premature end of file.
+E-QGE-QERX-1 TAP query result parse failed [Premature end of file.]
+I-QGE-QSUB-2 Submitting query: SELECT aG                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ...
+I-QGE-QGET-2 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+aG+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++...
+W-QGE-VOFP-1 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-QGE-VOCW-1 (l.1, c.513): ID table.12845083 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845083
+E-QGE-RRES-1 TAP response document RESOURCE element is not marked type='results'
+E-QGE-NOST-1 Missing <INFO name='QUERY_STATUS'> element before TABLE
+E-QGE-NREC-1 More than MAXREC rows returned (1 > 0) for SELECT aG                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ...
+E-QGE-CNAM-1 Query/result column name mismatch for column #0; ag                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ...
+E-QGE-QTYP-1 Query/result column type mismatch for column #0; FLOAT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
+I-QGE-QGET-3 Query GET URL: http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
+E-QGE-DFIO-1 TAP job failed for duff query [No Location field for 303 response from http://peter:8080/firethorn/tap/32771/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY]
+S-QGE-QNUM-1 Successful/submitted TAP queries: 1/2
+S-QGE-QTIM-1 Average successful query time: 15.9s
+
+Section QPO: Make ADQL queries in sync POST mode
+F-QPO-ZCOL-1 No columns known for QUERY_20151026_124421642                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ...
+I-QPO-QSUB-1 Submitting query: SELECT TOP 8 cuEventID                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ...
+W-QPO-VOFP-1 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-QPO-VOEK-1 (l.1, c.513): ID table.12845085 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845085
+E-QPO-RRES-1 TAP response document RESOURCE element is not marked type='results'
+E-QPO-NOST-1 Missing <INFO name='QUERY_STATUS'> element before TABLE
+E-QPO-CNAM-1 Query/result column name mismatch for column #0; cueventid                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ...
+E-QPO-QTYP-1 Query/result column type mismatch for column #0; INTEGER                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ...
+E-QPO-QTYP-2 Query/result column type mismatch for column taplint_c_2; DOUBLE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ...
+E-QPO-CNAM-2 Query/result column name mismatch for column #2; az                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ...
+E-QPO-QTYP-3 Query/result column type mismatch for column #2; FLOAT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+E-QPO-QTYP-4 Query/result column type mismatch for column taplint_c_4; FLOAT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ...
+E-QPO-CNAM-3 Query/result column name mismatch for column #4; ar                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ...
+E-QPO-QTYP-5 Query/result column type mismatch for column #4; FLOAT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+E-QPO-QTYP-6 Query/result column type mismatch for column taplint_c_6; FLOAT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ...
+E-QPO-CNAM-4 Query/result column name mismatch for column #6; ag                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ...
+E-QPO-QTYP-7 Query/result column type mismatch for column #6; FLOAT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+I-QPO-QSUB-2 Submitting query: SELECT aG                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ...
+W-QPO-VOFP-2 (l.1, c.331): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.3
+E-QPO-VOGF-1 (l.1, c.513): ID table.12845087 already defined RESOURCE (l.1, c.331)
+WARNING: Multiple elements with ID table.12845087
+E-QPO-RRES-2 TAP response document RESOURCE element is not marked type='results'
+E-QPO-NOST-2 Missing <INFO name='QUERY_STATUS'> element before TABLE
+E-QPO-NREC-1 More than MAXREC rows returned (7 > 0) for SELECT aG                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ...
+E-QPO-CNAM-5 Query/result column name mismatch for column #0; ag                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ...
+E-QPO-QTYP-8 Query/result column type mismatch for column #0; FLOAT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
+E-QPO-DFIO-1 TAP job failed for duff query [No Location field for 303 response from http://peter:8080/firethorn/tap/32771/sync]
+S-QPO-QNUM-1 Successful/submitted TAP queries: 2/2
+S-QPO-QTIM-1 Average successful query time: 19.4s
+
+Section QAS: Make ADQL queries in async mode
+F-QAS-ZCOL-1 No columns known for QUERY_20151026_124421642                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ...
+I-QAS-QSUB-1 Submitting query: SELECT TOP 8 cuEventID                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ...
+E-QAS-QERR-1 TAP query failed [no protocol: async/12812307]
+I-QAS-QSUB-2 Submitting query: SELECT aG                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ...
+E-QAS-QERR-2 TAP query failed [no protocol: async/12812308]
+I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
+E-QAS-DFIO-1 TAP job failed for duff query [no protocol: async/12812309]
+S-QAS-QNUM-1 Successful/submitted TAP queries: 0/2
+
+Section UWS: Test asynchronous UWS/TAP behaviour
+E-UWS-QFAA-1 Failed to submit TAP query SELECT TOP 100 * FROM atlasSource [no protocol: async/12812310]
+E-UWS-QFAA-2 Failed to submit TAP query SELECT TOP 100 * FROM atlasSource [no protocol: async/12812311]
+E-UWS-QFAA-3 Failed to submit TAP query SELECT TOP 100 * FROM atlasSource [no protocol: async/12812312]
+
+Section MDQ: Check table query result columns against declared metadata
+I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM atlasSource
+WARNING: Multiple elements with ID table.12845089
+E-MDQ-CLDR-1 SELECT * for table atlasSource                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ...
+E-MDQ-CLRD-1 SELECT * for table atlasSource                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ...
+I-MDQ-QSUB-2 Submitting query: SELECT TOP 1 * FROM atlasSourceXtwomass_psc
+WARNING: Multiple elements with ID table.12845091
+E-MDQ-CLRD-2 SELECT * for table atlasSourceXtwomass_psc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ...
+I-MDQ-QSUB-3 Submitting query: SELECT TOP 1 * FROM atlasSourceXtwomass_xsc
+WARNING: Multiple elements with ID table.12845093
+E-MDQ-CLRD-3 SELECT * for table atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ...
+I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM QUERY_20151026_124421642
+WARNING: Multiple elements with ID table.12845095
+E-MDQ-CLRD-4 SELECT * for table QUERY_20151026_124421642                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ...
+I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.columns
+WARNING: Multiple elements with ID table.12845097
+E-MDQ-CLRD-5 SELECT * for table TAP_SCHEMA.columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.key_columns
+WARNING: Multiple elements with ID table.12845099
+E-MDQ-CLRD-6 SELECT * for table TAP_SCHEMA.key_columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ...
+I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.keys
+WARNING: Multiple elements with ID table.12845101
+E-MDQ-CLRD-7 SELECT * for table TAP_SCHEMA.keys                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ...
+I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.schemas
+WARNING: Multiple elements with ID table.12845103
+E-MDQ-CLRD-8 SELECT * for table TAP_SCHEMA.schemas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.tables
+WARNING: Multiple elements with ID table.12845105
+E-MDQ-CLRD-9 SELECT * for table TAP_SCHEMA.tables                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ...
+S-MDQ-QNUM-1 Successful/submitted TAP queries: 9/9
+S-MDQ-QTIM-1 Average successful query time: 41.9s
+
+Section OBS: Test implementation of ObsCore Data Model
+I-OBS-OCCP-1 No table with name ivoa.ObsCore; probably just means no ObsCore intended but can't tell for sure because no capabilities present (earlier stages failed/skipped?)
+
+Section UPL: Make queries with table uploads
+I-UPL-QSUB-1 Submitting query: SELECT * FROM TAP_UPLOAD.t1
+E-UPL-QERR-1 TAP query failed [no protocol: async/12812322]
+I-UPL-QSUB-2 Submitting query: SELECT * FROM TAP_UPLOAD.t1
+E-UPL-QERR-2 TAP query failed [no protocol: async/12812323]
+
+Totals: Errors: 110; Warnings: 15; Infos: 52; Summaries: 16; Failures: 3
+
