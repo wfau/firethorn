@@ -301,7 +301,7 @@ class UWSJobFactory extends AbstractComponent{
 	            writer.append("<uws:phase>" + uwsjob.getPhase() + "</uws:phase>");
 	            writer.append("<uws:startTime xsi:nil='true'>" + uwsjob.getStartTime() + "</uws:startTime>");
 	            writer.append("<uws:endTime xsi:nil='true'>" + uwsjob.getEndTime() + "</uws:endTime>");
-	            writer.append("<uws:executionDuration>" + uwsjob.getExecutionDuration() + "<uws:executionDuration>");
+	            writer.append("<uws:executionDuration>" + uwsjob.getExecutionDuration() + "</uws:executionDuration>");
 	            writer.append("<uws:destruction>" + uwsjob.getDestructionTime() + "</uws:destruction>");
 	            writer.append("<uws:parameters>");
 			        if (uwsjob.getRequest()!=null){
