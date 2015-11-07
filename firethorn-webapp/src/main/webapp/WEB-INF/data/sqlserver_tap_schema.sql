@@ -1,7 +1,7 @@
 
 CREATE TABLE "TAP_SCHEMA"."schemas" ("schema_name" VARCHAR(1000), "description" VARCHAR(1000), "utype" VARCHAR(1000), "dbname" VARCHAR(1000), PRIMARY KEY("schema_name"));
 CREATE TABLE "TAP_SCHEMA"."tables" ("schema_name" VARCHAR(1000), "table_name" VARCHAR(1000), "table_type" VARCHAR(1000), "description" VARCHAR(1000), "utype" VARCHAR(1000), "dbname" VARCHAR(1000), PRIMARY KEY("table_name"));
-CREATE TABLE "TAP_SCHEMA"."columns" ("table_name" VARCHAR(1000), "column_name" VARCHAR(1000), "description" VARCHAR(1000), "unit" VARCHAR(1000), "ucd" VARCHAR(1000), "utype" VARCHAR(1000), "datatype" VARCHAR(1000), "size" INTEGER, "principal" SMALLINT, "indexed" SMALLINT, "std" SMALLINT, "dbname" VARCHAR(1000), PRIMARY KEY("table_name","column_name"));
+CREATE TABLE "TAP_SCHEMA"."columns" ("table_name" VARCHAR(1000), "column_name" VARCHAR(1000), "description" VARCHAR(1000), "unit" VARCHAR(1000), "ucd" VARCHAR(1000), "utype" VARCHAR(1000), "datatype" VARCHAR(1000), "size" INTEGER, "principal" INTEGER, "indexed" INTEGER, "std" INTEGER, "dbname" VARCHAR(1000), PRIMARY KEY("table_name","column_name"));
 CREATE TABLE "TAP_SCHEMA"."keys" ("key_id" VARCHAR(1000), "from_table" VARCHAR(1000), "target_table" VARCHAR(1000), "description" VARCHAR(1000), "utype" VARCHAR(1000), PRIMARY KEY("key_id"));
 CREATE TABLE "TAP_SCHEMA"."key_columns" ("key_id" VARCHAR(1000), "from_column" VARCHAR(1000), "target_column" VARCHAR(1000), PRIMARY KEY("key_id"));
 

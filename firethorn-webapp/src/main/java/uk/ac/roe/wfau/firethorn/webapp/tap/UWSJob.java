@@ -297,7 +297,7 @@ public class UWSJob {
 	}
 	
 	public String getDestructionTime(){
-		return null;
+		return "0";
 	}
 	
 	public void setRequest(String request){

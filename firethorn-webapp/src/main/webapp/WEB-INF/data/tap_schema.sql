@@ -3,7 +3,7 @@ CREATE SCHEMA TAP_SCHEMA;
 
 CREATE TABLE TAP_SCHEMA.schemas ("schema_name" VARCHAR, "description" VARCHAR, "utype" VARCHAR, "dbname" VARCHAR, PRIMARY KEY("schema_name"));
 CREATE TABLE TAP_SCHEMA.tables ("schema_name" VARCHAR, "table_name" VARCHAR, "table_type" VARCHAR, "description" VARCHAR, "utype" VARCHAR, "dbname" VARCHAR, PRIMARY KEY("table_name"));
-CREATE TABLE TAP_SCHEMA.columns ("table_name" VARCHAR, "column_name" VARCHAR, "description" VARCHAR, "unit" VARCHAR, "ucd" VARCHAR, "utype" VARCHAR, "datatype" VARCHAR, "size" INTEGER, "principal" SMALLINT, "indexed" SMALLINT, "std" SMALLINT, "dbname" VARCHAR, PRIMARY KEY("table_name","column_name"));
+CREATE TABLE TAP_SCHEMA.columns ("table_name" VARCHAR, "column_name" VARCHAR, "description" VARCHAR, "unit" VARCHAR, "ucd" VARCHAR, "utype" VARCHAR, "datatype" VARCHAR, "size" INTEGER, "principal" INTEGER, "indexed" INTEGER, "std" INTEGER, "dbname" VARCHAR, PRIMARY KEY("table_name","column_name"));
 CREATE TABLE TAP_SCHEMA."keys" ("key_id" VARCHAR, "from_table" VARCHAR, "target_table" VARCHAR, "description" VARCHAR, "utype" VARCHAR, PRIMARY KEY("key_id"));
 CREATE TABLE TAP_SCHEMA."key_columns" ("key_id" VARCHAR, "from_column" VARCHAR, "target_column" VARCHAR, PRIMARY KEY("key_id"));
 

@@ -156,14 +156,14 @@ public class AdqlTapAsyncController extends AbstractController {
 
 
 	@RequestMapping(value="{jobid}", method = RequestMethod.GET)
-	@ResponseBody
-	public String getJobInfo(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public void getJobInfo(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@PathVariable("jobid") String jobid,
 			final HttpServletResponse response)
 					throws Exception {
 
 		response.setContentType(CommonParams.TEXT_XML_MIME);
 		response.setCharacterEncoding("UTF-8");
+		PrintWriter writer = response.getWriter();
 
 		UWSJob uwsjob;
 		BlueQuery queryentity;
@@ -171,20 +171,24 @@ public class AdqlTapAsyncController extends AbstractController {
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {
-			return TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND);
+			writer.append(TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND));
+			return;
 		}
 		
 		if (resource != null) {
 			
 			if (queryentity != null) {
 				uwsjob = uwsfactory.create(resource, queryentity, jobType);
-				return uwsfactory.writeUWSJobToXML(uwsjob);
+				writer.append(uwsfactory.writeUWSJobToXML(uwsjob));
+				return;
 			} else {
-				return TapError.writeErrorToVotable(TapJobErrors.JOBID_MISSING);
+				writer.append(TapError.writeErrorToVotable(TapJobErrors.JOBID_MISSING));
+				return;
 			}
 
 		} else {
-			return TapError.writeErrorToVotable(TapJobErrors.RESOURCE_MISSING);
+			writer.append(TapError.writeErrorToVotable(TapJobErrors.RESOURCE_MISSING));
+			return;
 		}
 		
 	}
@@ -300,17 +304,18 @@ public class AdqlTapAsyncController extends AbstractController {
 
 	@RequestMapping(value = "/{jobid}/phase", method = RequestMethod.GET)
 	@UpdateAtomicMethod
-	@ResponseBody
-	public String phaseGet(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public void phaseGet(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
 
 		UWSJob uwsjob;
 		BlueQuery queryentity;
+		PrintWriter writer = response.getWriter();
 
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {
-			return TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND);
+			writer.append(TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND));
+			return;
 			
 		}
 		
@@ -327,36 +332,67 @@ public class AdqlTapAsyncController extends AbstractController {
 			phase = uwsjob.getPhase();
 
 		} catch (Exception e) {
-			return TapError.writeErrorToVotable(e.getMessage());
+			writer.append(TapError.writeErrorToVotable(e.getMessage()));
+			return;
 			
 		}
 		response.setContentType("text/plain");
-		return phase;
+		writer.append(phase);
+		return;
 	}
 
 	@RequestMapping(value = "/{jobid}/quote", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public String quote(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource)
+	public void quote(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+			final HttpServletResponse response)
 			throws IdentifierNotFoundException, Exception {
+
+		PrintWriter writer = response.getWriter();
+		response.setContentType("text/plain");
 		java.util.Date date = new java.util.Date();
-		return new Timestamp(date.getTime()).toString();
+		writer.append(new Timestamp(date.getTime()).toString());
+		return;
+
 	}
 
 	@RequestMapping(value = "/{jobid}/executionduration", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public String executionduration(@PathVariable String jobid,
-			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource)
+	public void executionduration(@PathVariable String jobid,
+			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+			final HttpServletResponse response)
 					throws IdentifierNotFoundException, Exception {
-		return Integer.toString(TapJobParams.EXECUTION_DURATION);
+		PrintWriter writer = response.getWriter();
+		response.setContentType("text/plain");
+		writer.append(Integer.toString(TapJobParams.EXECUTION_DURATION));
+		return;
 	}
 
 	@RequestMapping(value = "/{jobid}/destruction", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public String destruction(@PathVariable String jobid,
-			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource)
+	public void destruction(@PathVariable String jobid,
+			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+			final HttpServletResponse response)
 					throws IdentifierNotFoundException, Exception {
+		
+		UWSJob uwsjob;
+		BlueQuery queryentity;
+		PrintWriter writer = response.getWriter();
+		response.setContentType("text/plain");
+		
+		try {
+			
+			queryentity = getqueryentity(jobid);
 
-		return null;
+			if (queryentity != null) {
+				uwsjob = uwsfactory.create(resource, queryentity, jobType);
+			} else {
+				uwsjob = uwsfactory.create(resource, jobType);
+			}
+			
+			writer.append(uwsjob.getDestructionTime());
+			return;
+			
+		} catch (Exception e) {
+			writer.append("0");
+			return;
+		}
 	}
 
 	@RequestMapping(value = "/{jobid}/owner", method = { RequestMethod.POST, RequestMethod.GET })
