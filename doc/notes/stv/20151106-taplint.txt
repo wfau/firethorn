@@ -38,205 +38,161 @@ This is STILTS taplint, 3.0-5/55558a7 (2015-10-22)
 Static report types: ERROR(107), WARNING(37), INFO(16), SUMMARY(7), FAILURE(18)
 
 Section TMV: Validate table metadata against XML schema
-I-TMV-VURL-1 Validating http://peter:8080/firethorn/tap/1520435/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
-W-TMV-GONO-1 Optional resource /tables not present
+I-TMV-VURL-1 Validating http://peter:8080/firethorn/tap/15204353/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+E-TMV-ENFI-1 (l.14, c.14): cvc-complex-type.2.4.a: Invalid content was found starting with element 'schema'. One of '{schema}' is expected.
+S-TMV-VALI-1 SAX report: warnings 0, errors 1, fatal 0
 
 Section TME: Check content of tables metadata from /tables
-I-TME-TURL-1 Reading table metadata from http://peter:8080/firethorn/tap/1520435/tables
-E-TME-FLIO-1 Error reading table metadata [Table resource access failure (404 Not Found)]
-F-TME-GONE-1 Table metadata absent
+I-TME-TURL-1 Reading table metadata from http://peter:8080/firethorn/tap/15204353/tables
+E-TME-CRSV-1 Column name is ADQL reserved word 'size' in table columns - should delimit like '"size"'
+S-TME-SUMM-1 Schemas: 2, Tables: 8, Columns: 213, Foreign Keys: 0
+S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
+S-TME-FLGO-1 Other column flags: none
 
 Section TMS: Check content of tables metadata from TAP_SCHEMA
 I-TMS-QSUB-1 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.schemas
-I-TMS-QGET-1 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
-E-TMS-VOCT-1 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas)
-I-TMS-VVNL-1 Undeclared VOTable version; assuming v1.2
-W-TMS-VOEP-1 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-TMS-OSBJ-1 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-TMS-QERX-1 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
+I-TMS-QGET-1 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
 I-TMS-QSUB-2 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.tables
-I-TMS-QGET-2 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
-E-TMS-VOCT-2 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables)
-I-TMS-VVNL-2 Undeclared VOTable version; assuming v1.2
-W-TMS-VOEP-2 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-TMS-OSBJ-2 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-TMS-QERX-2 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
+I-TMS-QGET-2 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
 I-TMS-QSUB-3 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.columns
-I-TMS-QGET-3 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
-E-TMS-VOCT-3 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns)
-I-TMS-VVNL-3 Undeclared VOTable version; assuming v1.2
-W-TMS-VOEP-3 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-TMS-OSBJ-3 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-TMS-QERX-3 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
+I-TMS-QGET-3 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
 I-TMS-QSUB-4 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.keys
-I-TMS-QGET-4 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
-E-TMS-VOCT-4 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys)
-I-TMS-VVNL-4 Undeclared VOTable version; assuming v1.2
-W-TMS-VOEP-4 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-TMS-OSBJ-4 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-TMS-QERX-4 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
+I-TMS-QGET-4 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
 I-TMS-QSUB-5 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.key_columns
-I-TMS-QGET-5 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
-E-TMS-VOCT-5 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns)
-I-TMS-VVNL-5 Undeclared VOTable version; assuming v1.2
-W-TMS-VOEP-5 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-TMS-OSBJ-5 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-TMS-QERX-5 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
+I-TMS-QGET-5 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
 I-TMS-QSUB-6 Submitting query: SELECT principal, indexed, std, "size" FROM TAP_SCHEMA.columns
-I-TMS-QGET-6 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=10
-E-TMS-VOCT-6 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=10)
-I-TMS-VVNL-6 Undeclared VOTable version; assuming v1.2
-W-TMS-VOEP-6 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-TMS-OSBJ-6 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-TMS-CERR-1 Error reading TAP_SCHEMA.columns data [Result parse error: The element type "hr" must be terminated by the matching end-tag "</hr>".]
+I-TMS-QGET-6 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=220
+E-TMS-CINT-1 Column principal in TAP_SCHEMA.columns has wrong type short not int
+E-TMS-CINT-2 Column indexed in TAP_SCHEMA.columns has wrong type short not int
+E-TMS-CINT-3 Column std in TAP_SCHEMA.columns has wrong type short not int
 I-TMS-QSUB-7 Submitting query: SELECT column_name, description, unit, ucd, utype, datatype, indexed, principal, std, table_name FROM TAP_SCHEMA.columns
-I-TMS-QGET-7 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+column_name%2C+description%2C+unit%2C+ucd%2C+utype%2C+datatype%2C+indexed%2C+principal%2C+std%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=10
-E-TMS-VOCT-7 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+column_name%2C+description%2C+unit%2C+ucd%2C+utype%2C+datatype%2C+indexed%2C+principal%2C+std%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=10)
-I-TMS-VVNL-7 Undeclared VOTable version; assuming v1.2
-W-TMS-VOEP-7 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-TMS-OSBJ-7 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-TMS-CLIO-1 Error reading TAP_SCHEMA.columns table [Result parse error: The element type "hr" must be terminated by the matching end-tag "</hr>".]
+I-TMS-QGET-7 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+column_name%2C+description%2C+unit%2C+ucd%2C+utype%2C+datatype%2C+indexed%2C+principal%2C+std%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=220
 I-TMS-QSUB-8 Submitting query: SELECT from_column, target_column, key_id FROM TAP_SCHEMA.key_columns
-I-TMS-QGET-8 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=10
-E-TMS-VOCT-8 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=10)
-I-TMS-VVNL-8 Undeclared VOTable version; assuming v1.2
-W-TMS-VOEP-8 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-TMS-OSBJ-8 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-TMS-KCIO-1 Error reading TAP_SCHEMA.key_columns table [Result parse error: The element type "hr" must be terminated by the matching end-tag "</hr>".]
+I-TMS-QGET-8 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=220
 I-TMS-QSUB-9 Submitting query: SELECT key_id, target_table, description, utype, from_table FROM TAP_SCHEMA.keys
-I-TMS-QGET-9 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+key_id%2C+target_table%2C+description%2C+utype%2C+from_table+FROM+TAP_SCHEMA.keys&MAXREC=10
-E-TMS-VOCT-9 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+key_id%2C+target_table%2C+description%2C+utype%2C+from_table+FROM+TAP_SCHEMA.keys&MAXREC=10)
-I-TMS-VVNL-9 Undeclared VOTable version; assuming v1.2
-W-TMS-VOEP-9 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-TMS-OSBJ-9 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-TMS-FKIO-1 Error reading TAP_SCHEMA.keys table [Result parse error: The element type "hr" must be terminated by the matching end-tag "</hr>".]
-E-TMS-TBIO-1 Error reading TAP_SCHEMA.tables table [Result parse error: The element type "hr" must be terminated by the matching end-tag "</hr>".]
-E-TMS-SCIO-1 Error reading TAP_SCHEMA.schemas table [Result parse error: The element type "hr" must be terminated by the matching end-tag "</hr>".]
-F-TMS-GONE-1 Table metadata absent
-S-TMS-QNUM-1 Successful/submitted TAP queries: 0/11
+I-TMS-QGET-9 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+key_id%2C+target_table%2C+description%2C+utype%2C+from_table+FROM+TAP_SCHEMA.keys&MAXREC=220
+W-TMS-CLUN-1 Unused entry in TAP_SCHEMA.columns table: atlasSource
+W-TMS-CLUN-2 Unused entry in TAP_SCHEMA.columns table: atlasSourceXtwomass_psc
+W-TMS-CLUN-3 Unused entry in TAP_SCHEMA.columns table: atlasSourceXtwomass_xsc
+E-TMS-TNTN-1 Bad ADQL table name 'ATLASDR1.atlasSource                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ...
+E-TMS-TNTN-2 Bad ADQL table name 'ATLASDR1.atlasSourceXtwomass_psc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+E-TMS-TNTN-3 Bad ADQL table name 'ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+E-TMS-TNTN-4 Bad ADQL table name 'TAP_SCHEMA.columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ...
+E-TMS-TNTN-5 Bad ADQL table name 'TAP_SCHEMA.key_columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ...
+E-TMS-TNTN-6 Bad ADQL table name 'TAP_SCHEMA.keys                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ...
+E-TMS-TNTN-7 Bad ADQL table name 'TAP_SCHEMA.schemas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ...
+E-TMS-TNTN-8 Bad ADQL table name 'TAP_SCHEMA.tables                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ...
+E-TMS-CNID-1 Column name is not ADQL identifier 'column_name                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ...
+E-TMS-CNID-2 Column name is not ADQL identifier 'datatype                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ...
+E-TMS-CNID-3 Column name is not ADQL identifier 'description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ...
+E-TMS-CNID-4 Column name is not ADQL identifier 'indexed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ...
+E-TMS-CNID-5 Column name is not ADQL identifier 'principal                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ...
+E-TMS-CNID-6 Column name is not ADQL identifier 'size                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ...
+E-TMS-CNID-7 Column name is not ADQL identifier 'std                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ...
+E-TMS-CNID-8 Column name is not ADQL identifier 'table_name                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ...
+E-TMS-CNID-9 Column name is not ADQL identifier 'ucd                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ...
+S-TMS-SUMM-1 Schemas: 2, Tables: 8, Columns: 27, Foreign Keys: 0
+S-TMS-FLGS-1 Standard column flags: indexed: 7, principal: 7, std: 27
+S-TMS-QNUM-1 Successful/submitted TAP queries: 11/11
+S-TMS-QTIM-1 Average successful query time: 19.5s
 I-TMS-QSUB-x (2 more)
 I-TMS-QGET-x (2 more)
-E-TMS-VOCT-x (2 more)
-I-TMS-VVNL-x (2 more)
-W-TMS-VOEP-x (2 more)
-E-TMS-OSBJ-x (2 more)
+E-TMS-CNID-x (18 more)
 
 Section TMC: Compare table metadata from /tables and TAP_SCHEMA
-F-TMC-NOTM-1 Don't have two metadata sets to compare (earlier stages failed/skipped?)
+E-TMC-SM12-1 Schema ATLASDR1 exists in /tables but not in TAP_SCHEMA
+E-TMC-SM12-2 Schema TAP_SCHEMA exists in /tables but not in TAP_SCHEMA
+E-TMC-SM21-1 Schema ATLASDR1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ...
+E-TMC-SM21-2 Schema TAP_SCHEMA                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ...
 
 Section CPV: Validate capabilities against XML schema
-I-CPV-VURL-1 Validating http://peter:8080/firethorn/tap/1520435/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
-E-CPV-GONM-1 Mandatory resource /capabilities not present
+I-CPV-VURL-1 Validating http://peter:8080/firethorn/tap/15204353/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+E-CPV-EHAP-1 (l.1, c.2398): cvc-complex-type.2.4.b: The content of element 'capability' is not complete. One of '{language, outputFormat}' is expected.
+S-CPV-VALI-1 SAX report: warnings 0, errors 1, fatal 0
 
 Section CAP: Check content of TAPRegExt capabilities record
-I-CAP-CURL-1 Reading capability metadata from http://peter:8080/firethorn/tap/1520435/capabilities
-E-CAP-CPIO-1 Error reading capabilities metadata [http://peter:8080/firethorn/tap/1520435/capabilities]
+I-CAP-CURL-1 Reading capability metadata from http://peter:8080/firethorn/tap/15204353/capabilities
+E-CAP-NOOF-1 No output formats defined
 
 Section AVV: Validate availability against XML schema
-I-AVV-VURL-1 Validating http://peter:8080/firethorn/tap/1520435/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
-W-AVV-GONO-1 Optional resource /availability not present
+I-AVV-VURL-1 Validating http://peter:8080/firethorn/tap/15204353/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
 
 Section QGE: Make ADQL queries in sync GET mode
-I-QGE-SCHM-1 Using standard TAP_SCHEMA tables for metadata
-I-QGE-QSUB-1 Submitting query: SELECT TOP 10 schema_name FROM TAP_SCHEMA.tables
-I-QGE-QGET-1 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+schema_name+FROM+TAP_SCHEMA.tables
-E-QGE-VOCT-1 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+schema_name+FROM+TAP_SCHEMA.tables)
-I-QGE-VVNL-1 Undeclared VOTable version; assuming v1.2
-W-QGE-VOEP-1 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QGE-OSBJ-1 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QGE-QERX-1 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
-I-QGE-QSUB-2 Submitting query: SELECT TOP 1 schema_name FROM TAP_SCHEMA.tables
-I-QGE-QGET-2 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+schema_name+FROM+TAP_SCHEMA.tables
-E-QGE-VOCT-2 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+schema_name+FROM+TAP_SCHEMA.tables)
-I-QGE-VVNL-2 Undeclared VOTable version; assuming v1.2
-W-QGE-VOEP-2 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QGE-OSBJ-2 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QGE-QERX-2 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
-I-QGE-QSUB-3 Submitting query: SELECT TOP 1 schema_name FROM TAP_SCHEMA.tables
-I-QGE-QGET-3 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+schema_name+FROM+TAP_SCHEMA.tables
-E-QGE-VOCT-3 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+schema_name+FROM+TAP_SCHEMA.tables)
-I-QGE-VVNL-3 Undeclared VOTable version; assuming v1.2
-W-QGE-VOEP-3 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QGE-OSBJ-3 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QGE-QERX-3 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
-I-QGE-QSUB-4 Submitting query: SELECT TOP 8 description, utype AS taplint_c_2, T.target_table, from_table AS taplint_c_4, key_id  FROM TAP_SCHEMA.keys AS T
-I-QGE-QGET-4 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+description%2C+utype+AS+taplint_c_2%2C+T.target_table%2C+from_table+AS+taplint_c_4%2C+key_id++FROM+TAP_SCHEMA.keys+AS+T
-E-QGE-VOCT-4 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+description%2C+utype+AS+taplint_c_2%2C+T.target_table%2C+from_table+AS+taplint_c_4%2C+key_id++FROM+TAP_SCHEMA.keys+AS+T)
-I-QGE-VVNL-4 Undeclared VOTable version; assuming v1.2
-W-QGE-VOEP-4 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QGE-OSBJ-4 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QGE-QERX-4 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
-I-QGE-QSUB-5 Submitting query: SELECT table_name FROM TAP_SCHEMA.columns
-I-QGE-QGET-5 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name+FROM+TAP_SCHEMA.columns&MAXREC=0
-E-QGE-VOCT-5 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name+FROM+TAP_SCHEMA.columns&MAXREC=0)
-I-QGE-VVNL-5 Undeclared VOTable version; assuming v1.2
-W-QGE-VOEP-5 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QGE-OSBJ-5 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QGE-QERX-5 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
+F-QGE-ZCOL-1 No columns known for ATLASDR1.atlasSourceXtwomass_psc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+F-QGE-ZCOL-2 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+F-QGE-ZCOL-3 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
 I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
-I-QGE-QGET-6 Query GET URL: http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
-E-QGE-VOCT-6 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY)
-I-QGE-VVNL-6 Undeclared VOTable version; assuming v1.2
-W-QGE-VOEP-6 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QGE-OSBJ-6 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QGE-DFSF-1 TAP result parse failed for "DUFF QUERY" [The element type "hr" must be terminated by the matching end-tag "</hr>".]
-S-QGE-QNUM-1 Successful/submitted TAP queries: 0/5
+I-QGE-QGET-1 Query GET URL: http://peter:8080/firethorn/tap/15204353/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
+S-QGE-QNUM-1 Successful/submitted TAP queries: 0/0
 
 Section QPO: Make ADQL queries in sync POST mode
-I-QPO-QSUB-1 Submitting query: SELECT TOP 10 schema_name FROM TAP_SCHEMA.tables
-E-QPO-VOCT-1 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync)
-I-QPO-VVNL-1 Undeclared VOTable version; assuming v1.2
-W-QPO-VOEP-1 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QPO-OSBJ-1 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QPO-QERX-1 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
-I-QPO-QSUB-2 Submitting query: SELECT TOP 8 description, utype AS taplint_c_2, T.target_table, from_table AS taplint_c_4, key_id  FROM TAP_SCHEMA.keys AS T
-E-QPO-VOCT-2 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync)
-I-QPO-VVNL-2 Undeclared VOTable version; assuming v1.2
-W-QPO-VOEP-2 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QPO-OSBJ-2 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QPO-QERX-2 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
-I-QPO-QSUB-3 Submitting query: SELECT table_name FROM TAP_SCHEMA.columns
-E-QPO-VOCT-3 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync)
-I-QPO-VVNL-3 Undeclared VOTable version; assuming v1.2
-W-QPO-VOEP-3 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QPO-OSBJ-3 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QPO-QERX-3 TAP query result parse failed [The element type "hr" must be terminated by the matching end-tag "</hr>".]
+F-QPO-ZCOL-1 No columns known for ATLASDR1.atlasSourceXtwomass_psc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+F-QPO-ZCOL-2 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+F-QPO-ZCOL-3 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
 I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
-E-QPO-VOCT-4 Bad content type text/html;charset=utf-8 for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/1520435/sync)
-I-QPO-VVNL-4 Undeclared VOTable version; assuming v1.2
-W-QPO-VOEP-4 (l.1, c.22): Element not namespaced, should be in http://www.ivoa.net/xml/VOTable/v1.2
-E-QPO-OSBJ-4 (l.1, c.981): The element type "hr" must be terminated by the matching end-tag "</hr>".
-E-QPO-DFSF-1 TAP result parse failed for "DUFF QUERY" [The element type "hr" must be terminated by the matching end-tag "</hr>".]
-S-QPO-QNUM-1 Successful/submitted TAP queries: 0/3
+S-QPO-QNUM-1 Successful/submitted TAP queries: 0/0
 
 Section QAS: Make ADQL queries in async mode
-I-QAS-QSUB-1 Submitting query: SELECT TOP 10 schema_name FROM TAP_SCHEMA.tables
-E-QAS-QERR-1 TAP query failed [Non-303 response (404 Not Found)]
-I-QAS-QSUB-2 Submitting query: SELECT TOP 8 description, utype AS taplint_c_2, T.target_table, from_table AS taplint_c_4, key_id  FROM TAP_SCHEMA.keys AS T
-E-QAS-QERR-2 TAP query failed [Non-303 response (404 Not Found)]
-I-QAS-QSUB-3 Submitting query: SELECT table_name FROM TAP_SCHEMA.columns
-E-QAS-QERR-3 TAP query failed [Non-303 response (404 Not Found)]
+F-QAS-ZCOL-1 No columns known for ATLASDR1.atlasSourceXtwomass_psc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+F-QAS-ZCOL-2 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+F-QAS-ZCOL-3 No columns known for ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
 I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
-E-QAS-DFIO-1 TAP job failed for duff query [Non-303 response (404 Not Found)]
-S-QAS-QNUM-1 Successful/submitted TAP queries: 0/3
+I-QAS-QJOB-1 Submitted query at http://peter:8080/firethorn/tap/15204353/async/15859726
+E-QAS-VOCT-1 Bad content type text/html for HTTP response which should contain VOTable result or error document (http://peter:8080/firethorn/tap/15204353/async/15859726/error)
+S-QAS-QNUM-1 Successful/submitted TAP queries: 0/0
 
 Section UWS: Test asynchronous UWS/TAP behaviour
-E-UWS-QFAA-1 Failed to submit TAP query SELECT TOP 100 * FROM TAP_SCHEMA.schemas [Non-303 response (404 Not Found)]
-E-UWS-QFAA-2 Failed to submit TAP query SELECT TOP 100 * FROM TAP_SCHEMA.schemas [Non-303 response (404 Not Found)]
-E-UWS-QFAA-3 Failed to submit TAP query SELECT TOP 100 * FROM TAP_SCHEMA.schemas [Non-303 response (404 Not Found)]
+I-UWS-CJOB-1 Created new job http://peter:8080/firethorn/tap/15204353/async/15859727
+E-UWS-GMIM-1 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15859727/phase
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://peter:8080/firethorn/tap/15204353/async/15859727/parameters
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://peter:8080/firethorn/tap/15204353/async/15859727/phase
+E-UWS-GMIM-2 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15859727/phase
+E-UWS-PORE-1 Error response 405 Method Not Allowed for POST ACTION=DELETE to http://peter:8080/firethorn/tap/15204353/async/15859727
+I-UWS-CJOB-2 Created new job http://peter:8080/firethorn/tap/15204353/async/15859728
+E-UWS-GMIM-3 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15859728/phase
+E-UWS-DENO-1 Deleted job gives HTTP response 200 not 404 for http://peter:8080/firethorn/tap/15204353/async/15859728
+I-UWS-CJOB-3 Created new job http://peter:8080/firethorn/tap/15204353/async/15859729
+E-UWS-GMIM-4 Incorrect Content-Type "text/html;charset=UTF-8", should be one of [text/xml, application/xml] for http://peter:8080/firethorn/tap/15204353/async/15859729
+E-UWS-GMIM-5 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15859729/quote
+E-UWS-GMIM-6 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15859729/executionduration
+E-UWS-JDED-1 Execution duration mismatch between job info and /executionduration URL (null != 180000)
+W-UWS-NOCT-1 No Content-Type header for http://peter:8080/firethorn/tap/15204353/async/15859729/destruction
+W-UWS-TFMT-1 Not ISO-8601 content "" from http://peter:8080/firethorn/tap/15204353/async/15859729/destruction
+E-UWS-JDDE-1 Destruction time mismatch between job info and /destruction URL (null != )
+E-UWS-GMIM-7 Incorrect Content-Type "text/html", should be text/plain for http://peter:8080/firethorn/tap/15204353/async/15859729/phase
+I-UWS-POPA-3 POSTed PHASE=RUN to http://peter:8080/firethorn/tap/15204353/async/15859729/phase
 
 Section MDQ: Check table query result columns against declared metadata
-F-MDQ-NOTM-1 No table metadata available (earlier stages failed/skipped?) - will not run test queries
+I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM ATLASDR1.atlasSource
+E-MDQ-CLRD-1 SELECT * for table ATLASDR1.atlasSource                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ...
+I-MDQ-QSUB-2 Submitting query: SELECT TOP 1 * FROM ATLASDR1.atlasSourceXtwomass_psc
+E-MDQ-CLRD-2 SELECT * for table ATLASDR1.atlasSourceXtwomass_psc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ...
+I-MDQ-QSUB-3 Submitting query: SELECT TOP 1 * FROM ATLASDR1.atlasSourceXtwomass_xsc
+E-MDQ-CLRD-3 SELECT * for table ATLASDR1.atlasSourceXtwomass_xsc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ...
+I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.columns
+E-MDQ-CLDR-1 SELECT * for table TAP_SCHEMA.columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+E-MDQ-CLRD-4 SELECT * for table TAP_SCHEMA.columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.key_columns
+E-MDQ-CLDR-2 SELECT * for table TAP_SCHEMA.key_columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ...
+E-MDQ-CLRD-5 SELECT * for table TAP_SCHEMA.key_columns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ...
+I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.keys
+E-MDQ-CLDR-3 SELECT * for table TAP_SCHEMA.keys                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ...
+E-MDQ-CLRD-6 SELECT * for table TAP_SCHEMA.keys                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ...
+I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.schemas
+E-MDQ-CLDR-4 SELECT * for table TAP_SCHEMA.schemas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+E-MDQ-CLRD-7 SELECT * for table TAP_SCHEMA.schemas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ...
+I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.tables
+E-MDQ-CLDR-5 SELECT * for table TAP_SCHEMA.tables                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ...
+E-MDQ-CLRD-8 SELECT * for table TAP_SCHEMA.tables                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ...
+S-MDQ-QNUM-1 Successful/submitted TAP queries: 8/8
+S-MDQ-QTIM-1 Average successful query time: 23.9s
 
 Section OBS: Test implementation of ObsCore Data Model
-F-OBS-NOTM-1 No table metadata (earlier stages failed/skipped?)
+I-OBS-NODM-1 Table capabilities lists no DataModel ivo://ivoa.net/std/ObsCore/v1.0 - no ObsCore tests
 
 Section UPL: Make queries with table uploads
-I-UPL-QSUB-1 Submitting query: SELECT * FROM TAP_UPLOAD.t1
-E-UPL-QERR-1 TAP query failed [Non-303 response (404 Not Found)]
-I-UPL-QSUB-2 Submitting query: SELECT * FROM TAP_UPLOAD.t1
-E-UPL-QERR-2 TAP query failed [Non-303 response (404 Not Found)]
+F-UPL-NOUP-1 Table capabilities lists no upload methods - will not attempt upload tests
 
-Totals: Errors: 75; Warnings: 23; Infos: 71; Summaries: 4; Failures: 5
-
+Totals: Errors: 71; Warnings: 5; Infos: 47; Summaries: 15; Failures: 10
 
