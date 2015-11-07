@@ -330,7 +330,7 @@ public class AdqlTapAsyncController extends AbstractController {
 			return TapError.writeErrorToVotable(e.getMessage());
 			
 		}
-
+		response.setContentType("text/plain");
 		return phase;
 	}
 
