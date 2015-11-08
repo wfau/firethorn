@@ -59,16 +59,13 @@ public class TapError {
 		        // Based on VOTable-1.3 specification.
 		        // http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
 				
-				writer.append("<?xml version='1.0' encoding='UTF-8'?>");
 				writer.append("<VOTABLE ");
-				writer.append(" version=\"1.2\" ");
+				writer.append("version=\"1.2\" ");
 				writer.append("xmlns=\"http://www.ivoa.net/xml/VOTable/v1.2\" ");
 				writer.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-				writer.append("xsi:schemaLocation=\"http://www.ivoa.net/xml/VOTable/v1.2 http://www.ivoa.net/xml/VOTable/v1.2\" >");
+				writer.append("xsi:schemaLocation=\"http://www.ivoa.net/xml/VOTable/v1.2 http://www.ivoa.net/xml/VOTable/v1.2\">");
 				//writer.append("<VOTABLE version=\"1.2\" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.ivoa.net/xml/VOTable/v1.2 http://vo.ari.uni-heidelberg.de/docs/schemata/VOTable-1.2.xsd\">");
-		            writer.append("<RESOURCE");
-		            writer.append(" type='results'");
-		            writer.append(">");
+		            writer.append("<RESOURCE type='results'>");
 			            writer.append("<INFO");
 			            writer.append(" name='QUERY_STATUS'");
 			            writer.append(" value='ERROR' >");
@@ -95,15 +92,12 @@ public class TapError {
 			// Based on VOTable-1.3 specification.
 			// http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
 			
-			writer.append("<?xml version='1.0' encoding='UTF-8'?>");
 			writer.append("<VOTABLE ");
-			writer.append(" version=\"1.2\" ");
+			writer.append("version=\"1.2\" ");
 			writer.append("xmlns=\"http://www.ivoa.net/xml/VOTable/v1.2\" ");
 			writer.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-			writer.append("xsi:schemaLocation=\"http://www.ivoa.net/xml/VOTable/v1.2 http://www.ivoa.net/xml/VOTable/v1.2\" >");
-			writer.append("<RESOURCE");
-			writer.append(" type='results'");
-			writer.append(">");
+			writer.append("xsi:schemaLocation=\"http://www.ivoa.net/xml/VOTable/v1.2 http://www.ivoa.net/xml/VOTable/v1.2\">");
+			writer.append("<RESOURCE type='results'>");
 			    writer.append("<INFO");
 			    writer.append(" name='QUERY_STATUS'");
 			    writer.append(" value='ERROR' >");

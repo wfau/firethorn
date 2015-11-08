@@ -103,8 +103,12 @@ public class AdqlTapSyncController extends AbstractController {
             )
 					throws IdentifierNotFoundException, IOException {
 
+		
+		response.setContentType(CommonParams.TEXT_XML_MIME);
+
 		String results = "";
 		PrintWriter writer = response.getWriter();
+
 		// Check input parameters and return VOTable with appropriate message if
 		// any errors found
 		boolean valid = checkParams(REQUEST, LANG, QUERY, FORMAT, VERSION);
@@ -130,24 +134,25 @@ public class AdqlTapSyncController extends AbstractController {
 												query.state() == TaskState.RUNNING || 
 														query.state() == TaskState.CANCELLED
 								) {
-
-						
+							
+							response.setContentType("text/xml");
+						    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 							writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 							return;
 							
 						} else if (query.state() == TaskState.FAILED || query.state() == TaskState.ERROR) {
+							response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+							response.setContentType("text/xml");
 							
 							if (query.syntax().friendly()!=null){
 								writer.append(TapError.writeErrorToVotable(query.syntax().friendly()));
 							} else {
 								writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 							}
-							response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-							response.setContentType("text/xml");
+				
 							return;
 							
 						} else {
-							
 							results = query.results().adql().link() + "/votable";
 							response.setStatus(HttpServletResponse.SC_SEE_OTHER);
 						    response.setHeader("Location", results);
@@ -199,7 +204,10 @@ public class AdqlTapSyncController extends AbstractController {
 			valid = false;
 			return valid;
 		} else if (LANG != null) {
-			if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")) {
+			if (!LANG.equalsIgnoreCase("ADQL") && 
+					!LANG.equalsIgnoreCase("ADQL-2.0")  && 
+					!LANG.equalsIgnoreCase("ADQL-1.0") && 
+					!LANG.equalsIgnoreCase("PQL")) {
 				error_message = "Invalid LANGUAGE: " + LANG;
 				TapError.writeErrorToVotable(error_message);
 				valid = false;

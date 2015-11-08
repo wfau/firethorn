@@ -510,7 +510,10 @@ public class AdqlTapAsyncController extends AbstractController {
 			TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING);
 			valid = false;
 			return valid;
-		} else if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")) {
+		} else if (!LANG.equalsIgnoreCase("ADQL") && 
+				!LANG.equalsIgnoreCase("ADQL-2.0")  && 
+				!LANG.equalsIgnoreCase("ADQL-1.0") && 
+				!LANG.equalsIgnoreCase("PQL")) {
 			error_message = "Invalid LANGUAGE: " + LANG;
 			TapError.writeErrorToVotable(error_message);
 			valid = false;
