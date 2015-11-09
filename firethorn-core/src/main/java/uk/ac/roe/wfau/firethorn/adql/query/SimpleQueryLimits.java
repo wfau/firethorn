@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Simple implementation of the AdqlQuery.QueryLimits interface.
+ * @todo combine BaseQueryLimits, AdqlQueryLimits and SimpleQueryLimits
  *
  */
 public class SimpleQueryLimits

@@ -25,6 +25,8 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Timings;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.Handle;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.Param;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -474,4 +476,11 @@ extends BlueTask<BlueQuery>
     extends BlueTask.Handle
         {
         }
+
+    /**
+     * Our {@link BlueQuery.Handle}.
+     *
+    public Handle handle();
+     */
+
     }

@@ -366,7 +366,8 @@ extends NamedEntity
          * A {@link Map} of task parameters.
          * 
          */
-        Map<String, String> map();
+        public Map<String, String> map();
+
         }
 
     /**

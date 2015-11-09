@@ -1359,7 +1359,7 @@ implements BlueTask<TaskType>
      *
      */
     @ElementCollection(
-    		fetch = FetchType.EAGER
+        fetch = FetchType.EAGER
         )
     @MapKeyColumn(
         name="name"
@@ -1374,9 +1374,9 @@ implements BlueTask<TaskType>
     private Map<String, String> params = new HashMap<String, String>();
     
     @Override
-    public Param param()
+    public BlueTask.Param param()
         {
-        return new Param()
+        return new BlueTask.Param()
             {
             @Override
             public Map<String, String> map()

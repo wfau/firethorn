@@ -156,17 +156,6 @@ extends NamedEntity, Job
          */
         public Limits combine(final Limits that);
        
-        }
-
-    /**
-     * Modifiable Query Limits.
-     * @todo Fold this back into Limits
-     * 
-     */
-    public interface ModifiableLimits
-    extends Limits
-        {
-
         /**
          * The row limit.
          * @param value The row limit.
@@ -194,7 +183,7 @@ extends NamedEntity, Job
      * The query limits.
      * 
      */
-    public ModifiableLimits limits();
+    public Limits limits();
 
     /**
      * Set the query limits using a combination of the current values and the values from another Limits object.

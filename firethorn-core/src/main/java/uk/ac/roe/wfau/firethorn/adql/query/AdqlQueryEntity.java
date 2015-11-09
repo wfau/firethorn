@@ -1518,7 +1518,7 @@ implements AdqlQuery, AdqlParserQuery
     private AdqlQueryLimits limits;
     
     @Override
-    public ModifiableLimits limits()
+    public AdqlQuery.Limits limits()
         {
         /*
          * Need to check for null.

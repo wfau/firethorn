@@ -17,9 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
+import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 
 /**
  * Base class for implementations of the AdqlQuery.Limits interface.
+ * @todo combine BaseQueryLimits, AdqlQueryLimits and SimpleQueryLimits
  *
  */
 abstract public class BaseQueryLimits
@@ -27,7 +30,7 @@ implements AdqlQuery.Limits
     {
 
     @Override
-    public AdqlQuery.Limits lowest(AdqlQuery.Limits that)
+    public Limits lowest(final Limits that)
         {
         return lowest(
             this,
@@ -36,7 +39,7 @@ implements AdqlQuery.Limits
         }
 
     @Override
-    public AdqlQuery.Limits combine(AdqlQuery.Limits that)
+    public Limits combine(final Limits that)
         {
         return combine(
             this,
@@ -215,4 +218,22 @@ implements AdqlQuery.Limits
                 }
             };
         }
+
+    @Override
+    public void rows(final Long value)
+    	{
+    	throw new NotImplementedException(); 
+    	}
+
+    @Override
+    public void cells(final Long value)
+    	{
+    	throw new NotImplementedException(); 
+    	}
+    
+    @Override
+    public void time(final Long value)
+    	{
+    	throw new NotImplementedException(); 
+    	}
     }

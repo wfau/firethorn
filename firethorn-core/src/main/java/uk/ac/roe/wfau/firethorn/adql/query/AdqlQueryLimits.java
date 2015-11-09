@@ -27,6 +27,7 @@ import javax.persistence.FetchType;
 /**
  * Embeddable implementation of the AdqlQuery.QueryLimits interface.
  * @todo Check that the Hibernate annotations don't have any side effects when used as a POJO
+ * @todo combine BaseQueryLimits, AdqlQueryLimits and SimpleQueryLimits
  *
  */
 @Embeddable
@@ -35,7 +36,7 @@ import javax.persistence.FetchType;
     )
 public class AdqlQueryLimits
 extends BaseQueryLimits
-implements AdqlQuery.ModifiableLimits
+implements AdqlQuery.Limits
     {
     
     /**
