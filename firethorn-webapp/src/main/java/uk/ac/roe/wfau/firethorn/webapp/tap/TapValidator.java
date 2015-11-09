@@ -90,7 +90,21 @@ public class TapValidator {
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-
+	
+	/**
+	 * Check if a given string can be parsed as an Integer
+	 * @param str
+	 * @return true|false
+	 */
+	public boolean isStringInt(String s) {
+	    try {
+	    	Integer.parseInt(s);
+	        return true;
+	    } catch (NumberFormatException ex){
+	        return false;
+	    }
+	}
+	
 	/**
 	 * Check the parameters for a TAP job
 	 * @param REQUEST
@@ -155,6 +169,14 @@ public class TapValidator {
 			}
 		}
 		
+		if (getMaxrec() != null) {
+				if (!isStringInt(getMaxrec())){
+					error_message = "MAXREC '" + getVersion() + "' is not a valid integer" ;
+					setErrorMessage(TapError.writeErrorToVotable(error_message));
+					valid = false;
+				}
+			
+		}
 		return valid;
 
 	}
