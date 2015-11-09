@@ -380,4 +380,38 @@ public class BlueQueryBean
                 }
             };
         }
+
+    /**
+     * An {@link AdqlQuery.Limits} bean.
+     *
+     */
+    public interface LimitsBean
+        {
+        public Long getRows();
+        public Long getCells();
+        public Long getTime();
+        }
+
+    /**
+     * An {@link AdqlQuery.Limits}.
+     *
+     */
+    public LimitsBean getLimits()
+        {
+        return new LimitsBean()
+            {
+            public Long getRows()
+                {
+                return entity().limits().rows(); 
+                }
+            public Long getCells()
+                {
+                return entity().limits().cells(); 
+                }
+            public Long getTime()
+                {
+                return entity().limits().time(); 
+                }
+            };
+        }
     }

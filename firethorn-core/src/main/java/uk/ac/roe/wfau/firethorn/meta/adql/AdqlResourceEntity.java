@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
@@ -438,6 +439,18 @@ implements AdqlResource
                 return services().blues().create(
                     AdqlResourceEntity.this,
                     input,
+                    next,
+                    wait
+                    );
+                }
+            @Override
+            public BlueQuery create(String input, final AdqlQuery.Limits limits, TaskState next, Long wait)
+                throws InvalidRequestException, InternalServerErrorException
+                {
+                return services().blues().create(
+                    AdqlResourceEntity.this,
+                    input,
+                    limits,
                     next,
                     wait
                     );

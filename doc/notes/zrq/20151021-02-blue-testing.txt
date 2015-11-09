@@ -466,14 +466,6 @@ EOF
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
 
-        queryself=$(
-            cat blue-query.json | self
-            )
-
-        querynode=$(
-            cat blue-query.json | self | node
-            )
-
         queryident=$(
             cat blue-query.json | self | ident
             )
@@ -548,14 +540,6 @@ EOF
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
 
-        queryself=$(
-            cat blue-query.json | self
-            )
-
-        querynode=$(
-            cat blue-query.json | self | node
-            )
-
         queryident=$(
             cat blue-query.json | self | ident
             )
@@ -600,7 +584,6 @@ EOF
             --data "blue.query.wait=60000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
-
 
         queryself=$(
             cat blue-query.json | self

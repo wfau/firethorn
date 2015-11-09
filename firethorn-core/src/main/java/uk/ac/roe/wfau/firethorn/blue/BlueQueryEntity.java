@@ -1122,6 +1122,7 @@ implements BlueQuery
             );
         }
 
+    @Override
     public void limits(final Long rows, final Long cells, final Long time)
         {
         this.limits = new AdqlQueryLimits(
@@ -1478,13 +1479,13 @@ implements BlueQuery
 				@Override
 				public AdqlQuery.Limits limits()
 					{
-					return BlueQueryEntity.this.limits;
+					return BlueQueryEntity.this.limits();
 					}
 					
 				@Override
 				public AdqlQuery.Delays delays()
 					{
-					return BlueQueryEntity.this.delays ;
+					return BlueQueryEntity.this.delays() ;
 					}
 
 				@Override

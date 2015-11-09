@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
@@ -62,37 +63,61 @@ public class BlueQueryController
      * Request param name for the {@link BlueQuery} identifier, [{@value}].
      *
      */
-    public static final String IDENT_PARAM_NAME = BlueQuery.LinkFactory.IDENT_FIELD ;
+    public static final String QUERY_IDENT_PARAM = BlueQuery.LinkFactory.IDENT_FIELD ;
 
     /**
      * Request param name for the {@link BlueQuery} input, [{@value}].
      *
      */
-    public static final String INPUT_PARAM_NAME = "blue.query.input" ;
+    public static final String QUERY_INPUT_PARAM = "blue.query.input" ;
 
     /**
      * Request param name for the previous {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String PREV_STATUS_PARAM_NAME = "blue.query.prev.status" ;
+    public static final String PREV_STATUS_PARAM = "blue.query.prev.status" ;
 
     /**
      * Request param name for the next {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String NEXT_STATUS_PARAM_NAME = "blue.query.next.status" ;
-
+    public static final String NEXT_STATUS_PARAM = "blue.query.next.status" ;
+    
     /**
-     * Request param name for the {@link BlueQuery.Callback} row count, [{@value}].
+     * Request param name for the row limit, [{@value}].
      *
      */
-    public static final String ROWCOUNT_PARAM_NAME = "blue.query.rowcount" ;
+    public static final String QUERY_LIMT_ROWS = "blue.query.limit.rows" ;
+
+    /**
+     * Request param name for the total cell limit, [{@value}].
+     *
+     */
+    public static final String QUERY_LIMT_CELLS = "blue.query.limit.cells" ;
+
+    /**
+     * Request param name for the execution time limit, [{@value}].
+     *
+     */
+    public static final String QUERY_LIMT_TIME = "blue.query.limit.time" ;
 
     /**
      * Request param name for the wait, [{@value}].
      *
      */
-    public static final String WAIT_PARAM_NAME = "blue.query.wait" ;
+    public static final String REQUEST_WAIT_PARAM = "blue.query.wait" ;
+
+    /**
+     * Request param name for the {@link BlueQuery.Callback} {@link BlueTask.TaskState}, [{@value}].
+     *
+     */
+    public static final String CALLBACK_STATUS = "blue.query.status" ;
+
+    /**
+     * Request param name for the {@link BlueQuery.Callback} row count, [{@value}].
+     *
+     */
+    public static final String CALLBACK_ROWCOUNT = "blue.query.rowcount" ;
 
     /**
      * Our{@link BlueQuery.IdentFactory} implementation.
@@ -264,13 +289,13 @@ public class BlueQueryController
     @ResponseBody
     @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
     public BlueQueryBean select(
-        @PathVariable(value=IDENT_PARAM_NAME)
+        @PathVariable(value=QUERY_IDENT_PARAM)
         final String ident,
-        @RequestParam(value=PREV_STATUS_PARAM_NAME, required=false)
+        @RequestParam(value=PREV_STATUS_PARAM, required=false)
         final TaskState prev,
-        @RequestParam(value=NEXT_STATUS_PARAM_NAME, required=false)
+        @RequestParam(value=NEXT_STATUS_PARAM, required=false)
         final TaskState next,
-        @RequestParam(value=WAIT_PARAM_NAME, required=false)
+        @RequestParam(value=REQUEST_WAIT_PARAM, required=false)
         final Long wait
         ) throws IdentifierNotFoundException {
         log.debug("select(String, TaskStatus, TaskStatus, Long)");
@@ -296,7 +321,7 @@ public class BlueQueryController
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
 
-     * @param prev The previous {@link TaskState} t wait from.
+     * @param prev The previous {@link TaskState} to wait from.
      * @param next The next {@link TaskState} to wait for.
      * @param wait The wait timeout, zero for no wait, null for maximum wait.
 
@@ -309,16 +334,25 @@ public class BlueQueryController
     @ResponseBody
     @RequestMapping(value=WebappLinkFactory.IDENT_TOKEN, method=RequestMethod.POST, produces=JSON_MIME)
     public BlueQueryBean update(
-        @PathVariable(value=IDENT_PARAM_NAME)
+        @PathVariable(value=QUERY_IDENT_PARAM)
         final String ident,
-        @RequestParam(value=INPUT_PARAM_NAME, required=false)
+        @RequestParam(value=QUERY_INPUT_PARAM, required=false)
         final String input,
-        @RequestParam(value=PREV_STATUS_PARAM_NAME, required=false)
+
+        @RequestParam(value=PREV_STATUS_PARAM, required=false)
         final TaskState prev,
-        @RequestParam(value=NEXT_STATUS_PARAM_NAME, required=false)
+        @RequestParam(value=NEXT_STATUS_PARAM, required=false)
         final TaskState next,
-        @RequestParam(value=WAIT_PARAM_NAME, required=false)
-        final Long wait
+        @RequestParam(value=REQUEST_WAIT_PARAM, required=false)
+        final Long wait,
+
+        @RequestParam(value=QUERY_LIMT_CELLS, required=false)
+        final Long cells,
+        @RequestParam(value=QUERY_LIMT_ROWS, required=false)
+        final Long rows,
+        @RequestParam(value=QUERY_LIMT_TIME, required=false)
+        final Long time
+            
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
@@ -357,11 +391,11 @@ public class BlueQueryController
     @ResponseBody
     @RequestMapping(value=BlueQuery.LinkFactory.CALLBACK_PATH, method=RequestMethod.POST, consumes=FORM_MIME, produces=JSON_MIME)
     public BlueQueryBean formCallback(
-        @PathVariable(value=IDENT_PARAM_NAME)
+        @PathVariable(value=QUERY_IDENT_PARAM)
         final String ident,
-        @RequestParam(value=NEXT_STATUS_PARAM_NAME, required=false)
+        @RequestParam(value=CALLBACK_STATUS, required=false)
         final TaskState next,
-        @RequestParam(value=ROWCOUNT_PARAM_NAME, required=false)
+        @RequestParam(value=CALLBACK_ROWCOUNT, required=false)
         final Long rowcount
         ) throws
             IdentifierNotFoundException,
@@ -395,9 +429,11 @@ public class BlueQueryController
             );
         }
 
-    /*
-     * Ignore unknown fields. 
+    /**
+     * JSON callback bean.
+     * Annotated to ignore unknown fields. 
      * http://codingexplained.com/coding/java/ignoring-unrecognized-json-fields-spring-jackson
+     * 
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class RequestBean
@@ -442,13 +478,15 @@ public class BlueQueryController
         }
     
     /**
-     *
+     * {@link RequestMethod#POST} request to send a {@link BlueQuery.Callback} message.
+     * <br/>Request path : [{@value BlueQuery.LinkFactory#CALLBACK_PATH}]
+     * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * 
      */
     @ResponseBody
     @RequestMapping(value=BlueQuery.LinkFactory.CALLBACK_PATH, method=RequestMethod.POST, consumes=JSON_MIME, produces=JSON_MIME)
     public BlueQueryBean jsonCallback(
-        @PathVariable(value=IDENT_PARAM_NAME)
+        @PathVariable(value=QUERY_IDENT_PARAM)
         final String ident,
         @RequestBody
         final RequestBean bean 
@@ -471,7 +509,7 @@ public class BlueQueryController
                     @Override
                     public Long rowcount()
                         {
-                        return null;
+                        return bean.getCount();
                         }
                     @Override
                     public TaskState next()
