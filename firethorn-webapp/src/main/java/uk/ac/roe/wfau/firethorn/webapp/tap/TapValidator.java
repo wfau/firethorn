@@ -171,7 +171,7 @@ public class TapValidator {
 		
 		if (getMaxrec() != null) {
 				if (!isStringInt(getMaxrec())){
-					error_message = "MAXREC '" + getVersion() + "' is not a valid integer" ;
+					error_message = "MAXREC '" + getMaxrec() + "' is not a valid integer" ;
 					setErrorMessage(TapError.writeErrorToVotable(error_message));
 					valid = false;
 				}
