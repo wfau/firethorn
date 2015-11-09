@@ -396,11 +396,24 @@ implements BlueTask<TaskType>
      * @param owner 
      * 
      */
+    protected BlueTaskEntity(final Identity owner)
+        {
+        this(
+            owner,
+            null
+            );
+        }
+
+    /**
+     * Protected constructor.
+     * @param owner 
+     * 
+     */
     protected BlueTaskEntity(final Identity owner, final String name)
         {
         super(
     		owner,
-            name
+    		name
             );
         this.state = TaskState.EDITING;
         }

@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
+
 
 /**
  * Simple implementation of the AdqlQuery.QueryLimits interface.
@@ -179,6 +181,16 @@ implements AdqlQuery.Limits
                     defaults
                     ),
                 absolutes
+                );
+            }
+
+        @Override
+        public Limits create(final Long rows, final Long cells, final Long time)
+            {
+            return new SimpleQueryLimits(
+                rows,
+                cells,
+                time
                 );
             }
         }

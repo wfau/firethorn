@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,26 +54,25 @@ import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits.Factory;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.adql.query.SimpleQueryLimits;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.AdqlType;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -216,10 +214,24 @@ implements BlueQuery
 
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource source, final String input, final TaskState next, final Long wait)
+        public BlueQuery create(final AdqlResource source, final String input, final BlueQuery.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
-            log.debug("create(AdqlResource, String, TaskState, Long)");
+            return create(
+                source,
+                input,
+                null,
+                next,
+                wait
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final BlueQuery.TaskState next, final Long wait)
+        throws InvalidRequestException, InternalServerErrorException
+            {
+            log.debug("create(AdqlResource, String, Limits, TaskState, Long)");
             log.debug("  state [{}]", next);
             log.debug("  wait  [{}]", wait);
 
@@ -255,7 +267,7 @@ implements BlueQuery
                 				inner,
                 				source,
                 				input,
-                				services().names().name()
+                				limits
                 				)
                     		);
                         }
@@ -480,14 +492,6 @@ implements BlueQuery
             }
 
         @Autowired
-		private BlueQuery.NameFactory names;
-		@Override
-		public BlueQuery.NameFactory names()
-			{
-			return this.names;
-			}
-
-        @Autowired
 		private BlueQuery.TaskRunner runner;
 		@Override
 		public BlueQuery.TaskRunner runner()
@@ -501,6 +505,14 @@ implements BlueQuery
         public Context.Factory contexts()
             {
             return this.contexts;
+            }
+
+		@Autowired
+        private AdqlQuery.Limits.Factory limits;
+        @Override
+        public AdqlQuery.Limits.Factory limits()
+            {
+            return this.limits;
             }
         }
 
@@ -543,7 +555,7 @@ implements BlueQuery
             owner,
             source,
             input,
-            "BlueQuery"
+            null
             );
         }
 
@@ -551,15 +563,17 @@ implements BlueQuery
      * Protected constructor.
      * 
      */
-    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final String name)
+    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final AdqlQuery.Limits limits)
     throws InvalidStateTransitionException
         {
         super(
-    		owner,
-    		name
+    		owner
             );
         this.mode = Mode.AUTO;
         this.source = source;
+        this.limits(
+            limits
+            );
 		this.prepare(
 		    input
 		    );
@@ -1078,7 +1092,7 @@ implements BlueQuery
 
     @Embedded
     private AdqlQueryLimits limits;
-    
+
     @Override
     public Limits limits()
         {
@@ -1089,7 +1103,11 @@ implements BlueQuery
          */
         if (this.limits == null)
             {
-            this.limits = new AdqlQueryLimits();
+            this.limits = new AdqlQueryLimits(
+                services().limits().runtime(
+                    limits
+                    )
+                );
             }
         return this.limits ;
         }
@@ -1098,16 +1116,22 @@ implements BlueQuery
     public void limits(final Limits limits)
         {
         this.limits = new AdqlQueryLimits(
-            limits
+            services().limits().runtime(
+                limits
+                )
             );
         }
 
     public void limits(final Long rows, final Long cells, final Long time)
         {
         this.limits = new AdqlQueryLimits(
-            rows,
-            cells,
-            time
+            services().limits().runtime(
+                services().limits().create(
+                    rows,
+                    cells,
+                    time
+                    )
+                )
             );
         }
 

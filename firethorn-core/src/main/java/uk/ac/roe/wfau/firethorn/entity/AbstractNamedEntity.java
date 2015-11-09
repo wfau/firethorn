@@ -93,6 +93,21 @@ implements Entity, NamedEntity
      * Protected constructor, sets the owner, name and create date.
      *
      */
+    protected AbstractNamedEntity(final Identity owner)
+        {
+        super(
+            owner
+            );
+        log.debug("AbstractNamedEntity(Identity)");
+        this.init(
+            null
+            );
+        }
+
+    /**
+     * Protected constructor, sets the owner, name and create date.
+     *
+     */
     protected AbstractNamedEntity(final Identity owner, final String name)
 		{
     	super(

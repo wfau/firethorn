@@ -95,6 +95,12 @@ extends NamedEntity, Job
         public interface Factory
             {
             /**
+             * Create a limits.
+             * 
+             */
+            public Limits create(final Long rows, final Long cells, final Long time);
+            
+            /**
              * The default system limits, used if no other limits are defined.
              * @return A new Limits based on the system defaults.
              * 

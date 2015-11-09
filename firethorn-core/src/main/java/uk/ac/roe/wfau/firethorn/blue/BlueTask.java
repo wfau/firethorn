@@ -43,7 +43,7 @@ extends NamedEntity
      * 
      */
     public static interface EntityServices<TaskType extends BlueTask<?>>
-    extends NamedEntity.EntityServices<TaskType>
+    extends Entity.EntityServices<TaskType>
         {
         /**
          * Our {@link BlueTask.EntityFactory} instance.

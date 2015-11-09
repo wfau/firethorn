@@ -53,11 +53,12 @@ implements AdqlQuery.Limits
      */
     public AdqlQueryLimits(final AdqlQuery.Limits limits)
         {
-        this(
-            ((limits != null) ? limits.rows()  : null), 
-            ((limits != null) ? limits.cells() : null), 
-            ((limits != null) ? limits.time()  : null) 
-            );
+        if (limits != null)
+            {
+            this.ogsarows = limits.rows();
+            this.ogsacell = limits.cells();
+            this.ogsatime = limits.time();
+            }
         }
 
     /**

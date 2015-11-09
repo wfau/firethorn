@@ -66,38 +66,22 @@ extends BlueTask<BlueQuery>
          */
         public BlueQuery.EntityFactory entities();
         
+        /**
+         * Our {@link AdqlQuery.Limits.Factory } instance.
+         * 
+         */
+        public AdqlQuery.Limits.Factory limits();
+        
         @Override
         public BlueQuery.LinkFactory links();
+
         }
     
-    /**
-     * Services interface.
-     * 
-    public static interface Services
-    extends BlueTask.Services<BlueQuery>
-        {
-        @Override
-        public BlueQuery.IdentFactory idents();
-
-        @Override
-        public BlueQuery.NameFactory names();
-
-        @Override
-        public BlueQuery.LinkFactory links();
-
-        @Override
-        public BlueQuery.EntityFactory entities();
-
-        @Override
-        public BlueQuery.TaskRunner runner(); 
-
-        }
-     */
-
     /**
      * {@link NamedEntity.NameFactory} interface.
      *
      */
+    @Deprecated
     public static interface NameFactory
     extends NamedEntity.NameFactory<BlueQuery>
         {
@@ -176,10 +160,17 @@ extends BlueTask<BlueQuery>
          */
 
         /**
-         * Create a new {@link BlueQuery} with an ADQL string, state and wait limit.
+         * Create a new {@link BlueQuery} with an ADQL string, {@link BlueQuery.TaskState} and a wait timeout.
          *
          */
         public BlueQuery create(final AdqlResource source, final String input, final TaskState next, final Long wait)
+        throws InvalidRequestException, InternalServerErrorException;
+
+        /**
+         * Create a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, {@link BlueQuery.TaskState}, and a wait timeout.
+         *
+         */
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException;
 
         /**
@@ -440,15 +431,13 @@ extends BlueTask<BlueQuery>
     public Limits limits();
 
     /**
-     * Set the query limits using a combination of the current values and the values from another Limits object.
-     * @param limits The Limits object to combine.
-     * @see combine(Limits)
+     * Set the query limits.
      * 
      */
     public void limits(final Limits limits);
 
     /**
-     * Set the query limits.
+     * Set query limits to specific values.
      * @param rows  The rows value.
      * @param cells The cells value.
      * @param time  The time value.
