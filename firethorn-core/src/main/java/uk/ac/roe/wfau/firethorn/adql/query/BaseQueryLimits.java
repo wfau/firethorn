@@ -47,7 +47,8 @@ implements AdqlQuery.Limits
             );
         }
 
-    protected static final Long ZERO = new Long(0L);
+    //protected static final Long NO_LIMIT = new Long(0L);
+    protected static final Long NO_LIMIT = null;
 
     /**
      * Create a new Limits containing the lowest set of values from two Limits.
@@ -88,7 +89,7 @@ implements AdqlQuery.Limits
                         return right.rows();
                         }
                     else {
-                        return ZERO ;
+                        return NO_LIMIT ;
                         }
                     }
                 }
@@ -118,7 +119,7 @@ implements AdqlQuery.Limits
                         return right.cells();
                         }
                     else {
-                        return ZERO ;
+                        return NO_LIMIT ;
                         }
                     }
                 }
@@ -148,7 +149,7 @@ implements AdqlQuery.Limits
                         return right.time();
                         }
                     else {
-                        return ZERO ;
+                        return NO_LIMIT ;
                         }
                     }
                 }
@@ -181,7 +182,7 @@ implements AdqlQuery.Limits
                     return right.rows();
                     }
                 else {
-                    return ZERO ;
+                    return NO_LIMIT ;
                     }
                 }
 
@@ -197,7 +198,7 @@ implements AdqlQuery.Limits
                     return right.cells();
                     }
                 else {
-                    return ZERO ;
+                    return NO_LIMIT ;
                     }
                 }
 
@@ -213,7 +214,7 @@ implements AdqlQuery.Limits
                     return right.time();
                     }
                 else {
-                    return ZERO ;
+                    return NO_LIMIT ;
                     }
                 }
             };
