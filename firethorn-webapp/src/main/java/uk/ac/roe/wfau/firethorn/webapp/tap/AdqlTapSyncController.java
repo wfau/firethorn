@@ -49,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
+import uk.ac.roe.wfau.firethorn.webapp.tap.TapValidator;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CapabilitiesGenerator;
 import uk.ac.roe.wfau.firethorn.blue.*;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
@@ -94,7 +95,8 @@ public class AdqlTapSyncController extends AbstractController {
 	@RequestMapping(value = "sync", method = { RequestMethod.POST,
 			RequestMethod.GET })
 	public void sync(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response, @RequestParam(value = "QUERY", required = false) String QUERY,
+			final HttpServletResponse response, 
+			@RequestParam(value = "QUERY", required = false) String QUERY,
 			@RequestParam(value = "LANG", required = false) String LANG,
 			@RequestParam(value = "REQUEST", required = false) String REQUEST, 
 			@RequestParam(value = "FORMAT", required = false) String FORMAT, 
@@ -111,7 +113,8 @@ public class AdqlTapSyncController extends AbstractController {
 
 		// Check input parameters and return VOTable with appropriate message if
 		// any errors found
-		boolean valid = checkParams(REQUEST, LANG, QUERY, FORMAT, VERSION);
+		TapValidator validator = new TapValidator(REQUEST, LANG, QUERY, FORMAT, VERSION, MAXREC);
+		boolean valid = validator.checkParams();
 
 		if (valid) {
 
@@ -172,7 +175,7 @@ public class AdqlTapSyncController extends AbstractController {
 
 			}
 		} else {
-			writer.append(getErrorVOTable(REQUEST, LANG, QUERY, FORMAT, VERSION));
+			writer.append(validator.getErrorMessage());
 			return;
 		}
 		
@@ -181,107 +184,7 @@ public class AdqlTapSyncController extends AbstractController {
 		return;
 	}
 
-	private boolean checkParams(String REQUEST, String LANG, String QUERY, String FORMAT, String VERSION) {
-
-		String error_message;
-		boolean valid = true;
-
-		// Check for errors and return appropriate VOTable error messages
-		if (REQUEST == null) {
-			TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING);
-			valid = false;
-			return valid;
-		} else if (!REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)
-				&& !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
-			error_message = "Invalid REQUEST: " + REQUEST;
-			TapError.writeErrorToVotable(error_message);
-			valid = false;
-			return valid;
-		}
-
-		if (LANG == null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
-			TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING);
-			valid = false;
-			return valid;
-		} else if (LANG != null) {
-			if (!LANG.equalsIgnoreCase("ADQL") && 
-					!LANG.equalsIgnoreCase("ADQL-2.0")  && 
-					!LANG.equalsIgnoreCase("ADQL-1.0") && 
-					!LANG.equalsIgnoreCase("PQL")) {
-				error_message = "Invalid LANGUAGE: " + LANG;
-				TapError.writeErrorToVotable(error_message);
-				valid = false;
-			}
-		}
-
-		if (QUERY == null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
-			TapError.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING);
-			valid = false;
-			return valid;
-		}
-
-		if (FORMAT != null) {
-			if (!FORMAT.equalsIgnoreCase("votable")) {
-				error_message = "FORMAT '" + FORMAT + "'not supported" ;
-				TapError.writeErrorToVotable(error_message);
-				valid = false;
-			}
-		}
-		
-		if (VERSION != null) {
-			if (!VERSION.equalsIgnoreCase("1.0") || !VERSION.equalsIgnoreCase("1")) {
-				error_message = "VERSION '" + VERSION + "'not supported" ;
-				TapError.writeErrorToVotable(error_message);
-				valid = false;
-			}
-		}
-		
-		return valid;
-
-	}
 	
-	private String getErrorVOTable(String REQUEST, String LANG, String QUERY, String FORMAT, String VERSION) {
 
-		String error_message;
-
-		// Check for errors and return appropriate VOTable error messages
-		if (REQUEST == null) {
-			return TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING);
-		} else if (!REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)
-				&& !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
-			error_message = "Invalid REQUEST: " + REQUEST;
-			return TapError.writeErrorToVotable(error_message);
-		}
-
-		if (LANG == null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
-			return TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING);
-		} else if (LANG != null) {
-			if (!LANG.equalsIgnoreCase("ADQL") && !LANG.equalsIgnoreCase("PQL")) {
-				error_message = "Invalid LANGUAGE: " + LANG;
-				return TapError.writeErrorToVotable(error_message);
-			}
-		}
-
-		if (QUERY == null && !REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
-			return TapError.writeErrorToVotable(TapJobErrors.PARAM_QUERY_MISSING);
-		}
-
-		if (FORMAT != null) {
-			if (!FORMAT.equalsIgnoreCase("votable")) {
-				error_message = "FORMAT '" + FORMAT + "'not supported" ;
-				return TapError.writeErrorToVotable(error_message);
-			}
-		}
-		
-		if (VERSION != null) {
-			if (!VERSION.equalsIgnoreCase("1.0") || !VERSION.equalsIgnoreCase("1")) {
-				error_message = "VERSION '" + VERSION + "'not supported" ;
-				return TapError.writeErrorToVotable(error_message);
-			}
-		}
-		
-		return "";
-
-	}
 
 }

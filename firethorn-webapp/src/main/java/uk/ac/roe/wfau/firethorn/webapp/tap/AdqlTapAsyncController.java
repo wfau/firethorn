@@ -46,6 +46,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
 import uk.ac.roe.wfau.firethorn.blue.*;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
 
 @Slf4j
 @Controller
@@ -488,54 +489,5 @@ public class AdqlTapAsyncController extends AbstractController {
 	}
 
 	
-	
-	private boolean checkParams(final String REQUEST, final String LANG, final String QUERY, final String FORMAT, final String VERSION) {
 
-		String error_message;
-		boolean valid = true;
-
-		// Check for errors and return appropriate VOTable error messages
-		if (REQUEST == null) {
-			TapError.writeErrorToVotable(TapJobErrors.PARAM_REQUEST_MISSING);
-			valid = false;
-			return valid;
-		} else if (!REQUEST.equalsIgnoreCase("doQuery")) {
-			error_message = "Invalid REQUEST: " + REQUEST;
-			TapError.writeErrorToVotable(error_message);
-			valid = false;
-			return valid;
-		}
-
-		if (LANG == null) {
-			TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING);
-			valid = false;
-			return valid;
-		} else if (!LANG.equalsIgnoreCase("ADQL") && 
-				!LANG.equalsIgnoreCase("ADQL-2.0")  && 
-				!LANG.equalsIgnoreCase("ADQL-1.0") && 
-				!LANG.equalsIgnoreCase("PQL")) {
-			error_message = "Invalid LANGUAGE: " + LANG;
-			TapError.writeErrorToVotable(error_message);
-			valid = false;
-		}
-		
-		if (FORMAT != null) {
-			if (!FORMAT.equalsIgnoreCase("votable")) {
-				error_message = "FORMAT '" + FORMAT + "'not supported" ;
-				TapError.writeErrorToVotable(error_message);
-				valid = false;
-			}
-		}
-		
-		if (VERSION != null) {
-			if (!VERSION.equalsIgnoreCase("1.0") || !VERSION.equalsIgnoreCase("1")) {
-				error_message = "VERSION '" + VERSION + "'not supported" ;
-				TapError.writeErrorToVotable(error_message);
-				valid = false;
-			}
-		}
-
-		return valid;
-
-	}
 }
