@@ -90,7 +90,7 @@ implements BlueTask<TaskType>
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_JOBSTATUS_COL = "jobstatus";
+    protected static final String DB_TASK_STATUS_COL = "jobstatus";
 
     /**
      * Hibernate column mapping.
@@ -434,7 +434,7 @@ implements BlueTask<TaskType>
         EnumType.STRING
         )
     @Column(
-        name = DB_JOBSTATUS_COL,
+        name = DB_TASK_STATUS_COL,
         unique = false,
         nullable = true,
         updatable = true

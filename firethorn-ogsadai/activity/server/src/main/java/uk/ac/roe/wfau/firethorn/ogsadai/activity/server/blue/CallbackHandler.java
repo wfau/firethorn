@@ -122,18 +122,29 @@ public class CallbackHandler
 			);
 		}
 
-	protected void callback(final String status)
+	protected void callback(final String taskState)
 		{
 		callback(
-			status,
+			taskState,
 			null
 			);
 		}
-	protected void callback(final String status, final Long count)
+
+	protected void callback(final String taskState, final Long count)
+        {
+        callback(
+            taskState,
+            null,
+            count
+            );
+        }
+	
+	protected void callback(final String taskState, final String resultState, final Long count)
 		{
         logger.debug("callback(String, Long)");
-        logger.debug("  status [" + status + "]");
-        logger.debug("  count  [" + count + "]");
+        logger.debug("  task    [" + taskState + "]");
+        logger.debug("  results [" + resultState + "]");
+        logger.debug("  count   [" + count + "]");
         
 		if (context == null)
 			{
@@ -169,15 +180,21 @@ public class CallbackHandler
 								return context.ident();
 								}
 							@Override
-							public String getStatus()
+							public String getTaskState()
 								{
-								return status;
+								return taskState;
 								}
 							@Override
 							public Long getCount()
 								{
 								return count;
 								}
+                            @Override
+                            public String getResultState()
+                                {
+                                // TODO Auto-generated method stub
+                                return null;
+                                }
 							},
 						ResponseBean.class
 						);
@@ -279,7 +296,7 @@ public class CallbackHandler
 
     	private String status;
 		@Override
-        public String getStatus()
+        public String getTaskState()
             {
             return this.status;
             }

@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -183,6 +184,12 @@ implements BlueQuery
      *
      */
     protected static final String DB_RESULT_ROW_COUNT = "resultrowcount";
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_RESULT_STATUS_COL = "resultstatus";
 
     /**
      * {@link BlueQuery.TaskRunner} implementation.
@@ -418,7 +425,7 @@ implements BlueQuery
             {
             log.debug("callback(Identifier, CallbackEvent)");
             log.debug("  ident [{}]", ident);
-            log.debug("  next  [{}]", message.next());
+            log.debug("  next  [{}]", message.taskState());
             log.debug("  count [{}]", message.rowcount());
             final BlueQuery query = select(
                 ident
@@ -767,7 +774,26 @@ implements BlueQuery
          updatable = true
          )
      private Long rowcount ;
-    
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    @Column(
+        name = DB_RESULT_STATUS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private ResultState resultstate;
+
+    protected void resultstate(final ResultState state)
+        {
+        this.resultstate = state;
+        }
+
     @Override
     public Results results()
         {
@@ -789,6 +815,11 @@ implements BlueQuery
             public Long rowcount()
                 {
                 return BlueQueryEntity.this.rowcount;
+                }
+            @Override
+            public ResultState state()
+                {
+                return BlueQueryEntity.this.resultstate;
                 }
             };
         }
@@ -1671,7 +1702,7 @@ implements BlueQuery
     throws InvalidStateRequestException
         {
         log.debug("callback(Callback)");
-        log.debug("  next  [{}]", message.next());
+        log.debug("  next  [{}]", message.taskState());
         log.debug("  ident [{}]", this.ident());
         log.debug("  state [{}]", this.state());
         services().runner().thread(
@@ -1692,10 +1723,10 @@ implements BlueQuery
                             }
                         //
                         // Update the state.
-                        if (message.next() != null)
+                        if (message.taskState() != null)
                             {
                             query.transition(
-                                message.next()
+                                message.taskState()
                                 );
                             }
                         return query.state();

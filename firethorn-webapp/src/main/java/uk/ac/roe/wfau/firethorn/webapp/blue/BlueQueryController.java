@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
@@ -117,7 +118,13 @@ public class BlueQueryController
      * Request param name for the {@link BlueQuery.Callback} row count, [{@value}].
      *
      */
-    public static final String CALLBACK_ROWCOUNT = "blue.query.rowcount" ;
+    public static final String CALLBACK_RESULT_COUNT = "blue.query.results.count" ;
+
+    /**
+     * Request param name for the {@link BlueQuery.Callback} result state, [{@value}].
+     *
+     */
+    public static final String CALLBACK_RESULT_STATE = "blue.query.results.state" ;
 
     /**
      * Our{@link BlueQuery.IdentFactory} implementation.
@@ -395,8 +402,10 @@ public class BlueQueryController
         final String ident,
         @RequestParam(value=CALLBACK_STATUS, required=false)
         final TaskState next,
-        @RequestParam(value=CALLBACK_ROWCOUNT, required=false)
-        final Long rowcount
+        @RequestParam(value=CALLBACK_RESULT_COUNT, required=false)
+        final Long rowcount,
+        @RequestParam(value=CALLBACK_RESULT_STATE, required=false)
+        final BlueQuery.ResultState results
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
@@ -420,9 +429,14 @@ public class BlueQueryController
                         return rowcount;
                         }
                     @Override
-                    public TaskState next()
+                    public TaskState taskState()
                         {
                         return next;
+                        }
+                    @Override
+                    public ResultState resultState()
+                        {
+                        return results;
                         }
                     }
                 )
@@ -456,11 +470,11 @@ public class BlueQueryController
 
     	private String status;
 		@Override
-        public String getStatus()
+        public String getTaskState()
             {
             return this.status;
             }
-        public void setStatus(final String value)
+        public void setTaskState(final String value)
             {
             this.status = value;
             }
@@ -475,7 +489,18 @@ public class BlueQueryController
             {
             this.count = value;
             }
-        }
+
+        private String results;
+        @Override
+        public String getResultState()
+            {
+            return this.results;
+            }
+        public void setResultState(final String value)
+            {
+            this.results = value;
+            }
+    	}
     
     /**
      * {@link RequestMethod#POST} request to send a {@link BlueQuery.Callback} message.
@@ -498,7 +523,7 @@ public class BlueQueryController
         {
         log.debug("callback(String, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
-        log.debug("  next  [{}]", bean.getStatus());
+        log.debug("  next  [{}]", bean.getTaskState());
         return bean(
             services.entities().callback(
                 services.idents().ident(
@@ -512,11 +537,18 @@ public class BlueQueryController
                         return bean.getCount();
                         }
                     @Override
-                    public TaskState next()
+                    public TaskState taskState()
                         {
                         return TaskState.valueOf(
-                    		bean.getStatus()
+                    		bean.getTaskState()
                     		);
+                        }
+                    @Override
+                    public ResultState resultState()
+                        {
+                        return ResultState .valueOf(
+                            bean.getResultState()
+                            );
                         }
                     }
                 )

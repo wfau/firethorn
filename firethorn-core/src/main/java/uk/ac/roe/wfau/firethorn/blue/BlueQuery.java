@@ -237,7 +237,7 @@ extends BlueTask<BlueQuery>
          * The next {@link TaskState}.
          *
          */
-        public TaskState next();
+        public TaskState taskState();
         
         /**
          * The row count processed so far.
@@ -245,6 +245,12 @@ extends BlueTask<BlueQuery>
          */
         public Long rowcount();
 
+        /**
+         * The results state.
+         *
+         */
+        public ResultState resultState();
+        
         }
     
     /**
@@ -322,6 +328,18 @@ extends BlueTask<BlueQuery>
     public AdqlQuery.Mode mode();
 
     /**
+     * The query results status.
+     * 
+     */
+    public enum ResultState
+        {
+        EMPTY(),
+        PARTIAL(),
+        COMPLETED(),
+        TRUNCATED();
+        }
+    
+    /**
      * Our results.
      *
      */
@@ -344,6 +362,13 @@ extends BlueTask<BlueQuery>
          * 
          */
         public Long rowcount();
+        
+        /**
+         * The results status.
+         * 
+         */
+        public ResultState state();
+
         }
 
     /**
