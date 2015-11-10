@@ -4,13 +4,13 @@
 DROP SCHEMA TAP_SCHEMA;
 CREATE SCHEMA TAP_SCHEMA;
 
-CREATE TABLE `TAP_SCHEMA`.`schemas` (`schema_name` VARCHAR(256), `description` TEXT, `utype` VARCHAR(256), `dbname` VARCHAR(256), PRIMARY KEY(`schema_name`));
+CREATE TABLE `TAP_SCHEMA`.`schemas` (`schema_name` VARCHAR(256), `description` TEXT, `utype` VARCHAR(256), PRIMARY KEY(`schema_name`));
 CREATE TABLE `TAP_SCHEMA`.`tables` (`schema_name` VARCHAR(256), `table_name` VARCHAR(256), `table_type` VARCHAR(256), `description` VARCHAR(256), `utype` VARCHAR(256), `dbname` VARCHAR(256), PRIMARY KEY(`table_name`));
 CREATE TABLE `TAP_SCHEMA`.`columns` (`table_name` VARCHAR(256), `column_name` VARCHAR(256), `description` TEXT, `unit` VARCHAR(256), `ucd` VARCHAR(256), `utype` VARCHAR(256), `datatype` VARCHAR(256), `size` INTEGER, `principal` SMALLINT, `indexed` SMALLINT, `std` SMALLINT, `dbname` VARCHAR(256), PRIMARY KEY(`table_name`,`column_name`));
 CREATE TABLE `TAP_SCHEMA`.`keys` (`key_id` VARCHAR(256), `from_table` VARCHAR(256), `target_table` VARCHAR(256), `description` TEXT, `utype` VARCHAR(256), PRIMARY KEY(`key_id`));
 CREATE TABLE `TAP_SCHEMA`.`key_columns` (`key_id` VARCHAR(256), `from_column` VARCHAR(256), `target_column` VARCHAR(256), PRIMARY KEY(`key_id`));
 
-INSERT INTO `TAP_SCHEMA`.`schemas` VALUES ('TAP_SCHEMA', 'Set of tables listing and describing the schemas, tables and columns published in this TAP service.', NULL, NULL);
+INSERT INTO `TAP_SCHEMA`.`schemas` VALUES ('TAP_SCHEMA', 'Set of tables listing and describing the schemas, tables and columns published in this TAP service.', NULL);
 
 INSERT INTO `TAP_SCHEMA`.`tables` VALUES ('TAP_SCHEMA', 'TAP_SCHEMA.schemas', 'table', 'List of schemas published in this TAP service.', NULL, NULL);
 INSERT INTO `TAP_SCHEMA`.`tables` VALUES ('TAP_SCHEMA', 'TAP_SCHEMA.tables', 'table', 'List of tables published in this TAP service.', NULL, NULL);

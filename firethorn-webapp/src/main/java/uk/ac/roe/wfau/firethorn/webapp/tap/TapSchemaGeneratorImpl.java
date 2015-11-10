@@ -295,7 +295,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 							if (meta.adql().type() != null) {
 								if (meta.adql().type() != null) {
-									sql += "'" + meta.adql().type() + "',";
+									sql += "'" + meta.adql().type().toString().toLowerCase() + "',";
 								} else {
 									sql += "'',";
 								}

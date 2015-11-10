@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -110,6 +111,7 @@ public class AdqlTapSyncController extends AbstractController {
 
 		String results = "";
 		PrintWriter writer = response.getWriter();
+		response.setCharacterEncoding("UTF-8");
 
 		// Check input parameters and return VOTable with appropriate message if
 		// any errors found
@@ -147,8 +149,8 @@ public class AdqlTapSyncController extends AbstractController {
 							response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 							response.setContentType("text/xml");
 							
-							if (query.syntax().friendly()!=null){
-								writer.append(TapError.writeErrorToVotable(query.syntax().friendly()));
+							if (query.syntax()!=null){
+								writer.append(TapError.writeErrorToVotable(StringEscapeUtils.escapeXml(query.syntax().friendly())));
 							} else {
 								writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 							}
