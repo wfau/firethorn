@@ -224,7 +224,7 @@ implements BlueTask<TaskType>
         @Async
         @Override
         @UpdateAtomicMethod
-        public Future<TaskState> future(final Updator updator)
+        public Future<TaskState> future(final Updator<?> updator)
             {
             log.debug("execute(Updator)");
             log.debug("  ident [{}]", updator.ident());
@@ -344,8 +344,17 @@ implements BlueTask<TaskType>
      * {@link Updator} base class.
      * 
      */
-    public abstract static class Updator<TaskType extends BlueTaskEntity<?>>
-    implements TaskRunner.Updator 
+    public abstract static class Creator<TaskType extends BlueTask<?>>
+    implements TaskRunner.Creator<TaskType>
+        {
+        }
+    
+    /**
+     * {@link Updator} base class.
+     * 
+     */
+    public abstract static class Updator<TaskType extends BlueTask<?>>
+    implements TaskRunner.Updator<TaskType>
         {
         /**
          * Our initial {@link BlueTask} entity.
@@ -1199,7 +1208,7 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
         services().runner().thread(
-            new Updator<BlueTaskEntity<?>>(this)
+            new Updator<BlueTask<?>>(this)
                 {
                 @Override
                 public TaskState execute()
@@ -1246,7 +1255,7 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
         services().runner().thread(
-            new Updator<BlueTaskEntity<?>>(this)
+            new Updator<BlueTask<?>>(this)
                 {
                 @Override
                 public TaskState execute()
@@ -1311,7 +1320,7 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", state().name(), next.name());
         services().runner().thread(
-            new Updator<BlueTaskEntity<?>>(this)
+            new Updator<BlueTask<?>>(this)
                 {
                 @Override
                 public TaskState execute()

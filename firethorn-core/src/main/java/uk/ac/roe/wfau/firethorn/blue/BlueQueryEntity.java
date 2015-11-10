@@ -57,7 +57,6 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits.Factory;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
@@ -65,7 +64,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
-import uk.ac.roe.wfau.firethorn.adql.query.SimpleQueryLimits;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -196,6 +194,42 @@ implements BlueQuery
     implements BlueQuery.TaskRunner
     	{
     	}
+
+    /**
+     * {@link BlueQuery.TaskRunner.Creator} implementation.
+     * 
+     */
+    public abstract static class Creator
+    extends BlueTaskEntity.Creator<BlueQuery>
+    implements BlueQuery.TaskRunner.Creator
+        {
+        /**
+         * Public constructor.
+         *
+         */
+        public Creator()
+            {
+            super();
+            }
+        }
+
+    /**
+     * {@link BlueQuery.TaskRunner.Updator} implementation.
+     * 
+     */
+    public abstract static class Updator
+    extends BlueTaskEntity.Updator<BlueQuery>
+    implements BlueQuery.TaskRunner.Updator 
+        {
+        /**
+         * Public constructor.
+         *
+         */
+        public Updator(final BlueQuery initial)
+            {
+            super(initial);
+            }
+        }
     
     /**
      * {@link BlueQuery.EntityFactory} implementation.
@@ -287,14 +321,6 @@ implements BlueQuery
 	        		);
 	            }
 
-            //log.debug("Before refresh()");
-            //log.debug("  ident [{}]", result.ident());
-            //log.debug("  state [{}]", result.state());
-            //result.refresh();
-            //log.debug("After refresh()");
-            //log.debug("  ident [{}]", result.ident());
-            //log.debug("  state [{}]", result.state());
-
             log.debug("Returning BlueQuery");
             return result;
             }
@@ -313,6 +339,8 @@ implements BlueQuery
             final BlueQuery query = services.entities().select(
                 ident
                 );
+            //
+            // This will block the current Thread.
             if ((prev != null) || (next != null) || (wait != null))
                 {
                 query.waitfor(
@@ -329,6 +357,20 @@ implements BlueQuery
         public BlueQuery update(final Identifier ident, final String input, final TaskState prev, final TaskState next, final Long wait)
         throws IdentifierNotFoundException, InvalidStateRequestException
             {
+            return update(
+                ident,
+                input,
+                null,
+                prev,
+                next,
+                wait);
+            }
+
+        @Override
+        @UpdateMethod
+        public BlueQuery update(final Identifier ident, final String input, final AdqlQuery.Limits limits, final TaskState prev, final TaskState next, final Long wait)
+        throws IdentifierNotFoundException, InvalidStateRequestException
+            {
             log.debug("update(Identifier , String, TaskStatus, TaskStatus, Long)");
             log.debug("  ident [{}]", ident);
             log.debug("  prev  [{}]", prev);
@@ -338,13 +380,16 @@ implements BlueQuery
             final BlueQuery query = select(
                 ident
                 );
-// Should this be in a separate Thread
+            //
+            // This gets run in a separate Thread.
             if (input != null)
                 {
                 query.update(
-                    input
+                    input,
+                    limits
                     );
                 }
+
             if (next != null)
                 {
                 query.advance(
@@ -353,6 +398,8 @@ implements BlueQuery
                     wait
                     );
                 }
+            //
+            // This will block the current Thread.
             else if ((prev != null) || (wait != null))
                 {
                 query.waitfor(
@@ -1171,24 +1218,34 @@ implements BlueQuery
             }
         return this.stats;
         }
-    
-    /**
-     * Update our query input.
-     * Calling {@link #prepare()} in a new {@link Thread} performs the operation in a separate Hibernate {@link Session}.
-     * 
-     */
+
     @Override
     public void update(final String input)
     throws InvalidStateRequestException
         {
-        log.debug("Starting update(String)");
+        update(
+            input,
+            null
+            );
+        }
+
+    /**
+     * Update our input query and {@link AdqlQuery.Limits}.
+     * This calls {@link #prepare()} in a new {@link Thread} creating a separate Hibernate {@link Session}.
+     * 
+     */
+    @Override
+    public void update(final String input, final AdqlQuery.Limits limits)
+    throws InvalidStateRequestException
+        {
+        log.debug("Starting update(String, Limits)");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
 
         if ((this.state() == TaskState.EDITING) || (this.state() == TaskState.READY))
             {
             services().runner().thread(
-                new Updator<BlueQueryEntity>(this)
+                new Updator(this)
                     {
                     @Override
                     public TaskState execute()
@@ -1196,13 +1253,26 @@ implements BlueQuery
                         try {
 // Need to initialise current context.                        
                             BlueQueryEntity query = (BlueQueryEntity) rebase();
-                            log.debug("Before input(String)");
-                            log.debug("  state [{}]", query.state().name());
-                            query.prepare(
-                                input
-                                );
-                            log.debug("After input(String)");
-                            log.debug("  state [{}]", query.state().name());
+                            if (input != null)
+                                {
+                                log.debug("Before prepare(String)");
+                                log.debug("  state [{}]", query.state().name());
+                                query.prepare(
+                                    input
+                                    );
+                                log.debug("After prepare(String)");
+                                log.debug("  state [{}]", query.state().name());
+                                }
+                            if (limits != null)
+                                {
+                                log.debug("Before limits(Limits)");
+                                log.debug("  state [{}]", query.state().name());
+                                query.limits(
+                                    limits
+                                    );                                
+                                log.debug("After limits(Limits)");
+                                log.debug("  state [{}]", query.state().name());
+                                }
                             return query.state();
                             }
                     	catch (final InvalidStateTransitionException ouch)
@@ -1224,13 +1294,13 @@ implements BlueQuery
             log.debug("Refreshing state");
             this.refresh();
     
-            log.debug("Finished update(String)");
+            log.debug("Finished update(String, Limits)");
             log.debug("  state [{}]", state().name());
             }
         else {
             throw new InvalidStateRequestException(
                 this, 
-                "Update ADQL on a read only query"
+                "Attempt to modify a read only query"
                 );
             }
         }
@@ -1605,7 +1675,7 @@ implements BlueQuery
         log.debug("  ident [{}]", this.ident());
         log.debug("  state [{}]", this.state());
         services().runner().thread(
-            new Updator<BlueTaskEntity<?>>(this)
+            new Updator(this)
                 {
                 @Override
                 public TaskState execute()
