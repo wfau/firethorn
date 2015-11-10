@@ -23,7 +23,9 @@ import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -272,6 +274,13 @@ public class BlueQueryBean
          * 
          */
         public Long rowcount();
+
+        /**
+         * The {@link ResultState} state
+         *
+         */
+        public ResultState state();
+        
         }
 
     /**
@@ -308,6 +317,11 @@ public class BlueQueryBean
             public Long rowcount()
                 {
                 return entity().results().rowcount();
+                }
+            @Override
+            public ResultState state()
+                {
+                return entity().results().state();
                 }
             };
         }

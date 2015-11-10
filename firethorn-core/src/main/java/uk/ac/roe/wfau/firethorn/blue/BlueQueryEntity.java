@@ -183,7 +183,7 @@ implements BlueQuery
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_RESULT_ROW_COUNT = "resultrowcount";
+    protected static final String DB_RESULT_COUNT_COL = "resultrowcount";
 
     /**
      * Hibernate column mapping.
@@ -768,13 +768,17 @@ implements BlueQuery
      *
      */
     @Column(
-         name = DB_RESULT_ROW_COUNT,
+         name = DB_RESULT_COUNT_COL,
          unique = false,
          nullable = true,
          updatable = true
          )
-     private Long rowcount ;
+     private Long resultcount ;
 
+    /**
+     * The status of the results.
+     *
+     */
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -787,7 +791,7 @@ implements BlueQuery
         nullable = true,
         updatable = true
         )
-    private ResultState resultstate;
+    private ResultState resultstate = ResultState.NONE;
 
     protected void resultstate(final ResultState state)
         {
@@ -804,17 +808,15 @@ implements BlueQuery
                 {
                 return BlueQueryEntity.this.jdbctable;
                 }
-
             @Override
             public AdqlTable adql()
                 {
                 return BlueQueryEntity.this.adqltable;
                 }
-
             @Override
             public Long rowcount()
                 {
-                return BlueQueryEntity.this.rowcount;
+                return BlueQueryEntity.this.resultcount;
                 }
             @Override
             public ResultState state()
@@ -1719,7 +1721,7 @@ implements BlueQuery
                         // Update the row count.
                         if (message.rowcount() != null)
                             {
-                            query.rowcount = message.rowcount();
+                            query.resultcount = message.rowcount();
                             }
                         //
                         // Update the state.
@@ -1909,7 +1911,10 @@ implements BlueQuery
     		jdbctable
     		);
         log.debug("JDBC table created");
-        
+        //
+        // Update the results status.
+        this.resultcount    = 0L;
+        this.resultstate = ResultState.EMPTY;
         //
         // Log the end time.
         this.timings().jdbcdone();

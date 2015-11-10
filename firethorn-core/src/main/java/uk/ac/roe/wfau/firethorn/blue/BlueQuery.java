@@ -334,6 +334,7 @@ extends BlueTask<BlueQuery>
      */
     public enum ResultState
         {
+        NONE(),
         EMPTY(),
         PARTIAL(),
         COMPLETED(),
