@@ -541,7 +541,7 @@ public class BlueQueryController
                     @Override
                     public TaskState state()
                         {
-                        return TaskState.valueOf(
+                        return TaskState.parse(
                     		bean.getState()
                     		);
                         }
@@ -558,7 +558,7 @@ public class BlueQueryController
                             @Override
                             public ResultState state()
                                 {
-                                return ResultState .valueOf(
+                                return ResultState.parse(
                                     bean.getResultState()
                                     );
                                 }

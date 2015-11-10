@@ -368,6 +368,22 @@ extends BlueTask<BlueQuery>
             return this.active;
             }
         
+        /**
+         * Null friendly String parser.
+         * 
+         */
+        public static ResultState parse(final String string)
+            {
+            if (string == null)
+                {
+                return null ;
+                }
+            else {
+                return ResultState.valueOf(
+                    string
+                    );
+                }
+            }
         }
     
     /**

@@ -816,8 +816,11 @@ implements BlueQuery
         log.debug("transition(ResultState)");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", prev.name(), (next != null) ? next.name() : null);
-        if (next != null)
+        if (next == null)
             {
+            log.debug("Null ResultState, no change");
+            }
+        else {
             if (prev == next)
                 {
                 log.debug("No-op state change [{}][{}]", prev.name(), next.name());
@@ -838,9 +841,6 @@ implements BlueQuery
                     log.debug("Modifying inactive ResultState, change rejected [{}][{}]", prev.name(), next.name());
                     }
                 }
-            }
-        else {
-            log.debug("Null ResultState, no change");
             }
         }
     

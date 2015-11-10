@@ -228,6 +228,23 @@ extends NamedEntity
     				return prev;
         		}
     		}
+        
+        /**
+         * Null friendly String parser.
+         * 
+         */
+        public static TaskState parse(final String string)
+            {
+            if (string == null)
+                {
+                return null ;
+                }
+            else {
+                return TaskState.valueOf(
+                    string
+                    );
+                }
+            }
         };
 
     /**
