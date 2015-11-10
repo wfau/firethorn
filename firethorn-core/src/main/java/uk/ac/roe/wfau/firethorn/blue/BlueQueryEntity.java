@@ -775,7 +775,17 @@ implements BlueQuery
          nullable = true,
          updatable = true
          )
-     private Long resultcount ;
+    private Long resultcount ;
+    protected void resultcount(Long value)
+        {
+        if (value != null)
+            {
+            if (value > this.resultcount)
+                {
+                this.resultcount = value;
+                }
+            }
+        }
 
     /**
      * The status of the results.
@@ -1752,29 +1762,23 @@ implements BlueQuery
                     try {
                         //
                         // Get the current instance for this Thread.
-                        BlueQueryEntity query = (BlueQueryEntity) rebase();
+                        BlueQueryEntity entity = (BlueQueryEntity) rebase();
                         //
                         // Update the row count.
-                        final Long resultcount = message.results().count(); 
-                        if (resultcount != null)
-                            {
-                            query.resultcount = resultcount ;
-                            }
+                        resultcount(
+                            message.results().count()
+                            );
                         //
                         // Update the result state.
-                        query.transition(
-                                message.results().state()
+                        entity.transition(
+                            message.results().state()
                             );
                         //
                         // Update the task state.
-                        final TaskState taskstate = message.state();
-                        if (taskstate != null)
-                            {
-                            query.transition(
-                                taskstate
-                                );
-                            }
-                        return query.state();
+                        entity.transition(
+                            message.state()
+                            );
+                        return entity.state();
                         }
                     catch (InvalidStateTransitionException ouch)
                     	{

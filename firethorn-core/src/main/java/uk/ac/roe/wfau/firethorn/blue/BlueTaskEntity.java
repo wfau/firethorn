@@ -843,99 +843,105 @@ implements BlueTask<TaskType>
         final TaskState prev = this.state;
         log.debug("transition(TaskState)");
         log.debug("  ident [{}]", ident());
-        log.debug("  state [{}][{}]", prev.name(), next.name());
+        log.debug("  state [{}][{}]", prev.name(), (next != null) ? next.name() : null);
 
-        if (prev == next)
+        if (next == null)
             {
-            log.debug("No-op status change [{}]", next);
+            log.debug("Null TaskState, no change");
             }
-
-        else if (prev == TaskState.EDITING)
-            {
-            switch (next)
-                {
-                case READY :
-                    accept(next);
-                    break ;
-
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    accept(next);
-                    break ;
-
-                default :
-                    invalid(prev, next);
-                }
-            }
-        
-        else if (prev == TaskState.READY)
-            {
-            switch (next)
-                {
-                case EDITING:
-                    accept(next);
-                    break ;
-
-                case QUEUED:
-                    accept(next);
-                    break ;
-
-                case RUNNING:
-	                accept(next);
-	                break ;
-
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    accept(next);
-                    break ;
-    
-                default :
-                    invalid(prev, next);
-                }
-            }
-
-        else if (prev == TaskState.QUEUED)
-            {
-            switch (next)
-                {
-                case RUNNING:
-                    accept(next);
-                    break ;
-    
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    accept(next);
-                    break ;
-    
-                default :
-                    invalid(prev, next);
-                }
-            }
-
-        else if (prev == TaskState.RUNNING)
-            {
-            switch (next)
-                {
-                case COMPLETED:
-                    accept(next);
-                    break ;
-    
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    accept(next);
-                    break ;
-    
-                default :
-                    invalid(prev, next);
-                }
-            }
-
         else {
-            invalid(prev, next);
+            if (prev == next)
+                {
+                log.debug("No-op status change [{}]", next);
+                }
+    
+            else if (prev == TaskState.EDITING)
+                {
+                switch (next)
+                    {
+                    case READY :
+                        accept(next);
+                        break ;
+    
+                    case CANCELLED:
+                    case FAILED:
+                    case ERROR:
+                        accept(next);
+                        break ;
+    
+                    default :
+                        invalid(prev, next);
+                    }
+                }
+            
+            else if (prev == TaskState.READY)
+                {
+                switch (next)
+                    {
+                    case EDITING:
+                        accept(next);
+                        break ;
+    
+                    case QUEUED:
+                        accept(next);
+                        break ;
+    
+                    case RUNNING:
+    	                accept(next);
+    	                break ;
+    
+                    case CANCELLED:
+                    case FAILED:
+                    case ERROR:
+                        accept(next);
+                        break ;
+        
+                    default :
+                        invalid(prev, next);
+                    }
+                }
+    
+            else if (prev == TaskState.QUEUED)
+                {
+                switch (next)
+                    {
+                    case RUNNING:
+                        accept(next);
+                        break ;
+        
+                    case CANCELLED:
+                    case FAILED:
+                    case ERROR:
+                        accept(next);
+                        break ;
+        
+                    default :
+                        invalid(prev, next);
+                    }
+                }
+    
+            else if (prev == TaskState.RUNNING)
+                {
+                switch (next)
+                    {
+                    case COMPLETED:
+                        accept(next);
+                        break ;
+        
+                    case CANCELLED:
+                    case FAILED:
+                    case ERROR:
+                        accept(next);
+                        break ;
+        
+                    default :
+                        invalid(prev, next);
+                    }
+                }
+    
+            else {
+                invalid(prev, next);
+                }
             }
         }
 

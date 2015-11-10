@@ -31,10 +31,13 @@ import org.slf4j.LoggerFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.DelaysParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.LimitsParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
+import uk.ac.roe.wfau.firethorn.ogsadai.server.blue.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
 import uk.org.ogsadai.activity.MatchedIterativeActivity;
+import uk.org.ogsadai.activity.extension.SecureActivity;
 import uk.org.ogsadai.activity.io.ActivityInput;
 import uk.org.ogsadai.activity.io.BlockWriter;
 import uk.org.ogsadai.activity.io.ControlBlock;
@@ -45,6 +48,7 @@ import uk.org.ogsadai.activity.io.TupleListActivityInput;
 import uk.org.ogsadai.activity.io.TupleListIterator;
 import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
+import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.exception.ErrorID;
 import uk.org.ogsadai.tuple.Tuple;
 
@@ -54,6 +58,7 @@ import uk.org.ogsadai.tuple.Tuple;
  */
 public class LimitsActivity
 extends MatchedIterativeActivity
+implements SecureActivity
     {
 
     /**
@@ -70,6 +75,30 @@ extends MatchedIterativeActivity
      */
     //private ExecutorService executor = Executors.newSingleThreadExecutor();
     private ExecutorService executor = Executors.newCachedThreadPool();
+
+    /**
+     * Our request context.
+     * 
+     */
+    private RequestContext context ;
+
+    @Override
+    public void setSecurityContext(SecurityContext context)
+        {
+        if ((context != null) && (context instanceof RequestContext))
+            {
+            this.context  = (RequestContext) context;
+            this.callback = new CallbackHandler(
+                this.context
+                );          
+            }
+        }
+
+    /**
+     * Our callback handler.
+     * 
+     */
+    private CallbackHandler callback ;
     
     /**
      * Public constructor.
@@ -310,6 +339,7 @@ extends MatchedIterativeActivity
             logger.debug("Cancelling Future");
             future.cancel(true);
             logger.debug("Future cancelled");
+            callback.truncated();
             throw new ActivityTerminatedException();
             }
         catch (TimeoutException ouch)
@@ -319,6 +349,7 @@ extends MatchedIterativeActivity
             logger.debug("Cancelling Future");
             future.cancel(true);
             logger.debug("Future cancelled");
+            callback.truncated();
             throw new ActivityTerminatedException();
             }
         catch (ExecutionException ouch)
@@ -390,6 +421,9 @@ extends MatchedIterativeActivity
                     if (rowcount >= maxrows)
                         {
                         logger.debug("STOP -- Row limit reached [{}]", maxrows);
+                        callback.truncated(
+                            rowcount
+                            );
                         break ;
                         }
                     }

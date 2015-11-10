@@ -113,6 +113,24 @@ public class CallbackHandler
 			);
 		}
 
+   public void truncated()
+        {
+        callback(
+            "COMPLETED",
+            "TRUNCATED",
+            null
+            );
+        }
+
+   public void truncated(final Long count)
+       {
+       callback(
+           "COMPLETED",
+           "TRUNCATED",
+           count
+           );
+       }
+   
 	public void failed()
 		{
 		callback(
