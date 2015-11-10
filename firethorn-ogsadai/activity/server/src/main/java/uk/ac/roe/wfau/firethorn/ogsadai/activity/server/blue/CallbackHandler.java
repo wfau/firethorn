@@ -153,6 +153,7 @@ public class CallbackHandler
 		{
 		callback(
 			taskState,
+			null,
 			null
 			);
 		}
@@ -226,7 +227,8 @@ public class CallbackHandler
 						);
 		        	logger.debug("Response bean");
 		        	logger.debug("  Ident [{}]", bean.getIdent());
-		        	logger.debug("  Name  [{}]", bean.getName());
+                    logger.debug("  Name  [{}]", bean.getName());
+                    logger.debug("  State [{}]", bean.getState());
 		        	logger.debug("  Self  [{}]", bean.getSelf());
 	        		}
 		        catch (Exception ouch)

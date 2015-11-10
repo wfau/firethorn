@@ -412,10 +412,11 @@ public class BlueQueryController
             InvalidRequestException,
             InternalServerErrorException
         {
-        log.debug("callback(String, TaskStatus, Long)");
+        log.debug("callback(String, TaskState, Long, ResultState)");
         log.debug("  ident [{}]", ident);
         log.debug("  next  [{}]", next);
-        log.debug("  wait  [{}]", resultcount);
+        log.debug("  count [{}]", resultcount);
+        log.debug("  state [{}]", resultstate);
         return bean(
             services.entities().callback(
                 services.idents().ident(
@@ -481,7 +482,7 @@ public class BlueQueryController
             {
             return this.status;
             }
-        public void setTaskState(final String value)
+        public void setState(final String value)
             {
             this.status = value;
             }

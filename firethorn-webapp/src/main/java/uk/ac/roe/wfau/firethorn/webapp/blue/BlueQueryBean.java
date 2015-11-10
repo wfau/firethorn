@@ -273,13 +273,13 @@ public class BlueQueryBean
          * The result row count.
          * 
          */
-        public Long rowcount();
+        public Long getCount();
 
         /**
          * The {@link ResultState} state
          *
          */
-        public ResultState state();
+        public ResultState getState();
         
         }
 
@@ -314,12 +314,12 @@ public class BlueQueryBean
                     }
                 }
             @Override
-            public Long rowcount()
+            public Long getCount()
                 {
                 return entity().results().rowcount();
                 }
             @Override
-            public ResultState state()
+            public ResultState getState()
                 {
                 return entity().results().state();
                 }
