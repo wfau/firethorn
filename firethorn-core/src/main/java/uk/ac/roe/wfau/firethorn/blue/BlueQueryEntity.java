@@ -123,49 +123,49 @@ extends BlueTaskEntity<BlueQuery>
 implements BlueQuery
     {
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "BlueQueryEntity";
 
     /**
-     * Hibernate table mapping.
+     * Hibernate table mapping, {@value}.
      *
      */
     protected static final String DB_JOIN_PREFIX  = DB_TABLE_NAME + "JoinTo";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_OGSA_MODE_COL   = "ogsamode";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_INPUT_COL  = "adqlinput";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_QUERY_COL   = "adqlquery";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_OSQL_QUERY_COL   = "osqlquery";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_ADQL_TABLE_COL    = "adqltable";
@@ -173,7 +173,7 @@ implements BlueQuery
     protected static final String DB_ADQL_RESOURCE_COL = "adqlresource";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_SYNTAX_STATE_COL   = "syntaxstate";
@@ -181,13 +181,13 @@ implements BlueQuery
     protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_RESULT_COUNT_COL = "resultrowcount";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_RESULT_STATUS_COL = "resultstatus";
@@ -427,8 +427,8 @@ implements BlueQuery
             log.debug("callback(Identifier, CallbackEvent)");
             log.debug("  ident [{}]", ident);
             log.debug("  next  [{}]", message.state());
-            log.debug("  count [{}]", message.results().count());
             log.debug("  state [{}]", message.results().state());
+            log.debug("  count [{}]", message.results().count());
             final BlueQuery query = select(
                 ident
                 );
@@ -776,17 +776,17 @@ implements BlueQuery
          updatable = true
          )
     private Long resultcount ;
-    protected void resultcount(Long value)
+/*
+    protected void resultcount(final Long value)
         {
+        log.debug("resultcount(Long)");
+        log.debug("  value [{}]", value);
         if (value != null)
             {
-            if (value > this.resultcount)
-                {
-                this.resultcount = value;
-                }
+            this.resultcount = value;
             }
         }
-
+ */
     /**
      * The status of the results.
      *
@@ -806,16 +806,26 @@ implements BlueQuery
     private ResultState resultstate = ResultState.NONE;
 
     /**
-     * Internal state machine transitions.
+     * Update the ResultState and row count.
      * 
      */
-    protected void transition(final ResultState next)
+    protected void transition(final ResultState next, final Long count)
     throws InvalidStateTransitionException
         {
         final ResultState prev = this.resultstate;
-        log.debug("transition(ResultState)");
+        log.debug("transition(ResultState, Long)");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", prev.name(), (next != null) ? next.name() : null);
+        log.debug("  count [{}]", count);
+        
+        if (count != null)
+            {
+            if (count > this.resultcount)
+                {
+                this.resultcount = count ;
+                }
+            }
+
         if (next == null)
             {
             log.debug("Null ResultState, no change");
@@ -1750,9 +1760,11 @@ implements BlueQuery
     throws InvalidStateRequestException
         {
         log.debug("callback(Callback)");
-        log.debug("  next  [{}]", message.state());
         log.debug("  ident [{}]", this.ident());
         log.debug("  state [{}]", this.state());
+        log.debug("  next  [{}]", message.state());
+        log.debug("  state [{}]", message.results().state());
+        log.debug("  count [{}]", message.results().count());
         services().runner().thread(
             new Updator(this)
                 {
@@ -1764,14 +1776,10 @@ implements BlueQuery
                         // Get the current instance for this Thread.
                         BlueQueryEntity entity = (BlueQueryEntity) rebase();
                         //
-                        // Update the row count.
-                        resultcount(
-                            message.results().count()
-                            );
-                        //
                         // Update the result state.
                         entity.transition(
-                            message.results().state()
+                            message.results().state(),
+                            message.results().count()
                             );
                         //
                         // Update the task state.
