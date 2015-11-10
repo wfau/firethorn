@@ -293,7 +293,7 @@ public class UWSJob {
 	}
 	
 	public String getExecutionDuration(){
-		return null;
+		return Integer.toString(TapJobParams.EXECUTION_DURATION);
 	}
 	
 	public String getDestructionTime(){

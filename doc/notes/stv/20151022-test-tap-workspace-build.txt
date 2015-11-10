@@ -469,8 +469,8 @@ EOF
 	# Testing TAP
 
 	#resourceid=$(basename ${queryspace:?}) 
-	resourceid=16121857
-	query="SELECT+TOP+1+*+FROM+atlasSourceXtwomass_psc"
+	resourceid=18710529
+	query="SELECT+TOP+5+*+FROM+TAP_SCHEMA.tables"
 	format=VOTABLE
 	lang=ADQL
 	request=doQuery

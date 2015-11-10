@@ -303,14 +303,14 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 								if ((meta.adql().arraysize() != null)
 										&& (meta.adql().arraysize() != 0)) {
 									if (meta.adql().arraysize() == -1) {
-										sql += "-1,";
+										sql += "null,";
 									} else {
 										sql += meta.adql().arraysize()
 												.toString()
 												+ ",";
 									}
 								} else {
-									sql += "-1,";
+									sql += "null,";
 								}
 							}
 						}
