@@ -24,7 +24,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 
+import org.springframework.stereotype.Component;
+
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
 
 /**
  * Implementation of the query delays.
@@ -39,6 +42,25 @@ public class AdqlQueryDelays
 implements AdqlQuery.Delays
     {
     /**
+     * Factory implementation.
+     * 
+     */
+    @Component
+    public static class Factory
+    implements AdqlQuery.Delays.Factory
+        {
+        @Override
+        public AdqlQuery.Delays create(final Integer first, final Integer last, final Integer every)
+            {
+            return new AdqlQueryDelays(
+                first,
+                last,
+                every
+                );
+            }
+        }
+    
+    /**
      * Public constructor.
      * 
      */
@@ -48,15 +70,29 @@ implements AdqlQuery.Delays
         }
 
     /**
+     * Public constructor.
+     * 
+     */
+    public AdqlQueryDelays(final AdqlQuery.Delays delays)
+        {
+        if (delays != null)
+            {
+            this.first = delays.first();
+            this.every = delays.every();
+            this.last  = delays.last();
+            }
+        }
+
+    /**
      * Protected constructor.
      * 
      */
     protected AdqlQueryDelays(final Integer first, final Integer every, final Integer last)
         {
         log.debug("AdqlQueryDelays(Integer, Integer, Integer)");
-        this.ogsafirst = first ;
-        this.ogsaevery = every ;
-        this.ogsalast  = last  ;
+        this.first = first ;
+        this.every = every ;
+        this.last  = last  ;
         }
     
     /**
@@ -76,17 +112,17 @@ implements AdqlQuery.Delays
         nullable = true,
         updatable = true
         )
-    private Integer ogsafirst;
+    private Integer first;
 
     @Override
     public Integer first()
         {
-        return ogsafirst;
+        return first;
         }
     @Override
     public void first(Integer value)
         {
-        ogsafirst = value;
+        first = value;
         }
 
     @Basic(
@@ -98,17 +134,17 @@ implements AdqlQuery.Delays
         nullable = true,
         updatable = true
         )
-    private Integer ogsalast;
+    private Integer last;
     
     @Override
     public Integer last()
         {
-        return ogsalast;
+        return last;
         }
     @Override
     public void last(Integer value)
         {
-        ogsalast = value;
+        last = value;
         }
     
     @Basic(
@@ -120,16 +156,16 @@ implements AdqlQuery.Delays
         nullable = true,
         updatable = true
         )
-    private Integer ogsaevery;
+    private Integer every;
 
     @Override
     public Integer every()
         {
-        return ogsaevery;
+        return every;
         }
     @Override
     public void every(Integer value)
         {
-        ogsaevery = value ;
+        every = value ;
         }
     }

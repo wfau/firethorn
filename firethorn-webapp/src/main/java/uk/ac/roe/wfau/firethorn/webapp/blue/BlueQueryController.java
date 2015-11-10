@@ -103,7 +103,25 @@ public class BlueQueryController
     public static final String QUERY_LIMT_TIME = "blue.query.limit.time" ;
 
     /**
-     * Request param name for the wait, [{@value}].
+     * Request param name for the first row delay, [{@value}].
+     *
+     */
+    public static final String QUERY_DELAY_FIRST = "blue.query.delay.first" ;
+
+    /**
+     * Request param name for the last row delay, [{@value}].
+     *
+     */
+    public static final String QUERY_DELAY_LAST = "blue.query.delay.last" ;
+
+    /**
+     * Request param name for the every row delay, [{@value}].
+     *
+     */
+    public static final String QUERY_DELAY_EVERY = "blue.query.delay.every" ;
+
+    /**
+     * Request param name for the request wait, [{@value}].
      *
      */
     public static final String REQUEST_WAIT_PARAM = "blue.query.wait" ;

@@ -54,6 +54,9 @@ extends BlueTask<BlueQuery>
     public static interface EntityServices
     extends BlueTask.EntityServices<BlueQuery>
         {
+        @Override
+        public BlueQuery.LinkFactory links();
+
         /**
          * Our {@link BlueQuery.EntityFactory} instance.
          *
@@ -65,9 +68,12 @@ extends BlueTask<BlueQuery>
          * 
          */
         public AdqlQuery.Limits.Factory limits();
-        
-        @Override
-        public BlueQuery.LinkFactory links();
+
+        /**
+         * Our {@link AdqlQuery.Delays.Factory } instance.
+         * 
+         */
+        public AdqlQuery.Delays.Factory delays();
 
         }
     
@@ -167,6 +173,13 @@ extends BlueTask<BlueQuery>
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final BlueTask.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException;
 
+        /**
+         * Create a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, {@link AdqlQuery.Delays}, {@link BlueQuery.TaskState}, and a wait timeout.
+         *
+         */
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final BlueTask.TaskState next, final Long wait)
+        throws InvalidRequestException, InternalServerErrorException;
+        
         /**
          * Update a new {@link BlueQuery} with an ADQL string and state.
          *

@@ -95,7 +95,7 @@ extends NamedEntity, Job
         public interface Factory
             {
             /**
-             * Create a limits.
+             * Create a new Limits object.
              * 
              */
             public Limits create(final Long rows, final Long cells, final Long time);
@@ -215,6 +215,18 @@ extends NamedEntity, Job
     public interface Delays
     extends DelaysClient.Param
         {
+        /**
+         * Public factory interface.
+         * 
+         */
+        public interface Factory
+            {
+            /**
+             * Create a new Delays object.
+             * 
+             */
+            public Delays create(final Integer first, final Integer last, final Integer every);
+            }
 
         /**
          * The delay before the first row.
@@ -231,7 +243,7 @@ extends NamedEntity, Job
         public void last(final Integer value);
 
         /**
-         * The delay between each row.
+         * The delay between every row.
          * @param value The delay value.
          *
          */

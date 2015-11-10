@@ -330,7 +330,7 @@ implements SecureActivity
             logger.debug("Trying future");
             future.get(
                 maxtime,
-                TimeUnit.SECONDS
+                TimeUnit.MILLISECONDS
                 );
             }
         catch (InterruptedException ouch)

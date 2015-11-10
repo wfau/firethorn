@@ -263,6 +263,7 @@ implements BlueQuery
                 source,
                 input,
                 null,
+                null,
                 next,
                 wait
                 );
@@ -273,7 +274,22 @@ implements BlueQuery
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final BlueQuery.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
-            log.debug("create(AdqlResource, String, Limits, TaskState, Long)");
+            return create(
+                source,
+                input,
+                limits,
+                null,
+                next,
+                wait
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final BlueQuery.TaskState next, final Long wait)
+        throws InvalidRequestException, InternalServerErrorException
+            {
+            log.debug("create(AdqlResource, String, Limits, Delays, TaskState, Long)");
             log.debug("  state [{}]", next);
             log.debug("  wait  [{}]", wait);
 
@@ -309,7 +325,8 @@ implements BlueQuery
                 				inner,
                 				source,
                 				input,
-                				limits
+                				limits,
+                				delays
                 				)
                     		);
                         }
@@ -570,6 +587,14 @@ implements BlueQuery
             {
             return this.limits;
             }
+
+        @Autowired
+        private AdqlQuery.Delays.Factory delays;
+        @Override
+        public AdqlQuery.Delays.Factory delays()
+            {
+            return this.delays;
+            }
         }
 
     @Override
@@ -603,7 +628,6 @@ implements BlueQuery
     /**
      * Protected constructor.
      * 
-     */
     protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input)
     throws InvalidStateTransitionException
         {
@@ -611,15 +635,17 @@ implements BlueQuery
             owner,
             source,
             input,
+            null,
             null
             );
         }
+     */
 
     /**
      * Protected constructor.
      * 
      */
-    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final AdqlQuery.Limits limits)
+    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays)
     throws InvalidStateTransitionException
         {
         super(
@@ -629,6 +655,9 @@ implements BlueQuery
         this.source = source;
         this.limits(
             limits
+            );
+        this.delays(
+            delays
             );
 		this.prepare(
 		    input
@@ -1290,6 +1319,13 @@ implements BlueQuery
         return this.delays ;
         }
 
+    public void delays(final AdqlQuery.Delays delays)
+        {
+        this.delays = new AdqlQueryDelays(
+            delays
+            );
+        }
+    
     @Embedded
     private AdqlQueryTimings stats;
     

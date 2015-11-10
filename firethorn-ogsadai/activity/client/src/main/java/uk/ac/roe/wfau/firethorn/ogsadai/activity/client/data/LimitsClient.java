@@ -59,7 +59,7 @@ extends BaseActivity implements Activity
         public Long cells();
 
         /**
-         * The time limit.
+         * The time limit, in milliseconds.
          * @return The time limit.
          *
          */
@@ -79,7 +79,7 @@ extends BaseActivity implements Activity
     private final ActivityInput cells;
 
     /**
-     * The time limit.
+     * The time limit, in milliseconds.
      *
      */
     private final ActivityInput time;
@@ -200,7 +200,7 @@ extends BaseActivity implements Activity
         }
 
     /**
-     * Set the time limit.
+     * Set the time limit, in milliseconds.
      *
      */
     public void time(final Long value)

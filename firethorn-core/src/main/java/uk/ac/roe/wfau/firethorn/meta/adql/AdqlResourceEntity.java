@@ -433,7 +433,7 @@ implements AdqlResource
                     );
                 }
             @Override
-            public BlueQuery create(String input, TaskState next, Long wait)
+            public BlueQuery create(final String input, final TaskState next, final Long wait)
                 throws InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
@@ -444,13 +444,26 @@ implements AdqlResource
                     );
                 }
             @Override
-            public BlueQuery create(String input, final AdqlQuery.Limits limits, TaskState next, Long wait)
+            public BlueQuery create(final String input, final AdqlQuery.Limits limits, final TaskState next, final Long wait)
                 throws InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
                     AdqlResourceEntity.this,
                     input,
                     limits,
+                    next,
+                    wait
+                    );
+                }
+            @Override
+            public BlueQuery create(final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final TaskState next, final Long wait)
+                throws InvalidRequestException, InternalServerErrorException
+                {
+                return services().blues().create(
+                    AdqlResourceEntity.this,
+                    input,
+                    limits,
+                    delays,
                     next,
                     wait
                     );

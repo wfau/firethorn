@@ -142,7 +142,15 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         @RequestParam(value=BlueQueryController.QUERY_LIMT_ROWS, required=false)
         final Long rows,
         @RequestParam(value=BlueQueryController.QUERY_LIMT_TIME, required=false)
-        final Long time
+        final Long time,
+
+        @RequestParam(value=BlueQueryController.QUERY_DELAY_FIRST, required=false)
+        final Integer first,
+        @RequestParam(value=BlueQueryController.QUERY_DELAY_LAST, required=false)
+        final Integer last,
+        @RequestParam(value=BlueQueryController.QUERY_DELAY_EVERY, required=false)
+        final Integer every
+
         ) throws
         IdentifierNotFoundException,
         IdentifierFormatException,
@@ -165,6 +173,11 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
                         rows,
                         cells,
                         time
+                        ),
+                    factories().blues().delays().create(
+                        first,
+                        last,
+                        every
                         ),
                     next,
                     wait
