@@ -355,9 +355,16 @@ implements ResourceActivity, SecureActivity
         catch (final DataError ouch)
             {
             logger.debug("DataError reading tuples [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+            if (ouch.getCause() != null)
+                {
+                logger.debug("  cause [{}][{}]", ouch.getCause().getClass().getName(), ouch.getCause().getMessage());
+                }
+/*
+ * DataError occurs when pipe is closed by Limits.
             throw new ActivityProcessingException(
                 ouch
                 );
+ */                
             }
         catch (final SQLException ouch)
             {
