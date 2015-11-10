@@ -964,8 +964,8 @@ implements BlueTask<TaskType>
     private void invalid(final TaskState prev, final TaskState next)
     throws InvalidStateTransitionException
         {
-        this.state = TaskState.ERROR;
-        // TODO Do we notify our listners ?
+        // this.state = TaskState.ERROR;
+        // TODO Should we throw an Exception, or just ignore the transition ?
         throw new InvalidStateTransitionException(
             this,
             prev,
