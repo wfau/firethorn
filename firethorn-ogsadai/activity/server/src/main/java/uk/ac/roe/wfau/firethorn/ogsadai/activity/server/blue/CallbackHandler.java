@@ -192,8 +192,7 @@ public class CallbackHandler
                             @Override
                             public String getResultState()
                                 {
-                                // TODO Auto-generated method stub
-                                return null;
+                                return resultState;
                                 }
 							},
 						ResponseBean.class

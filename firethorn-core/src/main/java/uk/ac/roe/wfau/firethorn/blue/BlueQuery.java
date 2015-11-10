@@ -247,7 +247,8 @@ extends BlueTask<BlueQuery>
 
         /**
          * The results state.
-         *
+         * @todo Need to know more information - e.g. why the results were truncated.
+         * 
          */
         public ResultState resultState();
         
