@@ -97,11 +97,11 @@ firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
 firethorn.user.driver=${userdriver:?}
 
-firethorn.limits.time.default=10
-firethorn.limits.time.absolute=1000
+#firethorn.limits.time.default=60000
+#firethorn.limits.time.absolute=600000
 
-firethorn.limits.rows.default=10
-firethorn.limits.rows.absolute=1000
+#firethorn.limits.rows.default=1000
+#firethorn.limits.rows.absolute=1000000
 
 EOF
 
@@ -233,10 +233,23 @@ EOF
             --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
             --data "blue.query.next.status=COMPLETED" \
             --data "blue.query.limit.rows=100" \
+            --data "blue.query.limit.time=10000" \
             --data "blue.query.wait=60000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
 
+
+        queryident=$(
+            cat blue-query.json | self | ident
+            )
+
+        #
+        # Select the BlueQuery and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/blue/query/${queryident:?}?blue.query.next.status=COMPLETED&blue.query.wait=60000" \
+            | bin/pp
 
 
 # -----------------------------------------------------
