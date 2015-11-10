@@ -159,9 +159,16 @@ public class AdqlTapAsyncController extends AbstractController {
 	@RequestMapping(value="{jobid}", method = RequestMethod.GET)
 	public void getJobInfo(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@PathVariable("jobid") String jobid,
+			@RequestParam(value = "ACTION", required = false) String ACTION,
 			final HttpServletResponse response)
 					throws Exception {
 
+		if (ACTION=="DELETE"){
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			return;
+
+		}
+		
 		response.setContentType(CommonParams.TEXT_XML_MIME);
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter writer = response.getWriter();
@@ -404,15 +411,27 @@ public class AdqlTapAsyncController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/{jobid}/error", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public String error(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+	public void error(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
 
 		BlueQuery queryentity = getqueryentity(jobid);
+		PrintWriter writer = response.getWriter();
+		response.setContentType(CommonParams.TEXT_XML_MIME);
+		response.setCharacterEncoding("UTF-8");
+		
 		if (queryentity.state() == TaskState.ERROR || queryentity.state() == TaskState.FAILED) {
-			return TapError.writeErrorToVotable(queryentity.syntax().friendly());
+		
+			if (queryentity.syntax()!=null){
+				writer.append(TapError.writeErrorToVotable(queryentity.syntax().friendly()));
+			} else {
+				writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
+			}
+			return;
+			
 		} else {
-			return "";
+			
+			writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
+			return;
 		}
 	}
 
