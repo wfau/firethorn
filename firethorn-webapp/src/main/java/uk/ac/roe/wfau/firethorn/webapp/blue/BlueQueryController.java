@@ -112,7 +112,7 @@ public class BlueQueryController
      * Request param name for the {@link BlueQuery.Callback} {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String CALLBACK_STATUS = "blue.query.status" ;
+    public static final String CALLBACK_TASK_STATE = "blue.query.status" ;
 
     /**
      * Request param name for the {@link BlueQuery.Callback} row count, [{@value}].
@@ -400,12 +400,12 @@ public class BlueQueryController
     public BlueQueryBean formCallback(
         @PathVariable(value=QUERY_IDENT_PARAM)
         final String ident,
-        @RequestParam(value=CALLBACK_STATUS, required=false)
+        @RequestParam(value=CALLBACK_TASK_STATE, required=false)
         final TaskState next,
         @RequestParam(value=CALLBACK_RESULT_COUNT, required=false)
-        final Long rowcount,
+        final Long resultcount,
         @RequestParam(value=CALLBACK_RESULT_STATE, required=false)
-        final BlueQuery.ResultState results
+        final BlueQuery.ResultState resultstate
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
@@ -415,7 +415,7 @@ public class BlueQueryController
         log.debug("callback(String, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
         log.debug("  next  [{}]", next);
-        log.debug("  wait  [{}]", rowcount);
+        log.debug("  wait  [{}]", resultcount);
         return bean(
             services.entities().callback(
                 services.idents().ident(
@@ -424,19 +424,26 @@ public class BlueQueryController
                 new BlueQuery.Callback()
                     {
                     @Override
-                    public Long rowcount()
-                        {
-                        return rowcount;
-                        }
-                    @Override
-                    public TaskState taskState()
+                    public TaskState state()
                         {
                         return next;
                         }
                     @Override
-                    public ResultState resultState()
+                    public Results results()
                         {
-                        return results;
+                        return new Results()
+                            {
+                            @Override
+                            public Long count()
+                                {
+                                return resultcount;
+                                }
+                            @Override
+                            public ResultState state()
+                                {
+                                return resultstate;
+                                }
+                            };
                         }
                     }
                 )
@@ -470,7 +477,7 @@ public class BlueQueryController
 
     	private String status;
 		@Override
-        public String getTaskState()
+        public String getState()
             {
             return this.status;
             }
@@ -479,26 +486,26 @@ public class BlueQueryController
             this.status = value;
             }
 
-        private Long count;
+        private Long resultcount;
 		@Override
-		public Long getCount()
+		public Long getResultCount()
 			{
-			return this.count;
+			return this.resultcount;
 			}
-        public void setCount(final Long value)
+        public void setResultCount(final Long value)
             {
-            this.count = value;
+            this.resultcount = value;
             }
 
-        private String results;
+        private String resultstate;
         @Override
         public String getResultState()
             {
-            return this.results;
+            return this.resultstate;
             }
         public void setResultState(final String value)
             {
-            this.results = value;
+            this.resultstate = value;
             }
     	}
     
@@ -523,7 +530,7 @@ public class BlueQueryController
         {
         log.debug("callback(String, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
-        log.debug("  next  [{}]", bean.getTaskState());
+        log.debug("  next  [{}]", bean.getState());
         return bean(
             services.entities().callback(
                 services.idents().ident(
@@ -532,23 +539,30 @@ public class BlueQueryController
                 new BlueQuery.Callback()
                     {
                     @Override
-                    public Long rowcount()
-                        {
-                        return bean.getCount();
-                        }
-                    @Override
-                    public TaskState taskState()
+                    public TaskState state()
                         {
                         return TaskState.valueOf(
-                    		bean.getTaskState()
+                    		bean.getState()
                     		);
                         }
                     @Override
-                    public ResultState resultState()
+                    public Results results()
                         {
-                        return ResultState .valueOf(
-                            bean.getResultState()
-                            );
+                        return new Results()
+                            {
+                            @Override
+                            public Long count()
+                                {
+                                return bean.getResultCount();
+                                }
+                            @Override
+                            public ResultState state()
+                                {
+                                return ResultState .valueOf(
+                                    bean.getResultState()
+                                    );
+                                }
+                            };
                         }
                     }
                 )

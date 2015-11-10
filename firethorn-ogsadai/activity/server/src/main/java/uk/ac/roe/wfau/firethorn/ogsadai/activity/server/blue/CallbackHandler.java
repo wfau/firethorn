@@ -80,14 +80,17 @@ public class CallbackHandler
 	public void running()
 		{
 		callback(
-			"RUNNING"
+			"RUNNING",
+			"PARTIAL",
+			null
 			);
 		}
 
 	public void running(final Long count)
 		{
 		callback(
-			"RUNNING",
+            "RUNNING",
+            "PARTIAL",
 			count
 			);
 		}
@@ -95,13 +98,16 @@ public class CallbackHandler
 	public void completed()
 		{
 		callback(
-			"COMPLETED"
+            "COMPLETED",
+            "COMPLETED",
+            null
 			);
 		}
 
 	public void completed(final Long count)
 		{
 		callback(
+            "COMPLETED",
 			"COMPLETED",
 			count
 			);
@@ -110,14 +116,17 @@ public class CallbackHandler
 	public void failed()
 		{
 		callback(
-			"FAILED"
+            "FAILED",
+            "PARTIAL",
+            null
 			);
 		}
 
 	public void failed(final Long count)
 		{
 		callback(
-			"FAILED",
+            "FAILED",
+            "PARTIAL",
 			count
 			);
 		}
@@ -180,12 +189,12 @@ public class CallbackHandler
 								return context.ident();
 								}
 							@Override
-							public String getTaskState()
+							public String getState()
 								{
 								return taskState;
 								}
 							@Override
-							public Long getCount()
+							public Long getResultCount()
 								{
 								return count;
 								}
@@ -295,7 +304,7 @@ public class CallbackHandler
 
     	private String status;
 		@Override
-        public String getTaskState()
+        public String getState()
             {
             return this.status;
             }

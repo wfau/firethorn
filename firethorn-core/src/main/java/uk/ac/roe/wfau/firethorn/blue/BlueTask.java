@@ -185,9 +185,10 @@ extends NamedEntity
             }
 
         private boolean active ;
+
         /**
-         * Check if this is an active {@link TaskState}. 
-         * @return true if this is an active {@link TaskState}.
+         * Check if this is an active state. 
+         * @return true if this is an active state.
          * 
          */
         public boolean active()

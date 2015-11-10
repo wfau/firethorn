@@ -444,13 +444,13 @@ implements SecureActivity
 							}
 
 						@Override
-						public String getTaskState()
+						public String getState()
 							{
 							return next;
 							}
 
 						@Override
-						public Long getCount()
+						public Long getResultCount()
 							{
 							return null;
 							}
@@ -563,11 +563,11 @@ implements SecureActivity
 
     	private String next;
 		@Override
-        public String getTaskState()
+        public String getState()
             {
             return this.next;
             }
-        public void setNext(final String value)
+        public void setState(final String value)
             {
             this.next = value;
             }

@@ -62,6 +62,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
@@ -425,8 +426,9 @@ implements BlueQuery
             {
             log.debug("callback(Identifier, CallbackEvent)");
             log.debug("  ident [{}]", ident);
-            log.debug("  next  [{}]", message.taskState());
-            log.debug("  count [{}]", message.rowcount());
+            log.debug("  next  [{}]", message.state());
+            log.debug("  count [{}]", message.results().count());
+            log.debug("  state [{}]", message.results().state());
             final BlueQuery query = select(
                 ident
                 );
@@ -793,11 +795,45 @@ implements BlueQuery
         )
     private ResultState resultstate = ResultState.NONE;
 
-    protected void resultstate(final ResultState state)
+    /**
+     * Internal state machine transitions.
+     * 
+     */
+    protected void transition(final ResultState next)
+    throws InvalidStateTransitionException
         {
-        this.resultstate = state;
+        final ResultState prev = this.resultstate;
+        log.debug("transition(ResultState)");
+        log.debug("  ident [{}]", ident());
+        log.debug("  state [{}][{}]", prev.name(), (next != null) ? next.name() : null);
+        if (next != null)
+            {
+            if (prev == next)
+                {
+                log.debug("No-op state change [{}][{}]", prev.name(), next.name());
+                }
+            else {
+                if (prev.active())
+                    {
+                    if (next.ordinal() >= prev.ordinal())
+                        {
+                        log.debug("Forward transition, state change accepted [{}][{}]", prev.name(), next.name());
+                        this.resultstate = next;
+                        }
+                    else {
+                        log.warn("Backward transition, state change rejected [{}][{}]", prev.name(), next.name());
+                        }
+                    }
+                else {
+                    log.debug("Modifying inactive ResultState, change rejected [{}][{}]", prev.name(), next.name());
+                    }
+                }
+            }
+        else {
+            log.debug("Null ResultState, no change");
+            }
         }
-
+    
     @Override
     public Results results()
         {
@@ -1488,15 +1524,15 @@ implements BlueQuery
             }
 
         //
+        // Build our target resources.
+        build();
+        //
         // Mark our task as active.
 /*
         transition(
     		TaskState.QUEUED
     		);
  */
-        //
-        // Build our target resources.
-        build();
         
         //
         // Select our target OGSA-DAI service.  
@@ -1698,13 +1734,13 @@ implements BlueQuery
             this
             );
         }
-
+    
     @Override
     public void callback(final BlueQuery.Callback message)
     throws InvalidStateRequestException
         {
         log.debug("callback(Callback)");
-        log.debug("  next  [{}]", message.taskState());
+        log.debug("  next  [{}]", message.state());
         log.debug("  ident [{}]", this.ident());
         log.debug("  state [{}]", this.state());
         services().runner().thread(
@@ -1719,16 +1755,23 @@ implements BlueQuery
                         BlueQueryEntity query = (BlueQueryEntity) rebase();
                         //
                         // Update the row count.
-                        if (message.rowcount() != null)
+                        final Long resultcount = message.results().count(); 
+                        if (resultcount != null)
                             {
-                            query.resultcount = message.rowcount();
+                            query.resultcount = resultcount ;
                             }
                         //
-                        // Update the state.
-                        if (message.taskState() != null)
+                        // Update the result state.
+                        query.transition(
+                                message.results().state()
+                            );
+                        //
+                        // Update the task state.
+                        final TaskState taskstate = message.state();
+                        if (taskstate != null)
                             {
                             query.transition(
-                                message.taskState()
+                                taskstate
                                 );
                             }
                         return query.state();

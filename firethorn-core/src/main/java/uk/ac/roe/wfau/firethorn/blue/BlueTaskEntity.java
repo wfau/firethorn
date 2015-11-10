@@ -943,7 +943,7 @@ implements BlueTask<TaskType>
      * Accept a valid state transition.
      * 
      */
-    private void accept(final TaskState next)
+    protected void accept(final TaskState next)
         {
         log.debug("accept(TaskState)");
         log.debug("  ident [{}]", ident());
