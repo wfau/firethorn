@@ -240,6 +240,8 @@ EOF
             --data "blue.query.delay.every=200" \
             --data "blue.query.delay.last=300" \
             --data "blue.query.limit.time=1000" \
+            --data "blue.query.limit.rows=2000" \
+            --data "blue.query.limit.cells=3000" \
             --data "blue.query.wait=60000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json

@@ -54,8 +54,8 @@ implements AdqlQuery.Delays
             {
             return new AdqlQueryDelays(
                 first,
-                last,
-                every
+                every,
+                last
                 );
             }
         }
@@ -90,6 +90,9 @@ implements AdqlQuery.Delays
     protected AdqlQueryDelays(final Integer first, final Integer every, final Integer last)
         {
         log.debug("AdqlQueryDelays(Integer, Integer, Integer)");
+        log.debug("  first [{}]", first);
+        log.debug("  every [{}]", every);
+        log.debug("  last  [{}]", last);
         this.first = first ;
         this.every = every ;
         this.last  = last  ;
