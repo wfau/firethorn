@@ -1,0 +1,190 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Original query.
+#
+
+    select
+        S.sourceID as ID,
+        S.ra as ra,
+        S.dec as decl,
+        X.slaveObjID,
+        S.uAperMag6 as umagV,
+        S.gAperMag6 as gmagV,
+        S.rAperMag6 as rmagV,
+        S.iAperMag6 as imagV,
+        S.zAperMag6 as zmagV,
+        S.gAperMag3 as psfgmagV,
+        S.rAperMag3 as psfrmagV,
+        S.iAperMag3 as psfimagV,
+        W.w1mpro as W1,
+        W.w2mpro as W2,
+        W.w3mpro as W3,
+        W.h_m_2mass as H,
+        W.k_m_2mass as Ks,
+        S.uPetroMag as umodV,
+        S.gPetroMag as gmodV,
+        S.rPetroMag as rmodV,
+        S.iPetroMag as imodV,
+        S.zPetroMag as zmodV,
+        S.UlAperMag6 as Ul
+    from
+        ATLASDR2.dbo.atlasSource as S
+    join
+        ATLASDR2.dbo.atlasSourceXwise_allskysc as X
+    on
+        X.masterObjID = S.sourceID
+    join
+        WISE.dbo.wise_allskysc as W
+    on
+        X.slaveObjID = W.cntr
+    where
+        (
+            S.iAperMag6<20.5 and S.iAperMag6>15.5
+        and
+            S.rAperMag6>15.5
+        and
+            S.zAperMag6>14.4
+        and
+            S.gAperMag6 - S.rAperMag6 - 0.24 < 1.5
+        and
+            S.rAperMag6 - S.iAperMag6 - 0.21 < 1.5
+        and
+            S.rAperMag6 - S.zAperMag6 - 0.38 < 3.0
+        and
+            S.rAperMag6 - S.zAperMag6 - 0.38 > -0.6
+        and
+            (
+                S.iAperMag3-S.iAperMag6 >= 0.08
+            or
+                S.pGalaxy > 0.5
+            )
+        and
+            W.w1mpro-W.w2mpro > 0.55
+        and
+            W.w1mpro-W.w2mpro > 0.55 + 0.3 * (W.w2mpro - 14.2)     
+        and
+            (
+                (
+                    S.iAperMag6 - W.w1mpro + 0.37 > 3.5
+                and
+                    S.gAperMag6 -S.iAperMag6 - 0.45 > 1.0
+                and
+                    S.gAperMag6 - S.iAperMag6 - 0.45 < 2.5
+                )
+            or
+                (
+                    S.gAperMag6 - S.iAperMag6 - 0.45 < 1.2 * (S.iAperMag6 - W.w1mpro + 0.37 ) - 2.8
+                )
+            )
+        )
+
+
+
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/tester:1.1" \
+        bash
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | bin/pp | tee system-info.json
+
+# -----------------------------------------------------
+# Load the ATLASDR1 and WISE catalogs.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR2' 'dbo' "meta/ATLASDR2_TablesSchema.xml"
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'WISE'     'dbo' "meta/WISE_TablesSchema.xml"
+
+# -----------------------------------------------------
+# Create our workspace
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlasdr1'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR2' 'atlasdr2'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'WISE'     'wise'
+
+# -----------------------------------------------------
+# Run a BlueQuery
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
