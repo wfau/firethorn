@@ -1,13 +1,13 @@
 DROP SCHEMA IF EXISTS TAP_SCHEMA CASCADE;
 CREATE SCHEMA TAP_SCHEMA;
 
-CREATE TABLE TAP_SCHEMA.schemas ("schema_name" VARCHAR, "description" VARCHAR, "utype" VARCHAR, "dbname" VARCHAR, PRIMARY KEY("schema_name"));
+CREATE TABLE TAP_SCHEMA.schemas ("schema_name" VARCHAR, "description" VARCHAR, "utype" VARCHAR, PRIMARY KEY("schema_name"));
 CREATE TABLE TAP_SCHEMA.tables ("schema_name" VARCHAR, "table_name" VARCHAR, "table_type" VARCHAR, "description" VARCHAR, "utype" VARCHAR, "dbname" VARCHAR, PRIMARY KEY("table_name"));
 CREATE TABLE TAP_SCHEMA.columns ("table_name" VARCHAR, "column_name" VARCHAR, "description" VARCHAR, "unit" VARCHAR, "ucd" VARCHAR, "utype" VARCHAR, "datatype" VARCHAR, "size" INTEGER, "principal" INTEGER, "indexed" INTEGER, "std" INTEGER, "dbname" VARCHAR, PRIMARY KEY("table_name","column_name"));
 CREATE TABLE TAP_SCHEMA."keys" ("key_id" VARCHAR, "from_table" VARCHAR, "target_table" VARCHAR, "description" VARCHAR, "utype" VARCHAR, PRIMARY KEY("key_id"));
 CREATE TABLE TAP_SCHEMA."key_columns" ("key_id" VARCHAR, "from_column" VARCHAR, "target_column" VARCHAR, PRIMARY KEY("key_id"));
 
-INSERT INTO TAP_SCHEMA.schemas VALUES ('TAP_SCHEMA', 'Set of tables listing and describing the schemas, tables and columns published in this TAP service.', NULL, NULL);
+INSERT INTO TAP_SCHEMA.schemas VALUES ('TAP_SCHEMA', 'Set of tables listing and describing the schemas, tables and columns published in this TAP service.', NULL);
 
 INSERT INTO TAP_SCHEMA.tables VALUES ('TAP_SCHEMA', 'TAP_SCHEMA.schemas', 'table', 'List of schemas published in this TAP service.', NULL, NULL);
 INSERT INTO TAP_SCHEMA.tables VALUES ('TAP_SCHEMA', 'TAP_SCHEMA.tables', 'table', 'List of tables published in this TAP service.', NULL, NULL);

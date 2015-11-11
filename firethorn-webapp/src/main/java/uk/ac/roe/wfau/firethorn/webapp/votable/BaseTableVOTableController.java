@@ -343,12 +343,12 @@ extends AbstractTableController
     public void cell(final FieldFormatter formatter, final PrintWriter writer, final ResultSet results)
     throws SQLException
         {
+    	String content =  formatter.format(results);
         writer.append("<TD>");
-        writer.append(
-            formatter.format(
-                results
-                )
-            );
+        if (content!=null){
+        	content = content.trim();
+        }
+        writer.append(content);
         writer.append("</TD>");
         }
     

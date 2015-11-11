@@ -431,7 +431,6 @@ EOF
 
         source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
 
-        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasTwomass.xml"
 
 
 
@@ -469,7 +468,7 @@ EOF
 	# Testing TAP
 
 	#resourceid=$(basename ${queryspace:?}) 
-	resourceid=18710529
+	resourceid=21626881
 	query="SELECT+TOP+5+*+FROM+TAP_SCHEMA.tables"
 	format=VOTABLE
 	lang=ADQL
@@ -605,7 +604,7 @@ EOF
 
 	# ----------------------Query test5: Test GAVO-------------------------------
 
-	gavoquery="SELECT+top+5+*+from+amanda.nucanddd"
+	gavoquery="SELECT+top+5+*"
 	data="$( curl -L \
 	"http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/" \
 	-d LANG=ADQL \
@@ -712,213 +711,4 @@ EOF
 
 	curl -L ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results/result
 	
-
-# -----------------------------------------------------
-# Run a BlueQuery
-#[root@tester]
-
-        #
-        # Create BlueQuery with a valid input.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
-            "${endpointurl:?}/${queryspace:?}/blue/create" \
-            | bin/pp | tee blue-query.json
-
-        queryself=$(
-            cat blue-query.json | self
-            )
-
-        querynode=$(
-            cat blue-query.json | self | node
-            )
-
-        queryident=$(
-            cat blue-query.json | self | ident
-            )
-
-        #
-        # Run the BlueQuery.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.next.status=RUNNING" \
-            "${endpointurl:?}/blue/query/${queryident:?}" \
-            | bin/pp
-
-        #
-        # Wait for a bit ..
-        sleep 10
-
-        #
-        # Select the BlueQuery.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            "${endpointurl:?}/blue/query/${queryident:?}" \
-            | bin/pp
-
-
-# -----------------------------------------------------
-# Run a BlueQuery
-#[root@tester]
-
-        #
-        # Create BlueQuery with a valid input.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
-            "${endpointurl:?}/${queryspace:?}/blue/create" \
-            | bin/pp | tee blue-query.json
-
-        queryself=$(
-            cat blue-query.json | self
-            )
-
-        querynode=$(
-            cat blue-query.json | self | node
-            )
-
-        queryident=$(
-            cat blue-query.json | self | ident
-            )
-
-        #
-        # Run the BlueQuery and wait (60s) for completion.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.next.status=COMPLETED" \
-            --data "blue.query.wait=60000" \
-            "${endpointurl:?}/blue/query/${queryident:?}" \
-            | bin/pp
-
-# -----------------------------------------------------
-# Run a BlueQuery
-#[root@tester]
-
-        #
-        # Create BlueQuery with a valid input.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
-            "${endpointurl:?}/${queryspace:?}/blue/create" \
-            | bin/pp | tee blue-query.json
-
-        queryself=$(
-            cat blue-query.json | self
-            )
-
-        querynode=$(
-            cat blue-query.json | self | node
-            )
-
-        queryident=$(
-            cat blue-query.json | self | ident
-            )
-
-        #
-        # Run the BlueQuery and wait (0.5s) for completion.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.next.status=COMPLETED" \
-            --data "blue.query.wait=500" \
-            "${endpointurl:?}/blue/query/${queryident:?}" \
-            | bin/pp
-
-
-# -----------------------------------------------------
-# Run a BlueQuery
-#[root@tester]
-
-        #
-        # Create BlueQuery with a valid input and wait (60s) for completion.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
-            --data "blue.query.next.status=COMPLETED" \
-            --data "blue.query.wait=60000" \
-            "${endpointurl:?}/${queryspace:?}/blue/create" \
-            | bin/pp | tee blue-query.json
-
-# -----------------------------------------------------
-# Run a BlueQuery
-#[root@tester]
-
-        #
-        # Create BlueQuery with a valid input and wait (60s) for it to start.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
-            --data "blue.query.next.status=RUNNING" \
-            --data "blue.query.wait=60000" \
-            "${endpointurl:?}/${queryspace:?}/blue/create" \
-            | bin/pp | tee blue-query.json
-
-
-        queryself=$(
-            cat blue-query.json | self
-            )
-
-        querynode=$(
-            cat blue-query.json | self | node
-            )
-
-        queryident=$(
-            cat blue-query.json | self | ident
-            )
-
-        #
-        # Select the BlueQuery and wait (60s) for completion.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            "${endpointurl:?}/blue/query/${queryident:?}?blue.query.next.status=COMPLETED&blue.query.wait=60000" \
-            | bin/pp
-
-# -----------------------------------------------------
-# Run a BlueQuery
-#[root@tester]
-
-        #
-        # Create BlueQuery with a valid input and wait for it to start.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=
-                SELECT
-                    atlasSource.ra,
-                    atlasSource.dec
-                FROM
-                    atlas.atlasSource
-                WHERE
-                    atlasSource.ra  BETWEEN 354 AND 355
-                AND
-                    atlasSource.dec BETWEEN -40 AND -39
-                " \
-            --data "blue.query.next.status=RUNNING" \
-            --data "blue.query.wait=60000" \
-            "${endpointurl:?}/${queryspace:?}/blue/create" \
-            | bin/pp | tee blue-query.json
-
-        queryident=$(
-            cat blue-query.json | self | ident
-            )
-
-        #
-        # Select the BlueQuery and wait for an event.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            "${endpointurl:?}/blue/query/${queryident:?}?blue.query.wait=60000" \
-            | bin/pp
-
-
-
 

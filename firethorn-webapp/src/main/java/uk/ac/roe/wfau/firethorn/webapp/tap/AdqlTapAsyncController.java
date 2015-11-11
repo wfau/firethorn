@@ -22,6 +22,8 @@ import java.sql.Timestamp;
 
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -156,7 +158,7 @@ public class AdqlTapAsyncController extends AbstractController {
 	}
 
 
-	@RequestMapping(value="{jobid}", method = RequestMethod.GET)
+	@RequestMapping(value="{jobid}",  method = { RequestMethod.POST, RequestMethod.GET })
 	public void getJobInfo(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@PathVariable("jobid") String jobid,
 			@RequestParam(value = "ACTION", required = false) String ACTION,
@@ -422,7 +424,7 @@ public class AdqlTapAsyncController extends AbstractController {
 		if (queryentity.state() == TaskState.ERROR || queryentity.state() == TaskState.FAILED) {
 		
 			if (queryentity.syntax()!=null){
-				writer.append(TapError.writeErrorToVotable(queryentity.syntax().friendly()));
+				writer.append(TapError.writeErrorToVotable(StringEscapeUtils.escapeXml(queryentity.syntax().friendly())));
 			} else {
 				writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 			}
