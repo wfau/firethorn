@@ -146,10 +146,10 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
 
         @RequestParam(value=BlueQueryController.QUERY_DELAY_FIRST, required=false)
         final Integer first,
-        @RequestParam(value=BlueQueryController.QUERY_DELAY_LAST, required=false)
-        final Integer last,
         @RequestParam(value=BlueQueryController.QUERY_DELAY_EVERY, required=false)
-        final Integer every
+        final Integer every,
+        @RequestParam(value=BlueQueryController.QUERY_DELAY_LAST, required=false)
+        final Integer last
 
         ) throws
         IdentifierNotFoundException,
@@ -176,8 +176,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
                         ),
                     factories().blues().delays().create(
                         first,
-                        last,
-                        every
+                        every,
+                        last
                         ),
                     next,
                     wait

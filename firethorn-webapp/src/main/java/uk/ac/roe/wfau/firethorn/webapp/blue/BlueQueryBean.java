@@ -407,7 +407,7 @@ public class BlueQueryBean
         }
 
     /**
-     * An {@link AdqlQuery.Limits}.
+     * The query {@link AdqlQuery.Limits}.
      *
      */
     public LimitsBean getLimits()
@@ -425,6 +425,41 @@ public class BlueQueryBean
             public Long getTime()
                 {
                 return entity().limits().time(); 
+                }
+            };
+        }
+
+    
+    /**
+     * An {@link AdqlQuery.Delays} bean.
+     *
+     */
+    public interface DelaysBean
+        {
+        public Integer getFirst();
+        public Integer getEvery();
+        public Integer getLast();
+        }
+
+    /**
+     * The query {@link AdqlQuery.Delays}.
+     *
+     */
+    public DelaysBean getDelays()
+        {
+        return new DelaysBean()
+            {
+            public Integer getFirst()
+                {
+                return entity().delays().first(); 
+                }
+            public Integer getEvery()
+                {
+                return entity().delays().every(); 
+                }
+            public Integer getLast()
+                {
+                return entity().delays().last(); 
                 }
             };
         }

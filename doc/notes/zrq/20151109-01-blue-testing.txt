@@ -209,20 +209,8 @@ EOF
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
 
-        queryident=$(
-            cat blue-query.json | self | ident
-            )
-
-        #
-        # Select the BlueQuery and wait (60s) for completion.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            "${endpointurl:?}/blue/query/${queryident:?}?blue.query.next.status=COMPLETED&blue.query.wait=60000" \
-            | bin/pp
-
 # -----------------------------------------------------
-# Run a BlueQuery with limits
+# Run a BlueQuery with a row limit
 #[root@tester]
 
         #
@@ -233,27 +221,12 @@ EOF
             --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
             --data "blue.query.next.status=COMPLETED" \
             --data "blue.query.limit.rows=100" \
-            --data "blue.query.limit.time=10000" \
             --data "blue.query.wait=60000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
 
-
-        queryident=$(
-            cat blue-query.json | self | ident
-            )
-
-        #
-        # Select the BlueQuery and wait (60s) for completion.
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            "${endpointurl:?}/blue/query/${queryident:?}?blue.query.next.status=COMPLETED&blue.query.wait=60000" \
-            | bin/pp
-
-
 # -----------------------------------------------------
-# Run a BlueQuery with limits and delays
+# Run a BlueQuery with a time limit and a delay
 #[root@tester]
 
         #
@@ -263,7 +236,10 @@ EOF
             --header "firethorn.auth.community:${community:?}" \
             --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
             --data "blue.query.next.status=COMPLETED" \
-            --data "blue.query.limit.rows=100" \
+            --data "blue.query.delay.first=100" \
+            --data "blue.query.delay.every=200" \
+            --data "blue.query.delay.last=300" \
+            --data "blue.query.limit.time=1000" \
             --data "blue.query.wait=60000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json

@@ -109,16 +109,16 @@ public class BlueQueryController
     public static final String QUERY_DELAY_FIRST = "blue.query.delay.first" ;
 
     /**
-     * Request param name for the last row delay, [{@value}].
-     *
-     */
-    public static final String QUERY_DELAY_LAST = "blue.query.delay.last" ;
-
-    /**
      * Request param name for the every row delay, [{@value}].
      *
      */
     public static final String QUERY_DELAY_EVERY = "blue.query.delay.every" ;
+
+    /**
+     * Request param name for the last row delay, [{@value}].
+     *
+     */
+    public static final String QUERY_DELAY_LAST = "blue.query.delay.last" ;
 
     /**
      * Request param name for the request wait, [{@value}].

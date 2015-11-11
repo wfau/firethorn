@@ -50,7 +50,7 @@ implements AdqlQuery.Delays
     implements AdqlQuery.Delays.Factory
         {
         @Override
-        public AdqlQuery.Delays create(final Integer first, final Integer last, final Integer every)
+        public AdqlQuery.Delays create(final Integer first, final Integer every, final Integer last)
             {
             return new AdqlQueryDelays(
                 first,
@@ -100,8 +100,8 @@ implements AdqlQuery.Delays
      *
      */
     protected static final String DB_OGSA_DELAY_FIRST_COL = "ogsadelayfirst";
-    protected static final String DB_OGSA_DELAY_LAST_COL  = "ogsadelaylast";
     protected static final String DB_OGSA_DELAY_EVERY_COL = "ogsadelayevery";
+    protected static final String DB_OGSA_DELAY_LAST_COL  = "ogsadelaylast";
 
     @Basic(
         fetch = FetchType.EAGER
@@ -129,28 +129,6 @@ implements AdqlQuery.Delays
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_OGSA_DELAY_LAST_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private Integer last;
-    
-    @Override
-    public Integer last()
-        {
-        return last;
-        }
-    @Override
-    public void last(Integer value)
-        {
-        last = value;
-        }
-    
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
         name = DB_OGSA_DELAY_EVERY_COL,
         unique = false,
         nullable = true,
@@ -167,5 +145,27 @@ implements AdqlQuery.Delays
     public void every(Integer value)
         {
         every = value ;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_OGSA_DELAY_LAST_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Integer last;
+    
+    @Override
+    public Integer last()
+        {
+        return last;
+        }
+    @Override
+    public void last(Integer value)
+        {
+        last = value;
         }
     }

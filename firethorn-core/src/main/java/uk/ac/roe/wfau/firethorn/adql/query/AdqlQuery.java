@@ -225,7 +225,7 @@ extends NamedEntity, Job
              * Create a new Delays object.
              * 
              */
-            public Delays create(final Integer first, final Integer last, final Integer every);
+            public Delays create(final Integer first, final Integer every, final Integer last);
             }
 
         /**
@@ -236,19 +236,19 @@ extends NamedEntity, Job
         public void first(final Integer value);
 
         /**
-         * The delay after the last row.
-         * @param value The delay value.
-         *
-         */
-        public void last(final Integer value);
-
-        /**
          * The delay between every row.
          * @param value The delay value.
          *
          */
         public void every(final Integer value);
         
+        /**
+         * The delay after the last row.
+         * @param value The delay value.
+         *
+         */
+        public void last(final Integer value);
+
         }
 
     /**
