@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 
 
@@ -20,7 +21,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
  */
 
 @Component
-public class CapabilitiesGenerator{
+public class CapabilitiesGenerator extends AbstractComponent{
 
 	 @Value("${firethorn.webapp.baseurl:null}")
 	 private String baseurl;
@@ -82,33 +83,36 @@ public class CapabilitiesGenerator{
 		    "    <!-- RESTful VOSI-tables-1.1 would be use=\"base\" -->" +
 		    "  </capability>" +
 		    "  <!-- TAP-1.1 sync -->" +
-		    "  <capability standardID=\"ivo://ivoa.net/std/TAP#sync-1.1\">" +
-		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
-		    "      <accessURL use=\"base\">" + getBaseurl() + "/tap/" + resource.ident() + "/sync</accessURL>" +
-		    "    </interface>" +
-		    "   </capability>" +
+		
 		    "   <capability standardID=\"ivo://ivoa.net/std/TAP\" xsi:type=\"tr:TableAccess\">" +
 		    "     <interface role=\"std\" xsi:type=\"vs:ParamHTTP\"><accessURL use=\"base\">" + getBaseurl() + "/tap \"</accessURL>" +
     		"     </interface>" +
-	    	//"     <retentionPeriod><default>172800</default></retentionPeriod>" +
-	    	//"     <executionDuration><default>3600</default></executionDuration>" +
-	    	//"     <outputLimit><default unit=\"row\">2000</default>" +
-	    	//"     <hard unit=\"row\">1000000000</hard>" +
-	    	//"      </outputLimit>" +
 	    	"     <language>" +
 	    	"       <name>ADQL</name>" +
 	    	"       <version ivo-id=\"ivo://ivoa.net/std/ADQL#v2.0\">2.0</version>" +
 	    	"       <description>ADQL-2.0</description>" +
 	    	"     </language>" +
+    		"     <outputFormat ivo-id=\"ivo://ivoa.net/std/TAPRegEXT#output-votable-td\">" +
+    		"       <mime>application/x-votable+xml;serialization=tabledata</mime><alias>votable/td</alias>" +
+    		"     </outputFormat><executionDuration><default>" + factories().blues().limits().absolute().time() + "</default></executionDuration>" +
+    		"     <outputLimit><default unit=\"row\">" + factories().blues().limits().defaults().rows() + "</default><hard unit=\"row\">" + factories().blues().limits().absolute().rows() + "</hard></outputLimit>" +
 	    	"    </capability>" +
-		    "  <!-- TAP-1.1 async -->" +
-		    "    <capability standardID=\"ivo://ivoa.net/std/TAP#async-1.1\">" +
-		    "      <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
-		    "        <accessURL use=\"base\">" + getBaseurl() + "/tap/" + resource.ident() + "/async</accessURL>" +
-		    "      </interface>" +
-		    "     </capability>" +
 		    "  </cap:capabilities>" 
 		);
+    	/*
+        "  <capability standardID=\"ivo://ivoa.net/std/TAP#sync-1.1\">" +
+ 		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
+ 		    "      <accessURL use=\"base\">" + getBaseurl() + "/tap/" + resource.ident() + "/sync</accessURL>" +
+ 		    "    </interface>" +
+ 		    "   </capability>" +
+ 		    "  <!-- TAP-1.1 async -->" +
+ 		    "    <capability standardID=\"ivo://ivoa.net/std/TAP#async-1.1\">" +
+ 		    "      <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
+ 		    "        <accessURL use=\"base\">" + getBaseurl() + "/tap/" + resource.ident() + "/async</accessURL>" +
+ 		    "      </interface>" +
+ 		    "     </capability>" +
+ 		    */
+    	
         // Based on VOTable-1.3 specification.
         // http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
 

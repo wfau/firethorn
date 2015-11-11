@@ -494,5 +494,78 @@ public class UWSJob {
 		}
 	}
 	
+	 
+    /**
+	 * Write UWS Job results
+	 * @param uwsjob
+	 * @param writer
+	 */
+	public String writeUWSResultToXML (){
+		StringBuilder writer = new StringBuilder();
+		String resultsUrl = this.getJobURLResults();
+		writer.append("<uws:results xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd http://www.w3.org/1999/xlink http://vo.ari.uni-heidelberg.de/docs/schemata/xlink.xsd'>");
+		writer.append("<uws:result id='result' xlink:href='" + resultsUrl +"'/></uws:results>");
+		return writer.toString();
+	}
+	
+	/**
+	 * Write UWSJob in XML format
+	 * @param uwsjob
+	 * @param writer
+	 */
+	public String writeUWSJobToXML (){
+
+			StringBuilder writer = new StringBuilder();
+			
+	        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
+	        writer.append("	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd'>");
+	     
+	            writer.append("<uws:jobId>" + this.getJobId() + "</uws:jobId>");
+	            writer.append("<uws:ownerId xsi:nil='true'>" + this.getOwnerId() + "</uws:ownerId>");
+	            writer.append("<uws:phase>" + this.getPhase() + "</uws:phase>");
+	            writer.append("<uws:startTime xsi:nil='true'>" + this.getStartTime() + "</uws:startTime>");
+	            writer.append("<uws:endTime xsi:nil='true'>" + this.getEndTime() + "</uws:endTime>");
+	            writer.append("<uws:executionDuration>" + this.getExecutionDuration() + "</uws:executionDuration>");
+	            writer.append("<uws:destruction>" + this.getDestructionTime() + "</uws:destruction>");
+	            writer.append("<uws:parameters>");
+			        if (this.getRequest()!=null){
+		            	writer.append("<uws:parameter id='request'>" + this.getRequest() + "</uws:parameter>");
+			        } else {
+		            	writer.append("<uws:parameter id='request'>None</uws:parameter>");
+			        }
+			        if (this.getLang()!=null){
+		            	writer.append("<uws:parameter id='lang'>" + this.getLang() + "</uws:parameter>");
+			        } else {
+		            	writer.append("<uws:parameter id='lang'>None</uws:parameter>");
+			        }
+			        if (this.getQuery()!=null){
+		            	writer.append("<uws:parameter id='query'>" + this.getQuery().input() + "</uws:parameter>");
+			        }
+			        if (this.getFormat()!=null){
+		            	writer.append("<uws:parameter id='format'>" + this.getFormat() + "</uws:parameter>");
+			        } else {
+		            	writer.append("<uws:parameter id='format'>None</uws:parameter>");
+			        }
+			        if (this.getVersion()!=null){
+		            	writer.append("<uws:parameter id='version'>" + this.getVersion() + "</uws:parameter>");
+			        } 
+			        if (this.getMaxrec()!=null){
+		            	writer.append("<uws:parameter id='maxrec'>" + this.getMaxrec() + "</uws:parameter>");
+			        } else {
+		            	writer.append("<uws:parameter id='maxrec'>None</uws:parameter>");
+			        }
+		        writer.append("</uws:parameters>");
+		        
+		        writer.append("<uws:results>");
+			        if (this.getQuery() !=null){
+		            	writer.append("<uws:result id='result'  xlink:href='" + this.getResults() + "'></uws:result>");
+			        }
+			    
+		        writer.append("</uws:results>");
+	       
+	        writer.append("</uws:job>");
+		
+	        return writer.toString();
+	}
  
 }

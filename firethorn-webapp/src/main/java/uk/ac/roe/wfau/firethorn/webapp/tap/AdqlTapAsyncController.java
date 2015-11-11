@@ -115,14 +115,8 @@ public class AdqlTapAsyncController extends AbstractController {
 		
 		if (resource != null) {
 
-			// Check input parameters and return VOTable with appropriate
-			// message if any errors found
-			//boolean check = checkParams(writer, REQUEST, LANG, QUERY, FORMAT, VERSION);
-
-			//if (check) {
-
 			if (QUERY != null) {
-				qry = uwsfactory.createNewQuery(resource, QUERY);
+				qry = uwsfactory.createNewQuery(resource, QUERY, MAXREC);
 				uwsjob = uwsfactory.create(resource, qry, jobType);
 				uwsjob.setQuery(QUERY);
 			} else {
@@ -189,7 +183,7 @@ public class AdqlTapAsyncController extends AbstractController {
 			
 			if (queryentity != null) {
 				uwsjob = uwsfactory.create(resource, queryentity, jobType);
-				writer.append(uwsfactory.writeUWSJobToXML(uwsjob));
+				writer.append(uwsjob.writeUWSJobToXML());
 				return;
 			} else {
 				writer.append(TapError.writeErrorToVotable(TapJobErrors.JOBID_MISSING));
@@ -367,11 +361,12 @@ public class AdqlTapAsyncController extends AbstractController {
 	@RequestMapping(value = "/{jobid}/executionduration", method = { RequestMethod.POST, RequestMethod.GET })
 	public void executionduration(@PathVariable String jobid,
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+			@RequestParam(value = "TERMINATION", required = false) final String TERMINATION,
 			final HttpServletResponse response)
 					throws IdentifierNotFoundException, Exception {
 		PrintWriter writer = response.getWriter();
 		response.setContentType("text/plain");
-		writer.append(Integer.toString(TapJobParams.EXECUTION_DURATION));
+		writer.append(Long.toString(factories().blues().limits().absolute().time()));
 		return;
 	}
 
@@ -456,7 +451,7 @@ public class AdqlTapAsyncController extends AbstractController {
 		
 		try {
 			uwsjob = uwsfactory.create(resource, queryentity, jobType);
-			return uwsfactory.writeUWSResultToXML(uwsjob);
+			return uwsjob.writeUWSResultToXML();
 		} catch (Exception e) {
 			return TapError.writeErrorToVotable(e.getMessage());
 		}

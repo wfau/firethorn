@@ -126,9 +126,22 @@ public class AdqlTapSyncController extends AbstractController {
 			} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)) {
 
 				try {
+					BlueQuery query;
+					if (MAXREC!=null){
+						query = resource.blues().create(QUERY, 
+								factories().blues().limits().create(
+										Long.parseLong(MAXREC.trim()),
+										null,
+										null
+				                        ),
+								TaskState.COMPLETED,
+								factories().blues().limits().absolute().time());
+						;
+					} else {
+						query = resource.blues().create(QUERY, TaskState.COMPLETED,
+								factories().blues().limits().absolute().time());
+					}
 
-					BlueQuery query = resource.blues().create(QUERY, TaskState.COMPLETED,
-							Long.valueOf(TapJobParams.EXECUTION_DURATION));
 
 					// Write results to VOTable using AdqlQueryVOTableController
 					if (query != null) {

@@ -210,11 +210,23 @@ class UWSJobFactory extends AbstractComponent{
      * 
      */
     @UpdateAtomicMethod
-    public BlueQuery createNewQuery(AdqlResource resource, String querystring) throws IdentifierNotFoundException, IOException {
+    public BlueQuery createNewQuery(AdqlResource resource, String querystring, String maxrec) throws IdentifierNotFoundException, IOException {
 			BlueQuery query = null;
 			
 			try {
-				query = resource.blues().create(querystring);
+				if (maxrec!=null) {
+					query = resource.blues().create(querystring,
+							factories().blues().limits().create(
+							Long.parseLong(maxrec.trim()),
+							null,
+							null
+	                        ),	
+							TaskState.READY,
+							factories().blues().limits().absolute().time());
+				} else {
+					query = resource.blues().create(querystring);
+				}
+		
 				// query = schema.queries().create(null, querystring);
 			
 			} catch (final Exception ouch) {
@@ -270,79 +282,7 @@ class UWSJobFactory extends AbstractComponent{
 			}
 				
         } 
-    
-    /**
-	 * Write UWS Job results
-	 * @param uwsjob
-	 * @param writer
-	 */
-	public String writeUWSResultToXML (UWSJob uwsjob){
-		StringBuilder writer = new StringBuilder();
-		String resultsUrl = uwsjob.getJobURLResults();
-		writer.append("<uws:results xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd http://www.w3.org/1999/xlink http://vo.ari.uni-heidelberg.de/docs/schemata/xlink.xsd'>");
-		writer.append("<uws:result id='result' xlink:href='" + resultsUrl +"'/></uws:results>");
-		return writer.toString();
-	}
-	
-	/**
-	 * Write UWSJob in XML format
-	 * @param uwsjob
-	 * @param writer
-	 */
-	public String writeUWSJobToXML (UWSJob uwsjob){
-
-			StringBuilder writer = new StringBuilder();
-			
-	        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
-	        writer.append("	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd'>");
-	     
-	            writer.append("<uws:jobId>" + uwsjob.getJobId() + "</uws:jobId>");
-	            writer.append("<uws:ownerId xsi:nil='true'>" + uwsjob.getOwnerId() + "</uws:ownerId>");
-	            writer.append("<uws:phase>" + uwsjob.getPhase() + "</uws:phase>");
-	            writer.append("<uws:startTime xsi:nil='true'>" + uwsjob.getStartTime() + "</uws:startTime>");
-	            writer.append("<uws:endTime xsi:nil='true'>" + uwsjob.getEndTime() + "</uws:endTime>");
-	            writer.append("<uws:executionDuration>" + uwsjob.getExecutionDuration() + "</uws:executionDuration>");
-	            writer.append("<uws:destruction>" + uwsjob.getDestructionTime() + "</uws:destruction>");
-	            writer.append("<uws:parameters>");
-			        if (uwsjob.getRequest()!=null){
-		            	writer.append("<uws:parameter id='request'>" + uwsjob.getRequest() + "</uws:parameter>");
-			        } else {
-		            	writer.append("<uws:parameter id='request'>None</uws:parameter>");
-			        }
-			        if (uwsjob.getLang()!=null){
-		            	writer.append("<uws:parameter id='lang'>" + uwsjob.getLang() + "</uws:parameter>");
-			        } else {
-		            	writer.append("<uws:parameter id='lang'>None</uws:parameter>");
-			        }
-			        if (uwsjob.getQuery()!=null){
-		            	writer.append("<uws:parameter id='query'>" + uwsjob.getQuery().input() + "</uws:parameter>");
-			        }
-			        if (uwsjob.getFormat()!=null){
-		            	writer.append("<uws:parameter id='format'>" + uwsjob.getFormat() + "</uws:parameter>");
-			        } else {
-		            	writer.append("<uws:parameter id='format'>None</uws:parameter>");
-			        }
-			        if (uwsjob.getVersion()!=null){
-		            	writer.append("<uws:parameter id='version'>" + uwsjob.getVersion() + "</uws:parameter>");
-			        } 
-			        if (uwsjob.getMaxrec()!=null){
-		            	writer.append("<uws:parameter id='maxrec'>" + uwsjob.getMaxrec() + "</uws:parameter>");
-			        } else {
-		            	writer.append("<uws:parameter id='maxrec'>None</uws:parameter>");
-			        }
-		        writer.append("</uws:parameters>");
-		        
-		        writer.append("<uws:results>");
-			        if (uwsjob.getQuery() !=null){
-		            	writer.append("<uws:result id='result'  xlink:href='" + uwsjob.getResults() + "'></uws:result>");
-			        }
-			    
-		        writer.append("</uws:results>");
-	       
-	        writer.append("</uws:job>");
-		
-	        return writer.toString();
-	}
+   
 
 }
 

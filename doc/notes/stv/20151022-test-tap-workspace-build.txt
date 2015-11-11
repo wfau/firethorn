@@ -468,8 +468,8 @@ EOF
 	# Testing TAP
 
 	#resourceid=$(basename ${queryspace:?}) 
-	resourceid=21626881
-	query="SELECT+TOP+5+*+FROM+TAP_SCHEMA.tables"
+	resourceid=22347777
+	query="SELECT+TOP+10000+*+FROM+atlasSource"
 	format=VOTABLE
 	lang=ADQL
 	request=doQuery
@@ -492,6 +492,7 @@ EOF
 	${endpointurl:?}/tap/${resourceid:?}/sync \
 	-d QUERY=${query:?} \
 	-d LANG=${lang:?} \
+	-d MAXREC=50 \
 	-d REQUEST=${request:?}
 
 	# ----------------------Query test2: asynchronous-------------------------------
@@ -616,9 +617,9 @@ EOF
 
 	# Go here: http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL
  
-	curl -X POST -G \
-	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/${jobid:?}/parameters \
-	-d MAXREC=1000
+	curl  -X POST -G  \
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/ej9IBb/executionduration \
+	-d TERMINATION=1000
 
 	
 	curl -X POST -G \

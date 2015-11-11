@@ -11,19 +11,8 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
     AdqlResourceController.TARGET_ENTITY
     ) ;
 %><?xml version='1.0' encoding='UTF-8'?>
-<tableset
-    xsi:type="vods:TableSet"
-    xmlns="http://www.ivoa.net/xml/VODataService/v1.1"
-    xmlns:vors="http://www.ivoa.net/xml/VOResource/v1.0"
-    xmlns:vods="http://www.ivoa.net/xml/VODataService/v1.1"
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-    xsi:schemaLocation="
-        http://www.ivoa.net/xml/VOResource/v1.0
-        http://www.ivoa.net/xml/VOResource/v1.0
-        http://www.ivoa.net/xml/VODataService/v1.1
-        http://www.ivoa.net/xml/VODataService/v1.1
-        "
-    ><%
+<tableset xmlns:vosi="http://www.ivoa.net/xml/VOSITables/v1.0" xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<%
     for(AdqlSchema schema : resource.schemas().select())
         {
         %><schema>
