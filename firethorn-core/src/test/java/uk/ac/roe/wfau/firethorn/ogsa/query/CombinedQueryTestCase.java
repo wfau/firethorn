@@ -19,16 +19,11 @@ package uk.ac.roe.wfau.firethorn.ogsa.query;
 
 import static org.junit.Assert.assertNotNull;
 
-import javax.transaction.Transactional;
-
-import org.junit.Before;
 import org.junit.Test;
-
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
