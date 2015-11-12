@@ -492,7 +492,7 @@ EOF
 	${endpointurl:?}/tap/${resourceid:?}/sync \
 	-d QUERY=${query:?} \
 	-d LANG=${lang:?} \
-	-d MAXREC=50 \
+	-d MAXREC=1 \
 	-d REQUEST=${request:?}
 
 	# ----------------------Query test2: asynchronous-------------------------------
@@ -538,19 +538,21 @@ EOF
 
 	# ----------------------Query test3: asynchronous, empty query to start-------------------------------
 
-	data="$( curl  -L\
+	data="$( curl  -L \
 	${endpointurl:?}/tap/${resourceid:?}/async \
 	-d LANG=${lang:?} \
 	-d REQUEST=${request:?})"
 
 	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 
-	curl -L\
+	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase
 	 
+        query=select+top+20+ra+from+atlasSource
 	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/parameters \
-	-d QUERY=${query:?}
+	-d QUERY=${query:?}  \
+	-d MAXREC=2  
 
 	curl -X POST -G \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
@@ -607,7 +609,7 @@ EOF
 
 	gavoquery="SELECT+top+5+*"
 	data="$( curl -L \
-	"http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/" \
+	"http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async" \
 	-d LANG=ADQL \
 	-d REQUEST=doQuery \
 	-d QUERY=${gavoquery:?})"
@@ -615,31 +617,34 @@ EOF
 
         jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
 
-	# Go here: http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL
+	# Go here: http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/osvWgn
  
-	curl  -X POST -G  \
-	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/ej9IBb/executionduration \
+	curl  -L  \
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/osvWgn/executionduration \
 	-d TERMINATION=1000
 
-	
+	curl  -L  \
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/osvWgn/parameters \
+	-d MAXREC=10
+
 	curl -X POST -G \
-	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL/phase \
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/osvWgn/phase \
 	-d PHASE=RUN 
 
 	curl -X GET -G \
-	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL/quote
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/osvWgn/quote
 
 	curl -X GET -G \
-	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL/executionduration
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/osvWgn/executionduration
 
 	curl -X GET -G \
-	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL/destruction
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/osvWgn/destruction
 
 	curl -X GET -G \
-	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL/error
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/osvWgn/error
 
 	curl -X GET -G \
-	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/L6DTAL/owner
+	http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/async/osvWgn/owner
 
 
 

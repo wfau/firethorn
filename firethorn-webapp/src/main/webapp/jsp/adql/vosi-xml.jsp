@@ -11,8 +11,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
     AdqlResourceController.TARGET_ENTITY
     ) ;
 %><?xml version='1.0' encoding='UTF-8'?>
-<tableset xmlns:vosi="http://www.ivoa.net/xml/VOSITables/v1.0" xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<%
+<vtm:tableset xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" xmlns:vtm="http://www.ivoa.net/xml/VOSITables/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v1.1 http://www.ivoa.net/xml/VOSITables/v1.0"><%
     for(AdqlSchema schema : resource.schemas().select())
         {
         %><schema>
@@ -20,13 +19,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
         <title></title>
         <utype></utype>
         <% 
-        if (schema.text() != null)
-            {
-            %><description><![CDATA[<%= schema.text() %>]]></description><%
-            }
-        else {
-            %><description/><%
-            }
+
         for (AdqlTable table : schema.tables().select())
             {
             %>
@@ -35,13 +28,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
             <title></title>
             <utype></utype>
             <%
-            if (table.text() != null)
-                {
-                %><description><![CDATA[<%= table.text() %>]]></description><%
-                }
-            else {
-                %><description/><%
-                }
+
             %>
             <%
             for (AdqlColumn column : table.columns().select())
@@ -97,29 +84,54 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
 
                     if (meta.adql().type() != null)
                         {
+                        String votableType = meta.adql().type().votype().toString().toLowerCase();
+                        String arraysize = "*";
+                        
+                        if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
+			                {
+			                votableType = "char";
+			                arraysize = "*";
+			                }
+			            if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
+			                {
+			                votableType = "char";
+			                arraysize = "*";
+			                }
+			            if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
+			                {
+			                votableType = "char";
+			                arraysize = "*";
+			                }
+						else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) 
+						    {	
+			            	votableType = "int";
+			                arraysize = "1";
+			                }
+			       
+			                
                         if ((meta.adql().arraysize() != null) && (meta.adql().arraysize() != 0))
                             {
                             if (meta.adql().arraysize() == -1)
                                 {
                                 %>
-                                <type size='*'><%= meta.adql().type() %></type>
+                                <dataType arraysize='*' xsi:type="vs:VOTableType"><%= votableType %></dataType>
                                 <%
                                 }
                             else {
                                 %>
-                                <type size='<%= meta.adql().arraysize() %>'><%= meta.adql().type() %></type>
+                                <dataType arraysize='<%= meta.adql().arraysize() %>' xsi:type="vs:VOTableType"><%= votableType %></dataType>
                                 <%
                                 }
                             }
                         else {
                             %>
-                            <type><%= meta.adql().type() %></type>
+                            <dataType arraysize='<%= arraysize %>' xsi:type="vs:VOTableType"><%= votableType %></dataType>
                             <%
                             }
                         }
                     else {
                         %>
-                        <type/>
+                        <dataType/>
                         <%
                         }
                     }
@@ -135,5 +147,5 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
         <% } %>
     </schema>
     <% } %>
-</tableset>
+</vtm:tableset>
 

@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +13,11 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.blue.*;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 
 
 /**
@@ -333,7 +338,14 @@ public class UWSJob {
 	}
 
 	public void setMaxrec(String maxrec) {
-		this.getQuery().param().map().put("maxrec",maxrec);
+		this.getQuery().param().map().put("maxrec",maxrec);	
+		
+		if (maxrec!=null) {
+			Long maxrec_long = Long.parseLong(maxrec.trim());
+			AdqlQuery.Limits limit = new AdqlQueryLimits(maxrec_long, null ,null);
+			this.getQuery().limits(limit);
+		}
+		
 		this.maxrec = maxrec;
 	}
 	

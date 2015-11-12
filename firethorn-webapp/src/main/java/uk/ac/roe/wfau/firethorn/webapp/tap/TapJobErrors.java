@@ -16,7 +16,7 @@ public class TapJobErrors  {
 	public static final String INTERNAL_ERROR = "Internal Server Error";
 	public static final String JOBID_NOTFOUND = "UWS job could not be located in jobs table";
 	public static final String FILE_NOTFOUND = "File not found";
-
+	public static final String PARAM_CHANGE_NOT_ALLOWED = "Field phase: Parameters cannot be changed in phase: ";
 
 
 

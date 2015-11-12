@@ -29,6 +29,7 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.FieldFormatter;
@@ -186,6 +187,10 @@ extends AbstractTableController
         } else {
         	writer.append("<INFO name='QUERY_STATUS' value='OK'></INFO>");
         }
+        if (table.meta().adql().status() == TableStatus.TRUNCATED){
+        	writer.append("<INFO name=\"QUERY_STATUS\" value=\"OVERFLOW\"/>");
+        }
+        
      
         if (table.text() != null)
             {

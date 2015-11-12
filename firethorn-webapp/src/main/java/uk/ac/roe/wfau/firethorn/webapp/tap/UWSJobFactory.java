@@ -29,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
     readOnly=false
     )
 public
-class UWSJobFactory extends AbstractComponent{
+class UWSJobFactory extends AbstractComponent {
 
     /**
      * Public constructor.
@@ -210,24 +210,12 @@ class UWSJobFactory extends AbstractComponent{
      * 
      */
     @UpdateAtomicMethod
-    public BlueQuery createNewQuery(AdqlResource resource, String querystring, String maxrec) throws IdentifierNotFoundException, IOException {
+    public BlueQuery createNewQuery(AdqlResource resource, String querystring) throws IdentifierNotFoundException, IOException {
 			BlueQuery query = null;
 			
 			try {
-				if (maxrec!=null) {
-					query = resource.blues().create(querystring,
-							factories().blues().limits().create(
-							Long.parseLong(maxrec.trim()),
-							null,
-							null
-	                        ),	
-							TaskState.READY,
-							factories().blues().limits().absolute().time());
-				} else {
-					query = resource.blues().create(querystring);
-				}
-		
-				// query = schema.queries().create(null, querystring);
+				
+				query = resource.blues().create(querystring);
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();

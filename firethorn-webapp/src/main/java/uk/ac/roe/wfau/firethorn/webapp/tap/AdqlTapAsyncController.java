@@ -116,7 +116,7 @@ public class AdqlTapAsyncController extends AbstractController {
 		if (resource != null) {
 
 			if (QUERY != null) {
-				qry = uwsfactory.createNewQuery(resource, QUERY, MAXREC);
+				qry = uwsfactory.createNewQuery(resource, QUERY);
 				uwsjob = uwsfactory.create(resource, qry, jobType);
 				uwsjob.setQuery(QUERY);
 			} else {
@@ -231,7 +231,12 @@ public class AdqlTapAsyncController extends AbstractController {
 		}
 		
 		try {
-
+		
+			if (uwsjob.getPhase()!="PENDING"){ 
+				writer.append(TapError.writeErrorToVotable(TapJobErrors.PARAM_CHANGE_NOT_ALLOWED + uwsjob.getPhase()));
+				return;
+			}
+			
 			if (QUERY != null)
 				uwsjob.setQuery(QUERY);
 			if (REQUEST != null)
@@ -247,15 +252,14 @@ public class AdqlTapAsyncController extends AbstractController {
 			
 			response.setStatus(HttpServletResponse.SC_SEE_OTHER);
 		    response.setHeader("Location", uwsjob.getJobURL());
-		    
+		    return;
 		} catch (Exception e) {
 			
-			log.debug(e.getMessage());
-			writer.append(TapError.writeErrorToVotable(e.getMessage()));
+			log.debug("Exception caught: ", e);
+			writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 			return;
 		}
 		
-		return;
 		
 	}
 
