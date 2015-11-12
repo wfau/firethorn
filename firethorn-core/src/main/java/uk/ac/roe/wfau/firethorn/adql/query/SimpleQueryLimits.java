@@ -199,6 +199,12 @@ implements AdqlQuery.Limits
                 time
                 );
             }
+
+        @Override
+        public Limits validate(final Limits that) throws ValidationException
+            {
+            return that;
+            }
         }
     
     /**

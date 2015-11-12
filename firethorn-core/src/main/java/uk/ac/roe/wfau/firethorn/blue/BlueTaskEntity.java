@@ -609,11 +609,19 @@ implements BlueTask<TaskType>
                 	while (this.done(handle) == false)
                         {
                         try {
-                            log.debug("wait start [{}]", remaining());
-	                		this.count++;
-                            handle.wait(
-                        		remaining()
-                        		);
+                            this.count++;
+                            long time = remaining();
+                            if (time == Long.MAX_VALUE)
+                                {
+                                log.debug("wait start []");
+                                handle.wait();
+                                }
+                            else {
+                                log.debug("wait start [{}]", time);
+                                handle.wait(
+                                    time
+                                    );
+                                }
                             log.debug("wait done");
                             }
                         catch (Exception ouch)
@@ -644,7 +652,13 @@ implements BlueTask<TaskType>
 
         protected long remaining()
             {
-            return timeout() - elapsed();
+            if (timeout() == Long.MAX_VALUE)
+                {
+                return Long.MAX_VALUE ;
+                }
+            else {
+                return timeout() - elapsed();
+                }
             }
 
         protected boolean done(final BlueTask.Handle handle)
@@ -652,14 +666,20 @@ implements BlueTask<TaskType>
             log.debug("done()");
             log.debug("  elapsed [{}]", elapsed());
             log.debug("  timeout [{}]", timeout());
-            if (elapsed() >= timeout())
-            	{
-            	log.debug("done (elapsed >= timeout)");
-            	return true ;
-            	}
+            if (timeout() == Long.MAX_VALUE)
+                {
+                return false ;
+                }
             else {
-            	return false ;
-            	}
+                if (elapsed() >= timeout())
+                	{
+                	log.debug("done (elapsed >= timeout)");
+                	return true ;
+                	}
+                else {
+                	return false ;
+                	}
+                }
             }
         }
 

@@ -24,6 +24,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
+
 /**
  * Embeddable implementation of the AdqlQuery.QueryLimits interface.
  * @todo Check that the Hibernate annotations don't have any side effects when used as a POJO
@@ -51,13 +53,13 @@ implements AdqlQuery.Limits
      * Public constructor.
      * 
      */
-    public AdqlQueryLimits(final AdqlQuery.Limits limits)
+    public AdqlQueryLimits(final AdqlQuery.Limits that)
         {
-        if (limits != null)
+        if (that != null)
             {
-            this.ogsarows = limits.rows();
-            this.ogsacell = limits.cells();
-            this.ogsatime = limits.time();
+            this.rows = that.rows();
+            this.cell = that.cells();
+            this.time = that.time();
             }
         }
 
@@ -67,9 +69,9 @@ implements AdqlQuery.Limits
      */
     public AdqlQueryLimits(final Long rows, final Long cells, final Long time)
         {
-        this.ogsarows = rows  ;
-        this.ogsacell = cells ;
-        this.ogsatime = time  ;
+        this.rows = rows  ;
+        this.cell = cells ;
+        this.time = time  ;
         }
     
     /**
@@ -89,7 +91,7 @@ implements AdqlQuery.Limits
         nullable = true,
         updatable = true
         )
-    private Long ogsarows;
+    private Long rows;
     
     @Basic(
         fetch = FetchType.EAGER
@@ -100,7 +102,7 @@ implements AdqlQuery.Limits
         nullable = true,
         updatable = true
         )
-    private Long ogsacell;
+    private Long cell;
 
     @Basic(
         fetch = FetchType.EAGER
@@ -111,36 +113,60 @@ implements AdqlQuery.Limits
         nullable = true,
         updatable = true
         )
-    private Long ogsatime;
+    private Long time;
 
     @Override
     public Long rows()
         {
-        return ogsarows;
+        return rows;
         }
     @Override
     public void rows(Long value)
         {
-        ogsarows = value;
+        rows = value;
         }
     @Override
     public Long cells()
         {
-        return ogsacell;
+        return cell;
         }
     @Override
     public void cells(Long value)
         {
-        ogsacell = value;
+        cell = value;
         }
     @Override
     public Long time()
         {
-        return ogsatime;
+        return time;
         }
     @Override
     public void time(Long value)
         {
-        ogsatime = value ;
+        time = value ;
+        }
+
+    /**
+     * Update this {@link Limits} with the non-null values from another {@link Limits}.
+     * @todo Better null/zero handling.
+     *
+     */
+    public void update(final AdqlQuery.Limits that)
+        {
+        if (that != null)
+            {
+            if (that.rows() != null)
+                {
+                this.rows = that.rows();
+                }
+            if (that.cells() != null)
+                {
+                this.cell = that.cells();
+                }
+            if (that.time() != null)
+                {
+                this.time = that.time();
+                }
+            }
         }
     }

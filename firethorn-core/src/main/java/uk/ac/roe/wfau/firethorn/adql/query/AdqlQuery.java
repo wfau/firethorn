@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -116,14 +117,14 @@ extends NamedEntity, Job
             public Limits defaults(final Limits that);
 
             /**
-             * The absolute system limits. These will override any of the other limits.
+             * The absolute limits. These will override any of the other limits.
              * This enables us to start with the defaults set quite low, allow the user to increase the limits for a particular query, but still have an absolute upper bound.
              * 
              */
             public Limits absolute();
 
             /**
-             * Compare a Limits with the absolute system limits, using the lowest available value for each limit.
+             * Compare a Limits with the absolute limits, using the lowest available value for each limit.
              * @return A new Limits containing the lowest value of each limit.
              * @see Limits.lowest()
              * 
@@ -139,6 +140,48 @@ extends NamedEntity, Job
              */
             public Limits runtime(final Limits that);
 
+            /**
+             * Compare a Limits with the system defaults to fill in any missing values and then apply the system absolutes.
+             * @return A new Limits containing the lowest value of each limit.
+             * @throws 
+             * @see absolute(Limits)
+             * @see defaults(Limits) 
+             * 
+             */
+            public Limits validate(final Limits that)
+            throws ValidationException;
+
+            /**
+             * Exception to indicate a validation error.  
+             * 
+             */
+            public static class ValidationException
+            extends FirethornCheckedException
+                {
+                /**
+                 * Default serial version UID.
+                 *
+                 */
+                private static final long serialVersionUID = 1L;
+
+                /**
+                 * Public constructor.
+                 *
+                 */
+                public ValidationException(final Limits limits, final String message)
+                    {
+                    super(
+                        message
+                        );
+                    this.limits = limits;
+                    }
+
+                private Limits limits;
+                public Limits limits()
+                    {
+                    return this.limits;
+                    }
+                }
             }
         
         /**

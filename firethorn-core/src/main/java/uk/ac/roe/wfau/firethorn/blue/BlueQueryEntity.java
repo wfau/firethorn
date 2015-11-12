@@ -386,14 +386,32 @@ implements BlueQuery
                 ident,
                 input,
                 null,
+                null,
                 prev,
                 next,
-                wait);
+                wait
+                );
             }
 
         @Override
         @UpdateMethod
         public BlueQuery update(final Identifier ident, final String input, final AdqlQuery.Limits limits, final TaskState prev, final TaskState next, final Long wait)
+        throws IdentifierNotFoundException, InvalidStateRequestException
+            {
+            return update(
+                ident,
+                input,
+                limits,
+                null,
+                prev,
+                next,
+                wait
+                );
+            }
+
+        @Override
+        @UpdateMethod
+        public BlueQuery update(final Identifier ident, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final TaskState prev, final TaskState next, final Long wait)
         throws IdentifierNotFoundException, InvalidStateRequestException
             {
             log.debug("update(Identifier , String, TaskStatus, TaskStatus, Long)");
@@ -407,11 +425,12 @@ implements BlueQuery
                 );
             //
             // This gets run in a separate Thread.
-            if (input != null)
+            if ((input != null) || (limits != null) || (delays != null))
                 {
                 query.update(
                     input,
-                    limits
+                    limits,
+                    delays
                     );
                 }
 
@@ -1270,7 +1289,7 @@ implements BlueQuery
             {
             this.limits = new AdqlQueryLimits(
                 services().limits().runtime(
-                    limits
+                    null
                     )
                 );
             }
@@ -1278,13 +1297,23 @@ implements BlueQuery
         }
 
     @Override
-    public void limits(final Limits limits)
+    public void limits(final Limits that)
         {
-        this.limits = new AdqlQueryLimits(
-            services().limits().runtime(
-                limits
-                )
-            );
+        if (this.limits == null)
+            {
+            this.limits = new AdqlQueryLimits(
+                services().limits().runtime(
+                    that
+                    )
+                );
+            }
+        else {
+            this.limits.update(
+                services().limits().runtime(
+                    that
+                    )
+                );
+            }
         }
 
     @Override
@@ -1319,11 +1348,19 @@ implements BlueQuery
         return this.delays ;
         }
 
-    public void delays(final AdqlQuery.Delays delays)
+    public void delays(final AdqlQuery.Delays that)
         {
-        this.delays = new AdqlQueryDelays(
-            delays
-            );
+        if (this.delays == null)
+            {
+            this.delays = new AdqlQueryDelays(
+                that
+                );
+            }
+        else {
+            this.delays.update(
+                that
+                );
+            }
         }
     
     @Embedded
@@ -1350,17 +1387,29 @@ implements BlueQuery
         {
         update(
             input,
+            null,
+            null
+            );
+        }
+
+    @Override
+    public void update(final String input, final AdqlQuery.Limits limits)
+    throws InvalidStateRequestException
+        {
+        update(
+            input,
+            limits,
             null
             );
         }
 
     /**
      * Update our input query and {@link AdqlQuery.Limits}.
-     * This calls {@link #prepare()} in a new {@link Thread} creating a separate Hibernate {@link Session}.
+     * This performs the update in a new {@link Thread}, forcing the creation of a new Hibernate {@link Session}.
      * 
      */
     @Override
-    public void update(final String input, final AdqlQuery.Limits limits)
+    public void update(final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays)
     throws InvalidStateRequestException
         {
         log.debug("Starting update(String, Limits)");
@@ -1390,13 +1439,15 @@ implements BlueQuery
                                 }
                             if (limits != null)
                                 {
-                                log.debug("Before limits(Limits)");
-                                log.debug("  state [{}]", query.state().name());
                                 query.limits(
                                     limits
                                     );                                
-                                log.debug("After limits(Limits)");
-                                log.debug("  state [{}]", query.state().name());
+                                }
+                            if (delays != null)
+                                {
+                                query.delays(
+                                    delays
+                                    );                                
                                 }
                             return query.state();
                             }

@@ -123,6 +123,21 @@
     popd
 
 # -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:1.1 \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
 # Start our docker-proxy container.
 #[user@desktop]
 
@@ -346,21 +361,6 @@ EOF
 # Separate terminal
 #   source "${HOME:?}/chain.properties"
 #   docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
-
-# -----------------------------------------------------
-# Build our tester container.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source "bin/util.sh"
-
-        docker build \
-            --tag firethorn/tester:1.1 \
-            integration/tester
-
-    popd
 
 # -----------------------------------------------------
 # Start our test container.

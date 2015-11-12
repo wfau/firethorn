@@ -42,6 +42,12 @@ public class AdqlQueryDelays
 implements AdqlQuery.Delays
     {
     /**
+     * Value used to indicate no limit, {@value}.
+     * 
+     */
+    protected static final Long NO_VALUE = null;
+
+    /**
      * Factory implementation.
      * 
      */
@@ -66,20 +72,19 @@ implements AdqlQuery.Delays
      */
     public AdqlQueryDelays()
         {
-        log.debug("AdqlQueryDelays()");
         }
 
     /**
      * Public constructor.
      * 
      */
-    public AdqlQueryDelays(final AdqlQuery.Delays delays)
+    public AdqlQueryDelays(final AdqlQuery.Delays that)
         {
-        if (delays != null)
+        if (that != null)
             {
-            this.first = delays.first();
-            this.every = delays.every();
-            this.last  = delays.last();
+            this.first = that.first();
+            this.every = that.every();
+            this.last  = that.last();
             }
         }
 
@@ -123,7 +128,7 @@ implements AdqlQuery.Delays
         return first;
         }
     @Override
-    public void first(Integer value)
+    public void first(final Integer value)
         {
         first = value;
         }
@@ -145,7 +150,7 @@ implements AdqlQuery.Delays
         return every;
         }
     @Override
-    public void every(Integer value)
+    public void every(final Integer value)
         {
         every = value ;
         }
@@ -167,8 +172,31 @@ implements AdqlQuery.Delays
         return last;
         }
     @Override
-    public void last(Integer value)
+    public void last(final Integer value)
         {
         last = value;
+        }
+
+    /**
+     * Update this {@link Delays} with the non-null values from another {@link Delays}.
+     *
+     */
+    public void update(final Delays that)
+        {
+        if (that != null)
+            {
+            if (that.first() != null)
+                {
+                this.first = that.first();
+                }
+            if (that.every() != null)
+                {
+                this.every = that.every();
+                }
+            if (that.last() != null)
+                {
+                this.last= that.last();
+                }
+            }
         }
     }

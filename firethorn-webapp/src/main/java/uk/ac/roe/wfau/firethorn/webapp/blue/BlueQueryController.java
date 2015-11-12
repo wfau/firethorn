@@ -371,13 +371,20 @@ public class BlueQueryController
         @RequestParam(value=REQUEST_WAIT_PARAM, required=false)
         final Long wait,
 
-        @RequestParam(value=QUERY_LIMT_CELLS, required=false)
-        final Long cells,
         @RequestParam(value=QUERY_LIMT_ROWS, required=false)
         final Long rows,
+        @RequestParam(value=QUERY_LIMT_CELLS, required=false)
+        final Long cells,
         @RequestParam(value=QUERY_LIMT_TIME, required=false)
-        final Long time
-            
+        final Long time,
+
+        @RequestParam(value=QUERY_DELAY_FIRST, required=false)
+        final Integer first,
+        @RequestParam(value=QUERY_DELAY_EVERY, required=false)
+        final Integer every,
+        @RequestParam(value=QUERY_DELAY_LAST, required=false)
+        final Integer last
+
         ) throws
             IdentifierNotFoundException,
             IdentifierFormatException,
@@ -395,6 +402,16 @@ public class BlueQueryController
                     ident
                     ),
                 input,
+                factories().blues().limits().create(
+                    rows,
+                    cells,
+                    time
+                    ),
+                factories().blues().delays().create(
+                    first,
+                    every,
+                    last
+                    ),
                 prev,
                 next,
                 wait

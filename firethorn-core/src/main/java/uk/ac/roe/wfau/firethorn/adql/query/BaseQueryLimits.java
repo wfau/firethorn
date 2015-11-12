@@ -28,6 +28,11 @@ import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 abstract public class BaseQueryLimits
 implements AdqlQuery.Limits
     {
+    /**
+     * Value used to indicate no limit, {@value}.
+     * 
+     */
+    protected static final Long NO_VALUE = null;
 
     @Override
     public Limits lowest(final Limits that)
@@ -47,14 +52,11 @@ implements AdqlQuery.Limits
             );
         }
 
-    //protected static final Long NO_LIMIT = new Long(0L);
-    protected static final Long NO_LIMIT = null;
-
     /**
      * Create a new Limits containing the lowest set of values from two Limits.
      * If the value from both Limits are not null and not zero, then the lowest (non-zero) value is chosen.
      * If the value from one of the Limits is null or zero and the other is not null or zero, then the non-null non-zero value is chosen.
-     * If the values from both of the Limits are null or zero, then the result is zero.
+     * If the values from both of the Limits are null or zero, then the result is {@link NO_VALUE}.
      * @param left  One of the Limits to  compare.
      * @param right One of the Limits to compare.
      * @return A new Limits containing a combination of the lowest values from the two Limits.
@@ -89,7 +91,7 @@ implements AdqlQuery.Limits
                         return right.rows();
                         }
                     else {
-                        return NO_LIMIT ;
+                        return NO_VALUE ;
                         }
                     }
                 }
@@ -119,7 +121,7 @@ implements AdqlQuery.Limits
                         return right.cells();
                         }
                     else {
-                        return NO_LIMIT ;
+                        return NO_VALUE ;
                         }
                     }
                 }
@@ -149,7 +151,7 @@ implements AdqlQuery.Limits
                         return right.time();
                         }
                     else {
-                        return NO_LIMIT ;
+                        return NO_VALUE ;
                         }
                     }
                 }
@@ -159,8 +161,8 @@ implements AdqlQuery.Limits
     /**
      * Create a new Limits containing a combination of values from two Limits.
      * If the value from the first Limits is not null and not zero, then the value from the first Limits is used.
-     * If the value from the first Limits is null or zero, and the value from the second Limits is not zero, then the value from the second Limits is used.
-     * If the values from both Limits are null or zero, then the value is zero.
+     * If the value from the first Limits is null or zero, then the value from the second Limits is used.
+     * If the values from both Limits are null or zero, then the value is {@link NO_VALUE}.
      * @param left  The first Limits to  compare.
      * @param right The second Limits to compare.
      * @return A new Limits containing a combination of the values from the two Limits.
@@ -182,7 +184,7 @@ implements AdqlQuery.Limits
                     return right.rows();
                     }
                 else {
-                    return NO_LIMIT ;
+                    return NO_VALUE ;
                     }
                 }
 
@@ -198,7 +200,7 @@ implements AdqlQuery.Limits
                     return right.cells();
                     }
                 else {
-                    return NO_LIMIT ;
+                    return NO_VALUE ;
                     }
                 }
 
@@ -214,7 +216,7 @@ implements AdqlQuery.Limits
                     return right.time();
                     }
                 else {
-                    return NO_LIMIT ;
+                    return NO_VALUE ;
                     }
                 }
             };

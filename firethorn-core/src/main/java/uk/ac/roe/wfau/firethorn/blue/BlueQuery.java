@@ -181,24 +181,31 @@ extends BlueTask<BlueQuery>
         throws InvalidRequestException, InternalServerErrorException;
         
         /**
-         * Update a new {@link BlueQuery} with an ADQL string and state.
+         * Update a {@link BlueQuery} with an ADQL string and state.
          *
         public BlueQuery update(final Identifier ident, final String input, final TaskState next)
         throws InvalidStateTransitionException;
          */
 
         /**
-         * Update a new {@link BlueQuery} with an ADQL string, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         * Update a {@link BlueQuery} with an ADQL string, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
          *
          */
         public BlueQuery update(final Identifier ident, final String input, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
         throws IdentifierNotFoundException, InvalidStateRequestException;
 
         /**
-         * Update a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         * Update a {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
          *
          */
         public BlueQuery update(final Identifier ident, final String input, final AdqlQuery.Limits limits, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
+        throws IdentifierNotFoundException, InvalidStateRequestException;
+
+        /**
+         * Update a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, {@link AdqlQuery.Delays}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         *
+         */
+        public BlueQuery update(final Identifier ident, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
         throws IdentifierNotFoundException, InvalidStateRequestException;
 
         /**
@@ -317,7 +324,14 @@ extends BlueTask<BlueQuery>
      */
     public void update(final String input, final AdqlQuery.Limits limits)
     throws InvalidStateRequestException;
-    
+
+    /**
+     * Update our input query and {@link AdqlQuery.Limits} and {@link AdqlQuery.Delays}.
+     * 
+     */
+    public void update(final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays)
+    throws InvalidStateRequestException;
+
     /**
      * Our ADQL syntax status.
      *

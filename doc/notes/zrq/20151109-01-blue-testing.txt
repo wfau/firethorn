@@ -21,6 +21,20 @@
 #
 
 # -----------------------------------------------------
+# Get our branch and version number.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        branch=$(hg branch)
+
+        source "bin/util.sh"
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
 # Stop and remove our webapp containers.
 #[user@desktop]
 
@@ -245,4 +259,131 @@ EOF
             --data "blue.query.wait=60000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
+
+# -----------------------------------------------------
+# Edit a BlueQuery
+#[root@tester]
+
+        #
+        # Create an empty BlueQuery.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+        queryident=$(
+            cat blue-query.json | self | ident
+            )
+
+        #
+        # Update the query, setting the limits
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.time=1000" \
+            --data "blue.query.limit.rows=2000" \
+            --data "blue.query.limit.cells=3000" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update a limit
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.time=5000" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update a limit
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.rows=6000" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update a limit
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.cells=7000" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update the delays
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.first=100" \
+            --data "blue.query.delay.every=200" \
+            --data "blue.query.delay.last=300" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update a delay
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.first=10" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.every=20" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.last=30" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update the status (no effect)
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.next.status=READY" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update the query (statue => READY)
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Set a delay to zero
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.first=0" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+
+        #
+        # Set a limit to zero ** fails **
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.cells=0" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
 
