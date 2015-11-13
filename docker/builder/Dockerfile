@@ -1,35 +1,34 @@
 #
-# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
-# All rights reserved.
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#FROM firethorn/notroot:1.1
 FROM firethorn/fedora:21.1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Create our projects directory.
-RUN mkdir /var/local/projects
-#RUN chgrp users /var/local/projects
-#RUN chmod g+rwx /var/local/projects
 VOLUME /var/local/projects
 
 #
 # Create our cache directory.
-RUN mkdir /var/local/cache
-#RUN chgrp users /var/local/cache
-#RUN chmod g+rwx /var/local/cache
 VOLUME /var/local/cache
 
 #
@@ -42,6 +41,10 @@ RUN yum -y install bind-utils
 RUN yum -y install docker-io
 
 #
+# Install SSH clients.
+RUN yum -y install openssh-clients
+
+#
 # Install Mercurial
 RUN yum -y install mercurial
 
@@ -52,7 +55,16 @@ RUN yum -y install java-1.8.0-openjdk-headless
 
 #
 # Install Maven
-COPY bin/install-maven.sh /tmp/install-maven.sh
-RUN /bin/bash -c 'source /tmp/install-maven.sh'
+COPY bin/install /usr/local/bin/install
+RUN chmod -R a+x /usr/local/bin/install/*.sh
+RUN /usr/local/bin/install/install-maven.sh
 
+#
+# Install our build scripts.
+COPY bin/build   /usr/local/bin/build
+RUN chmod -R a+x /usr/local/bin/build/*.sh
+
+#
+# Set the working directory.
+WORKDIR /usr/local/bin/build
 

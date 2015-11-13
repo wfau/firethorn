@@ -94,7 +94,9 @@ docker rm -f -v $(docker ps -a -q)
     chmod a+r "/root/chain.properties"
     chcon -t svirt_sandbox_file_t "/root/chain.properties"
 
-
+# -----------------------------------------------------
+# Create our chain properties.
+#
 
     cat > /root/chain.properties << EOF
 
@@ -157,8 +159,6 @@ EOF
 
     source /root/chain.properties
 
-
-
 # -----------------------------------------------------
 # Run our build container.
 #
@@ -167,9 +167,10 @@ EOF
         --name builder \
         --env "branch=${branch:?}" \
         --env "version=${version:?}" \
-        --volume /var/local/cache:/cache \
-        --volume /var/local/projects:/projects \
+        --volume /var/local/cache:/var/local/cache \
+        --volume /var/local/projects:/var/local/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         --volume /root/setup/build.sh:/build.sh \
         firethorn/builder:1 \
         bash ./build.sh
+
