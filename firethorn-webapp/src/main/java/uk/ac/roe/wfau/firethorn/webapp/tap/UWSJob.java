@@ -108,16 +108,6 @@ public class UWSJob {
 	/** The duration that implies an unlimited execution duration. */
 	public final static long UNLIMITED_DURATION = 0;
 	
-	/**
-	 * Deleted Job status
-	 */
-	public static final String JOB_DELETED = "DELETED";
-	
-	/**
-	 * Pending Job status
-	 */
-	public static final String JOB_PENDING = "PENDING";
-	
 	/** The used date formatter. */
 	public static final DateFormat dateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
 
@@ -178,7 +168,7 @@ public class UWSJob {
 			this.format = CommonParams.DEFAULT_FORMAT;
 			this.version = CommonParams.DEFAULT_VERSION;
 			this.jobURL = generateJobURL(jobType);
-			this.jobstatus = JOB_PENDING;
+			this.jobstatus = CommonParams.JOB_PENDING;
 
 			/*this.destructionTime = destruction;
 			this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
@@ -208,7 +198,7 @@ public class UWSJob {
 		this.resource = resource;
 		this.query = query;
 		this.jobURL = generateJobURL(jobType);
-		this.jobstatus = query.param().map().containsKey("jobstatus") ? query.param().map().get("jobstatus") : PHASE_INITIAL;
+		this.jobstatus = query.param().map().containsKey("jobstatus") ? query.param().map().get("jobstatus") : null;
 		/*this.destructionTime = destruction;
 		this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
 		
@@ -583,6 +573,11 @@ public class UWSJob {
 		            	writer.append("<uws:parameter id='maxrec'>" + this.getMaxrec() + "</uws:parameter>");
 			        } else {
 		            	writer.append("<uws:parameter id='maxrec'>None</uws:parameter>");
+			        }
+			        if (this.getJobStatus()!=null){
+		            	writer.append("<uws:parameter id='jobstatus'>" + this.getJobStatus() + "</uws:parameter>");
+			        } else {
+		            	writer.append("<uws:parameter id='jobstatus'>None</uws:parameter>");
 			        }
 		        writer.append("</uws:parameters>");
 		        

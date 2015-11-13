@@ -56,7 +56,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         }
                     else {
                         %>
-                        <unit><unit/>
+                        <unit></unit>
                         <%
                         }
 

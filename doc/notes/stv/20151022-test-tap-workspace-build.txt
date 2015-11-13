@@ -467,7 +467,7 @@ EOF
 	# -----------------------------------------------------
 	# Testing TAP
 
-	resourceid=$(basename ${queryspace:?}) 
+	#resourceid=$(basename ${queryspace:?}) 
 	resourceid=29229058
 	query="SELECT+TOP+10000+schema_name+FROM+TAP_SCHEMA.schemas"
 	format=VOTABLE
@@ -512,11 +512,6 @@ EOF
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
 	-d PHASE=RUN 
 
-	curl POST -v \
-	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?} \
-	-d ACTION=DELETE 
-
-
 	curl  ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results
 
 	curl -v -L \
@@ -555,8 +550,14 @@ EOF
         query=select+top+20+ra+from+atlasSource
 	curl -L \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/parameters \
-	-d QUERY=${query:?}  \
+	-d ACTION=DELETE  \
 	-d MAXREC=2  
+
+	curl -v -X "DELETE" \
+	"${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}"
+
+
+
 
 	curl -X POST -G \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
@@ -595,6 +596,10 @@ EOF
 
 	curl ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/error
 
+
+	curl POST -v \
+	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?} \
+	-d ACTION=DELETE 
 
 
 	# ----------------------Query test5: Invalid input synchronous-------------------------------

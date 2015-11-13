@@ -352,8 +352,8 @@ extends AbstractTableController
         writer.append("<TD>");
         if (content!=null){
         	content = content.trim();
+            writer.append(content);
         }
-        writer.append(content);
         writer.append("</TD>");
         }
     

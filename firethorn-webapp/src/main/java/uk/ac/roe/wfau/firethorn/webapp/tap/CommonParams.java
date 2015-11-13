@@ -61,5 +61,15 @@ public class CommonParams  {
 	 * Default request
 	 */
 	public static final String DEFAULT_LANG = "ADQL";
-
+	
+	/**
+	 * Deleted Job status
+	 */
+	public static final String JOB_DELETED = "DELETED";
+	
+	/**
+	 * Pending Job status
+	 */
+	public static final String JOB_PENDING = "PENDING";
+	
 }
