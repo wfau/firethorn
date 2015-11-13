@@ -32,7 +32,7 @@ yum -y install java
 wget http://www.star.bris.ac.uk/~mbt/stilts/stilts.jar
  
 
-java -jar stilts.jar taplint tapurl=http://peter:8080/firethorn/tap/29229058 stages='UWS' debug=true 
+java -jar stilts.jar taplint tapurl=http://peter:8080/firethorn/tap/29229058  debug=true 
 
 
 This is STILTS taplint, 3.0-5/55558a7 (2015-10-22)

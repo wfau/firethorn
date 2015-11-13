@@ -54,11 +54,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         <unit><%= meta.adql().units() %></unit>
                         <%
                         }
-                    else {
-                        %>
-                        <unit></unit>
-                        <%
-                        }
+                 
 
                     if (meta.adql().ucd() != null)
                         {
@@ -66,9 +62,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         <ucd><%= meta.adql().ucd() %></ucd>
                         <%
                         }
-                    else {
-                        %><ucd></ucd><%
-                        }
+              
 
                     if (meta.adql().utype() != null)
                         {
@@ -76,11 +70,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         <utype><%= meta.adql().utype() %></utype>
                         <%
                         }
-                    else {
-                        %>
-                        <utype></utype>
-                        <%
-                        }
+                
 
                     if (meta.adql().type() != null)
                         {
@@ -129,11 +119,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                             <%
                             }
                         }
-                    else {
-                        %>
-                        <dataType></dataType>
-                        <%
-                        }
+                   
                     }
                 else {
                     %>
