@@ -41,7 +41,7 @@
     <!--+
         | Hibernate SessionFactory.
         +-->
-    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 
         <!--+
             | Hibernate Interceptor.
