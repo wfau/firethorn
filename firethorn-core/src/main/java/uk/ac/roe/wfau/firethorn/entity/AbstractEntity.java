@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
@@ -368,12 +369,19 @@ implements Entity
     /**
      * The date/time this Entity was created.
      *
+     * Issues with Joda DateTime in Hibernate
+     * http://stackoverflow.com/a/3044824
+     * http://jadira.sourceforge.net/usertype-userguide.html
+     *
      */
     @Column(
         name = DB_CREATED_COL,
         unique = false,
         nullable = false,
         updatable = false
+        )
+    @Type(
+        type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
         )
     private DateTime created ;
     @Override
@@ -385,6 +393,10 @@ implements Entity
     /**
      * The date/time this Entity was modified.
      *
+     * Issues with Joda DateTime in Hibernate
+     * http://stackoverflow.com/a/3044824
+     * http://jadira.sourceforge.net/usertype-userguide.html
+     *
      */
     @Version
     @Column(
@@ -392,6 +404,9 @@ implements Entity
         unique = false,
         nullable = false,
         updatable = false
+        )
+    @Type(
+        type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
         )
     private DateTime modified ;
     @Override

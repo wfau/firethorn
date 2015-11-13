@@ -50,7 +50,7 @@
     <properties>
 
 		<spring.version>4.2.2.RELEASE</spring.version>
-        <hibernate.version>5.0.3.Final</hibernate.version>
+        <hibernate.version>4.3.11.Final</hibernate.version>
 	    <hibernate.validator>5.2.2.Final</hibernate.validator>
 		<aspectj.version>1.8.7</aspectj.version>
 
@@ -286,21 +286,21 @@
             | http://blog.jadira.co.uk/
             | Replaced by hibernate-java8.
             | http://stackoverflow.com/a/31912551
+            +-->
         <dependency>
             <groupId>org.jadira.usertype</groupId>
             <artifactId>usertype.core</artifactId>
             <version>4.0.0.GA</version>
         </dependency>
-            +-->
         <!--+
             | Java8 Specific Hibernate classes
             | http://stackoverflow.com/a/31912551
-            +-->
         <dependency>
 	        <groupId>org.hibernate</groupId>
 	        <artifactId>hibernate-java8</artifactId>
 	        <version>${hibernate.version}</version>
         </dependency>
+            +-->
 
         <!--+
             | Java Persistence API (included by hibernate/spring)

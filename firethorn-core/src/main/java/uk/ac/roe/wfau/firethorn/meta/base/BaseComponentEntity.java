@@ -30,6 +30,7 @@ import javax.persistence.MappedSuperclass;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -348,6 +349,9 @@ implements BaseComponent
         unique = false,
         nullable = true,
         updatable = true
+        )
+    @Type(
+        type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
         )
     private DateTime scandate ;
     protected DateTime scandate()

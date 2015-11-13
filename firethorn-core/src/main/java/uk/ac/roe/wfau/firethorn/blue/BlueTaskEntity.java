@@ -37,6 +37,7 @@ import javax.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Session;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.NamedQueries;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -432,6 +433,9 @@ implements BlueTask<TaskType>
         nullable = true,
         updatable = true
         )
+    @Type(
+        type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
+        )
     private DateTime queued ;
     @Override
     public DateTime queued()
@@ -445,6 +449,9 @@ implements BlueTask<TaskType>
         nullable = true,
         updatable = true
         )
+    @Type(
+        type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
+        )
     private DateTime started ;
     @Override
     public DateTime started()
@@ -457,6 +464,9 @@ implements BlueTask<TaskType>
         unique = false,
         nullable = true,
         updatable = true
+        )
+    @Type(
+        type="org.jadira.usertype.dateandtime.joda.PersistentDateTime"
         )
     private DateTime completed ;
     @Override

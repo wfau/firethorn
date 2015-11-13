@@ -41,7 +41,7 @@
     <!--+
         | Hibernate SessionFactory.
         +-->
-    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 
         <!--+
             | Hibernate Interceptor.
@@ -93,9 +93,12 @@
                 <!--+
                     | Jadira usertype registration.
                     | http://usertype.sourceforge.net/
+                    | http://stackoverflow.com/a/18357746
                     +-->
                 <prop key="jadira.usertype.autoRegisterUserTypes">true</prop>
-
+                <prop key="jadira.usertype.databaseZone">jvm</prop>
+                <prop key="jadira.usertype.javaZone">jvm</prop>
+            
             </props>
         </property>
 
