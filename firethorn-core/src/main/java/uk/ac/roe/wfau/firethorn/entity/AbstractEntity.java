@@ -273,6 +273,10 @@ implements Entity
      * https://hibernate.onjira.com/browse/HHH-5376
      * http://sourceforge.net/projects/hsqldb/forums/forum/73674/topic/4537620
      *
+     * Changed hilo to seqhilo
+     * http://stackoverflow.com/a/33103723
+     * https://docs.jboss.org/hibernate/orm/5.0/manual/en-US/html/ch05.html#mapping-declaration-id-generator
+     * 
      */
     @Id
     @Column(
@@ -286,7 +290,7 @@ implements Entity
         )
     @GenericGenerator(
         name="ident-generator",
-        strategy="hilo"
+        strategy="seqhilo"
         )
     private Long ident ;
 
