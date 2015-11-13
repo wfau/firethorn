@@ -123,7 +123,12 @@ public class AdqlTapAsyncController extends AbstractController {
 				qry = uwsfactory.createNewQuery(resource);
 				uwsjob = uwsfactory.create(resource, qry, jobType);
 			}
-
+			
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+			
 			if (REQUEST != null)
 				uwsjob.setRequest(REQUEST);
 			if (LANG != null)
@@ -159,11 +164,6 @@ public class AdqlTapAsyncController extends AbstractController {
 			final HttpServletResponse response)
 					throws Exception {
 
-		if (ACTION=="DELETE"){
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			return;
-
-		}
 		
 		response.setContentType(CommonParams.TEXT_XML_MIME);
 		response.setCharacterEncoding("UTF-8");
@@ -183,6 +183,23 @@ public class AdqlTapAsyncController extends AbstractController {
 			
 			if (queryentity != null) {
 				uwsjob = uwsfactory.create(resource, queryentity, jobType);
+				log.debug("***1***" + uwsjob.getJobStatus());
+
+				if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+					return;
+				}
+				log.debug("***2***" + uwsjob.getJobStatus());
+				log.debug("***3***" + ACTION);
+
+				if (ACTION=="DELETE"){
+					uwsjob.setJobStatus(UWSJob.JOB_DELETED);
+					writer.append("");
+					log.debug("***4***" + uwsjob.getJobStatus());
+					return;
+
+				}
+				
 				writer.append(uwsjob.writeUWSJobToXML());
 				return;
 			} else {
@@ -231,7 +248,11 @@ public class AdqlTapAsyncController extends AbstractController {
 		}
 		
 		try {
-		
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+			
 			if (uwsjob.getPhase()!="PENDING"){ 
 				writer.append(TapError.writeErrorToVotable(TapJobErrors.PARAM_CHANGE_NOT_ALLOWED + uwsjob.getPhase()));
 				return;
@@ -288,7 +309,12 @@ public class AdqlTapAsyncController extends AbstractController {
 			} else {
 				uwsjob = uwsfactory.create(resource, jobType);
 			}
-
+			
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+			
 			if (PHASE == null) {
 				writer.append(TapError.writeErrorToVotable(TapJobErrors.PARAM_PHASE_MISSING));
 			} else {
@@ -336,7 +362,12 @@ public class AdqlTapAsyncController extends AbstractController {
 			} else {
 				uwsjob = uwsfactory.create(resource, jobType);
 			}
-
+			
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+			
 			phase = uwsjob.getPhase();
 
 		} catch (Exception e) {
@@ -355,6 +386,35 @@ public class AdqlTapAsyncController extends AbstractController {
 			throws IdentifierNotFoundException, Exception {
 
 		PrintWriter writer = response.getWriter();
+		UWSJob uwsjob;
+		BlueQuery queryentity;
+
+		try {
+			queryentity = getqueryentity(jobid);
+		} catch (Exception e) {
+			writer.append(TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND));
+			return;
+			
+		}
+		
+		try {
+
+			if (queryentity != null) {
+				uwsjob = uwsfactory.create(resource, queryentity, jobType);
+			} else {
+				uwsjob = uwsfactory.create(resource, jobType);
+			}
+			
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+		
+		} catch (Exception e) {
+			return;
+			
+		}
+	
 		response.setContentType("text/plain");
 		java.util.Date date = new java.util.Date();
 		writer.append(new Timestamp(date.getTime()).toString());
@@ -368,10 +428,32 @@ public class AdqlTapAsyncController extends AbstractController {
 			@RequestParam(value = "TERMINATION", required = false) final String TERMINATION,
 			final HttpServletResponse response)
 					throws IdentifierNotFoundException, Exception {
+		
 		PrintWriter writer = response.getWriter();
 		response.setContentType("text/plain");
-		writer.append(Long.toString(factories().blues().limits().absolute().time()));
-		return;
+		BlueQuery queryentity;
+		UWSJob uwsjob;
+
+		try {
+			queryentity = getqueryentity(jobid);
+			if (queryentity != null) {
+				uwsjob = uwsfactory.create(resource, queryentity, jobType);
+			} else {
+				uwsjob = uwsfactory.create(resource, jobType);
+			}
+			
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+			
+			writer.append(Long.toString(queryentity.limits().time()));
+			return;
+		} catch (Exception e) {
+			writer.append(Long.toString(factories().blues().limits().absolute().time()));
+			return;
+		}
+		
 	}
 
 	@RequestMapping(value = "/{jobid}/destruction", method = { RequestMethod.POST, RequestMethod.GET })
@@ -394,6 +476,11 @@ public class AdqlTapAsyncController extends AbstractController {
 			} else {
 				uwsjob = uwsfactory.create(resource, jobType);
 			}
+
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
 			
 			writer.append(uwsjob.getDestructionTime());
 			return;
@@ -405,35 +492,96 @@ public class AdqlTapAsyncController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/{jobid}/owner", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public String owner(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource)
+	public void owner(@PathVariable String jobid, 
+			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
+			final HttpServletResponse response)
 			throws IdentifierNotFoundException, Exception {
-		return null;
+		
+		UWSJob uwsjob;
+		BlueQuery queryentity;
+		PrintWriter writer = response.getWriter();
+		response.setContentType("text/plain");
+		
+		try {
+			
+			queryentity = getqueryentity(jobid);
+
+			if (queryentity != null) {
+				uwsjob = uwsfactory.create(resource, queryentity, jobType);
+			} else {
+				uwsjob = uwsfactory.create(resource, jobType);
+			}
+
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+			
+			return;
+			
+		} catch (Exception e) {
+			writer.append("");
+			return;
+		}
+		
 	}
 
 	@RequestMapping(value = "/{jobid}/error", method = { RequestMethod.POST, RequestMethod.GET })
 	public void error(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
-
-		BlueQuery queryentity = getqueryentity(jobid);
+		
+		BlueQuery queryentity;
+		UWSJob uwsjob;
 		PrintWriter writer = response.getWriter();
 		response.setContentType(CommonParams.TEXT_XML_MIME);
 		response.setCharacterEncoding("UTF-8");
+
+		try {
+			queryentity = getqueryentity(jobid);
+		} catch (Exception e) {
+			writer.append(TapError.writeErrorToVotable(TapJobErrors.JOBID_NOTFOUND));
+			return;
+		}
 		
-		if (queryentity.state() == TaskState.ERROR || queryentity.state() == TaskState.FAILED) {
-		
-			if (queryentity.syntax()!=null){
-				writer.append(TapError.writeErrorToVotable(StringEscapeUtils.escapeXml(queryentity.syntax().friendly())));
+		try {
+
+			if (queryentity != null) {
+				uwsjob = uwsfactory.create(resource, queryentity, jobType);
 			} else {
-				writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
+				uwsjob = uwsfactory.create(resource, jobType);
 			}
+
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+			
+			if (queryentity != null) {
+				
+				if (queryentity.state() == TaskState.ERROR || queryentity.state() == TaskState.FAILED) {
+					
+					if (queryentity.syntax()!=null){
+						writer.append(TapError.writeErrorToVotable(StringEscapeUtils.escapeXml(queryentity.syntax().friendly())));
+					} else {
+						writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
+					}
+					return;
+					
+				} else {
+					
+					writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
+					return;
+				}
+				
+			}
+			
 			return;
 			
-		} else {
-			
+		} catch (Exception e) {
 			writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 			return;
 		}
+	
 	}
 
 	@RequestMapping(value = "/{jobid}/results", method = { RequestMethod.POST, RequestMethod.GET })
@@ -455,6 +603,13 @@ public class AdqlTapAsyncController extends AbstractController {
 		
 		try {
 			uwsjob = uwsfactory.create(resource, queryentity, jobType);
+
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				return "";
+
+			}
+			
 			return uwsjob.writeUWSResultToXML();
 		} catch (Exception e) {
 			return TapError.writeErrorToVotable(e.getMessage());
@@ -480,7 +635,11 @@ public class AdqlTapAsyncController extends AbstractController {
 		
 		try {
 			uwsjob = uwsfactory.create(resource, queryentity, jobType);
-
+			
+			if (uwsjob.getJobStatus()==UWSJob.JOB_DELETED){
+				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			}
+			
 			if (queryentity.state() == TaskState.ERROR || queryentity.state() == TaskState.FAILED) {
 				throw new IdentifierNotFoundException(queryentity.ident(), "No results available for this job");
 			}

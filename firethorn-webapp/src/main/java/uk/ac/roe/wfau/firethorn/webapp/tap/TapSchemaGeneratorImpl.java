@@ -164,7 +164,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			con = DriverManager.getConnection(this.params.getConnectionURL(),
 					this.params.getUsername(), this.params.getPassword());
 
-			System.out.println("Inserting resource records into the table...");
+			log.debug("Inserting resource records into the table...");
 			stmt = con.createStatement();			
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -246,21 +246,32 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			for (AdqlSchema schema : this.resource.schemas().select()) {
 
 				String schemaName = schema.name();
+
 				String schemaDescription = schema.text();
-
-				String sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"schemas\" VALUES ('"
-						+ schemaName + "', '" + schemaDescription
-						+ "', '', '');";
+				String sql;
+				if (schemaDescription==null){
+					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"schemas\" VALUES ('"
+							+ schemaName + "', NULL, NULL);";
+				} else {
+					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"schemas\" VALUES ('"
+							+ schemaName + "', '" + schemaDescription
+							+ "', NULL);";
+				}
+				
 				stmt.executeUpdate(sql);
-
+				
 				for (AdqlTable table : schema.tables().select()) {
-
 					String tableName = table.name();
 					String tableDescription = table.text();
+					if (tableDescription==null){
+						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
+								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', NULL, '');";
+					} else {
+						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
+								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
+								+ tableDescription + "', '');";
+					}
 
-					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
-							+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
-							+ tableDescription + "', NULL, NULL);";
 					stmt.executeUpdate(sql);
 
 					for (AdqlColumn column : table.columns().select()) {
@@ -269,7 +280,11 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 						String columnDescription = column.text();
 						sql += "'" +  schemaName + "." + tableName + "',";
 						sql += "'" + columnName + "',";
-						sql += "'" + columnDescription + "',";
+						if (columnDescription==null){
+							sql += "NULL, ";
+						} else {
+							sql += "'" + columnDescription + "',";
+						}
 
 						AdqlColumn.Metadata meta = column.meta();
 
@@ -294,8 +309,33 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 							}
 
 							if (meta.adql().type() != null) {
-								if (meta.adql().type() != null) {
-									sql += "'" + meta.adql().type().toString().toLowerCase() + "',";
+								
+								String votableType = meta.adql().type().votype().toString().toLowerCase();
+								String arraysize = "*";
+								
+								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
+								    {
+								    votableType = "char";
+								    arraysize = "*";
+								    }
+								if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
+								    {
+								    votableType = "char";
+								    arraysize = "*";
+								    }
+								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
+								    {
+								    votableType = "char";
+								    arraysize = "*";
+								    }
+								else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) 
+								    {	
+									votableType = "int";
+								    arraysize = "1";
+								    }
+						       
+								if (votableType != null) {
+									sql += "'" + votableType + "',";
 								} else {
 									sql += "'',";
 								}
@@ -305,9 +345,9 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 									if (meta.adql().arraysize() == -1) {
 										sql += "null,";
 									} else {
-										sql += meta.adql().arraysize()
+										sql += "'"+meta.adql().arraysize()
 												.toString()
-												+ ",";
+												+ "',";
 									}
 								} else {
 									sql += "null,";
@@ -315,7 +355,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 							}
 						}
 
-						sql += "0, 0, '',''";
+						sql += " 0, '',''";
 						sql += ")";
 						stmt.executeUpdate(sql);
 
@@ -328,9 +368,10 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 		} catch (SQLException se) {
 			// Handle errors for JDBC
-			se.printStackTrace();
+			log.debug("SQLException: ", se);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Exception: ", e);
+
 		} finally {
 
 			try {

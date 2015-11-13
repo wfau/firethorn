@@ -467,9 +467,9 @@ EOF
 	# -----------------------------------------------------
 	# Testing TAP
 
-	#resourceid=$(basename ${queryspace:?}) 
-	resourceid=22347777
-	query="SELECT+TOP+10000+*+FROM+atlasSource"
+	resourceid=$(basename ${queryspace:?}) 
+	resourceid=29229058
+	query="SELECT+TOP+10000+schema_name+FROM+TAP_SCHEMA.schemas"
 	format=VOTABLE
 	lang=ADQL
 	request=doQuery
@@ -492,7 +492,6 @@ EOF
 	${endpointurl:?}/tap/${resourceid:?}/sync \
 	-d QUERY=${query:?} \
 	-d LANG=${lang:?} \
-	-d MAXREC=1 \
 	-d REQUEST=${request:?}
 
 	# ----------------------Query test2: asynchronous-------------------------------
@@ -512,6 +511,11 @@ EOF
 	curl -v \
 	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
 	-d PHASE=RUN 
+
+	curl POST -v \
+	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?} \
+	-d ACTION=DELETE 
+
 
 	curl  ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results
 

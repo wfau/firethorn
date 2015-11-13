@@ -108,10 +108,19 @@ public class UWSJob {
 	/** The duration that implies an unlimited execution duration. */
 	public final static long UNLIMITED_DURATION = 0;
 	
+	/**
+	 * Deleted Job status
+	 */
+	public static final String JOB_DELETED = "DELETED";
+	
+	/**
+	 * Pending Job status
+	 */
+	public static final String JOB_PENDING = "PENDING";
+	
 	/** The used date formatter. */
 	public static final DateFormat dateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
 
-	
 	/** The time at which the job execution started. */
 	private Date startTime = null;
 	
@@ -130,7 +139,7 @@ public class UWSJob {
 	private String version = null;
 	private String maxrec = null;
 	private String request = null;
-
+	private String jobstatus = null;
 
 	/** <p>This error summary gives a human-readable error message for the underlying job.</p>
 	 * <i><u>Note:</u> This object is intended to be a detailed error message, and consequently,
@@ -142,8 +151,6 @@ public class UWSJob {
 	 */
 	private UWSJobFactory myFactory;
 
-
-	
 	
 	/* ************ */
 	/* CONSTRUCTORS */
@@ -171,6 +178,8 @@ public class UWSJob {
 			this.format = CommonParams.DEFAULT_FORMAT;
 			this.version = CommonParams.DEFAULT_VERSION;
 			this.jobURL = generateJobURL(jobType);
+			this.jobstatus = JOB_PENDING;
+
 			/*this.destructionTime = destruction;
 			this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
 	}
@@ -199,7 +208,7 @@ public class UWSJob {
 		this.resource = resource;
 		this.query = query;
 		this.jobURL = generateJobURL(jobType);
-		
+		this.jobstatus = query.param().map().containsKey("jobstatus") ? query.param().map().get("jobstatus") : PHASE_INITIAL;
 		/*this.destructionTime = destruction;
 		this.executionDuration = (maxDuration<0)?UNLIMITED_DURATION:maxDuration;*/
 		
@@ -298,7 +307,7 @@ public class UWSJob {
 	}
 	
 	public String getExecutionDuration(){
-		return Integer.toString(TapJobParams.EXECUTION_DURATION);
+		return Long.toString(this.getQuery().limits().time());
 	}
 	
 	public String getDestructionTime(){
@@ -395,6 +404,15 @@ public class UWSJob {
 		}
 	}
 
+	
+	public void setJobStatus(String status) {
+		this.getQuery().param().map().put("jobstatus", status);	
+		this.jobstatus=status;
+	}
+	
+	public String getJobStatus() {
+		return jobstatus;
+	}
 	
 	/**
 	 * Get the BlueQuery
@@ -579,5 +597,7 @@ public class UWSJob {
 		
 	        return writer.toString();
 	}
+
+
  
 }

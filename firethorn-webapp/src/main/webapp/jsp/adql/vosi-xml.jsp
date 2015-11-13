@@ -24,7 +24,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
             {
             %>
         <table type='table'>
-            <name><%= table.name() %></name>
+            <name><%= schema.name() %>.<%= table.name() %></name>
             <title></title>
             <utype></utype>
             <%
@@ -56,7 +56,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         }
                     else {
                         %>
-                        <unit/>
+                        <unit><unit/>
                         <%
                         }
 
@@ -67,7 +67,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         <%
                         }
                     else {
-                        %><ucd/><%
+                        %><ucd></ucd><%
                         }
 
                     if (meta.adql().utype() != null)
@@ -78,7 +78,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         }
                     else {
                         %>
-                        <utype/>
+                        <utype></utype>
                         <%
                         }
 
@@ -131,7 +131,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         }
                     else {
                         %>
-                        <dataType/>
+                        <dataType></dataType>
                         <%
                         }
                     }
