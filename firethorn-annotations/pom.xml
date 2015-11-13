@@ -87,11 +87,11 @@
         <!--+
             | Jadira Type Libraries.
             | http://blog.jadira.co.uk/
-            +-->	
         <dependency>
             <groupId>org.jadira.usertype</groupId>
             <artifactId>usertype.core</artifactId>
         </dependency>
+            +-->	
 
     </dependencies>
 
