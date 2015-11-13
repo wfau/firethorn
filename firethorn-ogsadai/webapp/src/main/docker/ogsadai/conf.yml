@@ -19,12 +19,13 @@
 # Additional data require to create the Docker image
 packaging:
 
-  #
-  # Files to add to the build, usually used with ADD in the Dockerfile
-  add:
-    - target/${project.build.finalName}
+    #
+    # Files added with ADD in the Dockerfile
+    add:
+        - target/${project.build.finalName}
     
 #
-# Tag to use for images
-tag: firethorn/ogsadai:${project.version}
+# Tag to use for the Docker image
+tag:
+    firethorn/ogsadai:${project.version}
 
