@@ -15,7 +15,7 @@
     if [ ! -e "${HOME:?}/firethorn.settings" ]
     then
         cat > "${HOME:?}/firethorn.settings" << EOF
-FIRETHORN_CODE=/projects/firethorn
+FIRETHORN_CODE=/var/local/projects/firethorn
 EOF
     fi
 
@@ -90,7 +90,7 @@ EOF
             echo "# ------"
             echo "# Building Builder image"
             docker build \
-                --tag firethorn/builder:1.1 \
+                --tag firethorn/builder:1.2 \
                 docker/builder
         fi
 
