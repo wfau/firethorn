@@ -196,9 +196,7 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
         pushd firethorn-core
-
             mvn -D skipTests=false -D test=IvoaResourceLoaderTestCase test
-
         popd
     popd
 
@@ -388,8 +386,20 @@ EOF
     ....
 
 
+    [IvoaResourceLoaderTestCase] Resource [gaia-tap][2403] 
+    [IvoaResourceLoaderTestCase]   Schema [public][2404] 
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][3469] 
+    ....
+
+    [IvoaResourceLoaderTestCase] Resource [gavo-tap][3505] 
+    [IvoaResourceLoaderTestCase]   Schema [icecube][4706] 
+    [IvoaResourceLoaderTestCase]   Schema [tap_schema][5760] 
+    [IvoaResourceLoaderTestCase]   Schema [twomass][5894] 
+    ....
+
+
     ivoaname=GACS
-    ivoaschema=/ivoa/schema/163845
+    ivoaschema=/ivoa/schema/2404
 
 	curl  \
 	    --header "firethorn.auth.identity:${identity:?}" \
@@ -402,7 +412,7 @@ EOF
 
 
 	ivoaname=ICECUBE
-	ivoaschema=/ivoa/schema/163868
+	ivoaschema=/ivoa/schema/4706
 
 	curl  \
 	    --header "firethorn.auth.identity:${identity:?}" \
