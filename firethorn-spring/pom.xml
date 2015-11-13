@@ -271,6 +271,36 @@
 		    <artifactId>hibernate-validator</artifactId>
 		    <version>${hibernate.validator}</version>
 	    </dependency>
+	    <!--+
+	        | Extra dependency for hibernate-validator.
+	        | http://stackoverflow.com/a/27205438
+	        +-->
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <!--+
+            | Jadira Type Libraries.
+            | http://blog.jadira.co.uk/
+            | Replaced by hibernate-java8.
+            | http://stackoverflow.com/a/31912551
+        <dependency>
+            <groupId>org.jadira.usertype</groupId>
+            <artifactId>usertype.core</artifactId>
+            <version>4.0.0.GA</version>
+        </dependency>
+            +-->
+        <!--+
+            | Java8 Specific Hibernate classes
+            | http://stackoverflow.com/a/31912551
+            +-->
+        <dependency>
+	        <groupId>org.hibernate</groupId>
+	        <artifactId>hibernate-java8</artifactId>
+	        <version>${hibernate.version}</version>
+        </dependency>
 
         <!--+
             | Java Persistence API (included by hibernate/spring)

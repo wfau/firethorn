@@ -42,7 +42,7 @@
     <version project='firethorn'>2.0.1-zrq-maven-updates</version>
 
     <prerequisites>
-        <maven>3.2.5</maven>
+        <maven>3.0.5</maven>
     </prerequisites>
 
     <name>FireThorn project</name>
@@ -375,16 +375,6 @@
                 <version>1.4</version>
             </dependency>
 
-            <!--+
-                | Jadira Type Libraries.
-                | http://blog.jadira.co.uk/
-                +-->	
-            <dependency>
-                <groupId>org.jadira.usertype</groupId>
-                <artifactId>usertype.core</artifactId>
-                <version>4.0.0.GA</version>
-            </dependency>
-
 		    <!--+
 		        | Java Simplified Encryption
                 | http://www.jasypt.org/howtoencryptuserpasswords.html
@@ -591,7 +581,8 @@
                     <artifactId>docker-maven-plugin</artifactId>
                     <!--version>2.1.0</version-->
                     <!--version>2.3.1</version-->
-                    <version>2.11.4</version>
+                    <version>2.11.2</version>
+                    <!--version>2.11.4</version-->
                     <configuration>
                         <host>${docker.host}</host>
                         <removeIntermediateImages>true</removeIntermediateImages>
