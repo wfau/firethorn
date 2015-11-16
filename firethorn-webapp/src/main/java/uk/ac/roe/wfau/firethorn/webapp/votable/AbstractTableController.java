@@ -117,7 +117,7 @@ extends AbstractController
             {
             if (this.index == null)
                 {
-                this.index = this.column.root().name();
+            	this.index = this.column.name();
                 }
             return this.index;
             }
@@ -399,6 +399,7 @@ extends AbstractController
 
             catch (final SQLException ouch)
                 {
+            	log.debug("Exception",ouch);
                 log.error("Exception reading SQL results [{}]", ouch.getMessage());
                 }
             catch (final Exception ouch)

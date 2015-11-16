@@ -374,10 +374,10 @@ implements SecureActivity
 		this.ident = ident ;
 		}
 	
-	protected void callback(final String status, final String text)
+	protected void callback(final String next, final String text)
 		{
         logger.debug("callback(String)");
-        logger.debug("  Status  [" + status + "]");
+        logger.debug("  Next [" + next + "]");
         
 		if (context != null)
 			{
@@ -444,16 +444,22 @@ implements SecureActivity
 							}
 
 						@Override
-						public String getStatus()
+						public String getState()
 							{
-							return status;
+							return next;
 							}
 
 						@Override
-						public Long getCount()
+						public Long getResultCount()
 							{
 							return null;
 							}
+
+                        @Override
+                        public String getResultState()
+                            {
+                            return null;
+                            }
 						},
 					ResponseBean.class,
 					fields
@@ -555,15 +561,15 @@ implements SecureActivity
             this.self = value;
             }
 
-    	private String status;
+    	private String next;
 		@Override
-        public String getStatus()
+        public String getState()
             {
-            return this.status;
+            return this.next;
             }
-        public void setStatus(final String value)
+        public void setState(final String value)
             {
-            this.status = value;
+            this.next = value;
             }
     	}
     }

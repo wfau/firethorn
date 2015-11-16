@@ -27,7 +27,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.FieldFormatter;
@@ -139,20 +141,20 @@ extends AbstractTableController
     public void head(final PrintWriter writer, final BaseTable<?,?> table)
         {
         writer.append("<?xml version='1.0' encoding='UTF-8'?>");
-        writer.append("<vot:VOTABLE");
-        writer.append(" xmlns:vot='http://www.ivoa.net/xml/VOTable/v1.3'");
+        writer.append("<VOTABLE");
+        writer.append(" xmlns='http://www.ivoa.net/xml/VOTable/v1.3'");
         writer.append(" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'");
         writer.append(" xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3'");
         writer.append(" version='1.3'");
         writer.append(">");
-
+        
         //
         // TODO Add the table query description and ADQL statement if available.
         
-        writer.append("<RESOURCE");
-        writer.append(" ID='table.");
-        writer.append(table.ident().toString());
-        writer.append("'");
+        writer.append("<RESOURCE type='results'");
+        //writer.append(" ID='table.");
+        //writer.append(table.ident().toString());
+        //writer.append("'");
         if (table.name() != null)
             {
             writer.append(" name='");
@@ -170,7 +172,26 @@ extends AbstractTableController
         writer.append(table.link());
         writer.append("'");
         writer.append("/>");
+        if (table.query()!=null){
+	        if (table.query().status()==Status.COMPLETED) {
+	            writer.append("<INFO name='QUERY_STATUS' value='OK'>");
+	        } else  {
+	            writer.append("<INFO name='QUERY_STATUS' value='ERROR'>");
+	            writer.append(table.query().syntax().friendly());
+	        }
+	        writer.append("</INFO>");
+	        if (table.query().input() != null)
+	        {
+	        	writer.append("<INFO name='QUERY' value='" + table.query().input() + "' />");
+	        }
+        } else {
+        	writer.append("<INFO name='QUERY_STATUS' value='OK'></INFO>");
+        }
+        if (table.meta().adql().status() == TableStatus.TRUNCATED){
+        	writer.append("<INFO name=\"QUERY_STATUS\" value=\"OVERFLOW\"/>");
+        }
         
+     
         if (table.text() != null)
             {
             writer.append("<DESCRIPTION>");
@@ -327,12 +348,12 @@ extends AbstractTableController
     public void cell(final FieldFormatter formatter, final PrintWriter writer, final ResultSet results)
     throws SQLException
         {
+    	String content =  formatter.format(results);
         writer.append("<TD>");
-        writer.append(
-            formatter.format(
-                results
-                )
-            );
+        if (content!=null){
+        	content = content.trim();
+            writer.append(content);
+        }
         writer.append("</TD>");
         }
     
@@ -343,7 +364,7 @@ extends AbstractTableController
         writer.append("</DATA>");
         writer.append("</TABLE>");
         writer.append("</RESOURCE>");
-        writer.append("</vot:VOTABLE>");
+        writer.append("</VOTABLE>");
         }
 
     @Override

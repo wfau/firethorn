@@ -40,7 +40,7 @@ extends TuplesParam
     public static final String QUERY_IDENT = "query.ident" ;
 
     /**
-     * Public interface for a callback request bean.
+     * Public interface for a callback message bean.
      * 
      */
     public interface RequestBean
@@ -52,16 +52,22 @@ extends TuplesParam
         public String getIdent();
 
         /**
-    	 * Get the query status.
+    	 * The {@link BlueTask.TaskState}, as a String.
     	 * 
     	 */
-        public String getStatus();
+        public String getState();
 
         /**
-    	 * Get the query row count.
+    	 * The row count.
     	 * 
     	 */
-        public Long getCount();
+        public Long getResultCount();
+
+        /**
+         * The {@link ResultState}, as a String.
+         * 
+         */
+        public String getResultState();
 
     	}
 
@@ -72,25 +78,25 @@ extends TuplesParam
     public interface ResponseBean
     	{
         /**
-    	 * Get the query identifier.
+    	 * The query identifier.
     	 * 
     	 */
         public String getIdent();
 
         /**
-    	 * Get the query name.
+    	 * The query name.
     	 * 
     	 */
         public String getName();
 
         /**
-    	 * Get the query status.
+    	 * The query {@link BlueTask.TaskState}, as a String.
     	 * 
     	 */
-        public String getStatus();
+        public String getState();
 
         /**
-    	 * Get the 'self' URL.
+    	 * The 'self' URL.
     	 * 
     	 */
         public String getSelf();

@@ -24,9 +24,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
+
 /**
  * Embeddable implementation of the AdqlQuery.QueryLimits interface.
  * @todo Check that the Hibernate annotations don't have any side effects when used as a POJO
+ * @todo combine BaseQueryLimits, AdqlQueryLimits and SimpleQueryLimits
  *
  */
 @Embeddable
@@ -35,7 +38,7 @@ import javax.persistence.FetchType;
     )
 public class AdqlQueryLimits
 extends BaseQueryLimits
-implements AdqlQuery.ModifiableLimits
+implements AdqlQuery.Limits
     {
     
     /**
@@ -50,13 +53,14 @@ implements AdqlQuery.ModifiableLimits
      * Public constructor.
      * 
      */
-    public AdqlQueryLimits(final AdqlQuery.Limits limits)
+    public AdqlQueryLimits(final AdqlQuery.Limits that)
         {
-        this(
-            ((limits != null) ? limits.rows()  : null), 
-            ((limits != null) ? limits.cells() : null), 
-            ((limits != null) ? limits.time()  : null) 
-            );
+        if (that != null)
+            {
+            this.rows = that.rows();
+            this.cell = that.cells();
+            this.time = that.time();
+            }
         }
 
     /**
@@ -65,9 +69,9 @@ implements AdqlQuery.ModifiableLimits
      */
     public AdqlQueryLimits(final Long rows, final Long cells, final Long time)
         {
-        this.ogsarows = rows  ;
-        this.ogsacell = cells ;
-        this.ogsatime = time  ;
+        this.rows = rows  ;
+        this.cell = cells ;
+        this.time = time  ;
         }
     
     /**
@@ -87,7 +91,7 @@ implements AdqlQuery.ModifiableLimits
         nullable = true,
         updatable = true
         )
-    private Long ogsarows;
+    private Long rows;
     
     @Basic(
         fetch = FetchType.EAGER
@@ -98,7 +102,7 @@ implements AdqlQuery.ModifiableLimits
         nullable = true,
         updatable = true
         )
-    private Long ogsacell;
+    private Long cell;
 
     @Basic(
         fetch = FetchType.EAGER
@@ -109,36 +113,60 @@ implements AdqlQuery.ModifiableLimits
         nullable = true,
         updatable = true
         )
-    private Long ogsatime;
+    private Long time;
 
     @Override
     public Long rows()
         {
-        return ogsarows;
+        return rows;
         }
     @Override
     public void rows(Long value)
         {
-        ogsarows = value;
+        rows = value;
         }
     @Override
     public Long cells()
         {
-        return ogsacell;
+        return cell;
         }
     @Override
     public void cells(Long value)
         {
-        ogsacell = value;
+        cell = value;
         }
     @Override
     public Long time()
         {
-        return ogsatime;
+        return time;
         }
     @Override
     public void time(Long value)
         {
-        ogsatime = value ;
+        time = value ;
+        }
+
+    /**
+     * Update this {@link Limits} with the non-null values from another {@link Limits}.
+     * @todo Better null/zero handling.
+     *
+     */
+    public void update(final AdqlQuery.Limits that)
+        {
+        if (that != null)
+            {
+            if (that.rows() != null)
+                {
+                this.rows = that.rows();
+                }
+            if (that.cells() != null)
+                {
+                this.cell = that.cells();
+                }
+            if (that.time() != null)
+                {
+                this.time = that.time();
+                }
+            }
         }
     }

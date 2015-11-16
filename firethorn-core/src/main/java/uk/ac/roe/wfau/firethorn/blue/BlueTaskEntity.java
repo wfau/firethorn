@@ -25,13 +25,17 @@ import java.util.concurrent.Future;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,19 +48,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
  * {@link BlueTask} implementation. 
@@ -91,7 +90,7 @@ implements BlueTask<TaskType>
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_JOBSTATUS_COL = "jobstatus";
+    protected static final String DB_TASK_STATUS_COL = "jobstatus";
 
     /**
      * Hibernate column mapping.
@@ -225,7 +224,7 @@ implements BlueTask<TaskType>
         @Async
         @Override
         @UpdateAtomicMethod
-        public Future<TaskState> future(final Updator updator)
+        public Future<TaskState> future(final Updator<?> updator)
             {
             log.debug("execute(Updator)");
             log.debug("  ident [{}]", updator.ident());
@@ -345,8 +344,17 @@ implements BlueTask<TaskType>
      * {@link Updator} base class.
      * 
      */
-    public abstract static class Updator<TaskType extends BlueTaskEntity<?>>
-    implements TaskRunner.Updator 
+    public abstract static class Creator<TaskType extends BlueTask<?>>
+    implements TaskRunner.Creator<TaskType>
+        {
+        }
+    
+    /**
+     * {@link Updator} base class.
+     * 
+     */
+    public abstract static class Updator<TaskType extends BlueTask<?>>
+    implements TaskRunner.Updator<TaskType>
         {
         /**
          * Our initial {@link BlueTask} entity.
@@ -397,11 +405,24 @@ implements BlueTask<TaskType>
      * @param owner 
      * 
      */
+    protected BlueTaskEntity(final Identity owner)
+        {
+        this(
+            owner,
+            null
+            );
+        }
+
+    /**
+     * Protected constructor.
+     * @param owner 
+     * 
+     */
     protected BlueTaskEntity(final Identity owner, final String name)
         {
         super(
     		owner,
-            name
+    		name
             );
         this.state = TaskState.EDITING;
         }
@@ -413,7 +434,7 @@ implements BlueTask<TaskType>
         EnumType.STRING
         )
     @Column(
-        name = DB_JOBSTATUS_COL,
+        name = DB_TASK_STATUS_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -588,11 +609,19 @@ implements BlueTask<TaskType>
                 	while (this.done(handle) == false)
                         {
                         try {
-                            log.debug("wait start [{}]", remaining());
-	                		this.count++;
-                            handle.wait(
-                        		remaining()
-                        		);
+                            this.count++;
+                            long time = remaining();
+                            if (time == Long.MAX_VALUE)
+                                {
+                                log.debug("wait start []");
+                                handle.wait();
+                                }
+                            else {
+                                log.debug("wait start [{}]", time);
+                                handle.wait(
+                                    time
+                                    );
+                                }
                             log.debug("wait done");
                             }
                         catch (Exception ouch)
@@ -623,7 +652,13 @@ implements BlueTask<TaskType>
 
         protected long remaining()
             {
-            return timeout() - elapsed();
+            if (timeout() == Long.MAX_VALUE)
+                {
+                return Long.MAX_VALUE ;
+                }
+            else {
+                return timeout() - elapsed();
+                }
             }
 
         protected boolean done(final BlueTask.Handle handle)
@@ -631,14 +666,20 @@ implements BlueTask<TaskType>
             log.debug("done()");
             log.debug("  elapsed [{}]", elapsed());
             log.debug("  timeout [{}]", timeout());
-            if (elapsed() >= timeout())
-            	{
-            	log.debug("done (elapsed >= timeout)");
-            	return true ;
-            	}
+            if (timeout() == Long.MAX_VALUE)
+                {
+                return false ;
+                }
             else {
-            	return false ;
-            	}
+                if (elapsed() >= timeout())
+                	{
+                	log.debug("done (elapsed >= timeout)");
+                	return true ;
+                	}
+                else {
+                	return false ;
+                	}
+                }
             }
         }
 
@@ -822,99 +863,105 @@ implements BlueTask<TaskType>
         final TaskState prev = this.state;
         log.debug("transition(TaskState)");
         log.debug("  ident [{}]", ident());
-        log.debug("  state [{}][{}]", prev.name(), next.name());
+        log.debug("  state [{}][{}]", prev.name(), (next != null) ? next.name() : null);
 
-        if (prev == next)
+        if (next == null)
             {
-            log.debug("No-op status change [{}]", next);
+            log.debug("Null TaskState, no change");
             }
-
-        else if (prev == TaskState.EDITING)
-            {
-            switch (next)
-                {
-                case READY :
-                    accept(next);
-                    break ;
-
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    accept(next);
-                    break ;
-
-                default :
-                    invalid(prev, next);
-                }
-            }
-        
-        else if (prev == TaskState.READY)
-            {
-            switch (next)
-                {
-                case EDITING:
-                    accept(next);
-                    break ;
-
-                case QUEUED:
-                    accept(next);
-                    break ;
-
-                case RUNNING:
-	                accept(next);
-	                break ;
-
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    accept(next);
-                    break ;
-    
-                default :
-                    invalid(prev, next);
-                }
-            }
-
-        else if (prev == TaskState.QUEUED)
-            {
-            switch (next)
-                {
-                case RUNNING:
-                    accept(next);
-                    break ;
-    
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    accept(next);
-                    break ;
-    
-                default :
-                    invalid(prev, next);
-                }
-            }
-
-        else if (prev == TaskState.RUNNING)
-            {
-            switch (next)
-                {
-                case COMPLETED:
-                    accept(next);
-                    break ;
-    
-                case CANCELLED:
-                case FAILED:
-                case ERROR:
-                    accept(next);
-                    break ;
-    
-                default :
-                    invalid(prev, next);
-                }
-            }
-
         else {
-            invalid(prev, next);
+            if (prev == next)
+                {
+                log.debug("No-op status change [{}]", next);
+                }
+    
+            else if (prev == TaskState.EDITING)
+                {
+                switch (next)
+                    {
+                    case READY :
+                        accept(next);
+                        break ;
+    
+                    case CANCELLED:
+                    case FAILED:
+                    case ERROR:
+                        accept(next);
+                        break ;
+    
+                    default :
+                        invalid(prev, next);
+                    }
+                }
+            
+            else if (prev == TaskState.READY)
+                {
+                switch (next)
+                    {
+                    case EDITING:
+                        accept(next);
+                        break ;
+    
+                    case QUEUED:
+                        accept(next);
+                        break ;
+    
+                    case RUNNING:
+    	                accept(next);
+    	                break ;
+    
+                    case CANCELLED:
+                    case FAILED:
+                    case ERROR:
+                        accept(next);
+                        break ;
+        
+                    default :
+                        invalid(prev, next);
+                    }
+                }
+    
+            else if (prev == TaskState.QUEUED)
+                {
+                switch (next)
+                    {
+                    case RUNNING:
+                        accept(next);
+                        break ;
+        
+                    case CANCELLED:
+                    case FAILED:
+                    case ERROR:
+                        accept(next);
+                        break ;
+        
+                    default :
+                        invalid(prev, next);
+                    }
+                }
+    
+            else if (prev == TaskState.RUNNING)
+                {
+                switch (next)
+                    {
+                    case COMPLETED:
+                        accept(next);
+                        break ;
+        
+                    case CANCELLED:
+                    case FAILED:
+                    case ERROR:
+                        accept(next);
+                        break ;
+        
+                    default :
+                        invalid(prev, next);
+                    }
+                }
+    
+            else {
+                invalid(prev, next);
+                }
             }
         }
 
@@ -922,7 +969,7 @@ implements BlueTask<TaskType>
      * Accept a valid state transition.
      * 
      */
-    private void accept(final TaskState next)
+    protected void accept(final TaskState next)
         {
         log.debug("accept(TaskState)");
         log.debug("  ident [{}]", ident());
@@ -937,8 +984,8 @@ implements BlueTask<TaskType>
     private void invalid(final TaskState prev, final TaskState next)
     throws InvalidStateTransitionException
         {
-        this.state = TaskState.ERROR;
-        // TODO Do we notify our listners ?
+        // this.state = TaskState.ERROR;
+        // TODO Should we throw an Exception, or just ignore the transition ?
         throw new InvalidStateTransitionException(
             this,
             prev,
@@ -1187,7 +1234,7 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
         services().runner().thread(
-            new Updator<BlueTaskEntity<?>>(this)
+            new Updator<BlueTask<?>>(this)
                 {
                 @Override
                 public TaskState execute()
@@ -1234,7 +1281,7 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
         services().runner().thread(
-            new Updator<BlueTaskEntity<?>>(this)
+            new Updator<BlueTask<?>>(this)
                 {
                 @Override
                 public TaskState execute()
@@ -1299,7 +1346,7 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", state().name(), next.name());
         services().runner().thread(
-            new Updator<BlueTaskEntity<?>>(this)
+            new Updator<BlueTask<?>>(this)
                 {
                 @Override
                 public TaskState execute()
@@ -1354,4 +1401,36 @@ implements BlueTask<TaskType>
     		);
         }
 
+    /**
+     * Hibernate embedded map of Strings.
+     * http://stackoverflow.com/questions/3393649/storing-a-mapstring-string-using-jpa
+     *
+     */
+    @ElementCollection(
+        fetch = FetchType.EAGER
+        )
+    @MapKeyColumn(
+        name="name"
+        )
+    @Column(
+        name="value"
+        )
+    @CollectionTable(
+        name=DB_TABLE_PREFIX + "BlueTaskParam",
+        joinColumns= @JoinColumn(name="task")
+        )
+    private Map<String, String> params = new HashMap<String, String>();
+    
+    @Override
+    public BlueTask.Param param()
+        {
+        return new BlueTask.Param()
+            {
+            @Override
+            public Map<String, String> map()
+                {
+                return BlueTaskEntity.this.params;
+                }
+            };
+        }
     }

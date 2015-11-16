@@ -23,7 +23,9 @@ import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -271,7 +273,14 @@ public class BlueQueryBean
          * The result row count.
          * 
          */
-        public Long rowcount();
+        public Long getCount();
+
+        /**
+         * The {@link ResultState} state
+         *
+         */
+        public ResultState getState();
+        
         }
 
     /**
@@ -305,9 +314,14 @@ public class BlueQueryBean
                     }
                 }
             @Override
-            public Long rowcount()
+            public Long getCount()
                 {
                 return entity().results().rowcount();
+                }
+            @Override
+            public ResultState getState()
+                {
+                return entity().results().state();
                 }
             };
         }
@@ -377,6 +391,75 @@ public class BlueQueryBean
                         this.iter.remove();
                         }
                     };
+                }
+            };
+        }
+
+    /**
+     * An {@link AdqlQuery.Limits} bean.
+     *
+     */
+    public interface LimitsBean
+        {
+        public Long getRows();
+        public Long getCells();
+        public Long getTime();
+        }
+
+    /**
+     * The query {@link AdqlQuery.Limits}.
+     *
+     */
+    public LimitsBean getLimits()
+        {
+        return new LimitsBean()
+            {
+            public Long getRows()
+                {
+                return entity().limits().rows(); 
+                }
+            public Long getCells()
+                {
+                return entity().limits().cells(); 
+                }
+            public Long getTime()
+                {
+                return entity().limits().time(); 
+                }
+            };
+        }
+
+    
+    /**
+     * An {@link AdqlQuery.Delays} bean.
+     *
+     */
+    public interface DelaysBean
+        {
+        public Integer getFirst();
+        public Integer getEvery();
+        public Integer getLast();
+        }
+
+    /**
+     * The query {@link AdqlQuery.Delays}.
+     *
+     */
+    public DelaysBean getDelays()
+        {
+        return new DelaysBean()
+            {
+            public Integer getFirst()
+                {
+                return entity().delays().first(); 
+                }
+            public Integer getEvery()
+                {
+                return entity().delays().every(); 
+                }
+            public Integer getLast()
+                {
+                return entity().delays().last(); 
                 }
             };
         }

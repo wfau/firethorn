@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.blue;
 
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.hibernate.Session;
@@ -42,7 +43,7 @@ extends NamedEntity
      * 
      */
     public static interface EntityServices<TaskType extends BlueTask<?>>
-    extends NamedEntity.EntityServices<TaskType>
+    extends Entity.EntityServices<TaskType>
         {
         /**
          * Our {@link BlueTask.EntityFactory} instance.
@@ -70,10 +71,10 @@ extends NamedEntity
     public static interface TaskRunner<TaskType extends BlueTask<?>>
         {
         /**
-         * Public interface for a {@link BlueTask} update.
+         * Public interface for a {@link BlueTask} updator.
          *
          */
-        public interface Updator
+        public interface Updator<TaskType extends BlueTask<?>>
             {
             /**
              * The {@link BlueTask} {@link Identifier}.
@@ -92,16 +93,16 @@ extends NamedEntity
          * Execute an {@link TaskRunner.Updator} in a new {@link Thread}.
          * 
          */
-        public TaskState thread(final Updator updator);
+        public TaskState thread(final Updator<?> updator);
 
         /**
          * Execute an {@link TaskRunner.Updator} in a {@link Future}.
          * 
          */
-        public Future<TaskState> future(final Updator updator);
+        public Future<TaskState> future(final Updator<?> updator);
         
         /**
-         * Public interface for a {@link BlueTask} creation.
+         * Public interface for a {@link BlueTask} creator.
          *
          */
         public interface Creator<TaskType extends BlueTask<?>>
@@ -163,7 +164,7 @@ extends NamedEntity
         }
 
     /**
-     * The primary task status.
+     * The primary {@link BlueTask} status.
      *
      */
     public enum TaskState
@@ -184,9 +185,10 @@ extends NamedEntity
             }
 
         private boolean active ;
+
         /**
-         * Check if this is an active {@link TaskState}. 
-         * @return true if this is an active {@link TaskState}.
+         * Check if this is an active state. 
+         * @return true if this is an active state.
          * 
          */
         public boolean active()
@@ -226,6 +228,23 @@ extends NamedEntity
     				return prev;
         		}
     		}
+        
+        /**
+         * Null friendly String parser.
+         * 
+         */
+        public static TaskState parse(final String string)
+            {
+            if (string == null)
+                {
+                return null ;
+                }
+            else {
+                return TaskState.valueOf(
+                    string
+                    );
+                }
+            }
         };
 
     /**
@@ -354,5 +373,25 @@ extends NamedEntity
      *
      */
     public DateTime completed();
+
+    /**
+     *  Public interface for the task parameters.
+     *  
+     */
+    public interface Param
+        {
+        /**
+         * A {@link Map} of task parameters.
+         * 
+         */
+        public Map<String, String> map();
+
+        }
+
+    /**
+     *  Access to the task parameters.
+     *  
+     */
+    public Param param();
     
     }

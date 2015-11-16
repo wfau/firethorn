@@ -9,6 +9,7 @@ import com.google.common.io.BaseEncoding;
 
 /**
  * Unique name factory, based on the {@link Entity} uid values.
+ * @todo make this into the new NameFactory interface, with different implementations providing different prefixes per class.
  *
  */
 public class UniqueNamefactory extends AbstractComponent

@@ -80,14 +80,17 @@ public class CallbackHandler
 	public void running()
 		{
 		callback(
-			"RUNNING"
+			"RUNNING",
+			"PARTIAL",
+			null
 			);
 		}
 
 	public void running(final Long count)
 		{
 		callback(
-			"RUNNING",
+            "RUNNING",
+            "PARTIAL",
 			count
 			);
 		}
@@ -95,45 +98,81 @@ public class CallbackHandler
 	public void completed()
 		{
 		callback(
-			"COMPLETED"
+            "COMPLETED",
+            "COMPLETED",
+            null
 			);
 		}
 
 	public void completed(final Long count)
 		{
 		callback(
+            "COMPLETED",
 			"COMPLETED",
 			count
 			);
 		}
 
+   public void truncated()
+        {
+        callback(
+            "COMPLETED",
+            "TRUNCATED",
+            null
+            );
+        }
+
+   public void truncated(final Long count)
+       {
+       callback(
+           "COMPLETED",
+           "TRUNCATED",
+           count
+           );
+       }
+   
 	public void failed()
 		{
 		callback(
-			"FAILED"
+            "FAILED",
+            "PARTIAL",
+            null
 			);
 		}
 
 	public void failed(final Long count)
 		{
 		callback(
-			"FAILED",
+            "FAILED",
+            "PARTIAL",
 			count
 			);
 		}
 
-	protected void callback(final String status)
+	protected void callback(final String taskState)
 		{
 		callback(
-			status,
+			taskState,
+			null,
 			null
 			);
 		}
-	protected void callback(final String status, final Long count)
+
+	protected void callback(final String taskState, final Long count)
+        {
+        callback(
+            taskState,
+            null,
+            count
+            );
+        }
+	
+	protected void callback(final String taskState, final String resultState, final Long count)
 		{
         logger.debug("callback(String, Long)");
-        logger.debug("  status [" + status + "]");
-        logger.debug("  count  [" + count + "]");
+        logger.debug("  task    [" + taskState + "]");
+        logger.debug("  results [" + resultState + "]");
+        logger.debug("  count   [" + count + "]");
         
 		if (context == null)
 			{
@@ -169,21 +208,27 @@ public class CallbackHandler
 								return context.ident();
 								}
 							@Override
-							public String getStatus()
+							public String getState()
 								{
-								return status;
+								return taskState;
 								}
 							@Override
-							public Long getCount()
+							public Long getResultCount()
 								{
 								return count;
 								}
+                            @Override
+                            public String getResultState()
+                                {
+                                return resultState;
+                                }
 							},
 						ResponseBean.class
 						);
 		        	logger.debug("Response bean");
 		        	logger.debug("  Ident [{}]", bean.getIdent());
-		        	logger.debug("  Name  [{}]", bean.getName());
+                    logger.debug("  Name  [{}]", bean.getName());
+                    logger.debug("  State [{}]", bean.getState());
 		        	logger.debug("  Self  [{}]", bean.getSelf());
 	        		}
 		        catch (Exception ouch)
@@ -279,7 +324,7 @@ public class CallbackHandler
 
     	private String status;
 		@Override
-        public String getStatus()
+        public String getState()
             {
             return this.status;
             }

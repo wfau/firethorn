@@ -20,11 +20,7 @@ package uk.ac.roe.wfau.firethorn.blue;
 import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Timings;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -58,44 +54,34 @@ extends BlueTask<BlueQuery>
     public static interface EntityServices
     extends BlueTask.EntityServices<BlueQuery>
         {
+        @Override
+        public BlueQuery.LinkFactory links();
+
         /**
          * Our {@link BlueQuery.EntityFactory} instance.
          *
          */
         public BlueQuery.EntityFactory entities();
         
-        @Override
-        public BlueQuery.LinkFactory links();
+        /**
+         * Our {@link AdqlQuery.Limits.Factory } instance.
+         * 
+         */
+        public AdqlQuery.Limits.Factory limits();
+
+        /**
+         * Our {@link AdqlQuery.Delays.Factory } instance.
+         * 
+         */
+        public AdqlQuery.Delays.Factory delays();
+
         }
     
-    /**
-     * Services interface.
-     * 
-    public static interface Services
-    extends BlueTask.Services<BlueQuery>
-        {
-        @Override
-        public BlueQuery.IdentFactory idents();
-
-        @Override
-        public BlueQuery.NameFactory names();
-
-        @Override
-        public BlueQuery.LinkFactory links();
-
-        @Override
-        public BlueQuery.EntityFactory entities();
-
-        @Override
-        public BlueQuery.TaskRunner runner(); 
-
-        }
-     */
-
     /**
      * {@link NamedEntity.NameFactory} interface.
      *
      */
+    @Deprecated
     public static interface NameFactory
     extends NamedEntity.NameFactory<BlueQuery>
         {
@@ -174,24 +160,52 @@ extends BlueTask<BlueQuery>
          */
 
         /**
-         * Create a new {@link BlueQuery} with an ADQL string, state and wait limit.
+         * Create a new {@link BlueQuery} with an ADQL string, {@link BlueQuery.TaskState} and a wait timeout.
          *
          */
-        public BlueQuery create(final AdqlResource source, final String input, final TaskState next, final Long wait)
+        public BlueQuery create(final AdqlResource source, final String input, final BlueTask.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException;
 
         /**
-         * Update a new {@link BlueQuery} with an ADQL string and state.
+         * Create a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, {@link BlueQuery.TaskState}, and a wait timeout.
+         *
+         */
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final BlueTask.TaskState next, final Long wait)
+        throws InvalidRequestException, InternalServerErrorException;
+
+        /**
+         * Create a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, {@link AdqlQuery.Delays}, {@link BlueQuery.TaskState}, and a wait timeout.
+         *
+         */
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final BlueTask.TaskState next, final Long wait)
+        throws InvalidRequestException, InternalServerErrorException;
+        
+        /**
+         * Update a {@link BlueQuery} with an ADQL string and state.
          *
         public BlueQuery update(final Identifier ident, final String input, final TaskState next)
         throws InvalidStateTransitionException;
          */
 
         /**
-         * Update a new {@link BlueQuery} with an ADQL string, state and wait limit.
+         * Update a {@link BlueQuery} with an ADQL string, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
          *
          */
-        public BlueQuery update(final Identifier ident, final String input, final TaskState prev, final TaskState next, Long wait)
+        public BlueQuery update(final Identifier ident, final String input, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
+        throws IdentifierNotFoundException, InvalidStateRequestException;
+
+        /**
+         * Update a {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         *
+         */
+        public BlueQuery update(final Identifier ident, final String input, final AdqlQuery.Limits limits, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
+        throws IdentifierNotFoundException, InvalidStateRequestException;
+
+        /**
+         * Update a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, {@link AdqlQuery.Delays}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         *
+         */
+        public BlueQuery update(final Identifier ident, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
         throws IdentifierNotFoundException, InvalidStateRequestException;
 
         /**
@@ -228,14 +242,12 @@ extends BlueTask<BlueQuery>
             {}
 
         public static interface Updator
-        extends BlueTask.TaskRunner.Updator
+        extends BlueTask.TaskRunner.Updator<BlueQuery>
             {}
         }
 
     /**
-     * Public interface for a callback event,
-     * generated by an external worker service
-     * executing a task. 
+     * Public interface for a callback event.
      *  
      */
     public static interface Callback
@@ -244,20 +256,38 @@ extends BlueTask<BlueQuery>
          * The next {@link TaskState}.
          *
          */
-        public TaskState next();
+        public TaskState state();
         
         /**
-         * The row count processed so far.
-         *
+         * The result status.
+         * 
          */
-        public Long rowcount();
+        public interface Results
+            {
+            /**
+             * The row count processed so far.
+             *
+             */
+            public Long count();
+    
+            /**
+             * The results state.
+             * 
+             */
+            public ResultState state();
+
+            }
+
+        /**
+         * The result status.
+         * 
+         */
+        public Results results();
 
         }
     
     /**
-     * Handle a {@link Callback} message, 
-     * called by an external worker service
-     * executing the {@link BlueQuery}. 
+     * Handle a {@link Callback} message. 
      * 
      */
     public void callback(final BlueQuery.Callback message)
@@ -286,6 +316,20 @@ extends BlueTask<BlueQuery>
      * 
      */
     public void update(final String input)
+    throws InvalidStateRequestException;
+
+    /**
+     * Update our input query and {@link AdqlQuery.Limits}.
+     * 
+     */
+    public void update(final String input, final AdqlQuery.Limits limits)
+    throws InvalidStateRequestException;
+
+    /**
+     * Update our input query and {@link AdqlQuery.Limits} and {@link AdqlQuery.Delays}.
+     * 
+     */
+    public void update(final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays)
     throws InvalidStateRequestException;
 
     /**
@@ -319,8 +363,56 @@ extends BlueTask<BlueQuery>
      * The OGSA-DAI query mode.
      *
      */
-    public Mode mode();
+    public AdqlQuery.Mode mode();
 
+    /**
+     * The query results status.
+     * 
+     */
+    public enum ResultState
+    implements Comparable<ResultState>
+        {
+        NONE(true),
+        EMPTY(true),
+        PARTIAL(true),
+        COMPLETED(false),
+        TRUNCATED(false);
+
+        private ResultState(boolean active)
+            {
+            this.active = active;
+            }
+
+        private boolean active ;
+
+        /**
+         * Check if this is an active state. 
+         * @return true if this is an active state.
+         * 
+         */
+        public boolean active()
+            {
+            return this.active;
+            }
+        
+        /**
+         * Null friendly String parser.
+         * 
+         */
+        public static ResultState parse(final String string)
+            {
+            if (string == null)
+                {
+                return null ;
+                }
+            else {
+                return ResultState.valueOf(
+                    string
+                    );
+                }
+            }
+        }
+    
     /**
      * Our results.
      *
@@ -344,6 +436,13 @@ extends BlueTask<BlueQuery>
          * 
          */
         public Long rowcount();
+        
+        /**
+         * The results status.
+         * 
+         */
+        public ResultState state();
+
         }
 
     /**
@@ -353,16 +452,16 @@ extends BlueTask<BlueQuery>
     public Results results();
 
     /**
-     * The {@link SelectField}s used by the query.
+     * The {@link AdqlQuery.SelectField}s used by the query.
      *
      */
     public interface Fields
         {
-        public Iterable<SelectField> select();
+        public Iterable<AdqlQuery.SelectField> select();
         }
 
     /**
-     * The {@link SelectField}s used by the query.
+     * The {@link AdqlQuery.SelectField}s used by the query.
      *
      */
     public Fields fields();
@@ -435,18 +534,16 @@ extends BlueTask<BlueQuery>
      * The query limits.
      * 
      */
-    public Limits limits();
-
-    /**
-     * Set the query limits using a combination of the current values and the values from another Limits object.
-     * @param limits The Limits object to combine.
-     * @see combine(Limits)
-     * 
-     */
-    public void limits(final Limits limits);
+    public AdqlQuery.Limits limits();
 
     /**
      * Set the query limits.
+     * 
+     */
+    public void limits(final AdqlQuery.Limits limits);
+
+    /**
+     * Set query limits to specific values.
      * @param rows  The rows value.
      * @param cells The cells value.
      * @param time  The time value.
@@ -458,13 +555,13 @@ extends BlueTask<BlueQuery>
      * The query delays.
      * 
      */
-    public Delays delays();
+    public AdqlQuery.Delays delays();
 
     /**
      * The query timing statistics.
      * 
      */
-    public Timings timings();
+    public AdqlQuery.Timings timings();
 
     /**
      * Event notification handle.
@@ -474,4 +571,11 @@ extends BlueTask<BlueQuery>
     extends BlueTask.Handle
         {
         }
+
+    /**
+     * Our {@link BlueQuery.Handle}.
+     *
+    public Handle handle();
+     */
+
     }

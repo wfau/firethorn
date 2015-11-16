@@ -60,7 +60,7 @@ newversion=1.13.18
         #
         # Set the new database name.
         dbuser=SHEP
-        dbtype=LIVE
+        dbtype=DEV
         dbdate=$(date +%Y%m%d)
 
         metadataname="${dbtype:?}FirethornMetadata${dbuser:?}${dbdate:?}"

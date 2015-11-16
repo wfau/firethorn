@@ -118,7 +118,7 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
      * <br/>Request path : [{@value #CREATE_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The parent {@link AdqlResource} identifier in the request path.
-     * @param input The {@link BlueQuery} input, [{@value BlueQueryController#INPUT_PARAM_NAME}].
+     * @param input The {@link BlueQuery} input, [{@value BlueQueryController#QUERY_INPUT_PARAM}].
      * @return A new {@link BlueQuery} wrapped in an {@link BlueQueryBean}.
      * @throws InvalidStateTransitionException 
      * @throws IdentifierFormatException 
@@ -130,18 +130,33 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
     public ResponseEntity<BlueQueryBean> create(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
-        @RequestParam(value=BlueQueryController.INPUT_PARAM_NAME, required=false)
+        @RequestParam(value=BlueQueryController.QUERY_INPUT_PARAM, required=false)
         final String input,
-        @RequestParam(value=BlueQueryController.NEXT_STATUS_PARAM_NAME, required=false)
+        @RequestParam(value=BlueQueryController.NEXT_STATUS_PARAM, required=false)
         final TaskState next,
-        @RequestParam(value=BlueQueryController.WAIT_PARAM_NAME, required=false)
-        final Long wait
+        @RequestParam(value=BlueQueryController.REQUEST_WAIT_PARAM, required=false)
+        final Long wait,
+
+        @RequestParam(value=BlueQueryController.QUERY_LIMT_CELLS, required=false)
+        final Long cells,
+        @RequestParam(value=BlueQueryController.QUERY_LIMT_ROWS, required=false)
+        final Long rows,
+        @RequestParam(value=BlueQueryController.QUERY_LIMT_TIME, required=false)
+        final Long time,
+
+        @RequestParam(value=BlueQueryController.QUERY_DELAY_FIRST, required=false)
+        final Integer first,
+        @RequestParam(value=BlueQueryController.QUERY_DELAY_EVERY, required=false)
+        final Integer every,
+        @RequestParam(value=BlueQueryController.QUERY_DELAY_LAST, required=false)
+        final Integer last
+
         ) throws
-            IdentifierNotFoundException,
-            IdentifierFormatException,
-            InvalidRequestException,
-            InternalServerErrorException
-            {
+        IdentifierNotFoundException,
+        IdentifierFormatException,
+        InvalidRequestException,
+        InternalServerErrorException
+        {
         log.debug("create(String, String)");
         log.debug("  ident [{}]", ident);
         log.debug("  input [{}]", input);
@@ -154,6 +169,16 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
                     )
                 ).blues().create(
                     input,
+                    factories().blues().limits().create(
+                        rows,
+                        cells,
+                        time
+                        ),
+                    factories().blues().delays().create(
+                        first,
+                        every,
+                        last
+                        ),
                     next,
                     wait
                     )

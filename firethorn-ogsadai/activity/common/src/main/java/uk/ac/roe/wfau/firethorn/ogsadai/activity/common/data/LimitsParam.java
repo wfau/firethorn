@@ -58,7 +58,7 @@ extends TuplesParam
     public static final Long DEFAULT_CELLS = new Long(0);
     
     /**
-     * Activity input name for the time limit.
+     * Activity input name for the time limit, in milliseconds.
      * 
      */
     public static final String TIME_LIMIT = "limit.time"  ;

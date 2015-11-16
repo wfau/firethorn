@@ -123,6 +123,21 @@
     popd
 
 # -----------------------------------------------------
+# Build our tester container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:1.1 \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
 # Start our docker-proxy container.
 #[user@desktop]
 
@@ -348,21 +363,6 @@ EOF
 #   docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
 
 # -----------------------------------------------------
-# Build our tester container.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source "bin/util.sh"
-
-        docker build \
-            --tag firethorn/tester:1.1 \
-            integration/tester
-
-    popd
-
-# -----------------------------------------------------
 # Start our test container.
 #[user@desktop]
 
@@ -466,14 +466,6 @@ EOF
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
 
-        queryself=$(
-            cat blue-query.json | self
-            )
-
-        querynode=$(
-            cat blue-query.json | self | node
-            )
-
         queryident=$(
             cat blue-query.json | self | ident
             )
@@ -548,14 +540,6 @@ EOF
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
 
-        queryself=$(
-            cat blue-query.json | self
-            )
-
-        querynode=$(
-            cat blue-query.json | self | node
-            )
-
         queryident=$(
             cat blue-query.json | self | ident
             )
@@ -600,7 +584,6 @@ EOF
             --data "blue.query.wait=60000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json
-
 
         queryself=$(
             cat blue-query.json | self

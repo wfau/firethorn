@@ -3,7 +3,6 @@
  */
 package uk.ac.roe.wfau.firethorn.entity;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 
 /**

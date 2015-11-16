@@ -24,7 +24,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 
+import org.springframework.stereotype.Component;
+
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
 
 /**
  * Implementation of the query delays.
@@ -39,12 +42,50 @@ public class AdqlQueryDelays
 implements AdqlQuery.Delays
     {
     /**
+     * Value used to indicate no limit, {@value}.
+     * 
+     */
+    protected static final Long NO_VALUE = null;
+
+    /**
+     * Factory implementation.
+     * 
+     */
+    @Component
+    public static class Factory
+    implements AdqlQuery.Delays.Factory
+        {
+        @Override
+        public AdqlQuery.Delays create(final Integer first, final Integer every, final Integer last)
+            {
+            return new AdqlQueryDelays(
+                first,
+                every,
+                last
+                );
+            }
+        }
+    
+    /**
      * Public constructor.
      * 
      */
     public AdqlQueryDelays()
         {
-        log.debug("AdqlQueryDelays()");
+        }
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public AdqlQueryDelays(final AdqlQuery.Delays that)
+        {
+        if (that != null)
+            {
+            this.first = that.first();
+            this.every = that.every();
+            this.last  = that.last();
+            }
         }
 
     /**
@@ -54,9 +95,12 @@ implements AdqlQuery.Delays
     protected AdqlQueryDelays(final Integer first, final Integer every, final Integer last)
         {
         log.debug("AdqlQueryDelays(Integer, Integer, Integer)");
-        this.ogsafirst = first ;
-        this.ogsaevery = every ;
-        this.ogsalast  = last  ;
+        log.debug("  first [{}]", first);
+        log.debug("  every [{}]", every);
+        log.debug("  last  [{}]", last);
+        this.first = first ;
+        this.every = every ;
+        this.last  = last  ;
         }
     
     /**
@@ -64,8 +108,8 @@ implements AdqlQuery.Delays
      *
      */
     protected static final String DB_OGSA_DELAY_FIRST_COL = "ogsadelayfirst";
-    protected static final String DB_OGSA_DELAY_LAST_COL  = "ogsadelaylast";
     protected static final String DB_OGSA_DELAY_EVERY_COL = "ogsadelayevery";
+    protected static final String DB_OGSA_DELAY_LAST_COL  = "ogsadelaylast";
 
     @Basic(
         fetch = FetchType.EAGER
@@ -76,17 +120,39 @@ implements AdqlQuery.Delays
         nullable = true,
         updatable = true
         )
-    private Integer ogsafirst;
+    private Integer first;
 
     @Override
     public Integer first()
         {
-        return ogsafirst;
+        return first;
         }
     @Override
-    public void first(Integer value)
+    public void first(final Integer value)
         {
-        ogsafirst = value;
+        first = value;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_OGSA_DELAY_EVERY_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Integer every;
+
+    @Override
+    public Integer every()
+        {
+        return every;
+        }
+    @Override
+    public void every(final Integer value)
+        {
+        every = value ;
         }
 
     @Basic(
@@ -98,38 +164,39 @@ implements AdqlQuery.Delays
         nullable = true,
         updatable = true
         )
-    private Integer ogsalast;
+    private Integer last;
     
     @Override
     public Integer last()
         {
-        return ogsalast;
+        return last;
         }
     @Override
-    public void last(Integer value)
+    public void last(final Integer value)
         {
-        ogsalast = value;
+        last = value;
         }
-    
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_OGSA_DELAY_EVERY_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private Integer ogsaevery;
 
-    @Override
-    public Integer every()
+    /**
+     * Update this {@link Delays} with the non-null values from another {@link Delays}.
+     *
+     */
+    public void update(final Delays that)
         {
-        return ogsaevery;
-        }
-    @Override
-    public void every(Integer value)
-        {
-        ogsaevery = value ;
+        if (that != null)
+            {
+            if (that.first() != null)
+                {
+                this.first = that.first();
+                }
+            if (that.every() != null)
+                {
+                this.every = that.every();
+                }
+            if (that.last() != null)
+                {
+                this.last= that.last();
+                }
+            }
         }
     }

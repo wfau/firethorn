@@ -1,0 +1,389 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Get our branch and version number.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        branch=$(hg branch)
+
+        source "bin/util.sh"
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Stop and remove our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    docker stop "${firename:?}"
+    docker rm   "${firename:?}"
+
+    docker stop "${ogsaname:?}"
+    docker rm   "${ogsaname:?}"
+
+# -----------------------------------------------------
+# Build our source code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[root@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    docker run \
+        --detach \
+        --publish 8081:8080 \
+        --name "${ogsaname:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metalink:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+#firethorn.limits.time.default=60000
+#firethorn.limits.time.absolute=600000
+
+#firethorn.limits.rows.default=1000
+#firethorn.limits.rows.absolute=1000000
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+
+    properties=${HOME:?}/firethorn.properties
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${firename:?}" \
+        --link "${ogsaname:?}:${ogsalink:?}" \
+        --link "${metaname:?}:${metalink:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume "${properties:?}:/etc/firethorn.properties" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Start our test container.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/tester:1.1" \
+        bash
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | bin/pp | tee system-info.json
+
+# -----------------------------------------------------
+# Load the ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+# -----------------------------------------------------
+# Create our workspace
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh" 'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
+
+# -----------------------------------------------------
+# Run a BlueQuery
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+# -----------------------------------------------------
+# Run a BlueQuery with a row limit
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.limit.rows=100" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+# -----------------------------------------------------
+# Run a BlueQuery with a time limit and a delay
+#[root@tester]
+
+        #
+        # Create BlueQuery with a valid input and wait (60s) for completion.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.delay.first=100" \
+            --data "blue.query.delay.every=200" \
+            --data "blue.query.delay.last=300" \
+            --data "blue.query.limit.time=1000" \
+            --data "blue.query.limit.rows=2000" \
+            --data "blue.query.limit.cells=3000" \
+            --data "blue.query.wait=60000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+# -----------------------------------------------------
+# Edit a BlueQuery
+#[root@tester]
+
+        #
+        # Create an empty BlueQuery.
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+        queryident=$(
+            cat blue-query.json | self | ident
+            )
+
+        #
+        # Update the query, setting the limits
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.time=1000" \
+            --data "blue.query.limit.rows=2000" \
+            --data "blue.query.limit.cells=3000" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update a limit
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.time=5000" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update a limit
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.rows=6000" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update a limit
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.cells=7000" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update the delays
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.first=100" \
+            --data "blue.query.delay.every=200" \
+            --data "blue.query.delay.last=300" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update a delay
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.first=10" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.every=20" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.last=30" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update the status (no effect)
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.next.status=READY" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Update the query (statue => READY)
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 500 ra, dec FROM atlas.atlasSource" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+        #
+        # Set a delay to zero
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.delay.first=0" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+
+        #
+        # Set a limit to zero ** fails **
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.limit.cells=0" \
+            "${endpointurl:?}/blue/query/${queryident:?}" \
+            | bin/pp
+
+

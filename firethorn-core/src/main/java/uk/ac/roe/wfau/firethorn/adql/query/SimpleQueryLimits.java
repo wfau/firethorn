@@ -20,9 +20,12 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
+
 
 /**
  * Simple implementation of the AdqlQuery.QueryLimits interface.
+ * @todo combine BaseQueryLimits, AdqlQueryLimits and SimpleQueryLimits
  *
  */
 public class SimpleQueryLimits
@@ -40,61 +43,67 @@ implements AdqlQuery.Limits
         /*
          * @Value properties with defaults.
          * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * http://stackoverflow.com/a/17470732
          * Property : firethorn.limits.rows.default
-         * Default  : 0
+         * Default  : null
          * 
          */
-        @Value("${firethorn.limits.rows.default:0}")
+        @Value("${firethorn.limits.rows.default:#{null}}")
         private Long defaultrows;
 
         /*
          * @Value properties with defaults.
          * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * http://stackoverflow.com/a/17470732
          * Property : firethorn.limits.rows.absolute
-         * Default  : 0
+         * Default  : null
          * 
          */
-        @Value("${firethorn.limits.rows.absolute:0}")
+        @Value("${firethorn.limits.rows.absolute:#{null}}")
         private Long absoluterows;
 
         /*
          * @Value properties with defaults.
          * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * http://stackoverflow.com/a/17470732
          * Property : firethorn.limits.cells.default
-         * Default  : 0
+         * Default  : null
          * 
          */
-        @Value("${firethorn.limits.cells.default:0}")
+        @Value("${firethorn.limits.cells.default:#{null}}")
         private Long defaultcells;
 
         /*
          * @Value properties with defaults.
          * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * http://stackoverflow.com/a/17470732
          * Property : firethorn.limits.cells.absolute
-         * Default  : 0
+         * Default  : null
          * 
          */
-        @Value("${firethorn.limits.cells.absolute:0}")
+        @Value("${firethorn.limits.cells.absolute:#{null}}")
         private Long absolutecells;
 
         /*
          * @Value properties with defaults.
          * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * http://stackoverflow.com/a/17470732
          * Property : firethorn.limits.time.default
-         * Default  : 0
+         * Default  : null
          * 
          */
-        @Value("${firethorn.limits.time.default:0}")
+        @Value("${firethorn.limits.time.default:#{null}}")
         private Long defaulttime;
 
         /*
          * @Value properties with defaults.
          * http://forum.spring.io/forum/spring-projects/container/78556-default-values-for-configuration-with-value
+         * http://stackoverflow.com/a/17470732
          * Property : firethorn.limits.time.absolute
-         * Default  : 0
+         * Default  : null
          * 
          */
-        @Value("${firethorn.limits.time.absolute:0}")
+        @Value("${firethorn.limits.time.absolute:#{null}}")
         private Long absolutetime;
 
         private AdqlQuery.Limits defaults = new BaseQueryLimits()
@@ -179,6 +188,22 @@ implements AdqlQuery.Limits
                     ),
                 absolutes
                 );
+            }
+
+        @Override
+        public Limits create(final Long rows, final Long cells, final Long time)
+            {
+            return new SimpleQueryLimits(
+                rows,
+                cells,
+                time
+                );
+            }
+
+        @Override
+        public Limits validate(final Limits that) throws ValidationException
+            {
+            return that;
             }
         }
     
