@@ -35,7 +35,11 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 {
                 %>
             <column>
-                <name><%= column.name() %></name>
+           		<% if (column.name().equals("size")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else { %>
+					 <name><%= column.name() %></name>
+				<% } %>
                 <%
                 if (column.text() != null)
                     {
