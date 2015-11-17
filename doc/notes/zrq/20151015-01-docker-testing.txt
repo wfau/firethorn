@@ -55,6 +55,19 @@
 
     popd
 
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Mercurial repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg status
+        hg commit -m "...."
+        hg push
+
+    popd
+
 # -----------------------------------------
 # Create a new VM
 #[user@desktop]
@@ -82,12 +95,13 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
+        source bin/util.sh
+
     ssh "${vmname:?}" "cat > \"\${HOME:?}/test.properties\" << EOF
 branch=$(hg branch)
 version=$(getversion)
 EOF
 "
-
     popd
 
 # -----------------------------------------
