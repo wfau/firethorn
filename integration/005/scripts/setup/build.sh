@@ -90,7 +90,7 @@ EOF
             echo "# ------"
             echo "# Building Builder image"
             docker build \
-                --tag firethorn/builder:1.1 \
+                --tag firethorn/builder:1.2 \
                 docker/builder
         fi
 
