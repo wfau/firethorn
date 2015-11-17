@@ -43,13 +43,25 @@ EOF
     popd
 
 # -----------------------------------------------------
+# Define our docker image function.
+#[root@builder]
+
+    dockerimage()
+        {
+        local group=${1:?}
+        local image=${2:?}
+        local version=${3:?}
+        docker inspect --type image --format {{.Id}} "${group}/${image}:${version}" 2> /dev/null    
+        }
+
+# -----------------------------------------------------
 # Build our toolkit containers.
 #[root@builder]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        if [ $(docker images | grep -c '^firethorn/fedora') -eq 0 ]
+        if [ -z $(dockerimage firethorn fedora 21.1) ]
         then
             echo "# ------"
             echo "# Building Fedora image"
@@ -58,7 +70,7 @@ EOF
                 docker/fedora/21
         fi
 
-        if [ $(docker images | grep -c '^firethorn/java') -eq 0 ]
+        if [ -z $(dockerimage firethorn java 8.1) ]
         then
             echo "# ------"
             echo "# Building Java image"
@@ -67,7 +79,7 @@ EOF
                 docker/java/8
         fi
 
-        if [ $(docker images | grep -c '^firethorn/tomcat') -eq 0 ]
+        if [ -z $(dockerimage firethorn tomcat 8.1) ]
         then
             echo "# ------"
             echo "# Building Tomcat image"
@@ -76,7 +88,7 @@ EOF
                 docker/tomcat/8
         fi
 
-        if [ $(docker images | grep -c '^firethorn/postgres') -eq 0 ]
+        if [ -z $(dockerimage firethorn postgres 9) ]
         then
             echo "# ------"
             echo "# Building Postgres image"
@@ -85,7 +97,7 @@ EOF
                 docker/postgres/9
         fi
 
-        if [ $(docker images | grep -c '^firethorn/builder') -eq 0 ]
+        if [ -z $(dockerimage firethorn builder 1.2) ]
         then
             echo "# ------"
             echo "# Building Builder image"
@@ -94,7 +106,7 @@ EOF
                 docker/builder
         fi
 
-        if [ $(docker images | grep -c '^firethorn/docker-proxy') -eq 0 ]
+        if [ -z $(dockerimage firethorn docker-proxy 1.1) ]
         then
             echo "# ------"
             echo "# Building docker-proxy image"
@@ -103,7 +115,7 @@ EOF
                 docker/docker-proxy
         fi
 
-        if [ $(docker images | grep -c '^firethorn/sql-proxy') -eq 0 ]
+        if [ -z $(dockerimage firethorn sql-proxy 1.1) ]
         then
             echo "# ------"
             echo "# Building sql-proxy image"
@@ -112,7 +124,7 @@ EOF
                 docker/sql-proxy
         fi
 
-        if [ $(docker images | grep -c '^firethorn/sql-tunnel') -eq 0 ]
+        if [ -z $(dockerimage firethorn sql-tunnel 1.1) ]
         then
             echo "# ------"
             echo "# Building sql-tunnel image"
@@ -121,7 +133,7 @@ EOF
                 docker/sql-tunnel
         fi
 
-        if [ $(docker images | grep -c '^firethorn/ssh-client') -eq 0 ]
+        if [ -z $(dockerimage firethorn ssh-client 1.1) ]
         then
             echo "# ------"
             echo "# Building ssh-client image"
