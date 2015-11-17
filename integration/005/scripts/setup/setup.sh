@@ -171,6 +171,6 @@ EOF
         --volume /var/local/projects:/var/local/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         --volume /root/setup/build.sh:/build.sh \
-        firethorn/builder:1 \
-        bash ./build.sh
+        firethorn/builder:1.1 \
+        bash /build.sh
 

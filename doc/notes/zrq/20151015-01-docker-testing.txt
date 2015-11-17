@@ -20,20 +20,6 @@
 #
 #
 
-# -----------------------------------------------------
-# Get our branch and version number.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        branch=$(hg branch)
-
-        source "bin/util.sh"
-        version=$(getversion)
-
-    popd
-
 # -----------------------------------------
 # Package the scripts as a zipfile
 #[user@desktop]
@@ -91,12 +77,18 @@
 
     vmname=desouk
     vmname=edfu
-    
+    vmname=tau
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
     ssh "${vmname:?}" "cat > \"\${HOME:?}/test.properties\" << EOF
-branch=${branch:?}
-version=${version:?}
+branch=$(hg branch)
+version=$(getversion)
 EOF
 "
+
+    popd
 
 # -----------------------------------------
 # Login to the VM.
@@ -143,7 +135,6 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/test.properties"
-
     source run.sh 01 "${version:?}"
     
 # -----------------------------------------

@@ -602,14 +602,6 @@ EOF
             | bin/pp | tee blue-query.json
 
 
-        queryself=$(
-            cat blue-query.json | self
-            )
-
-        querynode=$(
-            cat blue-query.json | self | node
-            )
-
         queryident=$(
             cat blue-query.json | self | ident
             )
