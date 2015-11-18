@@ -399,11 +399,12 @@ extends AbstractController
 
             catch (final SQLException ouch)
                 {
-            	log.debug("Exception",ouch);
+            	log.debug("Exception: ",ouch);
                 log.error("Exception reading SQL results [{}]", ouch.getMessage());
                 }
             catch (final Exception ouch)
                 {
+            	log.debug("Exception: ",ouch);
                 log.error("Exception writing VOTable output [{}]", ouch.getMessage());
                 }
             finally {

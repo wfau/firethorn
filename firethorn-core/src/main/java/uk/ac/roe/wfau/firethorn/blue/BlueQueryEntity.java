@@ -1941,7 +1941,8 @@ implements BlueQuery
         this.jdbctable = jdbcspace.tables().create();
         this.adqltable = adqlspace.tables().create(
     		CopyDepth.PARTIAL,
-    		jdbctable
+    		jdbctable,
+    		this
             );
 
     	// TODO Add the row number index column.

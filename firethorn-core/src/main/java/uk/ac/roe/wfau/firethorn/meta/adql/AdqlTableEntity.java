@@ -39,6 +39,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
@@ -114,6 +116,11 @@ public class AdqlTableEntity
      */
     protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
 
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String BLUE_ADQL_QUERY_COL = "bluequery" ;
     /**
      * The default name prefix, {@value}.
      * 
@@ -345,6 +352,25 @@ public class AdqlTableEntity
             table.realize();
             return table ;
             }
+        
+        @Override
+        @CreateMethod
+        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base, final BlueQuery query)
+            {
+            final AdqlTableEntity table = new AdqlTableEntity(
+                depth,
+                query,
+                schema,
+                base,
+                query.name()
+                );
+            super.insert(
+                table
+                );
+            table.realize();
+            return table ;
+            }
+
 
         @Override
         @SelectMethod
@@ -555,7 +581,7 @@ public class AdqlTableEntity
         {
         this(
             CopyDepth.FULL,
-            null,
+            (AdqlQuery) null,
             schema,
             base,
             name
@@ -571,7 +597,7 @@ public class AdqlTableEntity
         {
         this(
             type,
-            null,
+            (AdqlQuery) null,
             schema,
             base,
             name
@@ -610,7 +636,24 @@ public class AdqlTableEntity
         this.base   = base;
         this.schema = schema;
         }
-
+    
+    /**
+     * Protected constructor.
+     * @todo Too many constructors.
+     *
+     */
+    protected AdqlTableEntity(final CopyDepth type, final BlueQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+        {
+        super(
+            type,
+            schema,
+            name
+            );
+        this.bluequery  = query;
+        this.query = null;
+        this.base   = base;
+        this.schema = schema;
+        }
     /**
      * Create a copy of a base column.
      * @todo Delay the full scan until the data is actually requested.
@@ -902,4 +945,21 @@ public class AdqlTableEntity
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
+    
+    @OneToOne(
+            fetch = FetchType.LAZY,
+            targetEntity = BlueQueryEntity.class
+            )
+        @JoinColumn(
+            name = BLUE_ADQL_QUERY_COL,
+            unique = false,
+            nullable = true,
+            updatable = false
+            )
+        private BlueQuery bluequery;
+        public BlueQuery bluequery()
+            {
+            return this.bluequery;
+            }
+
     }

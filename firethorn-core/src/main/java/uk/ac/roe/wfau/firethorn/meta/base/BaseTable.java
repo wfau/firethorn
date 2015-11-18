@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -182,6 +183,12 @@ extends TreeComponent
      *
      */
     public AdqlQuery query();
+
+    /**
+     * The {@link BlueQuery} that generated this table.
+     *
+     */
+    public BlueQuery bluequery();
 
     /**
      * The OGSA-DAI DQP table alias.

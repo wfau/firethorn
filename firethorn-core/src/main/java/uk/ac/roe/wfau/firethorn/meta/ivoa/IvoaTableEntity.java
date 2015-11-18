@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -654,4 +655,10 @@ public class IvoaTableEntity
             this.adqlutype(ivoa.utype());
             }
         }
+
+	@Override
+	public BlueQuery bluequery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
     }
