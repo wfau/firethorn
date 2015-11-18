@@ -117,12 +117,19 @@
     exit
 
 # -----------------------------------------
-# Configure our test VM
+# Login to our test VM
 #[user@desktop]
 
     vmname=desouk
     vmname=edfu
     vmname=tau
+
+    ssh "${vmname:?}" 'date'
+
+
+# -----------------------------------------
+# Configure our test VM
+#[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
