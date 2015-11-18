@@ -176,10 +176,8 @@ extends AbstractTableController
         if (table.query()!=null){
         	writer.append("<INFO name='QUERY_STATUS' value='OK'>");
         } else  if (table.bluequery()!=null){
-	        if (table.bluequery().results().state().equals(ResultState.COMPLETED)) {
+	        if (!table.bluequery().results().state().equals(ResultState.NONE) && !table.bluequery().results().state().equals(ResultState.EMPTY)) {
 	            writer.append("<INFO name='QUERY_STATUS' value='OK'>");
-	        } else if (table.bluequery().results().state().equals(ResultState.TRUNCATED)){
-		        writer.append("<INFO name=\"QUERY_STATUS\" value=\"OVERFLOW\">");
 	        } else  {
 	            writer.append("<INFO name='QUERY_STATUS' value='ERROR'>");
 	            writer.append(table.query().syntax().friendly());
@@ -226,6 +224,8 @@ extends AbstractTableController
 
         writer.append("<DATA>");
         writer.append("<TABLEDATA>");
+      
+        
         }            
 
     /**
@@ -367,6 +367,13 @@ extends AbstractTableController
         writer.append("</TABLEDATA>");
         writer.append("</DATA>");
         writer.append("</TABLE>");
+        if (table.bluequery()!=null){
+      	  
+        	if (table.bluequery().results().state().equals(ResultState.TRUNCATED)){
+		        writer.append("<INFO name=\"QUERY_STATUS\" value=\"OVERFLOW\" />");
+	        }
+	     
+        }
         writer.append("</RESOURCE>");
         writer.append("</VOTABLE>");
         }
