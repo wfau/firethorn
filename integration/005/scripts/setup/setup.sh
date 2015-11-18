@@ -19,22 +19,31 @@
 #
     #yum install -y https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
 
-    yum install docker-io
+    cat >/etc/yum.repos.d/docker.repo <<-EOF
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/fedora/21
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+
+    yum remove -y docker-io
+
+    yum install -y docker-engine
 
     systemctl enable docker.service
     systemctl start  docker.service
     systemctl status docker.service
-
 
 # -----------------------------------------------------
 # Remove existing docker containers and images
 #
 
 # Delete all containers
-docker rm -f -v $(docker ps -a -q)
+#docker rm -f -v $(docker ps -a -q)
 # Delete all images
 #docker rmi -f $(docker images -q)
-
 
 # -----------------------------------------------------
 # Create our projects directory.
