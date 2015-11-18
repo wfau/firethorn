@@ -192,3 +192,58 @@ EOF
 
 
 
+
+
+
+    2015-11-18 06:03:06,021 - root - INFO - Setting up Firethorn Environment..
+    2015-11-18 06:03:06,689 - root - ERROR - Error creating jdbc space
+    Traceback (most recent call last):
+      File "/home/pyrothorn/src/pyrothorn/firethornEngine.py", line 130, in create_jdbc_space
+        response = urllib2.urlopen(req)
+      File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+        return _opener.open(url, data, timeout)
+      File "/usr/lib/python2.7/urllib2.py", line 410, in open
+        response = meth(req, response)
+      File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+        'http', request, response, code, msg, hdrs)
+      File "/usr/lib/python2.7/urllib2.py", line 448, in error
+        return self._call_chain(*args)
+      File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+        result = func(*args)
+      File "/usr/lib/python2.7/urllib2.py", line 531, in http_error_default
+        raise HTTPError(req.get_full_url(), code, msg, hdrs, fp)
+    HTTPError: HTTP Error 404: Not Found
+    2015-11-18 06:03:06,702 - root - ERROR - Error creating ADQL space
+    Traceback (most recent call last):
+      File "/home/pyrothorn/src/pyrothorn/firethornEngine.py", line 207, in create_adql_space
+        response = urllib2.urlopen(req)
+      File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+        return _opener.open(url, data, timeout)
+      File "/usr/lib/python2.7/urllib2.py", line 410, in open
+        response = meth(req, response)
+      File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+        'http', request, response, code, msg, hdrs)
+      File "/usr/lib/python2.7/urllib2.py", line 448, in error
+        return self._call_chain(*args)
+      File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+        result = func(*args)
+      File "/usr/lib/python2.7/urllib2.py", line 531, in http_error_default
+        raise HTTPError(req.get_full_url(), code, msg, hdrs, fp)
+    HTTPError: HTTP Error 404: Not Found
+    ....
+    ....
+    ValueError: unknown url type: /queries/create
+    2015-11-18 06:08:33,886 - root - ERROR - unknown url type: /queries/create
+    Traceback (most recent call last):
+      File "/home/pyrothorn/src/pyrothorn/queryEngine.py", line 108, in run_query
+        f = urllib2.urlopen(request)
+      File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+        return _opener.open(url, data, timeout)
+      File "/usr/lib/python2.7/urllib2.py", line 396, in open
+        protocol = req.get_type()
+      File "/usr/lib/python2.7/urllib2.py", line 258, in get_type
+        raise ValueError, "unknown url type: %s" % self.__original
+    ValueError: unknown url type: /queries/create
+
+
+

@@ -40,7 +40,7 @@ RUN yum -y install bind-utils
 # Install Docker client.
 # https://blog.docker.com/2015/07/new-apt-and-yum-repos/
 COPY etc/yum.repos.d/docker.repo /etc/yum.repos.d/docker.repo
-RUN yum -y remove  docker-io
+#RUN yum -y remove  docker-io
 RUN yum -y install docker-engine
 
 #

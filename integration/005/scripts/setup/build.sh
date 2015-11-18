@@ -197,14 +197,12 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        source "bin/util.sh"
-
-        if [ $(docker images | grep -c '^firethorn/tester') -eq 0 ]
+        if [ -z $(dockerimage firethorn tester ${version:?}) ]
         then
             echo "# ------"
             echo "# Building tester image"
             docker build \
-               --tag firethorn/tester:$(getversion) \
+               --tag firethorn/tester:${version:?} \
                integration/tester
         fi
     popd
@@ -216,12 +214,12 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        if [ $(docker images | grep -c '^firethorn/pyrothorn') -eq 0 ]
+        if [ -z $(dockerimage firethorn pyrothorn ${version:?}) ]
         then
             echo "# ------"
             echo "# Building pyrothorn image"
             docker build \
-                --tag firethorn/pyrothorn:$(getversion) \
+                --tag firethorn/pyrothorn:${version:?} \
                 integration/005/testing/pyrothorn
 
         fi
