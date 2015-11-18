@@ -17,8 +17,9 @@
 # -----------------------------------------------------
 # Install and start Docker.
 #
-    yum install -y https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
+    #yum install -y https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
 
+    yum install docker-io
 
     systemctl enable docker.service
     systemctl start  docker.service
