@@ -68,7 +68,7 @@ I-TMS-QGET-9 Query GET URL: http://peter:8080/firethorn/tap/2162690/sync?REQUEST
 S-TMS-SUMM-1 Schemas: 2, Tables: 6, Columns: 204, Foreign Keys: 0
 S-TMS-FLGS-1 Standard column flags: indexed: 0, principal: 7, std: 27
 S-TMS-QNUM-1 Successful/submitted TAP queries: 11/11
-S-TMS-QTIM-1 Average successful query time: 26.8s
+S-TMS-QTIM-1 Average successful query time: 22.5s
 I-TMS-QSUB-x (2 more)
 I-TMS-QGET-x (2 more)
 
@@ -90,7 +90,6 @@ I-QGE-QSUB-1 Submitting query: SELECT TOP 10 aG FROM atlas.atlasSource
 I-QGE-QGET-1 Query GET URL: http://peter:8080/firethorn/tap/2162690/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+aG+FROM+atlas.atlasSource
 I-QGE-QSUB-2 Submitting query: SELECT aG FROM atlas.atlasSource
 I-QGE-QGET-2 Query GET URL: http://peter:8080/firethorn/tap/2162690/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+aG+FROM+atlas.atlasSource&MAXREC=9
-E-QGE-OVNO-1 Overflow not marked - no <INFO name='QUERY_STATUS' value='OVERFLOW'/> after TABLE
 I-QGE-QSUB-3 Submitting query: SELECT TOP 1 aG FROM atlas.atlasSource
 I-QGE-QGET-3 Query GET URL: http://peter:8080/firethorn/tap/2162690/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+aG+FROM+atlas.atlasSource
 I-QGE-QSUB-4 Submitting query: SELECT TOP 1 aG FROM atlas.atlasSource
@@ -99,46 +98,43 @@ I-QGE-QSUB-5 Submitting query: SELECT TOP 8 zXi, zClass AS taplint_c_2, a.uPsfMa
 I-QGE-QGET-5 Query GET URL: http://peter:8080/firethorn/tap/2162690/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+zXi%2C+zClass+AS+taplint_c_2%2C+a.uPsfMag%2C+uAverageConf+AS+taplint_c_4%2C+rPsfMag%2C+a.rAverageConf+AS+taplint_c_6%2C+mergedClassStat%2C+imzExtErr+AS+taplint_c_8%2C+a.iAperMag4%2C+gmrExtErr+AS+taplint_c_10%2C+gAperMag4%2C+a.aG+AS+taplint_c_12++FROM+atlas.atlasSource+AS+a
 I-QGE-QSUB-6 Submitting query: SELECT aG FROM atlas.atlasSource
 I-QGE-QGET-6 Query GET URL: http://peter:8080/firethorn/tap/2162690/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+aG+FROM+atlas.atlasSource&MAXREC=0
-E-QGE-NREC-1 More than MAXREC rows returned (1000 > 0) for SELECT aG FROM atlas.atlasSource
 I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
 I-QGE-QGET-7 Query GET URL: http://peter:8080/firethorn/tap/2162690/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
 S-QGE-QNUM-1 Successful/submitted TAP queries: 6/6
-S-QGE-QTIM-1 Average successful query time: 25.7s
+S-QGE-QTIM-1 Average successful query time: 24.0s
 
 Section QPO: Make ADQL queries in sync POST mode
 I-QPO-QSUB-1 Submitting query: SELECT TOP 10 aG FROM atlas.atlasSource
 I-QPO-QSUB-2 Submitting query: SELECT aG FROM atlas.atlasSource
 I-QPO-QSUB-3 Submitting query: SELECT TOP 8 zXi, zClass AS taplint_c_2, a.uPsfMag, uAverageConf AS taplint_c_4, rPsfMag, a.rAverageConf AS taplint_c_6, mergedClassStat, imzExtErr AS taplint_c_8, a.iAperMag4, gmrExtErr AS taplint_c_10, gAperMag4, a.aG AS taplint_c_12  FROM atlas.atlasSource AS a
 I-QPO-QSUB-4 Submitting query: SELECT aG FROM atlas.atlasSource
-E-QPO-NREC-1 More than MAXREC rows returned (1000 > 0) for SELECT aG FROM atlas.atlasSource
 I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
 S-QPO-QNUM-1 Successful/submitted TAP queries: 4/4
-S-QPO-QTIM-1 Average successful query time: 27.2s
+S-QPO-QTIM-1 Average successful query time: 41.1s
 
 Section QAS: Make ADQL queries in async mode
 I-QAS-QSUB-1 Submitting query: SELECT TOP 10 aG FROM atlas.atlasSource
-I-QAS-QJOB-1 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3604503
+I-QAS-QJOB-1 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3997753
 I-QAS-QSUB-2 Submitting query: SELECT aG FROM atlas.atlasSource
-I-QAS-QJOB-2 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3604504
+I-QAS-QJOB-2 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3997754
 I-QAS-QSUB-3 Submitting query: SELECT TOP 8 zXi, zClass AS taplint_c_2, a.uPsfMag, uAverageConf AS taplint_c_4, rPsfMag, a.rAverageConf AS taplint_c_6, mergedClassStat, imzExtErr AS taplint_c_8, a.iAperMag4, gmrExtErr AS taplint_c_10, gAperMag4, a.aG AS taplint_c_12  FROM atlas.atlasSource AS a
-I-QAS-QJOB-3 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3604505
+I-QAS-QJOB-3 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3997755
 I-QAS-QSUB-4 Submitting query: SELECT aG FROM atlas.atlasSource
-I-QAS-QJOB-4 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3604506
-E-QAS-NREC-1 More than MAXREC rows returned (1000 > 0) for SELECT aG FROM atlas.atlasSource
+I-QAS-QJOB-4 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3997756
 I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
-I-QAS-QJOB-5 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3604507
+I-QAS-QJOB-5 Submitted query at http://peter:8080/firethorn/tap/2162690/async/3997757
 S-QAS-QNUM-1 Successful/submitted TAP queries: 4/4
-S-QAS-QTIM-1 Average successful query time: 37.7s
+S-QAS-QTIM-1 Average successful query time: 35.4s
 
 Section UWS: Test asynchronous UWS/TAP behaviour
-I-UWS-CJOB-1 Created new job http://peter:8080/firethorn/tap/2162690/async/3604508
-I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://peter:8080/firethorn/tap/2162690/async/3604508/parameters
-I-UWS-POPA-2 POSTed PHASE=ABORT to http://peter:8080/firethorn/tap/2162690/async/3604508/phase
-I-UWS-POPA-3 POSTed ACTION=DELETE to http://peter:8080/firethorn/tap/2162690/async/3604508
-I-UWS-CJOB-2 Created new job http://peter:8080/firethorn/tap/2162690/async/3604509
-I-UWS-CJOB-3 Created new job http://peter:8080/firethorn/tap/2162690/async/3604510
-W-UWS-TFMT-1 Not ISO-8601 content "0" from http://peter:8080/firethorn/tap/2162690/async/3604510/destruction
-I-UWS-POPA-4 POSTed PHASE=RUN to http://peter:8080/firethorn/tap/2162690/async/3604510/phase
+I-UWS-CJOB-1 Created new job http://peter:8080/firethorn/tap/2162690/async/3997758
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://peter:8080/firethorn/tap/2162690/async/3997758/parameters
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://peter:8080/firethorn/tap/2162690/async/3997758/phase
+I-UWS-POPA-3 POSTed ACTION=DELETE to http://peter:8080/firethorn/tap/2162690/async/3997758
+I-UWS-CJOB-2 Created new job http://peter:8080/firethorn/tap/2162690/async/3997759
+I-UWS-CJOB-3 Created new job http://peter:8080/firethorn/tap/2162690/async/3997760
+W-UWS-TFMT-1 Not ISO-8601 content "0" from http://peter:8080/firethorn/tap/2162690/async/3997760/destruction
+I-UWS-POPA-4 POSTed PHASE=RUN to http://peter:8080/firethorn/tap/2162690/async/3997760/phase
 
 Section MDQ: Check table query result columns against declared metadata
 I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM atlas.atlasSource
@@ -148,7 +144,7 @@ I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.keys
 I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.schemas
 I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.tables
 S-MDQ-QNUM-1 Successful/submitted TAP queries: 6/6
-S-MDQ-QTIM-1 Average successful query time: 36.9s
+S-MDQ-QTIM-1 Average successful query time: 32.9s
 
 Section OBS: Test implementation of ObsCore Data Model
 I-OBS-NODM-1 Table capabilities lists no DataModel ivo://ivoa.net/std/ObsCore/v1.0 - no ObsCore tests
@@ -156,6 +152,5 @@ I-OBS-NODM-1 Table capabilities lists no DataModel ivo://ivoa.net/std/ObsCore/v1
 Section UPL: Make queries with table uploads
 F-UPL-NOUP-1 Table capabilities lists no upload methods - will not attempt upload tests
 
-Totals: Errors: 4; Warnings: 1; Infos: 70; Summaries: 18; Failures: 1
-
+Totals: Errors: 0; Warnings: 1; Infos: 70; Summaries: 18; Failures: 1
 
