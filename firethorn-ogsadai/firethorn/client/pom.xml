@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-firethorn</artifactId>
-        <version project='firethorn'>2.0.2</version>
+        <version project='firethorn'>2.0.2-zrq-genius-config</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-firethorn-client</artifactId>
