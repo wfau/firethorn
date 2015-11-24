@@ -1,0 +1,131 @@
+
+Abstract
+
+    Lessons learned from using Docker
+    for deployment and testing
+
+Why Docker
+
+    repeatable automatable testing
+    repeatable automatable deployment
+
+    better control of support environment
+        java version
+        tomcat version
+
+    better control over orchestration
+        deploy and test a set of services as a unit
+        automation means everything gets written down
+
+        works on my machine becomes
+            reproducable
+            portable
+
+    managing virtual machines
+        dependencies
+        deployment
+
+    managing cloud deployment
+        
+
+Container types
+
+    WebService containers
+
+        (Java + Tomcat) + webapp
+
+        (Apache + WebPy) + Python
+
+    Support services
+
+        JDBC connections
+            ambasador abstraction
+            
+        Metadata database
+            
+        Test statistics database
+
+    Build tools
+    
+        Maven
+        Mercurial
+        Docker
+
+        sqlsh
+
+        ivoatex
+
+Tricks learned
+
+    mount unix sockets 
+
+        docker in docker
+            mount docker sock
+
+        ssh in docker
+            mount ssh sock
+
+    ambasadors
+
+        socat proxy
+        
+            issues with original ambasador
+                https://hub.docker.com/r/svendowideit/ambassador/
+                original idea
+                http://docs.docker.com/engine/articles/ambassador_pattern_linking/
+                source code not published until later
+                https://github.com/SvenDowideit/dockerfiles/blob/master/ambassador/Dockerfile
+                easy enough to roll our own
+
+            unix to http docker sock
+
+            JDBC proxy
+                
+            JDBC over SSH proxy
+
+    rolling your own
+    
+        docker makes it easy
+        open source makes it easy to copy ideas
+        start with binary blobs
+        work back up the tree creating our own
+            socat
+            java + tomcat
+            fedora
+
+        fine grained control over versions        
+
+Issues found
+
+    Memory leak with logging
+
+        Original docker logging to JSON
+
+    Docker version
+        host version
+        docker in docker version
+
+    Docker registry
+        fedora mis-tagged
+
+    storage drivers
+        lvm
+        btrfs
+
+    Conflict with libvirtd on RedHat/Fedora
+
+Moving target
+
+    Memory issues fixed
+
+    Docker registry
+
+    Docker compose
+    Docker storage
+    Docker network
+
+        
+
+    
+
+

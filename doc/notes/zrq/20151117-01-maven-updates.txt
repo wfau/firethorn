@@ -1,0 +1,273 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Mercurial repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg status
+        hg commit -m "...."
+        hg push
+
+    popd
+
+# -----------------------------------------------------
+# Build our build container.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/fedora:21.1 \
+            docker/fedora/21
+
+        docker build \
+            --tag firethorn/builder:1.2 \
+            docker/builder
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our builder image to Docker repo.
+#[user@desktop]
+
+    docker login
+
+        Username: xxxx
+        Password: yyyy
+        Email:    zzzz
+        Login Succeeded
+
+    docker push 'firethorn/fedora:21.1'
+    docker push 'firethorn/builder:1.2'
+
+
+# -----------------------------------------
+# Package our integration scripts as a zipfile
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+        pushd integration/005
+
+            mvn clean install
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        ./bin/rsync-repo.sh
+
+    popd
+
+# -----------------------------------------------------
+# Create a new set of databases.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        gedit "doc/notes/zrq/20150911-01-sqlserver-create.txt" &
+
+    popd
+
+# -----------------------------------------
+# Create a new VM
+#[user@desktop]
+
+    ssh shep
+
+        createvm
+
+            INFO : Node name [edfu]
+            INFO : Base name [fedora-21-16G-20150407.qcow]
+            INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+            INFO : Disc name [edfu.qcow]
+            INFO : Disc size [16GiB]
+
+    exit
+
+# -----------------------------------------
+# Login to our test VM
+#[user@desktop]
+
+    vmname=desouk
+    vmname=edfu
+    vmname=tau
+
+    ssh "${vmname:?}" 'date'
+
+
+# -----------------------------------------
+# Configure our test VM
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+
+    ssh "${vmname:?}" "cat > \"\${HOME:?}/test.properties\" << EOF
+branch=$(hg branch)
+version=$(getversion)
+EOF
+"
+    popd
+
+# -----------------------------------------
+# Login to the VM.
+#[user@desktop]
+
+    ssh "${vmname:?}"
+
+# -----------------------------------------------------
+# Create our secret function.
+#[root@virtual]
+
+    secrethost='dave@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/^[:space:]*${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'ping'
+
+# -----------------------------------------
+# Install our test scripts.
+#[root@virtual]
+
+    source "${HOME:?}/test.properties"
+
+    base=http://data.metagrid.co.uk/wfau/maven/firethorn/uk/ac/roe/wfau/
+    wget "${base:?}/firethorn-integration-tests/${version:?}/firethorn-integration-tests-${version:?}.zip"
+
+    unzip "firethorn-integration-tests-${version:?}.zip"
+
+# -----------------------------------------
+# Fix the test script location.
+# *hard coded location for some of them
+#[root@virtual]
+
+    cp -r scripts/*  /root/
+    rm -rf scripts
+
+# -----------------------------------------
+# Run our test scripts.
+#[root@virtual]
+
+    source "${HOME:?}/test.properties"
+    source run.sh 01 "${version:?}"
+
+
+#
+# Speed test
+docker rm -fv $(docker ps -aq)
+docker rmi -f $(docker images -q)
+rm -rf /var/local/cache/
+rm -rf /var/local/projects/
+time source setup/setup.sh
+
+update
+    real    60m41.247s
+    real    67m11.532s
+
+default
+    real    46m37.081s
+    real    44m48.033s
+    
+# -----------------------------------------
+# Tail the Pyrothorn log file.
+#[root@virtual]
+
+    pyrologs=/var/logs/pyrothorn
+    tail -f "${pyrologs}/logfile.txt" 
+
+
+
+
+
+
+    2015-11-18 06:03:06,021 - root - INFO - Setting up Firethorn Environment..
+    2015-11-18 06:03:06,689 - root - ERROR - Error creating jdbc space
+    Traceback (most recent call last):
+      File "/home/pyrothorn/src/pyrothorn/firethornEngine.py", line 130, in create_jdbc_space
+        response = urllib2.urlopen(req)
+      File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+        return _opener.open(url, data, timeout)
+      File "/usr/lib/python2.7/urllib2.py", line 410, in open
+        response = meth(req, response)
+      File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+        'http', request, response, code, msg, hdrs)
+      File "/usr/lib/python2.7/urllib2.py", line 448, in error
+        return self._call_chain(*args)
+      File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+        result = func(*args)
+      File "/usr/lib/python2.7/urllib2.py", line 531, in http_error_default
+        raise HTTPError(req.get_full_url(), code, msg, hdrs, fp)
+    HTTPError: HTTP Error 404: Not Found
+    2015-11-18 06:03:06,702 - root - ERROR - Error creating ADQL space
+    Traceback (most recent call last):
+      File "/home/pyrothorn/src/pyrothorn/firethornEngine.py", line 207, in create_adql_space
+        response = urllib2.urlopen(req)
+      File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+        return _opener.open(url, data, timeout)
+      File "/usr/lib/python2.7/urllib2.py", line 410, in open
+        response = meth(req, response)
+      File "/usr/lib/python2.7/urllib2.py", line 523, in http_response
+        'http', request, response, code, msg, hdrs)
+      File "/usr/lib/python2.7/urllib2.py", line 448, in error
+        return self._call_chain(*args)
+      File "/usr/lib/python2.7/urllib2.py", line 382, in _call_chain
+        result = func(*args)
+      File "/usr/lib/python2.7/urllib2.py", line 531, in http_error_default
+        raise HTTPError(req.get_full_url(), code, msg, hdrs, fp)
+    HTTPError: HTTP Error 404: Not Found
+    ....
+    ....
+    ValueError: unknown url type: /queries/create
+    2015-11-18 06:08:33,886 - root - ERROR - unknown url type: /queries/create
+    Traceback (most recent call last):
+      File "/home/pyrothorn/src/pyrothorn/queryEngine.py", line 108, in run_query
+        f = urllib2.urlopen(request)
+      File "/usr/lib/python2.7/urllib2.py", line 127, in urlopen
+        return _opener.open(url, data, timeout)
+      File "/usr/lib/python2.7/urllib2.py", line 396, in open
+        protocol = req.get_type()
+      File "/usr/lib/python2.7/urllib2.py", line 258, in get_type
+        raise ValueError, "unknown url type: %s" % self.__original
+    ValueError: unknown url type: /queries/create
+
+
+
