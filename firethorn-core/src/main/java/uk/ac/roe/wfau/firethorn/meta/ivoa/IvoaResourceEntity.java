@@ -119,7 +119,8 @@ public class IvoaResourceEntity
             return super.insert(
                 new IvoaResourceEntity(
                     ivoaid,
-                    ivoaid
+                    ivoaid,
+                    null
                     )
                 );
             }
@@ -131,7 +132,21 @@ public class IvoaResourceEntity
             return super.insert(
                 new IvoaResourceEntity(
                     ivoaid,
-                    name
+                    name,
+                    null
+                    )
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public IvoaResource create(final String ivoaid, final String name, final String endpoint)
+            {
+            return super.insert(
+                new IvoaResourceEntity(
+                    ivoaid,
+                    name,
+                    endpoint
                     )
                 );
             }
@@ -265,12 +280,18 @@ public class IvoaResourceEntity
      * Protected constructor.
      *
      */
-    protected IvoaResourceEntity(final String ivoaid, final String name)
+    protected IvoaResourceEntity(final String ivoaid, final String name, final String endpoint)
         {
         super(
             name
             );
         this.ivoaid = ivoaid;
+        if (endpoint != null)
+            {
+            this.endpoints().create(
+                endpoint
+                );        
+            }
         }
 
     @Basic(fetch = FetchType.EAGER)
@@ -365,7 +386,7 @@ public class IvoaResourceEntity
         return new Endpoints()
             {
             @Override
-            public Endpoint create(String url)
+            public Endpoint create(final String url)
                 {
                 Endpoint endpoint = new IvoaEndpointEntity(
                     IvoaResourceEntity.this,
@@ -382,6 +403,18 @@ public class IvoaResourceEntity
                 return new GenericIterable<IvoaResource.Endpoint, Endpoint>(
                     endpoints
                     ); 
+                }
+            @Override
+            public Endpoint primary()
+                {
+                if (endpoints.isEmpty())
+                    {
+                    return null;
+                    }
+                else {
+                    // Just get the first.
+                    return endpoints.iterator().next();
+                    }
                 }
             };
         }

@@ -26,6 +26,7 @@ import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
 import uk.org.ogsadai.activity.MatchedIterativeActivity;
+import uk.org.ogsadai.activity.astro.ADQLAsyncQueryActivity;
 import uk.org.ogsadai.activity.extension.ResourceFactoryActivity;
 import uk.org.ogsadai.activity.extension.ResourceManagerActivity;
 import uk.org.ogsadai.activity.extension.SecureActivity;
@@ -192,8 +193,14 @@ implements ResourceManagerActivity, ResourceFactoryActivity
             final KeyValueProperties properties = state.getConfiguration();
             if (endpoint != null)
                 {
+                // IvoaSelectDataActivity
                 properties.put(
                     IvoaResourceKeys.IVOA_TAP_ENDPOINT,
+                    endpoint
+                    );
+                // ADQLQuery activity
+                properties.put(
+                    ADQLAsyncQueryActivity.TAP_URL_KEY,
                     endpoint
                     );
                 }

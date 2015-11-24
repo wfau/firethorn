@@ -75,6 +75,12 @@ extends BaseResource<IvoaSchema>
          */
         public IvoaResource create(final String ivoaid, final String name);
 
+        /**
+         * Create a new {@link IvoaResource}.
+         *
+         */
+        public IvoaResource create(final String ivoaid, final String name, final String endpoint);
+
         }
 
     /**
@@ -133,10 +139,16 @@ extends BaseResource<IvoaSchema>
     public interface Endpoint
         {
         /**
-         * The resource endpoint URL.
+         * Get the resource endpoint URL.
          *
          */
         public String endpoint();
+
+        /**
+         * Set the resource endpoint URL.
+         *
+         */
+        public void endpoint(final String url);
 
         /**
          * Get the endpoint capabilities.
@@ -162,6 +174,12 @@ extends BaseResource<IvoaSchema>
          * 
          */
         public Iterable<Endpoint> select();
+
+        /**
+         * Get the primary Endpoint.
+         * 
+         */
+        public Endpoint primary();
 
         }
     

@@ -98,7 +98,7 @@ public class JdbcColumnController
         @PathVariable("ident")
         final String ident
         ) throws EntityNotFoundException {
-        log.debug("table() [{}]", ident);
+        log.debug("column() [{}]", ident);
         return factories().jdbc().columns().entities().select(
             factories().jdbc().columns().idents().ident(
                 ident

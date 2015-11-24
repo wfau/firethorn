@@ -23,7 +23,8 @@ import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
- *
+ * Why do we have this ?
+ * What is it for ?
  *
  */
 @Component

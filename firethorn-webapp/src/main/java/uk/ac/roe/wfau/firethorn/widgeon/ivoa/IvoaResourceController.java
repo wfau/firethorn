@@ -83,6 +83,12 @@ public class IvoaResourceController
      */
     public static final String UPDATE_STATUS = "ivoa.resource.status" ;
 
+    /**
+     * MVC property for updating the endpoint.
+     *
+     */
+    public static final String UPDATE_ENDPOINT = "ivoa.resource.endpoint" ;
+
     @Override
     public IvoaResourceBean bean(final IvoaResource entity)
         {
@@ -142,10 +148,12 @@ public class IvoaResourceController
     public EntityBean<IvoaResource> update(
         @ModelAttribute(TARGET_ENTITY)
         final IvoaResource entity,
-        @RequestParam(value=UPDATE_NAME, required=false) final
-        String name,
-        @RequestParam(value=UPDATE_STATUS, required=false) final
-        String status
+        @RequestParam(value=UPDATE_NAME, required=false)
+        final String name,
+        @RequestParam(value=UPDATE_STATUS, required=false)
+        final String status,
+        @RequestParam(value=UPDATE_ENDPOINT, required=false)
+        final String endpoint
         ){
 
         if (name != null)
@@ -164,6 +172,13 @@ public class IvoaResourceController
                 BaseComponent.Status.valueOf(
                     status
                     )
+                );
+            }
+
+        if (endpoint != null)
+            {
+            entity.endpoints().primary().endpoint(
+                endpoint
                 );
             }
 

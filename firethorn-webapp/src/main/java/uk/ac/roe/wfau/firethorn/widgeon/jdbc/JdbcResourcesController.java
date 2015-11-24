@@ -130,9 +130,8 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<JdbcResourceBean> select(
-        final ModelAndView model
-        ){
+    public Iterable<JdbcResourceBean> select()
+        {
         return bean(
             factories().jdbc().resources().entities().select()
             );

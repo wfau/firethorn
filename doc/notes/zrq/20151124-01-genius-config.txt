@@ -32,3 +32,105 @@
 
     popd
 
+# -------------------------------------------------------------------------------------------
+# Code changes ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Configuration ...
+#[user@desktop]
+    
+    Create IvoaResource
+        Create matching OgsaIvoaResource
+            requires OgsaService endpoint
+
+    Create JdbcResource
+        Create matching OgsaIvoaResource
+            requires OgsaService endpoint
+
+    CreateAdqlResource
+        Import schemas from IvoaResources
+        Import schemas from JdbcResources
+
+
+
+    a) Junit test connecting to OGSA-DAI and the metadata database
+    before firethorn is activated.
+
+    Simpler to implement now, still leaves (b) to do later.
+
+    b) External web service calls, connecting to FireThorn via curl.
+    Requires IvoaResource create method.
+
+    Needs webservice method to import the modified VOSI document.
+    Similar to metadoc import.
+      
+# -------------------------------------------------------------------------------------------
+# Code changes ....
+#[user@desktop]
+
+Add old property to IVOA_RESOURCE_TEMPLATE
+
+    CONFIG
+    dai.astro.tapurl={endpoint}
+    ....
+    END
+
+Allows ADQLAsyncQueryActivity to use the resource.
+
+ADQLAsyncQueryActivity has the same API as SQLQueryActivity.
+
+Both take a single input called "expression" and generate a stream of tuples.
+
+Add SQLQuery activity to ACTIVITIES list for IVOA_RESOURCE_TEMPLATE
+Mapping it to ADQLQuery
+
+    ACTIVITIES
+    uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+    ....
+    END
+
+ADQLQuery is mapped to ADQLAsyncQueryActivity in activites.txt
+
+    ....
+    id=uk.org.ogsadai.ADQLQuery
+    class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.tap.ADQLAsyncQueryActivity
+    CONFIG
+    END
+    ....
+
+AdqlQueryEntity uses PipelineClient
+
+PipelineClient builds and runs a workflow containing SQLQuery
+Calling addExpression(String) to set the ADQL "expression".
+
+IvoaResource and IvoaResourceEntity maintain a list of OgsaIvoaResource(s)
+associated with an IvoaResource.
+
+    public OgsaIvoaResources ogsa()
+
+IvoaResource provides the link between IvoaResource and OgsaService.
+
+    public Iterable<OgsaIvoaResource> select(final OgsaService service);
+    public Iterable<OgsaIvoaResource> select(final IvoaResource source);
+
+    public OgsaIvoaResource primary(final OgsaService service, final IvoaResource source);
+
+Calling primary(OgsaService, IvoaResource) will create a new OgsaIvoaResource if needed.
+
+Calling init() on a OgsaIvoaResource will run a IvoaCreateResourceWorkflow in OGSA-DAI
+to create the corresponding resource, based on IVOA_RESOURCE_TEMPLATE.
+
+
+
+
+
+
+

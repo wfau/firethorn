@@ -76,37 +76,37 @@ public class JdbcResourceController
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.resource.update.name" ;
+    public static final String UPDATE_NAME = "jdbc.resource.name" ;
 
     /**
      * MVC property for updating the status.
      *
      */
-    public static final String UPDATE_STATUS = "jdbc.resource.update.status" ;
+    public static final String UPDATE_STATUS = "jdbc.resource.status" ;
 
     /**
      * MVC property for updating the connection URL.
      *
      */
-    public static final String UPDATE_CONN_URL = "jdbc.resource.connection.url" ;
+    public static final String UPDATE_CONN_URL = "jdbc.connection.url" ;
 
     /**
      * MVC property for updating the connection user name.
      *
      */
-    public static final String UPDATE_CONN_USER = "jdbc.resource.connection.user" ;
+    public static final String UPDATE_CONN_USER = "jdbc.connection.user" ;
 
     /**
      * MVC property for updating the connection password.
      *
      */
-    public static final String UPDATE_CONN_PASS = "jdbc.resource.connection.pass" ;
+    public static final String UPDATE_CONN_PASS = "jdbc.connection.pass" ;
 
     /**
      * MVC property for updating the connection status.
      *
      */
-    public static final String UPDATE_CONN_STATUS = "jdbc.resource.connection.status" ;
+    public static final String UPDATE_CONN_STATUS = "jdbc.connection.status" ;
 
     @Override
     public JdbcResourceBean bean(final JdbcResource entity)
