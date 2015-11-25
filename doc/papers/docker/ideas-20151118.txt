@@ -4,7 +4,27 @@ Abstract
     Lessons learned from using Docker
     for deployment and testing
 
+
 Why Docker
+
+    Docker for applications
+    
+        Reproducable science (paper)
+
+        Portable applications
+
+            IvoaTex
+            Instructions were Debian only
+            IvoaTex container runs anywhere
+            
+        Reproducable builds
+
+            Firethorn Maven build process
+            Minimal setup required
+            Portable - laptop, desktop, server or VM.            
+
+
+
 
     repeatable automatable testing
     repeatable automatable deployment
