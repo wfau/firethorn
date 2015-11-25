@@ -468,8 +468,8 @@ EOF
 	# Testing TAP
 
 	#resourceid=$(basename ${queryspace:?}) 
-	resourceid=29229058
-	query="SELECT+TOP+10000+schema_name+FROM+TAP_SCHEMA.schemas"
+	resourceid=2162690
+	query="SELECT+TOP+10000+column_name+FROM+TAP_SCHEMA.columns"
 	format=VOTABLE
 	lang=ADQL
 	request=doQuery
@@ -488,10 +488,11 @@ EOF
 	# ----------------------Query test1: synchronous-------------------------------
         # Run a synchronous query
 	
-	curl -L \
+	curl -v -L \
 	${endpointurl:?}/tap/${resourceid:?}/sync \
 	-d QUERY=${query:?} \
 	-d LANG=${lang:?} \
+	-d MAXREC=2 \
 	-d REQUEST=${request:?}
 
 	# ----------------------Query test2: asynchronous-------------------------------

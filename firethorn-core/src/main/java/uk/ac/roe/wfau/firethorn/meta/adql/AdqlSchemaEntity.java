@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -691,6 +692,18 @@ implements AdqlSchema
                     AdqlSchemaEntity.this,
                     query
                     );
+                }
+            
+            @Override
+            public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final BlueQuery bluequery)
+                {
+      
+                return factories().adql().tables().entities().create(
+                        depth,
+                        AdqlSchemaEntity.this,
+                        base,
+                        bluequery
+                        );
                 }
 
             @Override

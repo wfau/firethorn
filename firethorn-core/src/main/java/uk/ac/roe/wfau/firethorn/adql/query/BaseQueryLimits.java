@@ -69,9 +69,9 @@ implements AdqlQuery.Limits
             @Override
             public Long rows()
                 {
-                if ((left != null) && (left.rows() != null) && (left.rows() != 0L))
+                if ((left != null) && (left.rows() != null) )
                     {
-                    if ((right != null) && (right.rows() != null) && (right.rows() != 0L))
+                    if ((right != null) && (right.rows() != null) )
                         {
                         if (left.rows() <=  right.rows())
                             {
@@ -175,7 +175,7 @@ implements AdqlQuery.Limits
             @Override
             public Long rows()
                 {
-                if ((left != null) && (left.rows() != null) && (left.rows() != 0L))
+                if ((left != null) && (left.rows() != null))
                     {
                     return left.rows();
                     }

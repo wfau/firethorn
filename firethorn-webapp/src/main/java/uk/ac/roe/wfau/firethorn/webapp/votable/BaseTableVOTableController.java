@@ -27,6 +27,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
@@ -173,23 +174,24 @@ extends AbstractTableController
         writer.append("'");
         writer.append("/>");
         if (table.query()!=null){
-	        if (table.query().status()==Status.COMPLETED) {
+        	writer.append("<INFO name='QUERY_STATUS' value='OK'>");
+        } else  if (table.bluequery()!=null){
+	        if (!table.bluequery().results().state().equals(ResultState.NONE) && !table.bluequery().results().state().equals(ResultState.EMPTY)) {
 	            writer.append("<INFO name='QUERY_STATUS' value='OK'>");
 	        } else  {
 	            writer.append("<INFO name='QUERY_STATUS' value='ERROR'>");
 	            writer.append(table.query().syntax().friendly());
 	        }
 	        writer.append("</INFO>");
-	        if (table.query().input() != null)
-	        {
-	        	writer.append("<INFO name='QUERY' value='" + table.query().input() + "' />");
-	        }
+	        
+	        // if (table.bluequery().input() != null)
+	        //{
+	        //	writer.append("<INFO name='QUERY' value='" + table.query().input() + "' />");
+	        // }
         } else {
         	writer.append("<INFO name='QUERY_STATUS' value='OK'></INFO>");
         }
-        if (table.meta().adql().status() == TableStatus.TRUNCATED){
-        	writer.append("<INFO name=\"QUERY_STATUS\" value=\"OVERFLOW\"/>");
-        }
+    
         
      
         if (table.text() != null)
@@ -222,6 +224,8 @@ extends AbstractTableController
 
         writer.append("<DATA>");
         writer.append("<TABLEDATA>");
+      
+        
         }            
 
     /**
@@ -363,6 +367,13 @@ extends AbstractTableController
         writer.append("</TABLEDATA>");
         writer.append("</DATA>");
         writer.append("</TABLE>");
+        if (table.bluequery()!=null){
+      	  
+        	if (table.bluequery().results().state().equals(ResultState.TRUNCATED)){
+		        writer.append("<INFO name=\"QUERY_STATUS\" value=\"OVERFLOW\" />");
+	        }
+	     
+        }
         writer.append("</RESOURCE>");
         writer.append("</VOTABLE>");
         }

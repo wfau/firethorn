@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
@@ -410,4 +411,10 @@ public class AdqlTableProxy
         // A combination of protection from base and parent ? 
         return null;
         }
+
+	@Override
+	public BlueQuery bluequery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
     }

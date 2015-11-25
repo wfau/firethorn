@@ -40,10 +40,10 @@ extends TuplesParam
     public static final String ROW_LIMIT  = "limit.rows"  ;
 
     /**
-     * Default row limit (0 = no limit).
+     * Default row limit (-1 = no limit).
      * 
      */
-    public static final Long DEFAULT_ROWS = new Long(0);
+    public static final Long DEFAULT_ROWS = new Long(-1);
     
     /**
      * Activity input name for the cell limit.

@@ -47,6 +47,7 @@ import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -1358,4 +1359,10 @@ implements JdbcTable
         {
         // TODO Auto-generated method stub
         }
+
+	@Override
+	public BlueQuery bluequery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
     }
