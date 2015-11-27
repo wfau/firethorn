@@ -1,5 +1,3 @@
-
-
 #
 # <meta:header>
 #   <meta:licence>
@@ -22,11 +20,6 @@
 #
 #
 
-    # Requires the new branch name
-    # devname=zrq-xxxx-xxxx
-
-    echo "devname [${devname:?}]"
-
 # -----------------------------------------------------
 # Create a new development branch.
 #[user@desktop]
@@ -34,45 +27,31 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        #
-        # Pull the latest changes
-        hg pull
-        hg update 'default'
-
-        #
-        # Check the status
-        hg status
-        
-        #
-        # Create the new branch name
-        source "bin/util.sh"
-        devbranch="$(getversion)-${devname:?}"
-        echo "devbranch [${devbranch:?}]"
-
-        #
-        # Create the new branch.
-        hg branch "${devbranch:?}"
-
-        #
-        # Set the project version.
-        source 'bin/util.sh'
-        setversion "${devbranch:?}"
-
-        #
-        # Commit and push the new branch.
-        hg commit -m "Creating [branch-${devbranch:?}]"
-        hg push --new-branch
+        devname=zrq-admin-webapp
+        gedit "doc/notes/zrq/20141130-01-hg-branch.txt" &
 
     popd
 
 # -------------------------------------------------------------------------------------------
-# Clean build.
+# Code changes ...
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         mvn -P all clean install eclipse:eclipse
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Merger the branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        newversion=
+        gedit "doc/notes/zrq/20151021-01-hg-merge.txt" &
 
     popd
 

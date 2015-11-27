@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+    >
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--+
+        | Maven parent/child inheritance.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <parent>
+        <groupId>uk.ac.roe.wfau</groupId>
+        <artifactId>firethorn</artifactId>
+        <version project='firethorn'>2.0.4</version>
+    </parent>
+
+    <artifactId>firethorn-admin-webapp</artifactId>
+    <packaging>war</packaging>
+
+    <name>FireThorn admin webapp</name>
+    <description>
+        <![CDATA[
+        This Maven build takes the FireThorn webapp and adds the admin interface pages.
+        ]]>
+    </description>
+
+    <properties>
+    </properties>
+
+    <dependencies>
+
+        <!--+
+            | The FireThorn webapp.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-webapp</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+    
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!--+
+                | Maven WAR plugin.
+                +-->
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <overlays>
+                        <overlay>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>firethorn-webapp</artifactId>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+
+            <!--+
+                | Tomcat 7 plugin.
+                | https://tomcat.apache.org/maven-plugin-2.0/
+                +-->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <!--+
+                        | Enable JNDI nameing service.
+                        +-->
+                    <enableNaming>true</enableNaming>
+                    <!--+
+                        | Use the Maven test classpath.
+                        +-->
+                    <useTestClasspath>true</useTestClasspath>
+                    <!--+
+                        | The webapp context path.
+                        +-->
+                    <path>/firethorn</path>
+                    <!--+
+                        | The webapp context file.
+                        +-->
+                    <contextFile>src/test/conf/test-context.xml</contextFile>
+                    <!--+
+                        | Set the maximum allowed memory.
+                        | http://stackoverflow.com/questions/11928689/increase-memory-of-tomcat7-maven-plugin
+                        +-->
+                    <systemProperties>
+                        <!--JAVA_OPTS>-Xms128m -Xmx256m -XX:MaxPermSize=64m</JAVA_OPTS-->
+                        <!--JAVA_OPTS>-Xmx256m</JAVA_OPTS-->
+                        <!--Xmx>256m</Xmx-->
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+        <resources>
+    		<resource>
+    			<directory>${basedir}/src/conf</directory>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</resource>
+        </resources>
+
+        <testResources>
+    		<testResource>
+    			<directory>${basedir}/src/test/conf</directory>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</testResource>
+        </testResources>
+
+    </build>
+
+</project>
+
+

@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>2.0.3</version>
+    <version project='firethorn'>2.0.4</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -159,21 +159,11 @@
     </distributionManagement>
 
     <!--+
-        | Maven parent/child projects.
+        | Maven parent/child projects - moved to profiles.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
     <modules>
-
-        <module>firethorn-jdbc</module>
-        <module>firethorn-spring</module>
-        <module>firethorn-logging</module>
-        <module>firethorn-testing</module>
-
-        <module>firethorn-cds</module>
-        <module>firethorn-ogsadai</module>
-
-        <module>firethorn-core</module>
-        <module>firethorn-webapp</module>
-
+        ....
+        ....
     </modules>
         +-->
 
@@ -1022,6 +1012,7 @@
                 <module>firethorn-ogsadai</module>
                 <module>firethorn-core</module>
                 <module>firethorn-webapp</module>
+                <module>firethorn-admin</module>
             </modules>
         </profile>
 
@@ -1043,6 +1034,7 @@
             <modules>
                 <module>firethorn-ogsadai/webapp</module>
                 <module>firethorn-webapp</module>
+                <module>firethorn-admin</module>
             </modules>
         </profile>
 
