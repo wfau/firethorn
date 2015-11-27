@@ -24,7 +24,8 @@
     # Merge a development branch and test the resulting containers.
     #
 
-    newversion=2.0.0
+    echo "newversion [${newversion:?}]"
+
 
 # -----------------------------------------------------
 # Merge the changes into main.
