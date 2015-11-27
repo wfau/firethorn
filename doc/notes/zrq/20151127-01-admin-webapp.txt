@@ -50,7 +50,7 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        newversion=
+        newversion=2.0.4
         gedit "doc/notes/zrq/20151021-01-hg-merge.txt" &
 
     popd
