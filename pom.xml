@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>2.0.3</version>
+    <version project='firethorn'>2.0.3-zrq-admin-webapp</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
