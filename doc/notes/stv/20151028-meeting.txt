@@ -1,0 +1,27 @@
+Oct 28 2015
+-----------
+
+1a) Write as wiki page
+
+1b) Make changes from Mikes email
+
+
+
+1) UCDs for MDBCU9  (Add Jira issue to description of commit C9DM-48)
+
+2) Finish TAP / VOTable bugfix
+
+3) Merge 1.13-22-stv-jsonscripts
+
+4) Docker webpy
+
+5) Docker paper
+
+6) Add Examples to genius
+
+7) WFAU page
+
+8) Have a look at Aladin lite & see how generic their code, is how much is Aladin specific, and how many libraries they use
+
+3-4 December (Trieste)
+
