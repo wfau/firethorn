@@ -82,7 +82,7 @@ stored_queries_dbserver_port = ""
 stored_queries_database = ""
 stored_queries_query = "select top 10 * from [table] where [dbname] like 'atlas%'"
 logged_queries_txt_file = "query_logs/atlas-logged-queries-short.txt"
-
+logged_queries_json_file = "query_logs/integration.json"
 
 ### Firethorn Live test Configuration ###
 

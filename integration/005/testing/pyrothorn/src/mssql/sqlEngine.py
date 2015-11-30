@@ -129,38 +129,42 @@ class DBHelper:
 
         if timeout!=None:
             cnxn.timeout=timeout
+        try:
+            cursor = cnxn.cursor()
+            cursor.execute(query)
 
-        cursor = cnxn.cursor()
-        cursor.execute(query)
-   
-        columns = [column[0] for column in cursor.description]
-        return_val.append(columns)
-        rowlist=[]
+            columns = [column[0] for column in cursor.description]
+            return_val.append(columns)
+            rowlist=[]
 
-	if (limit!=None):
-            rows = cursor.fetchmany(limit)
-        else :
-            rows = cursor.fetchall()
+	    if (limit!=None):
+                rows = cursor.fetchmany(limit)
+            else :
+                rows = cursor.fetchall()
 
 
-        for row in rows:
-	    rowlist.append(dict(zip(columns, row)))
+            for row in rows:
+	        rowlist.append(dict(zip(columns, row)))
 	
 
-	"""
-	count = 0        	
-	for row in  ResultIter(cursor):
-	    count = count + 1
-	    if count<= limit:
-	        rowlist.append(dict(zip(columns, row)))
-	    else :
-		break
+	    """
+	    count = 0        	
+	    for row in  ResultIter(cursor):
+	        count = count + 1
+	        if count<= limit:
+	            rowlist.append(dict(zip(columns, row)))
+	        else :
+	  	    break
 
-	"""
+     	    """
 
-	return_val.append(rowlist)  
-        cnxn.close()
-
+  	    return_val.append(rowlist) 
+ 
+            cnxn.close()
+        except Exception as e:
+            cnxn.close()
+            raise e
+            
         return return_val
 
 
@@ -270,12 +274,12 @@ class SQLEngine(object):
             query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
         except pyodbc.ProgrammingError, err:
             error_message = repr(err)
-            logging.exception(error_message)
-            return (-1, error_message)     
+            return (-1, error_message)
         except Exception as e:
-            logging.exception(e) 
-            return (-1, e)
-        
+            if (type(e).__name__=="Timeout"):
+                raise e
+
+
         return (self._getRows(query_results), "")
     
     def execute_insert (self, qry, database, params):

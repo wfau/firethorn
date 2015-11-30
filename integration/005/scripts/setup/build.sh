@@ -1,4 +1,25 @@
+#!/bin/bash -eu
+# -e: Exit immediately if a command exits with a non-zero status.
+# -u: Treat unset variables as an error when substituting.
+#
+#  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
 
+    echo "*** Initialising build script [build.sh] ***"
 # -----------------------------------------------------
 # Update our path.
 #[root@builder]
@@ -6,6 +27,8 @@
     # ** this should be in the container **
     source /etc/bashrc
 
+
+    echo "*** Checkout a copy of our source code. [build.sh] ***"
 # -----------------------------------------------------
 # Checkout a copy of our source code.
 #[root@builder]
@@ -42,6 +65,7 @@ EOF
     
     popd
 
+    echo "*** Build our toolkit containers. [build.sh] ***"
 # -----------------------------------------------------
 # Build our toolkit containers.
 #[root@builder]
@@ -132,6 +156,8 @@ EOF
 
     popd
 
+
+    echo "*** Start docker-proxy container. [build.sh] ***"
 # -----------------------------------------------------
 # Start our docker-proxy container.
 #[root@builder]
@@ -145,9 +171,11 @@ EOF
     dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
     echo "docker-proxy [${dockerip:?}]"
 
-    sleep 1
+	sleep 1
     curl "http://${dockerip:?}:2375/version"
 
+
+    echo "*** Build our webapp services. [build.sh] ***"
 # -----------------------------------------------------
 # Build our webapp services.
 #[root@builder]
@@ -161,6 +189,8 @@ EOF
 
     popd
 
+
+    echo "*** Build our webapp containers. [build.sh] ***"
 # -----------------------------------------------------
 # Build our webapp containers.
 #[root@builder]
@@ -178,6 +208,8 @@ EOF
 
     popd
 
+
+    echo "*** Build our tester container. [build.sh] ***"
 # -----------------------------------------------------
 # Build our tester container.
 #[root@builder]

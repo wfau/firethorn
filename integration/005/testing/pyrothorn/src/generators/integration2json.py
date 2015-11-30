@@ -34,7 +34,6 @@ try:
     import base64
     import collections
     import hashlib
-    sys.stdout = open('logs/logfile.txt', 'w')
     
     # get a UUID - URL safe, Base64
     def get_a_uuid():
@@ -181,7 +180,7 @@ class test_firethorn(unittest.TestCase):
                 self.total_queries = 0
                 self.total_failed = 0            
 
-
+            target =  []
             with open(config.logged_queries_txt_file ) as f:
             
                 for query in f:
@@ -197,17 +196,17 @@ class test_firethorn(unittest.TestCase):
                     self.total_queries = self.total_queries + 1
                     try:
                         check_duplicate_query = "select count(*), queryid, query_count from queries where query_hash='" + querymd5 + "' and queryrunID='" + queryrunID + "'"                              
-                        query_duplicates_found_row = reporting_sqlEng.execute_sql_query(check_duplicate_query, config.reporting_database)[0]
-                        query_duplicates_found = query_duplicates_found_row[0]
-                        queryid = query_duplicates_found_row[1]
-                        query_count = query_duplicates_found_row[2]
+                        #query_duplicates_found_row = reporting_sqlEng.execute_sql_query(check_duplicate_query, config.reporting_database)[0]
+                        #query_duplicates_found = query_duplicates_found_row[0]
+                        #queryid = query_duplicates_found_row[1]
+                        #query_count = query_duplicates_found_row[2]
                     except Exception as e:
                         logging.info(e)
                         query_duplicates_found = 0
                         queryid = None
                         query_count = 0
 
-                    if (query_duplicates_found<=0):
+                    if (True):
                         continue_from_here_flag = True
                         sql_duration = 0
                         firethorn_duration = 0
@@ -245,8 +244,10 @@ class test_firethorn(unittest.TestCase):
                         try:                    
                     	    start_time = time.time()
 			    logging.info("Started Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-			    with Timeout(config.firethorn_timeout):
-			        firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
+			    #with Timeout(config.firethorn_timeout):
+			    #    firethorn_row_length, firethorn_error_message = qEng.run_query(query, "", fEng.query_schema)
+                            firethorn_row_length = -1
+                            firethorn_error_message = ""
 			    logging.info("Finished Firethorn job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    logging.info("Firethorn Query: " + str(firethorn_row_length) + " row(s) returned. ")
 			    firethorn_duration = float(time.time() - start_time)
@@ -265,8 +266,6 @@ class test_firethorn(unittest.TestCase):
 
                         test_passed = (sql_row_length == firethorn_row_length)
                         logging.info("---------------------- End Query Test ----------------------")
-                        if test_skipped:
-                            logging.info("Query skipped..")
                         if test_passed:                    
 			    logging.info("Query Successful !!")
 		        else:
@@ -276,10 +275,12 @@ class test_firethorn(unittest.TestCase):
 			    self.total_failed = self.total_failed + 1
 
                         logging.info("")
+                        logging.info("")
+                        logging.info("")
 
                         params = (query, queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, firethorn_changeset, sys_platform, sys_timestamp )
                         report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message, java_version, firethorn_changeset, sys_platform, sys_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
-                        reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
+                        #reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
                         #self.total_queries = self.total_queries + 1
 
                     else :
@@ -289,17 +290,21 @@ class test_firethorn(unittest.TestCase):
 			    update_results = reporting_sqlEng.execute_update(update_query, config.reporting_database)
 			    #self.total_queries = self.total_queries + 1
 
-
+                    logging.info("Query:" + query)
+                    logging.info("Rows:" + str(sql_row_length))
+                    target.append({"query": query, "rows" : sql_row_length})
                     logging.info("Total queries: "  + str(self.total_queries))
                     logging.info("Total unique queries: "  + str(self.total_unique_queries))
                     logging.info("Total failed: " + str(self.total_failed))
-                    logging.info("")
-                    logging.info("")
+
 		logging.info("Success percentage: " +  str(round(100-(float(self.total_failed)/float(self.total_unique_queries))*100,2)) + "%")
 
-
+		j = json.dumps(target, indent=4)
+		f = open('out.json', 'w')
+		print >> f, j
+		f.close()
         except Exception as e:
-            logging.info("..")
+            logging.info(e)
         # Test if total queries failed > 0            
         self.assertEqual(self.total_failed , 0, "Total queries failed: " + str(self.total_failed) + " (out of " + str(self.total_queries) +  ")" )
    

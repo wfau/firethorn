@@ -19,11 +19,12 @@
 #
 #
 
-echo "*** Initialising test001 script [test01-integration.sh] ***"
+echo "*** Initialising test05 script [test05-integration-json.sh] ***"
 
 source ${HOME:?}/chain.properties
 
-echo "*** Creating pyrothorn properties file [test01-integration.sh] ***"
+
+echo "*** Creating pyrothorn properties file [test05-integration-json.sh] ***"
 
 pyroproperties=$(mktemp)
 cat > "${pyroproperties:?}" << EOF
@@ -102,8 +103,9 @@ stored_queries_dbserver_password = "${storedqueriespass:?}"
 stored_queries_dbserver_port = "${storedqueriesport:?}" 
 stored_queries_database = "${storedqueriesdata:?}" 
 stored_queries_query = "select * from webqueries where dbname like 'ATLAS%' and query not like '%dr%' and query not like '%best%'" 
-logged_queries_txt_file = "/queries.txt" 
-
+logged_queries_txt_file = "testing/query_logs/integration_list.txt" 
+logged_queries_json_file = "testing/query_logs/integration.json"
+ 
 ### Firethorn Live test Configuration ###
 
 adql_copy_depth = "THIN" 
@@ -117,8 +119,7 @@ jdbccatalogname = '${testrundatabase:?}'
 jdbcschemaname = 'dbo'
 jdbc_resource_user = '${datauser:?}'
 jdbc_resource_pass = '${datapass:?}'
-#metadocfile = "testing/metadocs/${testrundatabase:?}_TablesSchema.xml" 
-metadocfile = "/metadoc.xml" 
+metadocfile = "testing/metadocs/${testrundatabase:?}_TablesSchema.xml" 
 metadocdirectory = "testing/metadocs/" 
 stored_env_config = 'conf/pyrothorn-stored.js'
 
@@ -133,32 +134,22 @@ schema_alias = "${testrundatabase:?}"
 
 EOF
 
-testbase="${HOME:?}/tests"
-testdata="${HOME:?}/tests/test-001"
-
-chmod a+r "${testbase:?}/test01-nohup.sh" 
-chcon -t svirt_sandbox_file_t "${testbase:?}/test01-nohup.sh" 
+chmod a+r "${HOME:?}/tests/test01-nohup.sh" 
+chcon -t svirt_sandbox_file_t "${HOME:?}//tests/test01-nohup.sh" 
 
 chmod a+r "${pyroproperties:?}" 
 chcon -t svirt_sandbox_file_t "${pyroproperties:?}" 
 
 mkdir -p /var/logs/${pyroname:?}
 
-chmod a+r "${testdata:?}/metadoc.xml" 
-chmod a+r "${testdata:?}/queries.txt" 
-chcon -t svirt_sandbox_file_t "${testdata:?}/metadoc.xml" 
-chcon -t svirt_sandbox_file_t "${testdata:?}/queries.txt" 
-
-echo "*** Run pyrothorn  [test01-integration.sh] ***"
+echo "*** Run pyrothorn [test05-integration-json.sh] ***"
 
 docker run -i -t \
     --name ${pyroname:?} \
     --detach \
     --memory 512M \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
-    --volume "${testbase:?}/test01-nohup.sh:/scripts/test01-nohup.sh" \
-    --volume "${testdata:?}/metadoc.xml:/metadoc.xml" \
-    --volume "${testdata:?}/queries.txt:/queries.txt" \
+    --volume ${HOME:?}/tests/test01-nohup.sh:/scripts/test05-nohup.sh \
     --volume "${pyrologs}:/home/pyrothorn/logs" \
     --link "${firename:?}:${firelink:?}" \
     --link "${pyrosqlname:?}:${pyrosqllink:?}" \
@@ -166,7 +157,7 @@ docker run -i -t \
     --link "${ogsaname:?}:${ogsalink:?}" \
     --link "${dataname:?}:${datalink:?}" \
     --link "${username:?}:${userlink:?}" \
-       firethorn/pyrothorn:${version:?} bash -c  '/scripts/test01-nohup.sh'
+       firethorn/pyrothorn:${version:?} bash -c  '/scripts/test05-nohup.sh'
 
 
 

@@ -64,7 +64,6 @@ class Timeout():
     def raise_timeout(self, *args):
         raise Timeout.Timeout()
 
-
 class test_firethorn(unittest.TestCase):
             
                
@@ -112,7 +111,10 @@ class test_firethorn(unittest.TestCase):
                                 data = json.load(data_file)
                             if ('jdbcspace' in data) and ('query_schema' in data) and ('adqlspace' in data):
                                 fEng = pyrothorn.firethornEngine.FirethornEngine(jdbcspace=data['jdbcspace'], adqlspace=data['adqlspace'], query_schema = data['query_schema'], driver= config.driver )
-                                queryrunID = data['queryrunID']
+                                if (config.test_is_continuation):
+                                    queryrunID = data['queryrunID']
+                                else :
+                                    queryrunID = get_a_uuid()
 				logging.info("Firethorn Environment loaded from cached config file: " + config.stored_env_config)
                                 valid_config_found = True
                             else :
@@ -229,8 +231,9 @@ class test_firethorn(unittest.TestCase):
                     except Exception as e:
                         if (type(e).__name__=="Timeout"):
                             test_skipped = True
-                        logging.info("Error caught while running sql query")
-
+                            logging.info("Timeout reached while running sql query..")
+                        else :
+                            logging.info("Error caught while running sql query..")
                     
 		    logging.info("")
 		    
@@ -249,21 +252,23 @@ class test_firethorn(unittest.TestCase):
                     except Exception as e:
                         if (type(e).__name__=="Timeout"):
                             test_skipped = True
-                            logging.info("Timeout reached..Skipping test")
-                        logging.info("Error caught while running firethorn query..")
+                            logging.info("Timeout reached while running firethorn query..")
+                        else:
+                            logging.info("Error caught while running firethorn query..")
 
 
                     test_passed = (sql_row_length == firethorn_row_length)
                     logging.info("---------------------- End Query Test ----------------------")
-		    if test_passed:		
+                    if test_skipped:
+                        logging.info("Query skipped..")
+                         
+		    elif test_passed:		
                         logging.info("Query Successful !!")
                     else:
 		        logging.info("Query Failed..")
 
                     if (not test_passed and (not test_skipped)):
                         self.total_failed = self.total_failed + 1
-		    logging.info("")
-		    logging.info("")
 		    logging.info("")
 
                     params = (query, queryrunID, querymd5, 1,  query_timestamp, sql_row_length, firethorn_row_length, firethorn_duration, sql_duration, test_passed, firethorn_version, str(firethorn_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, firethorn_changeset, sys_platform, sys_timestamp )
@@ -284,8 +289,9 @@ class test_firethorn(unittest.TestCase):
                 logging.info("Total failed: " + str(self.total_failed))
                 logging.info("Coverage percentage: "  + str(round((float(self.total_queries)/float(total_available_queries))*100,2)) + "%")
                 logging.info("Success percentage: " +  str(round(100-(float(self.total_failed)/float(self.total_unique_queries))*100,2)) + "%")
-               
-
+                logging.info("")
+                logging.info("")
+                logging.info("")
         except Exception as e:
             logging.exception(e)    
         

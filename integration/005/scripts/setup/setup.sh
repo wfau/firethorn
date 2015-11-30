@@ -1,4 +1,28 @@
+#!/bin/bash -eu
+# -e: Exit immediately if a command exits with a non-zero status.
+# -u: Treat unset variables as an error when substituting.
+#
+#  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
 
+  echo "*** Initialising build scripts [setup.sh] ***"
+
+  echo "*** Installing tools [setup.sh] ***"
+   
 # -----------------------------------------
 # Install admin tools.
 #
@@ -14,6 +38,7 @@
     yum install -y haveged
     systemctl start haveged.service
 
+    echo "*** Installing & starting docker [setup.sh] ***"
 # -----------------------------------------------------
 # Install and start Docker.
 #
@@ -29,12 +54,12 @@
 # Remove existing docker containers and images
 #
 
-# Delete all containers
-docker rm -f -v $(docker ps -a -q)
-# Delete all images
-#docker rmi -f $(docker images -q)
+    # Delete all containers
+    docker rm -f -v $(docker ps -a -q) 
+    # Delete all images
+    #docker rmi -f $(docker images -q)
 
-
+    echo "*** Creating projects & cache directories [setup.sh] ***"
 # -----------------------------------------------------
 # Create our projects directory.
 #
@@ -87,16 +112,16 @@ docker rm -f -v $(docker ps -a -q)
         popd
     popd
 
-    chmod a+r "/root/setup/build.sh" 
-    chcon -t svirt_sandbox_file_t "/root/setup/build.sh" 
+    chmod a+r "${HOME:?}/setup/build.sh" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/setup/build.sh" 
  
-    touch /root/chain.properties
-    chmod a+r "/root/chain.properties"
-    chcon -t svirt_sandbox_file_t "/root/chain.properties"
+    touch ${HOME:?}/chain.properties
+    chmod a+r "${HOME:?}/chain.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/chain.properties"
 
+    echo "*** Creating docker chain properties file [setup.sh] ***"
 
-
-    cat > /root/chain.properties << EOF
+    cat > ${HOME:?}/chain.properties << EOF
 
     version=${version:?}
 
@@ -155,10 +180,10 @@ docker rm -f -v $(docker ps -a -q)
 
 EOF
 
-    source /root/chain.properties
+    source ${HOME:?}/chain.properties
 
 
-
+    echo "*** Running build container [setup.sh] ***"
 # -----------------------------------------------------
 # Run our build container.
 #
@@ -170,6 +195,6 @@ EOF
         --volume /var/local/cache:/cache \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        --volume /root/setup/build.sh:/build.sh \
+        --volume ${HOME:?}/setup/build.sh:/build.sh \
         firethorn/builder:1 \
         bash ./build.sh

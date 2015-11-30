@@ -1,7 +1,28 @@
+#!/bin/bash -eu
+# -e: Exit immediately if a command exits with a non-zero status.
+# -u: Treat unset variables as an error when substituting.
+#
+#  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
+echo "*** Initialising test03 script [test03-hist-catalogue.sh] ***"
 
+source ${HOME:?}/chain.properties
 
-source /root/chain.properties
-
+echo "*** Creating pyrothorn properties file [test03-hist-catalogue.sh] ***"
 
 pyroproperties=$(mktemp)
 cat > "${pyroproperties:?}" << EOF
@@ -113,16 +134,18 @@ EOF
 
 chmod a+r "${pyroproperties:?}" 
 chcon -t svirt_sandbox_file_t "${pyroproperties:?}" 
-chmod a+r "/root/tests/test03-nohup.sh"
-chcon -t svirt_sandbox_file_t "/root/tests/test03-nohup.sh"
+chmod a+r "${HOME:?}/tests/test03-nohup.sh"
+chcon -t svirt_sandbox_file_t "${HOME:?}/tests/test03-nohup.sh"
 
 mkdir -p /var/logs/${pyroname:?}
+
+echo "*** Run pyrothorn [test03-hist-catalogue.sh] ***"
 
 docker run -i -t \
     --name ${pyroname:?} \
     --detach \
     --memory 512M \
-    --volume /root/tests/test03-nohup.sh:/scripts/test03-nohup.sh \
+    --volume ${HOME:?}/tests/test03-nohup.sh:/scripts/test03-nohup.sh \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
     --volume "${pyrologs}:/home/pyrothorn/logs" \
     --link "${firename:?}:${firelink:?}" \
@@ -131,7 +154,7 @@ docker run -i -t \
     --link "${ogsaname:?}:${ogsalink:?}" \
     --link "${dataname:?}:${datalink:?}" \
     --link "${username:?}:${userlink:?}" \
-       firethorn/pyrothorn bash -c  '/scripts/test03-nohup.sh'
+       firethorn/pyrothorn:${version:?} bash -c  '/scripts/test03-nohup.sh'
 
 
 
