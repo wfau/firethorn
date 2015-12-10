@@ -69,7 +69,7 @@ public class IvoaResourceLoaderTestCase
         log.debug("Reading  [gaia-tableset.xml]");
         reader.inport(
             new FileReader(
-                "src/test/data/vosi/20150921-modified/gaia-tableset.xml"
+                "src/test/data/vosi/modified/gaia-tableset.xml"
                 ),
             gaia
             );
