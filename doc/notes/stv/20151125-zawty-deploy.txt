@@ -201,7 +201,7 @@ terminationTime=null
 PROPERTIES
 END
 CONFIG
-dai.astro.tapurl=http://geadev.esac.esa.int/tap-dev/tap/
+dai.astro.tapurl=http://geadev.esac.esa.int/tap-server/tap/
 END
 ACTIVITIES
 uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
