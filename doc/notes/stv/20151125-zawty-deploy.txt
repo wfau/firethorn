@@ -310,8 +310,8 @@ chcon -t svirt_sandbox_file_t "${properties:?}"
 
 
 
-Schema [public][524293] 
-Schema [icecube][524316]
+Schema [public][1802245] 
+Schema [icecube][1802268]
 
 
 ....
@@ -368,7 +368,7 @@ Schema [icecube][524316]
 
 
         ivoaname=GACS
-        ivoaschema=/ivoa/schema/524293
+        ivoaschema=/ivoa/schema/1802245
 
 	curl  \
 	--header "firethorn.auth.identity:${identity:?}" \
@@ -380,7 +380,7 @@ Schema [icecube][524316]
 	| ./pp | tee query-schema.json
 
 	ivoaname=ICECUBE
-	ivoaschema=/ivoa/schema/524316
+	ivoaschema=/ivoa/schema/1802268
 
 	curl  \
 	--header "firethorn.auth.identity:${identity:?}" \
@@ -396,8 +396,8 @@ Schema [icecube][524316]
         cat "${HOME:?}/firethorn.spaces"
 
 
-	gaiapublic=/adql/schema/164023
-	
+	gaiapublic=http://peter:8080/firethorn/adql/schema/1638493
+	adqlresource=http://peter:8080/firethorn/adql/resource/1605636
 
     exit
 
