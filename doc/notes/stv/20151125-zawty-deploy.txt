@@ -158,7 +158,7 @@ cat  "${databasefile:?}"
    source "${HOME:?}/firethorn.settings"
    pushd "${FIRETHORN_CODE:?}"
 
-       scp -r integration/005/scripts/* root@zawty:/root/
+       scp -r integration/005/scripts/* root@hebenu:/root/
 
    popd
 
@@ -184,7 +184,7 @@ cat  "${databasefile:?}"
 
     secret 'firethorn.user.host'
    
-    source run.sh 01 default 2.0.5
+    source run.sh 05 2.0.5
  
 
    docker exec -it jarmila bash
@@ -318,7 +318,7 @@ Schema [icecube][1802268]
 
 
     source ${HOME:?}/chain.properties
-
+    docker rm -f tester
     testname=tester
 
     docker run \
@@ -357,7 +357,7 @@ Schema [icecube][1802268]
 	source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
 	atlasadql=${adqlspace:?}
 
-	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml" 
+	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml" 
 	atlasschema=${adqlschema:?}
 
 	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'TWOMASS' 'dbo' "meta/TWOMASS_TablesSchema.xml" 
@@ -376,8 +376,7 @@ Schema [icecube][1802268]
 	--data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
 	--data   "adql.resource.schema.import.name=${ivoaname:?}" \
 	--data   "adql.resource.schema.import.base=${ivoaschema:?}" \
-	"${endpointurl:?}${atlasadql:?}/schemas/import" \
-	| ./pp | tee query-schema.json
+	"${endpointurl:?}${atlasadql:?}/schemas/import" 
 
 	ivoaname=ICECUBE
 	ivoaschema=/ivoa/schema/1802268
@@ -388,16 +387,55 @@ Schema [icecube][1802268]
 	--data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
 	--data   "adql.resource.schema.import.name=${ivoaname:?}" \
 	--data   "adql.resource.schema.import.base=${ivoaschema:?}" \
-	"${endpointurl:?}${atlasadql:?}/schemas/import" \
-	| ./pp | tee query-schema.json
+	"${endpointurl:?}${atlasadql:?}/schemas/import" 
 
 
         ln -s -f "${HOME:?}/firethorn.spaces.${datetime:?}" "${HOME:?}/firethorn.spaces"
         cat "${HOME:?}/firethorn.spaces"
 
 
-	gaiapublic=http://peter:8080/firethorn/adql/schema/1638493
-	adqlresource=http://peter:8080/firethorn/adql/resource/1605636
+	gaiapublic=http://peter:8080/firethorn/adql/schema/1638685
+	adqlresource=http://peter:8080/firethorn/adql/resource/1605644
+
+
+
+
+# -----------------------------------------------------
+# Run test queries.
+#[user@laptop]
+
+       source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'GACS'    'GACS'
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'ICECUBE' 'ICECUBE'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                nualpha,
+                nudelta
+            FROM
+                ICECUBE.nucand
+            WHERE
+                nualpha BETWEEN 263.0 AND 263.9
+            AND
+                nudelta BETWEEN 19.0 AND 19.9
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+                count(*)
+            FROM
+                GACS.g10_lmc
+            "
+    exit
+
+
 
     exit
 
@@ -425,81 +463,4 @@ Schema [icecube][1802268]
         ~   firethorn_base=http://peter:8080/firethorn
 
     exit
-
-# -----------------------------------------------------
-# Run test queries.
-#[user@laptop]
-
-    deploytype=live
-    deploylist="${HOME:?}/${deploytype:?}.machines"
-    deployprop="${HOME:?}/${deploytype:?}.properties"
-
-    source "${deploylist:?}"
-    ssh "${testuser}@${testhost:?}" 
-
-        source "${HOME:?}/firethorn.settings"
-        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
-
-        pushd $(mktemp --directory)
-
-            identity=$(pwgen 16 1)
-            community=$(date '+%A')
-
-            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
-            source "${HOME:?}/firethorn.spaces"
-
-            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Test query workspace'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'  'twomass'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASDR1' 'atlas'
-            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
-
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
-
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 100 ra, dec FROM atlassource"
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 1000 ra, dec FROM atlassource"
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10000 ra, dec FROM atlassource"
-
-            #12278
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
-                SELECT
-                    COUNT(*)
-                FROM
-                    atlasSource
-                WHERE
-                    (ra > 180 AND ra < 181)
-                AND
-                    (dec > -3 AND (dec < -2 OR dec < -3))
-                "
-
-            #180146
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
-                SELECT
-                    COUNT(*)
-                FROM
-                    atlasSource
-                WHERE
-                    (ra > 180 AND ra < 181)
-                AND
-                    ((dec > -3 AND dec < -2) OR dec < -3)
-                "
-
-            #180146
-            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "
-                SELECT
-                    COUNT(*)
-                FROM
-                    atlasSource
-                WHERE
-                    (ra > 180 AND ra < 181)
-                AND
-                    (dec > -3 AND dec < -2 OR dec < -3)
-                "
-
-        popd
-    exit
-
 
