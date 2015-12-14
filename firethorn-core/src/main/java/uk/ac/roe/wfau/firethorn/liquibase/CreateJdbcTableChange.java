@@ -1,5 +1,7 @@
 package uk.ac.roe.wfau.firethorn.liquibase;
 
+import java.sql.JDBCType;
+
 import liquibase.change.ChangeMetaData;
 import liquibase.change.ColumnConfig;
 import liquibase.change.DatabaseChange;
@@ -71,31 +73,51 @@ extends CreateTableChange
 	                "DATETIME"
 	                );
 	            break ;
+	        case CHAR:
+	        case NCHAR:	 
+	        case VARCHAR:	 
+	        case NVARCHAR: 
+	        	if (meta.arraysize()==null){
+        	  		builder.append(
+        	  			"VARCHAR"
+	        		);
+    	    		builder.append("(MAX)");
+    	    	} else {
+	    		    builder.append(
+	 	                meta.jdbctype().name()
+	 	            );
+	    	        builder.append("(");
+	    	        builder.append(
+	    	            meta.arraysize()
+	    	            );
+	    	        builder.append(")");
+	    	        
+	    	        }
 	        default :
-	            builder.append(
-	                meta.jdbctype().name()
-	                );
+	        	builder.append(
+	        	    meta.jdbctype().name()
+	        	);
 	            break ;
 	        }
 
     	// TODO This should check for char() rather than array()
-    	if (meta.jdbctype().isarray() || meta.jdbctype().equals(AdqlColumn.AdqlType.CHAR) || meta.jdbctype().equals(JdbcColumn.JdbcType.CHAR) )
+    	if (meta.jdbctype().isarray()  
+    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.CHAR)
+    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.VARCHAR)
+    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.NCHAR)
+    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.NVARCHAR))
     	    {
     	    if (meta.arraysize() == AdqlColumn.VAR_ARRAY_SIZE)
     	        {
     	        builder.append("(*)");
     	        }
     	    else {
-    	    	if (meta.arraysize()==null){
-    	    		 builder.append("(*)");
-    	    	} else {
-	    	        builder.append("(");
-	    	        builder.append(
-	    	            meta.arraysize()
-	    	            );
-	    	        builder.append(")");
-	    	        }
-    	    	}
+    	        builder.append("(");
+    	        builder.append(
+    	            meta.arraysize()
+    	            );
+    	        builder.append(")");
+    	        }
     	    }
 	
     	return builder.toString();
