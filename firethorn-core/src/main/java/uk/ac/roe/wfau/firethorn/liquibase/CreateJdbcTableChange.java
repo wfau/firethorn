@@ -79,19 +79,23 @@ extends CreateTableChange
 	        }
 
     	// TODO This should check for char() rather than array()
-    	if (meta.jdbctype().isarray())
+    	if (meta.jdbctype().isarray() || meta.jdbctype().equals(AdqlColumn.AdqlType.CHAR) || meta.jdbctype().equals(JdbcColumn.JdbcType.CHAR) )
     	    {
     	    if (meta.arraysize() == AdqlColumn.VAR_ARRAY_SIZE)
     	        {
     	        builder.append("(*)");
     	        }
     	    else {
-    	        builder.append("(");
-    	        builder.append(
-    	            meta.arraysize()
-    	            );
-    	        builder.append(")");
-    	        }
+    	    	if (meta.arraysize()==null){
+    	    		 builder.append("(*)");
+    	    	} else {
+	    	        builder.append("(");
+	    	        builder.append(
+	    	            meta.arraysize()
+	    	            );
+	    	        builder.append(")");
+	    	        }
+    	    	}
     	    }
 	
     	return builder.toString();
