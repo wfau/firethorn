@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>2.0.5</version>
+        <version project='firethorn'>2.0.5-stv-char-fix</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata</artifactId>
