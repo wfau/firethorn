@@ -184,8 +184,7 @@ cat  "${databasefile:?}"
 
     secret 'firethorn.user.host'
    
-    source run.sh 05 2.0.5
- 
+    source run.sh 05 2.0.5-stv-char-fix
 
    docker exec -it jarmila bash
 
@@ -293,7 +292,7 @@ chcon -t svirt_sandbox_file_t "${properties:?}"
      cd /projects/firethorn/
 
             hg pull
-            hg update default
+            hg update 2.0.5-stv-char-fix
 
             pushd firethorn-core
 
@@ -310,8 +309,8 @@ chcon -t svirt_sandbox_file_t "${properties:?}"
 
 
 
-Schema [public][1802245] 
-Schema [icecube][1802268]
+Schema [public][4620293] 
+Schema [icecube][4620316]
 
 
 ....
@@ -363,12 +362,13 @@ Schema [icecube][1802268]
 	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'TWOMASS' 'dbo' "meta/TWOMASS_TablesSchema.xml" 
 	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'VHSDR1' 'dbo' "meta/VHSDR1_TablesSchema.xml" 
 	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'SDSSDR9' 'dbo' "meta/SDSSDR9_TablesSchema.xml" 
+	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'BESTDR9' 'dbo' "meta/BESTDR9_TablesSchema.xml" 
 	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'VIKINGDR3' 'dbo' "meta/VIKINGDR3_TablesSchema.xml" 
 	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'WISE' 'dbo' "meta/WISE_TablesSchema.xml" 
 
 
         ivoaname=GACS
-        ivoaschema=/ivoa/schema/1802245
+        ivoaschema=/ivoa/schema/4620293
 
 	curl  \
 	--header "firethorn.auth.identity:${identity:?}" \
@@ -379,7 +379,7 @@ Schema [icecube][1802268]
 	"${endpointurl:?}${atlasadql:?}/schemas/import" 
 
 	ivoaname=ICECUBE
-	ivoaschema=/ivoa/schema/1802268
+	ivoaschema=/ivoa/schema/4620316
 
 	curl  \
 	--header "firethorn.auth.identity:${identity:?}" \
@@ -394,8 +394,8 @@ Schema [icecube][1802268]
         cat "${HOME:?}/firethorn.spaces"
 
 
-	gaiapublic=http://peter:8080/firethorn/adql/schema/1638685
-	adqlresource=http://peter:8080/firethorn/adql/resource/1605644
+	gaiapublic=http://peter:8080/firethorn/adql/schema/4456542
+	adqlresource=http://peter:8080/firethorn/adql/resource/4423684
 
 
 
@@ -428,10 +428,7 @@ Schema [icecube][1802268]
         source "bin/05-03-execute-query.sh" \
             "AUTO" \
             "
-            SELECT
-                count(*)
-            FROM
-                GACS.g10_lmc
+            SELECT top 10 * from GACS.g10_mw
             "
     exit
 
