@@ -22,8 +22,8 @@
 #
 
 
-newrelease=2.0.5
-newversion=2.0.5
+
+newversion=2.0.5-stv-char-fix
 
 # -------------------------------------------------------------------------------------------
 # Create new metadata and userdata database(s).
@@ -33,6 +33,7 @@ newversion=2.0.5
   source "${deploylist:?}"
     ssh "${sqluser:?}@${sqlhost:?}"
 
+	newversion=2.0.5-stv-char-fix
         #
         # Set the new database name.
         dbuser=SHEP
@@ -64,7 +65,7 @@ newversion=2.0.5
         pushd "${FIRETHORN_CODE:?}"    
 
             hg pull
-            hg update default
+            hg update ${newversion:?}
             
             pushd 'firethorn-sqlserver/src/sql'
 
