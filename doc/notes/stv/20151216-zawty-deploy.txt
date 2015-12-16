@@ -159,7 +159,7 @@ cat  "${databasefile:?}"
    source "${HOME:?}/firethorn.settings"
    pushd "${FIRETHORN_CODE:?}"
 
-       scp -r integration/005/scripts/* root@hebenu:/root/
+       scp -r integration/005/scripts/* root@zawty:/root/
 
    popd
 
@@ -169,6 +169,7 @@ cat  "${databasefile:?}"
 
     ssh zawty
 
+    newversion=2.0.5-stv-char-fix
 
 # -----------------------------------------------------
 # Create our secret function.
@@ -185,7 +186,7 @@ cat  "${databasefile:?}"
 
     secret 'firethorn.user.host'
    
-    source run.sh 05 2.0.5-stv-char-fix
+    source run.sh 01 ${newversion:?}
 
    docker exec -it jarmila bash
 
@@ -310,10 +311,12 @@ chcon -t svirt_sandbox_file_t "${properties:?}"
 
 
 
-Schema [public][4620293] 
-Schema [icecube][4620316]
+Schema [public][393221] 
+Schema [icecube][393244]
 
 
+Schema [public][5406725]
+ Schema [icecube][5406748]
 ....
 
 
@@ -369,7 +372,7 @@ Schema [icecube][4620316]
 
 
         ivoaname=GACS
-        ivoaschema=/ivoa/schema/4620293
+        ivoaschema=/ivoa/schema/5406725
 
 	curl  \
 	--header "firethorn.auth.identity:${identity:?}" \
@@ -380,7 +383,7 @@ Schema [icecube][4620316]
 	"${endpointurl:?}${atlasadql:?}/schemas/import" 
 
 	ivoaname=ICECUBE
-	ivoaschema=/ivoa/schema/4620316
+	ivoaschema=/ivoa/schema/5406748
 
 	curl  \
 	--header "firethorn.auth.identity:${identity:?}" \
@@ -395,8 +398,8 @@ Schema [icecube][4620316]
         cat "${HOME:?}/firethorn.spaces"
 
 
-	gaiapublic=http://peter:8080/firethorn/adql/schema/4456542
-	adqlresource=http://peter:8080/firethorn/adql/resource/4423684
+	gaiapublic=http://peter:8080/firethorn/adql/schema/163934
+	adqlresource=http://peter:8080/firethorn/adql/resource/32773
 
 
 
