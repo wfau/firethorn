@@ -231,7 +231,7 @@ implements JdbcResource.JdbcDriver
 	            break ;
 	        }
 
-
+	// Handle Cases that have not be visited by the switch statement
     	// TODO This should check for char() rather than array()
     	if (meta.jdbctype().isarray()  
     			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.CHAR)

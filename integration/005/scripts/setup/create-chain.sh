@@ -187,3 +187,5 @@ EOF
     pyrologs="/var/logs/pyrothorn"
     directory "${pyrologs:?}"
 
+    sleep 10
+
