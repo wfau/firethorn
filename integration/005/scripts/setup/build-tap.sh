@@ -1,7 +1,24 @@
+#!/bin/bash -eu
+# -e: Exit immediately if a command exits with a non-zero status.
+# -u: Treat unset variables as an error when substituting.
+#
+#  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     
 
-# -----------------------------------------------------
-# Configure our identity.
-#[root@tester]
 
         identity=${identity:-$(date '+%H:%M:%S')}
         community=${community:-$(date '+%A %-d %B %Y')}
@@ -25,7 +42,7 @@
         database=ATLASDR1
         
         source "bin/02-02-create-jdbc-space.sh" \
-            'Atlas JDBC conection' \
+            "${catalogue:?} JDBC conection" \
             "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
             "${datauser:?}" \
             "${datapass:?}" \
@@ -33,12 +50,11 @@
             '*'
         atlasjdbc=${jdbcspace:?}
 
-        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        source "bin/03-01-create-adql-space.sh" '${catalogue:?} ADQL workspace'
         atlasadql=${adqlspace:?}
 
-        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" ${catalogue:?} 'dbo' "meta/${catalogue:?}_TablesSchema.xml"
 
-        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasTwomass.xml"
 
 
 
@@ -47,45 +63,15 @@
 #[root@tester]
 
         source "bin/04-01-create-query-space.sh" 'Test workspace'
-        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'atlas'
-
-
-# -----------------------------------------------------
-# Run an ATLASDR1 query
-#[root@tester]
-
-        source "bin/04-03-create-query-schema.sh"
-
-        source "bin/05-03-execute-query.sh" \
-            "AUTO" \
-            "
-            SELECT
-                atlasSource.ra,
-                atlasSource.dec
-            FROM
-                atlas.atlasSource
-            WHERE
-                atlasSource.ra  BETWEEN 354 AND 355
-            AND
-                atlasSource.dec BETWEEN -40 AND -39
-            "
-
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" "${catalogue:?}" "${catalogue:?}"
 
 
 	# -----------------------------------------------------
 	# Testing TAP
 
 	resourceid=$(basename ${queryspace:?}) 
-
-	query="SELECT+top+5+ra+from+atlasSource"
-	format=VOTABLE
-	lang=ADQL
-	request=doQuery
-
-        # Get VOSI
-	curl ${endpointurl:?}/tap/${resourceid:?}/tables
-
-query="SELECT+TOP+10+*+FROM+ATLASDR1.atlasSource"
+	#resourceid=4947969
+	query="SELECT+TOP+10+*+FROM+${catalogue:?}.atlasSource"
 	format=VOTABLE
 	lang=ADQL
 	request=doQuery
@@ -112,7 +98,6 @@ query="SELECT+TOP+10+*+FROM+ATLASDR1.atlasSource"
 	-d REQUEST=${request:?}
 
 	
-
 	# ----------------------TAP_SCHEMA generating-------------------------------
 
 	tap_schema_user=${metauser:?}
@@ -124,56 +109,12 @@ query="SELECT+TOP+10+*+FROM+ATLASDR1.atlasSource"
         # Generate TAP_SCHEMA
 	curl --data "url=${tap_schema_url:?}&user=${tap_schema_user:?}&pass=${tap_schema_pass:?}&driver=${tap_schema_driver:?}&catalog=${tap_schema_db:?}" ${endpointurl:?}/tap/${resourceid:?}/generateTapSchema
 
-
-	source "bin/02-02-create-jdbc-space.sh" \
-            'TAP_SCHEMA conection' \
-            "${tap_schema_url:?}" \
-            "${tap_schema_user:?}" \
-            "${tap_schema_pass:?}" \
-            "${tap_schema_driver:?}" \
-            '*' \
-            'nilbert'
-
-
-        cat >  "${HOME:?}/firethorn.spaces" << EOF
-tapschemajdbc=${jdbcspace:?}
-EOF
-
-
-        source "bin/03-04-import-jdbc-metadoc.sh" "${jdbcspace:?}" "${adqlspace:?}" "${tap_schema_db:?}" "TAP_SCHEMA_"${resourceid:?} "meta/TAP_SCHEMA.xml"
-      
-	source "bin/05-03-execute-query.sh" \
-            "AUTO" \
-            "
-            SELECT
-	      * from TAP_SCHEMA.tables
-            "
-
-	source "bin/05-03-execute-query.sh" \
-            "AUTO" \
-            "
-            SELECT
-	      * from TAP_SCHEMA.schemas
-            "
-	
+       echo "${catalogue:?} TAP Service: ${endpointurl:?}/tap/${resourceid:?}"
+       echo "${catalogue:?} Firethorn Resource: ${endpointurl:?}${atlasadql:?}"
 
 
 
 
-	# ----------------------Query test6: Test TAP_SCHEMA using TAP-------------------------------
-
-	query="SELECT+*+from+TAP_SCHEMA.tables"
-	data="$( curl -L \
-	${endpointurl:?}/tap/${resourceid:?}/async \
-	-d LANG=${lang:?} \
-	-d REQUEST=${request:?} \
-	-d QUERY=${query:?})"
-
-	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
-
-	curl -L \
-	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
-	-d PHASE=RUN 
 
 
 

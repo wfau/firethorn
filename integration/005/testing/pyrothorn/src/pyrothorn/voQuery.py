@@ -13,7 +13,7 @@ import urllib
 import StringIO
 import time
 import xml.dom.minidom
-import atpy
+from atpy import atpy
 import pyodbc
 try:
     import simplejson as json
@@ -24,7 +24,6 @@ import re
 import logging
 import datetime
 from time import gmtime,  strftime
-
 
 
 

@@ -21,22 +21,21 @@ try:
     import logging
     import urllib2
     import json
-    import pyrothorn
     import urllib
-    from pyrothorn import voQuery
+    import config
     from pyrothorn import firethornEngine
     from pyrothorn import queryEngine
     from pyrothorn.firethorn_config import web_services_sys_info
     from mssql import sqlEngine
-    import config
     import uuid
     from time import gmtime,  strftime
     import datetime
     import base64
     import collections
     import hashlib
+    from pyrothorn import voQuery
     sys.stdout = open('logs/logfile.txt', 'w')
-    
+    import pyrothorn    
     # get a UUID - URL safe, Base64
     def get_a_uuid():
         '''
@@ -86,6 +85,12 @@ class test_firethorn(unittest.TestCase):
         
         try:
             queryrunID = ""
+            firethorn_version = ""
+            java_version = ""
+            sys_platform = ""
+            sys_timestamp = ""
+            firethorn_changeset = ""
+            firethorn_version = ""
 	    logged_queries=[]
             logged_query_sqlEng = sqlEngine.SQLEngine(config.stored_queries_dbserver, config.stored_queries_dbserver_username, config.stored_queries_dbserver_password, config.stored_queries_dbserver_port)
             sqlEng = sqlEngine.SQLEngine(config.test_dbserver, config.test_dbserver_username, config.test_dbserver_password, config.test_dbserver_port)
@@ -108,9 +113,7 @@ class test_firethorn(unittest.TestCase):
                 self.total_queries = 0
                 self.total_failed = 0            
 
-
             with open(config.logged_queries_txt_file ) as f:
-            
                 for query in f:
                     qEng = queryEngine.QueryEngine()
                     query = str(query.strip())
@@ -173,7 +176,7 @@ class test_firethorn(unittest.TestCase):
                     	    start_time = time.time()
 			    logging.info("Started TAP job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    with Timeout(config.firethorn_timeout):
-			        votable = voQuery.execute_async_query(q=query, url="http://wfaudata.roe.ac.uk/atlasDR1-dsa//TAP/")
+			        votable = voQuery.execute_async_query(q=query, url=config.tap_service)
 			    tap_row_length = len(votable)
 			    logging.info("Finished TAP job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    logging.info("TAP  Query: " + str(tap_row_length) + " row(s) returned. ")
@@ -205,7 +208,7 @@ class test_firethorn(unittest.TestCase):
 
                         logging.info("")
 
-                        params = (query, queryrunID, querymd5, 1,  query_timestamp, sql_row_length, tap_row_length, tap_duration, sql_duration, test_passed, tap_version, str(tap_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, tap_changeset, sys_platform, sys_timestamp )
+                        params = (query, queryrunID, querymd5, 1,  query_timestamp, sql_row_length, tap_row_length, tap_duration, sql_duration, test_passed, firethorn_version, str(tap_error_message).encode('utf-8'), str(sql_error_message).encode('utf-8'), java_version, firethorn_changeset, sys_platform, sys_timestamp )
                         report_query = "INSERT INTO queries (query, queryrunID, query_hash, query_count, query_timestamp, direct_sql_rows, firethorn_sql_rows, firethorn_duration, sql_duration, test_passed, firethorn_version, firethorn_error_message, sql_error_message, java_version, firethorn_changeset, sys_platform, sys_timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" 
                         reporting_sqlEng.execute_insert(report_query, config.reporting_database, params=params)
                         #self.total_queries = self.total_queries + 1
@@ -227,7 +230,7 @@ class test_firethorn(unittest.TestCase):
 
 
         except Exception as e:
-            logging.info("..")
+            logging.info(e)
         # Test if total queries failed > 0            
         self.assertEqual(self.total_failed , 0, "Total queries failed: " + str(self.total_failed) + " (out of " + str(self.total_queries) +  ")" )
    
