@@ -22,6 +22,7 @@
 testname=$1
 branch=$2
 version=${3:-$branch}
+input_variable=""
 if [ -n "$4" ]; then
 input_variable=${4}
 fi
@@ -64,9 +65,23 @@ else
         source tests/test05-integration-json.sh
     elif [ $testname -eq 06 ];
     then
+        source setup/setup-pyro.sh 
         if [  -n "$input_variable" ]
         then 
-            echo "In run.sh, using input variable"
+            echo "Running tap test with: " + ${input_variable:?}
+            source tests/test06-taptest.sh  ${input_variable:?}
+        else
+            echo -n "Please enter a TAP service and press [ENTER]: "
+            read input_variable
+            source tests/test06-taptest.sh  ${input_variable:?}
+        fi
+	
+        
+    elif [ $testname -eq 07 ];
+    then
+        if [  -n "$input_variable" ]
+        then 
+            echo "Running setup tap script with: " + ${input_variable:?}
             source setup/setup-tap.sh ${input_variable:?}
         else
             echo -n "Please enter a catalogue and press [ENTER]: "

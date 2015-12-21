@@ -22,10 +22,10 @@ catalogue=$1
 
 if [ "$catalogue" != "DEFAULT" ]
   then
-    echo "Building TAP service for the supplied catalogue:"  ${catalogue:?}
+    echo "Building TAP service for the supplied catalogue:" + ${catalogue:?}
   else
     catalogue=${testrundatabase:?}
-    echo "No catalogue given.. Using catalogue from config:"  ${catalogue:?}
+    echo "No catalogue given.. Using catalogue from config:" + ${catalogue:?}
 fi
 
 source ${HOME:?}/chain.properties
