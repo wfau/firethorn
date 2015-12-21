@@ -18,6 +18,16 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
+catalogue=$1
+
+if [ "$catalogue" != "DEFAULT" ]
+  then
+    echo "Building TAP service for the supplied catalogue:" + ${catalogue:?}
+  else
+    catalogue=${testrundatabase:?}
+    echo "No catalogue given.. Using catalogue from config:" + ${catalogue:?}
+fi
+
 source ${HOME:?}/chain.properties
 
 setupdir="${HOME:?}/setup"
@@ -25,8 +35,6 @@ setupdir="${HOME:?}/setup"
 chcon -t svirt_sandbox_file_t "${setupdir:?}/build-tap.sh" 
 
 chmod a+r "${setupdir:?}/build-tap.sh"
-
-directory "${setupdir:?}"
 
 echo "*** Running tap setup script ***"
 
@@ -49,7 +57,7 @@ echo "*** Running tap setup script ***"
         --env "metapass=${metapass:?}" \
         --env "metadata=${metadata?}" \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
-        --env "catalogue=${testrundatabase:?}" \
+        --env "catalogue=${catalogue:?}" \
         --link "${firename:?}:${firelink:?}" \
         "firethorn/tester:1.1" \
         bash -C ${setupdir:?}/build-tap.sh
