@@ -104,7 +104,7 @@ def execute_async_query(url, q, mode_local="async", request="doQuery", lang="ADQ
     """    
 
     params = urllib.urlencode({'REQUEST': request, 'LANG': lang, 'FORMAT': voformat, 'QUERY' : q}) 
-    full_url = url+mode_local
+    full_url = url+"/"+mode_local
 
     votable = []
     jobId= 'None'

@@ -176,7 +176,7 @@ cat  "${databasefile:?}"
 #[root@hebenu]
 
     secrethost='stv@shepseskaf.roe.ac.uk'
-    secretfile='${HOME:?}/secret.store'
+    secretfile='${HOME:?}/secret.test.store'
 
     secret()
         {
@@ -186,7 +186,7 @@ cat  "${databasefile:?}"
 
     secret 'firethorn.user.host'
    
-    source run.sh 06 ${newversion:?}
+    source run.sh 01 ${newversion:?}
 
    docker exec -it jarmila bash
 

@@ -69,8 +69,7 @@
 	# -----------------------------------------------------
 	# Testing TAP
 
-	resourceid=$(basename ${queryspace:?}) 
-	#resourceid=4947969
+	resourceid=$(basename ${atlasadql:?}) 
 	query="SELECT+TOP+10+*+FROM+${catalogue:?}.atlasSource"
 	format=VOTABLE
 	lang=ADQL
