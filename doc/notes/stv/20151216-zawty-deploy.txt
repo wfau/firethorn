@@ -169,14 +169,14 @@ cat  "${databasefile:?}"
 
     ssh zawty
 
-    newversion=2.0.5-stv-char-fix
+    newversion=2.0.6-stv-tap
 
 # -----------------------------------------------------
 # Create our secret function.
 #[root@hebenu]
 
     secrethost='stv@shepseskaf.roe.ac.uk'
-    secretfile='${HOME:?}/secret.store'
+    secretfile='${HOME:?}/secret.test.store'
 
     secret()
         {

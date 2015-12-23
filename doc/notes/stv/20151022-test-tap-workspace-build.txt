@@ -468,8 +468,8 @@ EOF
 	# Testing TAP
 
 	#resourceid=$(basename ${queryspace:?}) 
-	resourceid=2162690
-	query="SELECT+TOP+10000+column_name+FROM+TAP_SCHEMA.columns"
+	resourceid=4947969
+	query="SELECT+TOP+10+*+FROM+ATLASDR1.atlasSource"
 	format=VOTABLE
 	lang=ADQL
 	request=doQuery

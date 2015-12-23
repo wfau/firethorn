@@ -116,6 +116,12 @@ properties=$(mktemp)
 cat > "${properties:?}" << EOF
 
         firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+        firethorn.webapp.baseurl=http://${firelink:?}:8080/firethorn
+
+        firethorn.limits.time.default=60000
+        firethorn.limits.time.absolute=600000
+        firethorn.limits.rows.default=${defaultrows:?}
+        firethorn.limits.rows.absolute=${absoluterows:?}
 
         firethorn.meta.url=jdbc:jtds:sqlserver://${userlink:?}/${metadata:?}
         firethorn.meta.user=${metauser:?}
@@ -128,6 +134,7 @@ cat > "${properties:?}" << EOF
         firethorn.user.pass=${userpass:?}
         firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
         firethorn.user.type=mssql
+
 
 EOF
 

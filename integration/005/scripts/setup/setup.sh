@@ -57,7 +57,7 @@
     # Delete all containers
     docker rm -f -v $(docker ps -a -q) 
     # Delete all images
-    #docker rmi -f $(docker images -q)
+    docker rmi -f $(docker images -q)
 
     echo "*** Creating projects & cache directories [setup.sh] ***"
 # -----------------------------------------------------
@@ -177,6 +177,9 @@
 
     tunneluser=$(secret 'ssh.tunnel.user')
     tunnelhost=$(secret 'ssh.tunnel.host')
+
+    defaultrows=100000
+    absoluterows=10000000
 
 EOF
 
