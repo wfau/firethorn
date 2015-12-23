@@ -93,6 +93,7 @@ extends CreateTableChange
 	    	        builder.append(")");
 	    	        
 	    	        }
+	        	break;
 	        default :
 	        	builder.append(
 	        	    meta.jdbctype().name()

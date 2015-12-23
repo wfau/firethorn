@@ -120,8 +120,8 @@ cat > "${properties:?}" << EOF
 
         firethorn.limits.time.default=60000
         firethorn.limits.time.absolute=600000
-        firethorn.limits.rows.default=100000
-        firethorn.limits.rows.absolute=10000000
+        firethorn.limits.rows.default=${defaultrows:?}
+        firethorn.limits.rows.absolute=${absoluterows:?}
 
         firethorn.meta.url=jdbc:jtds:sqlserver://${userlink:?}/${metadata:?}
         firethorn.meta.user=${metauser:?}

@@ -72,7 +72,7 @@
 
     secret 'firethorn.user.host'
    
-    source run.sh 06 ${newversion:?} ${newversion:?} ATLASDR1
+    source run.sh 06 {newversion:?} ${newversion:?} http://peter:8080/firethorn/tap/9207809
 
    
 

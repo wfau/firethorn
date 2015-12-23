@@ -207,6 +207,10 @@ implements JdbcResource.JdbcDriver
 	        case NCHAR:	 
 	        case VARCHAR:	 
 	        case NVARCHAR: 
+	        	
+	        	log.debug("*******1******");
+	        	log.debug(meta.arraysize().toString());
+	        	
 	        	if (meta.arraysize()==null){
         	  		builder.append(
         	  			"VARCHAR"
@@ -214,6 +218,7 @@ implements JdbcResource.JdbcDriver
     	    		builder.append("(MAX)");
     	    		
     	    	} else {
+    	    		log.debug("*****2*******");
 	    		    builder.append(
 	 	                meta.jdbctype().name()
 	 	            );
@@ -224,6 +229,7 @@ implements JdbcResource.JdbcDriver
 	    	        builder.append(")");
 	    	        
 	    	        }
+	        	break;
 	        default :
 	        	builder.append(
 	        			meta.jdbctype().name()
