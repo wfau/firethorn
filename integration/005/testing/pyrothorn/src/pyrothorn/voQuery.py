@@ -74,14 +74,15 @@ def start_async_loop(url):
                 return_vot = atpy.Table(url + '/results/result', type='vo')      
                 break
             elif res=='ERROR' or res== '':
-                return return_vot
+                print "Error.."
+                return -1
             time.sleep(1)
     except Exception as e:
         logging.exception('Exception caught:')
-        
+        return -1
         if f != "":
             f.close()
-        return_vot = []
+
     return return_vot    
 
 
@@ -89,6 +90,8 @@ def get_votable_rowcount(votable):
     """
     Get table rowcount
     """
+    if votable==-1:
+        return -1
     return len(votable)
 
 def execute_async_query(url, q, mode_local="async", request="doQuery", lang="ADQL", voformat="votable"):
