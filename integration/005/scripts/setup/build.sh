@@ -60,7 +60,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         hg pull
-        hg update "${branch:?}"
+        hg update -C "${branch:?}"
         hg branch
     
     popd
