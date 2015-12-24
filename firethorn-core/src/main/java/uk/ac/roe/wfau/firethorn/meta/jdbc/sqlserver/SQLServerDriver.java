@@ -207,10 +207,6 @@ implements JdbcResource.JdbcDriver
 	        case NCHAR:	 
 	        case VARCHAR:	 
 	        case NVARCHAR: 
-	        	
-	        	log.debug("*******1******");
-	        	log.debug(meta.arraysize().toString());
-	        	
 	        	if (meta.arraysize()==null){
         	  		builder.append(
         	  			"VARCHAR"
@@ -218,7 +214,6 @@ implements JdbcResource.JdbcDriver
     	    		builder.append("(MAX)");
     	    		
     	    	} else {
-    	    		log.debug("*****2*******");
 	    		    builder.append(
 	 	                meta.jdbctype().name()
 	 	            );
@@ -237,7 +232,7 @@ implements JdbcResource.JdbcDriver
 	            break ;
 	        }
 
-	// Handle Cases that have not be visited by the switch statement
+	    // Handle Cases that have not be visited by the switch statement
     	// TODO This should check for char() rather than array()
     	if (meta.jdbctype().isarray()  
     			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.CHAR)
