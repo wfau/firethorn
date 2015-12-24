@@ -9,7 +9,7 @@
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  This program is distributed in the hope that it will be useful,
+#  This program is distributed in the hope that it will be useful,z
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
@@ -150,12 +150,14 @@ mkdir -p /var/logs/${pyroname:?}
 
 echo "*** Run pyrothorn [test06-taptest.sh] ***"
 
+
+
 docker run -i -t \
     --name ${pyroname:?} \
     --detach \
     --memory 512M \
     --volume "${pyroproperties:?}:/home/pyrothorn/config.py" \
-    --volume ${HOME:?}/tests/test01-nohup.sh:/scripts/test05-nohup.sh \
+    --volume ${HOME:?}/tests/test06-nohup.sh:/scripts/test06-nohup.sh \
     --volume "${pyrologs}:/home/pyrothorn/logs" \
     --link "${firename:?}:${firelink:?}" \
     --link "${pyrosqlname:?}:${pyrosqllink:?}" \
