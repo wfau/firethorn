@@ -111,13 +111,11 @@
 #[root@virtual]
 
 
-ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 
 properties=$(mktemp)
 cat > "${properties:?}" << EOF
 
         firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
-        firethorn.webapp.baseurl=http://${ip:?}:8080/firethorn
 
         firethorn.limits.time.default=60000
         firethorn.limits.time.absolute=600000

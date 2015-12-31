@@ -24,7 +24,7 @@ echo "*** Initialising test06 script [test06-taptest.sh] ***"
 
 tap_service=$1
 
-echo "Running test on the following TAP Service :" + ${tap_service:?}
+echo "Running test on the following TAP Service :" ${tap_service:?}
 
 source ${HOME:?}/chain.properties
 
