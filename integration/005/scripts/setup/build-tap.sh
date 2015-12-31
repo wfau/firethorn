@@ -39,7 +39,7 @@
 # Load the ATLASDR1 resource.
 #[root@tester]
 
-        database=ATLASDR1
+        database=${datadata:?}
         
         source "bin/02-02-create-jdbc-space.sh" \
             "${catalogue:?} JDBC conection" \
