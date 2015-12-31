@@ -130,7 +130,7 @@ def execute_async_query(url, q, mode_local="async", request="doQuery", lang="ADQ
             
     except Exception as e:
         logging.exception('Exception caught:')
-        votable = []
+        return -1
 
     return votable
 

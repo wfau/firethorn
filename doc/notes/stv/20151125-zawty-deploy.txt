@@ -23,7 +23,7 @@
 
 
 
-newversion=2.0.5-stv-char-fix
+newversion=2.0.7
 
 # -------------------------------------------------------------------------------------------
 # Create new metadata and userdata database(s).
@@ -159,7 +159,7 @@ cat  "${databasefile:?}"
    source "${HOME:?}/firethorn.settings"
    pushd "${FIRETHORN_CODE:?}"
 
-       scp -r integration/005/scripts/* root@hebenu:/root/
+       scp -r integration/005/scripts/* root@zawty:/root/
 
    popd
 
@@ -185,7 +185,7 @@ cat  "${databasefile:?}"
 
     secret 'firethorn.user.host'
    
-    source run.sh 05 2.0.5-stv-char-fix
+    source run.sh 05 default 2.0.7
 
    docker exec -it jarmila bash
 
@@ -293,7 +293,7 @@ chcon -t svirt_sandbox_file_t "${properties:?}"
      cd /projects/firethorn/
 
             hg pull
-            hg update 2.0.5-stv-char-fix
+            hg update -C default
 
             pushd firethorn-core
 
@@ -310,8 +310,8 @@ chcon -t svirt_sandbox_file_t "${properties:?}"
 
 
 
-Schema [public][4620293] 
-Schema [icecube][4620316]
+Schema [public][1572869] 
+Schema [icecube][1572892]
 
 
 ....
@@ -330,7 +330,7 @@ Schema [icecube][4620316]
         --env "datadriver=${datadriver:?}" \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
-        "firethorn/tester:${version:?}" \
+        "firethorn/tester" \
         bash  
 # -----------------------------------------------------
 # Import the table metadata.
@@ -369,7 +369,7 @@ Schema [icecube][4620316]
 
 
         ivoaname=GACS
-        ivoaschema=/ivoa/schema/4620293
+        ivoaschema=/ivoa/schema/1572869
 
 	curl  \
 	--header "firethorn.auth.identity:${identity:?}" \
@@ -380,7 +380,7 @@ Schema [icecube][4620316]
 	"${endpointurl:?}${atlasadql:?}/schemas/import" 
 
 	ivoaname=ICECUBE
-	ivoaschema=/ivoa/schema/4620316
+	ivoaschema=/ivoa/schema/1572892
 
 	curl  \
 	--header "firethorn.auth.identity:${identity:?}" \
@@ -395,8 +395,8 @@ Schema [icecube][4620316]
         cat "${HOME:?}/firethorn.spaces"
 
 
-	gaiapublic=http://peter:8080/firethorn/adql/schema/4456542
-	adqlresource=http://peter:8080/firethorn/adql/resource/4423684
+	gaiapublic=http://peter:8080/firethorn/adql/schema/1409113
+	adqlresource=http://peter:8080/firethorn/adql/resource/1376260
 
 
 
