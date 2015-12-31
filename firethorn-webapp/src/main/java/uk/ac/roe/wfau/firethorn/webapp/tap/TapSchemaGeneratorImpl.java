@@ -104,6 +104,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		this.factories = factories;
 		this.tapSchemaJDBCName = "TAP_SCHEMA_" + this.resource.ident().toString();
 		this.tapSchemaResourceJDBCName = "TAP_RESOURCE_" + this.resource.ident().toString();
+		
 
 	}
 

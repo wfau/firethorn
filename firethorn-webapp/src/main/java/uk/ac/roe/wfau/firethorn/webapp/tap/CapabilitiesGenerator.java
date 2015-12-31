@@ -23,9 +23,13 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 @Component
 public class CapabilitiesGenerator extends AbstractComponent{
 
-	 @Value("${firethorn.webapp.baseurl:null}")
-	 private String baseurl;
-
+	private String baseurl;
+	
+	public CapabilitiesGenerator(String baseurl) {
+		super();
+		this.baseurl = baseurl;
+	}
+	 
 	/**
 	 * Get baseurl
 	 * 

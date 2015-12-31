@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
@@ -96,7 +97,7 @@ public class AdqlTapSyncController extends AbstractController {
 	@RequestMapping(value = "sync", method = { RequestMethod.POST,
 			RequestMethod.GET })
 	public void sync(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response, 
+			final HttpServletResponse response, HttpServletRequest request,
 			@RequestParam(value = "QUERY", required = false) String QUERY,
 			@RequestParam(value = "LANG", required = false) String LANG,
 			@RequestParam(value = "REQUEST", required = false) String REQUEST, 
@@ -121,6 +122,7 @@ public class AdqlTapSyncController extends AbstractController {
 		if (valid) {
 
 			if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
+				capgenerator = new CapabilitiesGenerator(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 				writer.append(capgenerator.generateCapabilities(resource));
 				return;
 			} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)) {
