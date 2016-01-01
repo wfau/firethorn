@@ -25,6 +25,10 @@ public class CapabilitiesGenerator extends AbstractComponent{
 
 	private String baseurl;
 	
+	public CapabilitiesGenerator() {
+		super();
+	}
+	
 	public CapabilitiesGenerator(String baseurl) {
 		super();
 		this.baseurl = baseurl;
