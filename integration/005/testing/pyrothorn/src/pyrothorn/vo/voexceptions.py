@@ -59,7 +59,7 @@ def _suppressed_warning(warning, config):
     if message_count <= MAX_WARNINGS:
         if message_count == MAX_WARNINGS:
             warning.formatted_message += ' (suppressing further warnings of this type...)'
-        warn(str(warning))
+        #warn(str(warning))
 
 def warn_or_raise(warning_class, exception_class=None, args=(), config={}, pos=None):
     """
