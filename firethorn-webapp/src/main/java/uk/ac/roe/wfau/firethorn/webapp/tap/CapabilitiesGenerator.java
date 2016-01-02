@@ -2,6 +2,8 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 
 import java.io.PrintWriter;
 
+import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,16 @@ public class CapabilitiesGenerator extends AbstractComponent{
 	public String getBaseurl() {
 		return baseurl;
 	}
+	
+	/**
+	 * Get baseurl from request
+	 * 
+	 * @return baseurl
+	 */
+	public String getBaseurlFromRequest( HttpServletRequest request) {
+		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+	}
+
 
 	/**
 	 * Set baseurl
@@ -56,7 +68,8 @@ public class CapabilitiesGenerator extends AbstractComponent{
      *
      */
     public String generateCapabilities(
-        AdqlResource resource
+        AdqlResource resource,
+        HttpServletRequest request
         ){
     	
 		StringBuilder writer = new StringBuilder();
@@ -76,24 +89,24 @@ public class CapabilitiesGenerator extends AbstractComponent{
 			"http://www.ivoa.net/xml/VODataService/v1.1 http://vo.ari.uni-heidelberg.de/docs/schemata/VODataService-v1.1.xsd \">" +
 		    "<capability standardID=\"ivo://ivoa.net/std/VOSI#capabilities\">" +
 		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
-		    "      <accessURL use=\"full\">" + getBaseurl() + "/tap/" + resource.ident() + "/capabilities</accessURL>" +
+		    "      <accessURL use=\"full\">" + getBaseurlFromRequest(request) + "/tap/" + resource.ident() + "/capabilities</accessURL>" +
 		    "    </interface>" +
 		    "  </capability>" +
 		    "  <capability standardID=\"ivo://ivoa.net/std/VOSI#availability\">" +
 		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
-		    "      <accessURL use=\"full\">" + getBaseurl() + "/tap/" + resource.ident() + "/availability</accessURL>" +
+		    "      <accessURL use=\"full\">" + getBaseurlFromRequest(request) + "/tap/" + resource.ident() + "/availability</accessURL>" +
 		    "    </interface>" +
 		    "  </capability>" +
 		    "  <capability standardID=\"ivo://ivoa.net/std/VOSI#tables\">" +
 		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
-		    "      <accessURL use=\"full\">" + getBaseurl() + "/tap/" + resource.ident() + "/tables</accessURL>" +
+		    "      <accessURL use=\"full\">" + getBaseurlFromRequest(request) + "/tap/" + resource.ident() + "/tables</accessURL>" +
 		    "    </interface>" +
 		    "    <!-- RESTful VOSI-tables-1.1 would be use=\"base\" -->" +
 		    "  </capability>" +
 		    "  <!-- TAP-1.1 sync -->" +
 		
 		    "   <capability standardID=\"ivo://ivoa.net/std/TAP\" xsi:type=\"tr:TableAccess\">" +
-		    "     <interface role=\"std\" xsi:type=\"vs:ParamHTTP\"><accessURL use=\"base\">" + getBaseurl() + "/tap \"</accessURL>" +
+		    "     <interface role=\"std\" xsi:type=\"vs:ParamHTTP\"><accessURL use=\"base\">" + getBaseurlFromRequest(request) + "/tap \"</accessURL>" +
     		"     </interface>" +
 	    	"     <language>" +
 	    	"       <name>ADQL</name>" +

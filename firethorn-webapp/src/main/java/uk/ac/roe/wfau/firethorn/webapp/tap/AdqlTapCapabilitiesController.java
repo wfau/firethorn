@@ -101,8 +101,7 @@ public class AdqlTapCapabilitiesController extends AbstractController {
 	            "UTF-8"
 	            );
 		
-	        capgenerator = new CapabilitiesGenerator(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
-			return capgenerator.generateCapabilities(resource);
+			return capgenerator.generateCapabilities(resource, request);
 	}
 
 
