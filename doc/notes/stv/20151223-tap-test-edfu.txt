@@ -72,7 +72,7 @@
 
     secret 'firethorn.user.host'
    
-    source run.sh 07 {newversion:?} ${newversion:?} http://peter:8080/firethorn/tap/13467649
+    source run.sh 07 ${newversion:?} ${newversion:?} http://peter:8080/firethorn/tap/13467649
 
    
 

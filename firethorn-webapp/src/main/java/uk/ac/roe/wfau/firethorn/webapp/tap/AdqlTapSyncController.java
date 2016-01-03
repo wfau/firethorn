@@ -122,8 +122,7 @@ public class AdqlTapSyncController extends AbstractController {
 		if (valid) {
 
 			if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_GET_CAPABILITIES)) {
-				capgenerator = new CapabilitiesGenerator(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
-				writer.append(capgenerator.generateCapabilities(resource));
+				writer.append(capgenerator.generateCapabilities(resource,request));
 				return;
 			} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)) {
 
