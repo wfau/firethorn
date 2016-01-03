@@ -81,7 +81,7 @@ else
         if [  -n "$input_variable" ]
         then 
             echo "Running tap test with: " + ${input_variable:?}
-            source tests/test06-taptest.sh  ${input_variable:?}
+            source tests/test07-fulltaptest.sh  ${input_variable:?}
         else
             echo -n "Please enter a TAP service and press [ENTER]: "
             read input_variable
