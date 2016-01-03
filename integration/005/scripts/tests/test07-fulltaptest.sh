@@ -140,8 +140,8 @@ schema_alias = "${testrundatabase:?}"
 
 EOF
 
-chmod a+r "${HOME:?}/tests/test07-nohup.sh" 
-chcon -t svirt_sandbox_file_t "${HOME:?}//tests/test06-nohup.sh" 
+chmod a+r "${HOME:?}/tests/test06-nohup.sh" 
+chcon -t svirt_sandbox_file_t "${HOME:?}/tests/test06-nohup.sh" 
 
 chmod a+r "${pyroproperties:?}" 
 chcon -t svirt_sandbox_file_t "${pyroproperties:?}" 
@@ -150,12 +150,10 @@ mkdir -p /var/logs/${pyroname:?}
 
 echo "*** Run pyrothorn [test06-taptest.sh] ***"
 
-chmod a+r "${HOME:?}/tests/test06-nohup.sh" 
-chcon -t svirt_sandbox_file_t "${HOME:?}//tests/test07-taplint.sh" 
+chmod a+r "${HOME:?}/tests/test07-taplint" 
+chcon -t svirt_sandbox_file_t "${HOME:?}/tests/test07-taplint.sh" 
 
 
-
-echo "*** Run pyrothorn [test07-taplint.sh] ***"
 
 
 docker run -i -t \
@@ -173,6 +171,7 @@ docker run -i -t \
     --link "${username:?}:${userlink:?}" \
        firethorn/pyrothorn:${version:?} bash -c  '/scripts/test06-nohup.sh'
 
+echo "*** Run pyrothorn [test07-taplint.sh] ***"
 
     docker run \
         -it \
