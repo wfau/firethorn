@@ -311,7 +311,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 							if (meta.adql().type() != null) {
 								
-								String votableType = meta.adql().type().votype().toString().toLowerCase();
+								String votableType = meta.adql().type().votype().toString();
 								String arraysize = "*";
 								
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
