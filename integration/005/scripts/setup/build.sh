@@ -60,7 +60,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         hg pull
-        hg update "${branch:?}"
+        hg update -C "${branch:?}"
         hg branch
     
     popd
@@ -153,6 +153,18 @@ EOF
                 --tag firethorn/ssh-client:1.1 \
                 docker/ssh-client
         fi
+
+   	source "bin/util.sh"
+
+        if [ $(docker images | grep -c '^integration/tester') -eq 0 ]
+        then
+            echo "# ------"
+            echo "# Building tester image"
+            docker build \
+              --tag firethorn/tester:1.1 \
+              integration/tester
+        fi
+
 
     popd
 

@@ -3,8 +3,12 @@ Created on May 3, 2013
 
 @author: stelios
 '''
-
-from config import *
+try:
+    from config import *
+except Exception as e:
+    full_firethorn_host = "peter:8080"
+    sql_rowlimit=100000
+    sql_timeout = 1000
 
 web_services_url = "http://" + full_firethorn_host + "/firethorn"
 web_services_sys_info = web_services_url + "/system/info"

@@ -100,6 +100,7 @@ jdbc_resource_pass = ''
 metadocfile = "metadocs/ATLASDR1_TablesSchema.xml"
 metadocdirectory = "testing/metadocs/"
 stored_env_config = 'conf/pyrothorn-stored.js'
+tap_service=""
 
 ### Firethorn Predefined test Configuration ###
 

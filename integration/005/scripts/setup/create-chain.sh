@@ -117,6 +117,11 @@ cat > "${properties:?}" << EOF
 
         firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
 
+        firethorn.limits.time.default=60000
+        firethorn.limits.time.absolute=600000
+        firethorn.limits.rows.default=${defaultrows:?}
+        firethorn.limits.rows.absolute=${absoluterows:?}
+
         firethorn.meta.url=jdbc:jtds:sqlserver://${userlink:?}/${metadata:?}
         firethorn.meta.user=${metauser:?}
         firethorn.meta.pass=${metapass:?}
@@ -128,6 +133,7 @@ cat > "${properties:?}" << EOF
         firethorn.user.pass=${userpass:?}
         firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
         firethorn.user.type=mssql
+
 
 EOF
 
@@ -186,4 +192,6 @@ EOF
 
     pyrologs="/var/logs/pyrothorn"
     directory "${pyrologs:?}"
+
+    sleep 10
 
