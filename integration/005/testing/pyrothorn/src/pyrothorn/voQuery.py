@@ -67,7 +67,7 @@ def start_async_loop(url):
         while True:
             res = get_async_results(url,'/phase')
             if res=='COMPLETED':      
-                time.sleep(60) 
+                time.sleep(5) 
                 return_vot = atpy.Table(url + '/results/result', type='vo')      
                 break
             elif res=='ERROR' or res== '':
