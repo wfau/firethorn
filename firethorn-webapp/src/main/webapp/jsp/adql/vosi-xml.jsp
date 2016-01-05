@@ -37,6 +37,12 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
             <column>
            		<% if (column.name().equals("size")) { %>
 					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("timeStamp")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("coord1")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("coord2")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>				 
 				<% } else { %>
 					 <name><%= column.name() %></name>
 				<% } %>
