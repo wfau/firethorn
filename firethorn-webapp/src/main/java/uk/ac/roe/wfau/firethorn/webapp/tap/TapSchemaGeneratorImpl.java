@@ -248,14 +248,14 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 				String schemaName = schema.name().replace("'", "\\'");;
 
-				String schemaDescription = schema.text().replace("'", "\\'");
+				String schemaDescription = schema.text();
 				String sql;
 				if (schemaDescription==null){
 					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"schemas\" VALUES ('"
 							+ schemaName + "', NULL, NULL);";
 				} else {
 					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"schemas\" VALUES ('"
-							+ schemaName + "', '" + schemaDescription
+							+ schemaName + "', '" + schemaDescription.replace("'", "\\'")
 							+ "', NULL);";
 				}
 				
@@ -263,14 +263,14 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 				
 				for (AdqlTable table : schema.tables().select()) {
 					String tableName = table.name().replace("'", "\\'");;
-					String tableDescription = table.text().replace("'", "\\'");;
+					String tableDescription = table.text();
 					if (tableDescription==null){
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
 								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', NULL, '');";
 					} else {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
 								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
-								+ tableDescription + "', '');";
+								+ tableDescription.replace("'", "\\'") + "', '');";
 					}
 
 					stmt.executeUpdate(sql);
@@ -278,13 +278,13 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					for (AdqlColumn column : table.columns().select()) {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"columns\" VALUES (";
 						String columnName = column.name().replace("'", "\\'");;
-						String columnDescription = column.text().replace("'", "\\'");;
+						String columnDescription = column.text();
 						sql += "'" +  schemaName + "." + tableName + "',";
 						sql += "'" + columnName + "',";
 						if (columnDescription==null){
 							sql += "NULL, ";
 						} else {
-							sql += "'" + columnDescription + "',";
+							sql += "'" + columnDescription.replace("'", "\\'") + "',";
 						}
 
 						AdqlColumn.Metadata meta = column.meta();
