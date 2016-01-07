@@ -192,8 +192,11 @@ public class AdqlTapAsyncController extends AbstractController {
 					return;
 				}
 				uwsjob.setJobStatus("DELETED");
-				writer.append("");
-
+				//writer.append("");
+				
+				response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+			    response.setHeader("Location", uwsjob.getJobURL());
+			    
 				return;
 
 			} else {
