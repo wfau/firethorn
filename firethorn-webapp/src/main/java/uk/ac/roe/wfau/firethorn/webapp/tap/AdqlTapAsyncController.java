@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
@@ -105,13 +106,14 @@ public class AdqlTapAsyncController extends AbstractController {
 			@RequestParam(value = "FORMAT", required = false) final String FORMAT, 
 			@RequestParam(value = "VERSION", required = false) final String VERSION, 
 			@RequestParam(value = "MAXREC", required = false) final String MAXREC,
-			final HttpServletResponse response)
+			final HttpServletResponse response, HttpServletRequest request)
 					throws Exception {
 
 
 		UWSJob uwsjob = null;
 		BlueQuery qry;
 		PrintWriter writer = response.getWriter();
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 		
 		if (resource != null) {
 
@@ -163,11 +165,12 @@ public class AdqlTapAsyncController extends AbstractController {
 	public void deleteJob(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@PathVariable("jobid") String jobid,
 			@RequestParam(value = "ACTION", required = false) String ACTION,
-			final HttpServletResponse response)
+			final HttpServletResponse response, HttpServletRequest request)
 					throws Exception {
 		
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter writer = response.getWriter();
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		UWSJob uwsjob;
 		BlueQuery queryentity;
@@ -189,8 +192,11 @@ public class AdqlTapAsyncController extends AbstractController {
 					return;
 				}
 				uwsjob.setJobStatus("DELETED");
-				writer.append("");
-
+				//writer.append("");
+				
+				response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+			    response.setHeader("Location", uwsjob.getJobURL());
+			    
 				return;
 
 			} else {
@@ -211,12 +217,13 @@ public class AdqlTapAsyncController extends AbstractController {
 	public void getJobInfo(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@PathVariable("jobid") String jobid,
 			@RequestParam(value = "ACTION", required = false) String ACTION,
-			final HttpServletResponse response)
+			final HttpServletResponse response, HttpServletRequest request)
 					throws Exception {
 
 		
 
 		PrintWriter writer = response.getWriter();
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		UWSJob uwsjob;
 		BlueQuery queryentity;
@@ -277,13 +284,14 @@ public class AdqlTapAsyncController extends AbstractController {
 			@RequestParam(value = "FORMAT", required = false) final String FORMAT, 
 			@RequestParam(value = "VERSION", required = false) final String VERSION, 
 			@RequestParam(value = "MAXREC", required = false) final String MAXREC,
-			final HttpServletResponse response)
+			final HttpServletResponse response, HttpServletRequest request)
 					throws IdentifierNotFoundException, Exception {
 
 	
 		UWSJob uwsjob;
 		BlueQuery queryentity = null;
 		PrintWriter writer = response.getWriter();
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -338,12 +346,13 @@ public class AdqlTapAsyncController extends AbstractController {
 	@UpdateAtomicMethod
 	@ResponseStatus(value = HttpStatus.SEE_OTHER)
 	public void phase(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response, @RequestParam(value = "PHASE", required = true) String PHASE)
+			final HttpServletResponse response, HttpServletRequest request, @RequestParam(value = "PHASE", required = true) String PHASE)
 					throws IdentifierNotFoundException, Exception {
 
 		UWSJob uwsjob;
 		BlueQuery queryentity = null;
 		PrintWriter writer = response.getWriter();
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -389,11 +398,12 @@ public class AdqlTapAsyncController extends AbstractController {
 	@RequestMapping(value = "/{jobid}/phase", method = RequestMethod.GET)
 	@UpdateAtomicMethod
 	public void phaseGet(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
+			final HttpServletResponse response, HttpServletRequest request) throws IdentifierNotFoundException, Exception {
 
 		UWSJob uwsjob;
 		BlueQuery queryentity;
 		PrintWriter writer = response.getWriter();
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -432,12 +442,13 @@ public class AdqlTapAsyncController extends AbstractController {
 
 	@RequestMapping(value = "/{jobid}/quote", method = { RequestMethod.POST, RequestMethod.GET })
 	public void quote(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response)
+			final HttpServletResponse response, HttpServletRequest request)
 			throws IdentifierNotFoundException, Exception {
 
 		PrintWriter writer = response.getWriter();
 		UWSJob uwsjob;
 		BlueQuery queryentity;
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -476,13 +487,14 @@ public class AdqlTapAsyncController extends AbstractController {
 	public void executionduration(@PathVariable String jobid,
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@RequestParam(value = "TERMINATION", required = false) final String TERMINATION,
-			final HttpServletResponse response)
+			final HttpServletResponse response, HttpServletRequest request)
 					throws IdentifierNotFoundException, Exception {
 		
 		PrintWriter writer = response.getWriter();
 		response.setContentType("text/plain");
 		BlueQuery queryentity;
 		UWSJob uwsjob;
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -509,14 +521,15 @@ public class AdqlTapAsyncController extends AbstractController {
 	@RequestMapping(value = "/{jobid}/destruction", method = { RequestMethod.POST, RequestMethod.GET })
 	public void destruction(@PathVariable String jobid,
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response)
+			final HttpServletResponse response, HttpServletRequest request)
 					throws IdentifierNotFoundException, Exception {
 		
 		UWSJob uwsjob;
 		BlueQuery queryentity;
 		PrintWriter writer = response.getWriter();
 		response.setContentType("text/plain");
-		
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
+
 		try {
 			
 			queryentity = getqueryentity(jobid);
@@ -544,14 +557,15 @@ public class AdqlTapAsyncController extends AbstractController {
 	@RequestMapping(value = "/{jobid}/owner", method = { RequestMethod.POST, RequestMethod.GET })
 	public void owner(@PathVariable String jobid, 
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response)
+			final HttpServletResponse response, HttpServletRequest request)
 			throws IdentifierNotFoundException, Exception {
 		
 		UWSJob uwsjob;
 		BlueQuery queryentity;
 		PrintWriter writer = response.getWriter();
 		response.setContentType("text/plain");
-		
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
+
 		try {
 			
 			queryentity = getqueryentity(jobid);
@@ -578,13 +592,14 @@ public class AdqlTapAsyncController extends AbstractController {
 
 	@RequestMapping(value = "/{jobid}/error", method = { RequestMethod.POST, RequestMethod.GET })
 	public void error(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
+			final HttpServletResponse response, HttpServletRequest request) throws IdentifierNotFoundException, Exception {
 		
 		BlueQuery queryentity;
 		UWSJob uwsjob;
 		PrintWriter writer = response.getWriter();
 		response.setContentType(CommonParams.TEXT_XML_MIME);
 		response.setCharacterEncoding("UTF-8");
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -637,10 +652,11 @@ public class AdqlTapAsyncController extends AbstractController {
 	@RequestMapping(value = "/{jobid}/results", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
 	public String results(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
+			final HttpServletResponse response, HttpServletRequest request) throws IdentifierNotFoundException, Exception {
 
 		response.setContentType(CommonParams.TEXT_XML_MIME);
 		response.setCharacterEncoding("UTF-8");
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		UWSJob uwsjob;
 		BlueQuery queryentity;
@@ -670,13 +686,14 @@ public class AdqlTapAsyncController extends AbstractController {
 	@RequestMapping(value = "/{jobid}/results/result", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseStatus(value = HttpStatus.SEE_OTHER)
 	public void result(@PathVariable String jobid, @ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			final HttpServletResponse response) throws IdentifierNotFoundException, Exception {
+			final HttpServletResponse response, HttpServletRequest request) throws IdentifierNotFoundException, Exception {
 
 		String results = "";
 		UWSJob uwsjob;
 		BlueQuery queryentity = null;
 		PrintWriter writer = response.getWriter();
-		
+		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
+
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {

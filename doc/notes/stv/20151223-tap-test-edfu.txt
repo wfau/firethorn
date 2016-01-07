@@ -55,7 +55,7 @@
 
     ssh edfu
 
-    newversion=2.0.6-stv-tap
+    newversion=2.0.7-stv-tap
 
 # -----------------------------------------------------
 # Create our secret function.
@@ -72,7 +72,7 @@
 
     secret 'firethorn.user.host'
    
-    source run.sh 06 {newversion:?} ${newversion:?} http://peter:8080/firethorn/tap/9207809
+    source run.sh 07 ${newversion:?} ${newversion:?} http://peter:8080/firethorn/tap/13467649
 
    
 

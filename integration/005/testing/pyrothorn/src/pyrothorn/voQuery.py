@@ -62,26 +62,20 @@ def start_async_loop(url):
     @return: A Votable with the results of a TAP job, or '' if error
     """
     
-    f = ""
     return_vot = []
     try:
         while True:
             res = get_async_results(url,'/phase')
-            if res=='COMPLETED':       
-                req = urllib2.Request(url + '/results/result')
-                f = urllib2.urlopen(req)
-                f.read()
+            if res=='COMPLETED':      
+                time.sleep(5) 
                 return_vot = atpy.Table(url + '/results/result', type='vo')      
                 break
             elif res=='ERROR' or res== '':
-                print "Error.."
                 return -1
             time.sleep(1)
     except Exception as e:
         logging.exception('Exception caught:')
         return -1
-        if f != "":
-            f.close()
 
     return return_vot    
 

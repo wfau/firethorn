@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 
 import java.io.IOException;
 import java.sql.SQLException;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,11 +120,13 @@ public class AdqlTapSchemaController extends AbstractController {
 			final String driver,
 		    @RequestParam(value=CONN_CATALOG, required=true)
 	        final String catalog,
-			final HttpServletResponse response)
+			final HttpServletResponse response,
+			HttpServletRequest request)
 			throws IdentifierNotFoundException, IOException, SQLException,
 			ClassNotFoundException {
 		JDBCParams params = new JDBCParams(url, user, pass, driver, catalog);
 		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "/WEB-INF/data/sqlserver_tap_schema.sql");
+		generator.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 		generator.createTapSchema();
 		
 	}

@@ -178,8 +178,8 @@
     tunneluser=$(secret 'ssh.tunnel.user')
     tunnelhost=$(secret 'ssh.tunnel.host')
 
-    defaultrows=100000
-    absoluterows=10000000
+    defaultrows=10000
+    absoluterows=100000
 
 EOF
 
