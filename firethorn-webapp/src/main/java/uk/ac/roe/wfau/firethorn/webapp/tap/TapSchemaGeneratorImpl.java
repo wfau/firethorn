@@ -278,6 +278,9 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					for (AdqlColumn column : table.columns().select()) {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"columns\" VALUES (";
 						String columnName = column.name().replace("'", "''");
+                        if (columnName.toLowerCase().equals("timestamp") || columnName.toLowerCase().equals("coord2") || columnName.toLowerCase().equals("coord1")){  
+                        	columnName = '"' + column.name() + '"';
+                        }
 						String columnDescription = column.text();
 						sql += "'" +  schemaName + "." + tableName + "',";
 						sql += "'" + columnName + "',";
