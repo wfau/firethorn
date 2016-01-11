@@ -20,14 +20,15 @@
 #
 #
 
+
+   # Stop any running apache service
+   sudo service apache2 stop
+
+
   source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source "bin/util.sh"
-
-        docker build \
-            --tag firethorn/tester:1.1 \
-            integration/tester
 
 	docker build  --tag firethorn/apache docker/apache
         docker run -p 80:80 --name firepache -d firethorn/apache 
@@ -36,19 +37,19 @@
 
     # Get Firethorn IP Addresss
     docker inspect --format '{{ .NetworkSettings.IPAddress }}' gillian
-    > 172.17.0.148
+    > 172.17.0.165
 
    docker exec -it firepache bash
 
-   nano /etc/apache2/apache.conf
+   nano /etc/apache2/apache2.conf
 
 	...
 
 	# mod_proxy setup.
 	ProxyRequests Off
 	ProxyPreserveHost On
-	ProxyPass /atlas/tap http://172.17.0.148:8080/ retry=0
-	ProxyPassReverse /atlas/tap http://172.17.0.148:8080/
+	ProxyPass /atlas/tap http://172.17.0.165:8080/ retry=0
+	ProxyPassReverse /atlas/tap http://172.17.0.155:8080/
 
 	<Proxy *>
 	    Order deny,allow

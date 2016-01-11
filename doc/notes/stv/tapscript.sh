@@ -339,9 +339,6 @@ EOF
             --tag firethorn/tester:1.1 \
             integration/tester
 
-	docker build  --tag firethorn/apache docker/apache
-        docker run -p 80:80 --name firepache firethorn/apache 
-
     popd
 
 
