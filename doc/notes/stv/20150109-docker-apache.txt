@@ -20,10 +20,56 @@
 #
 #
 
+  source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
 
-source "${HOME:?}/firethorn.settings"
-pushd "${FIRETHORN_CODE:?}"
-   docker build         --tag "firethorn/apache"         docker/apache
-   docker run -p 80:80 firethorn/apache
-           
-popd
+        source "bin/util.sh"
+
+        docker build \
+            --tag firethorn/tester:1.1 \
+            integration/tester
+
+	docker build  --tag firethorn/apache docker/apache
+        docker run -p 80:80 --name firepache -d firethorn/apache 
+
+    popd
+
+    # Get Firethorn IP Addresss
+    docker inspect --format '{{ .NetworkSettings.IPAddress }}' gillian
+    > 172.17.0.148
+
+   docker exec -it firepache bash
+
+   nano /etc/apache2/apache.conf
+
+	...
+
+	# mod_proxy setup.
+	ProxyRequests Off
+	ProxyPreserveHost On
+	ProxyPass /atlas/tap http://172.17.0.148:8080/ retry=0
+	ProxyPassReverse /atlas/tap http://172.17.0.148:8080/
+
+	<Proxy *>
+	    Order deny,allow
+	    Allow from all
+	</Proxy>
+
+	<Location "/atlas/tap">
+	  # Configurations specific to this location. Add what you need.
+	  # For instance, you can add mod_proxy_html directives to fix
+	  # links in the HTML code. See link at end of this page about using
+	  # mod_proxy_html.
+
+	  # Allow access to this proxied URL location for everyone.
+	  Order allow,deny
+	  Allow from all
+	</Location>
+	...
+
+
+  sudo service apache2 reload
+
+  exit 
+
+  curl http://localhost/atlas/tap/firethorn/system/info
