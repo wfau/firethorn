@@ -37,7 +37,7 @@
 
     # Get Firethorn IP Addresss
     docker inspect --format '{{ .NetworkSettings.IPAddress }}' gillian
-    > 172.17.0.165
+    > 172.17.0.15
 
    docker exec -it firepache bash
 
@@ -48,15 +48,15 @@
 	# mod_proxy setup.
 	ProxyRequests Off
 	ProxyPreserveHost On
-	ProxyPass /atlas/tap http://172.17.0.165:8080/ retry=0
-	ProxyPassReverse /atlas/tap http://172.17.0.155:8080/
+	ProxyPass /firethorn http://172.17.0.170:8080/firethorn retry=0
+	ProxyPassReverse /firethorn http://172.17.0.170:8080/firethorn
 
 	<Proxy *>
 	    Order deny,allow
 	    Allow from all
 	</Proxy>
 
-	<Location "/atlas/tap">
+	<Location "/firethorn">
 	  # Configurations specific to this location. Add what you need.
 	  # For instance, you can add mod_proxy_html directives to fix
 	  # links in the HTML code. See link at end of this page about using
@@ -73,4 +73,47 @@
 
   exit 
 
-  curl http://localhost/atlas/tap/firethorn/system/info
+
+
+        endpointurl=http://localhost/firethorn
+        resourceid=25690113
+	query="SELECT+TOP+10+*+FROM+ATLASDR1.atlasSource"
+	format=VOTABLE
+	lang=ADQL
+	request=doQuery
+	
+        # Get VOSI
+	curl ${endpointurl:?}/tap/${resourceid:?}/capabilities
+
+
+
+	# ----------------------Query test1: synchronous-------------------------------
+        # Run a synchronous query
+	
+	curl -v -L \
+	${endpointurl:?}/tap/${resourceid:?}/sync \
+	-d QUERY=${query:?} \
+	-d LANG=${lang:?} \
+	-d MAXREC=2 \
+	-d REQUEST=${request:?}
+
+	# ----------------------Query test2: asynchronous-------------------------------
+	# Run an asynchronous query
+
+	data="$( curl -v -L \
+	${endpointurl:?}/tap/${resourceid:?}/async \
+	-d QUERY=${query:?} \
+	-d LANG=${lang:?} \
+	-d REQUEST=${request:?})"
+
+	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
+
+	curl -v \
+	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
+	-d PHASE=RUN 
+
+	curl  ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results
+
+
+
+
