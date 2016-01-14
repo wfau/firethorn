@@ -24,4 +24,8 @@ RUN apt-get install -y unzip
 RUN apt-get install -y curl
 RUN apt-get install -y nano
 
+# https://github.com/docker/docker/issues/9299
+ENV TERM xterm
+
+
 
