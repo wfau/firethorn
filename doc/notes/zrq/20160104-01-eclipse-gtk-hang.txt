@@ -1,0 +1,56 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Symptoms:
+    # 1) Hangs while creating Java projects from Maven project tree.
+    # 2) Fails to update main panel in the properties/settings dialog.
+
+    #
+    # Similar symptoms
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1253898
+
+    #
+    # Manual install of latest binries from Eclipse project
+    # (ignore Oracle JDK, OpenJDK works fine)
+    # http://www.if-not-true-then-false.com/2010/linux-install-eclipse-on-fedora-centos-red-hat-rhel/
+    # http://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/mars1
+
+      
+    #
+    # Solution:
+    # Set the GTK_version to 2.
+    # http://c2rb.blogspot.co.uk/2015/08/eclipse-rendering-issues-on-fedora-22.html
+
+    gedit /var/local/toolkits/eclipse/eclipse-mars/eclipse.ini
+
+        --launcher.defaultAction
+        openFile
+    +   --launcher.GTK_version
+    +   2
+        --launcher.appendVmargs
+        -vmargs
+
+    #
+    # Related bug
+    # https://bugs.eclipse.org/bugs/show_bug.cgi?id=431160#c21
+
