@@ -29,6 +29,25 @@ fi
 
 test="secret ping"
 
+if [ "$1" == "--help" ]; then
+  echo ""
+  echo "Usage: run.sh testname branch version additional_param"
+  echo ""
+  echo "-----"
+  echo ""
+  echo "Available Tests:"
+  echo ""
+  echo "01 - Integration test, Query 1000 rows in Firethorn vs Direct SQL Server connection & compare results"
+  echo "02 - Full ATLASDR1 query test, query 1000 rows in Firethorn vs Direct SQL Server connection & compare results"
+  echo "03 - Run same comparison test in historical queries for database stored in 'secret.store'"
+  echo "04 - Query loop test, Start a continuous loop that will send queries through Firethorn. Used to test memory leaks"
+  echo "05 - JSON Integration test, Query 1000 rows in Firethorn and check if rows match expected number"
+  echo "06 - Tap test, Send 1000 rows through the given TAP service, and compare results with Direct SQL Server query"
+  echo "07 - Perform 06 test, but also run a taplint validation test"
+  echo "08 - Build a TAP Service for a given catalogue. (Uses secret.store database credentials)"
+  return 0
+fi
+
 if [ -z "$test" ];
 then
     echo "[Error]: Secret function needed!"
@@ -73,11 +92,24 @@ else
         else
             echo -n "Please enter a TAP service and press [ENTER]: "
             read input_variable
-            source tests/test06-taptest.sh  ${input_variable:?}
+            source tests/test06-tapstress.sh  ${input_variable:?}
+        fi
+    elif [ $testname -eq 07 ];
+    then
+        source setup/setup-pyro.sh 
+        if [  -n "$input_variable" ]
+        then 
+            echo "Running tap test with: " + ${input_variable:?}
+            source tests/test07-fulltaptest.sh  ${input_variable:?}
+        else
+            echo -n "Please enter a TAP service and press [ENTER]: "
+            read input_variable
+            source tests/test07-fulltaptest.sh  ${input_variable:?}
         fi
 	
         
-    elif [ $testname -eq 07 ];
+        
+    elif [ $testname -eq 08 ];
     then
         if [  -n "$input_variable" ]
         then 

@@ -104,6 +104,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		this.factories = factories;
 		this.tapSchemaJDBCName = "TAP_SCHEMA_" + this.resource.ident().toString();
 		this.tapSchemaResourceJDBCName = "TAP_RESOURCE_" + this.resource.ident().toString();
+		
 
 	}
 
@@ -245,7 +246,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 			for (AdqlSchema schema : this.resource.schemas().select()) {
 
-				String schemaName = schema.name();
+				String schemaName = schema.name().replace("'", "''");
 
 				String schemaDescription = schema.text();
 				String sql;
@@ -254,14 +255,14 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 							+ schemaName + "', NULL, NULL);";
 				} else {
 					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"schemas\" VALUES ('"
-							+ schemaName + "', '" + schemaDescription
+							+ schemaName + "', '" + schemaDescription.replace("'", "''")
 							+ "', NULL);";
 				}
 				
 				stmt.executeUpdate(sql);
 				
 				for (AdqlTable table : schema.tables().select()) {
-					String tableName = table.name();
+					String tableName = table.name().replace("'", "''");
 					String tableDescription = table.text();
 					if (tableDescription==null){
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
@@ -269,21 +270,24 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					} else {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
 								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
-								+ tableDescription + "', '');";
+								+ tableDescription.replace("'", "''") + "', '');";
 					}
 
 					stmt.executeUpdate(sql);
 
 					for (AdqlColumn column : table.columns().select()) {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"columns\" VALUES (";
-						String columnName = column.name();
+						String columnName = column.name().replace("'", "''");
+                        if (columnName.toLowerCase().equals("timestamp") || columnName.toLowerCase().equals("coord2") || columnName.toLowerCase().equals("coord1")){  
+                        	columnName = '"' + column.name() + '"';
+                        }
 						String columnDescription = column.text();
 						sql += "'" +  schemaName + "." + tableName + "',";
 						sql += "'" + columnName + "',";
 						if (columnDescription==null){
 							sql += "NULL, ";
 						} else {
-							sql += "'" + columnDescription + "',";
+							sql += "'" + columnDescription.replace("'", "''") + "',";
 						}
 
 						AdqlColumn.Metadata meta = column.meta();
@@ -291,26 +295,26 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 						if ((meta != null) && (meta.adql() != null)) {
 
 							if (meta.adql().units() != null) {
-								sql += "'" + meta.adql().units() + "',";
+								sql += "'" + meta.adql().units().replace("'", "''") + "',";
 							} else {
 								sql += "'',";
 							}
 
 							if (meta.adql().ucd() != null) {
-								sql += "'" + meta.adql().ucd() + "',";
+								sql += "'" + meta.adql().ucd().replace("'", "''") + "',";
 							} else {
 								sql += "'',";
 							}
 
 							if (meta.adql().utype() != null) {
-								sql += "'" + meta.adql().utype() + "',";
+								sql += "'" + meta.adql().utype().replace("'", "''") + "',";
 							} else {
 								sql += "'',";
 							}
 
 							if (meta.adql().type() != null) {
 								
-								String votableType = meta.adql().type().votype().toString().toLowerCase();
+								String votableType = meta.adql().type().votype().toString().replace("'", "''");
 								String arraysize = "*";
 								
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
@@ -346,7 +350,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 										sql += "null,";
 									} else {
 										sql += "'"+meta.adql().arraysize()
-												.toString()
+												.toString().replace("'", "''")
 												+ "',";
 									}
 								} else {
@@ -405,9 +409,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			tap_schema = tap_schema_resource.schemas().select(params.getCatalogue()  + "." + this.tapSchemaJDBCName);
 			resource.schemas().create("TAP_SCHEMA", tap_schema);
 		} catch (NameNotFoundException e) {
-			System.out.println("**************"  + tap_schema_resource.ident().toString());
-
-			System.out.println("**************"  + e);
+			System.out.println(e);
 		}
 	}
 

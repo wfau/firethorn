@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -88,7 +89,8 @@ public class AdqlTapCapabilitiesController extends AbstractController {
 	public String capabilities(
         @ModelAttribute(TARGET_ENTITY)
         AdqlResource resource,
-        final HttpServletResponse response
+        final HttpServletResponse response,
+        HttpServletRequest request
         ) throws  IdentifierNotFoundException, IOException {
 		
 
@@ -99,7 +101,7 @@ public class AdqlTapCapabilitiesController extends AbstractController {
 	            "UTF-8"
 	            );
 		
-			return capgenerator.generateCapabilities(resource);
+			return capgenerator.generateCapabilities(resource, request);
 	}
 
 

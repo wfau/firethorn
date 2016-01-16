@@ -254,12 +254,12 @@ extends AbstractTableController
                 writer.append(" datatype='char'");
                 writer.append(" arraysize='*'");
                 }
-            if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
+            else if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
                 {
                 writer.append(" datatype='char'");
                 writer.append(" arraysize='*'");
                 }
-            if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
+            else if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
                 {
                 writer.append(" datatype='char'");
                 writer.append(" arraysize='*'");
