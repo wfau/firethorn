@@ -1,0 +1,145 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Hi Marcus,
+
+On 2016-01-12 10:21, Markus Demleitner wrote:
+> 
+> So -- it seems nobody wanted to keep OFFSET out of ADQL 2.1 really
+> hard.  Now, Dave, as the editor of ADQL 2.1, what's your stance:
+> Should OFFSET go in?  And if so, attached to query_specification or
+> to order_by_clause?  Should I put something into the text on volute?
+> Should we solicit more opinions?
+> 
+
+I agree there is a good case for accepting OFFSET.
+
+By my count we have positive responses for
+
+    PostgreSQL (Marcus)
+    MySQL (Kristin)
+
+"possible with work arounds" responses for
+
+    SQLServer (Theresa, Gerard)
+    Oracle (Walter)
+
+and as yet, no "definitely not" responses.
+
+A quick Google for for HSQLDB,
+[http://www.hsqldb.org/doc/guide/ch09.html#select-section]
+indicates that it should work.
+
+For Apache Derby,
+[https://db.apache.org/derby/docs/10.8/ref/rrefsqljoffsetfetch.html]
+indicates that it should work.
+
+For DB2,
+[https://www.ibm.com/developerworks/community/blogs/SQLTips4DB2LUW/entry/limit_offset]
+indicates that it should work.
+
+For SQLite,
+[https://www.sqlite.org/lang_select.html]
+suggests that SQLite accepts OFFSET but only as part of a LIMIT clause.
+However, setting athe LIMIT TO a -ve value indicates no limit, enabling OFFSET without LIMIT. 
+
+For Sybase it is not so clear.
+[http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.infocenter.dc00801.1601/doc/html/san1281564978024.html]
+indicates that OFFSET is supported in Sybase, but only as part of a LIMIT expression.
+
+On the other hand,
+[http://stackoverflow.com/questions/7759166/sybase-offset-for-pagination]
+indicates that OFFSET is not supported in Sybase and describes a number of work arounds.
+
+If anyone is using any of these platforms, particularly Sybase, can they please run a quick test to confirm what works on their system ?
+
+Walter - the can you confirm that the work arounds for Oracle handle OFFSET without LIMIT ?
+
+----
+
+For SQLServer, I've tried the fix suggested by Gerard and it seems to work, with a couple of caveats.
+
+If the table doesn't have an integer column, then RAND() seems to work as a substitute.
+
+    SELECT
+        something
+    FROM
+        table
+    ORDER BY RAND()
+    OFFSET 2 ROWS
+    FETCH NEXT 2 ROWS ONLY
+
+If SELECT DISTINCT is specified, then the ORDER BY fields need to be in the select list.
+
+    SELECT DISTINCT
+        something,
+        RAND() AS skip
+    FROM
+        table
+    ORDER BY skip
+    OFFSET 2 ROWS
+    FETCH NEXT 2 ROWS ONLY
+
+Which can be filtered out with a nested query.
+
+    SELECT
+        nested.something
+    FROM (
+        SELECT DISTINCT
+            something,
+            RAND() AS skip
+        FROM
+            table
+        ORDER BY skip
+        OFFSET 2 ROWS
+        FETCH NEXT 2 ROWS ONLY
+        ) AS nested
+
+A bit verbose, but it seems to work.
+
+However, I'll need to do some more checking before I can be confident that it doesn't cause any performance issues.
+
+----
+
+As to the syntax, I think I agree with Tom, ideally we want to keep as close as possible to the SQL 2008 standard.
+
+I think the case for linking OFFSET to ORDER BY on efficiency grounds makes sense, but on its own it isn't strong enough to justify diverging from the SQL standard.
+
+As number of people have pointed out, this is just one of many ways to write syntactically correct but computationally inefficient queries. Not least of which, you could have OFFSET with ORDER BY on a non-indexed non-unique column, which would be syntactically correct, inefficient and inaccurate all at the same time.
+
+So assuming that the work arounds for SQLServer and Sybase are sufficient, and no one finds any other issues, I'm happy to include OFFSET attached to query_specification as optional in 2.1, with the option to look at making it mandatory in 3.x.
+
+If you would like to send me a draft of the descriptive text I'll add it to the document.
+
+Cheers,
+Dave
+
+--------
+Dave Morris
+Software Developer
+Wide Field Astronomy Unit
+Institute for Astronomy
+University of Edinburgh
+--------
+
+
+
