@@ -26,8 +26,6 @@
 # http://wfau.metagrid.co.uk/code/clearwing/
 
 
-
-
 # -----------------------------------------------------
 # ssh login test
 #[user@desktop]
@@ -39,8 +37,7 @@
     exit
 
 
-
-#
+# -----------------------------------------------------
 # Check if Mercurial is already installed.
 # (blank response means not installed)
 #[user@desktop]
@@ -49,7 +46,7 @@
 
         --
 
-#
+# -----------------------------------------------------
 # Install Mercurial.
 # Standard package fpr your system.
 # If machine is managed, ask IT support to install it.
@@ -58,7 +55,7 @@
     sudo apt-get update
     sudo apt-get install mercurial
 
-#
+# -----------------------------------------------------
 # Check if Mercurial is installed.
 #[user@desktop]
 
@@ -71,8 +68,8 @@
         Mercurial Distributed SCM (version 3.1.2)
         (see http://mercurial.selenic.com for more information)
 
-#
-# Configure username.
+# -----------------------------------------------------
+# Configure your Mercurial username.
 #[user@desktop]
 
     hg config --edit
@@ -83,48 +80,52 @@
     +   username = Test User <test@example.com>
 
 
-#
-# Create target directory
+# -----------------------------------------------------
+# Create the directory for the project
 #[user@desktop]
 
-    mkdir temp
-    pushd temp
+    mkdir wherever
+    pushd wherever
 
-#
-# Get initial copy (clone) of the repository.
+# -----------------------------------------------------
+# Get an initial copy (clone) of the repository.
 #[user@desktop]
 
     #
     # Note - You only need to do this once.
-    # Once you have a copy, use pull --update to update local copy. 
+    # Once you have a copy, use pull and update to keep it up to date with remote changes.
 
     #
     # For read only copy use the http url.
-    # hg clone http://wfau.metagrid.co.uk/code/clearwing/ clearwing
+    # hg clone \
+    #   http://wfau.metagrid.co.uk/code/clearwing/ \
+    #   clearwing
 
     #
     # For read/write copy use ssh URL.
-    hg clone ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code clearwing
+    hg clone \
+        ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code \
+        clearwing
 
-    ....
-    ....
-    added 104 changesets with 10050 changes to 8869 files (+2 heads)
-    updating to branch default
-    3636 files updated, 0 files merged, 0 files removed, 0 files unresolved
+        ....
+        ....
+        added 104 changesets with 10050 changes to 8869 files (+2 heads)
+        updating to branch default
+        3636 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
-#
+# -----------------------------------------------------
 # Change directory to your local copy
 #[user@desktop]
 
     cd clearwing
 
-#
+# -----------------------------------------------------
 # Update local copy to get latest changes.
 #[user@desktop]
 
     hg pull --update
 
-#
+# -----------------------------------------------------
 # Edit a file ..
 #[user@desktop]
 
@@ -134,17 +135,14 @@
         +    | Test edit to demo Hg ...
         +    +--->
 
-#
-# Check local changes
+# -----------------------------------------------------
+# Check for local changes
 #[user@desktop]
 
     hg status
 
         M src/templates/sqlcookbook.html
 
-#
-# Check local changes
-#[user@desktop]
 
     hg diff
 
@@ -152,15 +150,15 @@
         +    | Test edit to demo Hg ...
         +    +--->
 
-#
-# Commit the change to local repository.
+# -----------------------------------------------------
+# Commit the change to your local repository.
 #[user@desktop]
 
     hg commit -m "Test change ..."
 
-#
-# Check local changes.
-# (no changes listed because change was comitted to local repository)
+# -----------------------------------------------------
+# Check for local changes.
+# (no changes are listed because your change has been added (comitted) to your local repository)
 #[user@desktop]
 
     hg status
@@ -171,9 +169,9 @@
 
         --
 
-#
-# List the outgoing changes.
-# (local changes not pushed yet)
+# -----------------------------------------------------
+# List your outgoing changes.
+# (local changes that have not been pushed to the main repository yet)
 #[user@desktop]
 
     hg outgoing
@@ -187,9 +185,9 @@
         date:        Tue Jan 19 14:45:00 2016 +0000
         summary:     Test change to demo Hg
 
-#
-# List the content of outgoing changes
-# (local changes not pushed yet)
+# -----------------------------------------------------
+# List the content of your outgoing changes
+# (local changes that have not been pushed to the main repository yet)
 #[user@desktop]
 
     hg outgoing --patch
@@ -215,20 +213,20 @@
         +    +--->
                  
                  
-#
-# Your change is not in the main repository yet.
+# -----------------------------------------------------
+# Your change should not be in main repository yet.
 #[user@desktop]
 
     firefox 'http://wfau.metagrid.co.uk/code/clearwing/' &
 
-#
-# Push the change to the main repository.
+# -----------------------------------------------------
+# Push your changes to the main repository.
 #[user@desktop]
 
     hg push
 
-#
-# List of outgoing changes is empty.
+# -----------------------------------------------------
+# List of your outgoing changes should be empty.
 #[user@desktop]
 
     hg outgoing
@@ -236,8 +234,8 @@
         searching for changes
         no changes found
 
-#
-# Changes should show now up in main repository.
+# -----------------------------------------------------
+# Your changes should now show up in main repository.
 #[user@desktop]
 
     firefox 'http://wfau.metagrid.co.uk/code/clearwing/' &
@@ -248,8 +246,15 @@
 #
 
 #
-# Pull changes from the remote repository
-# and update your working copy.
+# Pull changes from the remote repository,  and update your working copy.
+#[user@desktop]
+
+    hg pull
+    hg update
+
+#
+# Pull changes from the main repository and update your working copy.
+# (single command)
 #[user@desktop]
 
     hg pull --update
@@ -280,10 +285,41 @@
     hg addremove
 
 
+# -----------------------------------------------------
+# Merge local and remote changes.
+# Use this if a push fails due to a conflict with remote changes.
+#[user@desktop]
 
+    hg push
 
+        # conflicts due to remote changes
 
+#
+# Pull the latest changes from the remote repository.
+#[user@desktop]
 
+    hg pull
+
+#
+# Merge the remote changes into your working copy.
+# If there are some conflicts that Mercurial can't handle automatically,
+# it may launch a text editor and ask you to fix them manually.
+#[user@desktop]
+
+    hg merge
+
+#
+# Your working copy should now contain a merge of your changes and the remote changes.
+# Use commit to save this combined set in your local repository.
+#[user@desktop]
+
+    hg commit -m "Merged local and remote changes"
+
+#
+# You should now be able to push the combined set without causing a conflict.
+#[user@desktop]
+
+    hg push
 
 
 
