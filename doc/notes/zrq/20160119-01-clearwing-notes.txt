@@ -1,0 +1,289 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Active Mercurial repository
+# http://wfau.metagrid.co.uk/code/clearwing/
+
+
+
+
+# -----------------------------------------------------
+# ssh login test
+#[user@desktop]
+
+    ssh Nick@wfau.metagrid.co.uk
+
+        ls
+        
+    exit
+
+
+
+#
+# Check if Mercurial is already installed.
+# (blank response means not installed)
+#[user@desktop]
+
+    which hg
+
+        --
+
+#
+# Install Mercurial.
+# Standard package fpr your system.
+# If machine is managed, ask IT support to install it.
+#[user@desktop]
+
+    sudo apt-get update
+    sudo apt-get install mercurial
+
+#
+# Check if Mercurial is installed.
+#[user@desktop]
+
+    which hg
+
+        /usr/bin/hg
+
+    hg version
+
+        Mercurial Distributed SCM (version 3.1.2)
+        (see http://mercurial.selenic.com for more information)
+
+#
+# Configure username.
+#[user@desktop]
+
+    hg config --edit
+
+        [ui]
+        # name and email, e.g.
+        # username = Jane Doe <jdoe@example.com>
+    +   username = Test User <test@example.com>
+
+
+#
+# Create target directory
+#[user@desktop]
+
+    mkdir temp
+    pushd temp
+
+#
+# Get initial copy (clone) of the repository.
+#[user@desktop]
+
+    #
+    # Note - You only need to do this once.
+    # Once you have a copy, use pull --update to update local copy. 
+
+    #
+    # For read only copy use the http url.
+    # hg clone http://wfau.metagrid.co.uk/code/clearwing/ clearwing
+
+    #
+    # For read/write copy use ssh URL.
+    hg clone ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code clearwing
+
+    ....
+    ....
+    added 104 changesets with 10050 changes to 8869 files (+2 heads)
+    updating to branch default
+    3636 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+#
+# Change directory to your local copy
+#[user@desktop]
+
+    cd clearwing
+
+#
+# Update local copy to get latest changes.
+#[user@desktop]
+
+    hg pull --update
+
+#
+# Edit a file ..
+#[user@desktop]
+
+    vi src/templates/sqlcookbook.html 
+
+        +<!--+
+        +    | Test edit to demo Hg ...
+        +    +--->
+
+#
+# Check local changes
+#[user@desktop]
+
+    hg status
+
+        M src/templates/sqlcookbook.html
+
+#
+# Check local changes
+#[user@desktop]
+
+    hg diff
+
+        +<!--+
+        +    | Test edit to demo Hg ...
+        +    +--->
+
+#
+# Commit the change to local repository.
+#[user@desktop]
+
+    hg commit -m "Test change ..."
+
+#
+# Check local changes.
+# (no changes listed because change was comitted to local repository)
+#[user@desktop]
+
+    hg status
+
+        --
+                
+    hg diff
+
+        --
+
+#
+# List the outgoing changes.
+# (local changes not pushed yet)
+#[user@desktop]
+
+    hg outgoing
+
+        comparing with ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code
+        searching for changes
+        changeset:   104:52b087bf1a66
+        tag:         tip
+        parent:      97:8a869e052fe8
+        user:        Test user <test@example.com>
+        date:        Tue Jan 19 14:45:00 2016 +0000
+        summary:     Test change to demo Hg
+
+#
+# List the content of outgoing changes
+# (local changes not pushed yet)
+#[user@desktop]
+
+    hg outgoing --patch
+
+        comparing with ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code
+        searching for changes
+        changeset:   104:52b087bf1a66
+        tag:         tip
+        parent:      97:8a869e052fe8
+        user:        Test user <test@example.com>
+        date:        Tue Jan 19 14:45:00 2016 +0000
+        summary:     Test change to demo Hg
+
+        diff -r 8a869e052fe8 -r 52b087bf1a66 src/templates/sqlcookbook.html
+        --- a/src/templates/sqlcookbook.html	Thu Dec 17 22:57:02 2015 +0200
+        +++ b/src/templates/sqlcookbook.html	Tue Jan 19 14:45:00 2016 +0000
+        @@ -10,6 +10,9 @@
+         		    });
+         </script>
+         
+        +<!--+
+        +    | Test edit to demo Hg ...
+        +    +--->
+                 
+                 
+#
+# Your change is not in the main repository yet.
+#[user@desktop]
+
+    firefox 'http://wfau.metagrid.co.uk/code/clearwing/' &
+
+#
+# Push the change to the main repository.
+#[user@desktop]
+
+    hg push
+
+#
+# List of outgoing changes is empty.
+#[user@desktop]
+
+    hg outgoing
+
+        searching for changes
+        no changes found
+
+#
+# Changes should show now up in main repository.
+#[user@desktop]
+
+    firefox 'http://wfau.metagrid.co.uk/code/clearwing/' &
+
+
+# -----------------------------------------------------
+# Other Hg commands that may be useful.
+#
+
+#
+# Pull changes from the remote repository
+# and update your working copy.
+#[user@desktop]
+
+    hg pull --update
+
+
+#
+# Add any new files
+#[user@desktop]
+
+    hg add
+
+#
+# Add a new file
+#[user@desktop]
+
+    hg add <filename>
+
+#
+# Remove an old file
+#[user@desktop]
+
+    hg remove <filename>
+
+#
+# Add/remove all files.
+#[user@desktop]
+
+    hg addremove
+
+
+
+
+
+
+
+
+
