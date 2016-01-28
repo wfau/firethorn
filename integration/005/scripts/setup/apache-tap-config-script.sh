@@ -5,6 +5,9 @@ ProxyPreserveHost On
 ProxyPassMatch ^/(firethorn\/tap\/.*)$   http://${gillianip:?}:8080/$1 retry=0
 ProxyPassReverse  ^/(firethorn\/tap\/.*$   http://${gillianip:?}:8080/$1
 
+ProxyPassMatch ^/(firethorn\/adql\/table\/.*\/votable)$1   http://${gillianip:?}:8080/ retry=0
+ProxyPassReverse  ^/(firethorn\/adql\/table\/.*\/votable)$1 http://${gillianip:?}:8080/
+
 <Proxy *>
 Order deny,allow
 Allow from alll
