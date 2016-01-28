@@ -32,11 +32,23 @@ source ${HOME:?}/chain.properties
 
 setupdir="${HOME:?}/setup"
 
+chmod a+r "${HOME:?}/tap_service"
+
+echo "*** Running tap setup script ***"
+
 chcon -t svirt_sandbox_file_t "${setupdir:?}/build-tap.sh" 
 
 chmod a+r "${setupdir:?}/build-tap.sh"
 
-echo "*** Running tap setup script ***"
+homedir="${HOME:?}"
+
+touch "${HOME:?}/tap_service"
+>tap_service
+chcon -t svirt_sandbox_file_t "${HOME:?}/tap_service" 
+
+chmod a+r "${HOME:?}/tap_service"
+
+ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 
 # -----------------------------------------------------
 # Start our test container.
@@ -44,8 +56,9 @@ echo "*** Running tap setup script ***"
 
     source "${HOME:?}/chain.properties"
     docker run \
-        -it \
+        --detach \
         --memory 512M \
+        --volume "${HOME:?}/tap_service:${HOME:?}/tap_service" \
         --volume "${setupdir:?}/build-tap.sh:${setupdir:?}/build-tap.sh" \
         --env "datadata=${datadata:?}" \
         --env "datalink=${datalink:?}" \
@@ -58,8 +71,13 @@ echo "*** Running tap setup script ***"
         --env "metadata=${metadata?}" \
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --env "catalogue=${catalogue:?}" \
+        --env "ip=${ip:?}" \
         --link "${firename:?}:${firelink:?}" \
         "firethorn/tester:1.1" \
         bash -C ${setupdir:?}/build-tap.sh
+
+
+
+
 
 

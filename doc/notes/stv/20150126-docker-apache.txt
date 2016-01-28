@@ -36,12 +36,11 @@
     popd
 
     # Get Firethorn IP Addresss
-    docker inspect --format '{{ .NetworkSettings.IPAddress }}' gillian
-    > 172.17.0.15
-
-   docker exec -it firepache bash
-
-   nano /etc/apache2/apache2.conf
+    gillianip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' gillian)
+    
+    docker exec -it firepache bash
+   
+    nano /etc/apache2/apache2.conf
 
 	...
         # mod_proxy setup.

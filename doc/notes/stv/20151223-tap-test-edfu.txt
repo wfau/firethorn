@@ -55,7 +55,7 @@
 
     ssh edfu
 
-    newversion=2.0.7-stv-tap
+    newversion=2.0.8-stv-tap-proxy
 
 # -----------------------------------------------------
 # Create our secret function.
@@ -72,7 +72,7 @@
 
     secret 'firethorn.user.host'
    
-    source run.sh 07 ${newversion:?} ${newversion:?} http://peter:8080/firethorn/tap/13467649
+    source run.sh 08 ${newversion:?} ${newversion:?} ATLASDR1
 
    
 
