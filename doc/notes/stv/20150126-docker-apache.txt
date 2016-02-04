@@ -1,0 +1,118 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+   # Stop any running apache service
+   sudo service apache2 stop
+
+
+  source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "bin/util.sh"
+
+	docker build  --tag firethorn/apache docker/apache
+        docker run -p 80:80 --name firepache -d firethorn/apache 
+
+    popd
+
+    # Get Firethorn IP Addresss
+    gillianip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' gillian)
+    
+    docker exec -it firepache bash
+   
+    nano /etc/apache2/apache2.conf
+
+	...
+        # mod_proxy setup.
+        ProxyRequests Off
+        ProxyPreserveHost On
+        ProxyPassMatch ^/(firethorn\/tap\/.*)$   http://172.17.0.57:8080/$1 retry=0
+        ProxyPassReverse  ^/(firethorn\/tap\/.*$   http://172.17.0.57:8080/$1
+
+        <Proxy *>
+            Order deny,allow
+            Allow from alll
+        </Proxy>
+
+        <Location "/firethorn">
+          # Configurations specific to this location. Add what you need.
+          # For instance, you can add mod_proxy_html directives to fix
+          # links in the HTML code. See link at end of this page about using
+          # mod_proxy_html.
+
+          # Allow access to this proxied URL location for everyone.
+          Order allow,deny
+          Allow from all
+        </Location>
+
+	...
+
+
+  sudo service apache2 reload
+
+  exit 
+
+
+
+        endpointurl=http://localhost/firethorn
+        resourceid=25690113
+	query="SELECT+TOP+10+*+FROM+ATLASDR1.atlasSource"
+	format=VOTABLE
+	lang=ADQL
+	request=doQuery
+	
+        # Get VOSI
+	curl ${endpointurl:?}/tap/${resourceid:?}/capabilities
+
+
+
+	# ----------------------Query test1: synchronous-------------------------------
+        # Run a synchronous query
+	
+	curl -v -L \
+	${endpointurl:?}/tap/${resourceid:?}/sync \
+	-d QUERY=${query:?} \
+	-d LANG=${lang:?} \
+	-d MAXREC=2 \
+	-d REQUEST=${request:?}
+
+	# ----------------------Query test2: asynchronous-------------------------------
+	# Run an asynchronous query
+
+	data="$( curl -v -L \
+	${endpointurl:?}/tap/${resourceid:?}/async \
+	-d QUERY=${query:?} \
+	-d LANG=${lang:?} \
+	-d REQUEST=${request:?})"
+
+	jobid=$(grep -oPm1 "(?<=<uws:jobId>)[^<]+" <<< "$data")
+
+	curl -v \
+	${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/phase \
+	-d PHASE=RUN 
+
+	curl  ${endpointurl:?}/tap/${resourceid:?}/async/${jobid:?}/results
+
+
+
+

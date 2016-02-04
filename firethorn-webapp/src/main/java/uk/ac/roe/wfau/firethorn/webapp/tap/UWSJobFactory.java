@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
@@ -37,7 +39,13 @@ class UWSJobFactory extends AbstractComponent {
      */
     public UWSJobFactory()
         {
+    	/**
+    	 * Get baseurl from context
+    	 * 
+    	 * @return baseurl
+    	 */
         super();
+
         }
 
     @Value("${firethorn.webapp.baseurl:null}")
@@ -53,12 +61,25 @@ class UWSJobFactory extends AbstractComponent {
     	this.baseurl = baseurl;
         }
     
+    
+	/**
+	 * Get baseurl from context
+	 * 
+	 * @return baseurl
+	 */
+	public String getBaseurlFromContext() {
+		
+	     UriComponentsBuilder builder ;
+	     builder = ServletUriComponentsBuilder.fromCurrentContextPath();
+		 return builder.build().toString();
+	}
+    
     /**
      * Get baseurl 
      * @return baseurl
      */
     public String getBaseurl() {
-    	return baseurl;
+    	return getBaseurlFromContext();
     }
     
     /**

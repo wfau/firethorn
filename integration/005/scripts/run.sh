@@ -115,6 +115,9 @@ else
         then 
             echo "Running setup tap script with: " + ${input_variable:?}
             source setup/setup-tap.sh ${input_variable:?}
+            source setup/apache-tap.sh
+    	    echo "${catalogue:?} TAP Service available in file: tap_service"
+            cat ${HOME:?}/tap_service
         else
             echo -n "Please enter a catalogue and press [ENTER]: "
             read input_variable
@@ -124,6 +127,11 @@ else
             else
                 source setup/setup-tap.sh "DEFAULT"
             fi
+
+            source setup/apache-tap.sh
+    	    echo "${catalogue:?} TAP Service available in file: tap_service"
+            cat ${HOME:?}/tap_service
+
         fi
     else 
         source setup/setup-pyro.sh

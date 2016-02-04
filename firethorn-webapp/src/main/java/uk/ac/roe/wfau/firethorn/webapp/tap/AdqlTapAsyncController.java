@@ -113,7 +113,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		UWSJob uwsjob = null;
 		BlueQuery qry;
 		PrintWriter writer = response.getWriter();
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 		
 		if (resource != null) {
 
@@ -170,7 +169,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter writer = response.getWriter();
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		UWSJob uwsjob;
 		BlueQuery queryentity;
@@ -223,8 +221,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		
 
 		PrintWriter writer = response.getWriter();
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
-
 		UWSJob uwsjob;
 		BlueQuery queryentity;
 		
@@ -291,7 +287,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		UWSJob uwsjob;
 		BlueQuery queryentity = null;
 		PrintWriter writer = response.getWriter();
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -352,7 +347,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		UWSJob uwsjob;
 		BlueQuery queryentity = null;
 		PrintWriter writer = response.getWriter();
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -403,7 +397,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		UWSJob uwsjob;
 		BlueQuery queryentity;
 		PrintWriter writer = response.getWriter();
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -448,7 +441,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		PrintWriter writer = response.getWriter();
 		UWSJob uwsjob;
 		BlueQuery queryentity;
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -494,7 +486,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		response.setContentType("text/plain");
 		BlueQuery queryentity;
 		UWSJob uwsjob;
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -528,7 +519,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		BlueQuery queryentity;
 		PrintWriter writer = response.getWriter();
 		response.setContentType("text/plain");
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			
@@ -564,7 +554,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		BlueQuery queryentity;
 		PrintWriter writer = response.getWriter();
 		response.setContentType("text/plain");
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			
@@ -599,7 +588,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		PrintWriter writer = response.getWriter();
 		response.setContentType(CommonParams.TEXT_XML_MIME);
 		response.setCharacterEncoding("UTF-8");
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);
@@ -656,7 +644,6 @@ public class AdqlTapAsyncController extends AbstractController {
 
 		response.setContentType(CommonParams.TEXT_XML_MIME);
 		response.setCharacterEncoding("UTF-8");
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		UWSJob uwsjob;
 		BlueQuery queryentity;
@@ -692,7 +679,6 @@ public class AdqlTapAsyncController extends AbstractController {
 		UWSJob uwsjob;
 		BlueQuery queryentity = null;
 		PrintWriter writer = response.getWriter();
-		uwsfactory.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
 		try {
 			queryentity = getqueryentity(jobid);

@@ -44,5 +44,7 @@ RUN yum -y install nano
 RUN yum -y install gzip
 RUN yum -y install pwgen
 
+# https://github.com/docker/docker/issues/9299
+ENV TERM xterm
 
 
