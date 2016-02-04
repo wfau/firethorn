@@ -33,7 +33,14 @@ chmod a+r "${setupdir:?}/apache-tap-config-script.sh"
 
 gillianip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' gillian)
 
-docker run -p 80:80 --name firepache  --memory 512M --volume "${setupdir:?}/apache-tap-config-script.sh:${setupdir:?}/apache-tap-config-script.sh" \--env "gillianip=${gillianip:?}" -d firethorn/apache 
+
+firepachelogs="/var/logs/firepache"
+
+directory "${firelogs:?}"
+
+
+
+docker run -p 80:80 --name firepache  --memory 512M --volume "${firepachelogs:?}:/var/log/apache2" --volume "${setupdir:?}/apache-tap-config-script.sh:${setupdir:?}/apache-tap-config-script.sh" \--env "gillianip=${gillianip:?}" -d firethorn/apache 
 
 docker exec  firepache /bin/sh -l -c ${setupdir:?}/apache-tap-config-script.sh
 
