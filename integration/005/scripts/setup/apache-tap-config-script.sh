@@ -3,10 +3,10 @@ cat <<EOF >> /etc/apache2/apache2.conf
 ProxyRequests Off
 ProxyPreserveHost On
 ProxyPassMatch ^/(firethorn\/tap\/.*)$   http://${gillianip:?}:8080/$1 retry=0
-ProxyPassReverse  ^/(firethorn\/tap\/.*$   http://${gillianip:?}:8080/$1
+ProxyPassReverse  ^/(firethorn\/tap\/.*)$   http://${gillianip:?}:8080/$1
 
-ProxyPassMatch ^/(firethorn\/adql\/table\/.*\/votable)$1   http://${gillianip:?}:8080/ retry=0
-ProxyPassReverse  ^/(firethorn\/adql\/table\/.*\/votable)$1 http://${gillianip:?}:8080/
+ProxyPassMatch ^/(firethorn\/adql\/table\/.*\/votable)$   http://${gillianip:?}:8080/$1 retry=0
+ProxyPassReverse  ^/(firethorn\/adql\/table\/.*\/votable)$ http://${gillianip:?}:8080/$1
 
 <Proxy *>
 Order deny,allow
