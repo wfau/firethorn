@@ -22,11 +22,7 @@
 
 #--------------------------------------------------------
   source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        docker build \
-            --tag firethorn/fedora:21 \
-            docker/fedora/21
+    pushd "${FIRETHORN_CODE:?}/attic/astrogrid"
 
         docker build \
             --tag firethorn/astrojava:8.1 \
@@ -48,6 +44,18 @@ docker run \
 --volume "/home/stelios/Downloads/astrogrid/:/var/local/tomcat/webapps" \
  "firethorn/astrotomcat:8.1" bash	
 
-chown tomcat:root -R conf/* 
+chown  -R tomcat:root ./* 
+cd conf/
+nano tomcat-users.xml
+
+...
+
+  <role rolename="manager"/>
+  <user username="admin" password="admin" roles="manager"/>
+
+...
+
+cd ..
+bin/startup.sh
 
 
