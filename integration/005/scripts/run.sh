@@ -117,6 +117,7 @@ else
             source setup/setup-tap.sh ${input_variable:?}
             source setup/apache-tap.sh
     	    echo "${catalogue:?} TAP Service available in file: tap_service"
+            sleep 60
             cat ${HOME:?}/tap_service
         else
             echo -n "Please enter a catalogue and press [ENTER]: "
@@ -130,6 +131,7 @@ else
 
             source setup/apache-tap.sh
     	    echo "${catalogue:?} TAP Service available in file: tap_service"
+            sleep 60
             cat ${HOME:?}/tap_service
 
         fi

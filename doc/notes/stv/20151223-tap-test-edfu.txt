@@ -55,14 +55,14 @@
 
     ssh edfu
 
-    newversion=2.0.8-stv-tap-proxy
+    newversion=2.0.9
 
 # -----------------------------------------------------
 # Create our secret function.
 #[root@hebenu]
 
     secrethost='stv@shepseskaf.roe.ac.uk'
-    secretfile='${HOME:?}/secret.test.store'
+    secretfile='${HOME:?}/secret.store'
 
     secret()
         {
@@ -72,7 +72,7 @@
 
     secret 'firethorn.user.host'
    
-    source run.sh 08 ${newversion:?} ${newversion:?} ATLASDR1
+    source run.sh 08 default ${newversion:?} ATLASDR1
 
    
 
