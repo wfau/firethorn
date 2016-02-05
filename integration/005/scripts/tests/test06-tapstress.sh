@@ -20,7 +20,7 @@
 #
 
 
-echo "*** Initialising test06 script [test06-taptest.sh] ***"
+echo "*** Initialising test06 script [test06-tapstress.sh] ***"
 
 tap_service=$1
 
@@ -29,7 +29,7 @@ echo "Running test on the following TAP Service :" ${tap_service:?}
 source ${HOME:?}/chain.properties
 
 
-echo "*** Creating pyrothorn properties file [test06-taptest.sh] ***"
+echo "*** Creating pyrothorn properties file [test06-tapstress.sh] ***"
 
 pyroproperties=$(mktemp)
 cat > "${pyroproperties:?}" << EOF
