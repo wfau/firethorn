@@ -36,7 +36,7 @@ gillianip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' gillian)
 
 firepachelogs="/var/logs/firepache"
 
-directory "${firelogs:?}"
+directory "${firepachelogs:?}"
 
 
 
