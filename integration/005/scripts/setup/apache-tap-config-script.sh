@@ -3,11 +3,11 @@ cat >> /etc/apache2/apache2.conf <<EOF
 # mod_proxy setup.
 ProxyRequests Off
 ProxyPreserveHost On
-ProxyPassMatch ^/(firethorn\/tap\/.*)$   http://${gillianip:?}:8080/$1 retry=0 connectiontimeout=14400 timeout=14400
-ProxyPassReverse  ^/(firethorn\/tap\/.*)$   http://${gillianip:?}:8080/$1 
+ProxyPassMatch ^/(firethorn\/tap\/.*)$   http://${gillianip:?}:8080/\$1 retry=0 connectiontimeout=14400 timeout=14400
+ProxyPassReverse  ^/(firethorn\/tap\/.*)$   http://${gillianip:?}:8080/\$1 
 
-ProxyPassMatch ^/(firethorn\/adql\/table\/.*\/votable)$   http://${gillianip:?}:8080/$1 retry=0 connectiontimeout=14400 timeout=14400
-ProxyPassReverse  ^/(firethorn\/adql\/table\/.*\/votable)$ http://${gillianip:?}:8080/$1 
+ProxyPassMatch ^/(firethorn\/adql\/table\/.*\/votable)$   http://${gillianip:?}:8080/\$1 retry=0 connectiontimeout=14400 timeout=14400
+ProxyPassReverse  ^/(firethorn\/adql\/table\/.*\/votable)$ http://${gillianip:?}:8080/\$1 
 
 <Proxy *>
 Order deny,allow
