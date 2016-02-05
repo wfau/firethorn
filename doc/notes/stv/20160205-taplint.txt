@@ -32,76 +32,76 @@ yum -y install java
 wget http://www.star.bris.ac.uk/~mbt/stilts/stilts.jar
  
 
-java -jar stilts.jar taplint tapurl=http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177  debug=true 
+java -jar stilts.jar taplint tapurl=http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089  debug=true 
 This is STILTS taplint, 3.0-6/f87800b (2015-11-26)
 Static report types: ERROR(107), WARNING(37), INFO(16), SUMMARY(7), FAILURE(18)
 
 Section TMV: Validate table metadata against XML schema
-I-TMV-VURL-1 Validating http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+I-TMV-VURL-1 Validating http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
 S-TMV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
 
 Section TME: Check content of tables metadata from /tables
-I-TME-TURL-1 Reading table metadata from http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/tables
+I-TME-TURL-1 Reading table metadata from http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/tables
 S-TME-SUMM-1 Schemas: 2, Tables: 68, Columns: 1137, Foreign Keys: 0
 S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
 S-TME-FLGO-1 Other column flags: none
 
 Section TMS: Check content of tables metadata from TAP_SCHEMA
 I-TMS-QSUB-1 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.schemas
-I-TMS-QGET-1 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
+I-TMS-QGET-1 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
 I-TMS-QSUB-2 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.tables
-I-TMS-QGET-2 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
+I-TMS-QGET-2 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
 I-TMS-QSUB-3 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.columns
-I-TMS-QGET-3 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
+I-TMS-QGET-3 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
 I-TMS-QSUB-4 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.keys
-I-TMS-QGET-4 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
+I-TMS-QGET-4 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
 I-TMS-QSUB-5 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.key_columns
-I-TMS-QGET-5 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
+I-TMS-QGET-5 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
 I-TMS-QSUB-6 Submitting query: SELECT principal, indexed, std, "size" FROM TAP_SCHEMA.columns
-I-TMS-QGET-6 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=1147
+I-TMS-QGET-6 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=1147
 I-TMS-QSUB-7 Submitting query: SELECT column_name, description, unit, ucd, utype, datatype, indexed, principal, std, table_name FROM TAP_SCHEMA.columns
-I-TMS-QGET-7 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+column_name%2C+description%2C+unit%2C+ucd%2C+utype%2C+datatype%2C+indexed%2C+principal%2C+std%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=1147
+I-TMS-QGET-7 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+column_name%2C+description%2C+unit%2C+ucd%2C+utype%2C+datatype%2C+indexed%2C+principal%2C+std%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=1147
 I-TMS-QSUB-8 Submitting query: SELECT from_column, target_column, key_id FROM TAP_SCHEMA.key_columns
-I-TMS-QGET-8 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=1147
+I-TMS-QGET-8 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=1147
 I-TMS-QSUB-9 Submitting query: SELECT key_id, target_table, description, utype, from_table FROM TAP_SCHEMA.keys
-I-TMS-QGET-9 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+key_id%2C+target_table%2C+description%2C+utype%2C+from_table+FROM+TAP_SCHEMA.keys&MAXREC=1147
+I-TMS-QGET-9 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+key_id%2C+target_table%2C+description%2C+utype%2C+from_table+FROM+TAP_SCHEMA.keys&MAXREC=1147
 S-TMS-SUMM-1 Schemas: 2, Tables: 68, Columns: 1137, Foreign Keys: 0
 S-TMS-FLGS-1 Standard column flags: indexed: 0, principal: 7, std: 27
 S-TMS-QNUM-1 Successful/submitted TAP queries: 11/11
-S-TMS-QTIM-1 Average successful query time: 1.8s
+S-TMS-QTIM-1 Average successful query time: 2.7s
 I-TMS-QSUB-x (2 more)
 I-TMS-QGET-x (2 more)
 
 Section TMC: Compare table metadata from /tables and TAP_SCHEMA
 
 Section CPV: Validate capabilities against XML schema
-I-CPV-VURL-1 Validating http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+I-CPV-VURL-1 Validating http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
 S-CPV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
 
 Section CAP: Check content of TAPRegExt capabilities record
-I-CAP-CURL-1 Reading capability metadata from http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/capabilities
+I-CAP-CURL-1 Reading capability metadata from http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/capabilities
 
 Section AVV: Validate availability against XML schema
-I-AVV-VURL-1 Validating http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+I-AVV-VURL-1 Validating http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
 S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
 
 Section QGE: Make ADQL queries in sync GET mode
 I-QGE-QSUB-1 Submitting query: SELECT TOP 10 distanceMins FROM ATLASDR1.atlasSourceXDR8PhotoObj
-I-QGE-QGET-1 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+distanceMins+FROM+ATLASDR1.atlasSourceXDR8PhotoObj
+I-QGE-QGET-1 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+distanceMins+FROM+ATLASDR1.atlasSourceXDR8PhotoObj
 I-QGE-QSUB-2 Submitting query: SELECT distanceMins FROM ATLASDR1.atlasSourceXDR8PhotoObj
-I-QGE-QGET-2 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+distanceMins+FROM+ATLASDR1.atlasSourceXDR8PhotoObj&MAXREC=9
+I-QGE-QGET-2 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+distanceMins+FROM+ATLASDR1.atlasSourceXDR8PhotoObj&MAXREC=9
 I-QGE-QSUB-3 Submitting query: SELECT TOP 1 distanceMins FROM ATLASDR1.atlasSourceXDR8PhotoObj
-I-QGE-QGET-3 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+distanceMins+FROM+ATLASDR1.atlasSourceXDR8PhotoObj
+I-QGE-QGET-3 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+distanceMins+FROM+ATLASDR1.atlasSourceXDR8PhotoObj
 I-QGE-QSUB-4 Submitting query: SELECT TOP 1 distanceMins FROM ATLASDR1.atlasSourceXDR8PhotoObj
-I-QGE-QGET-4 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+distanceMins+FROM+ATLASDR1.atlasSourceXDR8PhotoObj
+I-QGE-QGET-4 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+distanceMins+FROM+ATLASDR1.atlasSourceXDR8PhotoObj
 I-QGE-QSUB-5 Submitting query: SELECT TOP 8 slaveObjID, sdssType AS taplint_c_2, A.sdssPrimary, masterObjID AS taplint_c_4, distanceMins  FROM ATLASDR1.atlasSourceXDR8PhotoObjAll AS A
-I-QGE-QGET-5 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+slaveObjID%2C+sdssType+AS+taplint_c_2%2C+A.sdssPrimary%2C+masterObjID+AS+taplint_c_4%2C+distanceMins++FROM+ATLASDR1.atlasSourceXDR8PhotoObjAll+AS+A
+I-QGE-QGET-5 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+slaveObjID%2C+sdssType+AS+taplint_c_2%2C+A.sdssPrimary%2C+masterObjID+AS+taplint_c_4%2C+distanceMins++FROM+ATLASDR1.atlasSourceXDR8PhotoObjAll+AS+A
 I-QGE-QSUB-6 Submitting query: SELECT distanceMins FROM ATLASDR1.atlasSourceXDR9PhotoObj
-I-QGE-QGET-6 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+distanceMins+FROM+ATLASDR1.atlasSourceXDR9PhotoObj&MAXREC=0
+I-QGE-QGET-6 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+distanceMins+FROM+ATLASDR1.atlasSourceXDR9PhotoObj&MAXREC=0
 I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
-I-QGE-QGET-7 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
+I-QGE-QGET-7 Query GET URL: http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
 S-QGE-QNUM-1 Successful/submitted TAP queries: 6/6
-S-QGE-QTIM-1 Average successful query time: 1.7s
+S-QGE-QTIM-1 Average successful query time: 1.1s
 
 Section QPO: Make ADQL queries in sync POST mode
 I-QPO-QSUB-1 Submitting query: SELECT TOP 10 distanceMins FROM ATLASDR1.atlasSourceXDR8PhotoObj
@@ -110,31 +110,32 @@ I-QPO-QSUB-3 Submitting query: SELECT TOP 8 slaveObjID, sdssType AS taplint_c_2,
 I-QPO-QSUB-4 Submitting query: SELECT distanceMins FROM ATLASDR1.atlasSourceXDR9PhotoObj
 I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
 S-QPO-QNUM-1 Successful/submitted TAP queries: 4/4
-S-QPO-QTIM-1 Average successful query time: 1.2s
+S-QPO-QTIM-1 Average successful query time: 1.9s
 
 Section QAS: Make ADQL queries in async mode
 I-QAS-QSUB-1 Submitting query: SELECT TOP 10 distanceMins FROM ATLASDR1.atlasSourceXDR8PhotoObj
-I-QAS-QJOB-1 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637368
+I-QAS-QJOB-1 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932184
 I-QAS-QSUB-2 Submitting query: SELECT distanceMins FROM ATLASDR1.atlasSourceXDR8PhotoObj
-I-QAS-QJOB-2 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637369
+I-QAS-QJOB-2 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932185
 I-QAS-QSUB-3 Submitting query: SELECT TOP 8 slaveObjID, sdssType AS taplint_c_2, A.sdssPrimary, masterObjID AS taplint_c_4, distanceMins  FROM ATLASDR1.atlasSourceXDR8PhotoObjAll AS A
-I-QAS-QJOB-3 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637370
+I-QAS-QJOB-3 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932186
 I-QAS-QSUB-4 Submitting query: SELECT distanceMins FROM ATLASDR1.atlasSourceXDR9PhotoObj
-I-QAS-QJOB-4 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637371
+I-QAS-QJOB-4 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932187
 I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
-I-QAS-QJOB-5 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637372
+I-QAS-QJOB-5 Submitted query at http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932188
 S-QAS-QNUM-1 Successful/submitted TAP queries: 4/4
-S-QAS-QTIM-1 Average successful query time: 2.9s
+S-QAS-QTIM-1 Average successful query time: 2.7s
 
 Section UWS: Test asynchronous UWS/TAP behaviour
-I-UWS-CJOB-1 Created new job http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637373
-I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637373/parameters
-I-UWS-POPA-2 POSTed PHASE=ABORT to http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637373/phase
-I-UWS-POPA-3 POSTed ACTION=DELETE to http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637373
-I-UWS-CJOB-2 Created new job http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637374
-I-UWS-CJOB-3 Created new job http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637375
-W-UWS-TFMT-1 Not ISO-8601 content "0" from http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637375/destruction
-I-UWS-POPA-4 POSTed PHASE=RUN to http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3506177/async/3637375/phase
+I-UWS-CJOB-1 Created new job http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932189
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932189/parameters
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932189/phase
+I-UWS-POPA-3 POSTed ACTION=DELETE to http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932189
+I-UWS-CJOB-2 Created new job http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932190
+I-UWS-CJOB-3 Created new job http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932191
+W-UWS-TFMT-1 Not ISO-8601 content "0" from http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932191/destruction
+I-UWS-POPA-4 POSTed PHASE=RUN to http://shepseskaf.roe.ac.uk:8080/firethorn/tap/3801089/async/3932191/phase
+I-UWS-JOFI-1 Job completed immediately - can't test phase progression
 
 Section MDQ: Check table query result columns against declared metadata
 I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ArchiveCurationHistory
@@ -147,7 +148,7 @@ I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM ATLASDR1.atlasSourceXdenisDR3
 I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM ATLASDR1.atlasSourceXDR5PhotoObj
 I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM ATLASDR1.atlasSourceXDR5PhotoObjAll
 S-MDQ-QNUM-1 Successful/submitted TAP queries: 68/68
-S-MDQ-QTIM-1 Average successful query time: 1.6s
+S-MDQ-QTIM-1 Average successful query time: 1.5s
 I-MDQ-QSUB-x (59 more)
 
 Section OBS: Test implementation of ObsCore Data Model
@@ -156,5 +157,5 @@ I-OBS-NODM-1 Table capabilities lists no DataModel ivo://ivoa.net/std/ObsCore/v1
 Section UPL: Make queries with table uploads
 F-UPL-NOUP-1 Table capabilities lists no upload methods - will not attempt upload tests
 
-Totals: Errors: 0; Warnings: 1; Infos: 132; Summaries: 18; Failures: 1
+Totals: Errors: 0; Warnings: 1; Infos: 133; Summaries: 18; Failures: 1
 
