@@ -176,7 +176,10 @@ class test_firethorn(unittest.TestCase):
                     	    start_time = time.time()
 			    logging.info("Started TAP job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    with Timeout(config.firethorn_timeout):
-			        votable = voQuery.execute_async_query(q=query, url=config.tap_service)
+                                if (config.sql_rowlimit!=None):
+			            votable = voQuery.execute_async_query(q=query, url=config.tap_service, maxrec=config.sql_rowlimit)
+                                else :
+                                    votable = voQuery.execute_async_query(q=query, url=config.tap_service)
 			    tap_row_length = voQuery.get_votable_rowcount(votable)
 			    logging.info("Finished TAP job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    logging.info("TAP  Query: " + str(tap_row_length) + " row(s) returned. ")

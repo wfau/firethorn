@@ -88,7 +88,7 @@ def get_votable_rowcount(votable):
         return -1
     return len(votable)
 
-def execute_async_query(url, q, mode_local="async", request="doQuery", lang="ADQL", voformat="votable"):
+def execute_async_query(url, q, mode_local="async", request="doQuery", lang="ADQL", voformat="votable", maxrec=None):
     """
     Execute an ADQL query (q) against a TAP service (url + mode:sync|async)       
     Starts by submitting a request for an async query, then uses the received job URL to call start_async_loop, to receive the final query results 
@@ -100,7 +100,11 @@ def execute_async_query(url, q, mode_local="async", request="doQuery", lang="ADQ
     @return: Return a votable with the results, the TAP job ID and a temporary file path with the results stored on the server
     """    
 
-    params = urllib.urlencode({'REQUEST': request, 'LANG': lang, 'FORMAT': voformat, 'QUERY' : q}) 
+    if (maxrec!=None):
+        params = urllib.urlencode({'REQUEST': request, 'LANG': lang, 'FORMAT': voformat, 'QUERY' : q, 'MAXREC' : maxrec})
+    else:
+        params = urllib.urlencode({'REQUEST': request, 'LANG': lang, 'FORMAT': voformat, 'QUERY' : q}) 
+
     full_url = url+"/"+mode_local
 
     votable = []
