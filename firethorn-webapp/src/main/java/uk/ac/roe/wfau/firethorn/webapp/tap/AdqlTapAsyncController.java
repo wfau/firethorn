@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.webapp.tap;
 
 import java.io.PrintWriter;
 import java.sql.Timestamp;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -103,9 +104,9 @@ public class AdqlTapAsyncController extends AbstractController {
 			@RequestParam(value = "LANG", required = false) String LANG,
 			@RequestParam(value = "REQUEST", required = false) String REQUEST,
 			@RequestParam(value = "QUERY", required = false) String QUERY, 
-			@RequestParam(value = "FORMAT", required = false) final String FORMAT, 
-			@RequestParam(value = "VERSION", required = false) final String VERSION, 
-			@RequestParam(value = "MAXREC", required = false) final String MAXREC,
+			@RequestParam(value = "FORMAT", required = false) String FORMAT, 
+			@RequestParam(value = "VERSION", required = false) String VERSION, 
+			@RequestParam(value = "MAXREC", required = false) String MAXREC,
 			final HttpServletResponse response, HttpServletRequest request)
 					throws Exception {
 
@@ -113,6 +114,36 @@ public class AdqlTapAsyncController extends AbstractController {
 		UWSJob uwsjob = null;
 		BlueQuery qry;
 		PrintWriter writer = response.getWriter();
+		
+		Enumeration<?> enumeration = request.getParameterNames();
+		while (enumeration.hasMoreElements()) {
+			String parameterName = (String) enumeration.nextElement();
+			
+			if (parameterName.toLowerCase()=="query"){
+				QUERY = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="lang"){
+				LANG = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="request"){
+				REQUEST = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="format"){
+				FORMAT = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="version"){
+				VERSION = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="maxrec"){
+				MAXREC = request.getParameter(parameterName);
+			}
+			
+		}
 		
 		if (resource != null) {
 
@@ -276,10 +307,10 @@ public class AdqlTapAsyncController extends AbstractController {
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			@RequestParam(value = "LANG", required = false) String LANG,
 			@RequestParam(value = "REQUEST", required = false) String REQUEST,
-			@RequestParam(value = "QUERY", required = false) final String QUERY, 
-			@RequestParam(value = "FORMAT", required = false) final String FORMAT, 
-			@RequestParam(value = "VERSION", required = false) final String VERSION, 
-			@RequestParam(value = "MAXREC", required = false) final String MAXREC,
+			@RequestParam(value = "QUERY", required = false) String QUERY, 
+			@RequestParam(value = "FORMAT", required = false) String FORMAT, 
+			@RequestParam(value = "VERSION", required = false) String VERSION, 
+			@RequestParam(value = "MAXREC", required = false) String MAXREC,
 			final HttpServletResponse response, HttpServletRequest request)
 					throws IdentifierNotFoundException, Exception {
 
@@ -288,6 +319,37 @@ public class AdqlTapAsyncController extends AbstractController {
 		BlueQuery queryentity = null;
 		PrintWriter writer = response.getWriter();
 
+		Enumeration<?> enumeration = request.getParameterNames();
+		while (enumeration.hasMoreElements()) {
+			String parameterName = (String) enumeration.nextElement();
+			
+			if (parameterName.toLowerCase()=="query"){
+				QUERY = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="lang"){
+				LANG = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="request"){
+				REQUEST = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="format"){
+				FORMAT = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="version"){
+				VERSION = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="maxrec"){
+				MAXREC = request.getParameter(parameterName);
+			}
+			
+		}
+		
+		
 		try {
 			queryentity = getqueryentity(jobid);
 		} catch (Exception e) {

@@ -136,7 +136,7 @@ public class TapValidator {
 			setErrorMessage(TapError.writeErrorToVotable(TapJobErrors.PARAM_LANGUAGE_MISSING));
 			valid = false;
 			return valid;
-		} else if (getLang()  != null) {
+		} else if (getLang() != null) {
 			if (!getLang() .equalsIgnoreCase("ADQL") && 
 					!getLang() .equalsIgnoreCase("ADQL-2.0")  && 
 					!getLang() .equalsIgnoreCase("ADQL-1.0") && 

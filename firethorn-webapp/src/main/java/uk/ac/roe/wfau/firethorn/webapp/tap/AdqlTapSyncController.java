@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -114,6 +115,38 @@ public class AdqlTapSyncController extends AbstractController {
 		PrintWriter writer = response.getWriter();
 		response.setCharacterEncoding("UTF-8");
 
+        //
+        // Let's obtains parameters name here! 
+        //
+		Enumeration<?> enumeration = request.getParameterNames();
+		while (enumeration.hasMoreElements()) {
+			String parameterName = (String) enumeration.nextElement();
+			
+			if (parameterName.toLowerCase()=="query"){
+				QUERY = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="lang"){
+				LANG = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="request"){
+				REQUEST = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="format"){
+				FORMAT = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="version"){
+				VERSION = request.getParameter(parameterName);
+			}
+			
+			if (parameterName.toLowerCase()=="maxrec"){
+				MAXREC = request.getParameter(parameterName);
+			}
+			
+		}
 		// Check input parameters and return VOTable with appropriate message if
 		// any errors found
 		TapValidator validator = new TapValidator(REQUEST, LANG, QUERY, FORMAT, VERSION, MAXREC);
