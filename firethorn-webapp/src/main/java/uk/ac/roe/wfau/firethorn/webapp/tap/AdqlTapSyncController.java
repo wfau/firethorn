@@ -110,6 +110,13 @@ public class AdqlTapSyncController extends AbstractController {
 
 		
 		response.setContentType(CommonParams.TEXT_XML_MIME);
+		
+		String tap_query = QUERY;
+		String lang = LANG;
+		String req = REQUEST;
+		String format = FORMAT;
+		String version = VERSION;
+		String maxrec = MAXREC;
 
 		String results = "";
 		PrintWriter writer = response.getWriter();
@@ -118,38 +125,48 @@ public class AdqlTapSyncController extends AbstractController {
         //
         // Let's obtains parameters name here! 
         //
+		log.debug("**********");
 		Enumeration<?> enumeration = request.getParameterNames();
 		while (enumeration.hasMoreElements()) {
 			String parameterName = (String) enumeration.nextElement();
 			
-			if (parameterName.toLowerCase()=="query"){
-				QUERY = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("query")){
+				tap_query = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="lang"){
-				LANG = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("lang")){
+				lang = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="request"){
-				REQUEST = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("request")){
+				req = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="format"){
-				FORMAT = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("format")){
+				format = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="version"){
-				VERSION = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("version")){
+				version = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="maxrec"){
-				MAXREC = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("maxrec")){
+				maxrec = request.getParameter(parameterName);
 			}
+			
+			log.debug(parameterName);
+			log.debug(request.getParameter(parameterName));
+			
 			
 		}
+		
+		log.debug(LANG);
+
+		
+
 		// Check input parameters and return VOTable with appropriate message if
 		// any errors found
-		TapValidator validator = new TapValidator(REQUEST, LANG, QUERY, FORMAT, VERSION, MAXREC);
+		TapValidator validator = new TapValidator(req, lang, tap_query, format, version, maxrec);
 		boolean valid = validator.checkParams();
 
 		if (valid) {

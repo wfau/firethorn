@@ -115,40 +115,56 @@ public class AdqlTapAsyncController extends AbstractController {
 		BlueQuery qry;
 		PrintWriter writer = response.getWriter();
 		
+		String tap_query = QUERY;
+		String lang = LANG;
+		String req = REQUEST;
+		String format = FORMAT;
+		String version = VERSION;
+		String maxrec = MAXREC;
+
+        // Let's obtains parameters name here! 
+        //
+		log.debug("**********");
 		Enumeration<?> enumeration = request.getParameterNames();
 		while (enumeration.hasMoreElements()) {
 			String parameterName = (String) enumeration.nextElement();
 			
-			if (parameterName.toLowerCase()=="query"){
-				QUERY = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("query")){
+				tap_query = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="lang"){
-				LANG = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("lang")){
+				lang = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="request"){
-				REQUEST = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("request")){
+				req = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="format"){
-				FORMAT = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("format")){
+				format = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="version"){
-				VERSION = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("version")){
+				version = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="maxrec"){
-				MAXREC = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("maxrec")){
+				maxrec = request.getParameter(parameterName);
 			}
+			
+			log.debug(parameterName);
+			log.debug(request.getParameter(parameterName));
+			
 			
 		}
+	
+		
 		
 		if (resource != null) {
 
-			if (QUERY != null) {
-				qry = uwsfactory.createNewQuery(resource, QUERY);
+			if (tap_query != null) {
+				qry = uwsfactory.createNewQuery(resource, tap_query);
 				uwsjob = uwsfactory.create(resource, qry, jobType);
 				uwsjob.setQuery(QUERY);
 			} else {
@@ -161,16 +177,16 @@ public class AdqlTapAsyncController extends AbstractController {
 				return;
 			}
 			
-			if (REQUEST != null)
-				uwsjob.setRequest(REQUEST);
-			if (LANG != null)
-				uwsjob.setLang(LANG);
-			if (VERSION != null)
-				uwsjob.setVersion(VERSION);
-			if (FORMAT != null)
-				uwsjob.setFormat(FORMAT);
-			if (MAXREC != null)
-				uwsjob.setMaxrec(MAXREC);
+			if (req != null)
+				uwsjob.setRequest(req);
+			if (lang != null)
+				uwsjob.setLang(lang);
+			if (version != null)
+				uwsjob.setVersion(version);
+			if (format != null)
+				uwsjob.setFormat(format);
+			if (maxrec != null)
+				uwsjob.setMaxrec(maxrec);
 			
 			log.debug("Location:" + uwsjob.getJobURL());
 
@@ -318,34 +334,45 @@ public class AdqlTapAsyncController extends AbstractController {
 		UWSJob uwsjob;
 		BlueQuery queryentity = null;
 		PrintWriter writer = response.getWriter();
-
+		
+		String tap_query = QUERY;
+		String lang = LANG;
+		String req = REQUEST;
+		String format = FORMAT;
+		String version = VERSION;
+		String maxrec = MAXREC;
+		
 		Enumeration<?> enumeration = request.getParameterNames();
 		while (enumeration.hasMoreElements()) {
 			String parameterName = (String) enumeration.nextElement();
 			
-			if (parameterName.toLowerCase()=="query"){
-				QUERY = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("query")){
+				tap_query = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="lang"){
-				LANG = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("lang")){
+				lang = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="request"){
-				REQUEST = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("request")){
+				req = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="format"){
-				FORMAT = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("format")){
+				format = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="version"){
-				VERSION = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("version")){
+				version = request.getParameter(parameterName);
 			}
 			
-			if (parameterName.toLowerCase()=="maxrec"){
-				MAXREC = request.getParameter(parameterName);
+			if (parameterName.toLowerCase().equals("maxrec")){
+				maxrec = request.getParameter(parameterName);
 			}
+			
+			log.debug(parameterName);
+			log.debug(request.getParameter(parameterName));
+			
 			
 		}
 		
@@ -373,18 +400,18 @@ public class AdqlTapAsyncController extends AbstractController {
 				return;
 			}
 			
-			if (QUERY != null)
-				uwsjob.setQuery(QUERY);
-			if (REQUEST != null)
-				uwsjob.setRequest(REQUEST);
-			if (LANG != null)
-				uwsjob.setLang(LANG);
-			if (VERSION != null)
-				uwsjob.setVersion(VERSION);
-			if (FORMAT != null)
-				uwsjob.setFormat(FORMAT);
-			if (MAXREC != null)
-				uwsjob.setMaxrec(MAXREC);
+			if (tap_query != null)
+				uwsjob.setQuery(tap_query);
+			if (req != null)
+				uwsjob.setRequest(req);
+			if (lang != null)
+				uwsjob.setLang(lang);
+			if (version != null)
+				uwsjob.setVersion(version);
+			if (format != null)
+				uwsjob.setFormat(format);
+			if (maxrec != null)
+				uwsjob.setMaxrec(maxrec);
 			
 			response.setStatus(HttpServletResponse.SC_SEE_OTHER);
 		    response.setHeader("Location", uwsjob.getJobURL());
