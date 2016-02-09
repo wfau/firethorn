@@ -43,7 +43,7 @@
 # Install and start Docker.
 #
     yum install -y https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
-
+	
 
     systemctl enable docker.service
     systemctl start  docker.service
@@ -178,8 +178,8 @@
     tunneluser=$(secret 'ssh.tunnel.user')
     tunnelhost=$(secret 'ssh.tunnel.host')
 
-    defaultrows=10000
-    absoluterows=100000
+    defaultrows=1000000
+    absoluterows=10000000
 
 EOF
 
