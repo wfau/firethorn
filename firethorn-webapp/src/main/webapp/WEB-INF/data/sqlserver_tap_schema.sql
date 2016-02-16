@@ -1,9 +1,9 @@
 
-CREATE TABLE "TAP_SCHEMA"."schemas" ("schema_name" VARCHAR(MAX), "description" VARCHAR(MAX), "utype" VARCHAR(MAX), PRIMARY KEY("schema_name"));
-CREATE TABLE "TAP_SCHEMA"."tables" ("schema_name" VARCHAR(MAX), "table_name" VARCHAR(MAX), "table_type" VARCHAR(MAX), "description" VARCHAR(MAX), "utype" VARCHAR(MAX), PRIMARY KEY("table_name"));
-CREATE TABLE "TAP_SCHEMA"."columns" ("table_name" VARCHAR(MAX), "column_name" VARCHAR(MAX), "description" VARCHAR(MAX), "unit" VARCHAR(MAX), "ucd" VARCHAR(MAX), "utype" VARCHAR(MAX), "datatype" VARCHAR(MAX), "size" INTEGER, "principal" INTEGER, "indexed" INTEGER, "std" INTEGER, PRIMARY KEY("table_name","column_name"));
-CREATE TABLE "TAP_SCHEMA"."keys" ("key_id" VARCHAR(MAX), "from_table" VARCHAR(MAX), "target_table" VARCHAR(MAX), "description" VARCHAR(MAX), "utype" VARCHAR(MAX), PRIMARY KEY("key_id"));
-CREATE TABLE "TAP_SCHEMA"."key_columns" ("key_id" VARCHAR(MAX), "from_column" VARCHAR(MAX), "target_column" VARCHAR(MAX), PRIMARY KEY("key_id"));
+CREATE TABLE "TAP_SCHEMA"."schemas" ("schema_name" VARCHAR(1000), "description" VARCHAR(MAX), "utype" VARCHAR(MAX), PRIMARY KEY("schema_name"));
+CREATE TABLE "TAP_SCHEMA"."tables" ("schema_name" VARCHAR(1000), "table_name" VARCHAR(1000), "table_type" VARCHAR(MAX), "description" VARCHAR(MAX), "utype" VARCHAR(MAX), PRIMARY KEY("table_name"));
+CREATE TABLE "TAP_SCHEMA"."columns" ("table_name" VARCHAR(1000), "column_name" VARCHAR(1000), "description" VARCHAR(MAX), "unit" VARCHAR(MAX), "ucd" VARCHAR(MAX), "utype" VARCHAR(MAX), "datatype" VARCHAR(MAX), "size" INTEGER, "principal" INTEGER, "indexed" INTEGER, "std" INTEGER, PRIMARY KEY("table_name","column_name"));
+CREATE TABLE "TAP_SCHEMA"."keys" ("key_id" VARCHAR(1000), "from_table" VARCHAR(1000), "target_table" VARCHAR(1000), "description" VARCHAR(MAX), "utype" VARCHAR(MAX), PRIMARY KEY("key_id"));
+CREATE TABLE "TAP_SCHEMA"."key_columns" ("key_id" VARCHAR(1000), "from_column" VARCHAR(1000), "target_column" VARCHAR(1000), PRIMARY KEY("key_id"));
 
 INSERT INTO "TAP_SCHEMA"."schemas" VALUES ('TAP_SCHEMA', 'Set of tables listing and describing the schemas, tables and columns published in this TAP service.', NULL);
 
