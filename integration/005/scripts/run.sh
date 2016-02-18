@@ -115,10 +115,10 @@ else
         then 
             echo "Running setup tap script with: " + ${input_variable:?}
             source setup/setup-tap.sh ${input_variable:?}
+            sleep 120
+	    tap_service=$(cat tap_service)
             source setup/apache-tap.sh
-    	    echo "${catalogue:?} TAP Service available in file: tap_service"
-            sleep 60
-            cat ${HOME:?}/tap_service
+    	    echo "${catalogue:?} TAP Service available at: "$tap_service
         else
             echo -n "Please enter a catalogue and press [ENTER]: "
             read input_variable
@@ -128,11 +128,10 @@ else
             else
                 source setup/setup-tap.sh "DEFAULT"
             fi
-
+            sleep 120
+	    tap_service=$(cat tap_service)
             source setup/apache-tap.sh
-    	    echo "${catalogue:?} TAP Service available in file: tap_service"
-            sleep 60
-            cat ${HOME:?}/tap_service
+    	    echo "${catalogue:?} TAP Service available at: "$tap_service
 
         fi
     else 
