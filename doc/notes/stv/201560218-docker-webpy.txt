@@ -1,0 +1,309 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+clearwinglog=clearwing
+directory()
+        {
+        local target=${1:?}
+
+        mkdir --parents "${target:?}"
+
+        chown 995:994 "${target:?}"
+        chmod u=rwxs  "${target:?}"
+        chmod g=rwxs  "${target:?}"
+
+        chcon -t svirt_sandbox_file_t "${target:?}"
+
+        }
+
+clearwinglogs="/var/logs/${clearwinglog:?}"
+mkdir "${clearwinglogs:?}"
+directory "${clearwinglogs:?}"
+
+source "${HOME:?}/chain.properties"
+source "${HOME:?}/firethorn.settings"
+
+
+pushd "${FIRETHORN_CODE:?}"
+    cd integration/005
+
+
+    docker build \
+        --tag "firethorn/ubuntu:14.04" \
+        docker/ubuntu/14.04
+
+    docker build \
+        --tag "firethorn/python:3.4.2" \
+        docker/python/3.4.2
+
+    docker build \
+        --tag "firethorn/pythonlibs" \
+        docker/pythonlibs
+
+
+# ----------------------------------------------------
+# Run builder
+
+    docker run \
+        -it \
+        --name webpybuilder \
+        --volume /var/local/cache:/cache \
+        --volume /var/local/projects:/projects \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        --volume "${HOME:?}/chain.properties:/root/chain.properties" \
+        firethorn/builder:1 \
+        bash 
+
+
+# -----------------------------------------------------
+# Update our path.
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+    source "${HOME:?}/chain.properties"
+
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
+
+   mkdir /projects/clearwing
+
+    #
+    # Set the project path.
+cat > "${HOME:?}/firethorn.settings" << EOF
+CLEARWING_CODE=/projects/clearwing
+EOF
+  
+
+    #
+    # Clone our repository.
+source "${HOME:?}/firethorn.settings"
+pushd "${CLEARWING_CODE:?}"
+	hg clone 'http://wfau.metagrid.co.uk/code/clearwing'
+        hg pull
+	hg update -C default
+popd
+
+
+ source "${HOME:?}/firethorn.settings"
+    pushd "${CLEARWING_CODE:?}"
+
+	echo "# Building Webpy/Clearwing image"
+	docker build \
+	--tag firethorn/clearwing \
+	src
+
+    popd
+
+exit
+
+
+source "${HOME:?}/chain.properties"
+
+### Create config.py
+properties=$(mktemp)
+    cat > "${properties:?}" << EOF
+
+import web
+import os
+import logging
+
+### Mail Information
+web.config.smtp_server = 'mail.roe.ac.uk'
+from_email = "stv@roe.ac.uk"
+
+### Survey Information
+survey_short = 'OSA';
+survey_full = 'OmegaCAM Science Archive (OSA)';
+
+### Template renders
+render = web.template.render('templates/')
+gloss_render = web.template.render('templates/schema_browser/gloss/')
+schema_browser_render = web.template.render('templates/schema_browser/')
+main_page_render = web.template.render('templates/main_page/')
+wfau_page_render = web.template.render('templates/wfau/')
+monitoring_render = web.template.render('templates/monitoring/')
+
+## Directory and URL Information
+host = "${clearwing_host:?}"
+port = "${clearwing_port:?}"
+base_host = host if port=='' else host + ':' + port
+sub_app_prefix='${clearwing_host_alias:?}'
+base_location = os.getcwd()
+userhomedir =  base_location
+survey_sub_path = sub_app_prefix + "/" if sub_app_prefix!='' else ''#""
+survey_prefix = '/' + sub_app_prefix if sub_app_prefix!='' else '' #""
+cur_static_dir = base_location + '/static/static_vo_tool/'
+vospace_dir = base_location + '/static/static_vospace'
+base_url = 'http://' +  base_host + '/' + survey_sub_path 
+publicly_visible_temp_dir = base_url + '/static/static_vo_tool/temp/'
+host_temp_directory = base_location + '/static/static_vo_tool/temp/'
+log_directory = base_location + '/log/'
+firethorn_base = "http://${firelink:?}:8080/firethorn"
+firethorn_ini = base_location  + '/firethorn.ini'
+
+try:
+    firethorn_base = dict(line.strip().split('=') for line in open(firethorn_ini ))['firethorn_base']
+except:
+    logging.exception("Error initializing firethorn base")
+
+### Set to false when launching
+web.config.debug = False 
+
+
+
+### Configurations
+live = True
+debug_mode = False
+no_users = True
+offline=False
+use_config = 'singletap'
+mode_global = 'async'
+request = 'doQuery'
+result_format = 'votable'
+lang = 'ADQL'
+MAX_FILE_SIZE = 4048576000 #use : 104857600
+MAX_ROW_SIZE = 5000000
+MAX_CELL_SIZE = 20000000
+delay = 3
+use_cached_endpoints = 0
+global_precision = 0.0000001
+MIN_ELAPSED_TIME_BEFORE_REDUCE = 40
+MAX_ELAPSED_TIME = 18000
+MAX_DELAY = 15
+INITIAL_DELAY = 1
+
+
+
+### Survey, Servlet and CGI URLs
+
+registry_url = 'http://registry.astrogrid.org/astrogrid-registry/main/xqueryresults.jsp'
+tap_factory = "http://admire3.epcc.ed.ac.uk:8081/TAPFactory/create"
+getImageURL = "http://seshat.roe.ac.uk:8080/osa/GetImage"
+multiGetImageURL = "http://seshat.roe.ac.uk:8080/osa/MultiGetImage"
+multiGetImageTempURL = 'http://seshat.roe.ac.uk/osa/tmp/MultiGetImage/'
+crossIDURL = "http://seshat.roe.ac.uk:8080/osa/CrossID"
+survey_cgi_bin = 'http://surveys.roe.ac.uk/wsa/cgi-bin/'
+radialURL = "http://surveys.roe.ac.uk:8080/ssa/SSASQL"
+
+
+## Database and TAP Information
+
+SURVEY_TAP =  "${survey_tap:?}"
+SURVEY_TAP_TITLE = "${survey_tap_title:?}"
+SURVEY_DB =  "${survey_database:?}"
+PRIVATE_SURVEY_DB = "${private_survey:?}"
+PRIVATE_SURVEY_DB_VPHAS = "${private_survey_vphas:?}"
+FULL_SURVEYDBS = ['', '']
+FULL_SURVEYDBS_INC_SYNC = ['OSA_DailySync']
+PRIVATE_FULL_SURVEYDBS = [""]
+PRIVATE_SURVEYDBS_VPHAS = ['${private_survey_vphas:?}']
+
+community = "${default_community:?}"
+dbuser = "${dbuser:?}"
+dbpasswd = "${dbpasswd:?}"
+dbserver = "${dbserver:?}"
+vphasdbuser = "${vphasdbuser:?}"
+vphasdbpasswd = "${vphasdbpasswd:?}"
+vphasdbserver = "${vphasdbserver:?}"
+
+
+database_users = "${database_users:?}"
+table_users = "${table_users:?}"
+userdb_user = "${userdb_user:?}"
+userdb_pw = "${userdb_pw:?}"
+dbqueries = "${dbqueries:?}"
+dbnamequeries = "${dbnamequeries:?}"
+dbtablequeries = "${dbtablequeries:?}"
+
+database_imageList = SURVEY_DB
+
+db_to_tap_map = {SURVEY_DB :SURVEY_TAP, 'ATLASv20131127' :'http://djer-p:8083/atlas20131127-dsa/TAP/', 'ATLASDR2' : 'http://djer-p:8083/atlasDR2-dsa/tap', 'VPHASv20160112' :'http://djer.roe.ac.uk:8083/vphas20160112-dsa/TAP/'}
+taps_using_binary = ["http://dc.zah.uni-heidelberg.de"]
+EOF
+
+
+ ### Create odbcinst.ini
+
+odbcinst=$(mktemp)
+    cat > "${odbcinst:?}" << EOF
+	[ODBC Drivers]
+	TDS             = Installed
+
+	[TDS]
+	Description     = TDS driver (Sybase/MS SQL)
+	Driver          = /usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so
+	Setup           = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so
+	FileUsage       = 1
+
+	[ODBC]
+	Trace           = No
+	TraceFile       = /tmp/sql.log
+	ForceTrace      = No
+	Pooling         = No
+
+	[MySQL]
+	Description = ODBC for MySQL
+	Driver = /usr/lib/x86_64-linux-gnu/odbc/libmyodbc.so
+	FileUsage = 1
+
+EOF
+
+
+### Create firethorn.ini
+
+firethornini=$(mktemp)
+    cat > "${firethornini:?}" << EOF
+adqlspace=http://${firelink:?}:8080/firethorn/adql/resource/32669697
+atlasschema=http://${firelink:?}:8080/firethorn/adql/schema/32702514
+atlasprivate=http://${firelink:?}:8080/firethorn/adql/schema/32702514
+vphasprivate=http://${firelink:?}:8080/firethorn/adql/schema/32702514
+firethorn_base=http://${firelink:?}:8080/firethorn
+
+EOF
+
+chmod a+r "${properties:?}" 
+chmod a+r "${odbcinst:?}" 
+chmod a+r "${firethornini:?}" 
+
+chcon -t svirt_sandbox_file_t "${properties:?}" 
+chcon -t svirt_sandbox_file_t "${odbcinst:?}" 
+chcon -t svirt_sandbox_file_t "${firethornini:?}" 
+
+
+docker run -i -t \
+    -it  \
+    -p 80:80 \
+    --name clearwing \
+    --volume "${odbcinst:?}:/etc/odbcinst.ini" \
+    --volume "/etc/apache2/sites-enabled/000-default.conf:/etc/apache2/sites-enabled/000-default.conf" \
+    --volume "${properties:?}:/var/www/html/atlas/config.py" \
+    --volume "${firethornini:?}:/var/www/html/atlas/firethorn.ini" \
+    --volume "${clearwinglogs}:/var/log/apache2" \
+   firethorn/clearwing bash
+
+ 
+           
+popd
+
+
