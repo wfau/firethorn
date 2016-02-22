@@ -181,7 +181,32 @@
     defaultrows=1000000
     absoluterows=10000000
 
+
+    clearwing_host=$(secret 'clearwing_host')
+    clearwing_port=$(secret 'port')
+    clearwing_host_alias=$(secret 'clearwing_host_alias')
+    clearwing_tap_service=$(secret 'clearwing_tap_service')
+    clearwing_tap_service_title=$(secret 'clearwing_tap_service_title')
+    default_community=$(secret 'default_community')
+    private_survey=$(secret 'private_survey')
+    private_survey_vphas=$(secret 'private_survey_vphas')
+    authentication_database=$(secret 'authentication_database')
+    authentication_table=$(secret 'authentication_table')
+    authentication_database_user=$(secret 'authentication_database_user')
+    authentication_database_password=$(secret 'authentication_database_password')
+    query_store_database_server=$(secret 'query_store_database_server')
+    query_store_database=$(secret 'query_store_database')
+    query_store_table=$(secret 'query_store_table')
+    survey_database=$(secret 'survey_database')
+    survey_database_user=$(secret 'survey_database_user')
+    survey_database_password=$(secret 'survey_database_password')
+    survey_database_server=$(secret 'survey_database_server')
+    vphasdbuser=$(secret 'vphasdbuser')
+    vphasdbpasswd=$(secret 'vphasdbpasswd')
+    vphasdbserver=$(secret 'vphasdbserver')
+
 EOF
+
 
     source ${HOME:?}/chain.properties
 

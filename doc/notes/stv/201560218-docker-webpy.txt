@@ -408,9 +408,9 @@ docker run  \
     --volume "${setupdir:?}/apache-clearwing-init.sh:/scripts/apache-clearwing-init.sh" \
    firethorn/clearwing 
 
-docker exec clearwing /bin/sh -l -c ${setupdir:?}/apache-clearwing-init.sh
+docker exec clearwing /bin/sh -l -c /scripts/apache-clearwing-init.sh
 
-sudo service apache2 start
+
            
 popd
 
