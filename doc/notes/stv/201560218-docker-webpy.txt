@@ -20,7 +20,8 @@
 #
 #
 
-clearwinglog=clearwing
+
+
 directory()
         {
         local target=${1:?}
@@ -35,6 +36,9 @@ directory()
 
         }
 
+
+version=2.0.10-stv-webpy-docker
+clearwinglog=clearwing
 clearwinglogs="/var/logs/${clearwinglog:?}"
 mkdir "${clearwinglogs:?}"
 directory "${clearwinglogs:?}"
@@ -42,6 +46,9 @@ directory "${clearwinglogs:?}"
 source "${HOME:?}/chain.properties"
 source "${HOME:?}/firethorn.settings"
 
+
+docker rm -f webpybuilder
+docker rm -f clearwing
 
 pushd "${FIRETHORN_CODE:?}"
     cd integration/005
@@ -60,6 +67,7 @@ pushd "${FIRETHORN_CODE:?}"
         docker/pythonlibs
 
 popd
+
 
 
 # ----------------------------------------------------
@@ -118,6 +126,95 @@ popd
     popd
 
 exit
+
+source secret.sh
+version=2.0.10-stv-webpy-docker
+
+cat > ${HOME:?}/chain.properties << EOF
+
+    version=${version:?}
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    pyroname=pyrothorn
+    storedqueriesname=maria
+    pyrosqlname=mikaela
+
+    metalink=albert
+    userlink=edward
+    datalink=sebastien
+    ogsalink=timothy
+    firelink=peter
+    storedquerieslink=john
+    pyrosqllink=mike
+
+    metatype=mssql
+    metadata=$(secret 'firethorn.meta.data')
+    metauser=$(secret 'firethorn.meta.user')
+    metapass=$(secret 'firethorn.meta.pass')
+    metaport=1433
+    metadriver=net.sourceforge.jtds.jdbc.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+    dataport=1433
+
+    pyrosqlport=3306
+    
+    storedqueriesport=1433
+    storedquerieshost=$(secret 'pyrothorn.storedqueries.host')
+    storedqueriesdata=$(secret 'pyrothorn.storedqueries.data')
+    storedqueriesuser=$(secret 'pyrothorn.storedqueries.user')
+    storedqueriespass=$(secret 'pyrothorn.storedqueries.pass')
+    
+    testrundatabase=$(secret 'firethorn.data.data')
+    testrun_ogsadai_resource=$(secret 'firethorn.data.data')
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+    defaultrows=1000000
+    absoluterows=10000000
+
+
+    clearwing_host=$(secret 'clearwing_host')
+    clearwing_port=$(secret 'port')
+    clearwing_host_alias=$(secret 'clearwing_host_alias')
+    clearwing_tap_service=$(secret 'clearwing_tap_service')
+    clearwing_tap_service_title=$(secret 'clearwing_tap_service_title')
+    default_community=$(secret 'default_community')
+    private_survey=$(secret 'private_survey')
+    private_survey_vphas=$(secret 'private_survey_vphas')
+    authentication_database=$(secret 'authentication_database')
+    authentication_table=$(secret 'authentication_table')
+    authentication_database_user=$(secret 'authentication_database_user')
+    authentication_database_password=$(secret 'authentication_database_password')
+    query_store_database_server=$(secret 'query_store_database_server')
+    query_store_database=$(secret 'query_store_database')
+    query_store_table=$(secret 'query_store_table')
+    survey_database=$(secret 'survey_database')
+    survey_database_user=$(secret 'survey_database_user')
+    survey_database_password=$(secret 'survey_database_password')
+    survey_database_server=$(secret 'survey_database_server')
+    vphasdbuser=$(secret 'vphasdbuser')
+    vphasdbpasswd=$(secret 'vphasdbpasswd')
+    vphasdbserver=$(secret 'vphasdbserver')
+
+EOF
 
 
 source "${HOME:?}/chain.properties"
@@ -211,8 +308,8 @@ radialURL = "http://surveys.roe.ac.uk:8080/ssa/SSASQL"
 
 ## Database and TAP Information
 
-SURVEY_TAP =  "${survey_tap:?}"
-SURVEY_TAP_TITLE = "${survey_tap_title:?}"
+SURVEY_TAP =  "${clearwing_tap_service:?}"
+SURVEY_TAP_TITLE = "${clearwing_tap_service_title:?}"
 SURVEY_DB =  "${survey_database:?}"
 PRIVATE_SURVEY_DB = "${private_survey:?}"
 PRIVATE_SURVEY_DB_VPHAS = "${private_survey_vphas:?}"
@@ -222,25 +319,25 @@ PRIVATE_FULL_SURVEYDBS = [""]
 PRIVATE_SURVEYDBS_VPHAS = ['${private_survey_vphas:?}']
 
 community = "${default_community:?}"
-dbuser = "${dbuser:?}"
-dbpasswd = "${dbpasswd:?}"
-dbserver = "${dbserver:?}"
+dbuser = "${survey_database_user:?}"
+dbpasswd = "${survey_database_password:?}"
+dbserver = "${survey_database_server:?}"
 vphasdbuser = "${vphasdbuser:?}"
 vphasdbpasswd = "${vphasdbpasswd:?}"
 vphasdbserver = "${vphasdbserver:?}"
 
 
-database_users = "${database_users:?}"
-table_users = "${table_users:?}"
-userdb_user = "${userdb_user:?}"
-userdb_pw = "${userdb_pw:?}"
-dbqueries = "${dbqueries:?}"
-dbnamequeries = "${dbnamequeries:?}"
-dbtablequeries = "${dbtablequeries:?}"
+database_users = "${authentication_database:?}"
+table_users = "${authentication_table:?}"
+userdb_user = "${authentication_database_user:?}"
+userdb_pw = "${authentication_database_password:?}"
+dbqueries = "${query_store_database_server:?}"
+dbnamequeries = "${query_store_database:?}"
+dbtablequeries = "${query_store_table:?}"
 
 database_imageList = SURVEY_DB
 
-db_to_tap_map = {SURVEY_DB :SURVEY_TAP, 'ATLASv20131127' :'http://djer-p:8083/atlas20131127-dsa/TAP/', 'ATLASDR2' : 'http://djer-p:8083/atlasDR2-dsa/tap', 'VPHASv20160112' :'http://djer.roe.ac.uk:8083/vphas20160112-dsa/TAP/'}
+db_to_tap_map = {SURVEY_DB : SURVEY_TAP, 'ATLASv20131127' : 'http://djer-p:8083/atlas20131127-dsa/TAP/', 'ATLASDR2' : 'http://djer-p:8083/atlasDR2-dsa/tap', 'VPHASv20160112' : 'http://djer.roe.ac.uk:8083/vphas20160112-dsa/TAP/'}
 taps_using_binary = ["http://dc.zah.uni-heidelberg.de"]
 EOF
 
@@ -281,7 +378,6 @@ atlasschema=http://${firelink:?}:8080/firethorn/adql/schema/32702514
 atlasprivate=http://${firelink:?}:8080/firethorn/adql/schema/32702514
 vphasprivate=http://${firelink:?}:8080/firethorn/adql/schema/32702514
 firethorn_base=http://${firelink:?}:8080/firethorn
-
 EOF
 
 chmod a+r "${properties:?}" 
@@ -292,19 +388,29 @@ chcon -t svirt_sandbox_file_t "${properties:?}"
 chcon -t svirt_sandbox_file_t "${odbcinst:?}" 
 chcon -t svirt_sandbox_file_t "${firethornini:?}" 
 
+clearwinglog=clearwing
+clearwinglogs="/var/logs/${clearwinglog:?}"
+setupdir="${HOME:?}/hg/integration/005/scripts/setup"
+homedir="${HOME:?}"
 
-docker run -i -t \
-    -it  \
+chcon -t svirt_sandbox_file_t "${setupdir:?}/apache-clearwing-init.sh" 
+chmod +x "${setupdir:?}/apache-clearwing-init.sh"
+
+docker run  \
+    --detach \
     -p 80:80 \
     --name clearwing \
     --volume "${odbcinst:?}:/etc/odbcinst.ini" \
     --volume "/etc/apache2/sites-enabled/000-default.conf:/etc/apache2/sites-enabled/000-default.conf" \
     --volume "${properties:?}:/var/www/html/atlas/config.py" \
     --volume "${firethornini:?}:/var/www/html/atlas/firethorn.ini" \
-    --volume "${clearwinglogs}:/var/log/apache2" \
-   firethorn/clearwing bash
+    --volume "${clearwinglogs:?}:/var/log/apache2" \
+    --volume "${setupdir:?}/apache-clearwing-init.sh:/scripts/apache-clearwing-init.sh" \
+   firethorn/clearwing 
 
- 
+docker exec clearwing /bin/sh -l -c ${setupdir:?}/apache-clearwing-init.sh
+
+sudo service apache2 start
            
 popd
 
