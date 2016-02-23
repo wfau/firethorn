@@ -53,18 +53,10 @@ pushd "${FIRETHORN_CODE:?}"
 
 popd
 
-   mkdir /projects/clearwing
+mkdir -p /projects/clearwing
 
-    #
-    # Set the project path.
-cat > "${HOME:?}/firethorn.settings" << EOF
-CLEARWING_CODE=/projects/clearwing
-EOF	
-  
-
-    #
-    # Clone our repository.
-source "${HOME:?}/firethorn.settings"
+#
+# Clone our repository.
 pushd "${CLEARWING_CODE:?}/"
 	hg clone 'http://wfau.metagrid.co.uk/code/clearwing' .
         hg pull

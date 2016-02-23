@@ -192,13 +192,83 @@ vphasprivate=http://${firelink:?}:8080/firethorn/adql/schema/32702514
 firethorn_base=http://${firelink:?}:8080/firethorn
 EOF
 
+
+
+### Create 000-default.conf file
+
+apacheconf=$(mktemp)
+    cat > "${apacheconf:?}" << EOF
+<VirtualHost *:80>
+
+   
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/html
+
+	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+	# error, crit, alert, emerg.
+	# It is also possible to configure the loglevel for particular
+	# modules, e.g.
+	#LogLevel info ssl:warn
+
+	ErrorLog \${APACHE_LOG_DIR}/error.log
+	CustomLog \${APACHE_LOG_DIR}/access.log combined
+
+	# For most configuration files from conf-available/, which are
+	# enabled or disabled at a global level, it is possible to
+	# include a line for only one particular virtual host. For example the
+	# following line enables the CGI configuration for this host only
+	# after it has been globally disabled with "a2disconf".
+	#Include conf-available/serve-cgi-bin.conf
+
+      
+        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+        <Directory "/usr/lib/cgi-bin">
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Order allow,deny
+                Allow from all
+        </Directory>
+
+      ErrorLog /var/log/apache2/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog /var/log/apache2/access.log combined
+        ServerSignature On
+ 
+    #### VO Interface Setup ####
+        WSGIScriptAlias /osa /var/www/html/atlas/app.py/
+
+        Alias /osa/static     /var/www/html/atlas/static/
+        AddType text/css .css
+        AddType text/javascript .js
+        AddType text/html .htm
+        AddType image/gif .gif
+        AddType image/jpeg .jpeg .jpg
+
+        <Directory /var/www/html/atlas/static>
+                # directives to effect the static directory
+                Options +Indexes
+        </Directory>
+
+
+</VirtualHost>
+
+EOF
+
+
+
 chmod a+r "${properties:?}" 
 chmod a+r "${odbcinst:?}" 
 chmod a+r "${firethornini:?}" 
+chmod a+r "${apacheconf:?}" 
 
 chcon -t svirt_sandbox_file_t "${properties:?}" 
 chcon -t svirt_sandbox_file_t "${odbcinst:?}" 
 chcon -t svirt_sandbox_file_t "${firethornini:?}" 
+chcon -t svirt_sandbox_file_t "${apacheconf:?}" 
 
 
 docker run  \
@@ -206,16 +276,14 @@ docker run  \
     -p 80:80 \
     --name clearwing \
     --volume "${odbcinst:?}:/etc/odbcinst.ini" \
-    --volume "/etc/apache2/sites-enabled/000-default.conf:/etc/apache2/sites-enabled/000-default.conf" \
+    --volume "${apacheconf:?}:/etc/apache2/sites-enabled/000-default.conf" \
     --volume "${properties:?}:/var/www/html/atlas/config.py" \
     --volume "${firethornini:?}:/var/www/html/atlas/firethorn.ini" \
     --volume "${clearwinglogs:?}:/var/log/apache2" \
-    --volume "${setupdir:?}/apache-clearwing-init.sh:${HOME:?}/scipts/apache-clearwing-init.sh" \
-   firethorn/clearwing 
+    --volume "${setupdir:?}/apache-clearwing-init.sh:${setupdir:?}/apache-clearwing-init.sh" \
+   firethorn/clearwing:${version:?}
 
-docker exec clearwing /bin/sh -l -c "${HOME:?}/scipts/apache-clearwing-init.sh"
+docker exec clearwing /bin/sh -l -c "${setupdir:?}/apache-clearwing-init.sh"
 
 
-           
-popd
 
