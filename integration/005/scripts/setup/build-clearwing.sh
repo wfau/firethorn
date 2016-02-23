@@ -28,6 +28,8 @@
     source /etc/bashrc
     source "${HOME:?}/chain.properties"
     FIRETHORN_CODE=/projects/firethorn
+    CLEARWING_CODE=/projects/clearwing
+
 # -----------------------------------------------------
 # Checkout a copy of our source code.
 #[root@builder]
