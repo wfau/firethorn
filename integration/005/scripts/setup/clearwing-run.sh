@@ -22,6 +22,15 @@
 
 source "${HOME:?}/chain.properties"
 
+clearwinglog=clearwing
+clearwinglogs="/var/logs/${clearwinglog:?}"
+setupdir="${HOME:?}/setup"
+homedir="${HOME:?}"
+
+chcon -t svirt_sandbox_file_t "${setupdir:?}/apache-clearwing-init.sh" 
+chmod +x "${setupdir:?}/apache-clearwing-init.sh"
+
+
 ### Create config.py
 properties=$(mktemp)
     cat > "${properties:?}" << EOF
@@ -191,13 +200,6 @@ chcon -t svirt_sandbox_file_t "${properties:?}"
 chcon -t svirt_sandbox_file_t "${odbcinst:?}" 
 chcon -t svirt_sandbox_file_t "${firethornini:?}" 
 
-clearwinglog=clearwing
-clearwinglogs="/var/logs/${clearwinglog:?}"
-setupdir="${HOME:?}/setup"
-homedir="${HOME:?}"
-
-chcon -t svirt_sandbox_file_t "${setupdir:?}/apache-clearwing-init.sh" 
-chmod +x "${setupdir:?}/apache-clearwing-init.sh"
 
 docker run  \
     --detach \

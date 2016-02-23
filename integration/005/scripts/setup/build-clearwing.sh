@@ -27,10 +27,31 @@
     # ** this should be in the container **
     source /etc/bashrc
     source "${HOME:?}/chain.properties"
-
+    FIRETHORN_CODE=/projects/firethorn
 # -----------------------------------------------------
 # Checkout a copy of our source code.
 #[root@builder]
+
+
+
+
+
+pushd "${FIRETHORN_CODE:?}"
+
+
+    docker build \
+        --tag "firethorn/ubuntu:14.04" \
+        docker/ubuntu/14.04
+
+    docker build \
+        --tag "firethorn/python:3.4.2" \
+        docker/python/3.4.2
+
+    docker build \
+        --tag "firethorn/pythonlibs" \
+        docker/pythonlibs
+
+popd
 
    mkdir /projects/clearwing
 
@@ -38,14 +59,14 @@
     # Set the project path.
 cat > "${HOME:?}/firethorn.settings" << EOF
 CLEARWING_CODE=/projects/clearwing
-EOF
+EOF	
   
 
     #
     # Clone our repository.
 source "${HOME:?}/firethorn.settings"
-pushd "${CLEARWING_CODE:?}"
-	hg clone 'http://wfau.metagrid.co.uk/code/clearwing'
+pushd "${CLEARWING_CODE:?}/"
+	hg clone 'http://wfau.metagrid.co.uk/code/clearwing' .
         hg pull
 	hg update -C default
 popd

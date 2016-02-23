@@ -24,27 +24,14 @@ clearwinglog=clearwing
 clearwinglogs="/var/logs/${clearwinglog:?}"
 
 source "${HOME:?}/chain.properties"
-source "${HOME:?}/firethorn.settings"
+
+chcon -t svirt_sandbox_file_t "${setupdir:?}/apache-clearwing-init.sh" 
+chmod +x "${setupdir:?}/apache-clearwing-init.sh"
 
 
-pushd "${FIRETHORN_CODE:?}"
-    cd integration/005
-
-    docker build \
-        --tag "firethorn/ubuntu:14.04" \
-        docker/ubuntu/14.04
-
-    docker build \
-        --tag "firethorn/python:3.4.2" \
-        docker/python/3.4.2
-
-    docker build \
-        --tag "firethorn/pythonlibs" \
-        docker/pythonlibs
-
-popd
-
-
+chmod +x "${HOME:?}/setup/build-clearwing.sh"
+chcon -t svirt_sandbox_file_t "${HOME:?}/setup/build-clearwing.sh" 
+ 
 # ----------------------------------------------------
 # Run builder
 
@@ -56,6 +43,7 @@ popd
         --volume /var/local/cache:/cache \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
+        --volume ${HOME:?}/setup/build-clearwing.sh:/build-clearwing.sh \
         --volume "${HOME:?}/chain.properties:/root/chain.properties" \
         firethorn/builder:1 \
         bash ./build-clearwing.sh
