@@ -183,7 +183,7 @@
 
 
     clearwing_host=$(secret 'clearwing_host')
-    clearwing_port=$(secret 'port')
+    clearwing_port=$(secret 'clearwing_port')
     clearwing_host_alias=$(secret 'clearwing_host_alias')
     clearwing_tap_service=$(secret 'clearwing_tap_service')
     clearwing_tap_service_title=$(secret 'clearwing_tap_service_title')
