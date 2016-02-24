@@ -204,6 +204,7 @@
     vphasdbuser=$(secret 'vphasdbuser')
     vphasdbpasswd=$(secret 'vphasdbpasswd')
     vphasdbserver=$(secret 'vphasdbserver')
+    firethorn_tap_base=$(secret 'firethorn_tap_base')
 
 EOF
 

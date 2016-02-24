@@ -22,6 +22,8 @@
 
 clearwinglog=clearwing
 clearwinglogs="/var/logs/${clearwinglog:?}"
+setupdir="${HOME:?}/setup"
+
 
 source "${HOME:?}/chain.properties"
 

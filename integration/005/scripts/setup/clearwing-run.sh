@@ -72,6 +72,7 @@ host_temp_directory = base_location + '/static/static_vo_tool/temp/'
 log_directory = base_location + '/log/'
 firethorn_base = "http://${firelink:?}:8080/firethorn"
 firethorn_ini = base_location  + '/firethorn.ini'
+firethorn_tap_base = "${firethorn_tap_base:?}"
 
 try:
     firethorn_base = dict(line.strip().split('=') for line in open(firethorn_ini ))['firethorn_base']
