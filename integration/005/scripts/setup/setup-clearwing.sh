@@ -43,9 +43,9 @@ chcon -t svirt_sandbox_file_t "${HOME:?}/setup/build-clearwing.sh"
         --volume /var/local/cache:/cache \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        --volume ${HOME:?}/setup/build-clearwing.sh:/build-clearwing.sh \
+        --volume ${HOME:?}/setup/build-clearwing.sh:${HOME:?}/build-clearwing.sh \
         --volume "${HOME:?}/chain.properties:/root/chain.properties" \
         firethorn/builder:1 \
-        bash ./build-clearwing.sh
+        bash ${HOME:?}/build-clearwing.sh
 
 
