@@ -37,7 +37,6 @@
 
 
 
-
 pushd "${FIRETHORN_CODE:?}"
 
 
@@ -62,7 +61,7 @@ mkdir -p /projects/clearwing
 pushd "${CLEARWING_CODE:?}/"
 	hg clone 'http://wfau.metagrid.co.uk/code/clearwing' .
         hg pull
-	hg update -C default
+	hg update -C ${clearwing_version:?}
 popd
 
 

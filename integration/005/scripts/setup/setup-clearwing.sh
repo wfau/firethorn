@@ -32,6 +32,9 @@ chmod +x "${setupdir:?}/apache-clearwing-init.sh"
 chmod +x "${HOME:?}/setup/build-clearwing.sh"
 chcon -t svirt_sandbox_file_t "${HOME:?}/setup/build-clearwing.sh" 
  
+docker rm -f clearwing
+docker rm -f webpybuilder
+
 # ----------------------------------------------------
 # Run builder
 
@@ -40,6 +43,7 @@ chcon -t svirt_sandbox_file_t "${HOME:?}/setup/build-clearwing.sh"
         --name webpybuilder \
         --env "branch=${branch:?}" \
         --env "version=${version:?}" \
+        --env "clearwing_version=${input_variable:?}" \
         --volume /var/local/cache:/cache \
         --volume /var/local/projects:/projects \
         --volume /var/run/docker.sock:/var/run/docker.sock \

@@ -22,6 +22,7 @@
 testname=$1
 branch=$2
 version=${3:-$branch}
+
 input_variable=""
 if [ -n "$4" ]; then
 input_variable=${4}
@@ -136,11 +137,22 @@ else
 
     elif [ $testname -eq 09 ];
     then
+        if [  -n "$input_variable" ]
+        then 
+	    echo -n "Deploying clearwing container"
+	    source setup/setup-clearwing.sh ${input_variable:?}
+	    sleep 30
+	    source setup/clearwing-run.sh
+        else
+            echo -n "Please enter a version of clearwing to deploy and press [ENTER]: "
+            read input_variable
+ 	    echo -n "Deploying clearwing container"
+	    source setup/setup-clearwing.sh ${input_variable:?}
+	    sleep 30
+	    source setup/clearwing-run.sh
+
+        fi
       
-        echo -n "Running clearwing container"
-        source setup/setup-clearwing.sh 
-        sleep 120
-        source setup/clearwing-run.sh
 
     else 
         source setup/setup-pyro.sh

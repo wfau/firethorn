@@ -55,7 +55,7 @@
 
     ssh edfu
 
-    newversion=2.0.9
+    newversion=2.0.10-stv-webpy-docker
 
 # -----------------------------------------------------
 # Create our secret function.
@@ -72,7 +72,7 @@
 
     secret 'firethorn.user.host'
    
-    source run.sh 08 default ${newversion:?} ATLASDR1
+    source run.sh 09  ${newversion:?} ${newversion:?} 1.2.3-genius 
 
    
 
