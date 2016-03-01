@@ -275,6 +275,7 @@ chcon -t svirt_sandbox_file_t "${apacheconf:?}"
 docker run  \
     --detach \
     -p 80:80 \
+    --memory 512M \
     --name clearwing \
     --volume "${odbcinst:?}:/etc/odbcinst.ini" \
     --volume "${apacheconf:?}:/etc/apache2/sites-enabled/000-default.conf" \
