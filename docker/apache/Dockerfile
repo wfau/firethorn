@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:14.04
+FROM firethorn/pythonlibs
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 RUN apt-get -y update
@@ -12,6 +12,10 @@ RUN a2enmod rewrite
 
 RUN a2enmod proxy
 RUN a2enmod proxy_http
+
+
+RUN apt-get -y install libapache2-mod-wsgi
+RUN a2enmod wsgi
 
 
 # Manually set up the apache environment variables

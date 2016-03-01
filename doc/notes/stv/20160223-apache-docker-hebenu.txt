@@ -30,10 +30,10 @@
 
     createvm
 
-        INFO : Node name [edfu]
+        INFO : Node name [hebenu]
         INFO : Base name [fedora-21-16G-20150407.qcow]
         INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
-        INFO : Disc name [edfu.qcow]
+        INFO : Disc name [hebenu.qcow]
         INFO : Disc size [16GiB]
 
    exit
@@ -45,7 +45,7 @@
    source "${HOME:?}/firethorn.settings"
    pushd "${FIRETHORN_CODE:?}"
 
-       scp -r integration/005/scripts/* root@edfu:/root/
+       scp -r integration/005/scripts/* root@hebenu:/root/
 
    popd
 
@@ -53,7 +53,7 @@
 # Login to the the VM
 #[stv@shep]
 
-    ssh edfu
+    ssh hebenu
 
     newversion=2.0.10-stv-webpy-docker
 
@@ -72,7 +72,7 @@
 
     secret 'firethorn.user.host'
    
-    source run.sh 09  ${newversion:?} ${newversion:?} 1.2.3-genius 
+    source run.sh 09  ${newversion:?} ${newversion:?}
 
    
 

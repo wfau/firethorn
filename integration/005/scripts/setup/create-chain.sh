@@ -193,5 +193,9 @@ EOF
     pyrologs="/var/logs/pyrothorn"
     directory "${pyrologs:?}"
 
+    clearwinglog=clearwing
+    clearwinglogs="/var/logs/${clearwinglog:?}"
+
+    directory "${clearwinglogs:?}"
     sleep 10
 

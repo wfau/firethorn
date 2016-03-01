@@ -22,6 +22,7 @@
 testname=$1
 branch=$2
 version=${3:-$branch}
+
 input_variable=""
 if [ -n "$4" ]; then
 input_variable=${4}
@@ -45,6 +46,7 @@ if [ "$1" == "--help" ]; then
   echo "06 - Tap test, Send 1000 rows through the given TAP service, and compare results with Direct SQL Server query"
   echo "07 - Perform 06 test, but also run a taplint validation test"
   echo "08 - Build a TAP Service for a given catalogue. (Uses secret.store database credentials)"
+  echo "08 - Build a Clearwing (webpy interface) container"
   return 0
 fi
 
@@ -107,8 +109,6 @@ else
             source tests/test07-fulltaptest.sh  ${input_variable:?}
         fi
 	
-        
-        
     elif [ $testname -eq 08 ];
     then
         if [  -n "$input_variable" ]
@@ -134,6 +134,26 @@ else
     	    echo "${catalogue:?} TAP Service available at: "$tap_service
 
         fi
+
+    elif [ $testname -eq 09 ];
+    then
+        if [  -n "$input_variable" ]
+        then 
+	    echo -n "Deploying clearwing container"
+	    source setup/setup-clearwing.sh ${input_variable:?}
+	    sleep 30
+	    source setup/clearwing-run.sh
+        else
+            echo -n "Please enter a version of clearwing to deploy and press [ENTER]: "
+            read input_variable
+ 	    echo -n "Deploying clearwing container"
+	    source setup/setup-clearwing.sh ${input_variable:?}
+	    sleep 30
+	    source setup/clearwing-run.sh
+
+        fi
+      
+
     else 
         source setup/setup-pyro.sh
         source tests/$testname
