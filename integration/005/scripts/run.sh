@@ -46,7 +46,7 @@ if [ "$1" == "--help" ]; then
   echo "06 - Tap test, Send 1000 rows through the given TAP service, and compare results with Direct SQL Server query"
   echo "07 - Perform 06 test, but also run a taplint validation test"
   echo "08 - Build a TAP Service for a given catalogue. (Uses secret.store database credentials)"
-  echo "08 - Build a Clearwing (webpy interface) container"
+  echo "09 - Build a Clearwing (webpy interface) container"
   return 0
 fi
 
