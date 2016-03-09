@@ -186,7 +186,7 @@ implements BlueTask<TaskType>
 
         @Override
         @UpdateAtomicMethod
-        public TaskState thread(final Updator updator)
+        public TaskState thread(final Updator<?> updator)
             {
             log.debug("update(Updator)");
             log.debug("  ident [{}]", updator.ident());
