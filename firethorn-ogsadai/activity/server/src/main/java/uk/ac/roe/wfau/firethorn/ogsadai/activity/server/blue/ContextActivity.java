@@ -37,7 +37,7 @@ import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.authorization.SecurityContext;
 
 /**
- * Head Activity to begin a pipeline.
+ * Initial Activity to begin a pipeline, initializing the RequestContext callback information.
  *
  */
 public class ContextActivity

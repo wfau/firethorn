@@ -412,7 +412,6 @@ implements SecureActivity
             long rowcount = 0 ; 
             for (Tuple tuple ; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
                 {
-
                 if (maxrows != -1)
                     {
                     if (rowcount >= maxrows)
@@ -424,11 +423,10 @@ implements SecureActivity
                         break ;
                         }
                     }
-                
-               		writer.write(
-                        tuple
-               		);
-               		rowcount++;
+                writer.write(
+                    tuple
+                    );
+                rowcount++;
                 }
             }
         
