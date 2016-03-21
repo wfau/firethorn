@@ -1,0 +1,102 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Random notes on things we have found concerning (VO)Events in LSST.
+    These will be replaced by notes or pages on the LSST:UK wiki later.
+
+VOEvent
+
+    Discussion about 'What goes in a VOEvent'
+    https://jira.lsstcorp.org/browse/RFC-163
+
+    Data Products Definition Document (DPD)
+    http://ls.st/dpdd
+
+    Slides about the DPD Review (DPDR)
+    (page 17 describes event handling)
+    https://project.lsst.org/reviews/sites/lsst.org.reviews.dpdr/files/talks/LSST-DPDR-Level1-Final.pdf
+
+    Data Products Definition Review - Response
+    (page 8 raises concerns abaout VOEvent format)
+    https://project.lsst.org/reviews/sites/lsst.org.reviews.dpdr/files/Data%20Products%20Review%20Project%20Response.pdf
+
+
+
+
+
+Other
+
+    'Simple SQL' access to the Oracle DES DB
+    https://github.com/mgckind/easyaccess
+
+    Python in Astronomy 2016
+    http://python-in-astronomy.github.io/2016/
+
+
+    EasyDNS registration
+
+        Domain  : lsst.uk
+        Invoice : 356318
+        Cost    : USD 15.00
+            
+
+    yourls - URL shortener
+    http://yourls.org/
+
+    LSST URL shortener
+    http://ls.st/
+
+    Write a document giving reasons for moving to GitHub and preferring GitHub to Stash
+    https://jira.lsstcorp.org/browse/DM-1191
+
+    Why LSST DM should move its development natively on Github.
+    https://gist.github.com/frossie/fb8ceb11291956074307
+
+
+    LSST DM Developer Guide http://developer.lsst.io 
+    https://github.com/lsst-dm/dm_dev_guide
+
+    LSST DM Developer Guide
+    http://developer.lsst.io
+
+    Building the Next-Generation Data Processing System
+    http://dm.lsst.org/
+
+
+
+
+VO related
+
+    Begin exploratory TAP implementation within dbserv
+    https://jira.lsstcorp.org/browse/DM-5318
+    
+    X16 Revisit Public Interfaces / ADQL
+    https://jira.lsstcorp.org/browse/DM-4379
+    
+    Identify specs within VO stack which should be implemented by database team
+    https://jira.lsstcorp.org/browse/DM-5317
+
+
+
+
+
