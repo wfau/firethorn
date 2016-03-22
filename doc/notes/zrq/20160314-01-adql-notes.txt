@@ -1,0 +1,103 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+------------ ------------
+ADQL hackathon session
+
+    Dave Moris
+    Marco Molinaro
+
+Planning meeting concerning next steps for the ADQL specification.
+
+------------
+OFFSET/LIMIT
+
+The current consensus on the mailing list is to accept OFFSET without LIMIT.
+
+TODO - Dave
+Write a page on the IVOA wiki summarising the OFFSET/LIMIT syntax for each of the main platforms, PostgreSQL, MySQL, SQLServer, Oracle etc.
+
+If a database platform requires LIMIT, the proposed work around is to specify either (MAX_ROWS + 1) or (MAX_LONG).
+
+However, many of the text books and online manuals describe using OFFSET with LIMIT.
+
+TODO - Dave
+Propose to the mailing list that we accept OFFSET with LIMIT, allowing LIMIT as a synonym for TOP.
+
+The only reason for this is to make ADQL compatible with 90% of the text books and online manuals.
+
+Hopefully this should be a short yes/no discussion and then accept the consensus for the v2.1 specification.
+
+TODO - Dave
+Update the text of the v2.1 specification to include OFFSET (with/without LIMIT as agreed).
+
+------------
+Hexadecimal literals
+
+Adding hexadecimal literals to the BNF grammar has raised some issues.
+
+The simple way to add them would be to extend numeric literal to allow both decimal and hexadecimal values.
+
+If we follow a strict interpretation of the BNF, then allowing both decimal and hexadecimal values for numeric literals causes some odd side effects, particularly with scientific notation and exponents.
+
+TODO - Dave
+Write a page on the IVOA wiki detailing the issues.
+
+TODO - Dave
+Propose to the mailing list that we accept
+
+a) Numeric literals may contain both decimal and hexadecimal values but there are places where hexadecimal values do not make sense, and developers should do the right thing.
+
+and
+    
+b) The BNF grammar is not a definitive machine readable specification and there may be some unintended side effects in the BNF.
+
+TODO - Dave
+If consensus is to accept a flexible interpretation of the BNF, update the text of the v2.1 specification to reflect this.
+
+If consensus is for a strict interpretation of the BNF, then discussion on validating a strict BNF grammar will need to be continued at the May interop.
+    
+------------
+Crossmatch function
+
+The mailing list has yet to agree on a consensus for the crossmatch function.
+ 
+TODO - Marco
+Write an email to the mailing list summarising the options and starting a new discussion thread.
+
+TODO - Dave
+If consensus is reached, update the text of the v2.1 specification to include the crossmatch function.
+
+If no consensus is reached, then discussion of the crossmatch function can be continued at the May interop.
+
+------------
+v2.1 specification
+
+The aim is to try to resolve the outstanding issues during March, and have an updated version of the specification ready for review in April.
+
+If we are not able to reach consensus on an issue, then it should be deferred to the next version of the specification.
+
+
+
+
+

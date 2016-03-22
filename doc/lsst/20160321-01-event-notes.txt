@@ -72,6 +72,35 @@ Other
     Why LSST DM should move its development natively on Github.
     https://gist.github.com/frossie/fb8ceb11291956074307
 
+    LSST code on GitHub
+    https://github.com/lsst
+
+    QServ code on GitHub (GPLv3)
+    https://github.com/lsst/qserv
+
+        /*
+         * LSST Data Management System
+         * Copyright 2012-2015 LSST Corporation.
+         *
+         * This product includes software developed by the
+         * LSST Project (http://www.lsst.org/).
+         *
+         * This program is free software: you can redistribute it and/or modify
+         * it under the terms of the GNU General Public License as published by
+         * the Free Software Foundation, either version 3 of the License, or
+         * (at your option) any later version.
+         *
+         * This program is distributed in the hope that it will be useful,
+         * but WITHOUT ANY WARRANTY; without even the implied warranty of
+         * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+         * GNU General Public License for more details.
+         *
+         * You should have received a copy of the LSST License Statement and
+         * the GNU General Public License along with this program.  If not,
+         * see <http://www.lsstcorp.org/LegalNotices/>.
+         */
+
+
 
     LSST DM Developer Guide http://developer.lsst.io 
     https://github.com/lsst-dm/dm_dev_guide
@@ -82,6 +111,21 @@ Other
     Building the Next-Generation Data Processing System
     http://dm.lsst.org/
 
+    LSST DM Developer Guide
+    http://developer.lsst.io/en/latest/processes/decision_process.html
+
+        Empowerment
+        http://developer.lsst.io/en/latest/processes/decision_process.html#decision-making-empowerment
+
+    Project site
+    https://project.lsst.org/
+
+
+
+UK
+
+    LSST:UK website    
+    http://www.lsst.ac.uk/
 
 
 

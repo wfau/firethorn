@@ -1,0 +1,62 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Login as normal user.
+# Copy our ssh authorized_keys to root account
+#[user@desktop]
+
+    ssh -i ~/.ssh/dmr.roe.ac.uk.dsa dmr@129.215.175.112
+
+        sudo su -
+
+        cat /root/.ssh/authorized_keys
+        cat /home/dmr/.ssh/authorized_keys >> /root/.ssh/authorized_keys
+
+# -----------------------------------------------------
+# Test login as root.
+#[user@desktop]
+
+    ssh -i ~/.ssh/dmr.roe.ac.uk.dsa root@129.215.175.112
+
+# -----------------------------------------------------
+# Update our local DNS.
+#[user@desktop]
+
+        $ORIGIN metagrid.co.uk
+
+        ;
+        ; CloudNode machines.
+    +   cloudnode-01.roe    A   129.215.175.112
+
+
+# -----------------------------------------------------
+# Login from trop 1 to the others
+#[user@desktop]
+
+    ssh -i ~/.ssh/dmr.roe.ac.uk.dsa dmr@129.215.175.112
+
+        ssh trop2 'hostname -f'
+        ssh trop3 'hostname -f'
+        ssh trop4 'hostname -f'
+        
