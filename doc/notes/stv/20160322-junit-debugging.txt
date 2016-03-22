@@ -1,0 +1,80 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Rerun uk.ac.roe.wfau.firethorn.adql.query.atlas.CommentTestCase.test000S [JUnit]	
+	org.eclipse.jdt.internal.junit.runner.RemoteTestRunner at localhost:50541	
+		Thread [main] (Suspended (breakpoint at line 68 in TestFactories$MockNameFactory))	
+			TestFactories$AdqlFactories$QueryFactories$NameFactory(TestFactories$MockNameFactory<EntityType>).name() line: 68	
+			AdqlQueryEntity$EntityFactory.create(AdqlSchema, AdqlQuery$QueryParam, String) line: 288	
+			AdqlQueryEntity$EntityFactory$$FastClassBySpringCGLIB$$856c8f18.invoke(int, Object, Object[]) line: not available	
+			MethodProxy.invoke(Object, Object[]) line: 204	
+			CglibAopProxy$CglibMethodInvocation.invokeJoinpoint() line: 717	
+			CglibAopProxy$CglibMethodInvocation(ReflectiveMethodInvocation).proceed() line: 157	
+			TransactionInterceptor$1.proceedWithInvocation() line: 99	
+			TransactionInterceptor(TransactionAspectSupport).invokeWithinTransaction(Method, Class<?>, InvocationCallback) line: 281	
+			TransactionInterceptor.invoke(MethodInvocation) line: 96	
+			CglibAopProxy$CglibMethodInvocation(ReflectiveMethodInvocation).proceed() line: 179	
+			CglibAopProxy$DynamicAdvisedInterceptor.intercept(Object, Method, Object[], MethodProxy) line: 653	
+			AdqlQueryEntity$EntityFactory$$EnhancerBySpringCGLIB$$cc3cf571.create(AdqlSchema, AdqlQuery$QueryParam, String) line: not available	
+			AdqlSchemaEntity$2.create(AdqlQuery$QueryParam, String) line: 799	
+			CommentTestCase(AbstractQueryTestBase).validate(AdqlQuery$Mode, AdqlQuery$Syntax$Level, AdqlQuery$Syntax$State, String, String, AbstractQueryTestBase$ExpectedField[]) line: 622	
+			CommentTestCase(AbstractQueryTestBase).validate(AdqlQuery$Syntax$Level, AdqlQuery$Syntax$State, String, String, AbstractQueryTestBase$ExpectedField[]) line: 647	
+			CommentTestCase.test000S() line: 38	
+			NativeMethodAccessorImpl.invoke0(Method, Object, Object[]) line: not available [native method]	
+			NativeMethodAccessorImpl.invoke(Object, Object[]) line: 62	
+			DelegatingMethodAccessorImpl.invoke(Object, Object[]) line: 43	
+			Method.invoke(Object, Object...) line: 498	
+			FrameworkMethod$1.runReflectiveCall() line: 50	
+			FrameworkMethod$1(ReflectiveCallable).run() line: 12	
+			FrameworkMethod.invokeExplosively(Object, Object...) line: 47	
+			InvokeMethod.evaluate() line: 17	
+			RunBefores.evaluate() line: 26	
+			RunBeforeTestMethodCallbacks.evaluate() line: 73	
+			RunAfters.evaluate() line: 27	
+			RunAfterTestMethodCallbacks.evaluate() line: 82	
+			SpringRepeat.evaluate() line: 73	
+			SpringJUnit4ClassRunner(ParentRunner<T>).runLeaf(Statement, Description, RunNotifier) line: 325	
+			SpringJUnit4ClassRunner.runChild(FrameworkMethod, RunNotifier) line: 224	
+			SpringJUnit4ClassRunner.runChild(Object, RunNotifier) line: 83	
+			ParentRunner$3.run() line: 290	
+			ParentRunner$1.schedule(Runnable) line: 71	
+			SpringJUnit4ClassRunner(ParentRunner<T>).runChildren(RunNotifier) line: 288	
+			ParentRunner<T>.access$000(ParentRunner, RunNotifier) line: 58	
+			ParentRunner$2.evaluate() line: 268	
+			RunBeforeTestClassCallbacks.evaluate() line: 61	
+			RunAfterTestClassCallbacks.evaluate() line: 68	
+			SpringJUnit4ClassRunner(ParentRunner<T>).run(RunNotifier) line: 363	
+			SpringJUnit4ClassRunner.run(RunNotifier) line: 163	
+			JUnit4TestReference.run(TestExecution) line: 86	
+			TestExecution.run(ITestReference[]) line: 38	
+			RemoteTestRunner.runTests(String[], String, TestExecution) line: 459	
+			RemoteTestRunner.runTests(TestExecution) line: 675	
+			RemoteTestRunner.run() line: 382	
+			RemoteTestRunner.main(String[]) line: 192	
+		Thread [ReaderThread] (Running)	
+		Daemon Thread [Timer-0] (Running)	
+		Daemon Thread [com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0] (Running)	
+		Daemon Thread [com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1] (Running)	
+		Daemon Thread [com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2] (Running)	
+		Daemon Thread [Abandoned connection cleanup thread] (Running)	
+	/usr/lib/jvm/java-8-oracle/bin/java (Mar 22, 2016, 9:49:42 PM)	
+
