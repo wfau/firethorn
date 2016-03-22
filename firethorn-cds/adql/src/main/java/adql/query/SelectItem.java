@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 
 import adql.query.operand.ADQLOperand;
 import adql.query.operand.Concatenation;
+import adql.query.operand.Operation;
 
 /**
  * <p>Represents an item of a SELECT clause.</p>
@@ -190,6 +191,11 @@ public class SelectItem implements ADQLObject {
 			return alias;
 		else if (operand instanceof Concatenation)
 			return "concat";
+	    else if (operand instanceof Operation)
+                {
+                Operation op = (Operation) operand;
+                return op.getOperation().name();
+                }
 		else
 			return operand.getName();
 	}

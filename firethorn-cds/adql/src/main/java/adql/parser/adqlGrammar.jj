@@ -517,7 +517,18 @@ TOKEN : {
 |	< MINUS: "-" >
 |	< ASTERISK: "*" >
 |	< DIVIDE: "/" >
+|	< MODULO: "%" >
 }
+
+/* ******************** */
+/* Binary operators     */
+/* ******************** */
+TOKEN : {
+	< BIT_AND: "&" >
+|	< BIT_OR:  "|" >
+|	< BIT_XOR: "^" >
+}
+
 
 /* ******************** */
 /* Comparison operators */
@@ -629,6 +640,8 @@ TOKEN : {
 |	< MOD: "MOD" >
 |	< PI: "PI" >
 |	< POWER: "POWER" >
+|	< SQUARE: "SQUARE" >
+|	< SIGN: "SIGN" >
 |	< RADIANS: "RADIANS" >
 |	< RAND: "RAND" >
 |	< ROUND: "ROUND" >
@@ -649,6 +662,16 @@ TOKEN : {
 |	< SIN: "SIN" >
 |	< TAN: "TAN" >
 }
+
+
+/* *************** */
+/* CAST            */
+/* *************** */
+TOKEN : {
+    < CAST: "CAST" >
+|   < CAST_TYPE : "SMALLINT"| "SHORT" | "INT" | "INTEGER" | "BIGINT" | "LONG" | "FLOAT" | "DOUBLE" >
+}
+
 
 /* ******* */
 /* Comment */
@@ -685,6 +708,16 @@ TOKEN : {
 |	< UNSIGNED_INTEGER: (<DIGIT>)+ >
 |	< #DIGIT: ["0"-"9"] >
 }
+
+/* *************** */
+/* Hexadecimal numbers */
+/* *************** */
+TOKEN : {
+	< HEX_PREFIX: "0x" >
+|	< HEX_INTEGER: (<HEX_PREFIX>(<HEX_DIGIT>)+) >
+|	< #HEX_DIGIT: ["0"-"9","a"-"f","A"-"F"] >
+}
+
 
 							/* ########## */
 							/* # SYNTAX # */
@@ -767,7 +800,8 @@ void Select(): {ClauseSelect select = query.getSelect(); SelectItem item=null; T
 	(<COMMA> item=SelectItem() {select.add(item);})*
 	{
 		TextPosition lastItemPos = query.getSelect().get(query.getSelect().size()-1).getPosition();
-		select.setPosition(new TextPosition(start.beginLine, start.beginColumn, lastItemPos.endLine, lastItemPos.endColumn));	}
+		select.setPosition(new TextPosition(start.beginLine, start.beginColumn, lastItemPos.endLine, lastItemPos.endColumn));
+	}
 }
 
 SelectItem SelectItem(): {IdentifierItems identifiers = new IdentifierItems(true); IdentifierItem id = null, label = null; ADQLOperand op = null; SelectItem item; Token starToken;} {
@@ -811,7 +845,8 @@ SelectItem SelectItem(): {IdentifierItems identifiers = new IdentifierItems(true
 			if (label != null){
 				item.setCaseSensitive(label.caseSensitivity);
 				item.setPosition(new TextPosition(op.getPosition(), label.position));
-			}else				item.setPosition(new TextPosition(op.getPosition()));
+			}else
+				item.setPosition(new TextPosition(op.getPosition()));
 			return item;
 		}catch(Exception ex){
 			throw generateParseException(ex);
@@ -1065,7 +1100,8 @@ StringConstant String(): {Token t, start=null; String str=""; StringConstant cst
 NumericConstant UnsignedNumeric(): {Token t; NumericConstant cst;} {
 	(t=<SCIENTIFIC_NUMBER>
 	| t=<UNSIGNED_FLOAT>
-	| t=<UNSIGNED_INTEGER>)
+	| t=<UNSIGNED_INTEGER>
+    | t=<HEX_INTEGER>)
 	{		try{
 		  cst = queryFactory.createNumericConstant(t.image);
 		  cst.setPosition(new TextPosition(t));
@@ -1117,6 +1153,7 @@ ADQLOperand NumericValueExpressionPrimary(): {ADQLColumn column; ADQLOperand op;
 		| column=Column() {column.setExpectedType('N'); return column;}
 		// set_function_specification
 		| op=SqlFunction() {return op;}
+	    | op=CastFunction() {return op;}
 		// LEFT_PAR value_expression RIGHT_PAR
 		| (left=<LEFT_PAR> op=NumericExpression() right=<RIGHT_PAR>) { WrappedOperand wop = queryFactory.createWrappedOperand(op); wop.setPosition(new TextPosition(left, right)); return wop; })
 	}catch(Exception ex){
@@ -1171,7 +1208,7 @@ ADQLOperand NumericExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=n
 }
 
 ADQLOperand NumericTerm(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
-	(leftOp=Factor() ((sign=<ASTERISK> | sign=<DIVIDE>) rightOp=NumericTerm())?)
+	(leftOp=BinaryExpression() ((sign=<ASTERISK> | sign=<DIVIDE> | sign=<MODULO>) rightOp=NumericTerm())?)
 	{
 	if (sign == null)
 		return leftOp;
@@ -1180,6 +1217,21 @@ ADQLOperand NumericTerm(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} 
 			Operation operation = queryFactory.createOperation(leftOp, OperationType.getOperator(sign.image), rightOp);
 			operation.setPosition(new TextPosition(leftOp.getPosition(), rightOp.getPosition()));
 			return operation;
+		}catch(Exception ex){
+			throw generateParseException(ex);
+		}
+	}
+	}
+}
+
+ADQLOperand BinaryExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=null;} {
+	(leftOp=Factor() ((sign=<BIT_AND> | sign=<BIT_OR> | sign=<BIT_XOR>) rightOp=BinaryExpression())?)
+	{
+	if (sign == null)
+		return leftOp;
+	else{
+		try{
+			return queryFactory.createOperation(leftOp, OperationType.getOperator(sign.image), rightOp);
 		}catch(Exception ex){
 			throw generateParseException(ex);
 		}
@@ -1232,7 +1284,8 @@ ADQLOperand StringExpression(): {ADQLOperand leftOp; ADQLOperand rightOp = null;
 	)*
 	{
 		if (leftOp instanceof Concatenation){
-			Concatenation concat = (Concatenation)leftOp;			concat.setPosition(new TextPosition(concat.get(0).getPosition(), concat.get(concat.size()-1).getPosition()));
+			Concatenation concat = (Concatenation)leftOp;
+			concat.setPosition(new TextPosition(concat.get(0).getPosition(), concat.get(concat.size()-1).getPosition()));
 		}
 	  return leftOp;
 	}
@@ -1248,7 +1301,8 @@ ADQLOperand StringFactor(): {ADQLOperand op;} {
 GeometryValue<GeometryFunction> GeometryExpression(): {ADQLColumn col = null; GeometryFunction gf = null;} {
 	(col=Column() | gf=GeometryValueFunction())
 	{
-		if (col != null){		  	col.setExpectedType('G');
+		if (col != null){
+		  	col.setExpectedType('G');
 			return new GeometryValue<GeometryFunction>(col);
 		}else
 			return new GeometryValue<GeometryFunction>(gf);
@@ -1264,7 +1318,8 @@ ClauseConstraints ConditionsList(ClauseConstraints clause): {ADQLConstraint cons
 		constraint=Constraint()
 		{
 			if (notOp){
-			  	TextPosition oldPos = constraint.getPosition();				constraint = queryFactory.createNot(constraint);
+			  	TextPosition oldPos = constraint.getPosition();
+				constraint = queryFactory.createNot(constraint);
 				((NotConstraint)constraint).setPosition(new TextPosition(op.beginLine, op.beginColumn, oldPos.endLine, oldPos.endColumn));
 			}
 			notOp = false;
@@ -1296,7 +1351,8 @@ ClauseConstraints ConditionsList(ClauseConstraints clause): {ADQLConstraint cons
 		throw generateParseException(ex);
 	}
 	{
-	  	if (!clause.isEmpty()){	  		TextPosition start = clause.get(0).getPosition();
+	  	if (!clause.isEmpty()){
+	  		TextPosition start = clause.get(0).getPosition();
 	  		TextPosition end = clause.get(clause.size()-1).getPosition();
 			clause.setPosition(new TextPosition(start, end));
 		}
@@ -1443,6 +1499,23 @@ SQLFunction SqlFunction(): {Token fct, all=null, distinct=null, end; ADQLOperand
 	{ return funct; }
 }
 
+/* ************* */
+/* CAST FUNCTION */
+/* ************* */
+CastFunction CastFunction(): {Token type; ADQLOperand oper = null; CastFunction funct = null;}{
+    try {
+		(
+	        ( <CAST> <LEFT_PAR> oper = ValueExpression() <AS> type = <CAST_TYPE> <RIGHT_PAR>
+            { funct = queryFactory.createCastFunction(type, oper); } )
+		)
+	    }
+	catch(Exception ex)
+	    {
+		throw generateParseException(ex);
+	    }
+	{ return funct; }
+    }
+
 
 /* ************** */
 /* ADQL FUNCTIONS */
@@ -1473,7 +1546,8 @@ GeometryFunction GeometryFunction(): {Token fct=null, end; GeometryValue<Geometr
 				{
 					if (p1 != null)
 						gvp1 = new GeometryValue<PointFunction>(p1);
-					else{						col1.setExpectedType('G');
+					else{
+						col1.setExpectedType('G');
 						gvp1 = new GeometryValue<PointFunction>(col1);
 					}
 				}
@@ -1482,7 +1556,8 @@ GeometryFunction GeometryFunction(): {Token fct=null, end; GeometryValue<Geometr
 				{
 					if (p2 != null)
 						gvp2 = new GeometryValue<PointFunction>(p2);
-					else{						col2.setExpectedType('G');
+					else{
+						col2.setExpectedType('G');
 						gvp2 = new GeometryValue<PointFunction>(col2);
 					}
 				} 
@@ -1586,7 +1661,7 @@ ADQLFunction NumericFunction(): {ADQLFunction fct;} {
 	{return fct;}
 }
 
-MathFunction MathFunction(): {Token fct=null, end; ADQLOperand param1=null, param2=null; NumericConstant integerValue = null;} {
+MathFunction MathFunction(): {Token fct=null, end=null; ADQLOperand param1=null, param2=null; NumericConstant integerValue = null;} {
 	try{
 		((fct=<ABS> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<CEILING> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
@@ -1597,6 +1672,8 @@ MathFunction MathFunction(): {Token fct=null, end; ADQLOperand param1=null, para
 		| (fct=<LOG10> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<MOD> <LEFT_PAR> param1=NumericExpression() <COMMA> param2=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<PI> <LEFT_PAR> end=<RIGHT_PAR>)
+		| (fct=<SQUARE> <LEFT_PAR> param1=NumericExpression() <RIGHT_PAR>)
+		| (fct=<SIGN> <LEFT_PAR> param1=NumericExpression() <RIGHT_PAR>)
 		| (fct=<POWER> <LEFT_PAR> param1=NumericExpression() <COMMA> param2=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<RADIANS> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<RAND> <LEFT_PAR> (param1=NumericExpression())? end=<RIGHT_PAR>)
@@ -1604,7 +1681,8 @@ MathFunction MathFunction(): {Token fct=null, end; ADQLOperand param1=null, para
 		| (fct=<SQRT> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<TRUNCATE> <LEFT_PAR> param1=NumericExpression() (<COMMA> param2=SignedInteger())? end=<RIGHT_PAR>))
 		{
-			if (param1 != null){			  	MathFunction mf = queryFactory.createMathFunction(MathFunctionType.valueOf(fct.image.toUpperCase()), param1, param2);
+			if (param1 != null){
+			  	MathFunction mf = queryFactory.createMathFunction(MathFunctionType.valueOf(fct.image.toUpperCase()), param1, param2);
 			  	mf.setPosition(new TextPosition(fct, end));
 				return mf;
 			}else
@@ -1626,7 +1704,8 @@ MathFunction TrigFunction(): {Token fct=null, end; ADQLOperand param1=null, para
 	| (fct=<TAN> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>))
 	{
 		try{
-			if (param1 != null){			  	MathFunction mf = queryFactory.createMathFunction(MathFunctionType.valueOf(fct.image.toUpperCase()), param1, param2);
+			if (param1 != null){
+			  	MathFunction mf = queryFactory.createMathFunction(MathFunctionType.valueOf(fct.image.toUpperCase()), param1, param2);
 			  	mf.setPosition(new TextPosition(fct, end));
 			  	return mf;
 			}else

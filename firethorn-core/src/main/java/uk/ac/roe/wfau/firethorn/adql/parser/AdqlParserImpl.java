@@ -272,6 +272,12 @@ implements AdqlParser
 				return false;
 			}
 
+			@Override
+			public String translate(ADQLTranslator caller) throws TranslationException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
             }
 
         /**

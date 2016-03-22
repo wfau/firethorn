@@ -27,7 +27,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import lombok.extern.slf4j.Slf4j;
 
 import adql.db.DBColumn;
-import adql.db.exception.UnresolvedJoin;
+import adql.db.DBTable;
+import adql.db.exception.UnresolvedJoinException;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
 import adql.query.ADQLOrder;
@@ -97,6 +98,27 @@ public class OgsaDQPTranslator
             );
         }
 
+	/**
+	 * Appends the full name of the given table to the given StringBuffer.
+	 * 
+	 * @param str		The string buffer.
+	 * @param dbTable	The table whose the full name must be appended.
+	 * 
+	 * @return			The string buffer + full table name.
+	 */
+	public final StringBuffer appendFullDBName(final StringBuffer str, final DBTable dbTable){
+		if (dbTable != null){
+			if (dbTable.getDBCatalogName() != null)
+				appendIdentifier(str, dbTable.getDBCatalogName(), IdentifierField.CATALOG).append('.');
+
+			if (dbTable.getDBSchemaName() != null)
+				appendIdentifier(str, dbTable.getDBSchemaName(), IdentifierField.SCHEMA).append('.');
+
+			appendIdentifier(str, dbTable.getDBName(), IdentifierField.TABLE);
+		}
+		return str;
+	}
+    
     /**
      * Replaces the PostgreSQLTranslator method to not put LIMIT at the end.
      *
@@ -252,7 +274,7 @@ public class OgsaDQPTranslator
             {
             try {
     				dbCols = all.getQuery().getFrom().getDBColumns();
-    			} catch (UnresolvedJoin e) {
+    			} catch (UnresolvedJoinException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
     		}

@@ -61,6 +61,7 @@ import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.MathFunctionType;
 import adql.query.operand.function.SQLFunction;
 import adql.query.operand.function.SQLFunctionType;
+import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.query.operand.function.geometry.AreaFunction;
 import adql.query.operand.function.geometry.BoxFunction;
@@ -89,6 +90,9 @@ import adql.query.operand.function.geometry.RegionFunction;
  */
 public class ADQLQueryFactory {
 
+	
+	protected boolean allowUnknownFunctions = true;
+	
 	/**
 	 * Type of table JOIN.
 	 * 
@@ -106,6 +110,10 @@ public class ADQLQueryFactory {
 		;
 	}
 
+	public ADQLQueryFactory(boolean allowUnknownFunctions){
+		this.allowUnknownFunctions = allowUnknownFunctions;
+	}
+	
 	public ADQLQuery createQuery() throws Exception{
 		return new ADQLQuery();
 	}
@@ -268,6 +276,14 @@ public class ADQLQueryFactory {
 	public MathFunction createMathFunction(MathFunctionType type, ADQLOperand param1, ADQLOperand param2) throws Exception{
 		return new MathFunction(type, param1, param2);
 	}
+	
+	public CastFunction createCastFunction(Token type, ADQLOperand oper)
+	{
+	return new CastFunction(
+		type,
+		oper
+		);
+	}
 
 	/**
 	 * <p>Creates the user defined functions called as the given name and with the given parameters.</p>
@@ -293,7 +309,10 @@ public class ADQLQueryFactory {
 	 * @throws Exception	If there is a problem while creating the function.
 	 */
 	public UserDefinedFunction createUserDefinedFunction(String name, ADQLOperand[] params) throws Exception{
-		return new DefaultUDF(name, params);
+		if (allowUnknownFunctions)
+			return new DefaultUDF(name, params);
+		else
+			throw new UnsupportedOperationException("No ADQL function called \""+name+"\" !");
 	}
 
 	public DistanceFunction createDistance(PointFunction point1, PointFunction point2) throws Exception{
