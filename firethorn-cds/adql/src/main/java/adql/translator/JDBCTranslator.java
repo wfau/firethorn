@@ -16,19 +16,19 @@ package adql.translator;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2014 - Astronomisches Rechen Institut (ARI)
+ * Copyright 2015 - Astronomisches Rechen Institut (ARI)
  */
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-//import tap.data.DataReadException;
+import tap.data.DataReadException;
 import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.db.DBType;
 import adql.db.STCS.Region;
-import adql.db.exception.UnresolvedJoin;
+import adql.db.exception.UnresolvedJoinException;
 import adql.parser.ParseException;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
@@ -167,8 +167,8 @@ import adql.query.operand.function.geometry.RegionFunction;
  * </p>
  * 
  * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.3 (11/2014)
- * @since 1.3
+ * @version 1.4 (09/2015)
+ * @since 1.4
  * 
  * @see PostgreSQLTranslator
  * @see PgSphereTranslator
@@ -232,15 +232,40 @@ public abstract class JDBCTranslator implements ADQLTranslator {
 	 * 
 	 * @return	The qualified (with DB catalog and schema prefix if any, and with double quotes if needed) DB table name,
 	 *        	or an empty string if the given table is NULL or if there is no DB name.
+	 * 
+	 * @see #getTableName(DBTable, boolean)
 	 */
 	public String getQualifiedTableName(final DBTable table){
+		return getTableName(table, true);
+	}
+
+	/**
+	 * <p>Get the DB name of the given table.
+	 * The second parameter lets specify whether the table name must be prefixed by the qualified schema name or not.</p>
+	 * 
+	 * <p><i>Note:
+	 * 	This function will, by default, add double quotes if the table name must be case sensitive in the SQL query.
+	 * 	This information is provided by {@link #isCaseSensitive(IdentifierField)}.
+	 * </i></p>
+	 * 
+	 * @param table			The table whose the DB name is asked.
+	 * @param withSchema	<i>true</i> if the qualified schema name must prefix the table name, <i>false</i> otherwise. 
+	 * 
+	 * @return	The DB table name (prefixed by the qualified schema name if asked, and with double quotes if needed),
+	 *        	or an empty string if the given table is NULL or if there is no DB name.
+	 * 
+	 * @since 2.0
+	 */
+	public String getTableName(final DBTable table, final boolean withSchema){
 		if (table == null)
 			return "";
 
-		StringBuffer buf = new StringBuffer(getQualifiedSchemaName(table));
-		if (buf.length() > 0)
-			buf.append('.');
-
+		StringBuffer buf = new StringBuffer();
+		if (withSchema){
+			buf.append(getQualifiedSchemaName(table));
+			if (buf.length() > 0)
+				buf.append('.');
+		}
 		appendIdentifier(buf, table.getDBName(), IdentifierField.TABLE);
 
 		return buf.toString();
@@ -432,7 +457,7 @@ public abstract class JDBCTranslator implements ADQLTranslator {
 		}else if (item.getQuery() != null){
 			try{
 				dbCols = item.getQuery().getFrom().getDBColumns();
-			}catch(UnresolvedJoin pe){
+			}catch(UnresolvedJoinException pe){
 				throw new TranslationException("Due to a join problem, the ADQL to SQL translation can not be completed!", pe);
 			}
 			ArrayList<ADQLTable> tables = item.getQuery().getFrom().getTables();
@@ -652,7 +677,7 @@ public abstract class JDBCTranslator implements ADQLTranslator {
 
 	@Override
 	public String translate(StringConstant strConst) throws TranslationException{
-		return "'" + strConst.getValue() + "'";
+		return "'" + strConst.getValue().replaceAll("'", "''") + "'";
 	}
 
 	@Override
@@ -742,7 +767,7 @@ public abstract class JDBCTranslator implements ADQLTranslator {
 	 * 
 	 * @throws TranslationException	If there is an error during the translation.
 	 */
-	protected String getDefaultADQLFunction(ADQLFunction fct) throws TranslationException{
+	protected final String getDefaultADQLFunction(ADQLFunction fct) throws TranslationException{
 		String sql = fct.getName() + "(";
 
 		for(int i = 0; i < fct.getNbParameters(); i++)
@@ -766,7 +791,7 @@ public abstract class JDBCTranslator implements ADQLTranslator {
 
 	@Override
 	public String translate(UserDefinedFunction fct) throws TranslationException{
-		return getDefaultADQLFunction(fct);
+		return fct.translate(this);
 	}
 
 	/* *********************************** */
@@ -872,7 +897,7 @@ public abstract class JDBCTranslator implements ADQLTranslator {
 	 * 	If the given region is NULL, NULL will be returned.
 	 * </i></p>
 	 * 
-	 * @param stcs	The region to store in the DB.
+	 * @param region	The region to store in the DB.
 	 * 
 	 * @return	The corresponding DB column object.
 	 * 

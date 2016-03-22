@@ -16,16 +16,17 @@ package adql.db;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2011,2013-2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
- *                            Astronomisches Rechen Institut (ARI)
+ * Copyright 2011-2016 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institut (ARI)
  */
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -33,7 +34,7 @@ import adql.db.STCS.CoordSys;
 import adql.db.STCS.Region;
 import adql.db.STCS.RegionType;
 import adql.db.exception.UnresolvedColumnException;
-import adql.db.exception.UnresolvedFunction;
+import adql.db.exception.UnresolvedFunctionException;
 import adql.db.exception.UnresolvedIdentifiersException;
 import adql.db.exception.UnresolvedTableException;
 import adql.parser.ParseException;
@@ -63,6 +64,7 @@ import adql.query.operand.function.geometry.PolygonFunction;
 import adql.query.operand.function.geometry.RegionFunction;
 import adql.search.ISearchHandler;
 import adql.search.SearchColumnHandler;
+import adql.search.SimpleReplaceHandler;
 import adql.search.SimpleSearchHandler;
 
 /**
@@ -95,12 +97,12 @@ import adql.search.SimpleSearchHandler;
  * </i></p>
  * 
  * @author Gr&eacute;gory Mantelet (CDS;ARI)
- * @version 1.3 (10/2014)
+ * @version 1.4 (03/2016)
  */
 public class DBChecker implements QueryChecker {
 
 	/** List of all available tables ({@link DBTable}). */
-	protected SearchTableApi lstTables;
+	protected SearchTableList lstTables;
 
 	/** <p>List of all allowed geometrical functions (i.e. CONTAINS, REGION, POINT, COORD2, ...).</p>
 	 * <p>
@@ -213,7 +215,9 @@ public class DBChecker implements QueryChecker {
 					tmp[cnt++] = udf;
 			}
 			// make a copy of the array:
-			this.allowedUdfs = Arrays.copyOf(tmp, cnt, FunctionDef[].class);
+			this.allowedUdfs = new FunctionDef[cnt];
+			System.arraycopy(tmp, 0, this.allowedUdfs, 0, cnt);
+
 			tmp = null;
 			// sort the values:
 			Arrays.sort(this.allowedUdfs);
@@ -316,7 +320,8 @@ public class DBChecker implements QueryChecker {
 		}
 
 		// Make an adjusted array copy:
-		String[] copy = Arrays.copyOf(tmp, cnt);
+		String[] copy = new String[cnt];
+		System.arraycopy(tmp, 0, copy, 0, cnt);
 
 		// Sort the values:
 		Arrays.sort(copy);
@@ -364,7 +369,7 @@ public class DBChecker implements QueryChecker {
 	 * @see #check(ADQLQuery, Stack)
 	 */
 	@Override
-	public void check(final ADQLQuery query) throws ParseException{
+	public final void check(final ADQLQuery query) throws ParseException{
 		check(query, null);
 	}
 
@@ -420,109 +425,6 @@ public class DBChecker implements QueryChecker {
 			throw errors;
 	}
 
-	public void check(final ADQLQuery query, SearchColumnList stackColumnList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException {
-		UnresolvedIdentifiersException errors = new UnresolvedIdentifiersException();
-		HashMap<DBTable, ADQLTable> mapTables = _mapTables;
-		ISearchHandler sHandler;
-		stackColumnList.putTableAliasList(mapTables);
-		// Check the existence of all tables:
-		sHandler = new SearchTableHandler();
-		sHandler.search(query.getFrom());
-		for(ADQLObject result : sHandler){
-			try{
-				ADQLTable table = (ADQLTable)result;
-				// resolve the table:
-				DBTable dbTable = null;
-				if (table.isSubQuery()){
-					dbTable = generateDBTable(table.getSubQuery(), table.getAlias());
-				}else{
-					dbTable = resolveTable(table);
-					if (table.hasAlias())
-						dbTable = dbTable.copy(dbTable.getDBName(), table.getAlias());
-				}
-				// link with the matched DBTable:
-				table.setDBLink(dbTable);
-				mapTables.put(dbTable, table);
-			}catch(ParseException pe){
-				errors.addException(pe);
-			}
-		}
-
-		// Attach table information on wildcards with the syntax "{tableName}.*" of the SELECT clause:
-		sHandler = new SearchWildCardHandler();
-		sHandler.search(query.getSelect());
-		for(ADQLObject result : sHandler){
-			try{
-				SelectAllColumns wildcard = (SelectAllColumns)result;
-				ADQLTable table = wildcard.getAdqlTable();
-				DBTable dbTable = null;
-				// First, try to resolve the table by table alias:
-				if (table.getTableName() != null && table.getSchemaName() == null){
-					ArrayList<ADQLTable> tables = query.getFrom().getTablesByAlias(table.getTableName(), table.isCaseSensitive(IdentifierField.TABLE));
-					if (tables.size() == 1)
-						dbTable = tables.get(0).getDBLink();
-				}
-				// Then try to resolve the table reference by table name:
-				if (dbTable == null)
-					dbTable = resolveTable(table);
-
-				//			table.setDBLink(dbTable);
-				wildcard.setAdqlTable(mapTables.get(dbTable));
-			}catch(ParseException pe){
-				errors.addException(pe);
-			}
-		}
-
-		SearchColumnList list = query.getFrom().getDBColumns();
-
-		/* DEBUG
-		System.out.println("\n*** FROM COLUMNS ***");
-		for(DBColumn dbCol : list){
-			System.out.println("\t- "+dbCol.getADQLName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getADQLName())+" (= "+dbCol.getDBName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getDBName())+")");
-		}
-		System.out.println();
-		*/
-		// Check the existence of all columns:
-		sHandler = new SearchColumnHandler();  
-	
-		sHandler.search(query);
-		for(ADQLObject result : sHandler){
-			try{
-				ADQLColumn adqlColumn = (ADQLColumn)result;
-				// resolve the column:
-				DBColumn dbColumn = resolveColumn(adqlColumn, list, stackColumnList);
-				// link with the matched DBColumn:
-				adqlColumn.setDBLink(dbColumn);
-				adqlColumn.setAdqlTable(mapTables.get(dbColumn.getTable()));
-			}catch(ParseException pe){
-				errors.addException(pe);
-			}
-		}
-
-		// Check the correctness of all column references:
-		sHandler = new SearchColReferenceHandler();
-		sHandler.search(query);
-		ClauseSelect select = query.getSelect();
-		for(ADQLObject result : sHandler){
-			try{
-				ColumnReference colRef = (ColumnReference)result;
-				// resolve the column reference:
-				DBColumn dbColumn = checkColumnReference(colRef, select, list);
-				// link with the matched DBColumn:
-				colRef.setDBLink(dbColumn);
-				if (dbColumn != null)
-					colRef.setAdqlTable(mapTables.get(dbColumn.getTable()));
-			}catch(ParseException pe){
-				errors.addException(pe);
-			}
-		}
-
-		// Throw all errors if any:
-		if (errors.getNbErrors() > 0)
-			throw errors;
-	}
-
-	
 	/* ************************************************ */
 	/* CHECKING METHODS FOR DB ITEMS (TABLES & COLUMNS) */
 	/* ************************************************ */
@@ -672,14 +574,14 @@ public class DBChecker implements QueryChecker {
 	 * @throws ParseException	An {@link UnresolvedTableException} if the given table can't be resolved.
 	 */
 	protected DBTable resolveTable(final ADQLTable table) throws ParseException{
-		List<DBTable> tables = lstTables.search(table);
+		ArrayList<DBTable> tables = lstTables.search(table);
 
 		// good if only one table has been found:
 		if (tables.size() == 1)
 			return tables.get(0);
 		// but if more than one: ambiguous table name !
 		else if (tables.size() > 1)
-			throw new UnresolvedTableException(table, tables.get(0).getADQLSchemaName() + "." + tables.get(0).getADQLName(), tables.get(1).getADQLSchemaName() + "." + tables.get(1).getADQLName());
+			throw new UnresolvedTableException(table, (tables.get(0).getADQLSchemaName() == null ? "" : tables.get(0).getADQLSchemaName() + ".") + tables.get(0).getADQLName(), (tables.get(1).getADQLSchemaName() == null ? "" : tables.get(1).getADQLSchemaName() + ".") + tables.get(1).getADQLName());
 		// otherwise (no match): unknown table !
 		else
 			throw new UnresolvedTableException(table);
@@ -794,47 +696,6 @@ public class DBChecker implements QueryChecker {
 	}
 
 	/**
-	 * Resolves the given column, that's to say searches for the corresponding {@link DBColumn}.
-	 * 
-	 * @param column		The column to resolve.
-	 * @param dbColumns		List of all available {@link DBColumn}s.
-	 * 
-	 * @return				The corresponding {@link DBColumn} if found, <i>null</i> otherwise.
-	 * 
-	 * @throws ParseException	An {@link UnresolvedColumnException} if the given column can't be resolved
-	 * 							or an {@link UnresolvedTableException} if its table reference can't be resolved.
-	 */
-	protected DBColumn resolveColumn(final ADQLColumn column, final SearchColumnList dbColumns, final SearchColumnList stackColumnList) throws ParseException {
-		ArrayList<DBColumn> foundColumns = dbColumns.search(column);
-
-		// good if only one column has been found:
-		if (foundColumns.size() == 1)
-			return foundColumns.get(0);
-		// but if more than one: ambiguous table reference !
-		else if (foundColumns.size() > 1){
-			if (column.getTableName() == null)
-				throw new UnresolvedColumnException(column, (foundColumns.get(0).getTable()==null)?"<NULL>":(foundColumns.get(0).getTable().getADQLName()+"."+foundColumns.get(0).getADQLName()), (foundColumns.get(1).getTable()==null)?"<NULL>":(foundColumns.get(1).getTable().getADQLName()+"."+foundColumns.get(1).getADQLName()));
-			else
-				throw new UnresolvedTableException(column, (foundColumns.get(0).getTable()==null)?"<NULL>":foundColumns.get(0).getTable().getADQLName(), (foundColumns.get(1).getTable()==null)?"<NULL>":foundColumns.get(1).getTable().getADQLName());
-		}// otherwise (no match): unknown column ! Check stack column list
-		else{
-			ArrayList<DBColumn> foundColumnsFromStack = stackColumnList.search(column);
-			if (foundColumnsFromStack.size() == 1)
-				return foundColumnsFromStack.get(0);
-			// but if more than one: ambiguous table reference !
-			else if (foundColumnsFromStack.size() > 1){
-				if (column.getTableName() == null)
-					throw new UnresolvedColumnException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(0).getTable().getADQLName()+"."+foundColumnsFromStack.get(0).getADQLName()), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(1).getTable().getADQLName()+"."+foundColumnsFromStack.get(1).getADQLName()));
-		else
-					throw new UnresolvedTableException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":foundColumnsFromStack.get(0).getTable().getADQLName(), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":foundColumnsFromStack.get(1).getTable().getADQLName());
-			} else // otherwise (no match): unknown column !
-			throw new UnresolvedColumnException(column);
-		
-		
-		}
-	}
-	
-	/**
 	 * Check whether the given column reference corresponds to a selected item (column or an expression with an alias)
 	 * or to an existing column.
 	 * 
@@ -876,7 +737,7 @@ public class DBChecker implements QueryChecker {
 			}
 
 			// check the corresponding column:
-			return resolveColumn(col, dbColumns, new Stack<SearchColumnList>());
+			return resolveColumn(col, dbColumns, null);
 		}
 	}
 
@@ -925,16 +786,16 @@ public class DBChecker implements QueryChecker {
 	 * @since 1.3
 	 */
 	protected void checkUDFs(final ADQLQuery query, final UnresolvedIdentifiersException errors){
-		// Search all UDFs:
+		// 1. Search all UDFs:
 		ISearchHandler sHandler = new SearchUDFHandler();
 		sHandler.search(query);
 
 		// If no UDF are allowed, throw immediately an error:
 		if (allowedUdfs.length == 0){
 			for(ADQLObject result : sHandler)
-				errors.addException(new UnresolvedFunction((UserDefinedFunction)result));
+				errors.addException(new UnresolvedFunctionException((UserDefinedFunction)result));
 		}
-		// Otherwise, try to resolve all of them:
+		// 2. Try to resolve all of them:
 		else{
 			ArrayList<UserDefinedFunction> toResolveLater = new ArrayList<UserDefinedFunction>();
 			UserDefinedFunction udf;
@@ -952,34 +813,39 @@ public class DBChecker implements QueryChecker {
 			 *       for a later resolution try. */
 			for(ADQLObject result : sHandler){
 				udf = (UserDefinedFunction)result;
-				// search for a match:
-				match = binSearch.search(udf, allowedUdfs);
-				// if no match...
-				if (match < 0){
-					// ...if the type of all parameters is resolved, add an error (no match is possible):
-					if (isAllParamTypesResolved(udf))
-						errors.addException(new UnresolvedFunction(udf));	// TODO Add the ADQLOperand position!
-					// ...otherwise, try to resolved it later (when other UDFs will be mostly resolved):
-					else
-						toResolveLater.add(udf);
+				// if the type of not all parameters are resolved, postpone the resolution:
+				if (!isAllParamTypesResolved(udf))
+					toResolveLater.add(udf);
+				// otherwise:
+				else{
+					// search for a match:
+					match = binSearch.search(udf, allowedUdfs);
+					// if no match...
+					if (match < 0)
+						errors.addException(new UnresolvedFunctionException(udf));
+					// if there is a match, metadata may be attached (particularly if the function is built automatically by the syntactic parser):
+					else if (udf instanceof DefaultUDF)
+						((DefaultUDF)udf).setDefinition(allowedUdfs[match]);
 				}
-				// if there is a match, metadata may be attached (particularly if the function is built automatically by the syntactic parser):
-				else if (udf instanceof DefaultUDF)
-					((DefaultUDF)udf).setDefinition(allowedUdfs[match]);
 			}
 
 			// Try to resolve UDFs whose some parameter types are depending of other UDFs:
-			for(int i = 0; i < toResolveLater.size(); i++){
+			/* Note: we need to iterate from the end in order to resolve first the most wrapped functions
+			 *       (e.g. fct1(fct2(...)) ; fct2 must be resolved before fct1). */
+			for(int i = toResolveLater.size() - 1; i >= 0; i--){
 				udf = toResolveLater.get(i);
 				// search for a match:
 				match = binSearch.search(udf, allowedUdfs);
 				// if no match, add an error:
 				if (match < 0)
-					errors.addException(new UnresolvedFunction(udf));	// TODO Add the ADQLOperand position!
+					errors.addException(new UnresolvedFunctionException(udf));
 				// otherwise, metadata may be attached (particularly if the function is built automatically by the syntactic parser):
 				else if (udf instanceof DefaultUDF)
 					((DefaultUDF)udf).setDefinition(allowedUdfs[match]);
 			}
+
+			// 3. Replace all the resolved DefaultUDF by an instance of the class associated with the set signature:
+			(new ReplaceDefaultUDFHandler(errors)).searchAndReplace(query);
 		}
 	}
 
@@ -1002,7 +868,7 @@ public class DBChecker implements QueryChecker {
 	 */
 	protected final boolean isAllParamTypesResolved(final ADQLFunction fct){
 		for(ADQLOperand op : fct.getParameters()){
-			if (op.isNumeric() == op.isString())
+			if (op.isGeometry() == op.isNumeric() && op.isNumeric() == op.isString())
 				return false;
 		}
 		return true;
@@ -1097,7 +963,7 @@ public class DBChecker implements QueryChecker {
 		if (allowedGeo.length != 0)
 			match = binSearch.search(fctName, allowedGeo);
 		if (match < 0)
-			errors.addException(new UnresolvedFunction("The geometrical function \"" + fctName + "\" is not available in this implementation!", fct));
+			errors.addException(new UnresolvedFunctionException("The geometrical function \"" + fctName + "\" is not available in this implementation!", fct));
 	}
 
 	/**
@@ -1130,7 +996,7 @@ public class DBChecker implements QueryChecker {
 	 * @param errors		List of errors to complete in this function each time a coordinate system has a wrong syntax or is not supported.
 	 * 
 	 * @see STCS#parseCoordSys(String)
-	 * @see #checkCoordinateSystem(CoordSys, ADQLOperand, UnresolvedIdentifiersException)
+	 * @see #checkCoordinateSystem(adql.db.STCS.CoordSys, ADQLOperand, UnresolvedIdentifiersException)
 	 * 
 	 * @since 1.3
 	 */
@@ -1139,7 +1005,7 @@ public class DBChecker implements QueryChecker {
 		try{
 			checkCoordinateSystem(STCS.parseCoordSys(coordSysStr), adqlCoordSys, errors);
 		}catch(ParseException pe){
-			errors.addException(new ParseException(pe.getMessage())); // TODO Missing object position!
+			errors.addException(new ParseException(pe.getMessage(), adqlCoordSys.getPosition()));
 		}
 	}
 
@@ -1153,8 +1019,21 @@ public class DBChecker implements QueryChecker {
 	 * @since 1.3
 	 */
 	protected void checkCoordinateSystem(final CoordSys coordSys, final ADQLOperand operand, final UnresolvedIdentifiersException errors){
-		if (coordSysRegExp != null && coordSys != null && !coordSys.toFullSTCS().matches(coordSysRegExp))
-			errors.addException(new ParseException("Coordinate system \"" + ((operand instanceof StringConstant) ? ((StringConstant)operand).getValue() : coordSys.toString()) + "\" (= \"" + coordSys.toFullSTCS() + "\") not allowed in this implementation."));	// TODO Missing object position! + List of accepted coordinate systems
+		if (coordSysRegExp != null && coordSys != null && !coordSys.toFullSTCS().matches(coordSysRegExp)){
+			StringBuffer buf = new StringBuffer();
+			if (allowedCoordSys != null){
+				for(String cs : allowedCoordSys){
+					if (buf.length() > 0)
+						buf.append(", ");
+					buf.append(cs);
+				}
+			}
+			if (buf.length() == 0)
+				buf.append("No coordinate system is allowed!");
+			else
+				buf.insert(0, "Allowed coordinate systems are: ");
+			errors.addException(new ParseException("Coordinate system \"" + ((operand instanceof StringConstant) ? ((StringConstant)operand).getValue() : coordSys.toString()) + "\" (= \"" + coordSys.toFullSTCS() + "\") not allowed in this implementation. " + buf.toString(), operand.getPosition()));
+		}
 	}
 
 	/**
@@ -1173,7 +1052,7 @@ public class DBChecker implements QueryChecker {
 	 * @param errors		List of errors to complete in this function each time the STC-S syntax is wrong or each time the declared coordinate system or region is not supported.
 	 * 
 	 * @see STCS#parseRegion(String)
-	 * @see #checkRegion(Region, RegionFunction, BinarySearch, UnresolvedIdentifiersException)
+	 * @see #checkRegion(adql.db.STCS.Region, RegionFunction, BinarySearch, UnresolvedIdentifiersException)
 	 * 
 	 * @since 1.3
 	 */
@@ -1196,7 +1075,7 @@ public class DBChecker implements QueryChecker {
 				// check whether the regions (this one + the possible inner ones) and the coordinate systems are allowed:
 				checkRegion(region, (RegionFunction)result, binSearch, errors);
 			}catch(ParseException pe){
-				errors.addException(new ParseException(pe.getMessage())); // TODO Missing object position!
+				errors.addException(new ParseException(pe.getMessage(), result.getPosition()));
 			}
 		}
 	}
@@ -1215,8 +1094,9 @@ public class DBChecker implements QueryChecker {
 	 * @param fct		The REGION function containing the region to check.
 	 * @param errors	List of errors to complete in this function if the given region or its inner regions are not supported.
 	 * 
-	 * @see #checkCoordinateSystem(CoordSys, ADQLOperand, UnresolvedIdentifiersException)
+	 * @see #checkCoordinateSystem(adql.db.STCS.CoordSys, ADQLOperand, UnresolvedIdentifiersException)
 	 * @see #checkGeometryFunction(String, ADQLFunction, BinarySearch, UnresolvedIdentifiersException)
+	 * @see #checkRegion(adql.db.STCS.Region, RegionFunction, BinarySearch, UnresolvedIdentifiersException)
 	 * 
 	 * @since 1.3
 	 */
@@ -1231,7 +1111,7 @@ public class DBChecker implements QueryChecker {
 		// Check that the region type is allowed:
 		if (allowedGeo != null){
 			if (allowedGeo.length == 0)
-				errors.addException(new UnresolvedFunction("The region type \"" + r.type + "\" is not available in this implementation!", fct));
+				errors.addException(new UnresolvedFunctionException("The region type \"" + r.type + "\" is not available in this implementation!", fct));
 			else
 				checkGeometryFunction((r.type == RegionType.POSITION) ? "POINT" : r.type.toString(), fct, binSearch, errors);
 		}
@@ -1290,17 +1170,17 @@ public class DBChecker implements QueryChecker {
 				case 'G':
 				case 'g':
 					if (!unknown.isGeometry())
-						errors.addException(new ParseException("Type mismatch! A geometry was expected instead of \"" + unknown.toADQL() + "\"."));	// TODO Add the ADQLOperand position!
+						errors.addException(new ParseException("Type mismatch! A geometry was expected instead of \"" + unknown.toADQL() + "\".", result.getPosition()));
 					break;
 				case 'N':
 				case 'n':
 					if (!unknown.isNumeric())
-						errors.addException(new ParseException("Type mismatch! A numeric value was expected instead of \"" + unknown.toADQL() + "\"."));	// TODO Add the ADQLOperand position!
+						errors.addException(new ParseException("Type mismatch! A numeric value was expected instead of \"" + unknown.toADQL() + "\".", result.getPosition()));
 					break;
 				case 'S':
 				case 's':
 					if (!unknown.isString())
-						errors.addException(new ParseException("Type mismatch! A string value was expected instead of \"" + unknown.toADQL() + "\"."));	// TODO Add the ADQLOperand position!
+						errors.addException(new ParseException("Type mismatch! A string value was expected instead of \"" + unknown.toADQL() + "\".", result.getPosition()));
 					break;
 			}
 		}
@@ -1447,6 +1327,51 @@ public class DBChecker implements QueryChecker {
 		@Override
 		protected boolean match(ADQLObject obj){
 			return (obj instanceof UserDefinedFunction);
+		}
+	}
+
+	/**
+	 * <p>Let replacing every {@link DefaultUDF}s whose a {@link FunctionDef} is set by their corresponding {@link UserDefinedFunction} class.</p>
+	 * 
+	 * <p><i><b>Important note:</b>
+	 * 	If the replacer can not be created using the class returned by {@link FunctionDef#getUDFClass()}, no replacement is performed.
+	 * </i></p>
+	 * 
+	 * @author Gr&eacute;gory Mantelet (ARI)
+	 * @version 1.3 (02/2015)
+	 * @since 1.3
+	 */
+	private static class ReplaceDefaultUDFHandler extends SimpleReplaceHandler {
+		private final UnresolvedIdentifiersException errors;
+
+		public ReplaceDefaultUDFHandler(final UnresolvedIdentifiersException errorsContainer){
+			errors = errorsContainer;
+		}
+
+		@Override
+		protected boolean match(ADQLObject obj){
+			return (obj.getClass().getName().equals(DefaultUDF.class.getName())) && (((DefaultUDF)obj).getDefinition() != null) && (((DefaultUDF)obj).getDefinition().getUDFClass() != null);
+			/* Note: detection of DefaultUDF is done on the exact class name rather than using "instanceof" in order to have only direct instances of DefaultUDF,
+			 * and not extensions of it. Indeed, DefaultUDFs are generally created automatically by the ADQLQueryFactory ; so, extensions of it can only be custom
+			 * UserDefinedFunctions. */
+		}
+
+		@Override
+		protected ADQLObject getReplacer(ADQLObject objToReplace) throws UnsupportedOperationException{
+			try{
+				// get the associated UDF class:
+				Class<? extends UserDefinedFunction> udfClass = ((DefaultUDF)objToReplace).getDefinition().getUDFClass();
+				// get the constructor with a single parameter of type ADQLOperand[]:
+				Constructor<? extends UserDefinedFunction> constructor = udfClass.getConstructor(ADQLOperand[].class);
+				// create a new instance of this UDF class with the operands stored in the object to replace:
+				return constructor.newInstance((Object)(((DefaultUDF)objToReplace).getParameters())); /* note: without this class, each item of the given array will be considered as a single parameter. */
+			}catch(Exception ex){
+				// IF NO INSTANCE CAN BE CREATED...
+				// ...keep the error for further report:
+				errors.addException(new UnresolvedFunctionException("Impossible to represent the function \"" + ((DefaultUDF)objToReplace).getName() + "\": the following error occured while creating this representation: \"" + ((ex instanceof InvocationTargetException) ? "[" + ex.getCause().getClass().getSimpleName() + "] " + ex.getCause().getMessage() : ex.getMessage()) + "\"", (DefaultUDF)objToReplace));
+				// ...keep the same object (i.e. no replacement):
+				return objToReplace;
+			}
 		}
 	}
 
@@ -1599,7 +1524,5 @@ public class DBChecker implements QueryChecker {
 		 */
 		protected abstract int compare(final S searchItem, final T arrayItem);
 	}
-
-	
 
 }

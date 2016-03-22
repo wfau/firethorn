@@ -78,7 +78,7 @@ import adql.query.operand.function.geometry.RegionFunction;
  * </i></p>
  * 
  * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.3 (10/2014)
+ * @version 1.3 (12/2014)
  * @since 1.3
  */
 public final class STCS {
@@ -538,9 +538,9 @@ public final class STCS {
 		}
 
 		// The final regular expression must be reduced to a coordinate system and nothing else after:
-		finalRegExp.append(")\\s*");
+		finalRegExp.append(")\\s*$");
 
-		return (nbCoordSys > 0) ? finalRegExp.append(")$").toString() : defaultCoordSysRegExp;
+		return (nbCoordSys > 0) ? finalRegExp.toString() : defaultCoordSysRegExp;
 	}
 
 	/**
@@ -1219,8 +1219,6 @@ public final class STCS {
 	 * @return	The corresponding STC-S expression.
 	 * 
 	 * @throws ParseException	If the given object is NULL or not of the good type.
-	 * 
-	 * @see {@link Region#Region(GeometryFunction)}
 	 */
 	public static String toSTCS(final GeometryFunction region) throws ParseException{
 		if (region == null)
@@ -1397,7 +1395,7 @@ public final class STCS {
 			if (nextToken().matches(numericRegExp))
 				return Double.parseDouble(token);
 			else
-				throw new ParseException("a numeric was expected!", new TextPosition(1, pos - token.length(), 1, pos));	// TODO Check the begin and end!
+				throw new ParseException("a numeric was expected!", new TextPosition(1, pos - token.length(), 1, pos));
 		}
 
 		/**
@@ -1417,7 +1415,7 @@ public final class STCS {
 				if (pe instanceof EOEException)
 					throw pe;
 				else
-					throw new ParseException("a coordinates pair (2 numerics separated by one or more spaces) was expected!", new TextPosition(1, startPos, 1, pos));	// TODO Check the begin and end!
+					throw new ParseException("a coordinates pair (2 numerics separated by one or more spaces) was expected!", new TextPosition(1, startPos, 1, pos));
 			}
 		}
 

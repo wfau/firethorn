@@ -16,21 +16,22 @@ package adql.query;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
+ * Copyright 2012-2016 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ *                       Astronomisches Rechen Institute (ARI)
  */
 
 import java.util.NoSuchElementException;
 
 import adql.query.operand.ADQLOperand;
-import adql.query.operand.Operation;
+import adql.query.operand.Concatenation;
 
 /**
  * <p>Represents an item of a SELECT clause.</p>
  * 
  * <p>It merely encapsulates an operand and allows to associate to it an alias (according to the following syntax: "SELECT operand AS alias").</p>
  * 
- * @author Gr&eacute;gory Mantelet (CDS)
- * @version 01/2012
+ * @author Gr&eacute;gory Mantelet (CDS;ARI)
+ * @version 1.4 (03/2016)
  * 
  * @see ClauseSelect
  */
@@ -44,6 +45,10 @@ public class SelectItem implements ADQLObject {
 
 	/** Indicates whether the alias is case sensitive (if yes, the alias is written between double-quotes). */
 	private boolean caseSensitive = false;
+
+	/** Position of this Select item in the ADQL query string.
+	 * @since 1.4 */
+	private TextPosition position = null;
 
 	/**
 	 * Builds a SELECT item just with an operand.
@@ -78,6 +83,7 @@ public class SelectItem implements ADQLObject {
 			operand = null;
 		alias = toCopy.getAlias();
 		caseSensitive = toCopy.caseSensitive;
+		position = (toCopy.position == null) ? null : new TextPosition(toCopy.position);
 	}
 
 	/**
@@ -113,6 +119,8 @@ public class SelectItem implements ADQLObject {
 	 * @param newAlias	The new alias of the operand.
 	 */
 	public final void setAlias(String newAlias){
+		if (alias == null && newAlias != null || alias != null && newAlias == null || alias != null && !alias.equals(newAlias))
+			position = null;
 		alias = newAlias;
 		caseSensitive = false;
 
@@ -121,6 +129,7 @@ public class SelectItem implements ADQLObject {
 			a.trimToSize();
 			if (a.length() == 0){
 				alias = null;
+				position = null;
 				return;
 			}else if (a.length() > 1 && a.charAt(0) == '\"' && a.charAt(a.length() - 1) == '\"'){
 				a.deleteCharAt(0);
@@ -128,6 +137,7 @@ public class SelectItem implements ADQLObject {
 				a.trimToSize();
 				if (a.length() == 0){
 					alias = null;
+					position = null;
 					return;
 				}
 				caseSensitive = true;
@@ -154,35 +164,43 @@ public class SelectItem implements ADQLObject {
 		caseSensitive = sensitive;
 	}
 
+	@Override
+	public final TextPosition getPosition(){
+		return position;
+	}
+
+	/**
+	 * Set the position of this {@link SelectItem} in the given ADQL query string.
+	 * 
+	 * @param position	New position of this {@link SelectItem}.
+	 * @since 1.4
+	 */
+	public final void setPosition(final TextPosition position){
+		this.position = position;
+	}
+
+	@Override
 	public ADQLObject getCopy() throws Exception{
 		return new SelectItem(this);
 	}
 
+	@Override
+	public String getName(){
+		if (hasAlias())
+			return alias;
+		else if (operand instanceof Concatenation)
+			return "concat";
+		else
+			return operand.getName();
+	}
 
-	public String getName() {
-
-    	if (hasAlias())
-    	    {
-    	    return getAlias();
-    	    }
-        else {
-            if (operand instanceof Operation)
-                {
-                Operation op = (Operation) operand;
-                return op.getOperation().name();
-                }
-            else {
-                return operand.getName();
-                }
-    	    }
-    	}
-
-
+	@Override
 	public ADQLIterator adqlIterator(){
 		return new ADQLIterator(){
 
 			private boolean operandGot = (operand == null);
 
+			@Override
 			public ADQLObject next() throws NoSuchElementException{
 				if (operandGot)
 					throw new NoSuchElementException();
@@ -190,10 +208,12 @@ public class SelectItem implements ADQLObject {
 				return operand;
 			}
 
+			@Override
 			public boolean hasNext(){
 				return !operandGot;
 			}
 
+			@Override
 			public void replace(ADQLObject replacer) throws UnsupportedOperationException, IllegalStateException{
 				if (replacer == null)
 					remove();
@@ -201,10 +221,13 @@ public class SelectItem implements ADQLObject {
 					throw new IllegalStateException("replace(ADQLObject) impossible: next() has not yet been called !");
 				else if (!(replacer instanceof ADQLOperand))
 					throw new IllegalStateException("Impossible to replace an ADQLOperand by a " + replacer.getClass().getName() + " !");
-				else
+				else{
 					operand = (ADQLOperand)replacer;
+					position = null;
+				}
 			}
 
+			@Override
 			public void remove(){
 				if (!operandGot)
 					throw new IllegalStateException("remove() impossible: next() has not yet been called !");
@@ -214,6 +237,7 @@ public class SelectItem implements ADQLObject {
 		};
 	}
 
+	@Override
 	public String toADQL(){
 		StringBuffer adql = new StringBuffer(operand.toADQL());
 		if (hasAlias()){
