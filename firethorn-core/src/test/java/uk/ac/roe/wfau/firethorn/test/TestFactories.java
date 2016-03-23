@@ -290,9 +290,15 @@ public class TestFactories
                 }
             @Component
             public static class NameFactory
-            extends MockNameFactory<AdqlQuery>
+            extends DateNameFactory<AdqlQuery>
             implements AdqlQuery.NameFactory
                 {
+
+				@Override
+				public String name() {
+					return datename("TEST_QUERY");
+				}
+            	
                 }
             @Component
             public static class LinkFactory
