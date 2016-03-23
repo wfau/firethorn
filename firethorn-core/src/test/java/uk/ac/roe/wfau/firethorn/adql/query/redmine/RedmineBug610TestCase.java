@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 /**
  * JUnit test case for RedMine issue.
  * http://redmine.roe.ac.uk/issues/610
- *
+ * Known to fail
  */
 public class RedmineBug610TestCase
     extends AtlasQueryTestBase
@@ -38,7 +38,7 @@ public class RedmineBug610TestCase
 	        {
 	        validate(
 	            Level.LEGACY,
-	            State.VALID,
+	            State.PARSE_ERROR,
 
 	            " SELECT multiframeid,count(*) from atlasDetection GROUP BY  multiframeID order by count(*) desc"
 

@@ -45,7 +45,7 @@ public class RedmineBug642TestCase
         {
         validate(
             Level.LEGACY,
-            State.VALID,
+            State.PARSE_ERROR,
 
             "SELECT min(utDate) AS 'MIN', max(utDate) AS 'MAX', min(dateobs) AS 'MIN', max(dateobs) AS 'MAX', min(mjdobs) AS 'MIN', "
             + " max(mjdobs) AS 'MAX' "

@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
@@ -55,6 +56,37 @@ public class ExecuteQueryTestCase
             query.ident(),
             Status.RUNNING,
             10
+            );
+        }
+
+    /**
+     * Simple query so that test class doesn't fail when running JUnit tests
+     * @throws Exception
+     */
+    @Test
+    public void test000S()
+    throws Exception
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT TOP 100" +
+            "    ra," +
+            "    dec" +
+            " FROM" +
+            "    atlasSource",
+            
+            " SELECT TOP 100" +
+            "    {ATLAS_VERSION}.dbo.atlasSource.ra  AS ra," +
+            "    {ATLAS_VERSION}.dbo.atlasSource.dec AS dec" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlasSource",
+
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.AdqlType.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.AdqlType.DOUBLE, 0)
+                }
             );
         }
     }

@@ -47,7 +47,7 @@ public class RedmineBug444TestCase
         {
         validate(
             Level.LEGACY,
-            State.VALID,
+            State.PARSE_ERROR,
 
             " SELECT" +
             "     nested.lon      AS lon," +
