@@ -50,11 +50,13 @@ extends AtlasQueryTestBase
             "    3000" +
             " FROM" +
             "    atlasSource",
-
-            "unknown",
+            
+            " SELECT 3000 as 3000" +
+            " FROM" +
+            "    {ATLAS_VERSION}.dbo.atlassource",
 
             new ExpectedField[] {
-                new ExpectedField("unknown",  AdqlColumn.AdqlType.DOUBLE, 0)
+                new ExpectedField("3000",  AdqlColumn.AdqlType.INTEGER, 0)
                 }
             );
         }

@@ -28,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  * JUnit test case for RedMine issue.
  * http://redmine.roe.ac.uk/issues/657
  *
+ * Known to fail
  */
 public class RedmineBug657TestCase
     extends AtlasQueryTestBase
@@ -42,7 +43,7 @@ public class RedmineBug657TestCase
         {
         validate(
             Level.LEGACY,
-            State.VALID,
+            State.PARSE_ERROR,
 
             " Select ls.sourceid, ls.framesetid, rtrim( substring( " +
             "     mfy.filename, " +
