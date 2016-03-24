@@ -1574,7 +1574,7 @@ implements AdqlParser
         //
         // Not a floating point number.
         else {
-            final long value = number.getIntegerValue();
+            final long value = (long) number.getNumericValue();
             if ((value >= Integer.MIN_VALUE) && (value <= Integer.MAX_VALUE))
                 {
                 return AdqlColumn.AdqlType.INTEGER;
