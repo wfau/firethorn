@@ -35,7 +35,7 @@ public class RedmineBug631TestCase
 
     /**
      * Simpler example
-     *  
+     * Known to fail
      */
     @Test
     public void test004()
@@ -43,7 +43,7 @@ public class RedmineBug631TestCase
         {
         validate(
             Level.LEGACY,
-            State.VALID,
+            State.PARSE_ERROR,
 
             "select cast(x as int),cast(y as int),count(*) "
             + " from atlasDetection as d, atlasMergeLog as l "

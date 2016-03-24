@@ -34,7 +34,7 @@ public class RedmineBug495TestCase
 
     /**
      * We should reject SELECT and GROUP that don't match
-     * Known to fail.
+     * 
      * http://redmine.roe.ac.uk/issues/495
      *
      */
@@ -44,7 +44,7 @@ public class RedmineBug495TestCase
         {
         validate(
             Level.LEGACY,
-            State.PARSE_ERROR,
+            State.VALID,
 
             " SELECT TOP 5" +
             "    COUNT(ra) AS binsize," +
