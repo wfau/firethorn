@@ -64,30 +64,7 @@ public class RedmineBug444TestCase
             "     ) AS nested" +
             " GROUP BY" +
             "     nested.lon," +
-            "     nested.lat",
-
-            " SELECT" +
-            "     nested.lon AS lon," +
-            "     nested.lat AS lat," +
-            "     COUNT(*) AS num" +
-            " FROM" +
-            "     SELECT" +
-            "         ROUND({ATLAS_VERSION}.dbo.atlassource.l * 6.0,0,0)/ 6.0 AS lon," +
-            "         ROUND({ATLAS_VERSION}.dbo.atlassource.b * 6.0,0,0)/ 6.0 AS lat" +
-            "     FROM" +
-            "         {ATLAS_VERSION}.dbo.atlassource" +
-            "     WHERE" +
-            "         {ATLAS_VERSION}.dbo.atlassource.priOrSec = 0 OR {ATLAS_VERSION}.dbo.atlassource.priOrSec = {ATLAS_VERSION}.dbo.atlassource.frameSetID" +
-            "     AS nested" +
-            " GROUP BY" +
-            "     nested.lon," +
-            "     nested.lat",
-
-            new ExpectedField[] {
-                new ExpectedField("lon", AdqlColumn.AdqlType.DOUBLE, 0),
-                new ExpectedField("lat", AdqlColumn.AdqlType.DOUBLE, 0),
-                new ExpectedField("num", AdqlColumn.AdqlType.LONG, 0),
-                }
+            "     nested.lat"
             );
         }
     }

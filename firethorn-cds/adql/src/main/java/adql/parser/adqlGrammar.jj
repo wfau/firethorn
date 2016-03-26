@@ -878,9 +878,9 @@ void Where(): {ClauseConstraints where = query.getWhere(); ADQLConstraint condit
 	}
 }
 
-void GroupBy(): {ClauseADQL<ColumnReference> groupBy = query.getGroupBy(); ColumnReference colRef = null; Token start;} {
-	start=<GROUP_BY> colRef=ColumnRef() { groupBy.add(colRef); }
-	( <COMMA> colRef=ColumnRef() { groupBy.add(colRef); } )*
+void GroupBy(): {ClauseADQL<ADQLOperand> groupBy = query.getGroupBy(); ADQLOperand colRef = null; Token start;} {
+	start=<GROUP_BY> colRef=ValueExpression() { groupBy.add(colRef); }
+	( <COMMA> colRef=ValueExpression() { groupBy.add(colRef); } )*
 	{ groupBy.setPosition(new TextPosition(start.beginLine, start.beginColumn, colRef.getPosition().endLine, colRef.getPosition().endColumn)); }
 }
 
@@ -1176,7 +1176,7 @@ ADQLOperand StringValueExpressionPrimary(): {StringConstant expr; ADQLColumn col
 
 ADQLOperand ValueExpression(): {ADQLOperand valueExpr = null; Token left, right; } {
 	try{
-		(LOOKAHEAD((<PLUS>|<MINUS>) | (Factor() (<PLUS>|<MINUS>|<ASTERISK>|<DIVIDE>))) valueExpr=NumericExpression()
+		(LOOKAHEAD((<PLUS>|<MINUS>) | (Factor() (<PLUS>|<MINUS>|<ASTERISK>|<DIVIDE>)) | (BinaryExpression())) valueExpr=NumericExpression()
 		| LOOKAHEAD(<COORDSYS> | (StringFactor() <CONCAT>)) valueExpr=StringExpression()
 		| LOOKAHEAD(<LEFT_PAR>) left=<LEFT_PAR> valueExpr=ValueExpression() right=<RIGHT_PAR> { valueExpr = queryFactory.createWrappedOperand(valueExpr); ((WrappedOperand)valueExpr).setPosition(new TextPosition(left, right)); }
 		| LOOKAHEAD(<REGULAR_IDENTIFIER> <LEFT_PAR>) valueExpr=UserDefinedFunction()
@@ -1231,7 +1231,10 @@ ADQLOperand BinaryExpression(): {Token sign=null; ADQLOperand leftOp, rightOp=nu
 		return leftOp;
 	else{
 		try{
-			return queryFactory.createOperation(leftOp, OperationType.getOperator(sign.image), rightOp);
+			Operation operation = queryFactory.createOperation(leftOp, OperationType.getOperator(sign.image), rightOp);
+			operation.setPosition(new TextPosition(leftOp.getPosition(), rightOp.getPosition()));
+			return operation;
+			
 		}catch(Exception ex){
 			throw generateParseException(ex);
 		}
@@ -1502,11 +1505,13 @@ SQLFunction SqlFunction(): {Token fct, all=null, distinct=null, end; ADQLOperand
 /* ************* */
 /* CAST FUNCTION */
 /* ************* */
-CastFunction CastFunction(): {Token type; ADQLOperand oper = null; CastFunction funct = null;}{
+CastFunction CastFunction(): {Token type; ADQLOperand oper = null; CastFunction funct = null; Token end=null; }{
     try {
 		(
-	        ( <CAST> <LEFT_PAR> oper = ValueExpression() <AS> type = <CAST_TYPE> <RIGHT_PAR>
-            { funct = queryFactory.createCastFunction(type, oper); } )
+	        ( type=<CAST> <LEFT_PAR> oper = ValueExpression() <AS> type = <CAST_TYPE> end=<RIGHT_PAR>
+            { funct = queryFactory.createCastFunction(type, oper); 
+              funct.setPosition(new TextPosition(type, end));
+            } )
 		)
 	    }
 	catch(Exception ex)
@@ -1672,8 +1677,8 @@ MathFunction MathFunction(): {Token fct=null, end=null; ADQLOperand param1=null,
 		| (fct=<LOG10> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<MOD> <LEFT_PAR> param1=NumericExpression() <COMMA> param2=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<PI> <LEFT_PAR> end=<RIGHT_PAR>)
-		| (fct=<SQUARE> <LEFT_PAR> param1=NumericExpression() <RIGHT_PAR>)
-		| (fct=<SIGN> <LEFT_PAR> param1=NumericExpression() <RIGHT_PAR>)
+		| (fct=<SQUARE> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
+		| (fct=<SIGN> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<POWER> <LEFT_PAR> param1=NumericExpression() <COMMA> param2=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<RADIANS> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<RAND> <LEFT_PAR> (param1=NumericExpression())? end=<RIGHT_PAR>)
@@ -1681,12 +1686,13 @@ MathFunction MathFunction(): {Token fct=null, end=null; ADQLOperand param1=null,
 		| (fct=<SQRT> <LEFT_PAR> param1=NumericExpression() end=<RIGHT_PAR>)
 		| (fct=<TRUNCATE> <LEFT_PAR> param1=NumericExpression() (<COMMA> param2=SignedInteger())? end=<RIGHT_PAR>))
 		{
-			if (param1 != null){
+			if (param1 != null || MathFunctionType.valueOf(fct.image.toUpperCase()).equals(MathFunctionType.PI) || MathFunctionType.valueOf(fct.image.toUpperCase()).equals(MathFunctionType.RAND)){
 			  	MathFunction mf = queryFactory.createMathFunction(MathFunctionType.valueOf(fct.image.toUpperCase()), param1, param2);
 			  	mf.setPosition(new TextPosition(fct, end));
 				return mf;
-			}else
+			} else {
 				return null;
+			}	
 		}
 	}catch(Exception ex){
 		throw generateParseException(ex);
