@@ -145,7 +145,7 @@ implements AdqlParser
          */
         public AdqlQueryFactoryImpl(final boolean unknowns)
             {
-            super(unknowns);
+            super();
             }
 
         /**
