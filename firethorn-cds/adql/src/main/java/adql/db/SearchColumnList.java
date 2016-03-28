@@ -130,7 +130,6 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 			aliases.add(tableAlias);
 		}
 	}
-	
 
 	/**
 	 * Removes the given alias from this list.

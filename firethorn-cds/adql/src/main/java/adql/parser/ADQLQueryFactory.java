@@ -90,8 +90,6 @@ import adql.query.operand.function.geometry.RegionFunction;
  */
 public class ADQLQueryFactory {
 
-	
-	
 	/**
 	 * Type of table JOIN.
 	 * 
@@ -108,7 +106,6 @@ public class ADQLQueryFactory {
 	public ADQLQueryFactory(){
 		;
 	}
-
 
 	public ADQLQuery createQuery() throws Exception{
 		return new ADQLQuery();
@@ -305,7 +302,7 @@ public class ADQLQueryFactory {
 	 * @throws Exception	If there is a problem while creating the function.
 	 */
 	public UserDefinedFunction createUserDefinedFunction(String name, ADQLOperand[] params) throws Exception{
-			return new DefaultUDF(name, params);
+		return new DefaultUDF(name, params);
 	}
 
 	public DistanceFunction createDistance(PointFunction point1, PointFunction point2) throws Exception{
