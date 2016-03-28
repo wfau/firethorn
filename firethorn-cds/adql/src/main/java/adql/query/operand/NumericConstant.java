@@ -173,18 +173,6 @@ public class NumericConstant implements ADQLOperand {
 		return this.position;
 	}
 
-    /**
-     * Get the Numeric Constant as LONG
-     * @return long LONG value of Numeric constant
-     */
-	public long getIntegerValue() {
-        try{
-            return Long.parseLong(value);
-        } catch(NumberFormatException nfe){
-            return 0L;
-        }
-    }
-	
 	/**
 	 * Sets the position at which this {@link NumericConstant} has been found in the original ADQL query string.
 	 * 
@@ -212,7 +200,7 @@ public class NumericConstant implements ADQLOperand {
 	public String getName(){
 		return value;
 	}
-	
+
 	@Override
 	public ADQLIterator adqlIterator(){
 		return new NullADQLIterator();
