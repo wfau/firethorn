@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-cds</artifactId>
-        <version project='firethorn'>2.0.11-stv-junit-fixes</version>
+        <version project='firethorn'>2.0.12</version>
     </parent>
 
     <artifactId>firethorn-cds-depends</artifactId>
