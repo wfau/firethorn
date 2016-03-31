@@ -8,7 +8,7 @@
 			http://www.ivoa.net/xml/VODataService/v1.0 http://www.ivoa.net/xml/VODataService/v1.0"> 
 	<capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
 		<interface role="std" xsi:type="vs:ParamHTTP">
-			<accessURL use="base">http://gaia.esac.esa.int/tap-server/tap/tap</accessURL>
+			<accessURL use="base">http://geadev.esac.esa.int/tap-server/tap/tap</accessURL>
 		</interface>
 		<language>
 			<name>ADQL</name>
@@ -52,12 +52,12 @@
 	</capability>
 	<capability standardID="ivo://ivoa.net/std/VOSI#availability">
 		<interface xsi:type="vs:ParamHTTP" role="std">
-			<accessURL use="full"> http://gaia.esac.esa.int/tap-server/tap/availability </accessURL>
+			<accessURL use="full"> http://geadev.esac.esa.int/tap-server/tap/availability </accessURL>
 		</interface>
 	</capability>
 	<capability standardID="ivo://ivoa.net/std/VOSI#capabilities">
 		<interface xsi:type="vs:ParamHTTP" role="std">
-			<accessURL use="full"> http://gaia.esac.esa.int/tap-server/tap/capabilities </accessURL>
+			<accessURL use="full"> http://geadev.esac.esa.int/tap-server/tap/capabilities </accessURL>
 		</interface>
 	</capability>
 
