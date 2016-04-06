@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:23.1
+FROM firethorn/fedora:23-1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
@@ -48,3 +48,4 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 #
 # Set the default command.
 CMD ["postgres"]
+

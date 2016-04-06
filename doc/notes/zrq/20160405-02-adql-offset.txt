@@ -37,8 +37,8 @@ IFS=$'\n\t'
 
             docker rmi -f 'firethorn/adql-mysql:5.6-1'
             docker build \
-                --tag firethorn/adql-mysql:5.6-1 \
-                adql/mysql
+                --tag 'firethorn/adql-mysql:5.6-1' \
+                'adql/mysql'
 
         popd
     popd
@@ -110,26 +110,27 @@ EOSQL
 
         --
 
-        SELECT id, ra, decl FROM alpha_source ORDER BY id ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC ;
 
-        SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 ;
 
-        -- SELECT id, ra, decl FROM alpha_source ORDER BY id OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ;
 
-        SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 10,10 ;
-        SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 10 OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10,10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 OFFSET 10 ;
 
-        -- SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 10,10 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10,10 OFFSET 10 ;
 
-        -- SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT  0 OFFSET 10 ;
-        -- SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT -1 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT  0 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT -1 OFFSET 10 ;
 
-        SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 4294967295 OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 4294967295 OFFSET 10 ;
 
     MySQL :
 
-        [ORDER BY] is separate
-        [LIMIT row_count] is required [OFFSET offset] is optional
+        [ORDER BY <sort_column>] is separate
+        [LIMIT <row_count>] can be separate
+        [OFFSET <row_offset>] requires [LIMIT <row_count>]
 
 
 

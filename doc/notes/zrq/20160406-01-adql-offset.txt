@@ -27,7 +27,7 @@ set -uo pipefail
 IFS=$'\n\t'
 
 # -------------------------------------------------------------------------------------------
-# Create our PostgreSQL container.
+# Create our Derby container.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -35,16 +35,26 @@ IFS=$'\n\t'
 
         pushd docker
 
-            docker rmi -f 'firethorn/adql-pgsql:9.4-1'
+            docker rmi -f 'firethorn/fedora:23-1'
             docker build \
-                --tag 'firethorn/adql-pgsql:9.4-1' \
-                'adql/pgsql'
+                --tag 'firethorn/fedora:23-1' \
+                'fedora/23'
+
+            docker rmi -f 'firethorn/java:8-1'
+            docker build \
+                --tag 'firethorn/java:8-1' \
+                'java/8'
+
+            docker rmi -f 'firethorn/adql-derby:10.12-1'
+            docker build \
+                --tag 'firethorn/adql-derby:10.12-1' \
+                'adql/derby'
 
         popd
     popd
 
 # -------------------------------------------------------------------------------------------
-# Test our PostgreSQL container.
+# Test our Derby container.
 #[user@desktop]
 
     datadir=$(mktemp -d)
@@ -53,7 +63,6 @@ IFS=$'\n\t'
 cat > ${datacfg} << EOF
 #serverhome=/data
 #serverport=1234
-#serversock=/tmp/pgsql.sock
 #adminuser=mallard
 #adminpass=$(pwgen 10 1)
 #databasename=mydb
@@ -63,11 +72,12 @@ EOF
 
 cat > "${datadir}/01-alpha-source.sql" << 'EOSQL'
 
-CREATE TABLE IF NOT EXISTS alpha_source
+CREATE TABLE alpha_source
     (
-    id   SERIAL PRIMARY KEY,
+    id   INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
     ra   DOUBLE PRECISION NOT NULL,
-    decl DOUBLE PRECISION NOT NULL
+    decl DOUBLE PRECISION NOT NULL,
+    PRIMARY KEY (id)
     );
 
 EOSQL
@@ -75,46 +85,45 @@ EOSQL
     source "${HOME:?}/firethorn.settings"
     gzip -c "${FIRETHORN_CODE}/docker/adql/data/alpha-source.dat" > "${datadir}/02-alpha-source.sql.gz"
 
-#   chmod a+x "${FIRETHORN_CODE}/docker/adql/pgsql/bin/entrypoint.sh"
-#   --volume "${FIRETHORN_CODE}/docker/adql/pgsql/bin/entrypoint.sh:/usr/local/bin/entrypoint.sh" \
-#   docker stop pgsql ; docker rm -v pgsql
+#   chmod a+x "${FIRETHORN_CODE}/docker/adql/derby/bin/entrypoint.sh"
+#   --volume "${FIRETHORN_CODE}/docker/adql/derby/bin/entrypoint.sh:/usr/local/bin/entrypoint.sh" \
+#   docker stop derby ; docker rm -v derby
 
     docker run --detach \
-        --name pgsql \
+        --name derby \
         --volume "${datacfg}:/database.conf" \
         --volume "${datadir}:/database.init" \
-        firethorn/adql-pgsql:9.4-1
+        firethorn/adql-derby:10.12-1
 
-    docker logs -f pgsql
+    docker logs -f derby
     
     docker exec -it \
-        pgsql \
-        run-psql.sh
+        derby \
+        run-client.sh
 
         SELECT id, ra, decl FROM alpha_source ;
 
-        SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+        SELECT id, ra, decl FROM alpha_source FETCH FIRST 10 ROWS ONLY ;
 
-        SELECT id, ra, decl FROM alpha_source OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source OFFSET 10 ROWS ;
 
-        SELECT id, ra, decl FROM alpha_source LIMIT 10 OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source OFFSET 10 ROWS FETCH FIRST 10 ROWS ONLY ;
 
         --
 
         SELECT id, ra, decl FROM alpha_source ORDER BY id DESC ;
 
-        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC FETCH FIRST 10 ROWS ONLY ;
 
-        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ROWS ;
 
-        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ROWS FETCH FIRST 10 ROWS ONLY ;
 
-    PostgreSQL :
+    Derby :
 
         [ORDER BY sort_column] is separate
-        [LIMIT row_count] is separate
-        [OFFSET row_offset] is separate
-
+        [FETCH FIRST row_count ROWS ONLY] is separate
+        [OFFSET row_offset ROWS] is separate
 
 
 

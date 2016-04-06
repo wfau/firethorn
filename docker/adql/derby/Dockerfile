@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,32 +15,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM fedora:23
+FROM firethorn/java:8-1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Declare the system cache as a volume.
-VOLUME /var/cache/
+# Derby version
+ENV derbyversion=10.12.1.1
 
 #
-# Enable delta rpms.
-#RUN dnf install -y  deltarpm
+# Default port number.
+ENV databaseport 1527
+EXPOSE ${databaseport}
 
 #
-# Install common admin tools.
-RUN dnf install -y sed
-RUN dnf install -y tar
-RUN dnf install -y wget
-RUN dnf install -y nano
-RUN dnf install -y gzip
-RUN dnf install -y pwgen
-RUN dnf install -y gnupg
-RUN dnf install -y which
+# Install path.
+ENV derbypath /var/local/derby
 
 #
-# Set the terminal type for exec.
-# https://github.com/docker/docker/issues/9299
-ENV TERM xterm
+# Default data volume.
+ENV databasepath /var/lib/derby
+VOLUME ${databasepath}
 
 #
 # Add our install scripts. 
@@ -49,6 +43,13 @@ RUN chmod a+x /usr/local/bin/*.sh
 
 #
 # Run our install scripts.
-RUN /usr/local/bin/install-locale.sh
-RUN /usr/local/bin/install-gosu.sh
+RUN /usr/local/bin/install-derby.sh
+
+#
+# Install our entry point script.
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+#
+# Set the default command.
+CMD ["derby"]
 

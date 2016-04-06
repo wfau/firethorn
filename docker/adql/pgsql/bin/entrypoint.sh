@@ -201,11 +201,12 @@ then
             echo ""
             echo "Running init scripts"
             psqlcmd=(psql --set ON_ERROR_STOP=1 --username "${databaseuser}" --dbname "${databasename}" )
-            for file in ${databaseinit}/*; do
+            for file in ${databaseinit}/*
+            do
                 case "${file}" in
-                    *.sh)     echo "$0: running [${file}]"; source "${file}" ;;
-                    *.sql)    echo "$0: running [${file}]"; "${psqlcmd[@]}" --file "${file}"; echo ;;
-                    *.sql.gz) echo "$0: running [${file}]"; gunzip --stdout "${file}" | "${psqlcmd[@]}"; echo ;;
+                    *.sh)     echo "$0: running [${file}]"; source "${file}" ; echo ;;
+                    *.sql)    echo "$0: running [${file}]"; "${psqlcmd[@]}" --file "${file}" ; echo ;;
+                    *.sql.gz) echo "$0: running [${file}]"; gunzip --stdout "${file}" | "${psqlcmd[@]}" ; echo ;;
                     *)        echo "$0: ignoring [${file}]" ;;
                 esac
             done
@@ -220,13 +221,14 @@ then
             -m fast \
             -w stop
 
-            echo ""
-            echo "PostgreSQL init process complete."
-            echo ""
+        echo ""
+        echo "Initialization process complete."
+        echo ""
+
 	fi
 
     echo ""
-    echo "Starting PostgreSQL service"
+    echo "Starting database service"
     gosu postgres \
         /usr/bin/postgres \
             -h '*' \

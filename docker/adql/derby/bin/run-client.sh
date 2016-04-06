@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
@@ -14,37 +15,22 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-FROM firethorn/fedora:23-1
-MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+#
 
 #
-# MySQL version
-ENV mysqlversion 5.6.29
+# Strict error checking.
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
 
 #
-# Default port number.
-ENV databaseport 3306
-EXPOSE ${databaseport}
+# Load our database settings.
+source /database.settings 
 
 #
-# Default data volume.
-ENV databasepath /var/lib/mysql
-VOLUME ${databasepath}
+# Connect to our database.
+java -classpath "${derbylib}" \
+    -Dij.database=jdbc:derby://localhost:${serverport}/${databasename} \
+    -jar "${derbylib}/derbyrun.jar" \
+    ij
 
-#
-# Add our install scripts. 
-COPY bin /usr/local/bin/
-RUN chmod a+x /usr/local/bin/*.sh
-
-#
-# Run our install scripts.
-RUN /usr/local/bin/install-mysql.sh
-
-#
-# Install our entry point script.
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-#
-# Set the default command.
-CMD ["mysql"]

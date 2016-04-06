@@ -236,11 +236,12 @@ EOF
             echo ""
             echo "Running init scripts"
             mysqlcmd=( mysql --protocol='socket' --socket="${serversock}" --user="${adminuser}" --password="${adminpass}" --database="${databasename}" )
-            for file in ${databaseinit}/*; do
+            for file in ${databaseinit}/*
+            do
                 case "${file}" in
                     *.sh)     echo "$0: running [${file}]"; source "${file}" ;;
-                    *.sql)    echo "$0: running [${file}]"; "${mysqlcmd[@]}" < "${file}"; echo ;;
-                    *.sql.gz) echo "$0: running [${file}]"; gunzip --stdout "${file}" | "${mysqlcmd[@]}"; echo ;;
+                    *.sql)    echo "$0: running [${file}]"; "${mysqlcmd[@]}" < "${file}" ;;
+                    *.sql.gz) echo "$0: running [${file}]"; gunzip --stdout "${file}" | "${mysqlcmd[@]}" ;;
                     *)        echo "$0: ignoring [${file}]" ;;
                 esac
             done
@@ -257,8 +258,9 @@ EOF
             shutdown
 
         echo ""
-        echo "MySQL init process complete."
+        echo "Initialization process complete."
         echo ""
+
 	fi
 
 
@@ -277,7 +279,7 @@ EOF
     chmod u=rw,g=,o= /root/.my.cnf
 
     echo ""
-    echo "Starting MySQL service"
+    echo "Starting database service"
     mysqld_safe \
         --user='mysql' \
         --datadir="${serverhome}"
