@@ -1,0 +1,401 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+Markus Demleitner
+http://mail.ivoa.net/pipermail/dal/2016-January/007237.html
+
+    Initial request
+        
+        <offset_spec> ::= "OFFSET" <unsigned_integer>
+        
+        <query_specification> ::=
+            "SELECT" [ <set_quantifier> ] [ <set_limit> ] 
+            <select_list> <table_expression> [ <offset_spec> ]
+
+Kristin Riebe
+http://mail.ivoa.net/pipermail/dal/2016-January/007240.html
+
+    MySQL should be ok.
+
+    "For compatibility with PostgreSQL, MySQL also supports the LIMIT row_count OFFSET offset syntax."
+
+Jesus Salgado
+http://mail.ivoa.net/pipermail/dal/2016-January/007241.html
+
+    Sybase has problems with this.
+
+    The possibility to combine LIMIT and OFFSET to control (paginate) results could be quite useful.
+    
+    This was also one of our (ESA) ADQL evolution requirements.
+
+François-Xavier Pineau, Laurent Michel
+http://mail.ivoa.net/pipermail/dal/2016-January/007242.html
+
+    To be useful, OFFSET should be used with ORDER BY.
+    
+    Using LIMIT, ORDER BY and OFFSET may not be the best way to harvest a large table.
+
+    Having said this does not means that we are against its implementation in ADQL.
+
+Theresa Dower
+http://mail.ivoa.net/pipermail/dal/2016-January/007243.html
+
+    MSSQL Server - does support OFFSET, no support for LIMIT.
+
+Gerard Lemson
+http://mail.ivoa.net/pipermail/dal/2016-January/007244.html
+ 
+    MSSQL Server uses FETCH instead of LIMIT
+    
+        SELECT select_list
+        FROM table_expression
+        [ORDER BY ... [OFFSET number ROWS [FETCH FIRST number ROWS ONLY]]
+
+    (*) should the LIMIT/FETCH pattern be included? If so I'd vote for using the term FETCH rather than LIMIT and that we'd include the restriction that TOP must not be combined with OFFSET...FETCH (as in SQLServer).
+    (**) assuming ADQL will allow OFFSET only in the ORDER BY clause, otherwise mapping to SQLServer would become too ugly, and arguably it only makes sense in that context.
+
+        [ORDER BY ... [OFFSET number FETCH number]]
+    
+Tom McGlynn
+http://mail.ivoa.net/pipermail/dal/2016-January/007245.html
+
+    While ORDER BY is a necessary condition it is not sufficient.  The 
+    value of the expression must be unique in each row to guarantee a fixed 
+    ordering.
+     
+    So my feeling is that we shouldn't go out of our way to couple OFFSET 
+    and ORDER BY.
+
+
+    The SQL 2008 standard construct is
+
+        OFFSET start ROW[S]
+
+    In the vein of the previous comment, we might also consider adding 
+    support for the standard
+
+        FETCH FIRST count ROWS ONLY
+
+    as a standard if verbose synonym for TOP.
+    
+    I don't like the idea of adding support for LIMIT since it is another
+    non-standard keyword, though since the HEASARC's TAP is running in
+    Postgres it's easy enough for us to support.
+
+Gerard Lemson
+http://mail.ivoa.net/pipermail/dal/2016-January/007248.html
+
+    On MSSQL Server
+
+        FAILS
+        ORDER BY 'x' OFFSET 10 ROWS
+
+        WORKS
+        ORDER BY 0*<numerical column> OFFSET 10 ROWS
+
+    But I would now like to see the reason for introducing this clause at all without ORDER BY.
+
+Markus Demleitner
+http://mail.ivoa.net/pipermail/dal/2016-January/007249.html
+
+    In terms of whether OFFSET makes sense without ORDER BY: I think
+    that's really a moot point since ADQL has allowed TOP without ORDER BY
+    since the beginning, which is exactly as questionable.
+
+    .... OFFSET is a classical case of an 80% solution: it's probably good
+    enough for doing some things in 80% of the situations and miserably
+    fails for the remaining 20% (which of course would require at least
+    80% of the work for a comprehensive solution).
+
+    .... I agree with Tom that we should have a long hard look at what
+    SQL 2000 standard says
+
+    .... adding OFFSET 0 systematically certainly is not a good idea
+
+Mark Taylor
+http://mail.ivoa.net/pipermail/dal/2016-January/007250.html
+
+    TOP is just if you want a result but you don't want it too big.
+
+    Non-ORDERed OFFSET would on the other hand presumably be used to
+    provide pagination. 
+
+    The problem there is that you might get different orderings for
+    different queries, so end up with duplicate or missing records.
+
+Gerard Lemson
+http://mail.ivoa.net/pipermail/dal/2016-January/007252.html
+
+    Just wanted to voice my support for Mark's use case, which is exactly the
+    way I use TOP: to see an example of the data, generally used without ordering.
+
+Dave Morris
+http://mail.ivoa.net/pipermail/dal/2016-January/007264.html
+
+    I agree there is a good case for accepting OFFSET.
+
+    As to the syntax, I agree with Tom, ideally we want to keep as close as 
+    possible to the SQL 2008 standard.
+
+    I think that on its own the case for linking OFFSET to ORDER BY on 
+    efficiency grounds is not strong enough to justify diverging from the 
+    SQL standard.
+
+    A number of platforms only allow OFFSET as part of a LIMIT construct, so 
+    we will need to find a way for them to implement it.
+
+    Assuming we find a syntax that will work on all the platforms, I'm happy 
+    to include OFFSET as optional in 2.1 with the option to look at making 
+    it mandatory in 3.x.
+
+Markus Demleitner
+http://mail.ivoa.net/pipermail/dal/2016-January/007270.html
+
+    It turns out there's publicly available material (i.e., late working drafts) on that at
+    http://www.wiscorp.com/SQLStandards.html.  And that tells me that:
+
+    <query expression> ::=
+      [ <with clause> ] <query expression body>
+      [ <order by clause> ] [ <result offset clause> ] 
+      [ <fetch first clause> ]
+    (pdfp. 427)
+
+    -- so, offset and order by are not linked in SQL 2008.  Also,
+
+    <result offset clause> ::=
+      OFFSET <offset row count> { ROW | ROWS }
+
+    -- so they have the stupid "row" thing, and, if I read their version
+    of BNF correctly, it's even mandatory.
+
+    Also,
+
+    <offset row count> ::=
+      <simple value specification>
+
+    and <simple value specification> can be all kinds of messy things ("SQL
+    parameter reference", "embedded variable name", oh my).
+
+    As a service for the SQLServer folks whom I wouldn't want to force to
+    insert artificial ORDER BY clauses, I'm fine with hanging OFFSET off
+    of <order by clause> (which, conversely means that ADQL query writers
+    may have to add "artificial" order bys; but that's probably a good
+    idea anyway, even if it may mean some extremely whacky applications
+    relying on implementation details might become impossible).
+
+    The result would be, for ADQL,
+
+    <order_by_clause> ::= 
+
+        ORDER BY <sort_specification_list> <result offset clause>
+
+    <result offset clause> ::=
+
+        OFFSET <unsigned integer>
+
+    -- which is a relevant simplification, in particular restricting
+    ourselves to unsigned integers, but I propose that's a good idea.
+    Dropping the ROW[S], however, makes this not even a proper subset of
+    SQL 2008.  So, if anyone stands up and says "let's keep the ROW[S]",
+    I'll have no choice but to concur.
+
+    > A number of platforms only allow OFFSET as part of a LIMIT construct, so we
+    > will need to find a way for them to implement it.
+
+    if that is true just inserting an absurdly large LIMIT in the query morpher
+    would be a general and IMHO acceptable workaround.
+
+Walter Landry
+http://mail.ivoa.net/pipermail/dal/2016-January/007271.html
+
+    Let's keep the ROW[S].  We should not make it gratuitously different
+    from SQL.
+
+Mark Taylor
+http://mail.ivoa.net/pipermail/dal/2016-January/007272.html
+
+    Yeah.  Instead of the reek of COBOL, try thinking of it as retro chic.
+
+Markus Demleitner
+http://mail.ivoa.net/pipermail/dal/2016-January/007273.html
+
+    That certainly makes it more palatable, yes.  So, it would be
+
+    <order_by_clause> ::= 
+
+        ORDER BY <sort_specification_list> [ <result offset clause> ]
+
+    <result offset clause> ::=
+
+        OFFSET <unsigned integer> (ROW|ROWS)
+
+Walter Landry
+http://mail.ivoa.net/pipermail/dal/2016-January/007263.html
+
+    I would like to add that I support this in the general sense of making
+    it possible to do more sophisticated analysis on the server.
+
+    On Oracle 11g, we can workaround it to some degree by rewriting the
+    query to use rownum
+
+        http://stackoverflow.com/questions/2912144/alternatives-to-limit-and-offset-for-paging-in-oracle#2912182
+        http://www.jooq.org/doc/3.5/manual/sql-building/sql-statements/select-statement/limit-clause/
+
+    However, the solution that those links propose does add a column.  So
+    if a user made a query like
+
+        select ra,dec from fp_psc limit 10 offset 13
+
+    it gets turned into
+
+        select * from
+          (
+          select ra, dec, rownnum as rn from fp_psc
+          )
+        where rn >= 13 and rn <= 10+13
+
+Gerard Lemson
+http://mail.ivoa.net/pipermail/dal/2016-January/007239.html
+
+    Thanks for suggesting this, as it inspired me to check up on sqlserver where I found it has had OFFSET since version 2012.
+    Syntax is (see https://technet.microsoft.com/en-us/library/gg699618(v=sql.110).aspx):
+
+        [ORDER BY { order_by_expression [ ASC | DESC ] } [ ,...n][<offset_fetch>] ]
+
+        <offset_fetch> ::= {OFFSET { integer_constant | offset_row_count_expression } { ROW | ROWS }    [FETCH { FIRST | NEXT } {integer_constant | fetch_row_count_expression } { ROW | ROWS } ONLY]}
+
+    Most important difference is the requirement that it be part of an ORDER BY clause,
+    which I think makes sense as without that you cannot in general rely on consistent
+    ordering between consecutive requests. Would that be OK with you, all?
+
+Gerard Lemson
+http://mail.ivoa.net/pipermail/dal/2016-January/007246.html
+
+    I just now tied this on CasJobs' SQLServer and the error message says: 'A constant expression was encountered in the ORDER BY list'
+    What was accepted was ' ORDER BY 0*<numerical column> OFFSET 10 ROWS'
+
+    But I would now like to see the reason for introducing this clause at all without ORDER BY.
+
+Gilles Landais
+http://mail.ivoa.net/pipermail/dal/2016-January/007253.html
+
+    Concerning the offset option in ADQL.
+    This option is friendly in ADQL, but the implementation will be more 
+    difficult in particular for big tables (as Francois Xavier said: it 
+    needs to reorder the result).
+
+    This option is clearly interesting for pagination.
+    Could we considered to push this pagination capability in UWS?
+    UWS is may be not dedicated for tables; however a UWS capability 
+    allowing to get a "cut" of a result (delimited by an offset of lines or 
+    an option to split the result) could be an other solution?
+
+    
+SQL 20nn (draft) standard
+http://www.wiscorp.com/SQLStandards.html
+
+    http://www.wiscorp.com/sql20nn.zip
+        7IWD2-02-Foundation-2011-12.pdf
+
+    Information technology — Database languages — SQL —
+    Part 2:
+    Foundation (SQL/Foundation)
+
+        "
+        A <query expression> can also optionally contain a <result offset clause>, which may limit the cardinality of
+        the derived table by removing a specified number of rows from the beginning of the derived table. If a <query
+        expression> contains both an <order by clause> and a <result offset clause>, then the rows in the derived table
+        are first sorted according to the <order by clause> and then limited by dropping the number of rows specified
+        in the <result offset clause> from the beginning of the result produced by the <query expression>. If the cardi-
+        nality of the result of an evaluation of a <query expression> is less than the offset value specified by a <result
+        offset clause>, then the derived table is empty.
+        "
+
+        "
+        A <query expression> can also optionally contain a <fetch first clause>, which may limit the cardinality of the
+        derived table. If a <query expression> contains both an <order by clause> and a <fetch first clause>, then the
+        rows in the derived table are first sorted according to the <order by clause> and then limited to the number of
+        rows specified in the <fetch first clause>. The <fetch first clause> may specify this limit either as an exact
+        number of rows, or as a percentage. In addition, if WITH TIES is specified, then any peers of retained rows
+        are also retained in the result. A <query expression> may contain both a <result offset clause> and a <fetch
+        first clause>, in which case the <result offset clause> is applied first, followed by the <fetch first clause>. If
+        the cardinality of the result of an evaluation of a <query expression> is less than the limit specified by a <fetch
+        first clause>, then the <fetch first clause> has no effect on the derived table.
+        "
+
+        <query expression> ::=
+            [ <with clause> ]
+            <query expression body>
+            [ <order by clause> ]
+            [ <result offset clause> ] 
+            [ <fetch first clause> ]
+      
+        <order by clause> ::=
+            ORDER BY <sort specification list>
+
+        <result offset clause> ::=
+            OFFSET <offset row count> { ROW | ROWS }
+
+        <fetch first clause> ::=
+            FETCH { FIRST | NEXT } [ <fetch first quantity> ] { ROW | ROWS } { ONLY | WITH TIES }
+
+        <fetch first quantity> ::=
+            <fetch first row count>
+          | <fetch first percentage>
+
+        <offset row count> ::=
+            <simple value specification>
+
+        <fetch first row count> ::=
+            <simple value specification>
+
+        <fetch first percentage> ::=
+            <simple value specification> PERCENT
+
+        <simple value specification> ::=
+            <literal>
+          | <host parameter name>
+          | <SQL parameter reference>
+          | <embedded variable name>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

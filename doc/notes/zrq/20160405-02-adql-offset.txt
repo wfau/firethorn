@@ -1,0 +1,137 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Strict error checking.
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -uo pipefail
+IFS=$'\n\t'
+
+# -------------------------------------------------------------------------------------------
+# Create our MySQL container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            docker rmi -f 'firethorn/adql-mysql:5.6-1'
+            docker build \
+                --tag firethorn/adql-mysql:5.6-1 \
+                adql/mysql
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Test our MySQL container.
+#[user@desktop]
+
+    datadir=$(mktemp -d)
+    datacfg=$(mktemp)
+
+cat > ${datacfg} << EOF
+#serverhome=/data
+#serverport=1234
+#serversock=/tmp/mysql.sock
+#adminuser=mallard
+#adminpass=$(pwgen 10 1)
+#databasename=mydb
+#databaseuser=me
+#databasepass=$(pwgen 10 1)
+EOF
+
+cat > "${datadir}/01-alpha-source.sql" << 'EOSQL'
+
+CREATE TABLE IF NOT EXISTS alpha_source
+    (
+    id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    ra   DOUBLE NOT NULL,
+    decl DOUBLE NOT NULL
+    );
+
+EOSQL
+
+    source "${HOME:?}/firethorn.settings"
+    gzip -c "${FIRETHORN_CODE}/docker/adql/data/alpha-source.dat" > "${datadir}/02-alpha-source.sql.gz"
+
+#   chmod a+x "${FIRETHORN_CODE}/docker/adql/mysql/bin/entrypoint.sh"
+#   --volume "${FIRETHORN_CODE}/docker/adql/mysql/bin/entrypoint.sh:/usr/local/bin/entrypoint.sh" \
+#   docker stop mysql ; docker rm mysql
+
+    docker run --detach \
+        --name mysql \
+        --volume "${datacfg}:/database.conf" \
+        --volume "${datadir}:/database.init" \
+        firethorn/adql-mysql:5.6-1
+
+    docker logs mysql
+    
+    docker exec -it \
+        mysql \
+        mysql
+
+
+        SELECT id, ra, decl FROM alpha_source ;
+
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+
+        -- SELECT id, ra, decl FROM alpha_source OFFSET 10 ;
+
+        SELECT id, ra, decl FROM alpha_source LIMIT 10,10 ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 OFFSET 10 ;
+
+        -- SELECT id, ra, decl FROM alpha_source LIMIT 10,10 OFFSET 10 ;
+
+        -- SELECT id, ra, decl FROM alpha_source LIMIT  0 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source LIMIT -1 OFFSET 10 ;
+
+        SELECT id, ra, decl FROM alpha_source LIMIT 4294967295 OFFSET 10 ;
+
+        --
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 10 ;
+
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id OFFSET 10 ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 10,10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 10 OFFSET 10 ;
+
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 10,10 OFFSET 10 ;
+
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT  0 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT -1 OFFSET 10 ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id LIMIT 4294967295 OFFSET 10 ;
+
+    MySQL :
+
+        [ORDER BY] is separate
+        [LIMIT row_count] is required [OFFSET offset] is optional
+
+
+
+
+

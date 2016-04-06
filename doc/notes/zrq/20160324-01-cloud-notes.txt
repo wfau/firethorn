@@ -1,0 +1,157 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# IPv6 subnets
+# https://en.wikipedia.org/wiki/IPv6_subnetting_reference
+
+    /48 - Typical assignment for larger sites (/48 = 65536 /64)
+
+    /56 - Minimal end sites assignment[3] (e.g. Home network) (/56 = 256 /64)
+
+    /64 - Single End-user LAN (default prefix size for SLAAC)
+
+
+# -----------------------------------------------------
+# A&A IPv6 allocation
+# http://support.aa.net.uk/IPv6
+        
+    Customers are allocated a /48 block of addresses
+    /48 = 65536 * /64
+
+    A CPE (ADSL) line will have one or more /64 block routed to it
+
+        Allocated : 2001:8b0:be72::/48
+        Routed    : 2001:8b0:be72:d4ea::/64        
+
+# -----------------------------------------------------
+# Digital Ocean
+# https://www.digitalocean.com/community/tutorials/how-to-add-additional-ipv6-addresses-to-your-droplet
+
+    Digital Ocean IPV6 addresses are /64
+    
+    Each Droplet (virtual machine) is allocated a public  IPv4 address.
+    Each Droplet (virtual machine) is allocated a private 10. IPv4 address.
+
+    Each Droplet (virtual machine) is allocated a public a /124 IPv6 range of 16 addresses.
+
+    Public IPv4
+
+        Address : 46.101.38.168
+        Gateway : 46.101.0.1
+        Netmask : 255.255.192.0 
+
+    Private IPv4
+
+        Address : 10.131.14.227 
+        Netmask : 255.255.0.0 
+
+    Public IPv6
+
+        Active  : 2a03:b0c0:1:d0::1d7:2001/64
+        Range   : 2a03:b0c0:1:d0::1d7:2000/124
+
+# -----------------------------------------------------
+# OpenStack
+# http://docs.openstack.org/liberty/networking-guide/adv-config-ipv6.html
+
+    Using OpenStack Networking with IPv6
+    http://docs.openstack.org/liberty/networking-guide/adv-config-ipv6.html
+
+        The delegated prefixes must be /64 to work with the current
+        OpenStack Networking reference implementation.
+
+        Prefix delegation
+        From the Liberty release onwards, OpenStack Networking supports IPv6 prefix delegation.
+
+        https://en.wikipedia.org/wiki/Prefix_delegation
+
+# -----------------------------------------------------
+# Docker
+# https://docs.docker.com/engine/userguide/networking/default_network/ipv6/
+# https://docs.docker.com/v1.8/articles/networking/
+
+    The subnet for Docker containers should at least have a size of /80.
+    This way an IPv6 address can end with the container’s MAC address and
+    you prevent NDP neighbor cache invalidation issues in the Docker layer.
+    
+    If you have a /64 for your whole environment use /78 subnets for the
+    hosts and /80 for the containers. This way you can use 4096 hosts with
+    16 /80 subnets each.
+
+# -----------------------------------------------------
+# Recomended allocation (work in progress)
+
+    RFC6177 recomends /56 as the "minimal end site assignment" for a 'home site'.
+    https://tools.ietf.org/html/rfc6177
+
+    If ROE gets a /48, and we allocate /56 to our cloud, we can split the layers
+    between physical, virtual and container on byte-boundaries and still be able
+    to use a /80 prefix for Docker, enabling it to use SLAAC automatic address
+    configuration for containers.
+
+        xxxx:xxxx:xxxx:/48                  ROE
+        xxxx:xxxx:xxxx:01/56                Cloud
+        xxxx:xxxx:xxxx:01[00-FF]            Physical machines (256 machines in the cloud)
+
+        xxxx:xxxx:xxxx:0102:/64             Physical machine prefix
+
+        xxxx:xxxx:xxxx:0102:[00-FF]         OpenStack (256 virtual machines per host)
+
+        xxxx:xxxx:xxxx:0102:03/72           Virtual machine prefix
+
+        xxxx:xxxx:xxxx:0102:0304:/80        Prefix for Docker containers 
+        xxxx:xxxx:xxxx:0102:0304:[MAC]/128  Container (SLAAC auto config)
+
+    This does not mean that all of our containers will have public IPv6 addresses.
+    In the expected use case, we will only be assigning public addresses to some of our virtual machines.
+
+    However, by using a the same byte boundary subnets for our internal and external IPv6 addresses
+    we can manage both the internal and external addresses by changing the
+    top /48 prefix and keeping the rest of the subnet address the same.
+
+
+# -----------------------------------------------------
+# OpenStack
+
+
+    Managing Projects and Users
+    In OpenStack user interfaces and documentation, a group of users is referred to as a project or tenant. These terms are interchangeable.
+    http://docs.openstack.org/openstack-ops/content/projects_users.html
+
+    Tenant IPv6 Deployment in OpenStack Kilo Release
+    http://www.debug-all.com/?p=52
+
+    Using OpenStack Heat to Deploy an IPv6-enabled Instance
+    http://www.debug-all.com/?p=100
+
+    OpenStack Heat
+    https://wiki.openstack.org/wiki/Heat
+
+    http://docs.openstack.org/developer/heat/index.html
+    http://docs.openstack.org/developer/heat/getting_started/index.html
+
+
+
+
+
