@@ -15,21 +15,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:23-1
+FROM firethorn/java:8-1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# MariaDB version
-ENV mariadbversion 1:10.0.23
+# HSQLDB version
+ENV hsqldbversion=2.3.3
 
 #
 # Default port number.
-ENV serverport 3306
+ENV serverport 1527
 EXPOSE ${serverport}
 
 #
+# Default code path.
+ENV servercode /var/local/hsqldb
+
+#
 # Default data path.
-ENV serverdata /var/lib/mysql
+ENV serverdata /var/lib/hsqldb
 VOLUME ${serverdata}
 
 #
@@ -39,7 +43,7 @@ RUN chmod a+x /usr/local/bin/*.sh
 
 #
 # Run our install scripts.
-RUN /usr/local/bin/install-mariadb.sh
+RUN /usr/local/bin/install-hsqldb.sh
 
 #
 # Install our entry point script.
@@ -48,3 +52,4 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 #
 # Set the default command.
 CMD ["start"]
+

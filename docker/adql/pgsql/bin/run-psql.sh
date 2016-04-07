@@ -38,6 +38,6 @@ then
 fi
 
 #
-# Connect to our user database.
+# Connect to our database.
 eval "psql --user \"${databaseuser}\" --dbname \"${databasename}\" $@"
 

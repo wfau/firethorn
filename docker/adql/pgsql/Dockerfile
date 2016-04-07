@@ -24,13 +24,13 @@ ENV pgsqlversion=9.4.6
 
 #
 # Default port number.
-ENV databaseport 5432
-EXPOSE ${databaseport}
+ENV serverport 5432
+EXPOSE ${serverport}
 
 #
-# Default data volume.
-ENV databasepath /var/lib/pgsql
-VOLUME ${databasepath}
+# Default data path.
+ENV serverdata /var/lib/pgsql
+VOLUME ${serverdata}
 
 #
 # Add our install scripts. 
@@ -47,5 +47,5 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 #
 # Set the default command.
-CMD ["postgres"]
+CMD ["start"]
 

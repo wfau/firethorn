@@ -41,8 +41,7 @@ fi
 : ${adminuser:=root}
 : ${adminpass:=$(pwgen 10 1)}
 
-: ${serverhome:=/var/lib/mysql}
-: ${serverpath:=${serverhome}/${admindata}}
+: ${serverdata:=/var/lib/mysql}
 : ${serverport:=3306}
 : ${serversock:=/var/lib/mysql/mysql.sock}
 
@@ -70,8 +69,7 @@ adminpass=${adminpass}
 
 #
 # System settings
-serverhome=${serverhome}
-serverpath=${serverpath}
+serverdata=${serverdata}
 serverport=${serverport}
 serversock=${serversock}
 #serverlocale=${serverlocale}
@@ -90,23 +88,23 @@ EOF
 cat /database.settings
 
 #
-# If the first argument is 'mysql'.
-if [ "${1:-mysql}" = 'mysql' ]
+# Check the first argument.
+if [ "${1:-start}" = 'start' ]
 then
 
     #
     # Set up the database directory.
-    echo "Checking data directory [${serverhome}]"
-    if [ ! -e "${serverhome:?}" ]
+    echo "Checking data directory [${serverdata}]"
+    if [ ! -e "${serverdata:?}" ]
     then
-        echo "Creating data directory [${serverhome}]"
-        mkdir -p "${serverhome:?}"
+        echo "Creating data directory [${serverdata}]"
+        mkdir -p "${serverdata:?}"
     fi
 
-    echo "Updating data directory [${serverhome}]"
-    chown -R 'mysql' "${serverhome}"
-    chgrp -R 'mysql' "${serverhome}"
-    chmod u=rwx "${serverhome}"
+    echo "Updating data directory [${serverdata}]"
+    chown -R 'mysql' "${serverdata}"
+    chgrp -R 'mysql' "${serverdata}"
+    chmod u=rwx "${serverdata}"
 
     #
     # Set up the socket directory.
@@ -122,8 +120,9 @@ then
 
     #
     # Check for existing database.
+    # TODO Just check for any files, not just admindata.     
     echo "Checking for database data [${admindata}]"
-	if [ ! -e "${serverhome}/${admindata}" ]
+	if [ ! -e "${serverdata}/${admindata}" ]
 	then
 
         #
@@ -131,7 +130,7 @@ then
         echo "Creating database data [${admindata}]"
         gosu mysql mysql_install_db \
             --user mysql \
-            --datadir="${serverhome}" \
+            --datadir="${serverdata}" \
             --skip-name-resolve
 
         #
@@ -142,7 +141,7 @@ then
             --socket=${serversock} \
             --skip_networking \
             --skip-name-resolve \
-            --datadir="${serverhome}" \
+            --datadir="${serverdata}" \
             &
 
         #
@@ -282,10 +281,10 @@ EOF
     echo "Starting database service"
     mysqld_safe \
         --user='mysql' \
-        --datadir="${serverhome}"
+        --datadir="${serverdata}"
 
 #
-# If the first argument is not 'mysql'.
+# User command.
 else
 
     echo ""

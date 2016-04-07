@@ -61,7 +61,7 @@ IFS=$'\n\t'
     datacfg=$(mktemp)
 
 cat > ${datacfg} << EOF
-#serverhome=/data
+#serverdata=/data
 #serverport=1234
 #adminuser=mallard
 #adminpass=$(pwgen 10 1)

@@ -41,11 +41,9 @@ fi
 : ${adminuser:=postgres}
 : ${adminpass:=$(pwgen 10 1)}
 
-: ${serverhome:=/var/lib/pgsql}
-: ${serverpath:=${serverhome}/data}
+: ${serverdata:=/var/lib/pgsql/data}
 : ${serverport:=5432}
 : ${serversock:=/var/lib/pgsql/pgsql.sock}
-
 : ${serverlocale:=en_GB.UTF8}
 : ${serverencoding:=UTF8}
 
@@ -70,8 +68,7 @@ adminpass=${adminpass}
 
 #
 # System settings
-serverhome=${serverhome}
-serverpath=${serverpath}
+serverdata=${serverdata}
 serverport=${serverport}
 serversock=${serversock}
 #serverlocale=${serverlocale}
@@ -100,23 +97,23 @@ chgrp root  /root/.pgpass
 chmod u=rw,g=,o= /root/.pgpass
 
 #
-# If the first argument is 'postgres'.
-if [ "${1:-postgres}" = 'postgres' ]
+# Check the first argument.
+if [ "${1:-start}" = 'start' ]
 then
 
     #
     # Set up the database directory.
-    echo "Checking database directory [${serverpath}]"
-    if [ ! -e "${serverpath:?}" ]
+    echo "Checking database directory [${serverdata}]"
+    if [ ! -e "${serverdata:?}" ]
     then
-        echo "Creating database directory [${serverpath}]"
-        mkdir -p "${serverpath:?}"
+        echo "Creating database directory [${serverdata}]"
+        mkdir -p "${serverdata:?}"
     fi
 
-    echo "Updating database directory [${serverpath}]"
-    chown -R 'postgres' "${serverpath}"
-    chgrp -R 'postgres' "${serverpath}"
-    chmod 'u=rwx,g=,o=' "${serverpath}"
+    echo "Updating database directory [${serverdata}]"
+    chown -R 'postgres' "${serverdata}"
+    chgrp -R 'postgres' "${serverdata}"
+    chmod 'u=rwx,g=,o=' "${serverdata}"
 
     #
     # Set up the socket directory.
@@ -132,8 +129,9 @@ then
 
     #
     # Check for existing database.
+    # TODO Just check for any files, not just admindata.     
     echo "Checking for database data [${admindata}]"
-	if [ ! -e "${serverhome}/${admindata}" ]
+	if [ ! -e "${serverdata}/${admindata}" ]
 	then
 
         #
@@ -148,7 +146,7 @@ then
         gosu postgres \
             /usr/bin/initdb \
             --auth     md5 \
-            --pgdata   ${serverpath} \
+            --pgdata   ${serverdata} \
             --username ${adminuser} \
             --locale   ${serverlocale} \
             --encoding ${serverencoding} \
@@ -162,7 +160,7 @@ then
         echo "Running local PostgreSQL instance"
         gosu postgres \
             /usr/bin/pg_ctl \
-            --pgdata "${serverpath}"  \
+            --pgdata "${serverdata}"  \
             -o "-c listen_addresses=''" \
             -w start
 
@@ -217,7 +215,7 @@ then
         echo "Shutting down local instance"
         gosu postgres \
             /usr/bin/pg_ctl \
-            --pgdata "${serverpath}"  \
+            --pgdata "${serverdata}"  \
             -m fast \
             -w stop
 
@@ -232,11 +230,11 @@ then
     gosu postgres \
         /usr/bin/postgres \
             -h '*' \
-            -D "${serverpath}" \
+            -D "${serverdata}" \
             -p "${serverport}" \
 
 #
-# If the first argument is not 'postgres'.
+# User command.
 else
 
     echo ""

@@ -24,13 +24,13 @@ ENV mysqlversion 5.6.29
 
 #
 # Default port number.
-ENV databaseport 3306
-EXPOSE ${databaseport}
+ENV serverport 3306
+EXPOSE ${serverport}
 
 #
-# Default data volume.
-ENV databasepath /var/lib/mysql
-VOLUME ${databasepath}
+# Default data path.
+ENV serverdata /var/lib/mysql
+VOLUME ${serverdata}
 
 #
 # Add our install scripts. 
@@ -47,4 +47,4 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 #
 # Set the default command.
-CMD ["mysql"]
+CMD ["start"]

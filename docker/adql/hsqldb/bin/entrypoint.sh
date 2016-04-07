@@ -25,9 +25,10 @@ IFS=$'\n\t'
 
 #
 # Install directory
-: ${servercode:=/var/local/derby}
-derbybin="${servercode}/db-derby-${derbyversion}-bin"
-derbylib=${derbybin}/lib
+: ${servercode:=/var/local/hsqldb}
+hsqldbdir=${servercode}/hsqldb-${hsqldbversion}/hsqldb
+hsqldbbin=${hsqldbdir}/bin
+hsqldblib=${hsqldbdir}/lib
 
 #
 # Database configuration.
@@ -43,13 +44,13 @@ fi
 
 #
 # Default setings
-: ${systemuser:=derby}
+: ${systemuser:=hsqldb}
 
-: ${admindata:=derby}
-: ${adminuser:=derby}
+: ${admindata:=hsqldb}
+: ${adminuser:=hsqldb}
 : ${adminpass:=$(pwgen 10 1)}
 
-: ${serverdata:=/var/lib/derby}
+: ${serverdata:=/var/lib/hsqldb}
 : ${serverport:=1527}
 
 : ${databasename:=$(pwgen 10 1)}}
@@ -76,10 +77,10 @@ serverdata=${serverdata}
 serverport=${serverport}
 
 #
-# Derby settings
-derbybin=${derbybin}
-derbylib=${derbylib}
-derbyversion=${derbyversion}
+# HSQLDB settings
+hsqldbbin=${hsqldbbin}
+hsqldblib=${hsqldblib}
+hsqldbversion=${hsqldbversion}
 
 #
 # Database settings
@@ -128,19 +129,17 @@ then
     # Use the database directory
     pushd "${serverdata}"
 
-#
-# Create user accounts.
-#derby.connection.requireAuthentication=true
-#derby.user.sa=derbypass
-#derby.user.mary=little7xylamb
-
-#
-# Set the serverdata directory.
-#derby.system.home=${serverdata}
-
         #
         # Derby client command
         derbycmd=( gosu "${systemuser}" java -classpath "${derbylib}" -jar "${derbylib}/derbyrun.jar" ij )
+
+org.hsqldb.util.DatabaseManager
+http://hsqldb.org/doc/2.0/util-guide/index.html
+
+java -classpath ..\lib\hsqldb.jar org.hsqldb.util.%1 %2 %3 %4 %5 %6 %7 %8 %9
+
+java -classpath ../lib/hsqldb.jar org.hsqldb.server.Server %1 %2 %3 %4 %5 %6 %7 %8 %9
+
 
         #
         # Derby connect command
@@ -202,6 +201,11 @@ then
             server \
             start
     popd
+
+
+
+ java -cp ../lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
+
 
 #
 # User command.

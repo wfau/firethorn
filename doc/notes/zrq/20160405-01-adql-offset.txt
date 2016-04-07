@@ -51,13 +51,11 @@ IFS=$'\n\t'
     datacfg=$(mktemp)
 
 cat > ${datacfg} << EOF
-#serverhome=/data
+#serverdata=/data
 #serverport=1234
 #serversock=/tmp/mysql.sock
 #adminuser=mallard
 #adminpass=$(pwgen 10 1)
-#serverhome=/data
-#serverport=1234
 #databasename=mydb
 #databaseuser=me
 #databasepass=$(pwgen 10 1)

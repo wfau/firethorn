@@ -30,6 +30,7 @@ VOLUME /var/cache/
 # Install common admin tools.
 RUN dnf install -y sed
 RUN dnf install -y tar
+RUN dnf install -y zip
 RUN dnf install -y wget
 RUN dnf install -y nano
 RUN dnf install -y gzip

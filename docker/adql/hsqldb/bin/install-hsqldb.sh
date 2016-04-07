@@ -25,7 +25,7 @@ IFS=$'\n\t'
 
 #
 # Install directory
-: ${servercode:=/var/local/derby}
+: ${servercode:=/var/local/hsqldb}
 
 #
 # Check our install directory.
@@ -37,27 +37,28 @@ then
 fi
 
 #
+# Extra version fragment in the URL.
+urlversion=$(echo "${hsqldbversion}" | cut --fields '1,2' --delimiter '.' --output-delimiter '_')
+
+#
 # Use a temp directory.
 tempdir=$(mktemp -d)
 pushd "${tempdir:?}"
 
     echo ""
-    echo "Downloading tar files"
-    wget  --quiet "http://www-eu.apache.org/dist//db/derby/db-derby-${derbyversion}/db-derby-${derbyversion}-bin.tar.gz"
-    wget  --quiet "http://www.apache.org/dist/db/derby/db-derby-${derbyversion}/db-derby-${derbyversion}-bin.tar.gz.asc"
-    wget  --quiet "http://www.apache.org/dist/db/derby/db-derby-${derbyversion}/db-derby-${derbyversion}-bin.tar.gz.md5"
+    echo "Downloading zip files"
+    wget  --quiet "http://downloads.sourceforge.net/project/hsqldb/hsqldb/hsqldb_${urlversion}/hsqldb-${hsqldbversion}.zip"
 
     #
     # Verify the signature.
+    # SHA1 f5fce3d5eb21294f9ffba40c34e7c736ab64d6b9
+    # MD5  62c0b97e94fe47d5e50ff605d2edf37a
 
     #
-    # Unpack the tar file.
-    echo ""
-    echo "Unpacking tar files"
-    tar --gzip \
-        --extract \
-        --directory "${servercode}" \
-        --file "db-derby-${derbyversion}-bin.tar.gz"
+    # Unpack the zip file.
+    unzip \
+        -d "${servercode}" \
+        hsqldb-${hsqldbversion}.zip
 
 popd
 

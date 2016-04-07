@@ -24,17 +24,17 @@ ENV derbyversion=10.12.1.1
 
 #
 # Default port number.
-ENV databaseport 1527
-EXPOSE ${databaseport}
+ENV serverport 1527
+EXPOSE ${serverport}
 
 #
-# Install path.
-ENV derbypath /var/local/derby
+# Default code path.
+ENV servercode /var/local/derby
 
 #
-# Default data volume.
-ENV databasepath /var/lib/derby
-VOLUME ${databasepath}
+# Default data path.
+ENV serverdata /var/lib/derby
+VOLUME ${serverdata}
 
 #
 # Add our install scripts. 
@@ -51,5 +51,5 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 #
 # Set the default command.
-CMD ["derby"]
+CMD ["start"]
 
