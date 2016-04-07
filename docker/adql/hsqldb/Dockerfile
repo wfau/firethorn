@@ -24,12 +24,12 @@ ENV hsqldbversion=2.3.3
 
 #
 # Default port number.
-ENV serverport 1527
+ENV serverport 9001
 EXPOSE ${serverport}
 
 #
 # Default code path.
-ENV servercode /var/local/hsqldb
+ENV servercode /usr/lib/hsqldb
 
 #
 # Default data path.

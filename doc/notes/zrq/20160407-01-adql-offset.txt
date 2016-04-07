@@ -1,0 +1,136 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Strict error checking.
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -uo pipefail
+IFS=$'\n\t'
+
+# -------------------------------------------------------------------------------------------
+# Create our HSQLDB container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            docker rmi -f 'firethorn/fedora:23-1'
+            docker build \
+                --tag 'firethorn/fedora:23-1' \
+                'fedora/23'
+
+            docker rmi -f 'firethorn/java:8-1'
+            docker build \
+                --tag 'firethorn/java:8-1' \
+                'java/8'
+
+            docker rmi -f 'firethorn/adql-hsqldb:2.3-1'
+            docker build \
+                --tag 'firethorn/adql-hsqldb:2.3-1' \
+                'adql/hsqldb'
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Test our HSQLDB container.
+#[user@desktop]
+
+    datadir=$(mktemp -d)
+    dataini=$(mktemp)
+
+cat > ${dataini} << EOF
+#serverdata=/data
+#serverport=1234
+#adminuser=mallard
+#adminpass=$(pwgen 10 1)
+#databasename=mydb
+#databaseuser=me
+#databasepass=$(pwgen 10 1)
+EOF
+
+cat > "${datadir}/01-alpha-source.sql" << 'EOSQL'
+
+CREATE TABLE alpha_source
+    (
+    id   INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
+    ra   DOUBLE PRECISION NOT NULL,
+    decl DOUBLE PRECISION NOT NULL,
+    PRIMARY KEY (id)
+    );
+
+EOSQL
+
+    source "${HOME:?}/firethorn.settings"
+    gzip -c "${FIRETHORN_CODE}/docker/adql/data/alpha-source.dat" > "${datadir}/02-alpha-source.sql.gz"
+
+#   chmod a+x "${FIRETHORN_CODE}/docker/adql/hsqldb/bin/entrypoint.sh"
+#   --volume "${FIRETHORN_CODE}/docker/adql/hsqldb/bin/entrypoint.sh:/usr/local/bin/entrypoint.sh" \
+#   docker stop hsqldb ; docker rm -v hsqldb
+#   docker run -it --rm \
+
+    docker stop hsqldb ; docker rm -v hsqldb
+
+    docker run --detach \
+        --name hsqldb \
+        --volume "${datacfg}:/database.conf" \
+        --volume "${datadir}:/database.init" \
+        --volume "${FIRETHORN_CODE}/docker/adql/hsqldb/bin/entrypoint.sh:/usr/local/bin/entrypoint.sh" \
+        firethorn/adql-hsqldb:2.3-1
+
+    docker logs -f hsqldb
+
+    docker exec -it \
+        hsqldb \
+        entrypoint.sh \
+        sqltool
+
+
+        SELECT id, ra, decl FROM alpha_source ;
+
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+
+        SELECT id, ra, decl FROM alpha_source OFFSET 10 ;
+
+        SELECT id, ra, decl FROM alpha_source  LIMIT 10 OFFSET 10 ;
+
+        --
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 OFFSET 10 ;
+
+    HSQLDB :
+
+        [ORDER BY <sort_column>] is separate
+        [LIMIT <row_count>] is separate
+        [OFFSET <row_offset>] is separate
+
+
+
+

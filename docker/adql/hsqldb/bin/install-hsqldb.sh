@@ -57,6 +57,7 @@ pushd "${tempdir:?}"
     #
     # Unpack the zip file.
     unzip \
+        -q \
         -d "${servercode}" \
         hsqldb-${hsqldbversion}.zip
 

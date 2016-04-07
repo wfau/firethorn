@@ -32,10 +32,18 @@ hsqldblib=${hsqldbdir}/lib
 
 #
 # Database configuration.
-: ${databaseconf:=/database.conf}
-if [ -e "${databaseconf}" ]
+: ${databaseconfig:=/database.config}
+if [ -e "${databaseconfig}" ]
 then
-    source "${databaseconf}"
+    source "${databaseconfig}"
+fi
+
+#
+# Saved configuration.
+: ${databasesave:=/database.save}
+if [ -e "${databasesave}" ]
+then
+    source "${databasesave}"
 fi
 
 #
@@ -44,14 +52,14 @@ fi
 
 #
 # Default setings
-: ${systemuser:=hsqldb}
-
 : ${admindata:=hsqldb}
 : ${adminuser:=hsqldb}
 : ${adminpass:=$(pwgen 10 1)}
 
+: ${serveruser:=hsqldb}
 : ${serverdata:=/var/lib/hsqldb}
-: ${serverport:=1527}
+: ${serverport:=9001}
+: ${serveripv4:=0.0.0.0}
 
 : ${databasename:=$(pwgen 10 1)}}
 : ${databaseuser:=$(pwgen 10 1)}}
@@ -63,18 +71,19 @@ else
     : ${databasepass:=$(pwgen 10 1)}
 fi
 
-#
-# Save our settings
-cat > /database.settings << EOF
+cat > "${databasesave}" << EOF
 #
 # Admin settings
+admindata=${admindata}
 adminuser=${adminuser}
 adminpass=${adminpass}
 
 #
 # System settings
+serveruser=${serveruser}
 serverdata=${serverdata}
 serverport=${serverport}
+serveripv4=${serveripv4}
 
 #
 # HSQLDB settings
@@ -87,12 +96,11 @@ hsqldbversion=${hsqldbversion}
 databasename=${databasename}
 databaseuser=${databaseuser}
 databasepass=${databasepass}
-databaseinit=${databaseinit}
 EOF
 
 #
-# Display our settings
-cat /database.settings
+# Display our config
+#cat /database.conf
 
 #
 # Check the first argument.
@@ -101,14 +109,14 @@ then
 
     #
     # Check the system user account.
-    echo "Checking system user [${systemuser}]"
-    if [ -z $(id -u "${systemuser}" 2> /dev/null) ]
+    echo "Checking system user [${serveruser}]"
+    if [ -z $(id -u "${serveruser}" 2> /dev/null) ]
     then
-        echo "Creating system user [${systemuser}]"
+        echo "Creating system user [${serveruser}]"
         useradd \
             --system \
             --home-dir "${serverdata}" \
-            "${systemuser}"
+            "${serveruser}"
     fi
 
     #
@@ -121,91 +129,107 @@ then
     fi
 
     echo "Updating database directory [${serverdata}]"
-    chown -R "${systemuser}" "${serverdata}"
-    chgrp -R "${systemuser}" "${serverdata}"
+    chown -R "${serveruser}" "${serverdata}"
+    chgrp -R "${serveruser}" "${serverdata}"
     chmod 'u=rwx,g=,o=' "${serverdata}"
 
     #
-    # Use the database directory
-    pushd "${serverdata}"
+    # Create our client properties file.
+    cat > ${serverdata}/sqltool.rc << EOF
+urlid ${databasename}
+url jdbc:hsqldb:file:${serverdata}/${databasename};shutdown=true
+username ${databaseuser}
+password ${databasepass}
+transiso TRANSACTION_READ_COMMITTED
+EOF
+
+    #
+    # Check for user database.
+    echo "Checking for database [${databasename}]"
+    if [ ! -d "${serverdata}/${databasename}" ]
+    then
 
         #
-        # Derby client command
-        derbycmd=( gosu "${systemuser}" java -classpath "${derbylib}" -jar "${derbylib}/derbyrun.jar" ij )
+        # Create our user database.
+        echo "Creating database [${databasename}]"
+        gosu ${serveruser} \
+            java \
+                -classpath ${hsqldblib} \
+                -jar ${hsqldblib}/sqltool.jar \
+                --sql '' \
+                ${databasename}
 
-org.hsqldb.util.DatabaseManager
-http://hsqldb.org/doc/2.0/util-guide/index.html
+    fi
 
-java -classpath ..\lib\hsqldb.jar org.hsqldb.util.%1 %2 %3 %4 %5 %6 %7 %8 %9
+    #
+    # SQLtool command
+    toolcmd=( gosu "${serveruser}" )
+    toolcmd+=( java )
+    toolcmd+=( -classpath "${hsqldblib}" )
+    toolcmd+=( -jar ${hsqldblib}/sqltool.jar )
+    toolcmd+=( --autoCommit )
+    toolcmd+=( ${databasename} )
 
-java -classpath ../lib/hsqldb.jar org.hsqldb.server.Server %1 %2 %3 %4 %5 %6 %7 %8 %9
-
-
-        #
-        # Derby connect command
-
-        #
-        # Check for user database.
-        echo "Checking for database data [${databasename}]"
-        if [ ! -d "${databasename}" ]
-        then
-
-            #
-            # Create our user database.
-            echo "Creating database data [${databasename}]"
-            echo "connect 'jdbc:derby:${databasename};create=true';" | "${derbycmd[@]}"
-
-        fi
-
-        #
-        # Derby client command
-        derbycmd=( gosu "${systemuser}" )
-        derbycmd+=( java -classpath "${derbylib}" )
-        derbycmd+=( -Dij.database=jdbc:derby:${databasename} )
-        derbycmd+=( -jar "${derbylib}/derbyrun.jar" )
-        derbycmd+=( ij )
-
-        echo "----"
-        echo "${derbycmd[@]}"
-        echo "----"
-
-        echo
-        echo "Checking init directory [${databaseinit}]"
-        if [ -d "${databaseinit}" ]
-        then
-            echo ""
-            echo "Running init scripts"
-            for file in ${databaseinit}/*; do
-                case "${file}" in
-                    *.sh)     echo "$0: running [${file}]"; source "${file}" ; echo ;;
-                    *.sql)    echo "$0: running [${file}]"; cat "${file}" | "${derbycmd[@]}" ; echo ;;
-                    *.sql.gz) echo "$0: running [${file}]"; gunzip --stdout "${file}" | "${derbycmd[@]}" ; echo ;;
-                    *)        echo "$0: ignoring [${file}]" ;;
-                esac
-            done
-        fi
-
+    echo
+    echo "Checking init directory [${databaseinit}]"
+    if [ -d "${databaseinit}" ]
+    then
         echo ""
-        echo "Initialization process complete."
-        echo ""
+        echo "Running init scripts"
+        for file in ${databaseinit}/*; do
+            case "${file}" in
+                *.sh)     echo "Running [${file}]"; source "${file}" ; echo ;;
+                *.sql)    echo "Running [${file}]"; cat "${file}" | "${toolcmd[@]}" ; echo ;;
+                *.sql.gz) echo "Running [${file}]"; gunzip --stdout "${file}" | "${toolcmd[@]}" ; echo ;;
+                *)        echo "Ignoring [${file}]" ;;
+            esac
+        done
+    fi
 
-    popd
+    echo ""
+    echo "Initialization process complete."
+    echo ""
+
+    #
+    # Update our client properties file.
+    cat > ${serverdata}/sqltool.rc << EOF
+urlid ${databasename}
+url jdbc:hsqldb:hsql://localhost:${serverport}/${databasename}
+username ${databaseuser}
+password ${databasepass}
+transiso TRANSACTION_READ_COMMITTED
+EOF
+
+    #
+    # Create our server properties file.
+    cat > ${serverdata}/server.properties << EOF
+server.port=${serverport}
+server.address=${serveripv4}
+server.database.0=${serverdata}/${databasename}
+server.dbname.0=${databasename}
+EOF
 
     echo ""
     echo "Starting database service"
-    pushd "${serverdata}"
-        gosu "${systemuser}" \
-            java \
-            -classpath ${derbylib} \
-            -jar ${derbylib}/derbyrun.jar \
-            server \
-            start
-    popd
+    gosu "${serveruser}" \
+        java \
+        -classpath ${hsqldblib}/hsqldb.jar \
+        org.hsqldb.server.Server \
+        --props ${serverdata}/server.properties\
 
+#
+# SQLTool command.
+elif [ "${1}" = 'sqltool' ]
+then
 
-
- java -cp ../lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb
-
+    echo ""
+    echo "Starting SQLTool client"
+    gosu "${serveruser}" \
+        java \
+            -classpath ${hsqldblib} \
+            -jar ${hsqldblib}/sqltool.jar \
+            --rcFile ${serverdata}/sqltool.rc \
+            ${databasename}
 
 #
 # User command.
