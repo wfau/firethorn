@@ -117,8 +117,8 @@ cat > "${properties:?}" << EOF
 
         firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
 
-        firethorn.limits.time.default=60000
-        firethorn.limits.time.absolute=600000
+        firethorn.limits.time.default=6000000
+        firethorn.limits.time.absolute=6000000
         firethorn.limits.rows.default=${defaultrows:?}
         firethorn.limits.rows.absolute=${absoluterows:?}
 
