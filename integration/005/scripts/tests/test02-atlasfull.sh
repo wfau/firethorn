@@ -53,7 +53,7 @@ sample_query_expected_rows=10
 limit_query = None
 sql_rowlimit = 1000
 sql_timeout = 1000
-firethorn_timeout = 1000
+firethorn_timeout = 6000000
 query_mode = "AUTO" 
 
 #------------------- Test Configurations ----------------------------------#
