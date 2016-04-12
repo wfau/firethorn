@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.DelaysParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.LimitsParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
-import uk.ac.roe.wfau.firethorn.ogsadai.server.blue.RequestContext;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -88,17 +88,8 @@ implements SecureActivity
         if ((context != null) && (context instanceof RequestContext))
             {
             this.context  = (RequestContext) context;
-            this.callback = new CallbackHandler(
-                this.context
-                );          
             }
         }
-
-    /**
-     * Our callback handler.
-     * 
-     */
-    private CallbackHandler callback ;
     
     /**
      * Public constructor.
@@ -339,7 +330,7 @@ implements SecureActivity
             logger.debug("Cancelling Future");
             future.cancel(true);
             logger.debug("Future cancelled");
-            callback.truncated();
+            context.handler().truncated();
             throw new ActivityTerminatedException();
             }
         catch (TimeoutException ouch)
@@ -349,7 +340,7 @@ implements SecureActivity
             logger.debug("Cancelling Future");
             future.cancel(true);
             logger.debug("Future cancelled");
-            callback.truncated();
+            context.handler().truncated();
             throw new ActivityTerminatedException();
             }
         catch (ExecutionException ouch)
@@ -417,7 +408,7 @@ implements SecureActivity
                     if (rowcount >= maxrows)
                         {
                         logger.debug("STOP -- Row limit reached [{}]", maxrows);
-                        callback.truncated(
+                        context.handler().truncated(
                             rowcount
                             );
                         break ;

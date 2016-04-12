@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.server.blue.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -156,25 +155,25 @@ implements SecureActivity
 	        // Update our context.
 	        if (proto != null)
 	        	{
-	        	this.context.callback().protocol(
+	        	this.context.builder().protocol(
         			proto
         			);
 	        	}
 	        if (host != null)
 	        	{
-	        	this.context.callback().host(
+	        	this.context.builder().host(
         			host
         			);
 	        	}
 	        if (port != null)
 	        	{
-	        	this.context.callback().port(
+	        	this.context.builder().port(
         			port
         			);
 	        	}
 	        if (base != null)
 	        	{
-	        	this.context.callback().base(
+	        	this.context.builder().base(
         			base
         			);
 	        	}

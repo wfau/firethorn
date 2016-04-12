@@ -128,6 +128,17 @@
             <artifactId>httpclient</artifactId>
         </dependency>
 
+	    <!--+
+	        | Servlet libraries.
+            | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
+	        +-->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

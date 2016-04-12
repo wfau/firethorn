@@ -36,7 +36,7 @@ IFS=$'\n\t'
         hg pull
         hg update default
 
-        mvn -P all clean install
+        mvn -P all clean install eclipse:eclipse
 
     popd
 

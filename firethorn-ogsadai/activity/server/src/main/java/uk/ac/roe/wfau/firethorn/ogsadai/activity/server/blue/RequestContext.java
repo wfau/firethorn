@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.server.blue;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue;
 
 import uk.org.ogsadai.authorization.SecurityContext;
 
@@ -18,7 +18,7 @@ extends SecurityContext
      * Public interface for a callback endpoint builder.
      *
      */
-    public interface Callback
+    public interface EndpointBuilder
     	{
         /**
          * Get the protocol name.
@@ -79,7 +79,21 @@ extends SecurityContext
      * Our callback endpoint builder.
      * 
      */
-    public Callback callback();
+    @Deprecated
+    public EndpointBuilder builder();
+
+    /**
+     * Our callback endpoint.
+     * 
+     */
+    public StringBuilder endpoint();
+
+    /**
+     * Our callback handler.
+     * 
+     */
+    public CallbackHandler handler();
+    
     
     /**
      * Get the query identifier.

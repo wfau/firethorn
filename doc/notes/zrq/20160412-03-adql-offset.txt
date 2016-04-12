@@ -1,0 +1,72 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+The general concensus from the previous discussion
+on OFFSET was that we would add OFFSET as an optional
+langauge feature, not a required part of the core language.
+
+    offset_clause := [OFFSET <row_offset>]
+
+This matches the definition in the ISO SQL-2011 standard,
+which defines ORDER BY, OFFSET and FETCH as three separate
+components.
+
+If/when we are all happy that we have viable and efficient
+solutions for supporting it, we may consider making it a
+mandatory part of the language at a later date.
+
+
+In the mean time, as part of the background research for checking
+proposed changes to ADQL language, I've put together a set of Docker
+containers that cover each of the main database platforms.
+
+So far I have containers for
+
+...
+
+I have verified that it is possible to implement the poposed
+syntax for OFFSET in one way or another on all of the platforms
+that I have looked at so far.
+
+Almost all of them support some form of row limit
+clause in their dialect of SQL.
+
+A few of them only allow OFFSET as part of an ORDER BY or
+LIMIT CLAUSE. However I have found viable work arounds
+in each case.
+
+Oracle is the main exception, with no direct support
+for OFFSET or LIMIT in the language.
+
+I have found a number of articles that suggest various
+work-arounds for implmenting OFFSET in Oracle.
+
+The best one I have seen so far uses the ROWNUMBER
+function, but from what I can tell ROWNUMBER wasn't
+introduced until version ...
+
+I plan to publish all of the source code for the Docker
+containers in a GitHub project in the next few days.
+
+
+

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
-import uk.ac.roe.wfau.firethorn.ogsadai.server.blue.RequestContext;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -220,9 +220,9 @@ implements ResourceActivity, SecureActivity
         {
     	//
     	// Initialise our callback handler.
-		final CallbackHandler callback = new CallbackHandler(
-			context
-			); 	        
+//		final CallbackHandler callback = new CallbackHandler(
+//			context
+//			); 	        
     	//
     	// Initialise our table name.
         final String table = (String) inputs[0];
@@ -310,9 +310,12 @@ implements ResourceActivity, SecureActivity
                     	// Callback if not within the same time slot.
                     	if (diff > slot)
     						{
-    	        			callback.running(
-	        					total
-	        					);
+    						if (context != null)
+    						    {
+                                context.handler().running(
+                                    total
+                                    );
+    						    }
     	        			prev = next ;
     						}
                     	}
@@ -362,12 +365,6 @@ implements ResourceActivity, SecureActivity
             //
             // DataError occurs when the source pipe is closed by Limits timeout.
             done = true ;
-/*
- * DataError occurs when pipe is closed by Limits.
-            throw new ActivityProcessingException(
-                ouch
-                );
- */                
             }
         catch (final SQLException ouch)
             {
@@ -420,14 +417,20 @@ implements ResourceActivity, SecureActivity
             {
             if (done)
             	{
-    			callback.completed(
-					total
-					);
+            	if (context != null)
+            	    {
+                    context.handler().completed(
+                        total
+                        );
+            	    }
             	}
             else {
-				callback.failed(
-					total
-					);
+                if (context != null)
+                    {
+                    context.handler().failed(
+    					total
+    					);
+                    }
             	}
             iterativeStageComplete();
             }
