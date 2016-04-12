@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,41 +15,38 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/java:8-1
+FROM oraclelinux:6.7
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Derby version
-ENV derbyversion=10.12.1.1
+# Declare the system cache as a volume.
+VOLUME /var/cache/
 
 #
-# Default port number.
-ENV serverport 1527
-EXPOSE ${serverport}
+# Install common admin tools.
+RUN yum install -y sed
+RUN yum install -y tar
+RUN yum install -y zip
+RUN yum install -y wget
+RUN yum install -y nano
+RUN yum install -y gzip
+RUN yum install -y unzip
+#RUN yum install -y pwgen
+RUN yum install -y gnupg
+RUN yum install -y which
 
 #
-# Default code path.
-ENV servercode /usr/lib/derby
-
-#
-# Default data path.
-ENV serverdata /var/lib/derby
-VOLUME ${serverdata}
+# Set the terminal type for exec.
+# https://github.com/docker/docker/issues/9299
+ENV TERM xterm
 
 #
 # Add our install scripts. 
-COPY bin /usr/local/bin/
-RUN chmod a+x /usr/local/bin/*.sh
+#COPY bin /usr/local/bin/
+#RUN chmod a+x /usr/local/bin/*.sh
 
 #
 # Run our install scripts.
-RUN /usr/local/bin/install-derby.sh
-
-#
-# Install our entry point script.
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-#
-# Set the default command.
-CMD ["start"]
+#RUN /usr/local/bin/install-locale.sh
+#RUN /usr/local/bin/install-gosu.sh
 

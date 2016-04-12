@@ -25,10 +25,18 @@ IFS=$'\n\t'
 
 #
 # Database configuration.
-: ${databaseconf:=/database.conf}
-if [ -e "${databaseconf}" ]
+: ${databaseconfig:=/database.config}
+if [ -e "${databaseconfig}" ]
 then
-    source "${databaseconf}"
+    source "${databaseconfig}"
+fi
+
+#
+# Saved configuration.
+: ${databasesave:=/database.save}
+if [ -e "${databasesave}" ]
+then
+    source "${databasesave}"
 fi
 
 #
@@ -41,8 +49,10 @@ fi
 : ${adminuser:=root}
 : ${adminpass:=$(pwgen 10 1)}
 
+: ${serveruser:=mysql}
 : ${serverdata:=/var/lib/mysql}
 : ${serverport:=3306}
+: ${serveripv4:=0.0.0.0}
 : ${serversock:=/var/lib/mysql/mysql.sock}
 
 # ${serverlocale:=en_GB.UTF8}
@@ -59,8 +69,8 @@ else
 fi
 
 #
-# Save our settings
-cat > /database.settings << EOF
+# Saved configuration.
+cat > "${databasesave}" << EOF
 #
 # Admin settings
 admindata=${admindata}
@@ -69,26 +79,21 @@ adminpass=${adminpass}
 
 #
 # System settings
+serveruser=${serveruser}
 serverdata=${serverdata}
 serverport=${serverport}
+serveripv4=${serveripv4}
 serversock=${serversock}
-#serverlocale=${serverlocale}
-#serverencoding=${serverencoding}
 
 #
 # Database settings
 databasename=${databasename}
 databaseuser=${databaseuser}
 databasepass=${databasepass}
-databaseinit=${databaseinit}
 EOF
 
 #
-# Display our settings
-cat /database.settings
-
-#
-# Check the first argument.
+# Start database server.
 if [ "${1:-start}" = 'start' ]
 then
 
@@ -102,8 +107,8 @@ then
     fi
 
     echo "Updating data directory [${serverdata}]"
-    chown -R 'mysql' "${serverdata}"
-    chgrp -R 'mysql' "${serverdata}"
+    chown -R "${serveruser}" "${serverdata}"
+    chgrp -R "${serveruser}" "${serverdata}"
     chmod u=rwx "${serverdata}"
 
     #
@@ -113,8 +118,8 @@ then
     then
         echo "Creating socket directory [$(dirname ${serversock})]"
         mkdir -p "$(dirname ${serversock})"
-        chown -R 'mysql' "$(dirname ${serversock})"
-        chgrp -R 'mysql' "$(dirname ${serversock})"
+        chown -R "${serveruser}" "$(dirname ${serversock})"
+        chgrp -R "${serveruser}" "$(dirname ${serversock})"
         chmod u=rwx "$(dirname ${serversock})"
     fi
 
@@ -129,7 +134,7 @@ then
         # Initialise our database.
         echo "Creating database data [${admindata}]"
         gosu mysql mysql_install_db \
-            --user mysql \
+            --user="${serveruser}" \
             --datadir="${serverdata}" \
             --skip-name-resolve
 
@@ -137,8 +142,8 @@ then
         # Run a local instance.
         echo "Running local instance"
         mysqld_safe \
-            --user='mysql' \
-            --socket=${serversock} \
+            --user="${serveruser}" \
+            --socket="${serversock}" \
             --skip_networking \
             --skip-name-resolve \
             --datadir="${serverdata}" \
@@ -175,6 +180,18 @@ FLUSH PRIVILEGES ;
 EOF
 
         #
+        # Create our local password file
+        cat > /root/.my.cnf << EOF
+[client]
+protocol = socket
+socket = ${serversock}
+user = ${adminuser}
+password = ${adminpass}
+EOF
+            chown root:root  /root/.my.cnf
+            chmod u=rw,g=,o= /root/.my.cnf
+
+        #
         # Create our user database.
         echo "Checking user database [${databasename}]"
         if [ "${databasename}" != "${admindata}" ]
@@ -182,10 +199,6 @@ EOF
 
             echo "Creating user database [${databasename}]"
             mysqladmin \
-                --protocol='socket' \
-                --socket="${serversock}" \
-                --user="${adminuser}" \
-                --password="${adminpass}" \
                 create "${databasename}"
 
         fi
@@ -200,10 +213,6 @@ EOF
             # Create our database user
             echo "Creating user account [${databaseuser}]"
             mysql \
-                --protocol='socket' \
-                --socket="${serversock}" \
-                --user="${adminuser}" \
-                --password="${adminpass}" \
                 --execute \
                 "CREATE USER
                     '${databaseuser}'@'%'
@@ -215,10 +224,6 @@ EOF
             # Grant access to our database
             echo "Creating user access [${databaseuser}][${databasename}]"
             mysql \
-                --protocol='socket' \
-                --socket="${serversock}" \
-                --user="${adminuser}" \
-                --password="${adminpass}" \
                 --execute \
                 "GRANT ALL ON
                     ${databasename}.*
@@ -228,13 +233,26 @@ EOF
 
         fi
 
+        #
+        # Update our local password file
+        cat > /root/.my.cnf << EOF
+[client]
+protocol = socket
+socket = ${serversock}
+user = ${databaseuser}
+password = ${databasepass}
+database = ${databasename}
+EOF
+            chown root:root  /root/.my.cnf
+            chmod u=rw,g=,o= /root/.my.cnf
+
         echo
         echo "Checking init directory [${databaseinit}]"
         if [ -d "${databaseinit}" ]
         then
             echo ""
             echo "Running init scripts"
-            mysqlcmd=( mysql --protocol='socket' --socket="${serversock}" --user="${adminuser}" --password="${adminpass}" --database="${databasename}" )
+            mysqlcmd=( mysql )
             for file in ${databaseinit}/*
             do
                 case "${file}" in
@@ -247,13 +265,21 @@ EOF
         fi
 
         #
+        # Update our local password file
+        cat > /root/.my.cnf << EOF
+[client]
+protocol = socket
+socket = ${serversock}
+user = ${adminuser}
+password = ${adminpass}
+EOF
+            chown root:root  /root/.my.cnf
+            chmod u=rw,g=,o= /root/.my.cnf
+
+        #
         # Shutdown the local instance.
         echo "Shutting down local instance"
         mysqladmin \
-            --protocol='socket' \
-            --socket="${serversock}" \
-            --user="${adminuser}" \
-            --password="${adminpass}" \
             shutdown
 
         echo ""
@@ -261,18 +287,16 @@ EOF
         echo ""
 
 	fi
-
-
+    
     #
-    # Create our local password file
+    # Update our local password file
     cat > /root/.my.cnf << EOF
 [client]
 host = localhost
 port = ${serverport}
-protocol = socket
-database = ${databasename}
 user = ${databaseuser}
 password = ${databasepass}
+database = ${databasename}
 EOF
     chown root:root  /root/.my.cnf
     chmod u=rw,g=,o= /root/.my.cnf
@@ -280,8 +304,20 @@ EOF
     echo ""
     echo "Starting database service"
     mysqld_safe \
-        --user='mysql' \
+        --user="${serveruser}" \
         --datadir="${serverdata}"
+
+#
+# MySQL client
+elif [ "${1}" = 'mysql' ]
+then
+
+    shift
+
+    echo ""
+    echo "Running MySQL client"
+    mysql \
+        $@
 
 #
 # User command.

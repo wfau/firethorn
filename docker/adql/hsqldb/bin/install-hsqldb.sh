@@ -24,11 +24,8 @@ set -euo pipefail
 IFS=$'\n\t'
 
 #
-# Install directory
-: ${servercode:=/var/local/hsqldb}
-
-#
 # Check our install directory.
+: ${servercode:=/usr/lib/hsqldb}
 echo "Checking code path [${servercode}]"
 if [ ! -e "${servercode}" ]
 then
@@ -62,7 +59,4 @@ pushd "${tempdir:?}"
         hsqldb-${hsqldbversion}.zip
 
 popd
-
-
-
 

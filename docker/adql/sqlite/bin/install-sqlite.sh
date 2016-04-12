@@ -24,13 +24,10 @@ set -euo pipefail
 IFS=$'\n\t'
 
 #
-# Load our database settings.
-source /database.settings 
-
-#
-# Connect to our database.
-java -classpath "${derbylib}" \
-    -Dij.database=jdbc:derby://localhost:${serverport}/${databasename} \
-    -jar "${derbylib}/derbyrun.jar" \
-    ij
+# Install SQLite library
+echo ""
+echo "Installing SQLite"
+dnf install -y \
+    hostname \
+    sqlite-${sqliteversion}
 

@@ -24,11 +24,8 @@ set -euo pipefail
 IFS=$'\n\t'
 
 #
-# Install directory
-: ${servercode:=/var/local/derby}
-
-#
 # Check our install directory.
+: ${servercode:=/usr/lib/derby}
 echo "Checking code path [${servercode}]"
 if [ ! -e "${servercode}" ]
 then
@@ -60,7 +57,4 @@ pushd "${tempdir:?}"
         --file "db-derby-${derbyversion}-bin.tar.gz"
 
 popd
-
-
-
 

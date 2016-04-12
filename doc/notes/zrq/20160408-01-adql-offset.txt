@@ -1,0 +1,136 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Dear DAL,
+
+The consensus from the OFFSET discussion was that we should add [OFFSET <n>] to the ADQL grammar.
+
+Should we also consider adding LIMIT or FETCH as well ?
+
+The reason for suggesting this is that it would bring ADQL in line with the syntax used by the common database platforms and the majority of the text books and reference manuals.
+
+I've looked at a number of different database platforms to see how they handle row limits.
+
+Almost all of them use one of two forms, either LIMIT/OFFSET or OFFSET/FETCH, both at the end of the query.
+
+Our current proposal, adding OFFSET to the existing ADQL grammar, results in a composite form with TOP at the start of the query and OFFSET at the end.
+
+    SELECT
+    [TOP <m>]
+    ....
+    [OFFSET <n>]
+
+Technically this works, but it does not match any of the text books or reference manuals, making it just that little bit harder to learn.
+
+The suggestion is we adopt one or other of the common forms, either LIMIT/OFFSET, or OFFSET/FETCH.
+
+Either one could help make learning ADQL that little bit easier for our users.
+
+I am not proposing we remove TOP.
+
+TOP would stay part of the grammar, and the new term would be a synonym.
+
+If a query has both TOP and a limit, we could just use the smallest of the two values and ignore the other, or we could flag it as an error (SQLServer flags it as an error, I'm not sure what Sybase does).
+
+----
+
+Of the platforms that I have looked at so far, five of them use a variation of LIMIT and OFFSET :
+
+    PostgreSQL
+
+        [LIMIT <m>] [OFFSET <n>]
+
+    MySQL/MariaDB
+
+        [LIMIT <m> [OFFSET <n>]]
+
+    Sybase
+
+        [TOP <m>]
+        ....
+        [LIMIT <m> [OFFSET <n>]]
+
+    SQLite
+
+        [LIMIT <m> [OFFSET <n>]]
+
+    HyperSQL
+
+        [LIMIT <m>] [OFFSET <n>]
+
+Two of them follow the ISO SQL standard, and use a variation of OFFSET and FETCH :
+
+    ISO SQL-2011 standard
+
+        [OFFSET <n> ROWS] [FETCH NEXT <m> ROWS]
+
+    SQLServer
+
+        TOP <m>
+        ....
+        [ORDER BY <s> [OFFSET <n> ROWS [FETCH NEXT <m> ROWS]]]
+
+    Derby
+
+        [OFFSET <n> ROWS] [FETCH FIRST <m> ROWS ONLY]
+
+Firebird has two forms, FIRST/SKIP and ROWS/TO, neither of which I have seen anywhere else.
+
+        FIRST <m> SKIP <n>
+        ....
+        ROWS <n> TO <m+n>
+
+As far as I know, Oracle does not have terms for row limits and offsets in the SQL language. However there are a number of alternatives that give equivalent results using row number.
+
+----
+
+The suggestion is we keep TOP at the start of a query, and add one or other of the two forms at the end of the query.
+
+Either
+
+    SELECT
+    [TOP <m>]
+    ....
+    [LIMIT <m>] [OFFSET <n>]
+
+because it is the most common, or
+
+    SELECT
+    [TOP <m>]
+    ....
+    [OFFSET <n>] [FETCH <m>]
+
+because it is the SQL standard.
+
+Just enough so that it matches some of the reference manuals our users are likely to find.
+
+https://www.google.co.uk/search?q=SQL+offset
+
+----
+
+What do you think ?
+
+Is it worth adding a bit more complexity to our parsers to make the language easier to learn, or will having two ways of expressing the same thing cause more problems than it is worth ?
+
+Thanks,
+Dave
+

@@ -1,0 +1,313 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Strict error checking.
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -uo pipefail
+IFS=$'\n\t'
+
+# -------------------------------------------------------------------------------------------
+# Create our containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            docker rmi -f 'firethorn/fedora:23-1'
+            docker build \
+                --tag 'firethorn/fedora:23-1' \
+                'fedora/23'
+
+            docker rmi -f 'firethorn/java:8-1'
+            docker build \
+                --tag 'firethorn/java:8-1' \
+                'java/8'
+
+            docker rmi -f 'firethorn/adql-pgsql:9.4-1'
+            docker build \
+                --tag 'firethorn/adql-pgsql:9.4-1' \
+                'adql/pgsql'
+
+            docker rmi -f 'firethorn/adql-mysql:5.6-1'
+            docker build \
+                --tag 'firethorn/adql-mysql:5.6-1' \
+                'adql/mysql'
+
+            docker rmi -f 'firethorn/adql-mariadb:10.0-1'
+            docker build \
+                --tag 'firethorn/adql-mariadb:10.0-1' \
+                'adql/mariadb'
+
+            docker rmi -f 'firethorn/adql-derby:10.12-1'
+            docker build \
+                --tag 'firethorn/adql-derby:10.12-1' \
+                'adql/derby'
+
+            docker rmi -f 'firethorn/adql-hsqldb:2.3-1'
+            docker build \
+                --tag 'firethorn/adql-hsqldb:2.3-1' \
+                'adql/hsqldb'
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Test our HyperSQL container.
+#[user@desktop]
+    
+    datadir=$(mktemp -d)
+    source "${HOME:?}/firethorn.settings"
+    cp "${FIRETHORN_CODE}/docker/adql/hsqldb/sql/alpha-source.sql" "${datadir}/alpha-source.sql"
+
+    docker run --detach \
+        --name hsqldb \
+        --volume "${datadir}:/database.init" \
+        firethorn/adql-hsqldb:2.3-1
+
+    docker logs -f hsqldb
+    
+    docker exec -it \
+        hsqldb \
+        entrypoint.sh \
+        sqltool
+
+        -- HSQLDB :
+        --  [ORDER BY <sort_column>] is separate
+        --  [LIMIT <row_count>] is separate
+        --  [OFFSET <row_offset>] is separate
+        --  [LIMIT] and [OFFSET] can be in any order
+
+        SELECT id, ra, dec FROM alpha_source ;
+        SELECT id, ra, dec FROM alpha_source LIMIT 10 ;
+        SELECT id, ra, dec FROM alpha_source OFFSET 10 ;
+        SELECT id, ra, dec FROM alpha_source LIMIT 10 OFFSET 10 ;
+        SELECT id, ra, dec FROM alpha_source OFFSET 10 LIMIT 10 ;
+
+        --
+        
+        SELECT id, ra, dec FROM alpha_source ORDER BY id DESC ;
+        SELECT id, ra, dec FROM alpha_source ORDER BY id DESC LIMIT 10 ;
+        SELECT id, ra, dec FROM alpha_source ORDER BY id DESC OFFSET 10 ;
+        SELECT id, ra, dec FROM alpha_source ORDER BY id DESC LIMIT 10 OFFSET 10 ;
+        SELECT id, ra, dec FROM alpha_source ORDER BY id DESC OFFSET 10 LIMIT 10 ;
+
+        \q
+
+    docker rm -v $(docker stop $(docker ps -aq))
+
+# -------------------------------------------------------------------------------------------
+# Test our Derby container.
+#[user@desktop]
+    
+    datadir=$(mktemp -d)
+    source "${HOME:?}/firethorn.settings"
+    cp "${FIRETHORN_CODE}/docker/adql/derby/sql/alpha-source.sql" "${datadir}/alpha-source.sql"
+
+    docker run --detach \
+        --name derby \
+        --volume "${datadir}:/database.init" \
+        firethorn/adql-derby:10.12-1
+
+    docker logs -f derby
+    
+    docker exec -it \
+        derby \
+        entrypoint.sh \
+        ij
+
+        -- Derby :
+        --  [ORDER BY sort_column] is separate
+        --  [OFFSET row_offset ROWS] is separate
+        --  [FETCH FIRST row_count ROWS ONLY] is separate
+        --  [FETCH] cannot come before [OFFSET]
+
+        SELECT id, ra, decl FROM alpha_source ;
+        SELECT id, ra, decl FROM alpha_source FETCH FIRST 10 ROWS ONLY ;
+        SELECT id, ra, decl FROM alpha_source OFFSET 10 ROWS ;
+        SELECT id, ra, decl FROM alpha_source OFFSET 10 ROWS FETCH FIRST 10 ROWS ONLY ;
+
+        --
+        
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC FETCH FIRST 10 ROWS ONLY ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ROWS ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ROWS FETCH FIRST 10 ROWS ONLY ;
+
+        quit;
+
+    docker rm -v $(docker stop $(docker ps -aq))
+
+# -------------------------------------------------------------------------------------------
+# Test our MySQL container.
+#[user@desktop]
+
+    datadir=$(mktemp -d)
+    source "${HOME:?}/firethorn.settings"
+    cp "${FIRETHORN_CODE}/docker/adql/mysql/sql/alpha-source.sql" "${datadir}/alpha-source.sql"
+
+    docker run --detach \
+        --name mysql \
+        --volume "${datadir}:/database.init" \
+        firethorn/adql-mysql:5.6-1
+
+    docker logs -f mysql
+
+    docker exec -it \
+        mysql \
+        entrypoint.sh \
+        mysql
+
+        -- MySQL :
+        --  [ORDER BY <sort_column>] is separate
+        --  [LIMIT <row_count>] is separate
+        --  [OFFSET <row_offset>] requires [LIMIT <row_count>]
+
+        SELECT id, ra, decl FROM alpha_source ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 10,10 ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 4294967295 OFFSET 10 ;
+
+        --
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10,10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 4294967295 OFFSET 10 ;
+
+        -- SELECT id, ra, decl FROM alpha_source OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source LIMIT 10,10 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source LIMIT  0 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source LIMIT -1 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10,10 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT  0 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT -1 OFFSET 10 ;
+
+        \q
+        
+# -------------------------------------------------------------------------------------------
+# Test our MariaDB container.
+#[user@desktop]
+
+    datadir=$(mktemp -d)
+    source "${HOME:?}/firethorn.settings"
+    cp "${FIRETHORN_CODE}/docker/adql/mariadb/sql/alpha-source.sql" "${datadir}/alpha-source.sql"
+
+    docker run --detach \
+        --name mariadb \
+        --volume "${datadir}:/database.init" \
+        firethorn/adql-mariadb:10.0-1
+
+    docker logs -f mysql
+
+    docker exec -it \
+        mysql \
+        entrypoint.sh \
+        mysql
+
+        -- MariaDB :
+        --  [ORDER BY <sort_column>] is separate
+        --  [LIMIT <row_count>] is separate
+        --  [OFFSET <row_offset>] requires [LIMIT <row_count>]
+
+        SELECT id, ra, decl FROM alpha_source ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 10,10 ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 4294967295 OFFSET 10 ;
+
+        --
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10,10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 4294967295 OFFSET 10 ;
+
+        -- SELECT id, ra, decl FROM alpha_source OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source LIMIT 10,10 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source LIMIT  0 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source LIMIT -1 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10,10 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT  0 OFFSET 10 ;
+        -- SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT -1 OFFSET 10 ;
+
+        \q
+
+# -------------------------------------------------------------------------------------------
+# Test our PostgreSQL container.
+#[user@desktop]
+
+    datadir=$(mktemp -d)
+    source "${HOME:?}/firethorn.settings"
+    cp "${FIRETHORN_CODE}/docker/adql/pgsql/sql/alpha-source.sql" "${datadir}/alpha-source.sql"
+
+    docker run --detach \
+        --name pgsql \
+        --volume "${datadir}:/database.init" \
+        firethorn/adql-pgsql:9.4-1
+
+    docker logs -f pgsql
+
+    docker exec -it \
+        pgsql \
+        entrypoint.sh \
+        psql
+
+
+        SELECT id, ra, decl FROM alpha_source ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+        SELECT id, ra, decl FROM alpha_source OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 OFFSET 10 ;
+
+        --
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ;
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 OFFSET 10 ;
+
+        -- PostgreSQL :
+        --  [ORDER BY sort_column] is separate
+        --  [LIMIT row_count] is separate
+        --  [OFFSET row_offset] is separate
+
+# -------------------------------------------------------------------------------------------
+# Test our SQLServer container.
+#[user@desktop]
+
+        -- MSSQL :
+        --  [ORDER BY <sort_column> OFFSET <row_offset> ROWS FETCH NEXT <row_count> ROWS ONLY
+        --
+        --  [OFFSET <row_offset>] is requires [ORDER BY]
+        --  [ORDER BY 1] is allowed
+        --
+        --  [FETCH NEXT 10 ROWS ONLY] requires [OFFSET]
+        --  [OFFSET 0] is allowed
+
+

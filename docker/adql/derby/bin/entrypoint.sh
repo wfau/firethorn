@@ -25,16 +25,24 @@ IFS=$'\n\t'
 
 #
 # Install directory
-: ${servercode:=/var/local/derby}
+: ${servercode:=/usr/lib/derby}
 derbybin="${servercode}/db-derby-${derbyversion}-bin"
 derbylib=${derbybin}/lib
 
 #
 # Database configuration.
-: ${databaseconf:=/database.conf}
-if [ -e "${databaseconf}" ]
+: ${databaseconfig:=/database.config}
+if [ -e "${databaseconfig}" ]
 then
-    source "${databaseconf}"
+    source "${databaseconfig}"
+fi
+
+#
+# Saved configuration.
+: ${databasesave:=/database.save}
+if [ -e "${databasesave}" ]
+then
+    source "${databasesave}"
 fi
 
 #
@@ -43,14 +51,14 @@ fi
 
 #
 # Default setings
-: ${systemuser:=derby}
-
 : ${admindata:=derby}
 : ${adminuser:=derby}
 : ${adminpass:=$(pwgen 10 1)}
 
+: ${serveruser:=derby}
 : ${serverdata:=/var/lib/derby}
 : ${serverport:=1527}
+: ${serveripv4:=0.0.0.0}
 
 : ${databasename:=$(pwgen 10 1)}}
 : ${databaseuser:=$(pwgen 10 1)}}
@@ -63,8 +71,8 @@ else
 fi
 
 #
-# Save our settings
-cat > /database.settings << EOF
+# Saved configuration.
+cat > "${databasesave}" << EOF
 #
 # Admin settings
 adminuser=${adminuser}
@@ -72,8 +80,10 @@ adminpass=${adminpass}
 
 #
 # System settings
+serveruser=${serveruser}
 serverdata=${serverdata}
 serverport=${serverport}
+serveripv4=${serveripv4}
 
 #
 # Derby settings
@@ -86,28 +96,23 @@ derbyversion=${derbyversion}
 databasename=${databasename}
 databaseuser=${databaseuser}
 databasepass=${databasepass}
-databaseinit=${databaseinit}
 EOF
 
 #
-# Display our settings
-cat /database.settings
-
-#
-# Check the first argument.
+# Start database server.
 if [ "${1:-start}" = 'start' ]
 then
 
     #
     # Check the system user account.
-    echo "Checking system user [${systemuser}]"
-    if [ -z $(id -u "${systemuser}" 2> /dev/null) ]
+    echo "Checking system user [${serveruser}]"
+    if [ -z $(id -u "${serveruser}" 2> /dev/null) ]
     then
-        echo "Creating system user [${systemuser}]"
+        echo "Creating system user [${serveruser}]"
         useradd \
             --system \
             --home-dir "${serverdata}" \
-            "${systemuser}"
+            "${serveruser}"
     fi
 
     #
@@ -120,12 +125,13 @@ then
     fi
 
     echo "Updating database directory [${serverdata}]"
-    chown -R "${systemuser}" "${serverdata}"
-    chgrp -R "${systemuser}" "${serverdata}"
+    chown -R "${serveruser}" "${serverdata}"
+    chgrp -R "${serveruser}" "${serverdata}"
     chmod 'u=rwx,g=,o=' "${serverdata}"
 
     #
     # Use the database directory
+    #TODO User properties instead.
     pushd "${serverdata}"
 
 #
@@ -140,7 +146,7 @@ then
 
         #
         # Derby client command
-        derbycmd=( gosu "${systemuser}" java -classpath "${derbylib}" -jar "${derbylib}/derbyrun.jar" ij )
+        derbycmd=( gosu "${serveruser}" java -classpath "${derbylib}" -jar "${derbylib}/derbyrun.jar" ij )
 
         #
         # Derby connect command
@@ -160,7 +166,7 @@ then
 
         #
         # Derby client command
-        derbycmd=( gosu "${systemuser}" )
+        derbycmd=( gosu "${serveruser}" )
         derbycmd+=( java -classpath "${derbylib}" )
         derbycmd+=( -Dij.database=jdbc:derby:${databasename} )
         derbycmd+=( -jar "${derbylib}/derbyrun.jar" )
@@ -194,14 +200,34 @@ then
 
     echo ""
     echo "Starting database service"
+    #TODO Replace pushd with properties
     pushd "${serverdata}"
-        gosu "${systemuser}" \
+        gosu "${serveruser}" \
             java \
             -classpath ${derbylib} \
             -jar ${derbylib}/derbyrun.jar \
             server \
             start
     popd
+
+#
+# TODO SQLTool client ?
+
+#
+# Derby client.
+elif [ "${1}" = 'ij' ]
+then
+
+    shift
+    
+    echo ""
+    echo "Running Derby ij client"
+    java \
+        -classpath "${derbylib}" \
+        -Dij.database=jdbc:derby://localhost:${serverport}/${databasename} \
+        -jar "${derbylib}/derbyrun.jar" \
+        ij \
+        $@
 
 #
 # User command.

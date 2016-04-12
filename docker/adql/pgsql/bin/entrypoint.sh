@@ -25,10 +25,18 @@ IFS=$'\n\t'
 
 #
 # Database configuration.
-: ${databaseconf:=/database.conf}
-if [ -e "${databaseconf}" ]
+: ${databaseconfig:=/database.config}
+if [ -e "${databaseconfig}" ]
 then
-    source "${databaseconf}"
+    source "${databaseconfig}"
+fi
+
+#
+# Saved configuration.
+: ${databasesave:=/database.save}
+if [ -e "${databasesave}" ]
+then
+    source "${databasesave}"
 fi
 
 #
@@ -41,8 +49,10 @@ fi
 : ${adminuser:=postgres}
 : ${adminpass:=$(pwgen 10 1)}
 
+: ${serveruser:=postgres}
 : ${serverdata:=/var/lib/pgsql/data}
 : ${serverport:=5432}
+: ${serveripv4:=0.0.0.0}
 : ${serversock:=/var/lib/pgsql/pgsql.sock}
 : ${serverlocale:=en_GB.UTF8}
 : ${serverencoding:=UTF8}
@@ -58,8 +68,8 @@ else
 fi
 
 #
-# Save our settings
-cat > /database.settings << EOF
+# Saved configuration.
+cat > "${databasesave}" << EOF
 #
 # Admin settings
 admindata=${admindata}
@@ -68,23 +78,20 @@ adminpass=${adminpass}
 
 #
 # System settings
+serveruser=${serveruser}
 serverdata=${serverdata}
 serverport=${serverport}
+serveripv4=${serveripv4}
 serversock=${serversock}
-#serverlocale=${serverlocale}
-#serverencoding=${serverencoding}
+serverlocale=${serverlocale}
+serverencoding=${serverencoding}
 
 #
 # Database settings
 databasename=${databasename}
 databaseuser=${databaseuser}
 databasepass=${databasepass}
-databaseinit=${databaseinit}
 EOF
-
-#
-# Display our settings
-cat /database.settings
 
 #
 # Create our password file
@@ -97,7 +104,7 @@ chgrp root  /root/.pgpass
 chmod u=rw,g=,o= /root/.pgpass
 
 #
-# Check the first argument.
+# Start database server.
 if [ "${1:-start}" = 'start' ]
 then
 
@@ -111,8 +118,8 @@ then
     fi
 
     echo "Updating database directory [${serverdata}]"
-    chown -R 'postgres' "${serverdata}"
-    chgrp -R 'postgres' "${serverdata}"
+    chown -R "${serveruser}" "${serverdata}"
+    chgrp -R "${serveruser}" "${serverdata}"
     chmod 'u=rwx,g=,o=' "${serverdata}"
 
     #
@@ -122,8 +129,8 @@ then
     then
         echo "Creating socket directory [$(dirname ${serversock})]"
         mkdir -p "$(dirname ${serversock})"
-        chown -R 'postgres' "$(dirname ${serversock})"
-        chgrp -R 'postgres' "$(dirname ${serversock})"
+        chown -R "${serveruser}" "$(dirname ${serversock})"
+        chgrp -R "${serveruser}" "$(dirname ${serversock})"
         chmod u=rwx "$(dirname ${serversock})"
     fi
 
@@ -140,7 +147,8 @@ then
 
         pwfile=$(mktemp)
         echo "${adminpass}" > ${pwfile}
-        chown 'postgres:postgres'  ${pwfile}
+        chown "${serveruser}" ${pwfile}
+        chgrp "${serveruser}" ${pwfile}
         chmod 'u=r,g=,o=' ${pwfile}
         
         gosu postgres \
@@ -158,7 +166,7 @@ then
         # Run a local instance.
         # Does not listen on TCP/IP and waits until start finishes
         echo "Running local PostgreSQL instance"
-        gosu postgres \
+        gosu "${serveruser}" \
             /usr/bin/pg_ctl \
             --pgdata "${serverdata}"  \
             -o "-c listen_addresses=''" \
@@ -213,7 +221,7 @@ then
         #
         # Stop the local instance.
         echo "Shutting down local instance"
-        gosu postgres \
+        gosu "${serveruser}" \
             /usr/bin/pg_ctl \
             --pgdata "${serverdata}"  \
             -m fast \
@@ -227,11 +235,23 @@ then
 
     echo ""
     echo "Starting database service"
-    gosu postgres \
+    gosu "${serveruser}" \
         /usr/bin/postgres \
             -h '*' \
             -D "${serverdata}" \
             -p "${serverport}" \
+
+#
+# PostgreSQL client
+elif [ "${1}" = 'psql' ]
+then
+
+    echo ""
+    echo "Running PostgreSQL client"
+    psql \
+        --user "${databaseuser}" \
+        --dbname "${databasename}" \
+        $@
 
 #
 # User command.

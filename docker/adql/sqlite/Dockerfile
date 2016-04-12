@@ -1,4 +1,3 @@
-#!/bin/sh
 #
 # Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
@@ -15,29 +14,38 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
+FROM firethorn/fedora:23-1
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Strict error checking.
-# http://redsymbol.net/articles/unofficial-bash-strict-mode/
-set -euo pipefail
-IFS=$'\n\t'
+# SQLite version
+ENV sqliteversion=3.11.0
 
 #
-# Load our database settings.
-source /database.saved 
+# Default port number.
+ENV serverport 
+EXPOSE ${serverport}
 
 #
-# Create our password file
-if [ ! -e "${HOME}/.pgpass" ]
-then
-    echo "*:*:*:${databaseuser}:${databasepass}" > "${HOME}/.pgpass"
-    chown "$(id -un)" "${HOME}/.pgpass"
-    chgrp "$(id -un)" "${HOME}/.pgpass"
-    chmod u=rw,g=,o=  "${HOME}/.pgpass"
-fi
+# Default data path.
+ENV serverdata /var/lib/sqlite
+VOLUME ${serverdata}
 
 #
-# Connect to our database.
-eval "psql --user \"${databaseuser}\" --dbname \"${databasename}\" $@"
+# Add our install scripts. 
+COPY bin /usr/local/bin/
+RUN chmod a+x /usr/local/bin/*.sh
+
+#
+# Run our install scripts.
+RUN /usr/local/bin/install-sqlite.sh
+
+#
+# Install our entry point script.
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+#
+# Set the default command.
+CMD ["start"]
 

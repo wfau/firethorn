@@ -25,7 +25,7 @@ IFS=$'\n\t'
 
 #
 # Install directory
-: ${servercode:=/var/local/hsqldb}
+: ${servercode:=/usr/lib/hsqldb}
 hsqldbdir=${servercode}/hsqldb-${hsqldbversion}/hsqldb
 hsqldbbin=${hsqldbdir}/bin
 hsqldblib=${hsqldbdir}/lib
@@ -71,6 +71,7 @@ else
     : ${databasepass:=$(pwgen 10 1)}
 fi
 
+# Saved configuration.
 cat > "${databasesave}" << EOF
 #
 # Admin settings
@@ -99,11 +100,7 @@ databasepass=${databasepass}
 EOF
 
 #
-# Display our config
-#cat /database.conf
-
-#
-# Check the first argument.
+# Start database server.
 if [ "${1:-start}" = 'start' ]
 then
 
@@ -191,14 +188,16 @@ EOF
     echo ""
 
     #
-    # Update our client properties file.
-    cat > ${serverdata}/sqltool.rc << EOF
+    # Create our client properties file.
+    cat > /root/sqltool.rc << EOF
 urlid ${databasename}
 url jdbc:hsqldb:hsql://localhost:${serverport}/${databasename}
 username ${databaseuser}
 password ${databasepass}
 transiso TRANSACTION_READ_COMMITTED
 EOF
+    chown root:root  /root/sqltool.rc
+    chmod u=rw,g=,o= /root/sqltool.rc
 
     #
     # Create our server properties file.
@@ -218,18 +217,19 @@ EOF
         --props ${serverdata}/server.properties\
 
 #
-# SQLTool command.
+# SQLTool client.
 elif [ "${1}" = 'sqltool' ]
 then
 
+    shift
+
     echo ""
-    echo "Starting SQLTool client"
-    gosu "${serveruser}" \
-        java \
-            -classpath ${hsqldblib} \
-            -jar ${hsqldblib}/sqltool.jar \
-            --rcFile ${serverdata}/sqltool.rc \
-            ${databasename}
+    echo "Running SQLTool client"
+    java \
+        -classpath ${hsqldblib} \
+        -jar ${hsqldblib}/sqltool.jar \
+        ${databasename} \
+        $@
 
 #
 # User command.
