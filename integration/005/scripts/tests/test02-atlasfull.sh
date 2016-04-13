@@ -51,9 +51,9 @@ test_email = "test@test.roe.ac.uk"
 sample_query="Select top 10 * from Filter" 
 sample_query_expected_rows=10
 limit_query = None
-sql_rowlimit = 1000
+sql_rowlimit = ${defaultrows:?}
 sql_timeout = 1000
-firethorn_timeout = 6000000
+firethorn_timeout = 1000
 query_mode = "AUTO" 
 
 #------------------- Test Configurations ----------------------------------#
