@@ -127,19 +127,19 @@ public class BlueQueryController
     public static final String REQUEST_WAIT_PARAM = "blue.query.wait" ;
 
     /**
-     * Request param name for the {@link BlueQuery.Callback} {@link BlueTask.TaskState}, [{@value}].
+     * Request param name for the {@link BlueQuery.CallbackEvent} {@link BlueTask.TaskState}, [{@value}].
      *
      */
     public static final String CALLBACK_TASK_STATE = "blue.query.status" ;
 
     /**
-     * Request param name for the {@link BlueQuery.Callback} row count, [{@value}].
+     * Request param name for the {@link BlueQuery.CallbackEvent} row count, [{@value}].
      *
      */
     public static final String CALLBACK_RESULT_COUNT = "blue.query.results.count" ;
 
     /**
-     * Request param name for the {@link BlueQuery.Callback} result state, [{@value}].
+     * Request param name for the {@link BlueQuery.CallbackEvent} result state, [{@value}].
      *
      */
     public static final String CALLBACK_RESULT_STATE = "blue.query.results.state" ;
@@ -420,11 +420,11 @@ public class BlueQueryController
         }
 
     /**
-     * {@link RequestMethod#POST} request to send a {@link BlueQuery.Callback} message.
+     * {@link RequestMethod#POST} request to send a {@link BlueQuery.CallbackEvent} message.
      * <br/>Request path : [{@value BlueQuery.LinkFactory#CALLBACK_PATH}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @param next The next {@link BlueTask} {@link TaskState} status, [{@value }].
-     * @param count The {@link BlueQuery.Callback} rowcount, [{@value }].
+     * @param count The {@link BlueQuery.CallbackEvent} rowcount, [{@value }].
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
      * @throws InvalidStateTransitionException 
      * @throws IdentifierFormatException 
@@ -457,7 +457,7 @@ public class BlueQueryController
                 services.idents().ident(
                     ident
                     ),
-                new BlueQuery.Callback()
+                new BlueQuery.CallbackEvent()
                     {
                     @Override
                     public TaskState state()
@@ -546,7 +546,7 @@ public class BlueQueryController
     	}
     
     /**
-     * {@link RequestMethod#POST} request to send a {@link BlueQuery.Callback} message.
+     * {@link RequestMethod#POST} request to send a {@link BlueQuery.CallbackEvent} message.
      * <br/>Request path : [{@value BlueQuery.LinkFactory#CALLBACK_PATH}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * 
@@ -572,7 +572,7 @@ public class BlueQueryController
                 services.idents().ident(
                     ident
                     ),
-                new BlueQuery.Callback()
+                new BlueQuery.CallbackEvent()
                     {
                     @Override
                     public TaskState state()

@@ -27,11 +27,13 @@ import org.slf4j.LoggerFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
-import uk.ac.roe.wfau.firethorn.ogsadai.server.blue.RequestContext;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
 import uk.org.ogsadai.activity.MatchedIterativeActivity;
+import uk.org.ogsadai.activity.extension.ActivityInitialisationException;
+import uk.org.ogsadai.activity.extension.ConfigurableActivity;
 import uk.org.ogsadai.activity.extension.ResourceActivity;
 import uk.org.ogsadai.activity.extension.SecureActivity;
 import uk.org.ogsadai.activity.io.ActivityInput;
@@ -50,6 +52,8 @@ import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
 import uk.org.ogsadai.activity.sql.SQLBulkLoadTupleActivity;
 import uk.org.ogsadai.activity.sql.SQLUtilities;
 import uk.org.ogsadai.authorization.SecurityContext;
+import uk.org.ogsadai.config.Key;
+import uk.org.ogsadai.config.KeyValueProperties;
 import uk.org.ogsadai.metadata.MetadataWrapper;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionProvider;
@@ -65,8 +69,23 @@ import uk.org.ogsadai.tuple.TupleMetadata;
  */
 public class JdbcInsertDataActivity
 extends MatchedIterativeActivity
-implements ResourceActivity, SecureActivity
+implements ResourceActivity, SecureActivity, ConfigurableActivity
+
     {
+
+    /**
+     * Delay(ms) before the final database write, used during debugging
+     * to test for race conditions on completion.
+     * http://redmine.roe.ac.uk/issues/952
+     *   
+     * class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc.JdbcInsertDataActivity
+     * description=
+     * CONFIG
+     * final.delay=5000
+     * END
+     *
+     */
+    public static final Key FINAL_DELAY_KEY = new Key("final.delay"); 
 
     /**
      * Debug logger.
@@ -220,9 +239,9 @@ implements ResourceActivity, SecureActivity
         {
     	//
     	// Initialise our callback handler.
-		final CallbackHandler callback = new CallbackHandler(
-			context
-			); 	        
+//		final CallbackHandler callback = new CallbackHandler(
+//			context
+//			); 	        
     	//
     	// Initialise our table name.
         final String table = (String) inputs[0];
@@ -310,9 +329,12 @@ implements ResourceActivity, SecureActivity
                     	// Callback if not within the same time slot.
                     	if (diff > slot)
     						{
-    	        			callback.running(
-	        					total
-	        					);
+    						if (context != null)
+    						    {
+                                context.handler().running(
+                                    total
+                                    );
+    						    }
     	        			prev = next ;
     						}
                     	}
@@ -321,16 +343,39 @@ implements ResourceActivity, SecureActivity
             finally {
 
             	/*
-            	 * 
-            	logger.debug("finally");
-	            logger.debug("total [" + total +"]");
-	            logger.debug("count [" + count +"]");
-	            logger.debug("block [" + block +"]");
-	            logger.debug("large [" + large +"]");
-            	 * 
+            	 */ 
+            	logger.debug("Finally");
+	            logger.debug("Total [" + total +"]");
+	            logger.debug("Count [" + count +"]");
+	            logger.debug("Block [" + block +"]");
+	            logger.debug("Large [" + large +"]");
+            	/* 
             	 */
-            
-	            //
+
+	            if (config.containsKey(FINAL_DELAY_KEY))
+	                {
+    	            Long delay = Long.valueOf(
+                        (String) config.get(
+                            FINAL_DELAY_KEY
+                            )
+                        );
+                    logger.debug("Delay [" + delay + "]");
+    	            try {
+    	                for (int i = 0 ; i < delay ; i+= 1000)
+    	                    {
+                            logger.debug("....");
+                            Thread.sleep(
+                                1000
+                                );
+	                        }
+                        }
+                    catch (final Exception ouch)
+                        {
+                        logger.debug("Exception [" + ouch.getMessage() + "]");
+                        }
+                    }
+
+                //
                 // Write the final batch.
                 if (count != 0)
                     {
@@ -362,12 +407,6 @@ implements ResourceActivity, SecureActivity
             //
             // DataError occurs when the source pipe is closed by Limits timeout.
             done = true ;
-/*
- * DataError occurs when pipe is closed by Limits.
-            throw new ActivityProcessingException(
-                ouch
-                );
- */                
             }
         catch (final SQLException ouch)
             {
@@ -420,14 +459,20 @@ implements ResourceActivity, SecureActivity
             {
             if (done)
             	{
-    			callback.completed(
-					total
-					);
+            	if (context != null)
+            	    {
+                    context.handler().completed(
+                        total
+                        );
+            	    }
             	}
             else {
-				callback.failed(
-					total
-					);
+                if (context != null)
+                    {
+                    context.handler().failed(
+    					total
+    					);
+                    }
             	}
             iterativeStageComplete();
             }
@@ -484,5 +529,18 @@ implements ResourceActivity, SecureActivity
                 connection
                 );
             }
+        }
+
+    /**
+     * Resource settings.
+     *
+     */
+    private KeyValueProperties config ;
+
+    @Override
+    public void configureActivity(KeyValueProperties config)
+    throws ActivityInitialisationException
+        {
+        this.config = config;
         }
     }

@@ -685,6 +685,7 @@ id=uk.ac.roe.wfau.firethorn.JdbcInsertData
 class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc.JdbcInsertDataActivity
 description=
 CONFIG
+final.delay=60000
 END
 id=uk.ac.roe.wfau.firethorn.JdbcSelectData
 class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.jdbc.JdbcSelectDataActivity

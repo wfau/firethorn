@@ -1,0 +1,122 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        devname=zrq-ogsadai-limit
+        gedit "doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Code changes ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install eclipse:eclipse
+
+    popd
+
+
+
+
+
+
+
+    #
+    # Create an enum to represent the callback messages.
+    package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue;
+
+    public interface CallbackParam
+        {
+
+        public enum ActivityState
+            {
+
+            PENDING(),
+            RUNNING(),
+            FAILED(),
+            CANCELLED(),
+            COMPLETED();
+
+            }
+
+        public enum ResultState
+            {
+
+            EMPTY(),
+            PARTIAL(),
+            TRUNCATED(),
+            COMPLETED();
+
+            }
+
+        public enum LimitType
+            {
+
+            ROW_LIMIT(),
+            CELL_LIMIT(),
+            TIME_LIMIT(),
+            SPACE_LIMIT();
+
+            }
+
+        }
+
+
+    LimitType is just a refinement of ResultState.TRUNCATED
+
+
+    #
+    # Limit activity truncates the results.
+    # Sets a status for the request.
+
+    #
+    # Change requestContext to ActivityContext ?
+
+    package uk.ac.roe.wfau.firethorn.ogsadai.server.blue;
+    public interface RequestContext
+        {
+
+        public void truncated();
+        public void truncated(final long count);
+        
+        public ActivityStatus status();
+        public status(final ActivityStatus  status);
+
+        }
+
+    #
+    # When the final callback is called, callback handler checks the ActivityStatus.
+    
+
+
+
+
+
