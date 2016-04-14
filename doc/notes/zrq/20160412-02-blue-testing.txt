@@ -463,7 +463,7 @@ EOF
         #
         
         #
-        # With the bug fix, the query status does not change until after the last blocjk of rows have been writtent to the database.
+        # With the bug fix, the query status does not change until after the last block of rows have been writtent to the database.
         # This avoids the race condition, and the client should always get the right number of rows. 
         #
 
