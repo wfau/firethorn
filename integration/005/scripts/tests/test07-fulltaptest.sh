@@ -22,7 +22,7 @@
 
 echo "*** Initialising test06 script [test07-fulltaptest.sh] ***"
 
-tap_service=http://192.168.122.19:8080/firethorn/tap/atlasdr1
+tap_service=$1
 
 
 echo "Running test on the following TAP Service :" ${tap_service:?}
