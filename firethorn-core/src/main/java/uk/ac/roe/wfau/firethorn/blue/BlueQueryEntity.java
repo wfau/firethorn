@@ -457,7 +457,7 @@ implements BlueQuery
         
         @Override
         @UpdateMethod
-        public BlueQuery callback(final Identifier ident, final BlueQuery.Callback message)
+        public BlueQuery callback(final Identifier ident, final BlueQuery.CallbackEvent message)
         throws IdentifierNotFoundException, InvalidStateRequestException
             {
             log.debug("callback(Identifier, CallbackEvent)");
@@ -1843,7 +1843,7 @@ implements BlueQuery
         }
     
     @Override
-    public void callback(final BlueQuery.Callback message)
+    public void callback(final BlueQuery.CallbackEvent message)
     throws InvalidStateRequestException
         {
         log.debug("callback(Callback)");

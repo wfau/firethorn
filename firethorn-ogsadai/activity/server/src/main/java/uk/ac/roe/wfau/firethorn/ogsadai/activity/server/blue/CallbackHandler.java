@@ -19,8 +19,6 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.slf4j.Logger;
@@ -30,25 +28,6 @@ import org.springframework.http.converter.json.MappingJacksonHttpMessageConverte
 import org.springframework.web.client.RestTemplate;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.CallbackParam;
-import uk.ac.roe.wfau.firethorn.ogsadai.security.FirethornSecurityContext;
-import uk.ac.roe.wfau.firethorn.ogsadai.server.blue.RequestContext;
-import uk.org.ogsadai.activity.ActivityProcessingException;
-import uk.org.ogsadai.activity.ActivityTerminatedException;
-import uk.org.ogsadai.activity.ActivityUserException;
-import uk.org.ogsadai.activity.MatchedIterativeActivity;
-import uk.org.ogsadai.activity.extension.SecureActivity;
-import uk.org.ogsadai.activity.io.ActivityInput;
-import uk.org.ogsadai.activity.io.BlockWriter;
-import uk.org.ogsadai.activity.io.ControlBlock;
-import uk.org.ogsadai.activity.io.PipeClosedException;
-import uk.org.ogsadai.activity.io.PipeIOException;
-import uk.org.ogsadai.activity.io.PipeTerminatedException;
-import uk.org.ogsadai.activity.io.TupleListActivityInput;
-import uk.org.ogsadai.activity.io.TupleListIterator;
-import uk.org.ogsadai.activity.io.TypedActivityInput;
-import uk.org.ogsadai.activity.sql.ActivitySQLException;
-import uk.org.ogsadai.authorization.SecurityContext;
-import uk.org.ogsadai.tuple.Tuple;
 
 /**
  * Toolkit for sending a callback message to FireThorn. 
@@ -66,10 +45,10 @@ public class CallbackHandler
         );
 
     /**
-     * Public constructor.
+     * Protected constructor.
      *
      */
-    public CallbackHandler(final RequestContext context)
+    protected CallbackHandler(final RequestContext context)
         {
         super();
         this.context = context;
@@ -116,7 +95,7 @@ public class CallbackHandler
    public void truncated()
         {
         callback(
-            "COMPLETED",
+            null,
             "TRUNCATED",
             null
             );
@@ -125,7 +104,7 @@ public class CallbackHandler
    public void truncated(final Long count)
        {
        callback(
-           "COMPLETED",
+           null,
            "TRUNCATED",
            count
            );
@@ -186,13 +165,7 @@ public class CallbackHandler
 			else {
 				//
 				// Build our callback endpoint.
-				final StringBuilder endpoint = context.callback().endpoint();
-				endpoint.append(
-					"/blue/query/callback/"
-					);
-				endpoint.append(
-					context.ident()
-					);
+				final StringBuilder endpoint = context.endpoint();
 				
 		        logger.debug("Before callback");
 		        logger.debug("  Ident    [{}]", context.ident());

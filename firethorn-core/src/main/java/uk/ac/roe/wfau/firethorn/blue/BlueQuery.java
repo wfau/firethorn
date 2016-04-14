@@ -222,10 +222,10 @@ extends BlueTask<BlueQuery>
         public Iterable<BlueQuery> select(final AdqlResource resource);
 
         /**
-         * Handle a {@link Callback} message. 
+         * Handle a {@link CallbackEvent} message. 
          * 
          */
-        public BlueQuery callback(final Identifier ident, final Callback message)
+        public BlueQuery callback(final Identifier ident, final CallbackEvent message)
         throws IdentifierNotFoundException, InvalidStateRequestException;
 
         }
@@ -250,7 +250,7 @@ extends BlueTask<BlueQuery>
      * Public interface for a callback event.
      *  
      */
-    public static interface Callback
+    public static interface CallbackEvent
         {
         /**
          * The next {@link TaskState}.
@@ -287,14 +287,14 @@ extends BlueTask<BlueQuery>
         }
     
     /**
-     * Handle a {@link Callback} message. 
+     * Handle a {@link CallbackEvent} message. 
      * 
      */
-    public void callback(final BlueQuery.Callback message)
+    public void callback(final BlueQuery.CallbackEvent message)
     throws InvalidStateRequestException;
 
     /**
-     * The {@link Callback} URL (as a string).
+     * The {@link CallbackEvent} URL (as a string).
      *
      */
     public String callback();
