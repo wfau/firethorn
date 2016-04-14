@@ -95,7 +95,7 @@ public class CallbackHandler
    public void truncated()
         {
         callback(
-            "COMPLETED",
+            null,
             "TRUNCATED",
             null
             );
@@ -104,7 +104,7 @@ public class CallbackHandler
    public void truncated(final Long count)
        {
        callback(
-           "COMPLETED",
+           null,
            "TRUNCATED",
            count
            );
