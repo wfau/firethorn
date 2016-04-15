@@ -1387,7 +1387,7 @@ implements AdqlQuery, AdqlParserQuery
         final String name = field.name().trim().toLowerCase();
         //
         // Check for a duplicate.
-        if (fields.containsKey(name))
+        /*if (fields.containsKey(name))
             {
             throw new DuplicateFieldException(
                 field
@@ -1395,12 +1395,12 @@ implements AdqlQuery, AdqlParserQuery
             }
         //
         // Add the field.
-        else {
+        else {*/
             this.fields.put(
                 name,
                 field
                 );
-            }
+        //    }
         }
 
     /**
