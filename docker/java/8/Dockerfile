@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:23-1
+FROM firethorn/fedora:21.1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 ENV JAVA_VERSION 1.8.0
 
 #
 # Install Java
-RUN dnf install -y java-${JAVA_VERSION}-openjdk-headless
+RUN yum -y install java-${JAVA_VERSION}-openjdk-headless
 
