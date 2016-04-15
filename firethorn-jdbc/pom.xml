@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.0.14</version>
+        <version project='firethorn'>2.0.15</version>
     </parent>
 
     <artifactId>firethorn-jdbc</artifactId>
