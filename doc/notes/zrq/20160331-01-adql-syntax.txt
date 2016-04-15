@@ -1,0 +1,220 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+SQL 20nn (draft) standard
+http://www.wiscorp.com/SQLStandards.html
+
+    http://www.wiscorp.com/sql20nn.zip
+        7IWD2-02-Foundation-2011-12.pdf
+
+    Information technology — Database languages — SQL —
+    Part 2:
+    Foundation (SQL/Foundation)
+
+        "
+        A <query expression> can also optionally contain a <result offset clause>, which may limit the cardinality of
+        the derived table by removing a specified number of rows from the beginning of the derived table. If a <query
+        expression> contains both an <order by clause> and a <result offset clause>, then the rows in the derived table
+        are first sorted according to the <order by clause> and then limited by dropping the number of rows specified
+        in the <result offset clause> from the beginning of the result produced by the <query expression>. If the cardi-
+        nality of the result of an evaluation of a <query expression> is less than the offset value specified by a <result
+        offset clause>, then the derived table is empty.
+        "
+
+        "
+        A <query expression> can also optionally contain a <fetch first clause>, which may limit the cardinality of the
+        derived table. If a <query expression> contains both an <order by clause> and a <fetch first clause>, then the
+        rows in the derived table are first sorted according to the <order by clause> and then limited to the number of
+        rows specified in the <fetch first clause>. The <fetch first clause> may specify this limit either as an exact
+        number of rows, or as a percentage. In addition, if WITH TIES is specified, then any peers of retained rows
+        are also retained in the result. A <query expression> may contain both a <result offset clause> and a <fetch
+        first clause>, in which case the <result offset clause> is applied first, followed by the <fetch first clause>. If
+        the cardinality of the result of an evaluation of a <query expression> is less than the limit specified by a <fetch
+        first clause>, then the <fetch first clause> has no effect on the derived table.
+        "
+
+        <query expression> ::=
+            [ <with clause> ]
+            <query expression body>
+            [ <order by clause> ]
+            [ <result offset clause> ] 
+            [ <fetch first clause> ]
+      
+        <order by clause> ::=
+            ORDER BY <sort specification list>
+
+        <result offset clause> ::=
+            OFFSET <offset row count> { ROW | ROWS }
+
+        <fetch first clause> ::=
+            FETCH { FIRST | NEXT } [ <fetch first quantity> ] { ROW | ROWS } { ONLY | WITH TIES }
+
+        <fetch first quantity> ::=
+            <fetch first row count>
+          | <fetch first percentage>
+
+        <offset row count> ::=
+            <simple value specification>
+
+        <fetch first row count> ::=
+            <simple value specification>
+
+        <fetch first percentage> ::=
+            <simple value specification> PERCENT
+
+        <simple value specification> ::=
+            <literal>
+          | <host parameter name>
+          | <SQL parameter reference>
+          | <embedded variable name>
+
+        <literal> ::=
+            <signed numeric literal>
+          | <general literal>
+
+        <general literal> ::=
+            <character string literal>
+          | <national character string literal>
+          | <Unicode character string literal>
+          | <binary string literal>
+          | <datetime literal>
+          | <interval literal>
+          | <boolean literal>
+
+        <signed numeric literal> ::=
+            [ <sign> ] <unsigned numeric literal>
+
+        <unsigned numeric literal> ::=
+            <exact numeric literal>
+          | <approximate numeric literal>
+
+        <exact numeric literal> ::=
+            <unsigned integer> [ <period> [ <unsigned integer> ] ]
+          | <period> <unsigned integer>
+
+        <sign> ::=
+            <plus sign>
+          | <minus sign>
+
+        <approximate numeric literal> ::=
+            <mantissa> E <exponent>
+
+        <mantissa> ::=
+            <exact numeric literal>
+
+        <exponent> ::=
+            <signed integer>
+
+        <signed integer> ::=
+            [ <sign> ] <unsigned integer>
+
+        <unsigned integer> ::=
+            <digit>...
+
+        <boolean literal> ::=
+            TRUE
+          | FALSE
+          | UNKNOWN
+
+    <binary string literal> ::=
+        X <quote> [ <space>... ] [ { <hexit> [ <space>... ] <hexit> [ <space>... ] }... ] <quote>
+        [ { <separator> <quote> [ <space>... ] [ { <hexit> [ <space>... ] <hexit> [ <space>... ] }... ] <quote> }... ]
+
+    <hexit> ::=
+        <digit> | A | B | C | D | E | F | a | b | c | d | e | f
+
+
+
+
+
+
+    <character string literal> ::=
+        [ <introducer> <character set specification> ]
+        <quote> [ <character representation>... ] <quote>
+        [ { <separator> <quote> [ <character representation>... ] <quote> }... ]
+
+    <introducer> ::=
+        <underscore>
+
+    <character representation> ::=
+        <nonquote character>
+      | <quote symbol>
+
+    <nonquote character> ::=
+        !! See the Syntax Rules.
+
+    <quote symbol> ::=
+        <quote> <quote>
+
+    <national character string literal> ::=
+        N <quote> [ <character representation>... ]
+        <quote> [ { <separator> <quote> [ <character representation>... ] <quote> }... ]
+
+    <Unicode character string literal> ::=
+        [ <introducer> <character set specification> ]
+            U <ampersand> <quote> [ <Unicode representation>... ] <quote>
+            [ { <separator> <quote> [ <Unicode representation>... ] <quote> }... ]
+            <Unicode escape specifier>
+
+    <Unicode representation> ::=
+        <character representation>
+      | <Unicode escape value>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FND-999 The following Language Opportunity has been noted:
+Severity: Language Opportunity
+Reference: P02, SQL/Foundation, No specific location
+Note At: None.
+Source: CD1 2009, comment USA-P02-140
+Language Opportunity:
+The SQL standard is missing operators on binary data types (BINARY, VARBINARY, BLOB) that allow
+users to bitwise manipulate values. These operators (with straightforward semantics) are:
+— BITAND
+— BITOR
+— BITNOT
+Additionally, these operators could be enhanced to support binary integer values as well.
+Solution:
+None provided with comment.
+
+

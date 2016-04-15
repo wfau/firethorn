@@ -1,0 +1,109 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -------------------------------------------------------------------------------------------
+# Create our Fedora container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            docker build \
+                --tag firethorn/fedora:23.1 \
+                fedora/23
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Create our PostgreSQL container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            docker build \
+                --tag firethorn/adql-pgsql:94.1 \
+                adql/pgsql
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Test our PostgreSQL container.
+#[user@desktop]
+
+    pushd $(mktemp -d)
+
+cat > database.init << EOF
+pgsqllocale=en_GB.UTF8
+pgsqladminuser=mallard
+pgsqladminpass=secret
+databasepath=/data
+databaseport=1234
+databasename=mydb
+databaseuser=me
+databasepass=notellin
+EOF
+
+        source database.init
+
+        docker run --detach \
+            --name pgsql \
+            --volume "$(pwd)/database.init:/database.init" \
+            firethorn/adql-pgsql:94.1
+
+        docker logs -f pgsql
+
+        docker exec -it \
+            pgsql \
+            bash
+
+        docker exec -it \
+            pgsql \
+            psql \
+                --user "${pgsqladminuser:-postgres}" \
+                --dbname postgres \
+                --list
+
+        docker exec -it \
+            pgsql \
+            psql \
+                --user "${databaseuser:-postgres}" \
+                --dbname "${databasename:-postgres}" \
+                --list
+
+
+        docker stop pgsql
+        docker rm   pgsql
+
+        docker rmi firethorn/adql-fedora:23.1
+        docker rmi firethorn/adql-pgsql:9.1
+
+    popd
+
+

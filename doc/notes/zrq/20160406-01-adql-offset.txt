@@ -1,0 +1,130 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Strict error checking.
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -uo pipefail
+IFS=$'\n\t'
+
+# -------------------------------------------------------------------------------------------
+# Create our Derby container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            docker rmi -f 'firethorn/fedora:23-1'
+            docker build \
+                --tag 'firethorn/fedora:23-1' \
+                'fedora/23'
+
+            docker rmi -f 'firethorn/java:8-1'
+            docker build \
+                --tag 'firethorn/java:8-1' \
+                'java/8'
+
+            docker rmi -f 'firethorn/adql-derby:10.12-1'
+            docker build \
+                --tag 'firethorn/adql-derby:10.12-1' \
+                'adql/derby'
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Test our Derby container.
+#[user@desktop]
+
+    datadir=$(mktemp -d)
+    datacfg=$(mktemp)
+
+cat > ${datacfg} << EOF
+#serverdata=/data
+#serverport=1234
+#adminuser=mallard
+#adminpass=$(pwgen 10 1)
+#databasename=mydb
+#databaseuser=me
+#databasepass=$(pwgen 10 1)
+EOF
+
+cat > "${datadir}/01-alpha-source.sql" << 'EOSQL'
+
+CREATE TABLE alpha_source
+    (
+    id   INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
+    ra   DOUBLE PRECISION NOT NULL,
+    decl DOUBLE PRECISION NOT NULL,
+    PRIMARY KEY (id)
+    );
+
+EOSQL
+
+    source "${HOME:?}/firethorn.settings"
+    gzip -c "${FIRETHORN_CODE}/docker/adql/data/alpha-source.dat" > "${datadir}/02-alpha-source.sql.gz"
+
+#   chmod a+x "${FIRETHORN_CODE}/docker/adql/derby/bin/entrypoint.sh"
+#   --volume "${FIRETHORN_CODE}/docker/adql/derby/bin/entrypoint.sh:/usr/local/bin/entrypoint.sh" \
+#   docker stop derby ; docker rm -v derby
+
+    docker run --detach \
+        --name derby \
+        --volume "${datacfg}:/database.conf" \
+        --volume "${datadir}:/database.init" \
+        firethorn/adql-derby:10.12-1
+
+    docker logs -f derby
+    
+    docker exec -it \
+        derby \
+        run-client.sh
+
+        SELECT id, ra, decl FROM alpha_source ;
+
+        SELECT id, ra, decl FROM alpha_source FETCH FIRST 10 ROWS ONLY ;
+
+        SELECT id, ra, decl FROM alpha_source OFFSET 10 ROWS ;
+
+        SELECT id, ra, decl FROM alpha_source OFFSET 10 ROWS FETCH FIRST 10 ROWS ONLY ;
+
+        --
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC FETCH FIRST 10 ROWS ONLY ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ROWS ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ROWS FETCH FIRST 10 ROWS ONLY ;
+
+    Derby :
+
+        [ORDER BY sort_column] is separate
+        [FETCH FIRST row_count ROWS ONLY] is separate
+        [OFFSET row_offset ROWS] is separate
+
+
+
+

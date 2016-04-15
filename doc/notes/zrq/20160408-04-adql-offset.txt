@@ -1,0 +1,151 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Strict error checking.
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -uo pipefail
+IFS=$'\n\t'
+
+# -------------------------------------------------------------------------------------------
+# Create our containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            docker rmi -f 'firethorn/oracle-linux:7.2-1'
+            docker build \
+                --tag 'firethorn/oracle-linux:7.2-1' \
+                'adql/oracle/oracle-linx/'
+
+            docker rmi -f 'firethorn/oracle-xe:11.2-1'
+            docker build \
+                --tag 'firethorn/oracle-xe:11.2-1' \
+                'adql/oracle/oracle-xe/'
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Test our Oracle container.
+#[user@desktop]
+    
+    datadir=$(mktemp -d)
+    source "${HOME:?}/firethorn.settings"
+    cp "${FIRETHORN_CODE}/docker/adql/oracle/sql/alpha-source.sql" "${datadir}/alpha-source.sql"
+
+    #
+    # You will need to download Oracle XE from Oracle site.
+    # http://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html
+
+    zipfile=/var/local/projects/edinburgh/oracle/docker/oracle-xe-11.2.0-1.0.x86_64.rpm.zip
+
+    docker run -it --rm \
+        --name oracle \
+        --volume "${datadir}:/database.init" \
+        --volume "${zipfile}:/zipfile" \
+        firethorn/oracle-xe:11.2-1 \
+        bash
+
+#
+# Activate shared memory
+cp /temp/oracle-shm /etc/init.d/oracle-shm
+chmod 755 /etc/init.d/oracle-shm
+/etc/init.d/oracle-shm start
+
+
+rm: cannot remove '/dev/shm': Is a directory
+mkdir: cannot create directory '/dev/shm': File exists
+mount: permission denied
+mount: mount point /run/shm does not exist
+
+
+
+        datadir=$(mktemp -d)
+        unzip -j -d ${datadir} /zipfile
+
+        yum localinstall -y "${datadir}/oracle-xe-11.2.0-1.0.x86_64.rpm"
+
+        # Installing : libaio-0.3.109-13.el7.x86_64
+        # /var/tmp/rpm-tmp.mChf0Q: line 257: [: 18446744073692774399: integer expression expected
+        # /var/tmp/rpm-tmp.mChf0Q: line 271: [: 18446744073692774399: integer expression expected
+        # sysctl: setting key "fs.file-max": Read-only file system
+        # Installing : oracle-xe-11.2.0-1.0.x86_64
+        # Executing post-install steps...
+        # You must run '/etc/init.d/oracle-xe configure' as the root user to configure the database.
+
+
+        printf 8080\\n1521\\noracle\\noracle\\ny\\n | /etc/init.d/oracle-xe configure
+
+        #Specify the HTTP port that will be used for Oracle Application Express [8080]:
+        #Specify a port that will be used for the database listener [1521]:
+        #Specify a password:
+        #Confirm the password:
+        #Do you want Oracle Database 11g Express Edition to be started on boot (y/n) [y]:
+
+                /etc/init.d/oracle-xe configure
+
+        Database Configuration failed.
+        Look into /u01/app/oracle/product/11.2.0/xe/config/log for details
+
+        pushd /u01/app/oracle/product/11.2.0/xe/config/log
+
+            CloneRmanRestore.log
+
+                ORA-00845: MEMORY_TARGET not supported on this system
+
+            cloneDBCreation.log
+
+                ORA-27101: shared memory realm does not exist
+
+            postDBCreation.log
+
+                ORA-01034: ORACLE not available
+                ORA-27101: shared memory realm does not exist
+                Linux-x86_64 Error: 2: No such file or directory
+                ORA-00845: MEMORY_TARGET not supported on this system
+
+
+
+
+        cat /etc/mtab | grep shm
+
+            shm /dev/shm tmpfs rw,seclabel,nosuid,nodev,noexec,relatime,size=65536k 0 0
+
+
+
+
+
+
+
+
+
+COPY bin/oracle-shm /etc/init.d/oracle-shm
+RUN chmod 755 /etc/init.d/oracle-shm
+RUN /etc/init.d/oracle-shm start
+
+
+
+

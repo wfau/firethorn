@@ -60,3 +60,257 @@
         ssh trop3 'hostname -f'
         ssh trop4 'hostname -f'
         
+        
+# -----------------------------------------------------
+# IPv6 subnets
+# https://en.wikipedia.org/wiki/IPv6_subnetting_reference
+
+    /48 - Typical assignment for larger sites (/48 = 65536 /64)
+
+    /56 - Minimal end sites assignment[3] (e.g. Home network) (/56 = 256 /64)
+
+    /64 - Single End-user LAN (default prefix size for SLAAC)
+
+
+# -----------------------------------------------------
+# A&A IPv6 allocation
+# http://support.aa.net.uk/IPv6
+#
+        
+    Customers are allocated a /48 block of addresses.
+    CPE [https://en.wikipedia.org/wiki/Customer-premises_equipment]
+
+    Usually a line will have at least one /64 block routed to it. 
+
+        2001:8b0:be72::/48
+        2001:8b0:be72:d4ea::/64        
+
+    So each customer has a /48 => 65536 * /64
+    One or more /64 is routed to each CPE line.
+
+# -----------------------------------------------------
+# Digital Ocean
+# https://www.digitalocean.com/community/tutorials/how-to-add-additional-ipv6-addresses-to-your-droplet
+
+
+    Digital Ocean addresses are netmask /64
+    
+    Each Droplet is allocated public, static /124 IPv6 range (16 * /128 addresses)
+
+    Public IPv4
+
+        Address : 46.101.38.168
+        Gateway : 46.101.0.1
+        Netmask : 255.255.192.0 
+
+    Private IPv4
+
+        Address : 10.131.14.227 
+        Netmask : 255.255.0.0 
+
+    Public IPv6
+
+        Address : 2a03:b0c0:1:d0::1d7:2001/64
+
+        Range   : 2a03:b0c0:1:d0::1d7:2000 - 2a03:b0c0:1:d0::1d7:200f 
+
+    If you have enabled IPv6, you will have a section of that identifies the IPv6 networking details.
+    Among this information, you will have a range of addresses labeled "Configurable address range".
+
+    The DigitalOcean backend is already set up to serve requests for these addresses to your Droplet.
+    However, you will need to configure the network within the Droplet so that it knows about the
+    additional addresses.
+
+    Example :
+    
+        ip -6 addr add new_IPv6_address_in_range/64 dev eth0
+
+        ip -6 addr show eth0
+
+
+# -----------------------------------------------------
+# Docker
+# https://docs.docker.com/engine/userguide/networking/default_network/ipv6/
+
+    Examples all assume that hosts are in a /64 subnet.
+
+    The subnet for Docker containers should at least have a size of /80.
+    This way an IPv6 address can end with the container’s MAC address and
+    you prevent NDP neighbor cache invalidation issues in the Docker layer.
+    
+    So if you have a /64 for your whole environment use /78 subnets for the
+    hosts and /80 for the containers. This way you can use 4096 hosts with
+    16 /80 subnets each.
+
+# -----------------------------------------------------
+# OpenStack
+# http://docs.openstack.org/liberty/networking-guide/adv-config-ipv6.html
+
+    Using OpenStack Networking with IPv6
+    http://docs.openstack.org/liberty/networking-guide/adv-config-ipv6.html
+
+        "
+        The length that delegated prefixes will be.
+        This must be 64 to work with the current OpenStack Networking reference implementation.
+        "
+
+# -----------------------------------------------------
+# DevStack
+# http://docs.openstack.org/developer/devstack/faq.html
+
+    DevStack
+    http://docs.openstack.org/developer/devstack/faq.html
+
+        "
+        DevStack is meant for developers and those who want to see how OpenStack really works.
+        "
+
+    Using DevStack with neutron Networking
+    http://docs.openstack.org/developer/devstack/guides/neutron.html
+    
+    Neutron
+    https://wiki.openstack.org/wiki/Neutron
+
+        "
+        Neutron is an OpenStack project to provide "networking as a service" between
+        interface devices (e.g., vNICs) managed by other Openstack services (e.g., nova).
+        "
+
+# -----------------------------------------------------
+# Open vSwitch
+# http://www.openvswitch.org/
+
+    Home page
+    http://www.openvswitch.org/
+
+
+    What is Open vSwitch?
+    https://github.com/openvswitch/ovs
+
+    Why Open vSwitch?
+    https://github.com/openvswitch/ovs/blob/master/WHY-OVS.md
+
+    https://github.com/openvswitch/ovs/blob/master/INSTALL.Debian.md
+    https://github.com/openvswitch/ovs/blob/master/INSTALL.Fedora.md
+    https://github.com/openvswitch/ovs/blob/master/INSTALL.KVM.md
+    https://github.com/openvswitch/ovs/blob/master/INSTALL.Libvirt.md
+    https://github.com/openvswitch/ovs/blob/master/INSTALL.Docker.md
+
+
+
+    Exploring OpenStack IPv6
+    https://wiki.opnfv.org/ipv6_opnfv_project/openstack_ipv6
+
+
+    Open vSwitch and OpenStack Neutron troubleshooting
+    http://www.yet.org/2014/09/openvswitch-troubleshooting/
+
+    Introducing Linux Network Namespaces
+    http://blog.scottlowe.org/2013/09/04/introducing-linux-network-namespaces/
+   
+    Generic Routing Encapsulation
+    https://en.wikipedia.org/wiki/Generic_Routing_Encapsulation
+
+    IPv6 Support for Generic Routing Encapsulation (GRE)
+    https://tools.ietf.org/html/rfc7676
+
+
+
+    What is Open vSwitch Database or OVSDB?
+    https://www.sdxcentral.com/resources/open-source/what-is-ovsdb/
+
+    What is Network Virtualization? – Definition
+    https://www.sdxcentral.com/resources/network-virtualization/whats-network-virtualization/
+
+    Network Virtualization
+    https://www.sdxcentral.com/flow/network-virtualization/
+
+
+
+# -----------------------------------------------------
+# Software Defined Networking (SDN)
+
+    Software Defined Networking
+    https://www.sdxcentral.com/flow/sdn-software-defined-networking/
+
+        "
+        The SDN Controller relays information to switches and routers via
+        southbound APIs, and to the applications with northbound APIs.
+        "
+
+    What are SDN Southbound APIs?
+    https://www.sdxcentral.com/resources/sdn/southbound-interface-api/
+
+        "
+        In a software-defined network (SDN) architecture, southbound
+        application program interfaces (APIs) (or SDN southbound APIs)
+        are used to communicate between the SDN Controller and the
+        switches and routers of the network. 
+        "
+
+    What are SDN Northbound APIs?
+    https://www.sdxcentral.com/resources/sdn/north-bound-interfaces-api/
+
+        "
+        SDN Northbound APIs are also used to integrate the SDN Controller with
+        automation stacks, such as Puppet, Chef, SaltStack, Ansible and CFEngine,
+        as well as orchestration platforms, such as OpenStack, VMware’s vCloudDirector
+        or the open source CloudStack.
+        
+        The goal is to abstract the inner-workings of the network, so that
+        application developers can ‘hook’ into the network and make changes
+        to accommodate the needs of the application without having to understand
+        exactly what that means for the network.
+        "
+
+
+# -----------------------------------------------------
+# OpenShift 
+# https://www.openshift.com/
+
+
+
+    https://hub.openshift.com/
+    https://hub.openshift.com/quickstarts/95-jboss-eap-6
+    https://hub.openshift.com/quickstarts/96-tomcat-7-jboss-ews-2-0
+
+
+# -----------------------------------------------------
+# Docker
+
+    Resource management in Docker
+    https://goldmann.pl/blog/2014/09/11/resource-management-in-docker/
+
+    Memory inside Linux containers
+    http://fabiokung.com/2014/03/13/memory-inside-linux-containers/
+
+
+    Useful to know about
+    systemd-cgls
+
+
+# -----------------------------------------------------
+# Chef
+
+    OpenStack using Chef
+    http://openstack.prov12n.com/vbrownbag-automated-openstack-deployment-with-chef/
+
+# -----------------------------------------------------
+# RaspberryPi
+
+    OpenStack on RaspberryPi
+    http://www.trescca.eu/index.php/2013-05-23-13-18-38/guides/118-raspberry-pi-as-compute-node-in-openstack.html
+
+    OpenStack on RaspberryPi (incomplete)
+    http://openstack.prov12n.com/openstack-on-raspberry-pi-part-1-why/
+    http://openstack.prov12n.com/openstack-on-raspberry-pi-part-2-getting-started/
+    http://openstack.prov12n.com/openstack-on-raspberry-pi-part-3-packages/
+
+    Emulated Pi
+    http://openstack.prov12n.com/2014/01/
+    
+    Docker on RaspberryPi
+    https://blog.docker.com/2015/10/raspberry-pi-dockercon-challenge-winner/
+
+
+

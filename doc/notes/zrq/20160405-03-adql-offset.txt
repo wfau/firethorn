@@ -1,0 +1,121 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Strict error checking.
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -uo pipefail
+IFS=$'\n\t'
+
+# -------------------------------------------------------------------------------------------
+# Create our PostgreSQL container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd docker
+
+            docker rmi -f 'firethorn/adql-pgsql:9.4-1'
+            docker build \
+                --tag 'firethorn/adql-pgsql:9.4-1' \
+                'adql/pgsql'
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Test our PostgreSQL container.
+#[user@desktop]
+
+    datadir=$(mktemp -d)
+    datacfg=$(mktemp)
+
+cat > ${datacfg} << EOF
+#serverdata=/data
+#serverport=1234
+#serversock=/tmp/pgsql.sock
+#adminuser=mallard
+#adminpass=$(pwgen 10 1)
+#databasename=mydb
+#databaseuser=me
+#databasepass=$(pwgen 10 1)
+EOF
+
+cat > "${datadir}/01-alpha-source.sql" << 'EOSQL'
+
+CREATE TABLE IF NOT EXISTS alpha_source
+    (
+    id   SERIAL PRIMARY KEY,
+    ra   DOUBLE PRECISION NOT NULL,
+    decl DOUBLE PRECISION NOT NULL
+    );
+
+EOSQL
+
+    source "${HOME:?}/firethorn.settings"
+    gzip -c "${FIRETHORN_CODE}/docker/adql/data/alpha-source.dat" > "${datadir}/02-alpha-source.sql.gz"
+
+#   chmod a+x "${FIRETHORN_CODE}/docker/adql/pgsql/bin/entrypoint.sh"
+#   --volume "${FIRETHORN_CODE}/docker/adql/pgsql/bin/entrypoint.sh:/usr/local/bin/entrypoint.sh" \
+#   docker stop pgsql ; docker rm -v pgsql
+
+    docker run --detach \
+        --name pgsql \
+        --volume "${datacfg}:/database.conf" \
+        --volume "${datadir}:/database.init" \
+        firethorn/adql-pgsql:9.4-1
+
+    docker logs -f pgsql
+    
+    docker exec -it \
+        pgsql \
+        run-psql.sh
+
+        SELECT id, ra, decl FROM alpha_source ;
+
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+
+        SELECT id, ra, decl FROM alpha_source OFFSET 10 ;
+
+        SELECT id, ra, decl FROM alpha_source LIMIT 10 OFFSET 10 ;
+
+        --
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC OFFSET 10 ;
+
+        SELECT id, ra, decl FROM alpha_source ORDER BY id DESC LIMIT 10 OFFSET 10 ;
+
+    PostgreSQL :
+
+        [ORDER BY sort_column] is separate
+        [LIMIT row_count] is separate
+        [OFFSET row_offset] is separate
+
+
+
+
+
