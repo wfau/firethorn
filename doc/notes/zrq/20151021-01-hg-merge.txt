@@ -84,7 +84,7 @@
         --name "docker-proxy" \
         --volume /etc/localtime:/etc/localtime:ro \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        firethorn/docker-proxy:1.1
+        firethorn/docker-proxy:1
 
     dockerip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' docker-proxy)
 
