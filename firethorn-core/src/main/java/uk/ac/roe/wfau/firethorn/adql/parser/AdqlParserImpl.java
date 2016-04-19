@@ -583,7 +583,8 @@ implements AdqlParser
             object,
             iter(
                 object
-                )
+                ),
+            true
             );
         }
 
@@ -592,7 +593,7 @@ implements AdqlParser
      * @throws AdqlParserException
      *
      */
-    protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter)
+    protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter, Boolean additem)
     throws AdqlParserException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)");
@@ -609,7 +610,8 @@ implements AdqlParser
                 process(
                     subject,
                     query,
-                    ((ClauseSelect) clause)
+                    ((ClauseSelect) clause),
+                    additem
                     );
                 }
             //
@@ -656,7 +658,8 @@ implements AdqlParser
                     query,
                     iter(
                         clause
-                        )
+                        ),
+                    false
                     );
                 }
             }
@@ -723,7 +726,8 @@ implements AdqlParser
             query,
             iter(
                 oper
-                )
+                ),
+            true
             );
         }
 
@@ -731,7 +735,7 @@ implements AdqlParser
      * Process the SELECT part of the query.
      *
      */
-    protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ClauseSelect clause)
+    protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ClauseSelect clause, Boolean additem)
     throws AdqlParserException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, ClauseSelect)");
@@ -745,21 +749,25 @@ implements AdqlParser
             // Specific case of SelectAll.
             if (item instanceof SelectAllColumns)
                 {
-                process(
-                    subject,
-                    query,
-                    (SelectAllColumns) item
-                    );
+            	if (additem){
+	                process(
+	                    subject,
+	                    query,
+	                    (SelectAllColumns) item
+	                    );
+	                }
                 }
             //
             // Everything else ....
             else {
-                additem(
-                    subject,
-                    wrap(
-                        item
-                        )
-                    );
+            	if (additem){
+	                additem(
+	                    subject,
+	                    wrap(
+	                        item
+	                        )
+	                    );
+            		}
                 }
             }
         }
