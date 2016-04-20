@@ -38,7 +38,8 @@
 
             The items above are meant to represent the information transmitted with
             each alert; the content of the alert packet itself will be formatted to confirm
-            to VOEvent (or other relevant) standard. Where the existing standard is         inadequate for LSST needs, LSST will propose extensions and work with the
+            to VOEvent (or other relevant) standard. Where the existing standard is
+            inadequate for LSST needs, LSST will propose extensions and work with the
             community to reach a common solution.
 
     Slides about the DPD Review (DPDR)
