@@ -104,6 +104,9 @@
     RFC-163 - Meeting agenda
     https://docs.google.com/document/d/1pxvQyRkch2aqpcvbcozQOnonTqyA5Ze9gBUZ9JLWyZU/edit
     
+    Sketches for event architecture    
+    https://drive.google.com/file/d/0B4ji6e1g-McdYW9WTHZmLW15R3M/view
+    
     RFC-163 - Notes from meeting - What goes in a VOEvent
     https://community.lsst.org/t/notes-from-rfc-163-what-goes-in-a-voevent/667
 
