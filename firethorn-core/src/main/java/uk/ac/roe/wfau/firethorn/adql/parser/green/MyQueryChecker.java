@@ -72,13 +72,5 @@ public class MyQueryChecker
             );
         }
     
-    @Override
-    public void check(final ADQLQuery query) throws ParseException
-        {
-        log.debug("check(ADQLQuery)");
-        super.check(
-            query
-            );
-        }
-
+  
     }

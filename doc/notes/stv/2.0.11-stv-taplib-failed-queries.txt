@@ -44,31 +44,4 @@ SELECT mjdObs  FROM Multiframe WHERE multiframeID = ANY (SELECT gmfID FROM atlas
 2016-04-14 21:39:38,908 - root - INFO - Firethorn Query: -1 row(s) returned. 
 
 
-2016-04-14 21:07:12,915 - root - INFO - Query : SELECT * FROM Filter  WHERE filterID IN (     SELECT filterID     FROM Filter 	WHERE filterID>0 GROUP BY filterID )
-2016-04-14 21:07:12,915 - root - INFO - ---------------------- Starting Query Test ----------------------
-2016-04-14 21:07:12,916 - root - INFO - Starting sql query :::2016-04-14 21:07:12
-2016-04-14 21:07:12,946 - root - INFO - Completed sql query :::2016-04-14 21:07:12
-2016-04-14 21:07:12,946 - root - INFO - SQL Query: 13 row(s) returned. 
-2016-04-14 21:07:12,946 - root - INFO - 
-2016-04-14 21:07:12,946 - root - INFO - Started Firethorn job :::2016-04-14 21:07:12
-2016-04-14 21:07:13,083 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/40239465
-2016-04-14 21:07:13,083 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/40239465
-2016-04-14 21:07:13,083 - root - INFO - PARSE_ERROR - Duplicate SELECT field [filterID]
-2016-04-14 21:07:13,083 - root - INFO - Finished Firethorn job :::2016-04-14 21:07:13
-2016-04-14 21:07:13,083 - root - INFO - Firethorn Query: -1 row(s) returned. 
-
-
-2016-04-15 14:11:21,376 - root - INFO - Query : SELECT ATLASsource.*,2*DEGREES(ASIN(sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2))*60 as distance FROM /**/ (SELECT * FROM /**/ atlasSource /**/ WHERE sourceId BETWEEN 730144440000 AND 730144540000) as atlasSource /**/ WHERE dec > -3.0 and dec < -1.5999999999999994 and RA >= 182.29903945358734 and RA <= 183.70096054641263 and ((cx * -0.997825033922517 + cy * -0.052293794140904105 + cz * -0.040131792532559725 ) >= 0.999925369660452)
-2016-04-15 14:11:21,378 - root - INFO - ---------------------- Starting Query Test ----------------------
-2016-04-15 14:11:21,379 - root - INFO - Starting sql query :::2016-04-15 14:11:21
-2016-04-15 14:11:22,452 - root - INFO - Completed sql query :::2016-04-15 14:11:22
-2016-04-15 14:11:22,452 - root - INFO - SQL Query: 1000 row(s) returned. 
-2016-04-15 14:11:22,452 - root - INFO - 
-2016-04-15 14:11:22,452 - root - INFO - Started Firethorn job :::2016-04-15 14:11:22
-2016-04-15 14:11:23,336 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/360490
-2016-04-15 14:11:27,400 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/360490
-2016-04-15 14:11:27,400 - root - INFO - Query error: A problem occurred while running your query
-2016-04-15 14:11:27,401 - root - INFO - Finished Firethorn job :::2016-04-15 14:11:27
-2016-04-15 14:11:27,401 - root - INFO - Firethorn Query: -1 row(s) returned. 
-
 

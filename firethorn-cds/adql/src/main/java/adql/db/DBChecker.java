@@ -370,7 +370,7 @@ public class DBChecker implements QueryChecker {
 	 * @see #check(ADQLQuery, Stack)
 	 */
 	@Override
-	public void check(final ADQLQuery query) throws ParseException{
+	public final void check(final ADQLQuery query) throws ParseException{
 		check(query, null);
 	}
 
