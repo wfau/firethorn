@@ -1400,7 +1400,7 @@ implements AdqlQuery, AdqlParserQuery
                 name,
                 field
                 );
-            }
+        	}
         }
 
     /**

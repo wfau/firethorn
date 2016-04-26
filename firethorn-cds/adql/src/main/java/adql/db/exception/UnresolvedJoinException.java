@@ -16,7 +16,7 @@ package adql.db.exception;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2013-2014 - Astronomisches Rechen Institut (ARI)
+ * Copyright 2013-2015 - Astronomisches Rechen Institut (ARI)
  */
 
 import adql.parser.ParseException;
@@ -26,10 +26,11 @@ import adql.query.TextPosition;
  * This exception is thrown when a table between 2 tables can not be resolved,
  * and particularly because of the join condition (i.e. column names not found, ...).
  * 
- * @author Gr&eacute;gory Mantelet (ARI) - gmantele@ari.uni-heidelberg.de
- * @version 1.2 (11/2013)
+ * @author Gr&eacute;gory Mantelet (ARI)
+ * @version 1.4 (06/2015)
+ * @since 1.2
  */
-public class UnresolvedJoin extends ParseException {
+public class UnresolvedJoinException extends ParseException {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -38,7 +39,7 @@ public class UnresolvedJoin extends ParseException {
 	 * 
 	 * @param message	Message to display explaining why the join can't be resolved.
 	 */
-	public UnresolvedJoin(String message){
+	public UnresolvedJoinException(String message){
 		super(message);
 	}
 
@@ -48,8 +49,19 @@ public class UnresolvedJoin extends ParseException {
 	 * @param message		Message to display explaining why the join can't be resolved.
 	 * @param errorPosition	Position of the wrong part of the join.
 	 */
-	public UnresolvedJoin(String message, TextPosition errorPosition){
+	public UnresolvedJoinException(String message, TextPosition errorPosition){
 		super(message, errorPosition);
+	}
+
+	/**
+	 * Set the position of the invalid JOIN.
+	 * 
+	 * @param pos	Position of the concerned JOIN inside the ADQL query.
+	 * 
+	 * @since 1.4
+	 */
+	public void setPosition(final TextPosition pos){
+		this.position = pos;
 	}
 
 }

@@ -16,7 +16,7 @@ package adql.parser;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012,2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ * Copyright 2012-2015 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
  *                       Astronomisches Rechen Institut (ARI)
  */
 
@@ -49,7 +49,6 @@ import adql.query.from.OuterJoin;
 import adql.query.from.OuterJoin.OuterType;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
-import adql.query.operand.function.CastFunction;
 import adql.query.operand.Concatenation;
 import adql.query.operand.NegativeOperand;
 import adql.query.operand.NumericConstant;
@@ -62,6 +61,7 @@ import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.MathFunctionType;
 import adql.query.operand.function.SQLFunction;
 import adql.query.operand.function.SQLFunctionType;
+import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.query.operand.function.geometry.AreaFunction;
 import adql.query.operand.function.geometry.BoxFunction;
@@ -84,20 +84,20 @@ import adql.query.operand.function.geometry.RegionFunction;
  * <p>To customize the object representation you merely have to extends the appropriate functions of this class.</p>
  * 
  * @author Gr&eacute;gory Mantelet (CDS;ARI)
- * @version 1.3 (10/2014)
+ * @version 1.4 (08/2015)
  * 
  * @see ADQLParser
  */
 public class ADQLQueryFactory {
 
-	protected boolean allowUnknownFunctions = true;
-
-	public static enum JoinType {
-		CROSS,
-		INNER,
-		OUTER_LEFT,
-		OUTER_RIGHT,
-		OUTER_FULL;
+	/**
+	 * Type of table JOIN.
+	 * 
+	 * @author Gr&eacute;gory Mantelet (CDS)
+	 * @version 1.0 (08/2011)
+	 */
+	public static enum JoinType{
+		CROSS, INNER, OUTER_LEFT, OUTER_RIGHT, OUTER_FULL;
 	}
 
 	/**
@@ -107,9 +107,6 @@ public class ADQLQueryFactory {
 		;
 	}
 
-	public ADQLQueryFactory(boolean allowUnknownFunctions){
-		this.allowUnknownFunctions = allowUnknownFunctions;
-	}
 	public ADQLQuery createQuery() throws Exception{
 		return new ADQLQuery();
 	}
@@ -126,9 +123,6 @@ public class ADQLQueryFactory {
 		if (alias != null)
 			caseSensitivity = IdentifierField.ALIAS.setCaseSensitive(caseSensitivity, alias.caseSensitivity);
 		t.setCaseSensitive(caseSensitivity);
-
-		// Set the position in the query:
-		t.setPosition(idItems.getPosition());
 
 		return t;
 	}
@@ -307,11 +301,8 @@ public class ADQLQueryFactory {
 	 * 
 	 * @throws Exception	If there is a problem while creating the function.
 	 */
-	public UserDefinedFunction createUserDefinedFunction(String name, ADQLOperand[] params) throws Exception {
-		if (allowUnknownFunctions)
-			return new DefaultUDF(name, params);
-		else
-			throw new UnsupportedOperationException("No ADQL function called \""+name+"\" !");
+	public UserDefinedFunction createUserDefinedFunction(String name, ADQLOperand[] params) throws Exception{
+		return new DefaultUDF(name, params);
 	}
 
 	public DistanceFunction createDistance(PointFunction point1, PointFunction point2) throws Exception{
@@ -402,6 +393,18 @@ public class ADQLQueryFactory {
 		return new IntersectsFunction(left, right);
 	}
 
+	/**
+	 * Replace {@link #createOrder(int, boolean, TextPosition)}.
+	 * @since 1.4
+	 */
+	public ADQLOrder createOrder(final int ind, final boolean desc) throws Exception{
+		return new ADQLOrder(ind, desc);
+	}
+
+	/**
+	 * @deprecated since 1.4 ; Replaced by {@link #createOrder(int, boolean)}
+	 */
+	@Deprecated
 	public ADQLOrder createOrder(final int ind, final boolean desc, final TextPosition position) throws Exception{
 		ADQLOrder order = new ADQLOrder(ind, desc);
 		if (order != null)
@@ -409,15 +412,37 @@ public class ADQLQueryFactory {
 		return order;
 	}
 
-	public ADQLOrder createOrder(final IdentifierItems idItems, final boolean desc) throws Exception{
-		ADQLOrder order = new ADQLOrder(idItems.join("."), desc);
-		if (order != null){
-			order.setPosition(idItems.getPosition());
-			order.setCaseSensitive(idItems.getColumnCaseSensitivity());
-		}
+	public ADQLOrder createOrder(final IdentifierItem colName, final boolean desc) throws Exception{
+		ADQLOrder order = new ADQLOrder(colName.identifier, desc);
+		if (order != null)
+			order.setCaseSensitive(colName.caseSensitivity);
 		return order;
 	}
 
+	/**
+	 * @deprecated since 1.4 ; Former version's mistake: an ORDER BY item is either a regular/delimited column name or an integer, not a qualified column name ; Replaced by {@link #createOrder(IdentifierItem, boolean)} ; This function is no longer used by ADQLParser. 
+	 */
+	@Deprecated
+	public ADQLOrder createOrder(final IdentifierItems idItems, final boolean desc) throws Exception{
+		ADQLOrder order = new ADQLOrder(idItems.join("."), desc);
+		if (order != null)
+			order.setCaseSensitive(idItems.getColumnCaseSensitivity());
+		return order;
+	}
+
+	public ColumnReference createColRef(final IdentifierItem idItem) throws Exception{
+		ColumnReference colRef = new ColumnReference(idItem.identifier);
+		if (colRef != null){
+			colRef.setPosition(idItem.position);
+			colRef.setCaseSensitive(idItem.caseSensitivity);
+		}
+		return colRef;
+	}
+
+	/**
+	 * @deprecated since 1.4 ; Former version's mistake: a GROUP BY item is either a regular/delimited column name or an integer, not a qualified column name ; Replaced by {@link #createColRef(IdentifierItem)} ; This function is no longer used by ADQLParser.
+	 */
+	@Deprecated
 	public ColumnReference createColRef(final IdentifierItems idItems) throws Exception{
 		ColumnReference colRef = new ColumnReference(idItems.join("."));
 		if (colRef != null){

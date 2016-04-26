@@ -16,23 +16,28 @@ package adql.query.operand;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012,2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ * Copyright 2012-2015 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
  *                       Astronomisches Rechen Institut (ARI)
  */
 
 import adql.query.ADQLIterator;
 import adql.query.ADQLObject;
 import adql.query.NullADQLIterator;
+import adql.query.TextPosition;
 
 /**
  * A numeric (integer, double, ...) constant.
  * 
  * @author Gr&eacute;gory Mantelet (CDS;ARI)
- * @version 1.3 (10/2014)
+ * @version 1.4 (06/2015)
  */
 public class NumericConstant implements ADQLOperand {
 
 	protected String value;
+
+	/** Position of this operand.
+	 * @since 1.4 */
+	private TextPosition position = null;
 
 	/**
 	 * The numeric value is saved as a string so that the exact user format can be saved.
@@ -163,6 +168,21 @@ public class NumericConstant implements ADQLOperand {
 		return false;
 	}
 
+	@Override
+	public final TextPosition getPosition(){
+		return this.position;
+	}
+
+	/**
+	 * Sets the position at which this {@link NumericConstant} has been found in the original ADQL query string.
+	 * 
+	 * @param position	Position of this {@link NumericConstant}.
+	 * @since 1.4
+	 */
+	public final void setPosition(final TextPosition position){
+		this.position = position;
+	}
+
 	/** Always returns <i>false</i>.
 	 * @see adql.query.operand.ADQLOperand#isGeometry()
 	 */
@@ -180,19 +200,7 @@ public class NumericConstant implements ADQLOperand {
 	public String getName(){
 		return value;
 	}
-	
-    /**
-     * Get the Numeric Constant as LONG
-     * @return long LONG value of Numeric constant
-     */
-	public long getIntegerValue() {
-        try{
-            return Long.parseLong(value);
-        } catch(NumberFormatException nfe){
-            return 0L;
-        }
-    }
-	
+
 	@Override
 	public ADQLIterator adqlIterator(){
 		return new NullADQLIterator();

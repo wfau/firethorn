@@ -16,11 +16,10 @@ package adql.translator;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012-2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ * Copyright 2012-2015 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
  *                       Astronomisches Rechen Institut (ARI)
  */
 
-import adql.db.DBTable;
 import adql.db.DBType;
 import adql.db.DBType.DBDatatype;
 import adql.db.STCS.Region;
@@ -51,7 +50,7 @@ import adql.query.operand.function.geometry.RegionFunction;
  * </i></p>
  * 
  * @author Gr&eacute;gory Mantelet (CDS;ARI)
- * @version 1.3 (11/2014)
+ * @version 1.4 (12/2015)
  * 
  * @see PgSphereTranslator
  */
@@ -103,27 +102,6 @@ public class PostgreSQLTranslator extends JDBCTranslator {
 	public boolean isCaseSensitive(final IdentifierField field){
 		return field == null ? false : field.isCaseSensitive(caseSensitivity);
 	}
-	
-	/**
-	 * Appends the full name of the given table to the given StringBuffer.
-	 * 
-	 * @param str		The string buffer.
-	 * @param dbTable	The table whose the full name must be appended.
-	 * 
-	 * @return			The string buffer + full table name.
-	 */
-	public final StringBuffer appendFullDBName(final StringBuffer str, final DBTable dbTable){
-		if (dbTable != null){
-			if (dbTable.getDBCatalogName() != null)
-				appendIdentifier(str, dbTable.getDBCatalogName(), IdentifierField.CATALOG).append('.');
-
-			if (dbTable.getDBSchemaName() != null)
-				appendIdentifier(str, dbTable.getDBSchemaName(), IdentifierField.SCHEMA).append('.');
-
-			appendIdentifier(str, dbTable.getDBName(), IdentifierField.TABLE);
-		}
-		return str;
-	}
 
 	@Override
 	public String translate(StringConstant strConst) throws TranslationException{
@@ -142,15 +120,34 @@ public class PostgreSQLTranslator extends JDBCTranslator {
 	public String translate(MathFunction fct) throws TranslationException{
 		switch(fct.getType()){
 			case LOG:
-				return "ln(" + ((fct.getNbParameters() >= 1) ? translate(fct.getParameter(0)) : "") + ")";
+				return "ln(" + ((fct.getNbParameters() >= 1) ? "CAST(" + translate(fct.getParameter(0)) + " AS numeric)" : "") + ")";
 			case LOG10:
-				return "log(10, " + ((fct.getNbParameters() >= 1) ? translate(fct.getParameter(0)) : "") + ")";
+				return "log(10, " + ((fct.getNbParameters() >= 1) ? "CAST(" + translate(fct.getParameter(0)) + " AS numeric)" : "") + ")";
 			case RAND:
 				return "random()";
 			case TRUNCATE:
-				return "trunc(" + ((fct.getNbParameters() >= 2) ? (translate(fct.getParameter(0)) + ", " + translate(fct.getParameter(1))) : "") + ")";
-			default:
+				if (fct.getNbParameters() >= 2)
+					return "trunc(CAST(" + translate(fct.getParameter(0)) + " AS numeric), " + translate(fct.getParameter(1)) + ")";
+				else if (fct.getNbParameters() >= 1)
+					return "trunc(CAST(" + translate(fct.getParameter(0)) + " AS numeric)" + ")";
+				else
+					return "trunc()";
+			case ROUND:
+				if (fct.getNbParameters() >= 2)
+					return "round(CAST(" + translate(fct.getParameter(0)) + " AS numeric), " + translate(fct.getParameter(1)) + ")";
+				else if (fct.getNbParameters() >= 1)
+					return "round(CAST(" + translate(fct.getParameter(0)) + " AS numeric))";
+				else
+					return "round()";
+			case PI:
 				return getDefaultADQLFunction(fct);
+			default:
+				String sql = fct.getName() + "(";
+
+				for(int i = 0; i < fct.getNbParameters(); i++)
+					sql += ((i == 0) ? "" : ", ") + "CAST(" + translate(fct.getParameter(i)) + " AS numeric)";
+
+				return sql + ")";
 		}
 	}
 
@@ -218,7 +215,7 @@ public class PostgreSQLTranslator extends JDBCTranslator {
 	public DBType convertTypeFromDB(final int dbmsType, final String rawDbmsTypeName, String dbmsTypeName, final String[] params){
 		// If no type is provided return VARCHAR:
 		if (dbmsTypeName == null || dbmsTypeName.trim().length() == 0)
-			return new DBType(DBDatatype.VARCHAR, DBType.NO_LENGTH);
+			return null;
 
 		// Put the dbmsTypeName in lower case for the following comparisons:
 		dbmsTypeName = dbmsTypeName.toLowerCase();
@@ -269,7 +266,7 @@ public class PostgreSQLTranslator extends JDBCTranslator {
 			return new DBType(DBDatatype.TIMESTAMP);
 		// Default:
 		else
-			return new DBType(DBDatatype.VARCHAR, DBType.NO_LENGTH);
+			return null;
 	}
 
 	@Override

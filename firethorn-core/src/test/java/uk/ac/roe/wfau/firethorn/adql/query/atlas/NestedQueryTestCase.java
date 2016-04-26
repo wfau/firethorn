@@ -208,5 +208,19 @@ extends AtlasQueryTestBase
 
             );
         }
+    
+    @Test
+    public void test003()
+    throws Exception
+        {
+        validate(
+            Level.STRICT,
+            State.VALID,
+
+            " SELECT * FROM Filter  WHERE filterID IN (     SELECT filterID     FROM Filter 	WHERE filterID>0 GROUP BY filterID )"
+ 
+
+            );
+        }
     }
 

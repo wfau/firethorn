@@ -27,7 +27,7 @@ import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.db.DBType;
 import adql.db.STCS.Region;
-import adql.db.exception.UnresolvedJoin;
+import adql.db.exception.UnresolvedJoinException;
 import adql.parser.ParseException;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
@@ -884,7 +884,7 @@ public class SQLServerTranslator
 		}else if (item.getQuery() != null){
 			try{
 				dbCols = item.getQuery().getFrom().getDBColumns();
-			}catch(UnresolvedJoin pe){
+			}catch(UnresolvedJoinException pe){
 				throw new TranslationException("Due to a join problem, the ADQL to SQL translation can not be completed!", pe);
 			}
 			ArrayList<ADQLTable> tables = item.getQuery().getFrom().getTables();

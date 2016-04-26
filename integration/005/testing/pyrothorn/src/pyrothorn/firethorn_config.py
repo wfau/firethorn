@@ -9,6 +9,7 @@ except Exception as e:
     full_firethorn_host = "peter:8080"
     sql_rowlimit=100000
     sql_timeout = 1000
+    firethorn_timeout = 6000000
 
 web_services_url = "http://" + full_firethorn_host + "/firethorn"
 web_services_sys_info = web_services_url + "/system/info"
@@ -29,10 +30,10 @@ firethorn_limits_time_default=0
 #firethorn.limits.rows.absolute=1000000
 firethorn_limits_rows_absolute=sql_rowlimit
 firethorn_limits_cells_absolute=0
-firethorn_limits_time_absolute=0
+firethorn_limits_time_absolute=60000000
 
 
-firethorn_limits_time = sql_timeout
+firethorn_limits_time = 6000000
 
 ### URL, Type and Parameter associations and Information
 get_jdbc_resources_url = "/firethorn/jdbc/resource/select"

@@ -16,7 +16,7 @@ package adql.query;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012-2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ * Copyright 2012-2016 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
  *                       Astronomisches Rechen Institut (ARI)
  */
 
@@ -25,12 +25,20 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import adql.db.DBColumn;
+import adql.db.DBType;
+import adql.db.DBType.DBDatatype;
 import adql.db.DefaultDBColumn;
 import adql.parser.ADQLParser;
 import adql.parser.ParseException;
 import adql.query.from.FromContent;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
+import adql.query.operand.function.DefaultUDF;
+import adql.query.operand.function.geometry.BoxFunction;
+import adql.query.operand.function.geometry.CircleFunction;
+import adql.query.operand.function.geometry.PointFunction;
+import adql.query.operand.function.geometry.PolygonFunction;
+import adql.query.operand.function.geometry.RegionFunction;
 import adql.search.ISearchHandler;
 
 /**
@@ -38,7 +46,7 @@ import adql.search.ISearchHandler;
  * <p>The resulting object of the {@link ADQLParser} is an object of this class.</p>
  * 
  * @author Gr&eacute;gory Mantelet (CDS;ARI)
- * @version 1.2 (09/2014)
+ * @version 1.4 (03/2016)
  */
 public class ADQLQuery implements ADQLObject {
 
@@ -59,6 +67,10 @@ public class ADQLQuery implements ADQLObject {
 
 	/** The ADQL clause ORDER BY. */
 	private ClauseADQL<ADQLOrder> orderBy;
+
+	/** Position of this Query (or sub-query) inside the whole given ADQL query string.
+	 * @since 1.4 */
+	private TextPosition position = null;
 
 	/**
 	 * Builds an empty ADQL query.
@@ -86,6 +98,7 @@ public class ADQLQuery implements ADQLObject {
 		groupBy = (ClauseADQL<ADQLOperand>)toCopy.groupBy.getCopy();
 		having = (ClauseConstraints)toCopy.having.getCopy();
 		orderBy = (ClauseADQL<ADQLOrder>)toCopy.orderBy.getCopy();
+		position = (toCopy.position == null) ? null : new TextPosition(toCopy.position);
 	}
 
 	/**
@@ -101,6 +114,7 @@ public class ADQLQuery implements ADQLObject {
 		groupBy.clear();
 		having.clear();
 		orderBy.clear();
+		position = null;
 	}
 
 	/**
@@ -113,7 +127,9 @@ public class ADQLQuery implements ADQLObject {
 	}
 
 	/**
-	 * Replaces its SELECT clause by the given one.
+	 * <p>Replaces its SELECT clause by the given one.</p>
+	 * 
+	 * <p><i>note: the position of the query is erased.</i></p>
 	 * 
 	 * @param newSelect					The new SELECT clause.
 	 * 
@@ -124,6 +140,7 @@ public class ADQLQuery implements ADQLObject {
 			throw new NullPointerException("Impossible to replace the SELECT clause of a query by NULL !");
 		else
 			select = newSelect;
+		position = null;
 	}
 
 	/**
@@ -136,7 +153,9 @@ public class ADQLQuery implements ADQLObject {
 	}
 
 	/**
-	 * Replaces its FROM clause by the given one.
+	 * <p>Replaces its FROM clause by the given one.</p>
+	 * 
+	 * <p><i>note: the position of the query is erased.</i></p>
 	 * 
 	 * @param newFrom					The new FROM clause.
 	 * 
@@ -147,6 +166,7 @@ public class ADQLQuery implements ADQLObject {
 			throw new NullPointerException("Impossible to replace the FROM clause of a query by NULL !");
 		else
 			from = newFrom;
+		position = null;
 	}
 
 	/**
@@ -159,7 +179,9 @@ public class ADQLQuery implements ADQLObject {
 	}
 
 	/**
-	 * Replaces its WHERE clause by the given one.
+	 * <p>Replaces its WHERE clause by the given one.</p>
+	 * 
+	 * <p><i>note: the position of the query is erased.</i></p>
 	 * 
 	 * @param newWhere					The new WHERE clause.
 	 * 
@@ -170,6 +192,7 @@ public class ADQLQuery implements ADQLObject {
 			where.clear();
 		else
 			where = newWhere;
+		position = null;
 	}
 
 	/**
@@ -182,7 +205,9 @@ public class ADQLQuery implements ADQLObject {
 	}
 
 	/**
-	 * Replaces its GROUP BY clause by the given one.
+	 * <p>Replaces its GROUP BY clause by the given one.</p>
+	 * 
+	 * <p><i>note: the position of the query is erased.</i></p>
 	 * 
 	 * @param newGroupBy				The new GROUP BY clause.
 	 * @throws NullPointerException		If the given GROUP BY clause is <i>null</i>.
@@ -192,6 +217,7 @@ public class ADQLQuery implements ADQLObject {
 			groupBy.clear();
 		else
 			groupBy = newGroupBy;
+		position = null;
 	}
 
 	/**
@@ -204,7 +230,9 @@ public class ADQLQuery implements ADQLObject {
 	}
 
 	/**
-	 * Replaces its HAVING clause by the given one.
+	 * <p>Replaces its HAVING clause by the given one.</p>
+	 * 
+	 * <p><i>note: the position of the query is erased.</i></p>
 	 * 
 	 * @param newHaving					The new HAVING clause.
 	 * @throws NullPointerException		If the given HAVING clause is <i>null</i>.
@@ -214,6 +242,7 @@ public class ADQLQuery implements ADQLObject {
 			having.clear();
 		else
 			having = newHaving;
+		position = null;
 	}
 
 	/**
@@ -226,7 +255,9 @@ public class ADQLQuery implements ADQLObject {
 	}
 
 	/**
-	 * Replaces its ORDER BY clause by the given one.
+	 * <p>Replaces its ORDER BY clause by the given one.</p>
+	 * 
+	 * <p><i>note: the position of the query is erased.</i></p>
 	 * 
 	 * @param newOrderBy				The new ORDER BY clause.
 	 * @throws NullPointerException		If the given ORDER BY clause is <i>null</i>.
@@ -236,6 +267,22 @@ public class ADQLQuery implements ADQLObject {
 			orderBy.clear();
 		else
 			orderBy = newOrderBy;
+		position = null;
+	}
+
+	@Override
+	public final TextPosition getPosition(){
+		return position;
+	}
+
+	/**
+	 * Set the position of this {@link ADQLQuery} (or sub-query) inside the whole given ADQL query string.
+	 * 
+	 * @param position New position of this {@link ADQLQuery}.
+	 * @since 1.4
+	 */
+	public final void setPosition(final TextPosition position){
+		this.position = position;
 	}
 
 	@Override
@@ -272,19 +319,50 @@ public class ADQLQuery implements ADQLObject {
 					// Here, this error should not occur any more, since it must have been caught by the DBChecker!
 				}
 			}else{
+				// Create the DBColumn:
 				DBColumn col = null;
+				// ...whose the name will be set with the SELECT item's alias: 
 				if (item.hasAlias()){
 					if (operand instanceof ADQLColumn && ((ADQLColumn)operand).getDBLink() != null){
 						col = ((ADQLColumn)operand).getDBLink();
 						col = col.copy(col.getDBName(), item.getAlias(), col.getTable());
 					}else
 						col = new DefaultDBColumn(item.getAlias(), null);
-				}else{
+				}
+				// ...or whose the name will be the name of the SELECT item:
+				else{
 					if (operand instanceof ADQLColumn && ((ADQLColumn)operand).getDBLink() != null)
 						col = ((ADQLColumn)operand).getDBLink();
 					if (col == null)
 						col = new DefaultDBColumn(item.getName(), null);
 				}
+
+				/* For columns created by default (from functions and operations generally), 
+				 * set the adequate type if known: */
+				// CASE: Well-defined UDF
+				if (operand instanceof DefaultUDF && ((DefaultUDF)operand).getDefinition() != null){
+					DBType type = ((DefaultUDF)operand).getDefinition().returnType;
+					((DefaultDBColumn)col).setDatatype(type);
+				}
+				// CASE: Point type:
+				else if (operand instanceof PointFunction)
+					((DefaultDBColumn)col).setDatatype(new DBType(DBDatatype.POINT));
+				// CASE: Region type:
+				else if (operand instanceof RegionFunction || operand instanceof CircleFunction || operand instanceof BoxFunction || operand instanceof PolygonFunction)
+					((DefaultDBColumn)col).setDatatype(new DBType(DBDatatype.REGION));
+				// CASE: String and numeric types
+				else if (col instanceof DefaultDBColumn && col.getDatatype() == null && operand.isNumeric() != operand.isString()){
+					// CASE: String types
+					if (operand.isString())
+						((DefaultDBColumn)col).setDatatype(new DBType(DBDatatype.VARCHAR));
+					// CASE: Numeric types:
+					/* Note: a little special case here since a numeric could be a real, double, integer, or anything
+					 *       else and that we don't know precisely here. So we set the special UNKNOWN NUMERIC type. */
+					else
+						((DefaultDBColumn)col).setDatatype(new DBType(DBDatatype.UNKNOWN_NUMERIC));
+				}
+
+				// Add the new column to the list:
 				columns.add(col);
 			}
 		}
@@ -392,6 +470,7 @@ public class ADQLQuery implements ADQLObject {
 								throw new UnsupportedOperationException("Impossible to replace a ClauseADQL (" + orderBy.toADQL() + ") by a " + replacer.getClass().getName() + " (" + replacer.toADQL() + ") !");
 							break;
 					}
+					position = null;
 				}
 			}
 
@@ -402,8 +481,10 @@ public class ADQLQuery implements ADQLObject {
 
 				if (index == 0 || index == 1)
 					throw new UnsupportedOperationException("Impossible to remove a " + ((index == 0) ? "SELECT" : "FROM") + " clause from a query !");
-				else
+				else{
 					currentClause.clear();
+					position = null;
+				}
 			}
 		};
 	}

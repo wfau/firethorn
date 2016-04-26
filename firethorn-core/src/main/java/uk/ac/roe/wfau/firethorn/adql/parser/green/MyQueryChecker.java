@@ -72,23 +72,5 @@ public class MyQueryChecker
             );
         }
     
-    @Override
-    public void check(final ADQLQuery query) throws ParseException
-        {
-        log.debug("check(ADQLQuery)");
-        super.check(
-            query
-            );
-        }
-
-    @Override
-    public void check(ADQLQuery query, SearchColumnList stackColumnList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException
-        {
-        log.debug("check(ADQLQuery, SearchColumnList, HashMap)");
-        super.check(
-            query,
-            stackColumnList,
-            _mapTables
-            );
-        }
+  
     }

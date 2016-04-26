@@ -27,11 +27,13 @@ package adql.query.operand;
  * 
  * @see Operation
  */
-public enum OperationType{
-	SUM, SUB, MULT, DIV, MOD, BIT_OR, BIT_AND, BIT_XOR;
+public enum OperationType {
+	SUM, SUB, MULT, DIV, BIT_OR, BIT_AND, BIT_XOR, MOD;
 
-	public static String[] getOperators(){
-		return new String[]{SUM.toString(),SUB.toString(),MULT.toString(),DIV.toString(), MOD.toString(), BIT_OR.toString(), BIT_AND.toString(), BIT_XOR.toString() };
+	public static String[] getOperators() {
+		return new String[] { SUM.toString(), SUB.toString(), MULT.toString(),
+				DIV.toString(), MOD.toString(), BIT_OR.toString(),
+				BIT_AND.toString(), BIT_XOR.toString() };
 	}
 
 	public static OperationType getOperator(String str) throws UnsupportedOperationException{
@@ -43,14 +45,14 @@ public enum OperationType{
 			return MULT;
 		else if (str.equalsIgnoreCase("/"))
 			return DIV;
-	    else if (str.equalsIgnoreCase("%"))
-            return MOD;
-        else if (str.equalsIgnoreCase("|"))
-            return BIT_OR;
-        else if (str.equalsIgnoreCase("&"))
-            return BIT_AND;
-        else if (str.equalsIgnoreCase("^"))
-            return BIT_XOR;
+		else if (str.equalsIgnoreCase("%"))
+			return MOD;
+		else if (str.equalsIgnoreCase("|"))
+			return BIT_OR;
+		else if (str.equalsIgnoreCase("&"))
+			return BIT_AND;
+		else if (str.equalsIgnoreCase("^"))
+			return BIT_XOR;
 		else
 			throw new UnsupportedOperationException("Numeric operation unknown: \"" + str + "\" !");
 	}
@@ -60,26 +62,26 @@ public enum OperationType{
 	}
 
 	@Override
-	public String toString(){
-		switch(this){
-			case SUM:
-				return "+";
-			case SUB:
-				return "-";
-			case MULT:
-				return "*";
-			case DIV:
-				return "/";
-		   case MOD:
-	            return "%";
-	        case BIT_OR:
-	            return "|";
-	        case BIT_AND:
-	            return "&";
-	        case BIT_XOR:
-	            return "^";
-			default:
-				return "???";
+	public String toString() {
+		switch (this) {
+		case SUM:
+			return "+";
+		case SUB:
+			return "-";
+		case MULT:
+			return "*";
+		case DIV:
+			return "/";
+		case MOD:
+			return "%";
+		case BIT_OR:
+			return "|";
+		case BIT_AND:
+			return "&";
+		case BIT_XOR:
+			return "^";
+		default:
+			return "???";
 		}
 	}
 }

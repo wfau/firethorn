@@ -16,7 +16,7 @@ package adql.query.from;
  * You should have received a copy of the GNU Lesser General Public License
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2012-2014 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
+ * Copyright 2012-2015 - UDS/Centre de Données astronomiques de Strasbourg (CDS),
  *                       Astronomisches Rechen Institut (ARI)
  */
 
@@ -24,15 +24,16 @@ import java.util.ArrayList;
 
 import adql.db.DBColumn;
 import adql.db.SearchColumnList;
-import adql.db.exception.UnresolvedJoin;
+import adql.db.exception.UnresolvedJoinException;
 import adql.query.ADQLObject;
+import adql.query.TextPosition;
 
 /**
  * Represents the content of the whole or a part of the clause FROM.
  * It could be either a table ({@link ADQLTable}) or a join ({@link ADQLJoin}).
  * 
  * @author Gr&eacute;gory Mantelet (CDS;ARI)
- * @version 1.2 (11/2013)
+ * @version 1.4 (06/2015)
  */
 public interface FromContent extends ADQLObject {
 
@@ -42,9 +43,9 @@ public interface FromContent extends ADQLObject {
 	 * <p><i><u>Note:</u> In the most cases, this list is generated on the fly !</i></p>
 	 * 
 	 * @return	All the available {@link DBColumn}s.
-	 * @throws UnresolvedJoin If a join is not possible.
+	 * @throws UnresolvedJoinException If a join is not possible.
 	 */
-	public SearchColumnList getDBColumns() throws UnresolvedJoin;
+	public SearchColumnList getDBColumns() throws UnresolvedJoinException;
 
 	/**
 	 * Gets all {@link ADQLTable} instances contained in this FROM part (itself included, if it is an {@link ADQLTable}).
@@ -66,5 +67,13 @@ public interface FromContent extends ADQLObject {
 	 * @return	The list of all tables found.
 	 */
 	public ArrayList<ADQLTable> getTablesByAlias(final String alias, final boolean caseSensitive);
+
+	/**
+	 * Set the position of this {@link FromContent} in the given ADQL query string.
+	 * 
+	 * @param position	New position of this {@link FromContent}.
+	 * @since 1.4
+	 */
+	public void setPosition(final TextPosition position);
 
 }

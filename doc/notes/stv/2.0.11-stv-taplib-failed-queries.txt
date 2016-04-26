@@ -1,0 +1,47 @@
+Failed Queries
+SELECT mjdObs  FROM Multiframe WHERE multiframeID = ANY (SELECT gmfID FROM atlasMergeLog WHERE (dec BETWEEN -22.5 AND -12.5) AND (gmfID > 0))
+
+
+2016-04-15 02:14:09,983 - root - INFO - Query : SELECT COUNT(*) FROM atlasSource WHERE (ra >= 4.2 and ra <= 31.8) AND (dec >= -39.3 and dec < -33.4) AND (mergedClass = -1) and (uAperMag3 > 9.999995E)
+2016-04-15 02:14:09,983 - root - INFO - ---------------------- Starting Query Test ----------------------
+2016-04-15 02:14:09,983 - root - INFO - Starting sql query :::2016-04-15 02:14:09
+2016-04-15 02:14:34,221 - root - INFO - Completed sql query :::2016-04-15 02:14:34
+2016-04-15 02:14:34,221 - root - INFO - SQL Query: 1 row(s) returned. 
+2016-04-15 02:14:34,221 - root - INFO - 
+2016-04-15 02:14:34,221 - root - INFO - Started Firethorn job :::2016-04-15 02:14:34
+2016-04-15 02:14:34,358 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/40240378
+2016-04-15 02:14:34,358 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/40240378
+2016-04-15 02:14:34,358 - root - INFO - PARSE_ERROR -  Encountered "E". Was expecting one of: ")" "+" "-" "*" "/" "%" "&" "|" "^" "AND" "OR" 
+2016-04-15 02:14:34,358 - root - INFO - Finished Firethorn job :::2016-04-15 02:14:34
+2016-04-15 02:14:34,358 - root - INFO - Firethorn Query: -1 row(s) returned. 
+
+
+2016-04-15 00:48:00,721 - root - INFO - Query : SELECT ra as r,dec as dec FROM   ( SELECT * FROM ATLASdetection WHERE dec > -3.2 AND dec < -2.1 AND ra > 168.5 AND ra < 169.7)   AS query ORDER BY r
+2016-04-15 00:48:00,721 - root - INFO - ---------------------- Starting Query Test ----------------------
+2016-04-15 00:48:00,721 - root - INFO - Starting sql query :::2016-04-15 00:48:00
+2016-04-15 00:48:01,492 - root - INFO - Completed sql query :::2016-04-15 00:48:01
+2016-04-15 00:48:01,492 - root - INFO - SQL Query: 1000 row(s) returned. 
+2016-04-15 00:48:01,492 - root - INFO - 
+2016-04-15 00:48:01,492 - root - INFO - Started Firethorn job :::2016-04-15 00:48:01
+2016-04-15 00:48:02,093 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/40240228
+2016-04-15 00:48:04,117 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/40240228
+2016-04-15 00:48:04,117 - root - INFO - Query error: A problem occurred while running your query
+2016-04-15 00:48:04,117 - root - INFO - Finished Firethorn job :::2016-04-15 00:48:04
+2016-04-15 00:48:04,117 - root - INFO - Firethorn Query: -1 row(s) returned. 
+
+
+2016-04-14 21:38:21,010 - root - INFO - Query : SELECT  frameSetID, count(*) from (select distinct framesetid,priorsec from atlassource where priorsec !=0 ) as t group by frameSetID order by count(*) desc
+2016-04-14 21:38:21,010 - root - INFO - ---------------------- Starting Query Test ----------------------
+2016-04-14 21:38:21,010 - root - INFO - Starting sql query :::2016-04-14 21:38:21
+2016-04-14 21:39:38,818 - root - INFO - Completed sql query :::2016-04-14 21:39:38
+2016-04-14 21:39:38,818 - root - INFO - SQL Query: 1000 row(s) returned. 
+2016-04-14 21:39:38,818 - root - INFO - 
+2016-04-14 21:39:38,819 - root - INFO - Started Firethorn job :::2016-04-14 21:39:38
+2016-04-14 21:39:38,907 - root - INFO - Started query:http://peter:8080/firethorn/adql/query/40239670
+2016-04-14 21:39:38,907 - root - INFO - Finished query:http://peter:8080/firethorn/adql/query/40239670
+2016-04-14 21:39:38,908 - root - INFO - PARSE_ERROR -  Encountered "count". Was expecting one of: "\"" <REGULAR_IDENTIFIER> <UNSIGNED_INTEGER> 
+2016-04-14 21:39:38,908 - root - INFO - Finished Firethorn job :::2016-04-14 21:39:38
+2016-04-14 21:39:38,908 - root - INFO - Firethorn Query: -1 row(s) returned. 
+
+
+

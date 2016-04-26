@@ -22,7 +22,7 @@
 
 echo "*** Initialising test06 script [test07-fulltaptest.sh] ***"
 
-tap_service=http://192.168.122.19:8080/firethorn/tap/atlasdr1
+tap_service=$1
 
 
 echo "Running test on the following TAP Service :" ${tap_service:?}
@@ -58,7 +58,7 @@ test_email = "test@test.roe.ac.uk"
 sample_query="Select top 10 * from Filter" 
 sample_query_expected_rows=10
 limit_query = None
-sql_rowlimit = 1000
+sql_rowlimit = ${defaultrows:?}
 sql_timeout = 1000
 firethorn_timeout = 1000
 query_mode = "AUTO" 
