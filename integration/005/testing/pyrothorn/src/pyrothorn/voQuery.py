@@ -26,111 +26,128 @@ import datetime
 from time import gmtime,  strftime
 
 
-
-
-def get_async_results(url, URI):
+class VOQuery():
     """
-    Open the given url and URI and read/return the result 
-
-    @param url: A URL string to open
-    @param URI: A URI string to attach to the URL request
-    @return: The result of the HTTP request sent to the URI of the URL
+    Run a ADQL/TAP query, does an asynchronous TAP job behind the scene
     """
-    
-    res = ''
-    f = ''
-    try:
-        req = urllib2.Request(url+URI)
-        f = urllib2.urlopen(req)
-        res =  f.read() 
-        f.close()
-    except Exception as e:
-        if f!='':
+    def __init__(self, endpointURL, query, mode_local="async", request="doQuery", lang="ADQL", voformat="votable", maxrec=None):
+        self.endpointURL = endpointURL
+        self.query, self.lang = query, lang
+        self.mode_local = mode_local
+        self.voformat = voformat
+        self.request = request
+        self.maxrec = maxrec
+
+    def run():
+        """
+        Run the query
+        Todo: Add synchronous query capability
+        """
+        return self.execute_async_query(self.endpointURL, self.query, self.mode_local, self.request, self.lang, self.voformat, self.maxrec)
+
+
+    def _get_async_results(self, endpointURL, URI):
+        """
+        Open the given url and URI and read/return the result
+
+        @param url: A URL string to open
+        @param URI: A URI string to attach to the URL request
+        @return: The result of the HTTP request sent to the URI of the URL
+        """
+
+        res = ''
+        f = ''
+        try:
+            req = urllib2.Request(url+URI)
+            f = urllib2.urlopen(req)
+            res =  f.read()
             f.close()
-        logging.exception('Exception caught:')
-              
-    return res
+        except Exception as e:
+            if f!='':
+                f.close()
+            logging.exception('Exception caught:')
+
+        return res
 
 
+    def _start_async_loop(self, url):
+        """
+        Takes a TAP url and starts a loop that checks the phase URI and returns the results when completed. The loop is repeated every [delay=3] seconds
+
+        @param url: A URL string to be used
+        @return: A Votable with the results of a TAP job, or '' if error
+        """
+
+        return_vot = []
+        try:
+            while True:
+                res = self._get_async_results(url,'/phase')
+                if res=='COMPLETED':
+                    time.sleep(5)
+                    return_vot = atpy.Table(url + '/results/result', type='vo')
+                    break
+                elif res=='ERROR' or res== '':
+                    return -1
+                time.sleep(1)
+        except Exception as e:
+            logging.exception('Exception caught:')
+            return -1
+
+        return return_vot
 
 
-def start_async_loop(url):
-    """
-    Takes a TAP url and starts a loop that checks the phase URI and returns the results when completed. The loop is repeated every [delay=3] seconds
-
-    @param url: A URL string to be used
-    @return: A Votable with the results of a TAP job, or '' if error
-    """
-    
-    return_vot = []
-    try:
-        while True:
-            res = get_async_results(url,'/phase')
-            if res=='COMPLETED':      
-                time.sleep(5) 
-                return_vot = atpy.Table(url + '/results/result', type='vo')      
-                break
-            elif res=='ERROR' or res== '':
-                return -1
-            time.sleep(1)
-    except Exception as e:
-        logging.exception('Exception caught:')
-        return -1
-
-    return return_vot    
+    def _get_votable_rowcount(self, votable):
+        """
+        Get table rowcount
+        """
+        if votable==-1:
+            return -1
+        return len(votable)
 
 
-def get_votable_rowcount(votable):
-    """
-    Get table rowcount
-    """
-    if votable==-1:
-        return -1
-    return len(votable)
+    def execute_async_query(self, url, q, mode_local="async", request="doQuery", lang="ADQL", voformat="votable", maxrec=None):
+        """
+        Execute an ADQL query (q) against a TAP service (url + mode:sync|async)
+        Starts by submitting a request for an async query, then uses the received job URL to call start_async_loop, to receive the final query results
 
-def execute_async_query(url, q, mode_local="async", request="doQuery", lang="ADQL", voformat="votable", maxrec=None):
-    """
-    Execute an ADQL query (q) against a TAP service (url + mode:sync|async)       
-    Starts by submitting a request for an async query, then uses the received job URL to call start_async_loop, to receive the final query results 
+        @param url: A string containing the TAP URL
+        @param mode: sync or async to determine TAP mode of execution
+        @param q: The ADQL Query to execute as string
 
-    @param url: A string containing the TAP URL
-    @param mode: sync or async to determine TAP mode of execution
-    @param q: The ADQL Query to execute as string
-    
-    @return: Return a votable with the results, the TAP job ID and a temporary file path with the results stored on the server
-    """    
+        @return: Return a votable with the results, the TAP job ID and a temporary file path with the results stored on the server
+        """
 
-    if (maxrec!=None):
-        params = urllib.urlencode({'REQUEST': request, 'LANG': lang, 'FORMAT': voformat, 'QUERY' : q, 'MAXREC' : maxrec})
-    else:
-        params = urllib.urlencode({'REQUEST': request, 'LANG': lang, 'FORMAT': voformat, 'QUERY' : q}) 
+        if (maxrec!=None):
+            params = urllib.urlencode({'REQUEST': request, 'LANG': lang, 'FORMAT': voformat, 'QUERY' : q, 'MAXREC' : maxrec})
+        else:
+            params = urllib.urlencode({'REQUEST': request, 'LANG': lang, 'FORMAT': voformat, 'QUERY' : q})
 
-    full_url = url+"/"+mode_local
+        full_url = url+"/"+mode_local
 
-    votable = []
-    jobId= 'None'
-    file_path=''
-    try:
-        #Submit job and get job id 
-        req = urllib2.Request(full_url, params)
-        opener = urllib2.build_opener()
-  
-        f = opener.open(req)
-        jobId = f.url
-        logging.info("Jobid:" + jobId)
-        #Execute job and start loop requests for results
-        req2 = urllib2.Request(jobId+'/phase',urllib.urlencode({'PHASE' : 'RUN'}))
-        f2 = opener.open(req2) #@UnusedVariable
+        votable = []
+        jobId= 'None'
+        file_path=''
+        try:
+            #Submit job and get job id
+            req = urllib2.Request(full_url, params)
+            opener = urllib2.build_opener()
 
-        # Return results as a votable object
-        votable = start_async_loop(jobId)
-       
-            
-    except Exception as e:
-        logging.exception('Exception caught:')
-        return -1
+            f = opener.open(req)
+            jobId = f.url
+            logging.info("Jobid:" + jobId)
+            #Execute job and start loop requests for results
+            req2 = urllib2.Request(jobId+'/phase',urllib.urlencode({'PHASE' : 'RUN'}))
+            f2 = opener.open(req2) #@UnusedVariable
 
-    return votable
+            # Return results as a votable object
+            votable = self._start_async_loop(jobId)
+
+
+        except Exception as e:
+            logging.exception('Exception caught:')
+            return -1
+
+        return votable
 
 
 
