@@ -36,15 +36,16 @@ try:
     from pyrothorn import voQuery
     sys.stdout = open('logs/logfile.txt', 'w')
     import pyrothorn    
-    # get a UUID - URL safe, Base64
-    def get_a_uuid():
-        '''
-        Generate uuid
-        '''
-        r_uuid = base64.urlsafe_b64encode(uuid.uuid4().bytes)
-        return r_uuid.replace('=', '')
 except Exception as e:
     logging.info(e)
+
+def get_a_uuid():
+    '''
+    Generate uuid
+    '''
+    r_uuid = base64.urlsafe_b64encode(uuid.uuid4().bytes)
+    return r_uuid.replace('=', '')
+
 
 class Timeout():
     """Timeout class using ALARM signal."""
@@ -176,7 +177,7 @@ class test_firethorn(unittest.TestCase):
                     	    start_time = time.time()
 			    logging.info("Started TAP job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    with Timeout(config.firethorn_timeout):
-                                if (config.sql_rowlimit!=None:
+                                if (config.sql_rowlimit!=None):
 				    voqry = voQuery.VOQuery(endpointURL= config.tap_service, query=query,  maxrec=config.sql_rowlimit)
                                     voqry.run()
                                 else :
