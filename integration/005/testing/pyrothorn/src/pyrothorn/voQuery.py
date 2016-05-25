@@ -73,7 +73,7 @@ class VOQuery():
         except Exception as e:
             if f!='':
                 f.close()
-            logging.exception('Exception caught:')
+            logging.exception(e)
 
         return res
 
@@ -94,11 +94,11 @@ class VOQuery():
                     return_vot = parse(url + '/results/result').get_first_table().to_table()
                     break
                 elif res=='ERROR' or res== '':
-                    return -1
+                    return None
                 time.sleep(1)
         except Exception as e:
-            logging.exception('Exception caught:')
-            return -1
+            logging.exception(e)
+            return None
 
         return return_vot
 
@@ -107,7 +107,8 @@ class VOQuery():
         """
         Get table rowcount
         """
-        return len(self.votable)
+        if self.votable!=None:
+            return len(self.votable)
 
 
     def execute_async_query(self, url, q, mode_local="async", request="doQuery", lang="ADQL", voformat="votable", maxrec=None):
@@ -149,8 +150,8 @@ class VOQuery():
 
 
         except Exception as e:
-            logging.exception('Exception caught:')
-            return -1
+            logging.exception(e)
+            return None
 
         return votable
 
