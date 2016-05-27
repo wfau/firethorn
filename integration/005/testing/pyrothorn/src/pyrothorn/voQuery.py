@@ -10,7 +10,6 @@ Created on Nov 30, 2011
 import os
 import urllib2
 import urllib
-import StringIO
 import time
 import xml.dom.minidom
 import pyodbc
@@ -23,8 +22,8 @@ import re
 import logging
 import datetime
 from time import gmtime,  strftime
-from astropy.io.votable import parse
-
+from astropy.table import Table
+from cStringIO import StringIO
 
 class VOQuery():
     """
@@ -91,7 +90,7 @@ class VOQuery():
             while True:
                 res = self._get_async_results(url,'/phase')
                 if res=='COMPLETED':
-                    return_vot = parse(url + '/results/result').get_first_table().to_table()
+                    return_vot = Table.read(StringIO(self._get_async_results(url,'/results/result')), format="votable")
                     break
                 elif res=='ERROR' or res== '':
                     return None
@@ -101,15 +100,16 @@ class VOQuery():
             return None
 
         return return_vot
-
+	
 
     def get_votable_rowcount(self):
         """
         Get table rowcount
         """
-        if self.votable!=None:
+        if self.votable:
             return len(self.votable)
-
+        else :
+            return -1
 
     def execute_async_query(self, url, q, mode_local="async", request="doQuery", lang="ADQL", voformat="votable", maxrec=None):
         """
