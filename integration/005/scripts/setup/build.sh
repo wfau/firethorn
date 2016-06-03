@@ -40,8 +40,10 @@
     then
         cat > "${HOME:?}/firethorn.settings" << EOF
 FIRETHORN_CODE=/projects/firethorn
+PYROTHORN_CODE=/projects/firethorn/pyrothorn
 EOF
     fi
+    
 
     #
     # Clone our repository.
@@ -251,15 +253,22 @@ EOF
     #
     # Clone our repository.
     source "${HOME:?}/firethorn.settings"
-    if [ ! -e "${FIRETHORN_CODE:?}" ]
+    if [ ! -e "${PYROTHORN_CODE:?}" ]
     then
-        pushd "$(dirname ${FIRETHORN_CODE:?})"
+        pushd "${FIRETHORN_CODE:?}"
 
   	git clone https://github.com/stvoutsin/pyrothorn.git 
 
         popd
     fi
-  
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${PYROTHORN_CODE:?}"
+
+       git pull
+
+    popd
+
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
