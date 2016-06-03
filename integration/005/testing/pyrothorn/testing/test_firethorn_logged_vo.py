@@ -36,15 +36,16 @@ try:
     from pyrothorn import voQuery
     sys.stdout = open('logs/logfile.txt', 'w')
     import pyrothorn    
-    # get a UUID - URL safe, Base64
-    def get_a_uuid():
-        '''
-        Generate uuid
-        '''
-        r_uuid = base64.urlsafe_b64encode(uuid.uuid4().bytes)
-        return r_uuid.replace('=', '')
 except Exception as e:
     logging.info(e)
+
+def get_a_uuid():
+    '''
+    Generate uuid
+    '''
+    r_uuid = base64.urlsafe_b64encode(uuid.uuid4().bytes)
+    return r_uuid.replace('=', '')
+
 
 class Timeout():
     """Timeout class using ALARM signal."""
@@ -177,10 +178,13 @@ class test_firethorn(unittest.TestCase):
 			    logging.info("Started TAP job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    with Timeout(config.firethorn_timeout):
                                 if (config.sql_rowlimit!=None):
-			            votable = voQuery.execute_async_query(q=query, url=config.tap_service, maxrec=config.sql_rowlimit)
+				    voqry = voQuery.VOQuery(endpointURL= config.tap_service, query=query,  maxrec=config.sql_rowlimit)
+                                    voqry.run()
                                 else :
-                                    votable = voQuery.execute_async_query(q=query, url=config.tap_service)
-			    tap_row_length = voQuery.get_votable_rowcount(votable)
+                                    voqry = voQuery.VOQuery(endpointURL= config.tap_service, query=query)
+                                    voqry.run()
+
+			    tap_row_length = voqry.get_votable_rowcount()
 			    logging.info("Finished TAP job :::" +  strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 			    logging.info("TAP  Query: " + str(tap_row_length) + " row(s) returned. ")
 			    tap_duration = float(time.time() - start_time)

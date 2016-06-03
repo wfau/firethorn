@@ -10,10 +10,8 @@ Created on Nov 30, 2011
 import os
 import urllib2
 import urllib
-import StringIO
 import time
 import xml.dom.minidom
-from atpy import atpy
 import pyodbc
 try:
     import simplejson as json
@@ -24,7 +22,8 @@ import re
 import logging
 import datetime
 from time import gmtime,  strftime
-
+from astropy.table import Table
+from cStringIO import StringIO
 
 class VOQuery():
     """
@@ -37,35 +36,43 @@ class VOQuery():
         self.voformat = voformat
         self.request = request
         self.maxrec = maxrec
+        self.votable = None
 
-    def run():
+
+    @property
+    def votable(self):
+        """Votable object"""
+        return self.votable
+
+
+    def run(self):
         """
         Run the query
         Todo: Add synchronous query capability
         """
-        return self.execute_async_query(self.endpointURL, self.query, self.mode_local, self.request, self.lang, self.voformat, self.maxrec)
+        self.votable = self.execute_async_query(self.endpointURL, self.query, self.mode_local, self.request, self.lang, self.voformat, self.maxrec)
 
 
-    def _get_async_results(self, endpointURL, URI):
+    def _get_async_results(self, endpointURL, extension):
         """
-        Open the given url and URI and read/return the result
+        Open the given url and extension and read/return the result
 
-        @param url: A URL string to open
-        @param URI: A URI string to attach to the URL request
-        @return: The result of the HTTP request sent to the URI of the URL
+        @param endpointURL: A URL string to open
+        @param extension: An extension string to attach to the URL request
+        @return: The result of the HTTP request sent to the the URL
         """
 
         res = ''
         f = ''
         try:
-            req = urllib2.Request(url+URI)
+            req = urllib2.Request(endpointURL + extension)
             f = urllib2.urlopen(req)
             res =  f.read()
             f.close()
         except Exception as e:
             if f!='':
                 f.close()
-            logging.exception('Exception caught:')
+            logging.exception(e)
 
         return res
 
@@ -83,27 +90,26 @@ class VOQuery():
             while True:
                 res = self._get_async_results(url,'/phase')
                 if res=='COMPLETED':
-                    time.sleep(5)
-                    return_vot = atpy.Table(url + '/results/result', type='vo')
+                    return_vot = Table.read(StringIO(self._get_async_results(url,'/results/result')), format="votable")
                     break
                 elif res=='ERROR' or res== '':
-                    return -1
+                    return None
                 time.sleep(1)
         except Exception as e:
-            logging.exception('Exception caught:')
-            return -1
+            logging.exception(e)
+            return None
 
         return return_vot
+	
 
-
-    def _get_votable_rowcount(self, votable):
+    def get_votable_rowcount(self):
         """
         Get table rowcount
         """
-        if votable==-1:
+        if self.votable:
+            return len(self.votable)
+        else :
             return -1
-        return len(votable)
-
 
     def execute_async_query(self, url, q, mode_local="async", request="doQuery", lang="ADQL", voformat="votable", maxrec=None):
         """
@@ -144,8 +150,8 @@ class VOQuery():
 
 
         except Exception as e:
-            logging.exception('Exception caught:')
-            return -1
+            logging.exception(e)
+            return None
 
         return votable
 
