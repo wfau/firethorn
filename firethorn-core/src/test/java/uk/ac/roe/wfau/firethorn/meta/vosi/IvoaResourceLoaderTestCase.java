@@ -100,10 +100,10 @@ public class IvoaResourceLoaderTestCase
             "vizier-tap"
             );
         log.debug("Resource [{}][{}]", vizier.name(), vizier.ident());
-        log.debug("Reading  [vizier-tableset.xml]");
+        log.debug("Reading  [vizier-tableset-sample.xml]");
         reader.inport(
             new FileReader(
-                "src/test/data/vosi/original/vizier-twomass.xml"
+                "src/test/data/vosi/original/vizier-tableset-sample.xml"
                 ),
             vizier
             );
