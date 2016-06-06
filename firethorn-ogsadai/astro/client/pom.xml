@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-astro</artifactId>
-        <version project='firethorn'>2.0.18</version>
+        <version project='firethorn'>2.0.18-stv-vosi-test</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-astro-client</artifactId>
