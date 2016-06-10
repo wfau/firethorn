@@ -26,18 +26,14 @@ import adql.db.DBTable;
 import adql.db.exception.UnresolvedJoinException;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
-import adql.query.ADQLOrder;
 import adql.query.ADQLQuery;
-import adql.query.ClauseConstraints;
 import adql.query.ClauseSelect;
-import adql.query.ColumnReference;
 import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
 import adql.query.constraint.ConstraintsGroup;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
-import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
@@ -57,24 +53,7 @@ import adql.query.operand.function.geometry.RegionFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
-import java.util.Iterator;
-import adql.query.constraint.ADQLConstraint;
-import adql.query.constraint.Between;
-import adql.query.constraint.Comparison;
-import adql.query.constraint.Exists;
-import adql.query.constraint.In;
-import adql.query.constraint.IsNull;
-import adql.query.constraint.NotConstraint;
-import adql.query.from.ADQLJoin;
-import adql.query.from.FromContent;
-import adql.query.operand.ADQLOperand;
-import adql.query.operand.Concatenation;
-import adql.query.operand.NegativeOperand;
-import adql.query.operand.NumericConstant;
-import adql.query.operand.Operation;
 import adql.query.operand.StringConstant;
-import adql.query.operand.function.SQLFunction;
-import adql.query.operand.function.SQLFunctionType;
 import adql.query.operand.function.geometry.GeometryFunction;
 import adql.query.operand.function.geometry.GeometryFunction.GeometryValue;
 import adql.db.DBType;
@@ -383,38 +362,7 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 		return result;
 	}
 
-	/**
-	 * <p>
-	 * Get the qualified DB name of the schema containing the given table.
-	 * </p>
-	 * 
-	 * <p>
-	 * <i>Note: This function will, by default, add double quotes if the schema
-	 * name must be case sensitive in the SQL query. This information is
-	 * provided by {@link #isCaseSensitive(IdentifierField)}. </i>
-	 * </p>
-	 * 
-	 * @param table
-	 *            A table of the schema whose the qualified DB name is asked.
-	 * 
-	 * @return The qualified (with DB catalog name prefix if any, and with
-	 *         double quotes if needed) DB schema name, or an empty string if
-	 *         there is no schema or no DB name.
-	 */
-	public String getQualifiedSchemaName(final DBTable table) {
-		if (table == null || table.getDBSchemaName() == null)
-			return "";
-
-		StringBuffer buf = new StringBuffer();
-
-		if (table.getDBCatalogName() != null)
-			appendIdentifier(buf, table.getDBCatalogName(), IdentifierField.CATALOG).append('.');
-
-		appendIdentifier(buf, table.getDBSchemaName(), IdentifierField.SCHEMA);
-
-		return buf.toString();
-	}
-
+	
 	/**
 	 * <p>
 	 * Get the qualified DB name of the given table.
@@ -444,34 +392,6 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 		appendIdentifier(buf, table.getDBName(), IdentifierField.TABLE);
 
 		return buf.toString();
-	}
-
-	/**
-	 * <p>
-	 * Get the DB name of the given column
-	 * </p>
-	 * 
-	 * <p>
-	 * <i>Note: This function will, by default, add double quotes if the column
-	 * name must be case sensitive in the SQL query. This information is
-	 * provided by {@link #isCaseSensitive(IdentifierField)}. </i>
-	 * </p>
-	 * 
-	 * <p>
-	 * <b>Caution: The given column may be NULL and in this case an empty string
-	 * will be returned. But if the given column is not NULL, its DB name MUST
-	 * NOT BE NULL! </b>
-	 * </p>
-	 * 
-	 * @param column
-	 *            The column whose the DB name is asked.
-	 * 
-	 * @return The DB column name (with double quotes if needed), or an empty
-	 *         string if the given column is NULL.
-	 */
-	public String getColumnName(final DBColumn column) {
-		return (column == null) ? ""
-				: appendIdentifier(new StringBuffer(), column.getDBName(), IdentifierField.COLUMN).toString();
 	}
 
 	/* *************************** */
@@ -544,104 +464,6 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 		} else {
 			return item.toADQL();
 		}
-	}
-
-	/**
-	 * Gets the default SQL output for a column reference.
-	 * 
-	 * @param ref
-	 *            The column reference to format into SQL.
-	 * 
-	 * @return The corresponding SQL.
-	 * 
-	 * @throws TranslationException
-	 *             If there is an error during the translation.
-	 */
-	protected String getDefaultColumnReference(ColumnReference ref) throws TranslationException {
-		if (ref.isIndex()) {
-			return "" + ref.getColumnIndex();
-		} else {
-			if (ref.getDBLink() == null) {
-				return (ref.isCaseSensitive() ? ("\"" + ref.getColumnName() + "\"") : ref.getColumnName());
-			} else {
-				DBColumn dbCol = ref.getDBLink();
-				StringBuffer colName = new StringBuffer();
-				// Use the table alias if any:
-				if (ref.getAdqlTable() != null && ref.getAdqlTable().hasAlias())
-					appendIdentifier(colName, ref.getAdqlTable().getAlias(),
-							ref.getAdqlTable().isCaseSensitive(IdentifierField.ALIAS)).append('.');
-
-				// Use the DBTable if any:
-				else if (dbCol.getTable() != null)
-					colName.append(getQualifiedTableName(dbCol.getTable())).append('.');
-
-				appendIdentifier(colName, dbCol.getDBName(), IdentifierField.COLUMN);
-
-				return colName.toString();
-			}
-		}
-	}
-
-	/* ************************** */
-	/* ****** TABLE & JOIN ****** */
-	/* ************************** */
-
-	@Override
-	public String translate(ADQLTable table) throws TranslationException {
-		StringBuffer sql = new StringBuffer();
-
-		// CASE: SUB-QUERY:
-		if (table.isSubQuery())
-			sql.append('(').append(translate(table.getSubQuery())).append(')');
-
-		// CASE: TABLE REFERENCE:
-		else {
-			// Use the corresponding DB table, if known:
-			if (table.getDBLink() != null)
-				sql.append(getQualifiedTableName(table.getDBLink()));
-			// Otherwise, use the whole table name given in the ADQL query:
-			else
-				sql.append(table.getFullTableName());
-		}
-
-		// Add the table alias, if any:
-		if (table.hasAlias()) {
-			sql.append(" AS ");
-			appendIdentifier(sql, table.getAlias(), table.isCaseSensitive(IdentifierField.ALIAS));
-		}
-
-		return sql.toString();
-	}
-
-	@Override
-	public String translate(ADQLJoin join) throws TranslationException {
-		StringBuffer sql = new StringBuffer(translate(join.getLeftTable()));
-
-		if (join.isNatural())
-			sql.append(" NATURAL");
-
-		sql.append(' ').append(join.getJoinType()).append(' ').append(translate(join.getRightTable())).append(' ');
-
-		if (!join.isNatural()) {
-			if (join.getJoinCondition() != null)
-				sql.append(translate(join.getJoinCondition()));
-			else if (join.hasJoinedColumns()) {
-				StringBuffer cols = new StringBuffer();
-				Iterator<ADQLColumn> it = join.getJoinedColumns();
-				while (it.hasNext()) {
-					ADQLColumn item = it.next();
-					if (cols.length() > 0)
-						cols.append(", ");
-					if (item.getDBLink() == null)
-						appendIdentifier(cols, item.getColumnName(), item.isCaseSensitive(IdentifierField.COLUMN));
-					else
-						appendIdentifier(cols, item.getDBLink().getDBName(), IdentifierField.COLUMN);
-				}
-				sql.append("USING (").append(cols).append(')');
-			}
-		}
-
-		return sql.toString();
 	}
 
 	@Override
