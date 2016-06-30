@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import lombok.extern.slf4j.Slf4j;
 import adql.db.DBColumn;
@@ -32,6 +34,7 @@ import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
 import adql.query.constraint.ConstraintsGroup;
+import adql.query.from.ADQLJoin;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
@@ -57,6 +60,7 @@ import adql.query.operand.StringConstant;
 import adql.query.operand.function.geometry.GeometryFunction;
 import adql.query.operand.function.geometry.GeometryFunction.GeometryValue;
 import adql.db.DBType;
+import adql.db.SearchColumnList;
 import adql.db.DBType.DBDatatype;
 
 /*
@@ -475,69 +479,163 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 	/* ****** GEOMETRICAL FUNCTIONS ****** */
 	/* *********************************** */
 
-	@Override
-	public String translate(GeometryValue<? extends GeometryFunction> geomValue) throws TranslationException {
-		return translate(geomValue.getValue());
-	}
+	/**
+	 * Gets the default SQL output for the given ADQL function. Replace function name with new name
+	 * Ignores coordsys argument
+	 * 
+	 * @param fct	The ADQL function to format into SQL.
+	 * @param newname	The new name for the function
+	 * 
+	 * @return		The corresponding SQL.
+	 * 
+	 * @throws TranslationException	If there is an error during the translation.
+	 */
+	protected String getSQLServerADQLFunction(ADQLFunction fct, String newname) throws TranslationException{
+		String sql = newname + "(";
 
+		for(int i = 1; i < fct.getNbParameters(); i++)
+			sql += ((i == 1) ? "" : ", ") + translate(fct.getParameter(i));
+
+		return sql + ")";
+	}
+	
+	
 	@Override
-	public String translate(ExtractCoord extractCoord) throws TranslationException {
+	public String translate(final ExtractCoord extractCoord) throws TranslationException {
 		return getDefaultADQLFunction(extractCoord);
 	}
 
 	@Override
-	public String translate(ExtractCoordSys extractCoordSys) throws TranslationException {
+	public String translate(final ExtractCoordSys extractCoordSys) throws TranslationException {
 		return getDefaultADQLFunction(extractCoordSys);
 	}
 
 	@Override
-	public String translate(AreaFunction areaFunction) throws TranslationException {
+	public String translate(final AreaFunction areaFunction) throws TranslationException {
 		return getDefaultADQLFunction(areaFunction);
 	}
 
 	@Override
-	public String translate(CentroidFunction centroidFunction) throws TranslationException {
+	public String translate(final CentroidFunction centroidFunction) throws TranslationException {
 		return getDefaultADQLFunction(centroidFunction);
 	}
 
 	@Override
-	public String translate(DistanceFunction fct) throws TranslationException {
+	public String translate(final DistanceFunction fct) throws TranslationException {
 		return getDefaultADQLFunction(fct);
 	}
 
 	@Override
-	public String translate(ContainsFunction fct) throws TranslationException {
+	public String translate(final ContainsFunction fct) throws TranslationException {
 		return getDefaultADQLFunction(fct);
 	}
 
 	@Override
-	public String translate(IntersectsFunction fct) throws TranslationException {
+	public String translate(final IntersectsFunction fct) throws TranslationException {
 		return getDefaultADQLFunction(fct);
 	}
 
 	@Override
-	public String translate(BoxFunction box) throws TranslationException {
-		return getDefaultADQLFunction(box);
+	public String translate(final PointFunction point) throws TranslationException {
+		return getSQLServerADQLFunction(point, "fnSpatial_SearchPoint");
+
 	}
 
 	@Override
-	public String translate(CircleFunction circle) throws TranslationException {
-		return getDefaultADQLFunction(circle);
+	public String translate(final CircleFunction circle) throws TranslationException {
+		return getSQLServerADQLFunction(circle, "fnSpatial_SearchCircle");
 	}
 
 	@Override
-	public String translate(PointFunction point) throws TranslationException {
-		return getDefaultADQLFunction(point);
+	public String translate(final BoxFunction box) throws TranslationException {
+		return getSQLServerADQLFunction(box, "fSearchBox");
+
 	}
 
 	@Override
-	public String translate(PolygonFunction polygon) throws TranslationException {
+	public String translate(final PolygonFunction polygon) throws TranslationException {
 		return getDefaultADQLFunction(polygon);
 	}
 
 	@Override
-	public String translate(RegionFunction region) throws TranslationException {
+	public String translate(final RegionFunction region) throws TranslationException {
 		return getDefaultADQLFunction(region);
+	}
+
+	@Override
+	public String translate(final ADQLJoin join) throws TranslationException {
+		StringBuffer sql = new StringBuffer(translate(join.getLeftTable()));
+
+		sql.append(' ').append(join.getJoinType()).append(' ').append(translate(join.getRightTable())).append(' ');
+
+		// CASE: NATURAL
+		if (join.isNatural()){
+			try{
+				StringBuffer buf = new StringBuffer();
+			
+				// Find duplicated items between the two lists and translate them as ON conditions:
+				DBColumn rightCol;
+				SearchColumnList leftList = join.getLeftTable().getDBColumns();
+				SearchColumnList rightList = join.getRightTable().getDBColumns();
+				for(DBColumn leftCol : leftList){
+					// search for at most one column with the same name in the RIGHT list
+					// and throw an exception is there are several matches:
+					rightCol = ADQLJoin.findAtMostOneColumn(leftCol.getADQLName(), (byte)0, rightList, false);
+					// if there is one...
+					if (rightCol != null){
+						// ...check there is only one column with this name in the LEFT list,
+						// and throw an exception if it is not the case:
+						ADQLJoin.findExactlyOneColumn(leftCol.getADQLName(), (byte)0, leftList, true);
+						// ...append the corresponding join condition:
+						if (buf.length() > 0)
+							buf.append(" AND ");
+						buf.append(getQualifiedTableName(leftCol.getTable())).append('.').append(getColumnName(leftCol));
+						buf.append("=");
+						buf.append(getQualifiedTableName(rightCol.getTable())).append('.').append(getColumnName(rightCol));
+					}
+				}
+	
+				sql.append("ON ").append(buf.toString());
+			}catch(UnresolvedJoinException uje){
+				throw new TranslationException("Impossible to resolve the NATURAL JOIN between "+join.getLeftTable().toADQL()+" and "+join.getRightTable().toADQL()+"!", uje);
+			}
+		}
+		// CASE: USING
+		else if (join.hasJoinedColumns()){
+			try{
+				StringBuffer buf = new StringBuffer();
+				
+				// For each columns of usingList, check there is in each list exactly one matching column, and then, translate it as ON condition:
+				DBColumn leftCol, rightCol;
+				ADQLColumn usingCol;
+				SearchColumnList leftList = join.getLeftTable().getDBColumns();
+				SearchColumnList rightList = join.getRightTable().getDBColumns();
+				Iterator<ADQLColumn> itCols = join.getJoinedColumns();
+				while(itCols.hasNext()){
+					usingCol = itCols.next();
+					// search for exactly one column with the same name in the LEFT list
+					// and throw an exception if there is none, or if there are several matches:
+					leftCol = ADQLJoin.findExactlyOneColumn(usingCol.getColumnName(), usingCol.getCaseSensitive(), leftList, true);
+					// idem in the RIGHT list:
+					rightCol = ADQLJoin.findExactlyOneColumn(usingCol.getColumnName(), usingCol.getCaseSensitive(), rightList, false);
+					// append the corresponding join condition:
+					if (buf.length() > 0)
+						buf.append(" AND ");
+					buf.append(getQualifiedTableName(leftCol.getTable())).append('.').append(getColumnName(leftCol));
+					buf.append("=");
+					buf.append(getQualifiedTableName(rightCol.getTable())).append('.').append(getColumnName(rightCol));
+				}
+				
+				sql.append("ON ").append(buf.toString());
+			}catch(UnresolvedJoinException uje){
+				throw new TranslationException("Impossible to resolve the JOIN USING between "+join.getLeftTable().toADQL()+" and "+join.getRightTable().toADQL()+"!", uje);
+			}
+		}
+		// DEFAULT CASE:
+		else
+			sql.append(translate(join.getJoinCondition()));
+
+		return sql.toString();
 	}
 	
 	@Override
