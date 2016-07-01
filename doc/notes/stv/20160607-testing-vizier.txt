@@ -1,0 +1,309 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+newversion=2.0.18-stv-vosi-test
+
+ssh shep
+
+    createvm
+
+        INFO : Node name [zawty]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [kerma.qcow]
+        INFO : Disc size [16GiB]
+
+   exit
+
+
+# -----------------------------------------
+# Copy scripts from local to VM
+#
+   source "${HOME:?}/firethorn.settings"
+   pushd "${FIRETHORN_CODE:?}"
+
+       scp -r integration/005/scripts/* root@kerma:/root/
+
+   popd
+
+# -----------------------------------------
+# Login to the the VM
+#[stv@shep]
+
+    ssh kerma
+
+
+# -----------------------------------------------------
+# Create our secret function.
+#[root@hebenu]
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'firethorn.user.host'
+   
+    source run.sh 05 2.0.18-stv-vosi-test 2.0.18-stv-vosi-test
+
+   docker exec -it jarmila bash
+
+
+
+        pushd "webapps/ogsadai//WEB-INF/etc/dai"
+
+cat > resources/gaia-tap << EOF
+id=gaia-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://geadev.esac.esa.int/tap-server/tap/
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+cat > resources/vizier-tap << EOF
+id=vizier-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://tapvizier.u-strasbg.fr/beta/TAPVizieR/tap
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+cat > resources/gavo-tap << EOF
+id=gavo-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap/
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
+EOF
+
+cat > resources/vizier-tap << EOF
+id=vizier-tap
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.astro.tapurl=http://tapvizier.u-strasbg.fr/TAPVizieR/tap/
+END
+ACTIVITIES
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.ADQLQuery
+END
+dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource 
+EOF
+
+        popd
+    exit
+
+    source ${HOME:?}/chain.properties
+
+    docker rm -f builder
+
+
+properties=$(mktemp)
+cat > "${properties:?}" << EOF
+
+        firethorn.ogsadai.endpoint=http://${ogsalink:?}:8080/ogsadai/services
+
+        firethorn.meta.url=jdbc:jtds:sqlserver://${userlink:?}/${metadata:?}
+        firethorn.meta.user=${metauser:?}
+        firethorn.meta.pass=${metapass:?}
+        firethorn.meta.driver=net.sourceforge.jtds.jdbc.Driver
+        firethorn.meta.type=mssql
+
+        firethorn.user.url=jdbc:jtds:sqlserver://${userlink:?}/${userdata:?}
+        firethorn.user.user=${useruser:?}
+        firethorn.user.pass=${userpass:?}
+        firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+        firethorn.user.type=mssql
+
+EOF
+chmod a+r "${properties:?}" 
+chcon -t svirt_sandbox_file_t "${properties:?}" 
+
+    docker run \
+        -it \
+        --name builder \
+        --env "branch=${branch:?}" \
+        --env "version=${version:?}" \
+        --link "${dataname:?}:${datalink:?}" \
+        --link "${username:?}:${userlink:?}" \
+        --volume /var/local/cache:/cache \
+        --volume /var/local/projects:/projects \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        --volume ${HOME:?}/setup/build.sh:/build.sh \
+        --volume "${properties:?}:/root/firethorn.properties" \
+        firethorn/builder:1 \
+        bash 
+# -----------------------------------------------------
+# Manually load the IVOA vosi data.
+#[user@desktop]
+
+     yum install -y maven 
+
+     cd /projects/firethorn/
+
+            hg pull
+            hg update -C 2.0.18-stv-vosi-test
+
+            pushd firethorn-core
+
+                mvn -D skipTests=false -D test=IvoaResourceLoaderTestCase test
+
+         
+    exit
+    
+# -----------------------------------------------------
+# IvoaResourceLoader results.
+#
+
+....
+
+
+Resource [vizier-tap][46137347] 
+Schema [vcds1][46203049] 
+
+....
+
+
+    source ${HOME:?}/chain.properties
+    docker rm -f tester
+    testname=tester
+
+    docker run \
+	-it \
+        --name "${testname:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        "firethorn/tester" \
+        bash  
+# -----------------------------------------------------
+# Import the table metadata.
+#[user@desktop]
+
+	mkdir logs
+
+	identity=${identity:-$(date '+%H:%M:%S')}
+	community=${community:-$(date '+%A %-d %B %Y')}
+
+	source "bin/01-01-init-rest.sh" 
+
+	database=ATLASDR1
+
+	source "bin/02-02-create-jdbc-space.sh" \
+	    'Atlas JDBC conection' \
+	    "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+	    "${datauser:?}" \
+	    "${datapass:?}" \
+	    "${datadriver:?}" \
+	    '*'
+	atlasjdbc=${jdbcspace:?}
+
+	source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+	atlasadql=${adqlspace:?}
+
+	source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml" 
+	atlasschema=${adqlschema:?}
+
+
+        ivoaname=vcds1
+        ivoaschema=/ivoa/schema/46203049
+
+	curl  \
+	--header "firethorn.auth.identity:${identity:?}" \
+	--header "firethorn.auth.community:${community:?}" \
+	--data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+	--data   "adql.resource.schema.import.name=${ivoaname:?}" \
+	--data   "adql.resource.schema.import.base=${ivoaschema:?}" \
+	"${endpointurl:?}${atlasadql:?}/schemas/import" 
+
+
+
+
+# -----------------------------------------------------
+# Run test queries.
+#[user@laptop]
+
+       source "bin/04-01-create-query-space.sh" 'Test workspace'
+
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'vcds1'    'vcds1'
+
+        source "bin/04-03-import-query-schema.sh" "${adqlspace:?}" 'ATLASDR1'    'ATLASDR1'
+
+        source "bin/04-03-create-query-schema.sh"
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+             top 10 * from vcds1.\"B/astorb/astorb\"
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            SELECT
+             top 10 ra from ATLASDR1.atlassource
+            "
+
+
+
+
+    exit
+
+
+
