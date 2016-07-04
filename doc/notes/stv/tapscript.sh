@@ -207,7 +207,7 @@ popd
 
 
     clearwing_host=$(secret 'clearwing_host')
-    clearwing_port=$(secret 'clearwing_port')
+    clearwing_port=$(secret 'port')
     clearwing_host_alias=$(secret 'clearwing_host_alias')
     clearwing_tap_service=$(secret 'clearwing_tap_service')
     clearwing_tap_service_title=$(secret 'clearwing_tap_service_title')
@@ -455,17 +455,24 @@ EOF
         source "bin/05-03-execute-query.sh" \
             "AUTO" \
             "
-            SELECT
-                atlasSource.ra,
-                atlasSource.dec
-            FROM
-                atlas.atlasSource
-            WHERE
-                atlasSource.ra  BETWEEN 354 AND 355
-            AND
-                atlasSource.dec BETWEEN -40 AND -39
+            
+            SELECT TOP 10 * FROM CIRCLE('ICRS', 322.485880377909,-32.0594554957591, 1)
             "
 
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            
+	    SELECT TOP 10 CIRCLE('ICRS', 322.485880377909,-32.0594554957591, 1) FROM atlas.atlasSource
+            "
+
+        source "bin/05-03-execute-query.sh" \
+            "AUTO" \
+            "
+            
+	    select top 5 objID FROM atlasSource, POINT('ICRS', 322.485880377909,-32.0594554957591
+            "
 
 
 	# -----------------------------------------------------

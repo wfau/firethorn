@@ -537,18 +537,18 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 
 	@Override
 	public String translate(final PointFunction point) throws TranslationException {
-		return getSQLServerADQLFunction(point, "fnSpatial_SearchPoint");
+		return getSQLServerADQLFunction(point, "dbo.fnSpatial_SearchPoint");
 
 	}
 
 	@Override
 	public String translate(final CircleFunction circle) throws TranslationException {
-		return getSQLServerADQLFunction(circle, "fnSpatial_SearchCircle");
+		return getSQLServerADQLFunction(circle, "dbo.fnSpatial_SearchCircle");
 	}
 
 	@Override
 	public String translate(final BoxFunction box) throws TranslationException {
-		return getSQLServerADQLFunction(box, "fSearchBox");
+		return getSQLServerADQLFunction(box, "dbo.fSearchBox");
 
 	}
 

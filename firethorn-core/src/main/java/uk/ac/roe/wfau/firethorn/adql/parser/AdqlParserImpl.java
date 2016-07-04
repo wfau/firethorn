@@ -60,6 +60,7 @@ import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.SQLFunction;
 import adql.query.operand.function.UserDefinedFunction;
+import adql.query.operand.function.geometry.GeometryFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.TranslationException;
 
@@ -1756,6 +1757,11 @@ implements AdqlParser
             {
             return wrap((UserDefinedFunction) funct);
             }
+        else if (funct instanceof GeometryFunction)
+        	{
+        	return wrap((GeometryFunction) funct);
+        	}
+        
         else {
             throw new AdqlParserException(
                 "Unknown ADQLFunction class [" + funct.getName() + "][" + funct.getClass().getName() + "]"
@@ -2050,6 +2056,7 @@ implements AdqlParser
         	}
         
         }
+    
     /**
      * Hard coded set of UserDefinedFunctions for the OSA Altas catalog.
      *
@@ -2087,6 +2094,26 @@ implements AdqlParser
 				           new Integer(32)
 				           );
 	        }
+        }
+    
+    /**
+     * Wrap a SQLFunction.
+     *
+     */
+    public static MySelectField wrap(final GeometryFunction funct)
+    throws ArrayIndexOutOfBoundsException, AdqlParserException
+        {
+        log.trace("wrap(GeometryFunction)");
+        log.trace("  name   [{}]", funct.getName());
+        log.trace("  number [{}]", funct.isNumeric());
+        log.trace("  string [{}]", funct.isString());
+      
+        	return new MySelectFieldImpl(
+        			funct.getName(),
+		           AdqlColumn.AdqlType.INTEGER
+		           );
+
+         
         }
     }
 
