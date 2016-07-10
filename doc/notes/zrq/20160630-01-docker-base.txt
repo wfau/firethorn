@@ -1,0 +1,558 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Initial settings
+#[user@methionine] 
+
+    datpath=src/dat
+    cfgfile=src/config
+
+    : ${basepool:='base'}
+    : ${livepool:='live'}
+    : ${connection:='qemu:///system'}
+
+#---------------------------------------------------------------------
+# Create the initial base image.
+#[user@methionine] 
+
+    #
+    # Set the VM properties.
+    baseos=fedora-23    
+    basecpu=2
+    basemem=2048
+    nodearch=x86_64
+
+    basesize=16G
+    basename=${baseos}-base-$(date +%Y%m%d)
+    basefile=${basename}.qcow
+
+    #
+    # Delete any existing volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${basefile:?}"
+
+    #
+    # Create a new (empty) volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format qcow2
+
+    basepath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${basefile:?}")
+
+    #
+    # Check the image file.
+    sudo qemu-img \
+        info \
+        --backing-chain \
+        "${basepath:?}"
+
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 196K
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+    #
+    # Build our VM image.
+    sudo virt-builder \
+        --verbose \
+        --no-network \
+        --format  'qcow2' \
+        --arch    "${nodearch:?}" \
+        --output  "${basepath:?}" \
+        "${baseos:?}"
+
+    #
+    # Check the image file.
+    sudo qemu-img \
+        info \
+        --backing-chain \
+        "${basepath:?}"
+
+        file format: qcow2
+        virtual size: 6.0G (6442450944 bytes)
+        disk size: 920M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+    #
+    # Not what we want ...
+    # Original plan was to create a 16G btrfs image .....
+
+
+    #
+    # Docker device mapper driver.
+    # https://docs.docker.com/engine/userguide/storagedriver/device-mapper-driver/
+
+        "Docker hosts running the devicemapper storage driver default
+         to a configuration mode known as loop-lvm"
+    
+    #
+    # Docker btrfs driver
+    # https://docs.docker.com/engine/userguide/storagedriver/btrfs-driver/
+
+    #
+    # Can we control the image size in virt-builder ?
+    # Can we control the disc format in virt-builder ?
+
+#---------------------------------------------------------------------
+# Try again ....
+#[user@methionine] 
+
+    #
+    # Delete any existing volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${basefile:?}"
+
+    #
+    # Create a new (empty) volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format qcow2
+
+    basepath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${basefile:?}")
+
+    #
+    # Check the image file.
+    sudo qemu-img \
+        info \
+        --backing-chain \
+        "${basepath:?}"
+
+        image: /var/lib/libvirt/images/base/fedora-23-base-20160630.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 196K
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+    #
+    # Build our VM image.
+    sudo virt-builder \
+        --verbose \
+        --no-network \
+        --format  'qcow2' \
+        --size    "${basesize:?}" \
+        --arch    "${nodearch:?}" \
+        --output  "${basepath:?}" \
+        "${baseos:?}"
+
+        virt-resize: error: unknown/unavailable method for expanding the xfs 
+        filesystem on /dev/sda3
+
+        If reporting bugs, run virt-resize with debugging enabled and include the 
+        complete output:
+
+          virt-resize -v -x [...]
+
+    #
+    # http://libguestfs.org/virt-resize.1.html
+    
+        "There corresponding filesystem is not available in libguestfs,
+        because there is no proper package in the host with utilities for it.
+        This is usually the case for btrfs, ntfs, and xfs filesystems."
+
+
+        "In this case, it is enough to install the proper packages adding
+        support for them. For example, libguestfs-xfs on Red Hat Enterprise
+        Linux, CentOS, Debian, Ubuntu, and distributions derived from them,
+        for supporting the xfs filesystem."
+
+    #
+    # Install the xfs package.
+    sudo dnf install libguestfs-xfs
+
+    #
+    # Build our VM image.
+    sudo virt-builder \
+        --verbose \
+        --no-network \
+        --format  'qcow2' \
+        --size    "${basesize:?}" \
+        --arch    "${nodearch:?}" \
+        --output  "${basepath:?}" \
+        "${baseos:?}"
+
+
+    #
+    # Check the image file.
+    sudo qemu-img \
+        info \
+        --backing-chain \
+        "${basepath:?}"
+
+        image: /var/lib/libvirt/images/base/fedora-23-base-20160630.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 917M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+    #
+    # Ok, this solves the size but what about the filesystem ?
+    # No obvious way to convert from XFS to BTRFS.
+
+    #
+    # We could just go back to installing our one base system.
+    #
+
+#---------------------------------------------------------------------
+# Try again ....
+#[user@methionine] 
+
+    #
+    # Delete any existing volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${basefile:?}"
+
+    #
+    # Create a new (empty) volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format qcow2
+
+    basepath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${basefile:?}")
+
+    #
+    # Check the image file.
+    sudo qemu-img \
+        info \
+        --backing-chain \
+        "${basepath:?}"
+
+        image: /var/lib/libvirt/images/base/fedora-23-base-20160630.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 196K
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+    #
+    # Install the OS. 
+    netinst=http://mirrorservice.org/sites/download.fedora.redhat.com/pub/fedora/linux/releases/23/Server/x86_64/os
+
+    virt-install \
+        --connect "${connection:?}" \
+        --name "${basename:?}" \
+        --memory "${basemem:?}" \
+        --vcpus  "${basecpu:?}" \
+        --location "${netinst:?}" \
+        --disk "vol=${basepool:?}/${basefile:?}"
+
+        Minimal install
+            root password set
+            no user
+            London timezone
+            UK keyboard
+            
+        BTRFS filesystem
+            /boot ext4   256M
+             swap swap  2048M
+            /     btrfs ...
+
+    #
+    # Check the image file.
+    sudo qemu-img \
+        info \
+        --backing-chain \
+        "${basepath:?}"
+
+        image: /var/lib/libvirt/images/base/fedora-23-base-20160630.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 1.4G
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+    #
+    # Add our SSH key and trigger a restorecon.
+    sudo virt-sysprep \
+        --connect "${connection:?}" \
+        --domain "${basename:?}" \
+        --root-password random \
+        --ssh-inject root:file:/home/Zarquan/.ssh/zrq.metagrid.co.uk.rsa.pub \
+        --firstboot-command 'restorecon -Rv /root/.ssh'
+
+   #
+   # Delete the VM, but not the volume.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${basename:?}"
+
+#---------------------------------------------------------------------
+# Test the image ...
+#[user@methionine] 
+
+    vmname=eta
+
+    createvm
+    
+    ssh "${vmname:?}"
+
+        cat /etc/fstab 
+
+            UUID=13d28cc4-0ea6-4e84-b7c0-91adf7f52ee6 /     btrfs   subvol=root 0 0
+            UUID=f2252fae-71dc-49db-ab5d-706c717adf86 /boot ext4    defaults    1 2
+            UUID=14ac496c-047f-4e8c-8d4b-055c416b401f swap  swap    defaults    0 0
+
+        df -h
+
+            Filesystem      Size  Used Avail Use% Mounted on
+            devtmpfs        490M     0  490M   0% /dev
+            tmpfs           497M     0  497M   0% /dev/shm
+            tmpfs           497M  264K  497M   1% /run
+            tmpfs           497M     0  497M   0% /sys/fs/cgroup
+            /dev/vda3        14G  747M   12G   7% /
+            tmpfs           497M  4.0K  497M   1% /tmp
+            /dev/vda1       240M   74M  151M  33% /boot
+            tmpfs           100M     0  100M   0% /run/user/0
+
+# -----------------------------------------
+# Install useful admin tools.
+#[root@virtual]
+
+    dnf -y install sed
+    dnf -y install gawk
+
+    dnf -y install vim
+    dnf -y install nano
+
+    dnf -y install tar
+    dnf -y install zip
+    dnf -y install gzip
+
+    dnf -y install sudo
+    dnf -y install htop
+    dnf -y install pwgen
+
+    dnf -y install iputils
+    dnf -y install net-tools
+    dnf -y install bind-utils
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    #
+    # Install the entropy generator.
+    dnf install -y haveged
+
+    #
+    # Enable the service.
+    systemctl enable haveged.service
+
+#---------------------------------------------------------------------
+# Install our Docker tools.
+#[root@virtual] 
+
+    #
+    # Add the Docker repository.
+    cat << 'EOF' > /etc/yum.repos.d/docker.repo 
+[docker-repo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/fedora/$releasever/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+
+    #
+    # Install the docker engine
+    dnf -y install docker-engine
+
+    #
+    # Enable the Docker service.
+    systemctl enable docker.service
+
+#---------------------------------------------------------------------
+# Shutdown the VM.
+#[root@virtual] 
+
+    poweroff
+
+#---------------------------------------------------------------------
+# Check the image file(s).
+#[user@methionine] 
+
+    vmpath=$(virsh --connect "${connection:?}" vol-path --pool "${livepool:?}" "${vmname:?}.qcow")
+
+    sudo qemu-img \
+        info \
+        --backing-chain \
+        "${vmpath:?}"
+
+        image: /var/lib/libvirt/images/live/eta.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 562M
+        cluster_size: 65536
+        backing file: /var/lib/libvirt/images/base/fedora-23-base-20160630.qcow
+        backing file format: qcow2
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+        image: /var/lib/libvirt/images/base/fedora-23-base-20160630.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 1.4G
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+#---------------------------------------------------------------------
+# Clean the vm image.
+#[user@methionine] 
+
+    sudo virt-sysprep \
+        --connect "${connection:?}" \
+        --domain "${vmname:?}" \
+        --operations 'defaults,-ssh-userdir'
+
+#---------------------------------------------------------------------
+# Create a compressed copy of the image.
+#[user@methionine] 
+
+    tmpfile=$(mktemp)
+
+    sudo qemu-img \
+        convert \
+            -c \
+            -O qcow2 \
+            "${vmpath:?}" \
+            "${tmpfile:?}"
+
+#---------------------------------------------------------------------
+# Check the image file(s).
+#[user@methionine] 
+
+    sudo qemu-img \
+        info \
+        --backing-chain \
+        "${tmpfile:?}"
+
+        image: /tmp/tmp.6pyHsumual
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 678M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+#---------------------------------------------------------------------
+# Upload the new image.
+#[user@methionine] 
+
+    docksize=16G
+    dockname=${nodeos}-docker-$(date +%Y%m%d)
+    dockfile=${dockname}.qcow
+    
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${dockfile:?}" \
+            "${docksize:?}" \
+            --format 'qcow2'
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${dockfile:?}" \
+            "${tmpfile:?}"
+
+#---------------------------------------------------------------------
+# Check the file info.
+#[user@methionine] 
+
+    dockpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${dockfile:?}")
+
+    sudo qemu-img \
+        info \
+        --backing-chain \
+        "${dockpath:?}"
+
+#---------------------------------------------------------------------
+# Push the docker image to our webserver.
+#[user@methionine] 
+
+    dockpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${dockfile:?}")
+    dockgzip=/tmp/${dockfile:?}.gz
+
+    sudo chmod a+r ${dockpath:?}
+    
+    gzip -c "${dockpath:?}" > "${dockgzip:?}"
+
+    rsync \
+        --stats \
+        --progress \
+        --human-readable \
+        ${dockgzip:?} \
+        root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base
+
+

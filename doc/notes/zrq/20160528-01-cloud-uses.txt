@@ -1,0 +1,125 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+Potential use cases
+
+    Public web services for AstroTROP.
+        Self contained Java and Python webapps.
+        No need to access WFAU LAN.
+        Needs access to arbitary external addresses.
+        Needs at least one publically accessible IP address.
+        Needs to open ports 80 and 443 for external access.
+
+    Development patform for FireThorn VO services.
+        Java webservices, MySQL and PostgreSQL databases.
+        Needs access to arbitary external addresses.
+        Needs access to ROE SQLServer databases.
+        Needs access to ROE pixel data.
+
+    Testing patform for FireThorn VO services.
+        Java webservices, Python test tools, MySQL and PostgreSQL databases.
+        Needs access to arbitary external addresses.
+        Needs access to ROE SQLServer databases.
+        Needs access to ROE pixel data.
+        Needs at least one publically accessible IP address.
+        Needs external access to ports 80 and 443.
+
+    Live deployment for FireThorn VO services.
+    Replacing fenrir for the VO services
+        Java webservices, Python test tools, MySQL and PostgreSQL databases.
+        Needs access to arbitary external addresses.
+        Needs access to ROE SQLServer databases.
+        Needs access to ROE pixel data.
+        Needs at least one publically accessible IP address.
+        Needs external access to ports 80 and 443.
+    
+    Development patform for OSA science archive site.
+        Python web site connected to FireThorn webservices.
+        Needs access to ROE SQLServer databases.
+        Needs access to ROE pixel data.
+
+    Testing patform for OSA science archive site.
+        Python web site connected to FireThorn webservices.
+        Needs access to ROE SQLServer databases.
+        Needs access to ROE pixel data.
+
+    Live deployment for OSA science archive site.
+    Replacing djer for the live site
+    http://osa.roe.ac.uk/
+        Python web site connected to FireThorn webservices.
+        Needs access to arbitary external addresses.
+        Needs access to ROE SQLServer databases.
+        Needs access to ROE pixel data.
+        Needs at least one publically accessible IP address.
+        Needs external access to ports 80 and 443.
+
+
+    Development patform for Genius webservices.
+        FireThorn Java webservices, Python test tools, MySQL and PostgreSQL databases.
+        Needs access to arbitary external addresses.
+        Needs access to ROE SQLServer databases.
+
+    Testing patform for Genius webservices.
+        Java webservices, Python test tools, MySQL and PostgreSQL databases.
+        Needs access to arbitary external addresses.
+        Needs access to ROE SQLServer databases.
+
+    Live deployment for Genius webservices.
+        FireThorn Java webservices, Python test tools, MySQL and PostgreSQL databases.
+        Needs access to arbitary external addresses.
+        Needs access to ROE SQLServer databases.
+        Needs at least one publically accessible IP address.
+        Needs to open ports 80 and 443 for external access.
+
+    Development patform for Genius web site.
+        Python webservices connected to FireThorn.
+        Needs access to arbitary external addresses.
+        
+    Testing patform for Genius web site.
+        Python webservices connected to FireThorn.
+        Needs access to arbitary external addresses.
+
+    Live deployment for Genius distributed TAP site.
+    Replacing shep for the live site
+    http://genius.roe.ac.uk/
+        Python webservices connected to FireThorn.
+        Needs access to arbitary external addresses.
+
+
+
+
+    Development platform for the LSST VOEvent broker
+        No need to access WFAU LAN.
+        Needs access to arbitary external addresses.
+
+    Testing platform for the LSST VOEvent broker
+        No need to access WFAU LAN.
+        Needs access to arbitary external addresses.
+
+    Live deployment for the LSST VOEvent broker
+        No need to access WFAU LAN.
+        Needs access to arbitary external addresses.
+        Needs at least one publically accessible IP address.
+        Needs to open ports 80 and 443 for external access.
+

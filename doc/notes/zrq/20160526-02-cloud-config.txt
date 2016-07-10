@@ -1,0 +1,493 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Interesting blog post
+
+    Minimal DevStack with OpenStack Neutron networking (in a VM)
+    https://kashyapc.com/2015/03/17/minimal-devstack-with-openstack-neutron-networking/
+
+        "This post discusses a way to setup minimal DevStack
+        (OpenStack development environment from git sources)
+        with Neutron networking, in a virtual machine."
+
+
+#---------------------------------------------------------------------
+# Email from Mark H.
+
+    Machine details:
+
+    Intel Xeon CPU E5-2630 v3 @ 2.40GHz, 32 cores 
+    128GB RAM 
+    Debian Jessie installed on a single 240GB SSD
+    2 x 4TB hard drives mounted as /data1 and /data2 10GbE port on LAN
+
+
+#---------------------------------------------------------------------
+#---------------------------------------------------------------------
+# DNS resolver configuration.
+#[user@methionine]
+
+    ssh shep cat /etc/resolv.conf
+
+        search roe.ac.uk
+        nameserver 195.194.120.2
+        nameserver 195.194.120.1
+        nameserver 8.8.8.8
+        nameserver 192.168.137.1
+
+    ssh djer cat /etc/resolv.conf
+
+        search roe.ac.uk
+        nameserver 195.194.120.2
+        nameserver 195.194.120.1
+        nameserver 8.8.8.8
+
+
+#---------------------------------------------------------------------
+#---------------------------------------------------------------------
+# Libvirt network configuration.
+#[user@methionine]
+
+    ssh shep virsh -c 'qemu:///system' net-dumpxml default
+
+        <network connections='9'>
+          <name>default</name>
+          <uuid>386d156a-dd1e-4ec3-b22a-4e0a473d29c1</uuid>
+          <forward mode='nat'>
+            <nat>
+              <port start='1024' end='65535'/>
+            </nat>
+          </forward>
+          <bridge name='virbr0' stp='on' delay='0'/>
+          <ip address='192.168.122.1' netmask='255.255.255.0'>
+            <dhcp>
+              <range start='192.168.122.2' end='192.168.122.254'/>
+              <host mac='52:54:00:00:00:01' name='amarna' ip='192.168.122.10'/>
+              <host mac='52:54:00:00:00:02' name='badari' ip='192.168.122.11'/>
+              <host mac='52:54:00:00:00:03' name='desouk' ip='192.168.122.12'/>
+              <host mac='52:54:00:00:00:04' name='edfu' ip='192.168.122.13'/>
+              <host mac='52:54:00:00:00:05' name='hebenu' ip='192.168.122.14'/>
+              <host mac='52:54:00:00:00:06' name='kerma' ip='192.168.122.15'/>
+              <host mac='52:54:00:00:00:07' name='mendes' ip='192.168.122.16'/>
+              <host mac='52:54:00:00:00:08' name='nekhen' ip='192.168.122.17'/>
+              <host mac='52:54:00:00:00:09' name='thebes' ip='192.168.122.18'/>
+              <host mac='52:54:00:00:00:0A' name='zawty' ip='192.168.122.19'/>
+            </dhcp>
+          </ip>
+        </network>
+
+
+    ssh djer virsh -c 'qemu:///system' net-dumpxml default
+
+        <network>
+          <name>default</name>
+          <uuid>855578f0-c76b-1bdf-8154-ed6459c8095e</uuid>
+          <forward mode='nat'/>
+          <bridge name='virbr0' stp='on' delay='0' />
+          <ip address='192.168.122.1' netmask='255.255.255.0'>
+            <dhcp>
+              <range start='192.168.122.2' end='192.168.122.254' />
+            </dhcp>
+          </ip>
+        </network>
+
+#---------------------------------------------------------------------
+# Network interface configuration.
+#[user@methionine]
+
+    ssh root@trop-01 ifconfig
+
+        eth0      Link encap:Ethernet  HWaddr 0c:c4:7a:35:10:78  
+                  inet addr:129.215.175.112  Bcast:129.215.175.255  Mask:255.255.255.0
+                  inet6 addr: fe80::ec4:7aff:fe35:1078/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:6307144 errors:0 dropped:8 overruns:0 frame:0
+                  TX packets:20307 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:1000 
+                  RX bytes:2521236845 (2.3 GiB)  TX bytes:1695031 (1.6 MiB)
+
+        eth1      Link encap:Ethernet  HWaddr 0c:c4:7a:35:10:79  
+                  inet addr:192.168.137.228  Bcast:192.168.137.255  Mask:255.255.255.0
+                  inet6 addr: fe80::ec4:7aff:fe35:1079/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:17962401 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:2745 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:1000 
+                  RX bytes:3665308637 (3.4 GiB)  TX bytes:399671 (390.3 KiB)
+
+    ssh root@trop-02 ifconfig
+
+        eth0      Link encap:Ethernet  HWaddr 0c:c4:7a:35:12:06  
+                  inet addr:192.168.137.233  Bcast:192.168.137.255  Mask:255.255.255.0
+                  inet6 addr: fe80::ec4:7aff:fe35:1206/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:17979699 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:5020 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:1000 
+                  RX bytes:3791518530 (3.5 GiB)  TX bytes:536895 (524.3 KiB)
+
+    ssh root@trop-03 ifconfig
+
+        eth0      Link encap:Ethernet  HWaddr 0c:c4:7a:35:11:76  
+                  inet addr:192.168.137.234  Bcast:192.168.137.255  Mask:255.255.255.0
+                  inet6 addr: fe80::ec4:7aff:fe35:1176/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:17987776 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:15059 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:1000 
+                  RX bytes:3794734457 (3.5 GiB)  TX bytes:1167811 (1.1 MiB)
+
+    ssh root@trop-04 ifconfig
+
+        eth0      Link encap:Ethernet  HWaddr 0c:c4:7a:35:11:28  
+                  inet addr:192.168.137.235  Bcast:192.168.137.255  Mask:255.255.255.0
+                  inet6 addr: fe80::ec4:7aff:fe35:1128/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:17979348 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:5070 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:1000 
+                  RX bytes:3791414728 (3.5 GiB)  TX bytes:451991 (441.3 KiB)
+
+#---------------------------------------------------------------------
+# Manually assigned IPv4 configuration.
+#[user@methionine]
+
+    trop-01
+        129.215.175.112
+        192.168.137.228
+
+    trop-02
+        192.168.137.233
+        
+    trop-03
+        192.168.137.234
+
+    trop-04
+        192.168.137.235
+
+#---------------------------------------------------------------------
+# LinkLocal IPv6 configuration.
+#[user@methionine]
+
+    # Autoconfig not available from the router.
+    # DHCPv6 not available.
+
+    # Roll our own ?
+
+#---------------------------------------------------------------------
+# SSH proxy via trop-01 root node.
+#[user@methionine]
+
+    #
+    # Root node.
+    Host trop-01
+        HostName 129.215.175.112
+        User dmr
+        IdentityFile ~/.ssh/dmr.roe.ac.uk.dsa
+        Protocol 2
+        Compression yes
+        PasswordAuthentication no
+
+    Host trop-02
+        HostName 192.168.137.233
+
+    Host trop-03
+        HostName 192.168.137.234
+
+    Host trop-04
+        HostName 192.168.137.235
+
+    #
+    # Proxied via trop-01
+    Host trop-02 trop-03 trop-04
+        ProxyCommand ssh dmr@trop-01 nc %h %p
+        User dmr
+        IdentityFile ~/.ssh/dmr.roe.ac.uk.dsa
+        Protocol 2
+        Compression yes
+        PasswordAuthentication no
+
+#---------------------------------------------------------------------
+# SSH proxy via shepseskaf.
+#[user@methionine]
+
+    #
+    # This means we could free up the root node public IP address.
+    #
+
+    Host trop-11
+        HostName 192.168.137.228
+        
+    Host trop-12
+        HostName 192.168.137.233
+
+    Host trop-13
+        HostName 192.168.137.234
+
+    Host trop-14
+        HostName 192.168.137.235
+
+    #
+    # Proxied via shepseskaf
+    Host trop-11 trop-12 trop-13 trop-14
+        ProxyCommand ssh dave@shep nc %h %p
+        User dmr
+        IdentityFile ~/.ssh/dmr.roe.ac.uk.dsa
+        Protocol 2
+        Compression yes
+        PasswordAuthentication no
+
+#---------------------------------------------------------------------
+# DNS resolver configuration.
+#[user@methionine]
+
+    ssh trop-01 cat /etc/resolv.conf
+
+        search roe.ac.uk
+        nameserver 195.194.120.1
+        nameserver 195.194.120.2
+
+    ssh trop-02 cat /etc/resolv.conf
+
+        search roe.ac.uk
+
+    ssh trop-03 cat /etc/resolv.conf
+
+        search roe.ac.uk
+
+    ssh trop-04  cat /etc/resolv.conf
+
+        search roe.ac.uk
+
+#---------------------------------------------------------------------
+# Disc space configuration.
+#[user@methionine]
+
+    ssh trop-01 df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        udev             10M     0   10M   0% /dev
+
+        tmpfs            26G  2.5G   23G  10% /run
+        tmpfs            64G     0   64G   0% /dev/shm
+        tmpfs           5.0M     0  5.0M   0% /run/lock
+        tmpfs            64G     0   64G   0% /sys/fs/cgroup
+        tmpfs            13G     0   13G   0% /run/user/0
+        tmpfs            13G     0   13G   0% /run/user/1005
+
+        /dev/sda1       190M  124K  190M   1% /boot/efi
+        /dev/sda2        46G  7.5G   36G  18% /
+        /dev/sda4        14G   35M   13G   1% /tmp
+        /dev/sda5        92G   16G   72G  19% /var
+        /dev/sda6        65G   52M   62G   1% /home
+
+        /dev/sdb1       3.6T   30G  3.4T   1% /data1
+        /dev/sdc1       3.6T   68M  3.4T   1% /data2
+
+    ssh trop-02 df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        udev             10M     0   10M   0% /dev
+
+        tmpfs            26G   26M   26G   1% /run
+        tmpfs            64G     0   64G   0% /dev/shm
+        tmpfs           5.0M     0  5.0M   0% /run/lock
+        tmpfs            64G     0   64G   0% /sys/fs/cgroup
+
+        /dev/sda1       511M  132K  511M   1% /boot/efi
+        /dev/sda2        92G  643M   87G   1% /
+        /dev/sda4       9.1G   21M  8.6G   1% /tmp
+        /dev/sda5        65G  407M   61G   1% /var
+        /dev/sda6        53G   52M   50G   1% /home
+
+        /dev/sdb1       3.6T   68M  3.4T   1% /data1
+        /dev/sdc1       3.6T   68M  3.4T   1% /data2
+
+    ssh trop-03 df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        udev             10M     0   10M   0% /dev
+
+        tmpfs            26G   26M   26G   1% /run
+        tmpfs            64G     0   64G   0% /dev/shm
+        tmpfs           5.0M     0  5.0M   0% /run/lock
+        tmpfs            64G     0   64G   0% /sys/fs/cgroup
+
+        /dev/sda1       511M  132K  511M   1% /boot/efi
+        /dev/sda2        92G  643M   87G   1% /
+        /dev/sda4       9.1G   21M  8.6G   1% /tmp
+        /dev/sda5        65G  413M   61G   1% /var
+        /dev/sda6        53G   52M   50G   1% /home
+
+        /dev/sdc1       3.6T   68M  3.4T   1% /data2
+        /dev/sdb1       3.6T   68M  3.4T   1% /data1
+
+    ssh trop-04 df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        udev             10M     0   10M   0% /dev
+
+        tmpfs            26G   26M   26G   1% /run
+        tmpfs            64G     0   64G   0% /dev/shm
+        tmpfs           5.0M     0  5.0M   0% /run/lock
+        tmpfs            64G     0   64G   0% /sys/fs/cgroup
+
+        /dev/sda1       511M  132K  511M   1% /boot/efi
+        /dev/sda2        92G  643M   87G   1% /
+        /dev/sda4       9.1G   21M  8.6G   1% /tmp
+        /dev/sda5        65G  405M   61G   1% /var
+        /dev/sda6        53G   52M   50G   1% /home
+
+        /dev/sdc1       3.6T   68M  3.4T   1% /data2
+        /dev/sdb1       3.6T   68M  3.4T   1% /data1
+
+#---------------------------------------------------------------------
+# Disc mount configuration.
+#[user@methionine]
+
+    ssh trop-11 cat /etc/fstab
+
+        UUID=D60A-D338  /boot/efi                                 vfat    defaults           0       1
+
+        UUID=d3fc01a6-0574-43c3-b7d4-58a714f4ade3 /               ext4    errors=remount-ro  0       1
+        UUID=2c8ebeee-62b0-4d0d-bc1d-f6ea5348a2bf /tmp            ext4    defaults           0       2
+        UUID=9bf9e8aa-d0de-4c58-bad3-a4d9fa4429da /var            ext4    defaults           0       2
+        UUID=4f2b1498-afb8-4052-9874-7c39a328c7d0 /home           ext4    defaults           0       2
+
+        UUID=633ad8ba-faeb-4577-967e-5dbf36ed0118 none            swap    sw                 0       0
+
+        UUID=7083fbc9-7113-43d2-9acc-0a27b8f6b1a3 /data1	      ext4	  defaults           0       2
+        UUID=b7b32ca7-62f2-41c5-8bc5-0aa75ec71abe /data2	      ext4	  defaults           0       2
+
+        /dev/sr0        /media/cdrom0                             udf,iso9660 user,noauto    0       0
+
+    ssh trop-12 cat /etc/fstab
+
+        UUID=E4E1-2CFC  /boot/efi                                 vfat    umask=0077         0       1
+
+        UUID=08928403-1398-47c3-9a7a-ac1f0e0c6e66 /               ext4    errors=remount-ro  0       1
+        UUID=514bc877-8fbe-4d33-b0b2-1efb2e53e8ee /tmp            ext4    defaults           0       2
+        UUID=cef1f5a7-f4e9-45bb-8904-aba7f59891af /var            ext4    defaults           0       2
+        UUID=c4e7cf05-98b9-4131-a486-d04dd6cc1d53 /home           ext4    defaults           0       2
+
+        UUID=f38f526b-7be9-4811-b205-9af1b4f4cee6 none            swap    sw                 0       0
+
+        UUID=25773e82-45f6-4618-8258-d0e5e112eac9 /data1          ext4    defaults           0       2
+        UUID=91045298-78db-4a82-8baa-9f835d30e822 /data2          ext4    defaults           0       2
+
+        /dev/sr0        /media/cdrom0                             udf,iso9660 user,noauto    0       0
+        /dev/sdd1       /media/usb0                               auto        rw,user,noauto 0       0
+        /dev/sdd2       /media/usb1                               auto        rw,user,noauto 0       0
+
+    ssh trop-13 cat /etc/fstab
+
+        UUID=1E8F-061A  /boot/efi                                 vfat    umask=0077         0       1
+
+        UUID=0cd6e6fa-f035-4fb8-894f-d8b1a5756661 /               ext4    errors=remount-ro  0       1
+        UUID=ed4f2e49-0456-4eda-b64b-f5a172b53d75 /tmp            ext4    defaults           0       2
+        UUID=c5a76507-577f-45a1-969a-7b3548f6c0eb /var            ext4    defaults           0       2
+        UUID=34115ea5-b867-47b1-ba54-1cf26ea59cc5 /home           ext4    defaults           0       2
+
+        UUID=c0744dab-2a01-4e49-9557-cfc7e957cb2f none            swap    sw                 0       0
+
+        UUID=a6a97f2c-7d46-4685-bf65-e6b52b7b4743 /data1          ext4    defaults           0       2
+        UUID=1d01bafb-78ce-4f1e-8973-a364fb3b6762 /data2          ext4    defaults           0       2
+
+        /dev/sr0        /media/cdrom0                             udf,iso9660 user,noauto    0       0
+        /dev/sdd1       /media/usb0                               auto        rw,user,noauto 0       0
+        /dev/sdd2       /media/usb1                               auto        rw,user,noauto 0       0
+
+    ssh trop-14 cat /etc/fstab
+
+        UUID=5895-A2F7  /boot/efi                                 vfat    umask=0077         0       1
+
+        UUID=7fcc7fe1-ac1b-418a-a2b1-de0dc94030c6 /               ext4    errors=remount-ro  0       1
+        UUID=67cb2e4a-1d29-4875-aff7-d2dcbe669471 /tmp            ext4    defaults           0       2
+        UUID=ebdd1959-36ba-4ca2-8271-c8f31d860742 /var            ext4    defaults           0       2
+        UUID=65ebb989-1f64-4f8f-88b9-e702ee55a820 /home           ext4    defaults           0       2
+
+        UUID=088b2938-4766-4520-9dc4-1e6fe1d7b0f0 none            swap    sw                 0       0
+
+        UUID=19b54be0-c2b2-48fb-b7df-7bf69505f832 /data1          ext4    defaults           0       2
+        UUID=546584a4-3d35-4a8b-8077-760f5d9867fc /data2          ext4    defaults           0       2
+
+        /dev/sr0        /media/cdrom0                             udf,iso9660 user,noauto    0       0
+        /dev/sdd1       /media/usb0                               auto        rw,user,noauto 0       0
+        /dev/sdd2       /media/usb1                               auto        rw,user,noauto 0       0
+
+#---------------------------------------------------------------------
+# Disc device configuration.
+#[user@methionine]
+
+    ssh root@trop-11 blkid
+
+        /dev/sda1: UUID="D60A-D338" TYPE="vfat" PARTUUID="f9fe857f-aa61-4e7f-baee-72ba0afbeecb"
+        /dev/sda2: UUID="d3fc01a6-0574-43c3-b7d4-58a714f4ade3" TYPE="ext4" PARTUUID="0508bc02-d1ff-4bf2-a1eb-76191f9f2781"
+        /dev/sda3: UUID="633ad8ba-faeb-4577-967e-5dbf36ed0118" TYPE="swap" PARTUUID="e7076ead-a907-40c0-a71d-2b75c51ea8a8"
+        /dev/sda4: UUID="2c8ebeee-62b0-4d0d-bc1d-f6ea5348a2bf" TYPE="ext4" PARTUUID="089e319f-ae87-4d38-b702-471cb21f8376"
+        /dev/sda5: UUID="9bf9e8aa-d0de-4c58-bad3-a4d9fa4429da" TYPE="ext4" PARTUUID="72b0e1ef-64b4-489c-8e93-5b25292cf325"
+        /dev/sda6: UUID="4f2b1498-afb8-4052-9874-7c39a328c7d0" TYPE="ext4" PARTUUID="5c7b09c9-1f1a-453a-b60f-03c3dc21b197"
+
+        /dev/sdb1: UUID="7083fbc9-7113-43d2-9acc-0a27b8f6b1a3" TYPE="ext4" PARTLABEL="primary" PARTUUID="723c225b-cc27-43f0-b855-3b2a101d508a"
+        /dev/sdc1: UUID="b7b32ca7-62f2-41c5-8bc5-0aa75ec71abe" TYPE="ext4" PARTLABEL="primary" PARTUUID="41888730-f7f7-44ae-93e2-7a73fc252f22"
+
+    ssh root@trop-12 blkid
+
+        /dev/sda1: UUID="E4E1-2CFC" TYPE="vfat" PARTUUID="5b8b7bf1-39d8-4161-bea3-233efa3ce1d4"
+        /dev/sda2: UUID="08928403-1398-47c3-9a7a-ac1f0e0c6e66" TYPE="ext4" PARTLABEL="root" PARTUUID="53c05b23-3736-4e79-b3e8-698ae19c2a99"
+        /dev/sda3: UUID="f38f526b-7be9-4811-b205-9af1b4f4cee6" TYPE="swap" PARTUUID="ddafddc4-afb2-4166-a9bf-841eccabb996"
+        /dev/sda4: UUID="514bc877-8fbe-4d33-b0b2-1efb2e53e8ee" TYPE="ext4" PARTLABEL="tmp" PARTUUID="9f3a2c4a-15e5-490a-9bab-636fd1c112e5"
+        /dev/sda5: UUID="cef1f5a7-f4e9-45bb-8904-aba7f59891af" TYPE="ext4" PARTLABEL="var" PARTUUID="0c240206-c3a7-45a6-b9e5-259210c8b23d"
+        /dev/sda6: UUID="c4e7cf05-98b9-4131-a486-d04dd6cc1d53" TYPE="ext4" PARTLABEL="home" PARTUUID="8e3f1548-06d0-43f7-a202-7f3261eb3144"
+
+        /dev/sdb1: UUID="25773e82-45f6-4618-8258-d0e5e112eac9" TYPE="ext4" PARTLABEL="data1" PARTUUID="97f96c5b-669d-4d31-9473-fb24a700fd3a"
+        /dev/sdc1: UUID="91045298-78db-4a82-8baa-9f835d30e822" TYPE="ext4" PARTLABEL="data2" PARTUUID="56778848-de8d-4eb2-abbb-41b538150d9d"
+
+    ssh root@trop-13 blkid
+
+        /dev/sda1: UUID="1E8F-061A" TYPE="vfat" PARTUUID="5b3ddea9-9f70-41f2-bb91-8c3546d04a87"
+        /dev/sda2: UUID="0cd6e6fa-f035-4fb8-894f-d8b1a5756661" TYPE="ext4" PARTLABEL="root" PARTUUID="c9f600b8-f4ba-4643-8bf9-83d5b970fe25"
+        /dev/sda3: UUID="c0744dab-2a01-4e49-9557-cfc7e957cb2f" TYPE="swap" PARTUUID="b5c55467-57d5-4661-96c6-b56bcfa9490b"
+        /dev/sda4: UUID="ed4f2e49-0456-4eda-b64b-f5a172b53d75" TYPE="ext4" PARTLABEL="tmp" PARTUUID="3f1cd749-b191-40f5-bf92-82df62c1bc7c"
+        /dev/sda5: UUID="c5a76507-577f-45a1-969a-7b3548f6c0eb" TYPE="ext4" PARTLABEL="var" PARTUUID="c6d20bfe-a8b2-4cdc-835d-0f9256c2b5f6"
+        /dev/sda6: UUID="34115ea5-b867-47b1-ba54-1cf26ea59cc5" TYPE="ext4" PARTLABEL="home" PARTUUID="c62f4e65-246b-41ec-ad28-ea98652adca5"
+
+        /dev/sdc1: UUID="1d01bafb-78ce-4f1e-8973-a364fb3b6762" TYPE="ext4" PARTLABEL="data2" PARTUUID="8bb4ca20-8e01-4898-abd5-515b1e5a4ed7"
+        /dev/sdb1: UUID="a6a97f2c-7d46-4685-bf65-e6b52b7b4743" TYPE="ext4" PARTLABEL="data1" PARTUUID="15ce0999-b884-4d0b-97f3-cf427b3ccb61"
+
+    ssh root@trop-14 blkid
+
+        /dev/sda1: UUID="5895-A2F7" TYPE="vfat" PARTUUID="2fafa84d-f4c7-470a-bac6-380bc858eb26"
+        /dev/sda2: UUID="7fcc7fe1-ac1b-418a-a2b1-de0dc94030c6" TYPE="ext4" PARTLABEL="root" PARTUUID="734d1dae-6509-493a-9c69-32b7d754bc92"
+        /dev/sda3: UUID="088b2938-4766-4520-9dc4-1e6fe1d7b0f0" TYPE="swap" PARTUUID="75900e97-ee11-4fff-b5d0-82267a28d53a"
+        /dev/sda4: UUID="67cb2e4a-1d29-4875-aff7-d2dcbe669471" TYPE="ext4" PARTLABEL="tmp" PARTUUID="ec68814a-9569-47c2-8af4-a9259afca14c"
+        /dev/sda5: UUID="ebdd1959-36ba-4ca2-8271-c8f31d860742" TYPE="ext4" PARTLABEL="var" PARTUUID="326de25b-2290-4a04-bb80-8282b74d5eea"
+        /dev/sda6: UUID="65ebb989-1f64-4f8f-88b9-e702ee55a820" TYPE="ext4" PARTLABEL="home" PARTUUID="6343278a-9d51-41be-98b0-bf41b8e2dfba"
+
+        /dev/sdb1: UUID="19b54be0-c2b2-48fb-b7df-7bf69505f832" TYPE="ext4" PARTLABEL="data1" PARTUUID="be57b7e2-a1f2-4fe2-adb3-9f1977af7cba"
+        /dev/sdc1: UUID="546584a4-3d35-4a8b-8077-760f5d9867fc" TYPE="ext4" PARTLABEL="data2" PARTUUID="4e8a0809-fd20-4dd0-ae2c-6ed83aaf920f"
+
+
+
+
+
