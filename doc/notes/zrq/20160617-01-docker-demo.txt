@@ -1,0 +1,93 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+    Notes on demo of Docker
+
+    Running it on laptop
+
+
+        docker run -it debian bash
+
+            apt-get update
+            apt-get -y install apache2
+
+
+
+        mkdir docker-demo
+        pushd docker-demo
+
+            gedit Dockerfile &
+
+            docker build .
+
+            docker images
+
+                REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+                <none>              <none>              1c6ce733f3cf        7 seconds ago       193.4 MB
+                debian              latest              1b088884749b        7 days ago          125.1 MB
+
+            docker tag 1c6ce733f3cf yrvafhom/docker-demo:1.0
+
+            docker images
+
+                REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE
+                yrvafhom/docker-demo   1.0                 1c6ce733f3cf        13 minutes ago      193.4 MB
+                debian                 latest              1b088884749b        7 days ago          125.1 MB
+
+
+        docker push "yrvafhom/docker-demo:1.0"
+
+
+
+            debian base image
+
+                install apache
+
+                add a test page
+
+                expose port 80
+
+    
+        push to Docker registry
+    
+        docker push "yrvafhom/docker-demo"
+
+
+    
+    Running it on shep
+
+        create vm
+        
+        
+            install docker
+        
+        
+    
+    Running it on DigitalVirtual
+    
+    
+    
+
+
+
