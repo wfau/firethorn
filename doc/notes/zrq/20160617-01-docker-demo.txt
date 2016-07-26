@@ -39,6 +39,18 @@
 
             gedit Dockerfile &
 
+
+FROM debian
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+RUN apt-get update
+RUN apt-get -y install apache2
+
+EXPOSE 80
+
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]        
+
+
             docker build .
 
             docker images
