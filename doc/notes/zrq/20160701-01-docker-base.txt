@@ -239,7 +239,9 @@
             "${tmpcopy:?}"
 
     newpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${newfile:?}")
-    newpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "fedora-23-base-20160701.qcow")
+
+    newfile=fedora-23-docker-20160701.qcow
+    newpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${newfile:?}")
 
 #---------------------------------------------------------------------
 # Push the new image to our webserver.
