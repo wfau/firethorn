@@ -21,7 +21,7 @@
 #
 #
 
-version=3.3.1
+version=3.3.9
 current=apache-maven-${version:?}
 tarfile=${current:?}-bin.tar.gz
 
