@@ -391,6 +391,7 @@ implements BaseComponent
                 }
             }
         }
+
     protected void scanperiod(final Period period)
         {
         this.scanperiod = period;
@@ -459,6 +460,7 @@ implements BaseComponent
                 }
             else {
                 log.debug("Found lock [{}][{}][{}]", this.ident(), this.name(), lock);
+// TODO Check it is not us .. thread lock.
                 while (lock != null)
                     {
                     try {

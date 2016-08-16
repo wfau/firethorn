@@ -85,6 +85,8 @@ public class JdbcResourceInportTestCase
             );
         }
 
+    /*
+     * 
     @Test
     public void test002()
     throws Exception
@@ -109,6 +111,8 @@ public class JdbcResourceInportTestCase
                     );
             }
         }
+     * 
+     */
 
     @Test
     public void test003()

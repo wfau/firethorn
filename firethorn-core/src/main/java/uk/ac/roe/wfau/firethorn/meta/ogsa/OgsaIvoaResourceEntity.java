@@ -40,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource.Endpoint;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
@@ -364,68 +365,85 @@ public class OgsaIvoaResourceEntity
         log.debug("  ogsaid [{}]", this.ogsaid);
         //
         // If we already have an ODSA-DAI resource ID.
-        if (ogsaid() != null)
+        if (this.ogsaid != null)
             {
+            log.debug("Using existing OGSA id [{}]", this.ogsaid);
             return ogstatus() ;
             }
         //
         // If we don't have an ODSA-DAI resource ID.
         else {
-            IvoaCreateResourceWorkflow workflow = null;
-            try {
-                workflow = new IvoaCreateResourceWorkflow(
-                    service().endpoint()
-                    );
-                }
-            catch (MalformedURLException ouch)
+            //
+            // Get the TAP endpoint.
+            final Endpoint endpoint = resource().endpoint();
+            //
+            // If the TAP endpoint is valid.
+            if ((endpoint != null) && (endpoint.string() != null))
                 {
-                return ogstatus(
-                    OgsaStatus.ERROR
-                    );
-                }
-
-            final SimpleResourceWorkflowResult response = workflow.execute(
-                new IvoaCreateResourceWorkflow.Param()
-                    {
-                    @Override
-                    public String endpoint()
-                        {
-                        // Just use the first endpoint.
-                        return resource().endpoints().select().iterator().next().endpoint();
-                        }
-
-                    @Override
-                    public Boolean quickstart()
-                        {
-                        return Boolean.FALSE;
-                        }
-
-                    @Override
-                    public Integer interval()
-                        {
-                        return new Integer(10);
-                        }
-
-                    @Override
-                    public Integer timeout()
-                        {
-                        return new Integer(300);
-                        }
+                log.debug("Using TAP endpoint [{}]", endpoint.string());
+                //
+                // Create our OGSA-DAI resource.
+                IvoaCreateResourceWorkflow workflow = null;
+                try {
+                    workflow = new IvoaCreateResourceWorkflow(
+                        service().endpoint()
+                        );
                     }
-                );
-
-            log.debug("Status  [{}]", response.status());
-            log.debug("Created [{}]", response.result());
+                catch (MalformedURLException ouch)
+                    {
+                    return ogstatus(
+                        OgsaStatus.ERROR
+                        );
+                    }
     
-            if (response.status() == WorkflowResult.Status.COMPLETED)
-                {
-                return ogsaid(
-                    OgsaStatus.ACTIVE,
-                    response.result().toString()
+                final SimpleResourceWorkflowResult response = workflow.execute(
+                    new IvoaCreateResourceWorkflow.Param()
+                        {
+                        @Override
+                        public String endpoint()
+                            {
+                            return endpoint.string();
+                            }
+    
+                        @Override
+                        public Boolean quickstart()
+                            {
+                            return Boolean.FALSE;
+                            }
+    
+                        @Override
+                        public Integer interval()
+                            {
+                            return new Integer(10);
+                            }
+    
+                        @Override
+                        public Integer timeout()
+                            {
+                            return new Integer(300);
+                            }
+                        }
                     );
+
+                log.debug("Status  [{}]", response.status());
+                log.debug("Created [{}]", response.result());
+        
+                if (response.status() == WorkflowResult.Status.COMPLETED)
+                    {
+                    return ogsaid(
+                        OgsaStatus.ACTIVE,
+                        response.result().toString()
+                        );
+                    }
+        
+                else {
+                    return ogstatus(
+                        OgsaStatus.ERROR
+                        );
+                    }
                 }
-    
             else {
+                log.debug("TAP endpoint is null [{}]", endpoint);
                 return ogstatus(
                     OgsaStatus.ERROR
                     );

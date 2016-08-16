@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import java.net.URL;
+
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -67,13 +69,13 @@ extends BaseResource<IvoaSchema>
          * Create a new {@link IvoaResource}.
          *
          */
-        public IvoaResource create(final String ivoaid);
+        public IvoaResource create(final String endpoint);
 
         /**
          * Create a new {@link IvoaResource}.
          *
          */
-        public IvoaResource create(final String ivoaid, final String name);
+        public IvoaResource create(final String name, final String endpoint);
 
         }
 
@@ -117,14 +119,14 @@ extends BaseResource<IvoaSchema>
     /**
      * The resource registry URI.
      *
-     */
     public String ivoaid();
+     */
 
     /**
      * The resource registry URI.
      *
-     */
     public void ivoaid(final String ivoaid);
+     */
 
     /**
      * Public interface for a service Endpoint.
@@ -133,43 +135,58 @@ extends BaseResource<IvoaSchema>
     public interface Endpoint
         {
         /**
-         * The resource endpoint URL.
-         *
-         */
-        public String endpoint();
-
-        /**
-         * Get the endpoint capabilities.
+         * The parent resource.
          * 
          */
+        public IvoaResource resource();
+
+        /**
+         * The resource endpoint URL as a String.
+         *
+         */
+        public String string();
 
         }
 
     /**
-     * Public  interface for the service Endpoint(s).
+     * The service endpoint.
      * 
      */
+    public Endpoint endpoint();
+    
+    /**
+     * Public  interface for the service Endpoint(s).
+     * 
+     *
     public interface Endpoints
         {
-        /**
+        **
          * Add a new service Endpoint.
          * 
-         */
+         *
         public Endpoint create(final String endpoint);
 
-        /**
+        **
          * Select a list of the service Endpoint(s).
          * 
-         */
+         *
         public Iterable<Endpoint> select();
 
+        **
+         * Select the primary Endpoint.
+         * 
+         *
+        public Endpoint primary();
+
         }
+     *http
+     */
     
     /**
      * Access to the service Endpoint(s).
      * 
-     */
     public Endpoints endpoints();
+     */
 
     /**
      * The {@link IvoaResource} metadata.
@@ -185,6 +202,7 @@ extends BaseResource<IvoaSchema>
         public interface Ivoa
             {
             }
+
         /**
          * The IVOA metadata.
          * 

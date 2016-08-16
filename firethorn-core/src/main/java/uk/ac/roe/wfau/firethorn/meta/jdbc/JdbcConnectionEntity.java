@@ -145,10 +145,15 @@ public class JdbcConnectionEntity
             }
         }
 
-    public JdbcConnectionEntity()
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcConnectionEntity()
         {
         }
 
+    /*
     public JdbcConnectionEntity(final String url)
         {
         this(
@@ -164,14 +169,23 @@ public class JdbcConnectionEntity
             null
             );
         }
+     */
 
-    public JdbcConnectionEntity(final JdbcResourceEntity parent, final String url)
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcConnectionEntity(final JdbcResourceEntity parent, final String url)
         {
         this.url    = url ;
         this.parent = parent;
         }
 
-    public JdbcConnectionEntity(final JdbcResourceEntity parent, final String url, final String user, final String pass)
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcConnectionEntity(final JdbcResourceEntity parent, final String url, final String user, final String pass)
 	    {
 	    this.url    = url ;
 	    this.user   = user;
@@ -179,7 +193,11 @@ public class JdbcConnectionEntity
 	    this.parent = parent;
 	    }
 
-    public JdbcConnectionEntity(final JdbcResourceEntity parent, final String url, final String user, final String pass, final String driver)
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcConnectionEntity(final JdbcResourceEntity parent, final String url, final String user, final String pass, final String driver)
         {
         this.url    = url ;
         this.user   = user;

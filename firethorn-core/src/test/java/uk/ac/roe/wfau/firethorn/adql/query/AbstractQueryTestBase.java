@@ -139,6 +139,43 @@ extends TestPropertiesBase
         }
 
     /**
+     * Load an {@link IvoaResource}.
+     * 
+     */
+    protected IvoaResource ivoaResource(final String tag, final String name, final String endpoint)
+        {
+        IvoaResource found = ivoa.get(
+            tag
+            );
+        if (found == null)
+            {
+            final String ident = testprops().getProperty(tag);
+            log.debug("Loading IVOA resource [{}][{}]", tag, ident);
+            if (ident != null)
+                {
+                found = factories().ivoa().resources().entities().search(
+                    factories().ivoa().resources().idents().ident(
+                        ident
+                        )
+                    );
+                }
+            if (found == null)
+                {
+                log.debug("Creating new IVOA resource [{}]", tag);
+                found = factories().ivoa().resources().entities().create(
+                    name,
+                    endpoint
+                    );
+                }
+            ivoa.put(
+                tag,
+                found
+                );
+            }
+        return found ;
+        }
+
+    /**
      * Save an {@link IvoaResource}.
      * 
      */

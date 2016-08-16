@@ -19,18 +19,28 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
+import uk.ac.roe.wfau.firethorn.meta.vosi.VosiTableSetReader;
+import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
+import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -169,6 +179,63 @@ public class IvoaResourceController
 
         return new IvoaResourceBean(
             entity
+            );
+        }
+
+    /**
+     * VOSI import path (relative to the resource itself).
+     * 
+     */
+    protected static final String VOSI_IMPORT_PATH = "/vosi/import" ;
+
+    /**
+     * MVC property for the VOSI file.
+     * 
+     */
+    protected static final String VOSI_IMPORT_FILE = "vosi.tableset" ;
+    
+    /**
+     * Import a VOSI tableset document.
+     * @throws IOException
+     * @throws XMLReaderException
+     * @throws XMLParserException
+     * @throws EntityNotFoundException 
+     * @throws IdentifierFormatException 
+     * @throws DuplicateEntityException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=VOSI_IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MIME)
+    public Iterable<IvoaSchemaBean> inport(
+        @ModelAttribute(TARGET_ENTITY)
+        final IvoaResource resource,
+        @RequestPart(value=VOSI_IMPORT_FILE, required=true)
+        final MultipartFile vosidata
+        ) throws
+            XMLParserException,
+            XMLReaderException,
+            IOException,
+            IdentifierFormatException,
+            EntityNotFoundException,
+            DuplicateEntityException
+        {
+        log.debug("inport(IvoaResource, File) [{}]", resource.ident());
+
+        // TODO Move this into IvoaResource.schemas()
+        // TODO Support flexible namespaces
+        // TODO Support update (duplicate => update)
+        
+        VosiTableSetReader reader = new VosiTableSetReader();
+
+        reader.inport(
+            new InputStreamReader(
+                vosidata.getInputStream()
+                ),
+            resource
+            );
+
+        return new IvoaSchemaBean.Iter(
+            resource.schemas().select()
             );
         }
     }

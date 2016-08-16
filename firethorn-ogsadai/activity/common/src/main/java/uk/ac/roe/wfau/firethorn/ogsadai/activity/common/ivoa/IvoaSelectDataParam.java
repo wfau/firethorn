@@ -32,16 +32,16 @@ extends IvoaResourceParam
     public static final String ACTIVITY_NAME = "uk.ac.roe.wfau.firethorn.IvoaSelectData" ;
 
     /**
-     * Activity input name for the TAP service ADQL query, {@value}.
+     * Activity input name for the ADQL query, {@value}.
      * 
      */
-    public static final String IVOA_TAP_ADQL_QUERY_PARAM = "ivoa.tap.adql.query"  ;
+    public static final String IVOA_TAP_ADQL_QUERY_PARAM = "expression"  ;
 
     /**
      * Activity output name for the output tuples, {@value}.
      * 
      */
-    public static final String TUPLE_OUTPUT = "tuples" ;
+    public static final String TUPLE_OUTPUT = "data" ;
     
     
     }

@@ -4,14 +4,12 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
-import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.Parent;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 
@@ -19,41 +17,32 @@ import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
  * {@link IvoaResource.Endpoint} implementation.
  *
  */
-@Entity
+@Slf4j
+@Embeddable
 @Access(
     AccessType.FIELD
     )
-@Table(
-    name = IvoaEndpointEntity.DB_TABLE_NAME
-    )
-@NamedQueries(
-        {
-        }
-    )
 public class IvoaEndpointEntity
-extends AbstractEntity
 implements IvoaResource.Endpoint
     {
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX  + "IvoaEndpointEntity";
 
     protected static final String DB_ENDPOINT_COL  = "endpoint";
-    protected static final String DB_RESOURCE_COL  = "resource";
 
     /**
-     * Reference to our parent.
+     * Reference to our parent resource.
      * 
      */
-    @ManyToOne(
-        fetch = FetchType.LAZY,
-        targetEntity = IvoaResourceEntity.class
-        )
-    @JoinColumn(
-        name = DB_RESOURCE_COL,
-        unique = false,
-        nullable = false,
-        updatable = false
-        )
-    private IvoaResource resource ;
+    @Parent
+    protected IvoaResourceEntity resource ;
+    protected IvoaResourceEntity getResource()
+        {
+        return this.resource;
+        }
+    protected void setResource(final IvoaResourceEntity resource)
+        {
+        this.resource = resource;
+        }
+    @Override
     public IvoaResource resource()
         {
         return this.resource;
@@ -63,10 +52,18 @@ implements IvoaResource.Endpoint
      * Protected constructor.
      *
      */
-    protected IvoaEndpointEntity(final IvoaResource resource, final String url)
+    protected IvoaEndpointEntity()
         {
-        this.url = url ;
+        }
+
+    /**
+     * Protected constructor.
+     *
+     */
+    protected IvoaEndpointEntity(final IvoaResourceEntity resource, final String url)
+        {
         this.resource = resource;
+        this.url = url ;
         }
     
     @Basic(fetch = FetchType.EAGER)
@@ -78,29 +75,8 @@ implements IvoaResource.Endpoint
         )
     private String url;
     @Override
-    public String endpoint()
+    public String string()
         {
         return this.url;
         }
-
-    @Override
-    public String link()
-        {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
-        }
-
-	@Override
-	protected EntityFactory<?> factory()
-		{
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
-		}
-
-	@Override
-	protected EntityServices<?> services()
-		{
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
-		}
     }
