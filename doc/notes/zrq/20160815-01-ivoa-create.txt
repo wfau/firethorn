@@ -322,28 +322,8 @@ EOF
             | bin/pp | tee system-info.json
 
 # -----------------------------------------------------
-# Create the TWOMASS resource.
-#[root@tester]
-
-        #
-        # Create the IvoaResource
-        source "bin/02-03-create-ivoa-space.sh" \
-            'GAVO TAP service' \
-            "http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap"
-
-        gavoivoa=${ivoaspace:?}
-
-
-        #
-        # Import the static VOSI file
-        vosifile='vosi/gavo/gavo-tableset.xml'
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --form   "vosi.tableset=@${vosifile:?}" \
-            "${endpointurl:?}/${ivoaspace:?}/vosi/import" \
-            | bin/pp
-
+# AstroGrid DAL service doesn't handle fully qualified names :-(
+# -----------------------------------------------------
 
 # -----------------------------------------------------
 # Load the ATLASDR1 resource.
@@ -366,30 +346,50 @@ EOF
         source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
 
 # -----------------------------------------------------
+# Create the GAVO TWOMASS resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAVO TAP service' \
+            'http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap'
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gavo/gavo-tableset.xml'
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${ivoaspace:?}/vosi/import" \
+            | bin/pp
+
+        #
+        # Find the twomass schema
+        gavospace=${ivoaspace:?}
+        schemaname=twomass
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${schemaname:?}" \
+            "${endpointurl:?}/${gavospace:?}/schemas/select" \
+            | bin/pp | tee gavo-schema.json
+
+        gavoschema=$(
+            cat gavo-schema.json | self
+            )
+
+# -----------------------------------------------------
 # Create our query workspace
 #[root@tester]
 
-        source "bin/04-01-create-query-space.sh" 'Test workspace'
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
         source "bin/04-03-import-query-schema.sh" "${atlasadql:?}"   'ATLASDR1' 'atlas'
 
         #
         # BUG - the param names are different for adql and ivoa schema/select 
         #source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'twomass'  'twomass'
-
-        #
-        # Find the twomass schema
-        basespace=${ivoaspace:?}
-        basename=twomass
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "ivoa.resource.schema.name=${basename:?}" \
-            "${endpointurl:?}/${basespace:?}/schemas/select" \
-            | bin/pp | tee base-schema.json
-
-        baseschema=$(
-            cat base-schema.json | self
-            )
 
         adqlname=twomass
         curl \
@@ -397,12 +397,12 @@ EOF
             --header "firethorn.auth.community:${community:?}" \
             --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
             --data   "adql.resource.schema.import.name=${adqlname:?}" \
-            --data   "adql.resource.schema.import.base=${baseschema:?}" \
+            --data   "adql.resource.schema.import.base=${gavoschema:?}" \
             "${endpointurl:?}/${queryspace:?}/schemas/import" \
             | bin/pp | tee query-schema.json
 
 # -----------------------------------------------------
-# Test queries ...
+# Test query ...
 #[root@tester]
 
         curl \
@@ -410,6 +410,76 @@ EOF
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --data "blue.query.input=SELECT TOP 2000 raj2000, dej2000 FROM twomass.data" \
+            --data "blue.query.next.status=COMPLETED" \
+            --data "blue.query.wait=600000" \
+            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            | bin/pp | tee blue-query.json
+
+# --------------------------------------
+# Create the GAIA TWOMASS resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAIA TAP service' \
+            'https://gaia.esac.esa.int/tap-server/tap'
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gaia/gaia-tableset.xml'
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${ivoaspace:?}/vosi/import" \
+            | bin/pp
+
+        #
+        # Find the twomass schema
+        gaiaspace=${ivoaspace:?}
+        schemaname=public
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${schemaname:?}" \
+            "${endpointurl:?}/${gaiaspace:?}/schemas/select" \
+            | bin/pp | tee gaia-schema.json
+
+        gaiaschema=$(
+            cat gaia-schema.json | self
+            )
+
+# -----------------------------------------------------
+# Create our query workspace
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}"   'ATLASDR1' 'atlas'
+
+        #
+        # BUG - the param names are different for adql and ivoa schema/select 
+        #source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'twomass'  'twomass'
+
+        adqlname=public
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${adqlname:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | bin/pp | tee query-schema.json
+
+# -----------------------------------------------------
+# Test query ...
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "blue.query.input=SELECT TOP 2000 ra, dec FROM public.tmass_original_valid" \
             --data "blue.query.next.status=COMPLETED" \
             --data "blue.query.wait=600000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \

@@ -55,7 +55,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -695,6 +697,12 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
     }
 
     /**
+     * Content-Encoding header field for a gzipped stream. 
+     * 
+     */
+    protected static final String GZIPPED_ENCODING = "gzip" ;
+    
+    /**
      * Returns a stream for a given http URL.
      * 
      * @param url
@@ -705,21 +713,45 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
      * @throws IOException
      * @throws ActivityProcessingException
      */
-    private InputStream getStreamFromRequest(HttpUriRequest httpRequest)
+    private InputStream getStreamFromRequest(final HttpUriRequest request)
     throws ClientProtocolException, IOException, ActivityProcessingException 
         {
-        HttpResponse response;
-        response = http.execute(httpRequest);
-        HttpEntity entity = response.getEntity();
+        //HttpResponse response = http.execute(request);
+        HttpEntity entity = http.execute(
+            request
+            ).getEntity();
         if (entity != null)
             {
-            return new BufferedInputStream(entity.getContent());
+            InputStream stream = entity.getContent() ;
+            if (stream != null)
+                {
+                Header header = entity.getContentEncoding() ;
+                if (header != null)
+                    {
+                    logger.debug("ContentEncoding header [" + header.getName() + "][" + header.getValue() + "]");
+                    if (GZIPPED_ENCODING.equals(header.getValue()))
+                        {
+                        stream = new GZIPInputStream(
+                            stream
+                            );
+                        }
+                    }
+                return new BufferedInputStream(
+                    stream
+                    );
+                }
+            else {
+                throw new ActivityProcessingException(
+                    new Exception(
+                        "Response stream is null"
+                        )
+                    );
+                }
             }
-        else 
-            {
+        else {
             throw new ActivityProcessingException(
                 new Exception(
-                    "No response document to request " + httpRequest
+                    "Response entity is null"
                     )
                 );
             }
