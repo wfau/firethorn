@@ -20,64 +20,6 @@
 #
 #
 
-    Create IvoaResource
-
-        1) Create with uploaded MetaDoc/VOSI    
-        2) Automate IvoaResource scan ..
-
-#---------------------------------------------------------------------
-# Create a branch for the first step.
-#[user@desktop] 
-
-    doc/notes/zrq/20141130-01-hg-branch.txt
-
-    devname=zrq-ivoa-create
-
-# -----------------------------------------------------
-# Build our toolkit containers.
-#[user@desktop] 
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        docker build \
-            --tag firethorn/fedora:21.1 \
-            docker/fedora/21
-
-        docker build \
-            --tag firethorn/java:8.1 \
-            docker/java/8
-
-        docker build \
-            --tag firethorn/tomcat:8.1 \
-            docker/tomcat/8
-
-        docker build \
-            --tag firethorn/postgres:9 \
-            docker/postgres/9
-
-        docker build \
-            --tag firethorn/builder:1.1 \
-            docker/builder
-
-        docker build \
-            --tag firethorn/docker-proxy:1.1 \
-            docker/docker-proxy
-
-        docker build \
-            --tag firethorn/sql-proxy:1.1 \
-            docker/sql-proxy
-
-        docker build \
-            --tag firethorn/sql-tunnel:1.1 \
-            docker/sql-tunnel
-
-        docker build \
-            --tag firethorn/ssh-client:1.1 \
-            docker/ssh-client
-
-    popd
-
 # -----------------------------------------------------
 # Start our docker-proxy container.
 #[user@desktop] 
@@ -231,6 +173,16 @@ EOF
 
 # -----------------------------------------------------
 # -----------------------------------------------------
+# Remove our webapp containers.
+#[user@desktop] 
+
+    docker stop "${ogsaname:?}"
+    docker rm -v -f "${ogsaname:?}"
+
+    docker stop "${firename:?}"
+    docker rm -v -f "${firename:?}"
+
+# -----------------------------------------------------
 # Build our source code.
 #[user@desktop] 
 
@@ -257,16 +209,6 @@ EOF
         popd
 
     popd
-
-# -----------------------------------------------------
-# Remove our webapp containers.
-#[user@desktop] 
-
-    docker stop "${ogsaname:?}"
-    docker rm -v -f "${ogsaname:?}"
-
-    docker stop "${firename:?}"
-    docker rm -v -f "${firename:?}"
 
 # -----------------------------------------------------
 # Start our OGSA-DAI container.
@@ -356,9 +298,9 @@ EOF
 # -----------------------------------------------------
 # Add XML and JSON tools.
 #[root@tester]
-
-    yum install -y jq
-    yum install -y xmlstarlet
+#
+#   yum install -y jq
+#   yum install -y xmlstarlet
 
 # -----------------------------------------------------
 # Configure our identity.
@@ -378,6 +320,30 @@ EOF
             --header "firethorn.auth.community:${community:?}" \
             "${endpointurl:?}/system/info" \
             | bin/pp | tee system-info.json
+
+# -----------------------------------------------------
+# Create the TWOMASS resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'TWOMASS IVOA conection' \
+            "http://wfaudata.roe.ac.uk/twomass-dsa/TAP"
+
+        twomassivoa=${ivoaspace:?}
+
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/wfau/twomass-001.xml'
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${ivoaspace:?}/vosi/import" \
+            | bin/pp
+
 
 # -----------------------------------------------------
 # Load the ATLASDR1 resource.
@@ -400,58 +366,44 @@ EOF
         source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
 
 # -----------------------------------------------------
-# Create the TWOMASS resource.
-#[root@tester]
-
-        source "bin/02-03-create-ivoa-space.sh" \
-            'TWOMASS IVOA conection' \
-            "http://wfaudata.roe.ac.uk/twomass-dsa/TAP"
-
-        twomassivoa=${ivoaspace:?}
-
-        #source "bin/03-05-import-ivoa-tableset.sh" "${twomassivoa:?}" "vosi/wfau/twomass-001.xml"
-
-ivoaspace="${twomassivoa}"
-tablesetfile='vosi/wfau/twomass-001.xml'
-
-curl \
-    --header "firethorn.auth.identity:${identity:?}" \
-    --header "firethorn.auth.community:${community:?}" \
-    --form   "urn:schema.tableset.file=@${tablesetfile:?}" \
-    "${endpointurl:?}/${ivoaspace:?}/vosi/import" \
-    | bin/pp | tee ivoa-schema.json
-
-ivoaschema=$(
-    cat adql-schema.json | self | node
-    )
-
-
-        source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
-        twomassadql=${adqlspace:?}
-
-
-link 
-twomassivoa.twomass
-as
-twomassadql.twomass
-
-# -----------------------------------------------------
-# Create our workspace
+# Create our query workspace
 #[root@tester]
 
         source "bin/04-01-create-query-space.sh" 'Test workspace'
         source "bin/04-03-import-query-schema.sh" "${atlasadql:?}"   'ATLASDR1' 'atlas'
-        source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'twomass'  'twomass'
+
+        #
+        # BUG - the param names are different for adql and ivoa schema/select 
+        #source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'twomass'  'twomass'
+
+        #
+        # Find the twomass schema
+        basespace=${ivoaspace:?}
+        basename=twomass
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${basename:?}" \
+            "${endpointurl:?}/${basespace:?}/schemas/select" \
+            | bin/pp | tee base-schema.json
+
+        baseschema=$(
+            cat base-schema.json | self
+            )
+
+        adqlname=twomass
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${adqlname:?}" \
+            --data   "adql.resource.schema.import.base=${baseschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | bin/pp | tee query-schema.json
 
 # -----------------------------------------------------
-# Test stuff .....
+# Test queries ...
 #[root@tester]
-
-
-
-
-
-
 
         curl \
             --silent \
@@ -459,8 +411,6 @@ twomassadql.twomass
             --header "firethorn.auth.community:${community:?}" \
             --data "blue.query.input=SELECT TOP 2000 ra, dec FROM twomass.twomass_psc" \
             --data "blue.query.next.status=COMPLETED" \
-            --data "blue.query.delay.every=10" \
-            --data "blue.query.limit.rows=1000" \
             --data "blue.query.wait=600000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \
             | bin/pp | tee blue-query.json

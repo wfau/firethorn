@@ -67,12 +67,6 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
     public static final String SELECT_NAME = "jdbc.resource.select.name" ;
 
     /**
-     * MVC property for the select results.
-     *
-     */
-    public static final String SELECT_RESULT = "jdbc.resource.select.result" ;
-
-    /**
      * MVC property for the initial name.
      *
      */

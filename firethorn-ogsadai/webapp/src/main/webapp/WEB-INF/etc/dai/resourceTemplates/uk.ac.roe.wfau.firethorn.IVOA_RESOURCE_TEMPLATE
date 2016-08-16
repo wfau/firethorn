@@ -11,7 +11,7 @@ ivoa.uws.interval=1000
 ivoa.uws.quickstart=false
 END
 ACTIVITIES
-uk.ac.roe.wfau.firethorn.IvoaSelectData=uk.ac.roe.wfau.firethorn.IvoaSelectData
+uk.org.ogsadai.SQLQuery=uk.ac.roe.wfau.firethorn.IvoaSelectData
 END
 dataResourceClass=uk.org.ogsadai.resource.generic.GenericResource
 

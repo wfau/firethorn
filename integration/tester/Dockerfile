@@ -23,6 +23,7 @@ RUN yum -y install perl-JSON
 
 COPY bin/  /tester/bin 
 COPY meta/ /tester/meta 
+COPY vosi/ /tester/vosi 
 
 ADD https://github.com/micha/resty/raw/master/pp    /tester/bin/
 ADD https://github.com/micha/resty/raw/master/resty /tester/bin/

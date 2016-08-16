@@ -112,8 +112,8 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
     /**
      * Our resource template name.
      *
-     */
     protected static final String IVOA_RESOURCE_TEMPLATE = "uk.ac.roe.wfau.firethorn.IVOA_RESOURCE_TEMPLATE" ;
+     */
     
     /**
      * Our debug logger.
@@ -193,10 +193,8 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             try {
                 Object object = properties.get(IvoaResourceKeys.IVOA_UWS_INTERVAL);
                 logger.debug("CFG interval [{}][{}]", object.getClass().getName(), object.toString());
-                interval = Integer.valueOf(
-                    (String) properties.get(
-                        IvoaResourceKeys.IVOA_UWS_INTERVAL
-                        )
+                interval = (Integer) properties.get(
+                    IvoaResourceKeys.IVOA_UWS_INTERVAL
                     );
                 }
             catch (Exception ouch)
@@ -215,10 +213,8 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             try {
                 Object object = properties.get(IvoaResourceKeys.IVOA_UWS_TIMEOUT);
                 logger.debug("CFG timeout [{}][{}]", object.getClass().getName(), object.toString());
-                timeout = Integer.valueOf(
-                    (String) properties.get(
-                        IvoaResourceKeys.IVOA_UWS_TIMEOUT
-                        )
+                timeout = (Integer) properties.get(
+                    IvoaResourceKeys.IVOA_UWS_TIMEOUT
                     );
                 }
             catch (Exception ouch)
@@ -380,17 +376,15 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
 
             String jobid = submit(this.endpoint, adql);
             
-            String jobServiceURL = this.endpoint + "/" + jobid;
-
             // start job: post PHASE=RUN
-            start(jobServiceURL);
+            start(this.endpoint, jobid);
             
             // check for errors
-            String state = poll(jobServiceURL);
+            String state = poll(this.endpoint, jobid);
             logger.debug("Job completed. Status: " + state);
             
             // wait for results
-            result = getResults(jobServiceURL);
+            result = getResults(this.endpoint, jobid);
                         
             }       
         catch (ActivityProcessingException ouch)
@@ -487,15 +481,16 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             }
         }
 
-    private String submit(String asyncTAPServiceURL, String expression) 
+    private String submit(String endpoint, String expression) 
     throws ClientProtocolException, IOException, ActivityProcessingException, ActivityUserException 
         {
+        String target = endpoint + "/async" ;
+
+        logger.debug("Submitting job to " + target);
         HttpPost httpPost = prepareHttpPost(
-            asyncTAPServiceURL,
+            target,
             expression
             );
-
-        logger.debug("Submitting job to " + asyncTAPServiceURL);
 
         String jobResult = readInputStream(getStreamFromRequest(httpPost));
         logger.debug(jobResult);
@@ -513,11 +508,13 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         return jobID;
         }
 
-    private void start(String jobServiceURL)
+    private void start(String endpoint, String jobid)
     throws ClientProtocolException, ActivityProcessingException, IOException
         {
-        logger.debug("Checking phase.");
-        HttpGet getPhase = new HttpGet(jobServiceURL+ "/phase");
+        String target = endpoint + "/async/" + jobid + "/phase";
+        logger.debug("Checking phase [" + target + "]");
+        
+        HttpGet getPhase = new HttpGet(target);
         InputStream input = getStreamFromRequest(getPhase);
         String phase = readInputStream(input);
         logger.debug(" phase [" + phase + "]");
@@ -525,7 +522,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         if (isPhase(phase, UWSJobStatus.PHASE_PENDING))
             {
             logger.debug("Phase is PENDING .. starting job.");
-        	HttpPost startJob = new HttpPost(jobServiceURL + "/phase");
+        	HttpPost startJob = new HttpPost(target);
             List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
             postParameters.add(new BasicNameValuePair("PHASE", "RUN"));
             UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(postParameters);
@@ -538,11 +535,12 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             }
         }
     
-    private String poll(final String jobServiceURL)
+    private String poll(String endpoint, String jobid)
     throws ClientProtocolException, IOException, ActivityUserException, ActivityProcessingException, ActivityTerminatedException 
         {
-        final String url = jobServiceURL + "/phase";
-        
+        final String target = endpoint + "/async/" + jobid;
+        logger.debug("Polling phase [" + target + "]");
+       
         Callable<String> callable = new Callable<String>() 
             {
             @Override
@@ -561,7 +559,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
                         Thread.currentThread().interrupt(); // ?
                         throw new ActivityTerminatedException();
                         }
-                    HttpGet getPhase = new HttpGet(url);
+                    HttpGet getPhase = new HttpGet(target  + "/phase");
                     InputStream input = getStreamFromRequest(getPhase);
                     phase = readInputStream(input);
                     }
@@ -577,7 +575,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
                 // reject any job that hasn't completed successfully
                 if (!isPhase(phase, UWSJobStatus.PHASE_COMPLETED))
                     {
-                    HttpGet job = new HttpGet(jobServiceURL);
+                    HttpGet job = new HttpGet(target);
                     InputStream input = getStreamFromRequest(job);
                     try {
                         UWSJobStatus status = UWSJobStatus.parseJob(input);
@@ -645,10 +643,13 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             }
         }
     
-    private InputStream getResults(String jobServiceURL)
+    private InputStream getResults(String endpoint, String jobid)
     throws ClientProtocolException, ActivityProcessingException, IOException
     {
-        HttpGet getResultLinks = new HttpGet(jobServiceURL + "/results");
+    final String target = endpoint + "/async/" + jobid;
+    logger.debug("Getting results [" + target + "]");
+    
+    HttpGet getResultLinks = new HttpGet(target  + "/results");
         List<String> results = 
             UWSJobStatus.parseResults(getStreamFromRequest(getResultLinks));
         // there should be only one result
@@ -656,7 +657,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
         {
             // we use the first one since we only expect on result set
             String resultId = results.iterator().next();
-            String url = jobServiceURL + "/results/" + resultId;
+            String url = target + "/results/" + resultId;
             logger.debug("Retrieving results from " + url);
             HttpGet getResults = new HttpGet(url);
             return getStreamFromRequest(getResults);

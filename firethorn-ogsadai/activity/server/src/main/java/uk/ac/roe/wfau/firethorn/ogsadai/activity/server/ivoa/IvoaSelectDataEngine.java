@@ -23,6 +23,7 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.ivoa;
  * Write our own to make it fixable.
  *
  */
+@Deprecated
 public class IvoaSelectDataEngine
     {
 
