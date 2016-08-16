@@ -606,7 +606,7 @@ implements ResourceActivity, ServiceAddressesActivity, ConfigurableActivity
             logger.debug("Timeout [" + timeout + "]");
             if (timeout > 0)
                 {
-                return future.get(timeout, TimeUnit.MILLISECONDS);
+                return future.get(timeout, TimeUnit.SECONDS);
                 }
             else {
                 return future.get();

@@ -328,15 +328,15 @@ EOF
         #
         # Create the IvoaResource
         source "bin/02-03-create-ivoa-space.sh" \
-            'TWOMASS IVOA conection' \
-            "http://wfaudata.roe.ac.uk/twomass-dsa/TAP"
+            'GAVO TAP service' \
+            "http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap"
 
-        twomassivoa=${ivoaspace:?}
+        gavoivoa=${ivoaspace:?}
 
 
         #
         # Import the static VOSI file
-        vosifile='vosi/wfau/twomass-001.xml'
+        vosifile='vosi/gavo/gavo-tableset.xml'
         curl \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
@@ -409,7 +409,7 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=SELECT TOP 2000 ra, dec FROM twomass.twomass_psc" \
+            --data "blue.query.input=SELECT TOP 2000 raj2000, dej2000 FROM twomass.data" \
             --data "blue.query.next.status=COMPLETED" \
             --data "blue.query.wait=600000" \
             "${endpointurl:?}/${queryspace:?}/blue/create" \
