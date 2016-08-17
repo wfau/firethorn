@@ -104,7 +104,7 @@ public class BlueQueryBean
         }
 
     /**
-     * The {@link BlueQuery} {@link GreenQuery.Mode} mode.
+     * The {@link BlueQuery} {@link AdqlQueryBase.Mode} mode.
      *
      */
     public AdqlQueryBase.Mode getMode()

@@ -31,6 +31,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  *
  */
 @Component
+@Deprecated
 public class AdqlQueryIdentFactory
 extends WebappIdentFactory<GreenQuery>
 implements GreenQuery.IdentFactory

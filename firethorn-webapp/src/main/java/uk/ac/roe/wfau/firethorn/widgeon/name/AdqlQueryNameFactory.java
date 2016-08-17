@@ -27,6 +27,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
  *
  */
 @Component
+@Deprecated
 public class AdqlQueryNameFactory
 extends BaseNameFactory<GreenQuery>
 implements GreenQuery.NameFactory

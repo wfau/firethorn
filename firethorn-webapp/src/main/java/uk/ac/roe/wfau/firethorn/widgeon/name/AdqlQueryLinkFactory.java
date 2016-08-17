@@ -32,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  *
  */
 @Component
+@Deprecated
 public class AdqlQueryLinkFactory
 extends WebappLinkFactory<GreenQuery>
 implements GreenQuery.LinkFactory
