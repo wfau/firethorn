@@ -28,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
  * Abstract representation of a Job.
  *
  */
+@Deprecated
 public interface GreenJob
 extends Entity
     {

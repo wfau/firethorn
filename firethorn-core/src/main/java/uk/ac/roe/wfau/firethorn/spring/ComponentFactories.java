@@ -119,12 +119,6 @@ public interface ComponentFactories
     public GreenJob.EntityServices jobs();
 
     /**
-     * Our {@link TestJob.EntityServices} instance.
-     *
-     */
-    public TestJob.EntityServices tests();
-
-    /**
      * Our {@link GreenQuery.EntityServices} instance.
      *
      */

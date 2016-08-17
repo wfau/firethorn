@@ -195,14 +195,6 @@ public class ComponentFactoriesImpl
     	}
 
     @Autowired
-    protected TestJob.EntityServices tests;
-    @Override
-    public TestJob.EntityServices tests()
-        {
-        return this.tests;
-        }
-
-    @Autowired
     protected Operation.EntityServices operations;
     @Override
 	public Operation.EntityServices operations()
