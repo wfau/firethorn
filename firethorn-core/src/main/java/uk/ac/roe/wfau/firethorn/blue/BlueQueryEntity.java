@@ -64,7 +64,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimitEntity;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -1275,7 +1275,7 @@ implements BlueQuery
     	}
 
     @Embedded
-    private AdqlQueryLimits limits;
+    private AdqlQueryLimitEntity limits;
 
     @Override
     public Limits limits()
@@ -1287,7 +1287,7 @@ implements BlueQuery
          */
         if (this.limits == null)
             {
-            this.limits = new AdqlQueryLimits(
+            this.limits = new AdqlQueryLimitEntity(
                 services().limits().runtime(
                     null
                     )
@@ -1301,7 +1301,7 @@ implements BlueQuery
         {
         if (this.limits == null)
             {
-            this.limits = new AdqlQueryLimits(
+            this.limits = new AdqlQueryLimitEntity(
                 services().limits().runtime(
                     that
                     )
@@ -1319,7 +1319,7 @@ implements BlueQuery
     @Override
     public void limits(final Long rows, final Long cells, final Long time)
         {
-        this.limits = new AdqlQueryLimits(
+        this.limits = new AdqlQueryLimitEntity(
             services().limits().runtime(
                 services().limits().create(
                     rows,

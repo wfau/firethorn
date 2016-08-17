@@ -36,7 +36,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
 @Access(
     AccessType.FIELD
     )
-public class AdqlQueryLimits
+public class AdqlQueryLimitEntity
 extends BaseQueryLimits
 implements AdqlQuery.Limits
     {
@@ -45,7 +45,7 @@ implements AdqlQuery.Limits
      * Public constructor.
      * 
      */
-    public AdqlQueryLimits()
+    public AdqlQueryLimitEntity()
         {
         }
 
@@ -53,7 +53,7 @@ implements AdqlQuery.Limits
      * Public constructor.
      * 
      */
-    public AdqlQueryLimits(final AdqlQuery.Limits that)
+    public AdqlQueryLimitEntity(final AdqlQuery.Limits that)
         {
         if (that != null)
             {
@@ -67,7 +67,7 @@ implements AdqlQuery.Limits
      * Public constructor.
      * 
      */
-    public AdqlQueryLimits(final Long rows, final Long cells, final Long time)
+    public AdqlQueryLimitEntity(final Long rows, final Long cells, final Long time)
         {
         this.rows = rows  ;
         this.cell = cells ;

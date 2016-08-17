@@ -526,7 +526,7 @@ implements AdqlQuery, AdqlParserQuery
             );
         this.schema = schema;
         this.delays = new AdqlQueryDelays();
-        this.limits = new AdqlQueryLimits();
+        this.limits = new AdqlQueryLimitEntity();
         this.params(
             params
             );
@@ -1515,7 +1515,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Embedded
-    private AdqlQueryLimits limits;
+    private AdqlQueryLimitEntity limits;
     
     @Override
     public AdqlQuery.Limits limits()
@@ -1527,7 +1527,7 @@ implements AdqlQuery, AdqlParserQuery
          */
         if (this.limits == null)
             {
-            this.limits = new AdqlQueryLimits();
+            this.limits = new AdqlQueryLimitEntity();
             }
         return this.limits ;
         }
@@ -1535,14 +1535,14 @@ implements AdqlQuery, AdqlParserQuery
     @Override
     public void limits(final Limits limits)
         {
-        this.limits = new AdqlQueryLimits(
+        this.limits = new AdqlQueryLimitEntity(
             limits
             );
         }
 
     public void limits(final Long rows, final Long cells, final Long time)
         {
-        this.limits = new AdqlQueryLimits(
+        this.limits = new AdqlQueryLimitEntity(
             rows,
             cells,
             time
