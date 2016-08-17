@@ -154,7 +154,7 @@ extends TestBase
             query.mode()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(
@@ -228,7 +228,7 @@ extends TestBase
             query.mode()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(
@@ -329,14 +329,14 @@ extends TestBase
             query.mode()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(
             query.syntax().message()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(
@@ -412,7 +412,7 @@ extends TestBase
             query.mode()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(

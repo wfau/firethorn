@@ -14,7 +14,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJobFactory;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimitEntity;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.blue.*;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
@@ -341,7 +341,7 @@ public class UWSJob {
 		
 		if (maxrec!=null) {
 			Long maxrec_long = Long.parseLong(maxrec.trim());
-			AdqlQuery.Limits limit = new AdqlQueryLimitEntity(maxrec_long, null ,null);
+			AdqlQuery.Limits limit = new AdqlQueryLimits(maxrec_long, null ,null);
 			this.getQuery().limits(limit);
 		}
 		

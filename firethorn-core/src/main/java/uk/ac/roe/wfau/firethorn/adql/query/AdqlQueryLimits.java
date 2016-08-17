@@ -17,22 +17,160 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
-import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Limits;
 
 /**
- * Base class for implementations of the AdqlQuery.Limits interface.
- * @todo combine BaseQueryLimits, AdqlQueryLimits and SimpleQueryLimits
+ * Embeddable implementation of the AdqlQuery.QueryLimits interface.
  *
  */
-abstract public class BaseQueryLimits
-implements AdqlQuery.Limits
+@Embeddable
+@Access(
+    AccessType.FIELD
+    )
+public class AdqlQueryLimits
+implements Limits
     {
     /**
      * Value used to indicate no limit, {@value}.
      * 
      */
     protected static final Long NO_VALUE = null;
+    
+    /**
+     * Public constructor.
+     * 
+     */
+    public AdqlQueryLimits()
+        {
+        }
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public AdqlQueryLimits(final Limits that)
+        {
+        if (that != null)
+            {
+            this.rows = that.rows();
+            this.cell = that.cells();
+            this.time = that.time();
+            }
+        }
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public AdqlQueryLimits(final Long rows, final Long cells, final Long time)
+        {
+        this.rows = rows  ;
+        this.cell = cells ;
+        this.time = time  ;
+        }
+    
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_OGSA_LIMIT_ROWS_COL = "ogsalimitrows";
+    protected static final String DB_OGSA_LIMIT_CELL_COL = "ogsalimitcell";
+    protected static final String DB_OGSA_LIMIT_TIME_COL = "ogsalimittime";
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_OGSA_LIMIT_ROWS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Long rows;
+    
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_OGSA_LIMIT_CELL_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Long cell;
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_OGSA_LIMIT_TIME_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Long time;
+
+    @Override
+    public Long rows()
+        {
+        return rows;
+        }
+    @Override
+    public void rows(Long value)
+        {
+        rows = value;
+        }
+    @Override
+    public Long cells()
+        {
+        return cell;
+        }
+    @Override
+    public void cells(Long value)
+        {
+        cell = value;
+        }
+    @Override
+    public Long time()
+        {
+        return time;
+        }
+    @Override
+    public void time(Long value)
+        {
+        time = value ;
+        }
+
+    /**
+     * Update this {@link Limits} with the non-null values from another {@link Limits}.
+     * @todo Better null/zero handling.
+     *
+     */
+    public void update(final Limits that)
+        {
+        if (that != null)
+            {
+            if (that.rows() != null)
+                {
+                this.rows = that.rows();
+                }
+            if (that.cells() != null)
+                {
+                this.cell = that.cells();
+                }
+            if (that.time() != null)
+                {
+                this.time = that.time();
+                }
+            }
+        }
 
     @Override
     public Limits lowest(final Limits that)
@@ -62,9 +200,9 @@ implements AdqlQuery.Limits
      * @return A new Limits containing a combination of the lowest values from the two Limits.
      * 
      */
-    public static AdqlQuery.Limits lowest(final AdqlQuery.Limits left, final AdqlQuery.Limits right)
+    public static Limits lowest(final Limits left, final Limits right)
         {
-        return new BaseQueryLimits()
+        return new AdqlQueryLimits()
             {
             @Override
             public Long rows()
@@ -168,9 +306,9 @@ implements AdqlQuery.Limits
      * @return A new Limits containing a combination of the values from the two Limits.
      * 
      */
-    public static AdqlQuery.Limits combine(final AdqlQuery.Limits left, final AdqlQuery.Limits right)
+    public static Limits combine(final Limits left, final Limits right)
         {
-        return new BaseQueryLimits()
+        return new AdqlQueryLimits()
             {
             @Override
             public Long rows()
@@ -221,22 +359,4 @@ implements AdqlQuery.Limits
                 }
             };
         }
-
-    @Override
-    public void rows(final Long value)
-    	{
-    	throw new NotImplementedException(); 
-    	}
-
-    @Override
-    public void cells(final Long value)
-    	{
-    	throw new NotImplementedException(); 
-    	}
-    
-    @Override
-    public void time(final Long value)
-    	{
-    	throw new NotImplementedException(); 
-    	}
     }

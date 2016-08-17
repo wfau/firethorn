@@ -55,16 +55,16 @@ import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Limits;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Delays;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Limits;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.SelectField;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimitEntity;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -271,7 +271,7 @@ implements BlueQuery
 
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final BlueQuery.TaskState next, final Long wait)
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final BlueQuery.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
             return create(
@@ -286,7 +286,7 @@ implements BlueQuery
 
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final BlueQuery.TaskState next, final Long wait)
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
             log.debug("create(AdqlResource, String, Limits, Delays, TaskState, Long)");
@@ -395,7 +395,7 @@ implements BlueQuery
 
         @Override
         @UpdateMethod
-        public BlueQuery update(final Identifier ident, final String input, final AdqlQuery.Limits limits, final TaskState prev, final TaskState next, final Long wait)
+        public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final TaskState prev, final TaskState next, final Long wait)
         throws IdentifierNotFoundException, InvalidStateRequestException
             {
             return update(
@@ -411,7 +411,7 @@ implements BlueQuery
 
         @Override
         @UpdateMethod
-        public BlueQuery update(final Identifier ident, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final TaskState prev, final TaskState next, final Long wait)
+        public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState prev, final TaskState next, final Long wait)
         throws IdentifierNotFoundException, InvalidStateRequestException
             {
             log.debug("update(Identifier , String, TaskStatus, TaskStatus, Long)");
@@ -600,17 +600,17 @@ implements BlueQuery
             }
 
 		@Autowired
-        private AdqlQuery.Limits.Factory limits;
+        private AdqlQueryBase.Limits.Factory limits;
         @Override
-        public AdqlQuery.Limits.Factory limits()
+        public AdqlQueryBase.Limits.Factory limits()
             {
             return this.limits;
             }
 
         @Autowired
-        private AdqlQuery.Delays.Factory delays;
+        private AdqlQueryBase.Delays.Factory delays;
         @Override
-        public AdqlQuery.Delays.Factory delays()
+        public AdqlQueryBase.Delays.Factory delays()
             {
             return this.delays;
             }
@@ -664,7 +664,7 @@ implements BlueQuery
      * Protected constructor.
      * 
      */
-    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays)
+    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
     throws InvalidStateTransitionException
         {
         super(
@@ -1275,7 +1275,7 @@ implements BlueQuery
     	}
 
     @Embedded
-    private AdqlQueryLimitEntity limits;
+    private AdqlQueryLimits limits;
 
     @Override
     public Limits limits()
@@ -1287,7 +1287,7 @@ implements BlueQuery
          */
         if (this.limits == null)
             {
-            this.limits = new AdqlQueryLimitEntity(
+            this.limits = new AdqlQueryLimits(
                 services().limits().runtime(
                     null
                     )
@@ -1301,7 +1301,7 @@ implements BlueQuery
         {
         if (this.limits == null)
             {
-            this.limits = new AdqlQueryLimitEntity(
+            this.limits = new AdqlQueryLimits(
                 services().limits().runtime(
                     that
                     )
@@ -1319,7 +1319,7 @@ implements BlueQuery
     @Override
     public void limits(final Long rows, final Long cells, final Long time)
         {
-        this.limits = new AdqlQueryLimitEntity(
+        this.limits = new AdqlQueryLimits(
             services().limits().runtime(
                 services().limits().create(
                     rows,
@@ -1348,7 +1348,7 @@ implements BlueQuery
         return this.delays ;
         }
 
-    public void delays(final AdqlQuery.Delays that)
+    public void delays(final AdqlQueryBase.Delays that)
         {
         if (this.delays == null)
             {
@@ -1393,7 +1393,7 @@ implements BlueQuery
         }
 
     @Override
-    public void update(final String input, final AdqlQuery.Limits limits)
+    public void update(final String input, final AdqlQueryBase.Limits limits)
     throws InvalidStateRequestException
         {
         update(
@@ -1409,7 +1409,7 @@ implements BlueQuery
      * 
      */
     @Override
-    public void update(final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays)
+    public void update(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
     throws InvalidStateRequestException
         {
         log.debug("Starting update(String, Limits)");
@@ -1723,13 +1723,13 @@ implements BlueQuery
 					}
 
 				@Override
-				public AdqlQuery.Limits limits()
+				public AdqlQueryBase.Limits limits()
 					{
 					return BlueQueryEntity.this.limits();
 					}
 					
 				@Override
-				public AdqlQuery.Delays delays()
+				public AdqlQueryBase.Delays delays()
 					{
 					return BlueQueryEntity.this.delays() ;
 					}

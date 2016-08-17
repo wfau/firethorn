@@ -60,8 +60,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -232,7 +232,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        public QueryParam create(final Level level, final Mode mode)
+        public AdqlQuery.QueryParam create(final Level level, final Mode mode)
             {
             return new AdqlQuery.QueryParam()
                 {
@@ -475,9 +475,9 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Autowired
-        private AdqlQuery.Limits.Factory limits ;
+        private AdqlQueryBase.Limits.Factory limits ;
         @Override
-        public AdqlQuery.Limits.Factory limits()
+        public AdqlQueryBase.Limits.Factory limits()
             {
             return this.limits;
             }
@@ -526,7 +526,7 @@ implements AdqlQuery, AdqlParserQuery
             );
         this.schema = schema;
         this.delays = new AdqlQueryDelays();
-        this.limits = new AdqlQueryLimitEntity();
+        this.limits = new AdqlQueryLimits();
         this.params(
             params
             );
@@ -1515,7 +1515,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Embedded
-    private AdqlQueryLimitEntity limits;
+    private AdqlQueryLimits limits;
     
     @Override
     public AdqlQuery.Limits limits()
@@ -1527,7 +1527,7 @@ implements AdqlQuery, AdqlParserQuery
          */
         if (this.limits == null)
             {
-            this.limits = new AdqlQueryLimitEntity();
+            this.limits = new AdqlQueryLimits();
             }
         return this.limits ;
         }
@@ -1535,14 +1535,14 @@ implements AdqlQuery, AdqlParserQuery
     @Override
     public void limits(final Limits limits)
         {
-        this.limits = new AdqlQueryLimitEntity(
+        this.limits = new AdqlQueryLimits(
             limits
             );
         }
 
     public void limits(final Long rows, final Long cells, final Long time)
         {
-        this.limits = new AdqlQueryLimitEntity(
+        this.limits = new AdqlQueryLimits(
             rows,
             cells,
             time

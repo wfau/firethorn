@@ -23,30 +23,27 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.SelectField;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 
 /**
@@ -510,7 +507,7 @@ extends TestPropertiesBase
      * Check the expected state.
      *
      */
-    public void validate(final AdqlQuery query, final AdqlQuery.Syntax.State status)
+    public void validate(final AdqlQuery query, final AdqlQueryBase.Syntax.State status)
         {
         assertEquals(
             status,
@@ -653,7 +650,7 @@ extends TestPropertiesBase
             );
         }
 
-    public AdqlQuery validate(final AdqlQuery.Mode mode, final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    public AdqlQuery validate(final AdqlQuery.Mode mode, final Level level, final AdqlQueryBase.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
     throws QueryProcessingException
         {
         final AdqlQuery query = testschema().queries().create(
@@ -678,7 +675,7 @@ extends TestPropertiesBase
         return query;
         }
 
-    public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    public AdqlQuery validate(final Level level, final AdqlQueryBase.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
     throws QueryProcessingException
         {
         return validate(
@@ -691,7 +688,7 @@ extends TestPropertiesBase
             );
         }
 
-    public AdqlQuery validate(final Level level, final AdqlQuery.Syntax.State status, final String adql)
+    public AdqlQuery validate(final Level level, final AdqlQueryBase.Syntax.State status, final String adql)
     throws QueryProcessingException
         {
         return validate(

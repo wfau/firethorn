@@ -36,324 +36,8 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
  *
  */
 public interface AdqlQuery
-extends NamedEntity, Job
+extends AdqlQueryBase, NamedEntity, Job
     {
-    /**
-     * Query timing statistics.
-     * 
-     */
-    public interface Timings
-        {
-        /**
-         * Timestamp (absolute) for the start of query processing.
-         * 
-         */
-        public Long start();  
-
-        /**
-         * Timestamp (duration) for the ADQL parsing.
-         * 
-         */
-        public Long adql();  
-
-        /**
-         * Timestamp (duration) for creating the JDBC table.
-         * 
-         */
-        public Long jdbc();  
-
-        /**
-         * Timestamp (duration) for the OGSA-DAI processing.
-         * 
-         */
-        public Long ogsa();  
-
-        /**
-         * Timestamp (dutation) for the whole query processing.
-         * 
-         */
-        public Long total();  
-
-        }
-
-    /**
-     * The query timing statistics.
-     * 
-     */
-    public Timings timings();
-
-    /**
-     * The Query limits.
-     * 
-     */
-    public interface Limits
-    extends LimitsClient.Param
-        {
-        /**
-         * Public factory interface.
-         * 
-         */
-        public interface Factory
-            {
-            /**
-             * Create a new Limits object.
-             * 
-             */
-            public Limits create(final Long rows, final Long cells, final Long time);
-            
-            /**
-             * The default system limits, used if no other limits are defined.
-             * @return A new Limits based on the system defaults.
-             * 
-             */
-            public Limits defaults();
-
-            /**
-             * Compare a Limits with the default system limits, using the defaults to fill in any missing values.
-             * @return A new Limits containing a combination of the original limits and the system defaults.
-             * @see Limits.combine()
-             * 
-             */
-            public Limits defaults(final Limits that);
-
-            /**
-             * The absolute limits. These will override any of the other limits.
-             * This enables us to start with the defaults set quite low, allow the user to increase the limits for a particular query, but still have an absolute upper bound.
-             * 
-             */
-            public Limits absolute();
-
-            /**
-             * Compare a Limits with the absolute limits, using the lowest available value for each limit.
-             * @return A new Limits containing the lowest value of each limit.
-             * @see Limits.lowest()
-             * 
-             */
-            public Limits absolute(final Limits that);
-
-            /**
-             * Compare a Limits with the system defaults to fill in any missing values and then apply the system absolutes.
-             * @return A new Limits containing a combination of values from the supplied Limits, system defaults and the system absolutes.
-             * @see absolute(Limits)
-             * @see defaults(Limits) 
-             * 
-             */
-            public Limits runtime(final Limits that);
-
-            /**
-             * Compare a Limits with the system defaults to fill in any missing values and then apply the system absolutes.
-             * @return A new Limits containing the lowest value of each limit.
-             * @throws 
-             * @see absolute(Limits)
-             * @see defaults(Limits) 
-             * 
-             */
-            public Limits validate(final Limits that)
-            throws ValidationException;
-
-            /**
-             * Exception to indicate a validation error.  
-             * 
-             */
-            public static class ValidationException
-            extends FirethornCheckedException
-                {
-                /**
-                 * Default serial version UID.
-                 *
-                 */
-                private static final long serialVersionUID = 1L;
-
-                /**
-                 * Public constructor.
-                 *
-                 */
-                public ValidationException(final Limits limits, final String message)
-                    {
-                    super(
-                        message
-                        );
-                    this.limits = limits;
-                    }
-
-                private Limits limits;
-                public Limits limits()
-                    {
-                    return this.limits;
-                    }
-                }
-            }
-        
-        /**
-         * Compare this Limits with another and return a new Limits containing the lowest value of each limit.
-         * If the value from both Limits are not null, then the lowest value is chosen.
-         * If the value from one of the Limits is null and the other is not null, then the non-null value is chosen.
-         * If the values from both of the Limits are null, then the result is null.
-         * @param left  The Limits to compare with this Limits.
-         * @return A new Limits containing a combination of the lowest values from the two Limits.
-         * 
-         */
-        public Limits lowest(final Limits that);
-
-        /**
-         * Compare this Limits with another and return a new Limits containing a combination of values from two Limits.
-         * If the value from the this Limits is not null, then this value is chosen.
-         * If the value from this Limits is null, then the value from that Limits is chosen.
-         * If the values from both of the Limits are null, then the result is null.
-         * @param left  The Limits to compare with this Limits.
-         * @return A new Limits containing a combination of the lowest values from the two Limits.
-         */
-        public Limits combine(final Limits that);
-       
-        /**
-         * The row limit.
-         * @param value The row limit.
-         *
-         */
-        public void rows(final Long value);
-
-        /**
-         * The cells limit.
-         * @param value The cells limit.
-         *
-         */
-        public void cells(final Long value);
-
-        /**
-         * The time limit.
-         * @param value The time limit.
-         *
-         */
-        public void time(final Long value);
-            
-        }
-    
-    /**
-     * The query limits.
-     * 
-     */
-    public Limits limits();
-
-    /**
-     * Set the query limits using a combination of the current values and the values from another Limits object.
-     * @param limits The Limits object to combine.
-     * @see combine(Limits)
-     * 
-     */
-    public void limits(final Limits limits);
-
-    /**
-     * Set the query limits.
-     * @param rows  The rows value.
-     * @param cells The cells value.
-     * @param time  The time value.
-     * 
-     */
-    public void limits(final Long rows, final Long cells, final Long time);
-        
-    /**
-     * Query delay properties.
-     * 
-     */
-    public interface Delays
-    extends DelaysClient.Param
-        {
-        /**
-         * Public factory interface.
-         * 
-         */
-        public interface Factory
-            {
-            /**
-             * Create a new Delays object.
-             * 
-             */
-            public Delays create(final Integer first, final Integer every, final Integer last);
-            }
-
-        /**
-         * The delay before the first row.
-         * @param value The delay value.
-         *
-         */
-        public void first(final Integer value);
-
-        /**
-         * The delay between every row.
-         * @param value The delay value.
-         *
-         */
-        public void every(final Integer value);
-        
-        /**
-         * The delay after the last row.
-         * @param value The delay value.
-         *
-         */
-        public void last(final Integer value);
-
-        }
-
-    /**
-     * The query delays.
-     * 
-     */
-    public Delays delays();
-    
-    /**
-     * Public interface for OGSA-DAI query params.
-     * @todo This should become the basis for an OgsaDaiService entity ?
-     *
-     */
-    public interface QueryParam
-        {
-        /**
-         * The service endpoint URL.
-         *
-         */
-        public String endpoint();
-
-        /**
-         * The DQP processor name.
-         *
-         */
-        public String dqp();
-
-        /**
-         * The DQP processor mode.
-         *
-         */
-        public Mode mode();
-
-        /**
-         * The ADQL parser level.
-         *
-         */
-        public AdqlQuery.Syntax.Level level();
-        
-        }
-
-    /**
-     * OGSA-DAI param factory interface.
-     *
-     */
-    public static interface ParamFactory
-        {
-        /**
-         * Create a new set of params using the environment settings.
-         *
-         */
-        public QueryParam create();
-
-        /**
-         * Create a new set of params, with a specific mode.
-         * @param level The @{link AdqlQuery.Syntax.Level}.
-         * @param mode  The @{link AdqlQuery.Mode}.
-         *
-         */
-        public QueryParam create(final AdqlQuery.Syntax.Level level, final AdqlQuery.Mode mode);
-
-        }
 
     /**
      * {@link NamedEntity.NameFactory} interface.
@@ -485,145 +169,6 @@ extends NamedEntity, Job
     public String cleaned();
 
     /**
-     * ADQL syntax status.
-     *
-     */
-    public interface Syntax
-        {
-        /**
-         * The validation level.
-         *
-         */
-        public enum Level
-            {
-            /**
-             * Enforce the ADQL specification.
-             *
-             */
-            STRICT(),
-
-            /**
-             * Compensate for legacy SQLServer syntax.
-             *
-             */
-            LEGACY();
-
-            }
-
-        /**
-         * Get the syntax level.
-         *
-         */
-        public Level level();
-
-        /**
-         * Set the syntax level.
-         *
-         */
-        public void level(final Level level);
-
-        /**
-         * The validation state.
-         *
-         */
-        public enum State
-            {
-            /**
-             * The query has been parsed and is valid ADQL.
-             *
-             */
-            VALID(),
-
-            /**
-             * A parser error in the ADQL query.
-             *
-             */
-            PARSE_ERROR(),
-
-            /**
-             * A translation error processing the query.
-             *
-             */
-            TRANS_ERROR(),
-
-            /**
-             * Unknown state - the query hasn't been parsed yet.
-             *
-             */
-            UNKNOWN();
-            }
-
-        /**
-         * The validation sate.
-         *
-         */
-        public State state();
-
-        /**
-         * The ADQL parser error message.
-         *
-         */
-        public String message();
-
-        /**
-         * A user friendly error message.
-         *
-         */
-        public String friendly();
-
-        /**
-         * A list of syntax warnings.
-         *
-         */
-        public Iterable<String> warnings();
-
-        }
-
-    /**
-     * The ADQL syntax status.
-     *
-     */
-    public Syntax syntax();
-
-    /**
-     * The OGSA-DAI query params.
-     *
-     */
-    public QueryParam params();
-
-    /**
-     * OGSA-DAI query mode.
-     *
-     */
-    public enum Mode
-        {
-        /**
-         * Automatic selection.
-         *
-         */
-        AUTO(),
-
-        /**
-         * Direct query to a single resource.
-         *
-         */
-        DIRECT(),
-
-        /**
-         * Distributed query handled DQP.
-         *
-         */
-        DISTRIBUTED();
-
-        }
-
-    /**
-     * The OGSA-DAI query mode.
-     *
-     */
-    public Mode mode();
-
-    /**
      * The ADQL schema this query applies to.
      *
      */
@@ -670,34 +215,6 @@ extends NamedEntity, Job
     public BaseResource<?> primary();
 
     /**
-     * Metadata for a SELECT field.
-     *
-     */
-    public interface SelectField
-        {
-
-        /**
-         * The field name.
-         *
-         */
-        public abstract String name();
-
-        /**
-         * The field size.
-         *
-         */
-        public abstract Integer arraysize();
-
-        /**
-         * The field type.
-         *
-         */
-        public abstract AdqlColumn.AdqlType type();
-
-        
-        }
-
-    /**
      * A list of the SELECT fields used in this query.
      * ** The list is only generated when an input query is parsed.
      * ** The list is NOT saved in the database.
@@ -735,5 +252,66 @@ extends NamedEntity, Job
      *
      */
     public Results results();
+
+    /**
+     * Public interface for OGSA-DAI query params.
+     * @todo This should become the basis for an OgsaDaiService entity ?
+     *
+     */
+    public interface QueryParam
+        {
+        /**
+         * The service endpoint URL.
+         *
+         */
+        public String endpoint();
+
+        /**
+         * The DQP processor name.
+         *
+         */
+        public String dqp();
+
+        /**
+         * The DQP processor mode.
+         *
+         */
+        public Mode mode();
+
+        /**
+         * The ADQL parser level.
+         *
+         */
+        public AdqlQuery.Syntax.Level level();
+        
+        }
+
+    /**
+     * OGSA-DAI param factory interface.
+     *
+     */
+    public static interface ParamFactory
+        {
+        /**
+         * Create a new set of params using the environment settings.
+         *
+         */
+        public QueryParam create();
+
+        /**
+         * Create a new set of params, with a specific mode.
+         * @param level The @{link AdqlQuery.Syntax.Level}.
+         * @param mode  The @{link AdqlQuery.Mode}.
+         *
+         */
+        public QueryParam create(final AdqlQuery.Syntax.Level level, final AdqlQuery.Mode mode);
+
+        }
+
+    /**
+     * The OGSA-DAI query params.
+     *
+     */
+    public QueryParam params();
 
     }
