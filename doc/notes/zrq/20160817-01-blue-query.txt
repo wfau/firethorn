@@ -20,8 +20,6 @@
 #
 #
 
-    BlueQuery + IvoaResource
-
     AdqlQuery rename
     BlueQuery rename
 
@@ -29,9 +27,10 @@
 # Create a branch for the reboot.
 #[user@methionine] 
 
+    devname=zrq-blue-query
+
     doc/notes/zrq/20141130-01-hg-branch.txt
 
-    devname=zrq-converge
 
 
 
