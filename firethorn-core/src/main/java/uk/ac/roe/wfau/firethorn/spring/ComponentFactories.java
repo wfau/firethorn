@@ -26,7 +26,6 @@ import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;

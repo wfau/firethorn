@@ -17,11 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.spring;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
@@ -31,7 +30,6 @@ import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
