@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;

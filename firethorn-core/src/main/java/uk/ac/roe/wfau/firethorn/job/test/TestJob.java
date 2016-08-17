@@ -17,16 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.job.test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
-import uk.ac.roe.wfau.firethorn.job.Job;
 
 /**
  *
  *
  */
 public interface TestJob
-extends Job, NamedEntity
+extends GreenJob, NamedEntity
     {
 
     /**
@@ -52,7 +52,7 @@ extends Job, NamedEntity
      *
      */
     public static interface EntityFactory
-    extends Job.EntityFactory<TestJob>
+    extends GreenJob.EntityFactory<TestJob>
         {
         /**
          * Create a test Job.
@@ -76,10 +76,10 @@ extends Job, NamedEntity
         public TestJob.EntityFactory entities();
 
         /**
-         * Our {@link Job.Executor}.
+         * Our {@link GreenJob.Executor}.
          *
          */
-        public Job.Executor executor();
+        public GreenJob.Executor executor();
         }
     
     /**

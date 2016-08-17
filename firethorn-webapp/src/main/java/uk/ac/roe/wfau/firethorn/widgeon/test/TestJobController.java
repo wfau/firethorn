@@ -31,13 +31,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
@@ -180,7 +180,7 @@ public class TestJobController
          * @todo Move this to a JobBean base class
          *
          */
-        public Job.Status getStatus();
+        public GreenJob.Status getStatus();
 
         /**
          * The date/time the Job was queued.
@@ -355,7 +355,7 @@ public class TestJobController
         @RequestParam(value=UPDATE_LIMIT, required=false)
         final Integer limit,
         @RequestParam(value=UPDATE_STATUS, required=false)
-        final Job.Status status,
+        final GreenJob.Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout
         ) throws EntityNotFoundException {

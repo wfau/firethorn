@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.job;
+package uk.ac.roe.wfau.firethorn.adql.query.green;
 
 import java.util.concurrent.Future;
 
@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
  * Abstract representation of a Job.
  *
  */
-public interface Job
+public interface GreenJob
 extends Entity
     {
     /**
@@ -36,7 +36,7 @@ extends Entity
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<Job>
+    extends Entity.LinkFactory<GreenJob>
         {
         }
 
@@ -45,7 +45,7 @@ extends Entity
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<Job>
+    extends Entity.IdentFactory<GreenJob>
         {
         }
 
@@ -54,7 +54,7 @@ extends Entity
      *
      */
     public static interface Resolver
-    extends Entity.EntityFactory<Job>
+    extends Entity.EntityFactory<GreenJob>
         {
         }
 
@@ -62,7 +62,7 @@ extends Entity
      * Job factory interface.
      *
      */
-    public static interface EntityFactory<JobType extends Job>
+    public static interface EntityFactory<JobType extends GreenJob>
     extends Entity.EntityFactory<JobType>
         {
         /**
@@ -99,7 +99,7 @@ extends Entity
          * Update the status, with a timeout in milliseconds.
          *
          */
-        public Status update(final Identifier ident, final Job.Status next, final Integer timeout);
+        public Status update(final Identifier ident, final GreenJob.Status next, final Integer timeout);
 
         /**
          * Validate a Job parameters.
@@ -122,19 +122,19 @@ extends Entity
         }
 
     /**
-     * {@link Job.EntityServices} interface.
+     * {@link GreenJob.EntityServices} interface.
      * 
      */
     public static interface EntityServices
     	{
 		/**
-		 * Our {@link Job.Resolver} instance.
+		 * Our {@link GreenJob.Resolver} instance.
 		 *
 		 */
 		public Resolver resolver();
 		
 		/**
-		 * Our {@link Job.Executor} instance.
+		 * Our {@link GreenJob.Executor} instance.
 		 *
 		 */
 		public Executor executor();

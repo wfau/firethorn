@@ -23,9 +23,9 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
@@ -105,7 +105,7 @@ public class CombinedQueryTestCase
 
         factories().greens().executor().update(
             query.ident(),
-            Job.Status.RUNNING,
+            GreenJob.Status.RUNNING,
             10
             );
         }

@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.spring;
 
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
@@ -25,7 +26,6 @@ import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
@@ -113,10 +113,10 @@ public interface ComponentFactories
     public ConfigProperty.EntityServices config();
 
     /**
-     * Our {@link Job.EntityServices} instance.
+     * Our {@link GreenJob.EntityServices} instance.
      *
      */
-    public Job.EntityServices jobs();
+    public GreenJob.EntityServices jobs();
 
     /**
      * Our {@link TestJob.EntityServices} instance.

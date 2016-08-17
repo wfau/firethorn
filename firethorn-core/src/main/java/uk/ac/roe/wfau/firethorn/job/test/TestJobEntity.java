@@ -34,11 +34,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJobEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.JobEntity;
 
 /**
  *
@@ -62,7 +62,7 @@ import uk.ac.roe.wfau.firethorn.job.JobEntity;
         }
     )
 public class TestJobEntity
-extends JobEntity
+extends GreenJobEntity
 implements TestJob
     {
     /**
@@ -196,9 +196,9 @@ implements TestJob
             }
 
         @Autowired
-        private Job.Executor executor;
+        private GreenJob.Executor executor;
         @Override
-        public Job.Executor executor()
+        public GreenJob.Executor executor()
             {
             return this.executor;
             }

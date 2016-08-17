@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.query;
+package uk.ac.roe.wfau.firethorn.adql.query.green;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -59,17 +59,25 @@ import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
+import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Delays;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Limits;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.SelectField;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Limits.Factory;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
@@ -102,16 +110,16 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClien
     AccessType.FIELD
     )
 @Table(
-    name = AdqlQueryEntity.DB_TABLE_NAME,
+    name = GreenQueryEntity.DB_TABLE_NAME,
     indexes={
         @Index(
-            columnList=AdqlQueryEntity.DB_JDBC_TABLE_COL
+            columnList=GreenQueryEntity.DB_JDBC_TABLE_COL
             ),
         @Index(
-            columnList=AdqlQueryEntity.DB_ADQL_TABLE_COL
+            columnList=GreenQueryEntity.DB_ADQL_TABLE_COL
             ),
         @Index(
-            columnList=AdqlQueryEntity.DB_ADQL_SCHEMA_COL
+            columnList=GreenQueryEntity.DB_ADQL_SCHEMA_COL
             )
         }
     )
@@ -135,8 +143,8 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClien
             )
         }
      )
-public class AdqlQueryEntity
-extends JobEntity
+public class GreenQueryEntity
+extends GreenJobEntity
 implements GreenQuery, AdqlParserQuery
     {
     /**
@@ -272,7 +280,7 @@ implements GreenQuery, AdqlParserQuery
         @Override
         public Class<?> etype()
             {
-            return AdqlQueryEntity.class ;
+            return GreenQueryEntity.class ;
             }
 
         @Override
@@ -298,7 +306,7 @@ implements GreenQuery, AdqlParserQuery
             log.debug("  Name   [{}]", name);
             //
             // Create the query entity.
-            final AdqlQueryEntity entity = new AdqlQueryEntity(
+            final GreenQueryEntity entity = new GreenQueryEntity(
                 params,
                 schema,
                 input,
@@ -394,7 +402,7 @@ implements GreenQuery, AdqlParserQuery
          */
         public static EntityServices instance()
             {
-            return AdqlQueryEntity.EntityServices.instance ;
+            return GreenQueryEntity.EntityServices.instance ;
             }
 
         /**
@@ -413,9 +421,9 @@ implements GreenQuery, AdqlParserQuery
         protected void init()
             {
             log.debug("init()");
-            if (AdqlQueryEntity.EntityServices.instance == null)
+            if (GreenQueryEntity.EntityServices.instance == null)
                 {
-                AdqlQueryEntity.EntityServices.instance = this ;
+                GreenQueryEntity.EntityServices.instance = this ;
                 }
             else {
                 log.error("Setting instance more than once");
@@ -458,9 +466,9 @@ implements GreenQuery, AdqlParserQuery
             }
 
         @Autowired
-        private Job.Executor executor;
+        private GreenJob.Executor executor;
         @Override
-        public Job.Executor executor()
+        public GreenJob.Executor executor()
             {
             return this.executor;
             }
@@ -486,14 +494,14 @@ implements GreenQuery, AdqlParserQuery
     protected GreenQuery.EntityFactory factory()
         {
         log.debug("factory()");
-        return AdqlQueryEntity.EntityServices.instance().entities() ; 
+        return GreenQueryEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected GreenQuery.EntityServices services()
         {
         log.debug("services()");
-        return AdqlQueryEntity.EntityServices.instance() ; 
+        return GreenQueryEntity.EntityServices.instance() ; 
         }
 
     @Override
@@ -508,7 +516,7 @@ implements GreenQuery, AdqlParserQuery
      * Protected constructor, used by Hibernate.
      *
      */
-    protected AdqlQueryEntity()
+    protected GreenQueryEntity()
         {
         super();
         }
@@ -517,7 +525,7 @@ implements GreenQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final GreenQuery.QueryParam params, final AdqlSchema schema, final String input, final String name)
+    protected GreenQueryEntity(final GreenQuery.QueryParam params, final AdqlSchema schema, final String input, final String name)
     throws NameFormatException
         {
         super(
@@ -733,22 +741,22 @@ implements GreenQuery, AdqlParserQuery
             @Override
             public String endpoint()
                 {
-                return AdqlQueryEntity.this.endpoint;
+                return GreenQueryEntity.this.endpoint;
                 }
             @Override
             public String dqp()
                 {
-                return AdqlQueryEntity.this.dqp;
+                return GreenQueryEntity.this.dqp;
                 }
             @Override
             public Mode mode()
                 {
-                return AdqlQueryEntity.this.mode;
+                return GreenQueryEntity.this.mode;
                 }
             @Override
             public GreenQuery.Syntax.Level level()
                 {
-                return AdqlQueryEntity.this.level;
+                return GreenQueryEntity.this.level;
                 }
             };
         }
@@ -761,32 +769,32 @@ implements GreenQuery, AdqlParserQuery
             @Override
             public State state()
                 {
-                return AdqlQueryEntity.this.syntax;
+                return GreenQueryEntity.this.syntax;
                 }
             @Override
             public String message()
                 {
-                return AdqlQueryEntity.this.message;
+                return GreenQueryEntity.this.message;
                 }
             @Override
             public String friendly()
                 {
-                return AdqlQueryEntity.this.message;
+                return GreenQueryEntity.this.message;
                 }
             @Override
             public Level level()
                 {
-                return AdqlQueryEntity.this.level;
+                return GreenQueryEntity.this.level;
                 }
             @Override
             public void level(final Level level)
                 {
-                AdqlQueryEntity.this.level = level;
+                GreenQueryEntity.this.level = level;
                 }
             @Override
             public Iterable<String> warnings()
                 {
-                return AdqlQueryEntity.this.warnings;
+                return GreenQueryEntity.this.warnings;
                 }
             };
         }
@@ -1259,7 +1267,7 @@ implements GreenQuery, AdqlParserQuery
                             @Override
                             public String source()
                                 {
-                                return AdqlQueryEntity.this.source ;
+                                return GreenQueryEntity.this.source ;
                                 }
                             @Override
                             public String query()
@@ -1273,7 +1281,7 @@ implements GreenQuery, AdqlParserQuery
                                     {
                                     public String resource()
                                         {
-                                        return AdqlQueryEntity.this.target;
+                                        return GreenQueryEntity.this.target;
                                         }
                                     @Override
                                     public String table()
@@ -1497,18 +1505,18 @@ implements GreenQuery, AdqlParserQuery
             @Deprecated
             public JdbcTable jdbc()
                 {
-                return AdqlQueryEntity.this.jdbctable ;
+                return GreenQueryEntity.this.jdbctable ;
                 }
             @Override
             @Deprecated
             public BaseTable<?,?> base()
                 {
-                return AdqlQueryEntity.this.jdbctable ;
+                return GreenQueryEntity.this.jdbctable ;
                 }
             @Override
             public AdqlTable adql()
                 {
-                return AdqlQueryEntity.this.adqltable;
+                return GreenQueryEntity.this.adqltable;
                 }
             };
         }

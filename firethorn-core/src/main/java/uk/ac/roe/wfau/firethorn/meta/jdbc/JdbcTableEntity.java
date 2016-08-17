@@ -45,9 +45,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -1268,7 +1268,7 @@ implements JdbcTable
     // http://improvingsoftware.com/2010/03/26/creating-a-unique-constraint-that-ignores-nulls-in-sql-server/
     @OneToOne(
         fetch = FetchType.LAZY,
-        targetEntity = AdqlQueryEntity.class
+        targetEntity = GreenQueryEntity.class
         )
     @JoinColumn(
         name = DB_GREEN_QUERY_COL,

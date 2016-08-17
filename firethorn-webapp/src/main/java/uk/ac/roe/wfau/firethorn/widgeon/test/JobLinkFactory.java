@@ -19,10 +19,10 @@ package uk.ac.roe.wfau.firethorn.widgeon.test;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -30,8 +30,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class JobLinkFactory
-extends WebappLinkFactory<Job>
-implements Job.LinkFactory
+extends WebappLinkFactory<GreenJob>
+implements GreenJob.LinkFactory
     {
     protected JobLinkFactory()
         {
@@ -53,7 +53,7 @@ implements Job.LinkFactory
     public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final Job entity)
+    public String link(final GreenJob entity)
         {
         return link(
             ENTITY_PATH,
@@ -62,7 +62,7 @@ implements Job.LinkFactory
         }
 
     @Override
-    public Job resolve(String link)
+    public GreenJob resolve(String link)
     throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
         {
         // TODO Auto-generated method stub

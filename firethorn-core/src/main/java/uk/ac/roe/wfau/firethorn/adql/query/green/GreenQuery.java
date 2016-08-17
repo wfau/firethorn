@@ -27,7 +27,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Limits.Factory;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
-import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -42,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
  */
 @Deprecated
 public interface GreenQuery
-extends AdqlQueryBase, NamedEntity, Job
+extends AdqlQueryBase, NamedEntity, GreenJob
     {
 
     /**
@@ -77,7 +76,7 @@ extends AdqlQueryBase, NamedEntity, Job
      *
      */
     public static interface EntityFactory
-    extends Job.EntityFactory<GreenQuery>
+    extends GreenJob.EntityFactory<GreenQuery>
         {
         /**
          * Create a new query.
@@ -122,10 +121,10 @@ extends AdqlQueryBase, NamedEntity, Job
         public GreenQuery.EntityFactory entities();
 
         /**
-         * Our {@link Job.Executor} instance.
+         * Our {@link GreenJob.Executor} instance.
          *
          */
-        public Job.Executor executor();
+        public GreenJob.Executor executor();
 
         /**
          * Our OGSA-DAI param factory instance.

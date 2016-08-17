@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.job;
+package uk.ac.roe.wfau.firethorn.adql.query.green;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -64,7 +64,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
     AccessType.FIELD
     )
 @Table(
-    name = JobEntity.DB_TABLE_NAME
+    name = GreenJobEntity.DB_TABLE_NAME
     )
 @Inheritance(
     strategy = InheritanceType.JOINED
@@ -73,9 +73,9 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
         {
         }
     )
-public abstract class JobEntity
+public abstract class GreenJobEntity
 extends AbstractNamedEntity
-implements Job
+implements GreenJob
     {
     /**
      * Hibernate table mapping.
@@ -93,53 +93,53 @@ implements Job
     protected static final String DB_COMPLETED_COL = "completed" ;
     
     /**
-     * {@link Job.Resolver} implementation.
+     * {@link GreenJob.Resolver} implementation.
      *
      */
     @Repository
     public static class Resolver
-    extends AbstractEntityFactory<Job>
-    implements Job.Resolver
+    extends AbstractEntityFactory<GreenJob>
+    implements GreenJob.Resolver
         {
         @Override
         public Class<?> etype()
             {
-            return JobEntity.class;
+            return GreenJobEntity.class;
             }
         }
 
     /**
-     * {@link Job.EntityServices} implementation.
+     * {@link GreenJob.EntityServices} implementation.
      * 
      */
     @Component
     public static class EntityServices
-    implements Job.EntityServices
+    implements GreenJob.EntityServices
     	{
 		@Autowired
-		private Job.Resolver resolver;
+		private GreenJob.Resolver resolver;
 		@Override
-		public Job.Resolver resolver()
+		public GreenJob.Resolver resolver()
 			{
 			return this.resolver;
 			}
 		@Autowired
-		private Job.Executor executor;
+		private GreenJob.Executor executor;
 		@Override
-		public Job.Executor executor()
+		public GreenJob.Executor executor()
 			{
 			return this.executor;
 			}
     	}
 
    /**
-     * {@link Job.Executor} implementation.
+     * {@link GreenJob.Executor} implementation.
      *
      */
     @Component
     public static class Executor
     extends AbstractComponent
-    implements Job.Executor
+    implements GreenJob.Executor
         {
         @Override
         @SelectAtomicMethod
@@ -167,7 +167,7 @@ implements Job
             log.debug("  ident  [{}]", ident);
             log.debug("  status [{}]", status);
             try {
-                final Job job = factories().jobs().resolver().select(
+                final GreenJob job = factories().jobs().resolver().select(
                     ident
                     );
                 log.debug("Found [{}]", ((job != null ? job.ident() : null)));
@@ -293,7 +293,7 @@ implements Job
             log.debug("prepare(Identifier, boolean)");
             log.debug("  Ident [{}]", ident);
             try {
-                final Job job = factories().jobs().resolver().select(
+                final GreenJob job = factories().jobs().resolver().select(
                     ident
                     );
                 if (job != null)
@@ -327,7 +327,7 @@ implements Job
             log.debug("prepare(Identifier)");
             log.debug("  Ident [{}]", ident);
             try {
-                final Job job = factories().jobs().resolver().select(
+                final GreenJob job = factories().jobs().resolver().select(
                     ident
                     );
                 if (job != null)
@@ -381,7 +381,7 @@ implements Job
      * Protected constructor.
      *
      */
-    protected JobEntity()
+    protected GreenJobEntity()
         {
     	super();
         }
@@ -390,7 +390,7 @@ implements Job
      * Protected constructor.
      *
      */
-    protected JobEntity(final String name)
+    protected GreenJobEntity(final String name)
     throws NameFormatException
         {
         super(

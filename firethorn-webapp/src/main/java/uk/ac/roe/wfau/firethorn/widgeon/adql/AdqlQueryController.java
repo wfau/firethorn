@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
@@ -87,7 +87,7 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
     public static final String UPDATE_INPUT = "adql.query.update.query" ;
 
     /**
-     * MVC property for the {@link Job.Status}, [{@value}].
+     * MVC property for the {@link GreenJob.Status}, [{@value}].
      * @see GreenQuery#status(Status)
      *
      */
@@ -95,7 +95,7 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
 
     /**
      * MVC property for the {@link HttpRequest} timeout, [{@value}].
-     * The number of seconds to wait for a {@link Job.Status} change before returning a response.
+     * The number of seconds to wait for a {@link GreenJob.Status} change before returning a response.
      *
      */
     public static final String UPDATE_TIMEOUT = "adql.query.update.timeout" ;
@@ -196,8 +196,8 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
      * @param limitrows  The {@link AdqlQueryBase.Limits} row limit, [{@value #UPDATE_LIMT_ROWS}].
      * @param limitcells The {@link AdqlQueryBase.Limits} cell limit, [{@value #UPDATE_LIMT_CELLS}].
      * @param limittime  The {@link AdqlQueryBase.Limits} time limit, [{@value #UPDATE_LIMT_TIME}].
-     * <br/>Optional {@link Job.Status} params :
-     * @param status  The {@link GreenQuery} {@link Job.Status}, [{@value #UPDATE_STATUS}].
+     * <br/>Optional {@link GreenJob.Status} params :
+     * @param status  The {@link GreenQuery} {@link GreenJob.Status}, [{@value #UPDATE_STATUS}].
      * @param timeout The timeout to wait for a status change, [{@value #UPDATE_TIMEOUT}].
      * @return The updated {@link GreenQuery} wrapped in a {@link AdqlQueryBean}.
      * @throws EntityNotFoundException If the {@link GreenQuery} could not be found.

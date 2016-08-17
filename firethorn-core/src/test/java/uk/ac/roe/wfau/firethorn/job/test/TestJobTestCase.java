@@ -26,9 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.test.TestRoot;
 
 /**
@@ -114,7 +114,7 @@ extends TestRoot
 
         factories().tests().executor().update(
             job.ident(),
-            Job.Status.RUNNING,
+            GreenJob.Status.RUNNING,
             10
             );
 

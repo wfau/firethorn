@@ -37,10 +37,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
@@ -906,7 +906,7 @@ public class AdqlTableEntity
      */
     @OneToOne(
         fetch = FetchType.LAZY,
-        targetEntity = AdqlQueryEntity.class
+        targetEntity = GreenQueryEntity.class
         )
     @JoinColumn(
         name = DB_GREEN_QUERY_COL,

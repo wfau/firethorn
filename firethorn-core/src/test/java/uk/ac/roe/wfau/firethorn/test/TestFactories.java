@@ -20,7 +20,10 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Executor;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Resolver;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
@@ -35,9 +38,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.Job.Executor;
-import uk.ac.roe.wfau.firethorn.job.Job.Resolver;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -99,14 +99,14 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory<Job>
-            implements Job.IdentFactory
+            extends AbstractIdentFactory<GreenJob>
+            implements GreenJob.IdentFactory
                 {
                 }
             @Component
             public static class LinkFactory
-            extends MockLinkFactory<Job>
-            implements Job.LinkFactory
+            extends MockLinkFactory<GreenJob>
+            implements GreenJob.LinkFactory
                 {
                 public LinkFactory()
                     {
