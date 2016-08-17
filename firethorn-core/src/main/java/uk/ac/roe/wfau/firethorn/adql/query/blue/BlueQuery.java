@@ -331,21 +331,6 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
      */
     public void update(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
     throws InvalidStateRequestException;
-
-    /**
-     * Our ADQL syntax status.
-     *
-    public interface Syntax
-    extends AdqlQuery.Syntax
-    	{
-    	}
-     */
-
-    /**
-     * Our ADQL syntax status.
-     *
-    public Syntax syntax();
-     */
     
     /**
      * Our ADQL query.
