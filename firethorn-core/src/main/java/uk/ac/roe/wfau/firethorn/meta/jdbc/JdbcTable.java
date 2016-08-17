@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;

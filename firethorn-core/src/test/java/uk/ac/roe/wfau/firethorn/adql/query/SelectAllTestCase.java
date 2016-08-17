@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+
 
 /**
  *

@@ -19,10 +19,10 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 

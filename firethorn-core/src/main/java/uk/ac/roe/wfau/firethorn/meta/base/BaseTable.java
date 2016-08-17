@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
-import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;

@@ -35,9 +35,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;

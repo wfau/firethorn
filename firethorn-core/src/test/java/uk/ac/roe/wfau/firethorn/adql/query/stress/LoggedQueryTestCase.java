@@ -25,9 +25,9 @@ import org.junit.Test;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import lombok.extern.slf4j.Slf4j;
 
 /**

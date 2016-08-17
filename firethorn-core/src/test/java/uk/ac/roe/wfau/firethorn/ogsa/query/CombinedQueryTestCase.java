@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
-import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;

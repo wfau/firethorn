@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.name;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 
 /**
