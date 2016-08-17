@@ -410,8 +410,8 @@ extends AtlasQueryTestBase
                 final String  adql    = results.getString("query");
                 log.debug("[{}][{}]", catalog, adql);
 
-                final AdqlQuery query = testschema().queries().create(
-                    factories().adql().queries().params().create(),
+                final AdqlQuery query = testschema().greens().create(
+                    factories().adql().greens().params().create(),
                     adql
                     );
 

@@ -80,7 +80,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
             columnList = JdbcTableEntity.DB_PARENT_COL
             ),
         @Index(
-            columnList = JdbcTableEntity.DB_JDBC_QUERY_COL
+            columnList = JdbcTableEntity.DB_GREEN_QUERY_COL
             )
         },
     uniqueConstraints={
@@ -148,7 +148,7 @@ implements JdbcTable
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_JDBC_QUERY_COL  = "adqlquery"  ;
+    protected static final String DB_GREEN_QUERY_COL  = "greenquery" ;
     
     /**
      * {@link JdbcTable.Builder} implementation.
@@ -707,7 +707,7 @@ implements JdbcTable
             schema,
             name
             );
-        this.query  = query;
+        this.greenquery  = query;
         this.schema = schema;
 
         this.jdbctype   = type ;
@@ -1271,18 +1271,25 @@ implements JdbcTable
         targetEntity = AdqlQueryEntity.class
         )
     @JoinColumn(
-        name = DB_JDBC_QUERY_COL,
+        name = DB_GREEN_QUERY_COL,
         unique = false,
         nullable = true,
         updatable = false
         )
-    private AdqlQuery query;
+    private AdqlQuery greenquery;
     @Override
-    public AdqlQuery query()
+    public AdqlQuery greenquery()
         {
-        return this.query;
+        return this.greenquery;
         }
 
+    @Override
+    public BlueQuery bluequery()
+        {
+        // TODO Auto-generated method stub
+        return null;
+        }
+    
     protected JdbcTable.Metadata.Jdbc jdbcmeta()
         {
         return new JdbcTable.Metadata.Jdbc()
@@ -1359,10 +1366,4 @@ implements JdbcTable
         {
         // TODO Auto-generated method stub
         }
-
-	@Override
-	public BlueQuery bluequery() {
-		// TODO Auto-generated method stub
-		return null;
-	}
     }

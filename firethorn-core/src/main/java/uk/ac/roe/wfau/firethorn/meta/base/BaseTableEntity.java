@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -207,12 +208,6 @@ implements BaseTable<TableType, ColumnType>
     @Override
     public abstract String alias();
 
-    @Override
-    public AdqlQuery query()
-        {
-        return root().query();
-        }
-
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = DB_ADQL_STATUS_COL,
@@ -358,4 +353,34 @@ implements BaseTable<TableType, ColumnType>
                 }
             };
         }
+
+    /*
+     * 
+    @Override
+    @Deprecated
+    public AdqlQuery greenquery()
+        {
+        return root().greenquery();
+        }
+
+    @Override
+    public BlueQuery bluequery()
+        {
+        return root().bluequery();
+        }
+
+    @Override
+    @Deprecated
+    public AdqlQuery greenquery()
+        {
+        return null;
+        }
+
+    @Override
+    public BlueQuery bluequery()
+        {
+        return null;
+        }
+     * 
+     */
     }

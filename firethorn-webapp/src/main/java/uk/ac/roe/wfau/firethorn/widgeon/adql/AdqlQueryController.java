@@ -173,8 +173,8 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final String ident
         ) throws IdentifierNotFoundException {
         return bean(
-            factories().adql().queries().entities().select(
-                factories().adql().queries().idents().ident(
+            factories().adql().greens().entities().select(
+                factories().adql().greens().idents().ident(
                     ident
                     )
                 )
@@ -188,14 +188,14 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      * <br/>Optional {@link AdqlQuery} params :
      * @param name  The {@link AdqlQuery} name, [{@value #UPDATE_NAME}].
      * @param input The {@link AdqlQuery} input, [{@value #UPDATE_INPUT}].
-     * <br/>Optional {@link AdqlQuery.Delays} params :
-     * @param first The {@link AdqlQuery.Delays} delay before the first row, [{@value #UPDATE_DELAY_FIRST}].
-     * @param every The {@link AdqlQuery.Delays} delay between the every row, [{@value #UPDATE_DELAY_EVERY}].
-     * @param last  The {@link AdqlQuery.Delays} delay after the last row, [{@value #UPDATE_DELAY_LAST}].
-     * <br/>Optional {@link AdqlQuery.Limits} params :
-     * @param limitrows  The {@link AdqlQuery.Limits} row limit, [{@value #UPDATE_LIMT_ROWS}].
-     * @param limitcells The {@link AdqlQuery.Limits} cell limit, [{@value #UPDATE_LIMT_CELLS}].
-     * @param limittime  The {@link AdqlQuery.Limits} time limit, [{@value #UPDATE_LIMT_TIME}].
+     * <br/>Optional {@link AdqlQueryBase.Delays} params :
+     * @param first The {@link AdqlQueryBase.Delays} delay before the first row, [{@value #UPDATE_DELAY_FIRST}].
+     * @param every The {@link AdqlQueryBase.Delays} delay between the every row, [{@value #UPDATE_DELAY_EVERY}].
+     * @param last  The {@link AdqlQueryBase.Delays} delay after the last row, [{@value #UPDATE_DELAY_LAST}].
+     * <br/>Optional {@link AdqlQueryBase.Limits} params :
+     * @param limitrows  The {@link AdqlQueryBase.Limits} row limit, [{@value #UPDATE_LIMT_ROWS}].
+     * @param limitcells The {@link AdqlQueryBase.Limits} cell limit, [{@value #UPDATE_LIMT_CELLS}].
+     * @param limittime  The {@link AdqlQueryBase.Limits} time limit, [{@value #UPDATE_LIMT_TIME}].
      * <br/>Optional {@link Job.Status} params :
      * @param status  The {@link AdqlQuery} {@link Job.Status}, [{@value #UPDATE_STATUS}].
      * @param timeout The timeout to wait for a status change, [{@value #UPDATE_TIMEOUT}].
@@ -231,8 +231,8 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         ) throws IdentifierNotFoundException {
 
         //TODO idents().resolve(String)
-        final AdqlQuery query = factories().queries().entities().select(
-            factories().queries().idents().ident(
+        final AdqlQuery query = factories().greens().entities().select(
+            factories().greens().idents().ident(
                 ident
                 )
             );
@@ -316,7 +316,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
 
         if (status != null)
             {
-            factories().queries().executor().update(
+            factories().greens().executor().update(
                 query.ident(),
                 status,
                 timeout

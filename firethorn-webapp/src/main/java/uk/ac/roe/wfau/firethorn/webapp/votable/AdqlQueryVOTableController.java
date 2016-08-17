@@ -63,6 +63,7 @@ import uk.ac.roe.wfau.firethorn.job.Job.Status;
  */
 @Slf4j
 @Controller
+@Deprecated
 @RequestMapping(AdqlQueryLinkFactory.VOTABLE_PATH)
 public class AdqlQueryVOTableController
     extends AbstractController
@@ -1231,8 +1232,8 @@ public class AdqlQueryVOTableController
             );
 		generateVotable(
 		    response.getWriter(),
-	        factories().adql().queries().entities().select(
-	            factories().adql().queries().idents().ident(
+	        factories().adql().greens().entities().select(
+	            factories().adql().greens().idents().ident(
 	                ident
 	                )
 	            )

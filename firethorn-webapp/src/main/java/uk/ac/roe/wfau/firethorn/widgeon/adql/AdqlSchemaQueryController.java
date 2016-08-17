@@ -145,7 +145,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final AdqlSchema schema
         ){
         return bean(
-            schema.queries().select()
+            schema.greens().select()
             );
         }
 
@@ -176,8 +176,8 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final AdqlQuery.Syntax.Level level
         ) throws QueryProcessingException {
         return created(
-            schema.queries().create(
-                factories().adql().queries().params().create(
+            schema.greens().create(
+                factories().adql().greens().params().create(
                     level,
                     mode
                     ),

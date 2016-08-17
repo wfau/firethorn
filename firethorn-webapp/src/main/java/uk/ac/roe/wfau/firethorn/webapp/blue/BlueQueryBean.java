@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask;
@@ -107,7 +107,7 @@ public class BlueQueryBean
      * The {@link BlueQuery} {@link AdqlQuery.Mode} mode.
      *
      */
-    public AdqlQuery.Mode getMode()
+    public AdqlQueryBase.Mode getMode()
         {
         return entity().mode();
         }
@@ -327,7 +327,7 @@ public class BlueQueryBean
         }
     
     /**
-     * An {@link AdqlQuery.SelectField} bean.
+     * An {@link AdqlQueryBase.SelectField} bean.
      *
      */
     public interface FieldBean
@@ -340,7 +340,7 @@ public class BlueQueryBean
         }
 
     /**
-     * The {@BlueQuery} select {@link AdqlQuery.SelectField}s.
+     * The {@BlueQuery} select {@link AdqlQueryBase.SelectField}s.
      *
      */
     public Iterable<FieldBean> getFields()
@@ -352,8 +352,8 @@ public class BlueQueryBean
                 {
                 return new Iterator<FieldBean>()
                     {
-                    final Iterator<AdqlQuery.SelectField> iter = entity().fields().select().iterator();
-                    protected Iterator<AdqlQuery.SelectField> iter()
+                    final Iterator<AdqlQueryBase.SelectField> iter = entity().fields().select().iterator();
+                    protected Iterator<AdqlQueryBase.SelectField> iter()
                         {
                         return this.iter;
                         }
@@ -366,7 +366,7 @@ public class BlueQueryBean
                     public FieldBean next()
                         {
                         return new FieldBean(){
-                            final AdqlQuery.SelectField field = iter().next();
+                            final AdqlQueryBase.SelectField field = iter().next();
                             @Override
                             public String getName()
                                 {
@@ -396,7 +396,7 @@ public class BlueQueryBean
         }
 
     /**
-     * An {@link AdqlQuery.Limits} bean.
+     * An {@link AdqlQueryBase.Limits} bean.
      *
      */
     public interface LimitsBean
@@ -407,7 +407,7 @@ public class BlueQueryBean
         }
 
     /**
-     * The query {@link AdqlQuery.Limits}.
+     * The query {@link AdqlQueryBase.Limits}.
      *
      */
     public LimitsBean getLimits()
@@ -431,7 +431,7 @@ public class BlueQueryBean
 
     
     /**
-     * An {@link AdqlQuery.Delays} bean.
+     * An {@link AdqlQueryBase.Delays} bean.
      *
      */
     public interface DelaysBean
@@ -442,7 +442,7 @@ public class BlueQueryBean
         }
 
     /**
-     * The query {@link AdqlQuery.Delays}.
+     * The query {@link AdqlQueryBase.Delays}.
      *
      */
     public DelaysBean getDelays()

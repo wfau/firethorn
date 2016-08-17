@@ -227,11 +227,11 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
-    protected AdqlQuery.EntityServices queries;
+    protected AdqlQuery.EntityServices greens;
     @Override
-    public AdqlQuery.EntityServices queries()
+    public AdqlQuery.EntityServices greens()
         {
-        return this.queries;
+        return this.greens;
         }
 
     @Autowired

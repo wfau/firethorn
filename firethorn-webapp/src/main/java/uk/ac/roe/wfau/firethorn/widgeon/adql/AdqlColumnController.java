@@ -65,7 +65,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * MVC property for the {@link AdqlQuery}, [{@value}].
+     * MVC property for the {@link AdqlColumn}, [{@value}].
      *
      */
     public static final String TARGET_ENTITY = "urn:adql.column.entity" ;

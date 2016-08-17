@@ -73,8 +73,8 @@ public class LoggedQueryTestCase
         log.debug("--------");
         log.debug("ADQL [{}][{}]", linenum, linestr);
 
-        final AdqlQuery query = testschema().queries().create(
-            factories().queries().params().create(),
+        final AdqlQuery query = testschema().greens().create(
+            factories().greens().params().create(),
             linestr
             );
 

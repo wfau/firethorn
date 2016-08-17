@@ -223,8 +223,8 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
                 + "    ra,"
                 + "    dec"
@@ -251,8 +251,8 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
                 + "    frog"
                 + "    toad"
@@ -273,8 +273,8 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
                 + "    date as mydate"
                 + " FROM"
@@ -296,8 +296,8 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
                 + "    *"
                 + " FROM"
@@ -382,8 +382,8 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
 
                 + "    COUNT(ra),"

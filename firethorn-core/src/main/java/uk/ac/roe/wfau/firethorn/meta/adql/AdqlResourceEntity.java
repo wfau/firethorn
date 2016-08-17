@@ -30,9 +30,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.blue.BlueTask;
 import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -433,7 +433,7 @@ implements AdqlResource
                     );
                 }
             @Override
-            public BlueQuery create(final String input, final TaskState next, final Long wait)
+            public BlueQuery create(final String input, final BlueTask.TaskState next, final Long wait)
                 throws InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
@@ -444,7 +444,7 @@ implements AdqlResource
                     );
                 }
             @Override
-            public BlueQuery create(final String input, final AdqlQuery.Limits limits, final TaskState next, final Long wait)
+            public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final BlueTask.TaskState next, final Long wait)
                 throws InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
@@ -456,7 +456,7 @@ implements AdqlResource
                     );
                 }
             @Override
-            public BlueQuery create(final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final TaskState next, final Long wait)
+            public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
                 throws InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(

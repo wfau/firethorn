@@ -653,8 +653,8 @@ extends TestPropertiesBase
     public AdqlQuery validate(final AdqlQuery.Mode mode, final Level level, final AdqlQueryBase.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
     throws QueryProcessingException
         {
-        final AdqlQuery query = testschema().queries().create(
-            factories().queries().params().create(
+        final AdqlQuery query = testschema().greens().create(
+            factories().greens().params().create(
                 level,
                 mode
                 ),

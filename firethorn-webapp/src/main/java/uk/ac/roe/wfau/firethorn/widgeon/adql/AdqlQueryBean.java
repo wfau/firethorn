@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -103,7 +104,7 @@ extends NamedEntityBeanImpl<AdqlQuery>
         return entity().input();
         }
 
-    public AdqlQuery.Mode getMode()
+    public AdqlQueryBase.Mode getMode()
         {
         return entity().mode();
         }
@@ -215,7 +216,7 @@ extends NamedEntityBeanImpl<AdqlQuery>
 
     public interface Syntax
         {
-        public AdqlQuery.Syntax.State getStatus();
+        public AdqlQueryBase.Syntax.State getStatus();
         public String getMessage();
         public String getFriendly();
         }
@@ -225,14 +226,14 @@ extends NamedEntityBeanImpl<AdqlQuery>
         return new Syntax()
             {
             @Override
-            public AdqlQuery.Syntax.State getStatus()
+            public AdqlQueryBase.Syntax.State getStatus()
                 {
                 if (entity().syntax() != null)
                     {
                     return entity().syntax().state();
                     }
                 else {
-                    return AdqlQuery.Syntax.State.UNKNOWN;
+                    return AdqlQueryBase.Syntax.State.UNKNOWN;
                     }
                 }
             @Override
@@ -378,8 +379,8 @@ extends NamedEntityBeanImpl<AdqlQuery>
                 {
                 return new Iterator<FieldBean>()
                     {
-                    final Iterator<AdqlQuery.SelectField> iter = entity().fields().iterator();
-                    protected Iterator<AdqlQuery.SelectField> iter()
+                    final Iterator<AdqlQueryBase.SelectField> iter = entity().fields().iterator();
+                    protected Iterator<AdqlQueryBase.SelectField> iter()
                         {
                         return this.iter;
                         }
@@ -392,7 +393,7 @@ extends NamedEntityBeanImpl<AdqlQuery>
                     public FieldBean next()
                         {
                         return new FieldBean(){
-                            final AdqlQuery.SelectField field = iter().next();
+                            final AdqlQueryBase.SelectField field = iter().next();
                             @Override
                             public String getName()
                                 {

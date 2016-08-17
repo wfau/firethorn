@@ -1404,7 +1404,7 @@ implements BlueQuery
         }
 
     /**
-     * Update our input query and {@link AdqlQuery.Limits}.
+     * Update our input query and {@link AdqlQueryBase.Limits}.
      * This performs the update in a new {@link Thread}, forcing the creation of a new Hibernate {@link Session}.
      * 
      */

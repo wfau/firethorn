@@ -89,8 +89,8 @@ public class CombinedQueryTestCase
             schema
             );
         
-        query = schema.queries().create(
-            factories().adql().queries().params().create(
+        query = schema.greens().create(
+            factories().adql().greens().params().create(
                 AdqlQuery.Syntax.Level.LEGACY,
                 AdqlQuery.Mode.DIRECT
                 ),
@@ -107,7 +107,7 @@ public class CombinedQueryTestCase
         {
         prepare();
 
-        factories().queries().executor().update(
+        factories().greens().executor().update(
             query.ident(),
             Job.Status.RUNNING,
             10

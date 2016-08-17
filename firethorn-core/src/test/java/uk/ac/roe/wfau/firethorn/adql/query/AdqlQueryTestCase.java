@@ -138,8 +138,8 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.queries().create(
-            factories().adql().queries().params().create(),
+        final AdqlQuery query = schema.greens().create(
+            factories().adql().greens().params().create(),
             IMPORTED_000
             );
         //query.prepare();
@@ -212,8 +212,8 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.queries().create(
-            factories().adql().queries().params().create(),
+        final AdqlQuery query = schema.greens().create(
+            factories().adql().greens().params().create(),
             IMPORTED_001
             );
         //query.prepare();
@@ -313,8 +313,8 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.queries().create(
-            factories().adql().queries().params().create(),
+        final AdqlQuery query = schema.greens().create(
+            factories().adql().greens().params().create(),
             IMPORTED_002
             );
         //query.prepare();
@@ -396,8 +396,8 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.queries().create(
-            factories().adql().queries().params().create(),
+        final AdqlQuery query = schema.greens().create(
+            factories().adql().greens().params().create(),
             IMPORTED_002
             );
         //query.prepare();

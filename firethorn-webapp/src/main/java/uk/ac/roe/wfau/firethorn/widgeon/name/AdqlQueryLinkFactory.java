@@ -63,24 +63,28 @@ implements AdqlQuery.LinkFactory
      * The URI path for the VOTable representation, [{@value}].
      *
      */
+    @Deprecated
     public static final String VOTABLE_NAME = "/votable";
     
     /**
      * The URI path for the VOTable representation, [{@value}].
      *
      */
+    @Deprecated
     public static final String VOTABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + VOTABLE_NAME;
 
     /**
      * The URI path for the DataTable representation, [{@value}].
      *
      */
+    @Deprecated
     public static final String DATATABLE_NAME = "/datatable";
     
     /**
      * The URI path for the DataTable representation, [{@value}].
      *
      */
+    @Deprecated
     public static final String DATATABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + DATATABLE_NAME;
 
     @Override

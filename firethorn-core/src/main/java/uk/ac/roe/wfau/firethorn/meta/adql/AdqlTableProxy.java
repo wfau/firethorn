@@ -314,9 +314,9 @@ public class AdqlTableProxy
         }
 
     @Override
-    public AdqlQuery query()
+    public AdqlQuery greenquery()
         {
-        return base.query();
+        return base.greenquery();
         }
 
     @Override

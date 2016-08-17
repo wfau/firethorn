@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
-import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -28,13 +27,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 
 /**
  *
  *
  */
+@Deprecated
 public interface AdqlQuery
 extends AdqlQueryBase, NamedEntity, Job
     {

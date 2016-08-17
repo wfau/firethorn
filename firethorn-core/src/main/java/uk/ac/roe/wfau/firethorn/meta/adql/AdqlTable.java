@@ -102,12 +102,14 @@ extends BaseTable<AdqlTable, AdqlColumn>
          * Create a new {@link AdqlTable}.
          *
          */
+        @Deprecated
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query);
 
         /**
          * Create a new {@link AdqlTable}.
          *
          */
+        @Deprecated
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query);
         
         /**

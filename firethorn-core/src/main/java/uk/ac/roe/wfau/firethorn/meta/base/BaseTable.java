@@ -182,7 +182,8 @@ extends TreeComponent
      * The {@link AdqlQuery} that generated this table.
      *
      */
-    public AdqlQuery query();
+    @Deprecated
+    public AdqlQuery greenquery();
 
     /**
      * The {@link BlueQuery} that generated this table.

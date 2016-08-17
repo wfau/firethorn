@@ -47,8 +47,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
@@ -58,6 +56,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
@@ -78,12 +77,10 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
@@ -97,6 +94,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClien
  *
  *
  */
+@Deprecated
 @Slf4j
 @Entity()
 @Access(

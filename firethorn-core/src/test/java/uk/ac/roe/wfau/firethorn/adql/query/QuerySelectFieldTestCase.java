@@ -34,8 +34,8 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
                 + "    frog"
                 + "    toad"
@@ -57,8 +57,8 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
                 + "    date"
                 + " FROM"
@@ -80,8 +80,8 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
                 + "    MAX(ra)"
                 + " FROM"
@@ -103,8 +103,8 @@ extends QuerySelectFieldTestBase
     throws Exception
       {
       validate(
-          this.schema.queries().create(
-              factories().adql().queries().params().create(),
+          this.schema.greens().create(
+              factories().adql().greens().params().create(),
               "SELECT"
               + "    *"
               + " FROM"
@@ -191,8 +191,8 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
                 + "    ra +  dec as radec"
                 + " FROM"
@@ -214,8 +214,8 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
-                factories().adql().queries().params().create(),
+            this.schema.greens().create(
+                factories().adql().greens().params().create(),
                 "SELECT"
                 + "    ra +  dec"
                 + " FROM"

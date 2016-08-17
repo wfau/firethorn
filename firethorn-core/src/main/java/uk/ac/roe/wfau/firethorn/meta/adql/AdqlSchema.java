@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -168,6 +167,7 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new {@link AdqlTable table}, importing the columns from a {@link AdqlQuery query}.
          *
          */
+        @Deprecated
         public AdqlTable create(final AdqlQuery query);
         
         /**
@@ -189,24 +189,23 @@ extends BaseSchema<AdqlSchema, AdqlTable>
 
     /**
      * Access to the schema {@link AdqlQuery queries}.
-     * @todo Does this make sense ?
-     * @todo Does this depend on who is asking ?
      *
      */
-    public interface Queries
+    @Deprecated
+    public interface Greens
         {
         /**
          * Create a new {@link AdqlQuery}.
          *
          */
-        public AdqlQuery create(final QueryParam param, final String query)
+        public AdqlQuery create(final AdqlQuery.QueryParam param, final String query)
         throws QueryProcessingException;
 
         /**
          * Create a new {@link AdqlQuery}.
          *
          */
-        public AdqlQuery create(final QueryParam param, final String query, final String name)
+        public AdqlQuery create(final AdqlQuery.QueryParam param, final String query, final String name)
         throws QueryProcessingException;
 
         /**
@@ -220,11 +219,10 @@ extends BaseSchema<AdqlSchema, AdqlTable>
 
     /**
      * Access to the schema {@link AdqlQuery queries}.
-     * @todo Does this make sense ?
-     * @todo Does this depend on who is asking ?
      *
      */
-    public Queries queries();
+    @Deprecated
+    public Greens greens();
 
     /**
      * The {@link AdqlSchema} metadata.

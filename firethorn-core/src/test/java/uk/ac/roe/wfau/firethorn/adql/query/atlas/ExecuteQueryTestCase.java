@@ -39,8 +39,8 @@ public class ExecuteQueryTestCase
     public void notTest000()
     throws Exception
         {
-        final AdqlQuery query = testschema().queries().create(
-            factories().queries().params().create(
+        final AdqlQuery query = testschema().greens().create(
+            factories().greens().params().create(
                 Level.STRICT,
                 Mode.AUTO
                 ),
@@ -51,7 +51,7 @@ public class ExecuteQueryTestCase
             "    atlasSource"
             );
 
-        factories().queries().executor().update(
+        factories().greens().executor().update(
             query.ident(),
             Status.RUNNING,
             10

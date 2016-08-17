@@ -75,9 +75,9 @@ extends BaseTableBean<AdqlTable>
 
     public String getQuery()
         {
-        if (entity().query() != null)
+        if (entity().greenquery() != null)
             {
-            return entity().query().link();
+            return entity().greenquery().link();
             }
         else {
             return null ;

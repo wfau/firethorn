@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 
 /**
  * Our ADQL component factories
@@ -54,8 +55,14 @@ public interface AdqlFactories
      * Our {@link AdqlQuery.EntityServices} instance.
      *
      */
-    public AdqlQuery.EntityServices queries();
+    public AdqlQuery.EntityServices greens();
 
+    /**
+     * Our {@link BlueQuery.EntityServices} instance.
+     *
+     */
+    public BlueQuery.EntityServices blues();
+    
     /**
      * The local ADQL parser factory.
      *

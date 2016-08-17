@@ -57,6 +57,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
  * 
  */
 @Slf4j
+@Deprecated
 @Controller
 @RequestMapping(AdqlQueryLinkFactory.DATATABLE_PATH)
 public class AdqlQueryDatatablesController
@@ -448,8 +449,8 @@ public class AdqlQueryDatatablesController
         final PrintWriter writer = response.getWriter();
        
 
-        final AdqlQuery query = factories().adql().queries().entities().select(
-            factories().adql().queries().idents().ident(
+        final AdqlQuery query = factories().adql().greens().entities().select(
+            factories().adql().greens().idents().ident(
                 ident
                 )
             );		

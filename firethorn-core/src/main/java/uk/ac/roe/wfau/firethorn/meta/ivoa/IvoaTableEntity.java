@@ -561,12 +561,6 @@ public class IvoaTableEntity
         }
 
     @Override
-    public AdqlQuery query()
-        {
-        return null;
-        }
-
-    @Override
     protected void scanimpl()
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
@@ -656,9 +650,16 @@ public class IvoaTableEntity
             }
         }
 
-	@Override
-	public BlueQuery bluequery() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    @Deprecated
+    public AdqlQuery greenquery()
+        {
+        return null;
+        }
+
+    @Override
+    public BlueQuery bluequery()
+        {
+        return null;
+        }
     }

@@ -686,6 +686,7 @@ implements AdqlSchema
                 }
 
             @Override
+            @Deprecated
             public AdqlTable create(final AdqlQuery query)
                 {
                 return factories().adql().tables().entities().create(
@@ -788,15 +789,15 @@ implements AdqlSchema
         }
 
     @Override
-    public Queries queries()
+    public Greens greens()
         {
-        return new Queries()
+        return new Greens()
             {
             @Override
             public AdqlQuery create(final QueryParam param, final String query)
             throws QueryProcessingException
                 {
-                return factories().adql().queries().entities().create(
+                return factories().adql().greens().entities().create(
                     AdqlSchemaEntity.this,
                     param,
                     query
@@ -807,7 +808,7 @@ implements AdqlSchema
             public AdqlQuery create(final QueryParam param, final String query, final String name)
             throws QueryProcessingException
                 {
-                return factories().adql().queries().entities().create(
+                return factories().adql().greens().entities().create(
                     AdqlSchemaEntity.this,
                     param,
                     query,
@@ -818,7 +819,7 @@ implements AdqlSchema
             @Override
             public Iterable<AdqlQuery> select()
                 {
-                return factories().adql().queries().entities().select(
+                return factories().adql().greens().entities().select(
                     AdqlSchemaEntity.this
                     );
                 }

@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.parser ;
 
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import adql.db.DBColumn;
@@ -45,7 +45,7 @@ extends DBTable
          * Create a new AdqlParserTable.
          *
          */
-        public AdqlParserTable create(final AdqlQuery.Mode mode, final AdqlTable table);
+        public AdqlParserTable create(final AdqlQueryBase.Mode mode, final AdqlTable table);
 
         }
 
@@ -53,7 +53,7 @@ extends DBTable
      * The query mode.
      *
      */
-    public AdqlQuery.Mode mode();
+    public AdqlQueryBase.Mode mode();
 
     /**
      * Our underlying AdqlTable.

@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.blue.InvalidRequestException;
@@ -213,14 +214,14 @@ extends BaseResource<AdqlSchema>
          * Create a new {@link BlueQuery}.
          * 
          */
-        public BlueQuery create(final String input, final AdqlQuery.Limits limits, final TaskState next, final Long wait)
+        public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException;
 
         /**
          * Create a new {@link BlueQuery}.
          * 
          */
-        public BlueQuery create(final String input, final AdqlQuery.Limits limits, final AdqlQuery.Delays delays, final TaskState next, final Long wait)
+        public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException;
         
         }

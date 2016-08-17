@@ -72,7 +72,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
             columnList = AdqlTableEntity.DB_PARENT_COL 
             ),
         @Index(
-            columnList = AdqlTableEntity.DB_ADQL_QUERY_COL
+            columnList = AdqlTableEntity.DB_GREEN_QUERY_COL
             )
         },
     uniqueConstraints={
@@ -114,13 +114,13 @@ public class AdqlTableEntity
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
+    protected static final String DB_GREEN_QUERY_COL = "adqlquery" ;
 
     /**
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String BLUE_ADQL_QUERY_COL = "bluequery" ;
+    protected static final String DB_BLUE_QUERY_COL = "bluequery" ;
     /**
      * The default name prefix, {@value}.
      * 
@@ -256,86 +256,64 @@ public class AdqlTableEntity
         @CreateMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
             {
-            final AdqlTableEntity table = new AdqlTableEntity(
+            return create(
+                CopyDepth.FULL,
                 schema,
                 base,
                 base.name()
                 );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
             }
 
         @Override
         @CreateMethod
         public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base)
             {
-            final AdqlTableEntity table = new AdqlTableEntity(
+            return create(
                 depth,
                 schema,
                 base,
                 base.name()
                 );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
             }
 
         @Override
         @CreateMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
-            final AdqlTableEntity table = new AdqlTableEntity(
+            return create(
+                CopyDepth.FULL,
                 schema,
                 base,
                 name
                 );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
             }
 
         @Override
         @CreateMethod
         public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
-            final AdqlTableEntity table = new AdqlTableEntity(
+            return create(
                 depth,
                 schema,
                 base,
                 name
                 );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
             }
 
         @Override
+        @Deprecated
         @CreateMethod
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query)
             {
-            final AdqlTableEntity table = new AdqlTableEntity(
-                query,
+            return create(
+                CopyDepth.FULL,
                 schema,
-                query.results().base(),
-                query.name()
+                query
                 );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
             }
 
         @Override
+        @Deprecated
         @CreateMethod
         public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final AdqlQuery query)
             {
@@ -576,7 +554,6 @@ public class AdqlTableEntity
      * Protected constructor.
      * @todo Too many constructors.
      *
-     */
     protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
@@ -587,12 +564,12 @@ public class AdqlTableEntity
             name
             );
         }
+     */
 
     /**
      * Protected constructor.
      * @todo Too many constructors.
      *
-     */
     protected AdqlTableEntity(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
@@ -603,12 +580,12 @@ public class AdqlTableEntity
             name
             );
         }
+     */
 
     /**
      * Protected constructor.
      * @todo Too many constructors.
      *
-     */
     protected AdqlTableEntity(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
@@ -619,6 +596,7 @@ public class AdqlTableEntity
             name
             );
         }
+     */
 
     /**
      * Protected constructor.
@@ -632,14 +610,13 @@ public class AdqlTableEntity
             schema,
             name
             );
-        this.query  = query;
+        this.greenquery  = query;
         this.base   = base;
         this.schema = schema;
         }
     
     /**
      * Protected constructor.
-     * @todo Too many constructors.
      *
      */
     protected AdqlTableEntity(final CopyDepth type, final BlueQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
@@ -650,7 +627,7 @@ public class AdqlTableEntity
             name
             );
         this.bluequery  = query;
-        this.query = null;
+        this.greenquery = null;
         this.base   = base;
         this.schema = schema;
         }
@@ -922,21 +899,26 @@ public class AdqlTableEntity
     //
     // SQLServer won't allow a unique column to have a null value.
     // http://improvingsoftware.com/2010/03/26/creating-a-unique-constraint-that-ignores-nulls-in-sql-server/
+    /*
+     * TODO This should be part of JdbcTableEntity
+     * TODO This should just return root().bluequery()
+     * 
+     */
     @OneToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlQueryEntity.class
         )
     @JoinColumn(
-        name = DB_ADQL_QUERY_COL,
+        name = DB_GREEN_QUERY_COL,
         unique = false,
         nullable = true,
         updatable = false
         )
-    private AdqlQuery query;
+    private AdqlQuery greenquery;
     @Override
-    public AdqlQuery query()
+    public AdqlQuery greenquery()
         {
-        return this.query;
+        return this.greenquery;
         }
 
     @Override
@@ -945,21 +927,26 @@ public class AdqlTableEntity
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
         }
-    
-    @OneToOne(
-            fetch = FetchType.LAZY,
-            targetEntity = BlueQueryEntity.class
-            )
-        @JoinColumn(
-            name = BLUE_ADQL_QUERY_COL,
-            unique = false,
-            nullable = true,
-            updatable = false
-            )
-        private BlueQuery bluequery;
-        public BlueQuery bluequery()
-            {
-            return this.bluequery;
-            }
 
+    /*
+     * TODO This should be part of JdbcTableEntity
+     * TODO This should just return root().bluequery()
+     * 
+     */
+    @OneToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = BlueQueryEntity.class
+        )
+    @JoinColumn(
+        name = DB_BLUE_QUERY_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private BlueQuery bluequery;
+    @Override
+    public BlueQuery bluequery()
+        {
+        return this.bluequery;
+        }
     }

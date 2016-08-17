@@ -78,7 +78,7 @@ implements Delays
      * Public constructor.
      * 
      */
-    public AdqlQueryDelays(final AdqlQuery.Delays that)
+    public AdqlQueryDelays(final Delays that)
         {
         if (that != null)
             {

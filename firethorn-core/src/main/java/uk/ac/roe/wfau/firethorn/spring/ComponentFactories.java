@@ -128,7 +128,7 @@ public interface ComponentFactories
      * Our {@link AdqlQuery.EntityServices} instance.
      *
      */
-    public AdqlQuery.EntityServices queries();
+    public AdqlQuery.EntityServices greens();
 
     /**
      * Our {@link BlueQuery.EntityServices} instance.

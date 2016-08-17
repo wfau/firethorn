@@ -64,13 +64,13 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
         public BlueQuery.EntityFactory entities();
         
         /**
-         * Our {@link AdqlQuery.Limits.Factory } instance.
+         * Our {@link AdqlQueryBase.Limits.Factory } instance.
          * 
          */
         public AdqlQueryBase.Limits.Factory limits();
 
         /**
-         * Our {@link AdqlQuery.Delays.Factory } instance.
+         * Our {@link AdqlQueryBase.Delays.Factory } instance.
          * 
          */
         public AdqlQueryBase.Delays.Factory delays();
@@ -167,14 +167,14 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
         throws InvalidRequestException, InternalServerErrorException;
 
         /**
-         * Create a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, {@link BlueQuery.TaskState}, and a wait timeout.
+         * Create a new {@link BlueQuery} with an ADQL string, {@link AdqlQueryBase.Limits}, {@link BlueQuery.TaskState}, and a wait timeout.
          *
          */
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final BlueTask.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException;
 
         /**
-         * Create a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, {@link AdqlQuery.Delays}, {@link BlueQuery.TaskState}, and a wait timeout.
+         * Create a new {@link BlueQuery} with an ADQL string, {@link AdqlQueryBase.Limits}, {@link AdqlQueryBase.Delays}, {@link BlueQuery.TaskState}, and a wait timeout.
          *
          */
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
@@ -195,14 +195,14 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
         throws IdentifierNotFoundException, InvalidStateRequestException;
 
         /**
-         * Update a {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         * Update a {@link BlueQuery} with an ADQL string, {@link AdqlQueryBase.Limits}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
          *
          */
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
         throws IdentifierNotFoundException, InvalidStateRequestException;
 
         /**
-         * Update a new {@link BlueQuery} with an ADQL string, {@link AdqlQuery.Limits}, {@link AdqlQuery.Delays}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         * Update a new {@link BlueQuery} with an ADQL string, {@link AdqlQueryBase.Limits}, {@link AdqlQueryBase.Delays}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
          *
          */
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
@@ -319,14 +319,14 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
     throws InvalidStateRequestException;
 
     /**
-     * Update our input query and {@link AdqlQuery.Limits}.
+     * Update our input query and {@link AdqlQueryBase.Limits}.
      * 
      */
     public void update(final String input, final AdqlQueryBase.Limits limits)
     throws InvalidStateRequestException;
 
     /**
-     * Update our input query and {@link AdqlQuery.Limits} and {@link AdqlQuery.Delays}.
+     * Update our input query and {@link AdqlQueryBase.Limits} and {@link AdqlQueryBase.Delays}.
      * 
      */
     public void update(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
@@ -446,7 +446,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
     public Results results();
 
     /**
-     * The {@link AdqlQuery.SelectField}s used by the query.
+     * The {@link AdqlQueryBase.SelectField}s used by the query.
      *
      */
     public interface Fields
@@ -455,7 +455,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
         }
 
     /**
-     * The {@link AdqlQuery.SelectField}s used by the query.
+     * The {@link AdqlQueryBase.SelectField}s used by the query.
      *
      */
     public Fields fields();
