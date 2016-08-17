@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.ac.roe.wfau.firethorn.blue;
+package uk.ac.roe.wfau.firethorn.adql.query.blue;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 
 /**
- * Exception thrown when a internal server error occurs.
+ * Exception thrown in response to an invalid request.
  *
  */
 @SuppressWarnings("serial")
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-public abstract class InternalServerErrorException
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+public abstract class InvalidRequestException
 extends FirethornCheckedException {
 
 	/**
@@ -22,7 +22,7 @@ extends FirethornCheckedException {
 	 * @param message
 	 * 
 	 */
-	public InternalServerErrorException(final String message)
+	public InvalidRequestException(final String message)
 		{
 		super(message);
 		}
@@ -32,7 +32,7 @@ extends FirethornCheckedException {
 	 * @param cause
 	 * 
 	 */
-	public InternalServerErrorException(final Throwable cause)
+	public InvalidRequestException(final Throwable cause)
 		{
 		super(cause);
 		}
@@ -43,7 +43,7 @@ extends FirethornCheckedException {
 	 * @param cause
 	 * 
 	 */
-	public InternalServerErrorException(final String message, final Throwable cause)
+	public InvalidRequestException(final String message, final Throwable cause)
 		{
 		super(message, cause);
 		}

@@ -42,6 +42,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import uk.ac.roe.wfau.firethorn.webapp.votable.*;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.*;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -54,8 +56,6 @@ import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
 import uk.ac.roe.wfau.firethorn.webapp.tap.TapValidator;
 import uk.ac.roe.wfau.firethorn.webapp.tap.CapabilitiesGenerator;
-import uk.ac.roe.wfau.firethorn.blue.*;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 
 @Slf4j
 @Controller

@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 

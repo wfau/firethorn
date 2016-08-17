@@ -22,10 +22,10 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueQueryEntity;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery.ResultState;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;

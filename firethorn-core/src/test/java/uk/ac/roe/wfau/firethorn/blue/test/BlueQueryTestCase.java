@@ -21,8 +21,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 
 /**
  *
