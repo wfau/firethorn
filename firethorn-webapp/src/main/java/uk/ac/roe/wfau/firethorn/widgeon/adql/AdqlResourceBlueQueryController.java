@@ -46,12 +46,12 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
 
 /**
  * Spring MVC controller to handle the {@link AdqlSchema} in an {@link AdqlResource}.
- * <br/>Controller path : [{@value AdqlResourceLinkFactory#RESOURCE_SCHEMA_PATH}]
+ * <br/>Controller path : [{@value AdqlResourceLinkFactory#RESOURCE_SCHEMAS_PATH}]
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlResourceLinkFactory.RESOURCE_BLUE_PATH)
+@RequestMapping(AdqlResourceLinkFactory.RESOURCE_QUERIES_PATH)
 public class AdqlResourceBlueQueryController
 extends AbstractEntityController<BlueQuery, BlueQueryBean>
     {
@@ -59,7 +59,7 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
     public Path path()
         {
         return path(
-            AdqlResourceLinkFactory.RESOURCE_BLUE_PATH
+            AdqlResourceLinkFactory.RESOURCE_QUERIES_PATH
             );
         }
 

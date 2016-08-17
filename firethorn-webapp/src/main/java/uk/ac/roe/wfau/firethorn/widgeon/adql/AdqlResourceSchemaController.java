@@ -43,12 +43,12 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
 
 /**
  * Spring MVC controller to handle the {@link AdqlSchema} in an {@link AdqlResource}.
- * <br/>Controller path : [{@value AdqlResourceLinkFactory#RESOURCE_SCHEMA_PATH}]
+ * <br/>Controller path : [{@value AdqlResourceLinkFactory#RESOURCE_SCHEMAS_PATH}]
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlResourceLinkFactory.RESOURCE_SCHEMA_PATH)
+@RequestMapping(AdqlResourceLinkFactory.RESOURCE_SCHEMAS_PATH)
 public class AdqlResourceSchemaController
 extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     {
@@ -56,7 +56,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     public Path path()
         {
         return path(
-            AdqlResourceLinkFactory.RESOURCE_SCHEMA_PATH
+            AdqlResourceLinkFactory.RESOURCE_SCHEMAS_PATH
             );
         }
 
