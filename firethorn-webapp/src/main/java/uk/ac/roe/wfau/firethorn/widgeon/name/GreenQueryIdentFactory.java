@@ -17,39 +17,32 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.name;
 
+import java.net.URI;
+
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- *
+ * An {@link GreenQuery.IdentFactory} implementation.
+ * @todo Use PURLs.
  *
  */
 @Component
 @Deprecated
-public class AdqlQueryNameFactory
-extends BaseNameFactory<GreenQuery>
-implements GreenQuery.NameFactory
+public class GreenQueryIdentFactory
+extends WebappIdentFactory<GreenQuery>
+implements GreenQuery.IdentFactory
     {
-    @Override
-    public String name(final String name)
-        {
-    	if (name != null)
-    		{
-    		return super.name(
-				name
-				);
-    		}
-    	else {
-    		return name();
-    		}
-        }
-    @Override
-    public String name()
-        {
-        return datename(
-            "QUERY"
-            );
-        }
+    /**
+     * The type URI for this type.
+     * @todo Move this to entity type interface.
+     * @todo Use PURLs.
+     *
+     */
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/entity/green-query-1.0.json"
+        );
     }

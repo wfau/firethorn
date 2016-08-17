@@ -34,26 +34,26 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.name.GreenQueryLinkFactory;
 
 /**
  * Spring MVC controller to handle {@link GreenQuery} entities.
- * <br/>Controller path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
+ * <br/>Controller path : [{@value GreenQueryLinkFactory#ENTITY_PATH}]
  * @todo Add an entity() load method.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlQueryLinkFactory.ENTITY_PATH)
-public class AdqlQueryController
-extends AbstractEntityController<GreenQuery, AdqlQueryBean>
+@RequestMapping(GreenQueryLinkFactory.ENTITY_PATH)
+public class GreenQueryController
+extends AbstractEntityController<GreenQuery, GreenQueryBean>
     {
 
     @Override
     public Path path()
         {
         return path(
-            AdqlQueryLinkFactory.ENTITY_PATH
+            GreenQueryLinkFactory.ENTITY_PATH
             );
         }
 
@@ -61,7 +61,7 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
      * Public constructor.
      *
      */
-    public AdqlQueryController()
+    public GreenQueryController()
         {
         super();
         }
@@ -143,32 +143,32 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
     public static final String UPDATE_LIMT_TIME = "adql.query.update.limit.time" ;
     
     @Override
-    public AdqlQueryBean bean(final GreenQuery entity)
+    public GreenQueryBean bean(final GreenQuery entity)
         {
-        return new AdqlQueryBean(
+        return new GreenQueryBean(
             entity
             );
         }
 
     @Override
-    public Iterable<AdqlQueryBean> bean(final Iterable<GreenQuery> iter)
+    public Iterable<GreenQueryBean> bean(final Iterable<GreenQuery> iter)
         {
-        return new AdqlQueryBean.Iter(
+        return new GreenQueryBean.Iter(
             iter
             );
         }
 
     /**
      * {@link RequestMethod#GET} request to select a specific {@link GreenQuery}.
-     * <br/>Request path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
+     * <br/>Request path : [{@value GreenQueryLinkFactory#ENTITY_PATH}]
      * @param ident The {@link GreenQuery} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
-     * @return The selected {@link GreenQuery} wrapped in a {@link AdqlQueryBean}.
+     * @return The selected {@link GreenQuery} wrapped in a {@link GreenQueryBean}.
      * @throws EntityNotFoundException If the {@link GreenQuery} could not be found.
      * 
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public AdqlQueryBean select(
+    public GreenQueryBean select(
         @PathVariable("ident")
         final String ident
         ) throws IdentifierNotFoundException {
@@ -183,7 +183,7 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
 
     /**
      * {@link RequestMethod#POST} request to update a specific {@link GreenQuery}.
-     * <br/>Request path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
+     * <br/>Request path : [{@value GreenQueryLinkFactory#ENTITY_PATH}]
      * @param ident The {@link GreenQuery} identifier from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * <br/>Optional {@link GreenQuery} params :
      * @param name  The {@link GreenQuery} name, [{@value #UPDATE_NAME}].
@@ -199,13 +199,13 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
      * <br/>Optional {@link GreenJob.Status} params :
      * @param status  The {@link GreenQuery} {@link GreenJob.Status}, [{@value #UPDATE_STATUS}].
      * @param timeout The timeout to wait for a status change, [{@value #UPDATE_TIMEOUT}].
-     * @return The updated {@link GreenQuery} wrapped in a {@link AdqlQueryBean}.
+     * @return The updated {@link GreenQuery} wrapped in a {@link GreenQueryBean}.
      * @throws EntityNotFoundException If the {@link GreenQuery} could not be found.
      *
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public AdqlQueryBean update(
+    public GreenQueryBean update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @RequestParam(value=UPDATE_INPUT, required=false)

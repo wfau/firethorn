@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 @Deprecated
-public class AdqlQueryLinkFactory
+public class GreenQueryLinkFactory
 extends WebappLinkFactory<GreenQuery>
 implements GreenQuery.LinkFactory
     {
@@ -41,7 +41,7 @@ implements GreenQuery.LinkFactory
      * Protected constructor.
      *
      */
-    protected AdqlQueryLinkFactory()
+    protected GreenQueryLinkFactory()
         {
         super(
             SERVICE_PATH
@@ -52,7 +52,7 @@ implements GreenQuery.LinkFactory
      * The URI path for the service, [{@value}].
      *
      */
-    protected static final String SERVICE_PATH = "/adql/query" ;
+    protected static final String SERVICE_PATH = "/green/query" ;
 
     /**
      * The URI path for an {@link GreenQuery}, [{@value}].

@@ -27,15 +27,15 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryIdentFactory;
-import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.name.GreenQueryIdentFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.name.GreenQueryLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 
 /**
  * An {@link EntityBean} wrapper for an {@link GreenQuery}.
  *
  */
-public class AdqlQueryBean
+public class GreenQueryBean
 extends NamedEntityBeanImpl<GreenQuery>
     {
     /**
@@ -43,7 +43,7 @@ extends NamedEntityBeanImpl<GreenQuery>
      *
      */
     public static class Iter
-    extends AbstractEntityBeanIter<GreenQuery, AdqlQueryBean>
+    extends AbstractEntityBeanIter<GreenQuery, GreenQueryBean>
         {
         /**
          * Public constructor.
@@ -57,9 +57,9 @@ extends NamedEntityBeanImpl<GreenQuery>
                 );
             }
         @Override
-        public AdqlQueryBean bean(final GreenQuery entity)
+        public GreenQueryBean bean(final GreenQuery entity)
             {
-            return new AdqlQueryBean(
+            return new GreenQueryBean(
                 entity
                 );
             }
@@ -70,10 +70,10 @@ extends NamedEntityBeanImpl<GreenQuery>
      * @param entity The {@link GreenQuery} to wrap.
      *
      */
-    protected AdqlQueryBean(final GreenQuery entity)
+    protected GreenQueryBean(final GreenQuery entity)
         {
         super(
-            AdqlQueryIdentFactory.TYPE_URI,
+            GreenQueryIdentFactory.TYPE_URI,
             entity
             );
         }
@@ -331,7 +331,7 @@ extends NamedEntityBeanImpl<GreenQuery>
             public String getVotable()
                 {
                 return entity().link().concat(
-                    AdqlQueryLinkFactory.VOTABLE_NAME
+                    GreenQueryLinkFactory.VOTABLE_NAME
                     );
                 }
            
@@ -342,7 +342,7 @@ extends NamedEntityBeanImpl<GreenQuery>
             	  if (entity().results().adql() != null)
                   {
             		  return entity().results().adql().link().concat(
-                              AdqlQueryLinkFactory.DATATABLE_NAME
+                              GreenQueryLinkFactory.DATATABLE_NAME
                            );
                   }
             	  else {

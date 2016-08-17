@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_QUERY_PATH)
 public class AdqlSchemaQueryController
-extends AbstractEntityController<GreenQuery, AdqlQueryBean>
+extends AbstractEntityController<GreenQuery, GreenQueryBean>
     {
     @Override
     public Path path()
@@ -95,17 +95,17 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
     public static final String CREATE_LEVEL = "adql.schema.query.create.level" ;
 
     @Override
-    public AdqlQueryBean bean(final GreenQuery entity)
+    public GreenQueryBean bean(final GreenQuery entity)
         {
-        return new AdqlQueryBean(
+        return new GreenQueryBean(
             entity
             );
         }
 
     @Override
-    public Iterable<AdqlQueryBean> bean(final Iterable<GreenQuery> iter)
+    public Iterable<GreenQueryBean> bean(final Iterable<GreenQuery> iter)
         {
-        return new AdqlQueryBean.Iter(
+        return new GreenQueryBean.Iter(
             iter
             );
         }
@@ -135,12 +135,12 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
      * <br/>Request path : [{@value #SELECT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
-     * @return An {@Iterable} set of {@link AdqlQueryBean}.
+     * @return An {@Iterable} set of {@link GreenQueryBean}.
      * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<AdqlQueryBean> select(
+    public Iterable<GreenQueryBean> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
         ){
@@ -157,13 +157,13 @@ extends AbstractEntityController<GreenQuery, AdqlQueryBean>
      * @param name The {@link GreenQuery} name, [{@value #CREATE_NAME}].
      * @param name The {@link GreenQuery.Mode} mode, [{@value #CREATE_MODE}].
      * @param name The {@link GreenQuery.Syntax.Level} level, [{@value #CREATE_LEVEL}].
-     * @return An {@link AdqlQueryBean} wrapping the new {@link GreenQuery}.
+     * @return An {@link GreenQueryBean} wrapping the new {@link GreenQuery}.
      * @todo Rejects duplicate names.
      * 
      */
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)
-    public ResponseEntity<AdqlQueryBean> create(
+    public ResponseEntity<GreenQueryBean> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(value=CREATE_QUERY, required=true)
