@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
@@ -64,7 +64,7 @@ public class QueryBugsTestCase
     public void test002L()
     throws QueryProcessingException
         {
-        final AdqlQuery query = validate(
+        final GreenQuery query = validate(
             Level.LEGACY,
             State.VALID,
 
@@ -123,7 +123,7 @@ public class QueryBugsTestCase
     public void test003L()
     throws QueryProcessingException
         {
-        final AdqlQuery query = validate(
+        final GreenQuery query = validate(
             Level.LEGACY,
             State.VALID,
 

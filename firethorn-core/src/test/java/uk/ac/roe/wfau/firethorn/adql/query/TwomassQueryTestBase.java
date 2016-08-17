@@ -96,7 +96,7 @@ extends TestBase
      * Debug display of a query.
      *
      */
-    public void debug(final AdqlQuery query)
+    public void debug(final GreenQuery query)
         {
         log.debug("Query -- ");
         log.debug("Mode   [{}]", query.mode());

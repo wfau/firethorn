@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
  *
  */
 @Deprecated
-public interface AdqlQuery
+public interface GreenQuery
 extends AdqlQueryBase, NamedEntity, Job
     {
 
@@ -42,7 +42,7 @@ extends AdqlQueryBase, NamedEntity, Job
      *
      */
     public static interface NameFactory
-    extends NamedEntity.NameFactory<AdqlQuery>
+    extends NamedEntity.NameFactory<GreenQuery>
         {
         }
 
@@ -51,7 +51,7 @@ extends AdqlQueryBase, NamedEntity, Job
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<AdqlQuery>
+    extends Entity.LinkFactory<GreenQuery>
         {
         }
 
@@ -60,7 +60,7 @@ extends AdqlQueryBase, NamedEntity, Job
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<AdqlQuery>
+    extends Entity.IdentFactory<GreenQuery>
         {
         }
 
@@ -69,13 +69,13 @@ extends AdqlQueryBase, NamedEntity, Job
      *
      */
     public static interface EntityFactory
-    extends Job.EntityFactory<AdqlQuery>
+    extends Job.EntityFactory<GreenQuery>
         {
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input)
+        public GreenQuery create(final AdqlSchema schema, final QueryParam params, final String input)
         throws QueryProcessingException;
 
         /**
@@ -83,20 +83,20 @@ extends AdqlQueryBase, NamedEntity, Job
          * @throws QueryProcessingException 
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
+        public GreenQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
         throws QueryProcessingException;
 
         /**
          * Select all the queries from a resource.
          *
          */
-        public Iterable<AdqlQuery> select(final AdqlSchema schema);
+        public Iterable<GreenQuery> select(final AdqlSchema schema);
 
         /**
          * Text search for queries (name starts with).
          *
          */
-        public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text);
+        public Iterable<GreenQuery> search(final AdqlSchema schema, final String text);
         
         }
 
@@ -105,13 +105,13 @@ extends AdqlQueryBase, NamedEntity, Job
      * 
      */
     public static interface EntityServices
-    extends NamedEntity.EntityServices<AdqlQuery>
+    extends NamedEntity.EntityServices<GreenQuery>
         {
         /**
-         * Our {@link AdqlQuery.EntityFactory} instance.
+         * Our {@link GreenQuery.EntityFactory} instance.
          *
          */
-        public AdqlQuery.EntityFactory entities();
+        public GreenQuery.EntityFactory entities();
 
         /**
          * Our {@link Job.Executor} instance.
@@ -144,7 +144,7 @@ extends AdqlQueryBase, NamedEntity, Job
          * Build a physical table.
          *
          */
-        public JdbcTable create(final JdbcSchema store, final AdqlQuery query);
+        public JdbcTable create(final JdbcSchema store, final GreenQuery query);
 
         }
 
@@ -280,7 +280,7 @@ extends AdqlQueryBase, NamedEntity, Job
          * The ADQL parser level.
          *
          */
-        public AdqlQuery.Syntax.Level level();
+        public GreenQuery.Syntax.Level level();
         
         }
 
@@ -302,7 +302,7 @@ extends AdqlQueryBase, NamedEntity, Job
          * @param mode  The @{link AdqlQuery.Mode}.
          *
          */
-        public QueryParam create(final AdqlQuery.Syntax.Level level, final AdqlQuery.Mode mode);
+        public QueryParam create(final GreenQuery.Syntax.Level level, final GreenQuery.Mode mode);
 
         }
 

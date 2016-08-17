@@ -45,7 +45,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
@@ -331,7 +331,7 @@ implements JdbcTable
 
         @Override
         @CreateMethod
-        public JdbcTable create(final JdbcSchema schema, final AdqlQuery query)
+        public JdbcTable create(final JdbcSchema schema, final GreenQuery query)
             {
             final JdbcTable table = this.insert(
                 new JdbcTableEntity(
@@ -342,7 +342,7 @@ implements JdbcTable
                 );
             //
             // Add the select fields.
-            for (final AdqlQuery.SelectField field : query.fields())
+            for (final GreenQuery.SelectField field : query.fields())
                 {
                 final String name = field.name();
                 if (name == null)
@@ -687,7 +687,7 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name)
+    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery query, final String name)
         {
         this(
             schema,
@@ -701,7 +701,7 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final JdbcType type)
+    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery query, final String name, final JdbcType type)
         {
         super(
             schema,
@@ -1276,9 +1276,9 @@ implements JdbcTable
         nullable = true,
         updatable = false
         )
-    private AdqlQuery greenquery;
+    private GreenQuery greenquery;
     @Override
-    public AdqlQuery greenquery()
+    public GreenQuery greenquery()
         {
         return this.greenquery;
         }

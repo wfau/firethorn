@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -179,11 +179,11 @@ extends TreeComponent
     public Columns<ColumnType> columns();
 
     /**
-     * The {@link AdqlQuery} that generated this table.
+     * The {@link GreenQuery} that generated this table.
      *
      */
     @Deprecated
-    public AdqlQuery greenquery();
+    public GreenQuery greenquery();
 
     /**
      * The {@link BlueQuery} that generated this table.

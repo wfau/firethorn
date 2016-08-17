@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
@@ -314,7 +314,7 @@ public class AdqlTableProxy
         }
 
     @Override
-    public AdqlQuery greenquery()
+    public GreenQuery greenquery()
         {
         return base.greenquery();
         }

@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -51,7 +51,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
 
 /**
- * Spring MVC controller to format the results of an {@link AdqlQuery} as a <a href='http://datatables.net/index'>DataTable</a>.
+ * Spring MVC controller to format the results of an {@link GreenQuery} as a <a href='http://datatables.net/index'>DataTable</a>.
  * @see <a href='http://datatables.net/index'>DataTables</a>
  * @deprecated Use the formatter on the query results themselves.
  * 
@@ -283,7 +283,7 @@ public class AdqlQueryDatatablesController
      */
     public void generateDatatable(
         final PrintWriter writer,
-        final AdqlQuery   query
+        final GreenQuery   query
         ){
     	
         final AdqlTable table= query.results().adql();
@@ -449,7 +449,7 @@ public class AdqlQueryDatatablesController
         final PrintWriter writer = response.getWriter();
        
 
-        final AdqlQuery query = factories().adql().greens().entities().select(
+        final GreenQuery query = factories().adql().greens().entities().select(
             factories().adql().greens().idents().ident(
                 ident
                 )

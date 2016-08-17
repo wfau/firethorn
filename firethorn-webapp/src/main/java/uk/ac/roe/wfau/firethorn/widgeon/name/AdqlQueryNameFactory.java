@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.name;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 
 /**
@@ -28,8 +28,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
  */
 @Component
 public class AdqlQueryNameFactory
-extends BaseNameFactory<AdqlQuery>
-implements AdqlQuery.NameFactory
+extends BaseNameFactory<GreenQuery>
+implements GreenQuery.NameFactory
     {
     @Override
     public String name(final String name)

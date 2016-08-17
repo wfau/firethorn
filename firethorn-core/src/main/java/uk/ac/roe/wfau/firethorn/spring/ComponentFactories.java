@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.spring;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
@@ -125,10 +125,10 @@ public interface ComponentFactories
     public TestJob.EntityServices tests();
 
     /**
-     * Our {@link AdqlQuery.EntityServices} instance.
+     * Our {@link GreenQuery.EntityServices} instance.
      *
      */
-    public AdqlQuery.EntityServices greens();
+    public GreenQuery.EntityServices greens();
 
     /**
      * Our {@link BlueQuery.EntityServices} instance.

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
@@ -37,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
 
 /**
- * Spring MVC controller to handle {@link AdqlQuery} entities.
+ * Spring MVC controller to handle {@link GreenQuery} entities.
  * <br/>Controller path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
  * @todo Add an entity() load method.
  *
@@ -46,7 +46,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
 @Controller
 @RequestMapping(AdqlQueryLinkFactory.ENTITY_PATH)
 public class AdqlQueryController
-extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
+extends AbstractEntityController<GreenQuery, AdqlQueryBean>
     {
 
     @Override
@@ -67,28 +67,28 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * MVC property for the {@link AdqlQuery}, [{@value}].
+     * MVC property for the {@link GreenQuery}, [{@value}].
      *
      */
     public static final String TARGET_ENTITY = "urn:adql.query.entity" ;
 
     /**
-     * MVC property for the {@link AdqlQuery} name, [{@value}].
-     * @see AdqlQuery#name(String)
+     * MVC property for the {@link GreenQuery} name, [{@value}].
+     * @see GreenQuery#name(String)
      *
      */
     public static final String UPDATE_NAME = "adql.query.update.name" ;
 
     /**
-     * MVC property for the {@link AdqlQuery} input, [{@value}].
-     * @see AdqlQuery#input(String)
+     * MVC property for the {@link GreenQuery} input, [{@value}].
+     * @see GreenQuery#input(String)
      *
      */
     public static final String UPDATE_INPUT = "adql.query.update.query" ;
 
     /**
      * MVC property for the {@link Job.Status}, [{@value}].
-     * @see AdqlQuery#status(Status)
+     * @see GreenQuery#status(Status)
      *
      */
     public static final String UPDATE_STATUS = "adql.query.update.status" ;
@@ -102,48 +102,48 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
 
     /**
      * MVC property for the delay before the first row, [{@value}].
-     * @see AdqlQuery.Delays#first(Integer)
+     * @see GreenQuery.Delays#first(Integer)
      *
      */
     public static final String UPDATE_DELAY_FIRST = "adql.query.update.delay.first" ;
     
     /**
      * MVC property for the delay between every row, [{@value}].
-     * @see AdqlQuery.Delays#every(Integer)
+     * @see GreenQuery.Delays#every(Integer)
      *
      */
     public static final String UPDATE_DELAY_EVERY = "adql.query.update.delay.every" ;
 
     /**
      * MVC property for the delay after the last row, [{@value}].
-     * @see AdqlQuery.Delays#last(Integer)
+     * @see GreenQuery.Delays#last(Integer)
      *
      */
     public static final String UPDATE_DELAY_LAST = "adql.query.update.delay.last" ;
 
     /**
      * MVC property for the row limit, [{@value}].
-     * @see AdqlQuery.ModifiableLimits#rows(Long)
+     * @see GreenQuery.ModifiableLimits#rows(Long)
      *
      */
     public static final String UPDATE_LIMT_ROWS = "adql.query.update.limit.rows" ;
 
     /**
      * MVC property for the cell limit, [{@value}].
-     * @see AdqlQuery.ModifiableLimits#cells(Long)
+     * @see GreenQuery.ModifiableLimits#cells(Long)
      *
      */
     public static final String UPDATE_LIMT_CELLS = "adql.query.update.limit.cells" ;
 
     /**
      * MVC property for the time limit, [{@value}].
-     * @see AdqlQuery.ModifiableLimits#time(Long)
+     * @see GreenQuery.ModifiableLimits#time(Long)
      *
      */
     public static final String UPDATE_LIMT_TIME = "adql.query.update.limit.time" ;
     
     @Override
-    public AdqlQueryBean bean(final AdqlQuery entity)
+    public AdqlQueryBean bean(final GreenQuery entity)
         {
         return new AdqlQueryBean(
             entity
@@ -151,7 +151,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     @Override
-    public Iterable<AdqlQueryBean> bean(final Iterable<AdqlQuery> iter)
+    public Iterable<AdqlQueryBean> bean(final Iterable<GreenQuery> iter)
         {
         return new AdqlQueryBean.Iter(
             iter
@@ -159,11 +159,11 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * {@link RequestMethod#GET} request to select a specific {@link AdqlQuery}.
+     * {@link RequestMethod#GET} request to select a specific {@link GreenQuery}.
      * <br/>Request path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
-     * @param ident The {@link AdqlQuery} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
-     * @return The selected {@link AdqlQuery} wrapped in a {@link AdqlQueryBean}.
-     * @throws EntityNotFoundException If the {@link AdqlQuery} could not be found.
+     * @param ident The {@link GreenQuery} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * @return The selected {@link GreenQuery} wrapped in a {@link AdqlQueryBean}.
+     * @throws EntityNotFoundException If the {@link GreenQuery} could not be found.
      * 
      */
     @ResponseBody
@@ -182,12 +182,12 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * {@link RequestMethod#POST} request to update a specific {@link AdqlQuery}.
+     * {@link RequestMethod#POST} request to update a specific {@link GreenQuery}.
      * <br/>Request path : [{@value AdqlQueryLinkFactory#ENTITY_PATH}]
-     * @param ident The {@link AdqlQuery} identifier from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
-     * <br/>Optional {@link AdqlQuery} params :
-     * @param name  The {@link AdqlQuery} name, [{@value #UPDATE_NAME}].
-     * @param input The {@link AdqlQuery} input, [{@value #UPDATE_INPUT}].
+     * @param ident The {@link GreenQuery} identifier from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
+     * <br/>Optional {@link GreenQuery} params :
+     * @param name  The {@link GreenQuery} name, [{@value #UPDATE_NAME}].
+     * @param input The {@link GreenQuery} input, [{@value #UPDATE_INPUT}].
      * <br/>Optional {@link AdqlQueryBase.Delays} params :
      * @param first The {@link AdqlQueryBase.Delays} delay before the first row, [{@value #UPDATE_DELAY_FIRST}].
      * @param every The {@link AdqlQueryBase.Delays} delay between the every row, [{@value #UPDATE_DELAY_EVERY}].
@@ -197,10 +197,10 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      * @param limitcells The {@link AdqlQueryBase.Limits} cell limit, [{@value #UPDATE_LIMT_CELLS}].
      * @param limittime  The {@link AdqlQueryBase.Limits} time limit, [{@value #UPDATE_LIMT_TIME}].
      * <br/>Optional {@link Job.Status} params :
-     * @param status  The {@link AdqlQuery} {@link Job.Status}, [{@value #UPDATE_STATUS}].
+     * @param status  The {@link GreenQuery} {@link Job.Status}, [{@value #UPDATE_STATUS}].
      * @param timeout The timeout to wait for a status change, [{@value #UPDATE_TIMEOUT}].
-     * @return The updated {@link AdqlQuery} wrapped in a {@link AdqlQueryBean}.
-     * @throws EntityNotFoundException If the {@link AdqlQuery} could not be found.
+     * @return The updated {@link GreenQuery} wrapped in a {@link AdqlQueryBean}.
+     * @throws EntityNotFoundException If the {@link GreenQuery} could not be found.
      *
      */
     @ResponseBody
@@ -231,7 +231,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         ) throws IdentifierNotFoundException {
 
         //TODO idents().resolve(String)
-        final AdqlQuery query = factories().greens().entities().select(
+        final GreenQuery query = factories().greens().entities().select(
             factories().greens().idents().ident(
                 ident
                 )

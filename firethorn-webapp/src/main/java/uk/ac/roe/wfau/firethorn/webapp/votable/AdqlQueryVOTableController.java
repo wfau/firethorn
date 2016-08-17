@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -55,7 +55,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 
 /**
- * Spring MVC controller to format the results of an {@link AdqlQuery} as a <a href='http://www.ivoa.net/documents/VOTable/'>IVOA VOTable</a>.
+ * Spring MVC controller to format the results of an {@link GreenQuery} as a <a href='http://www.ivoa.net/documents/VOTable/'>IVOA VOTable</a>.
  * <br/>Controller path : [{@value AdqlQueryLinkFactory#VOTABLE_PATH}].
  * @see <a href='http://www.ivoa.net/documents/VOTable/'>IVOA VOTable</a>
  * 
@@ -292,7 +292,7 @@ public class AdqlQueryVOTableController
      */
     public void generateTAPVotable(
         final PrintWriter writer,
-        final AdqlQuery   query
+        final GreenQuery   query
         ){
         final AdqlTable table= query.results().adql();
         final JdbcTable jdbc = query.results().jdbc();
@@ -929,7 +929,7 @@ public class AdqlQueryVOTableController
      */
     public void generateVotable(
         final PrintWriter writer,
-        final AdqlQuery   query
+        final GreenQuery   query
         ){
 
         final AdqlTable table= query.results().adql();

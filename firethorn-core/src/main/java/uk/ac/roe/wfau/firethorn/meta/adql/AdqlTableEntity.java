@@ -37,7 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQueryEntity;
@@ -303,7 +303,7 @@ public class AdqlTableEntity
         @Override
         @Deprecated
         @CreateMethod
-        public AdqlTable create(final AdqlSchema schema, final AdqlQuery query)
+        public AdqlTable create(final AdqlSchema schema, final GreenQuery query)
             {
             return create(
                 CopyDepth.FULL,
@@ -315,7 +315,7 @@ public class AdqlTableEntity
         @Override
         @Deprecated
         @CreateMethod
-        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final AdqlQuery query)
+        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final GreenQuery query)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
                 depth,
@@ -603,7 +603,7 @@ public class AdqlTableEntity
      * @todo Too many constructors.
      *
      */
-    protected AdqlTableEntity(final CopyDepth type, final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+    protected AdqlTableEntity(final CopyDepth type, final GreenQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         super(
             type,
@@ -914,9 +914,9 @@ public class AdqlTableEntity
         nullable = true,
         updatable = false
         )
-    private AdqlQuery greenquery;
+    private GreenQuery greenquery;
     @Override
-    public AdqlQuery greenquery()
+    public GreenQuery greenquery()
         {
         return this.greenquery;
         }

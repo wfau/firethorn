@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
@@ -39,7 +39,7 @@ public class ExecuteQueryTestCase
     public void notTest000()
     throws Exception
         {
-        final AdqlQuery query = testschema().greens().create(
+        final GreenQuery query = testschema().greens().create(
             factories().greens().params().create(
                 Level.STRICT,
                 Mode.AUTO

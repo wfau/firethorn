@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 
 /**
@@ -52,10 +52,10 @@ public interface AdqlFactories
     public AdqlColumn.EntityServices columns();
 
     /**
-     * Our {@link AdqlQuery.EntityServices} instance.
+     * Our {@link GreenQuery.EntityServices} instance.
      *
      */
-    public AdqlQuery.EntityServices greens();
+    public GreenQuery.EntityServices greens();
 
     /**
      * Our {@link BlueQuery.EntityServices} instance.

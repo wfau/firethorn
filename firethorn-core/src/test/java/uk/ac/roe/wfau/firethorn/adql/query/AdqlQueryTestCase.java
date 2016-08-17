@@ -70,7 +70,7 @@ extends TestBase
      * Debug display of a query.
      *
      */
-    public void debug(final AdqlQuery query)
+    public void debug(final GreenQuery query)
         {
         log.debug("Columns -- ");
         for (final AdqlColumn column : query.columns())
@@ -138,7 +138,7 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.greens().create(
+        final GreenQuery query = schema.greens().create(
             factories().adql().greens().params().create(),
             IMPORTED_000
             );
@@ -146,11 +146,11 @@ extends TestBase
         debug(query);
 
         assertEquals(
-            AdqlQuery.Status.READY,
+            GreenQuery.Status.READY,
             query.status()
             );
         assertEquals(
-            AdqlQuery.Mode.DIRECT,
+            AdqlQueryBase.Mode.DIRECT,
             query.mode()
             );
         assertEquals(
@@ -212,7 +212,7 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.greens().create(
+        final GreenQuery query = schema.greens().create(
             factories().adql().greens().params().create(),
             IMPORTED_001
             );
@@ -220,11 +220,11 @@ extends TestBase
         debug(query);
 
         assertEquals(
-            AdqlQuery.Status.READY,
+            GreenQuery.Status.READY,
             query.status()
             );
         assertEquals(
-            AdqlQuery.Mode.DIRECT,
+            AdqlQueryBase.Mode.DIRECT,
             query.mode()
             );
         assertEquals(
@@ -313,7 +313,7 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.greens().create(
+        final GreenQuery query = schema.greens().create(
             factories().adql().greens().params().create(),
             IMPORTED_002
             );
@@ -321,11 +321,11 @@ extends TestBase
         debug(query);
 
         assertEquals(
-            AdqlQuery.Status.READY,
+            GreenQuery.Status.READY,
             query.status()
             );
         assertEquals(
-            AdqlQuery.Mode.DISTRIBUTED,
+            AdqlQueryBase.Mode.DISTRIBUTED,
             query.mode()
             );
         assertEquals(
@@ -396,7 +396,7 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.greens().create(
+        final GreenQuery query = schema.greens().create(
             factories().adql().greens().params().create(),
             IMPORTED_002
             );
@@ -404,11 +404,11 @@ extends TestBase
         debug(query);
 
         assertEquals(
-            AdqlQuery.Status.READY,
+            GreenQuery.Status.READY,
             query.status()
             );
         assertEquals(
-            AdqlQuery.Mode.DIRECT,
+            AdqlQueryBase.Mode.DIRECT,
             query.mode()
             );
         assertEquals(

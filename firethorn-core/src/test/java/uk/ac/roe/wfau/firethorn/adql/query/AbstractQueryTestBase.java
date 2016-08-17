@@ -507,7 +507,7 @@ extends TestPropertiesBase
      * Check the expected state.
      *
      */
-    public void validate(final AdqlQuery query, final AdqlQueryBase.Syntax.State status)
+    public void validate(final GreenQuery query, final AdqlQueryBase.Syntax.State status)
         {
         assertEquals(
             status,
@@ -520,7 +520,7 @@ extends TestPropertiesBase
      *
      */
     public static class ExpectedField
-    implements AdqlQuery.SelectField
+    implements GreenQuery.SelectField
         {
         public ExpectedField(final String name, final AdqlColumn.AdqlType type, final Integer size)
             {
@@ -546,7 +546,7 @@ extends TestPropertiesBase
             {
             return this.name;
             }
-        void validate(final AdqlQuery.SelectField field)
+        void validate(final GreenQuery.SelectField field)
             {
             log.debug("validate(SelectField)");
             log.debug("  name [{}][{}]", this.name, field.name());
@@ -567,13 +567,13 @@ extends TestPropertiesBase
             }
         }
 
-    public void validate(final AdqlQuery query, final ExpectedField[] fields)
+    public void validate(final GreenQuery query, final ExpectedField[] fields)
         {
-        final Iterator<AdqlQuery.SelectField> iter = query.fields().iterator();
+        final Iterator<GreenQuery.SelectField> iter = query.fields().iterator();
         int i = 0 ;
         while (iter.hasNext())
             {
-            final AdqlQuery.SelectField field = iter.next();
+            final GreenQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
             if ((i+1)<=fields.length){
 	            fields[i++].validate(
@@ -632,7 +632,7 @@ extends TestPropertiesBase
         return result ;
         }
     
-    public void validate(final AdqlQuery query, final String input)
+    public void validate(final GreenQuery query, final String input)
         {
         log.debug("---- SQL ----");
         log.debug(query.osql());
@@ -650,10 +650,10 @@ extends TestPropertiesBase
             );
         }
 
-    public AdqlQuery validate(final AdqlQuery.Mode mode, final Level level, final AdqlQueryBase.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    public GreenQuery validate(final GreenQuery.Mode mode, final Level level, final AdqlQueryBase.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
     throws QueryProcessingException
         {
-        final AdqlQuery query = testschema().greens().create(
+        final GreenQuery query = testschema().greens().create(
             factories().greens().params().create(
                 level,
                 mode
@@ -675,7 +675,7 @@ extends TestPropertiesBase
         return query;
         }
 
-    public AdqlQuery validate(final Level level, final AdqlQueryBase.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
+    public GreenQuery validate(final Level level, final AdqlQueryBase.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
     throws QueryProcessingException
         {
         return validate(
@@ -688,7 +688,7 @@ extends TestPropertiesBase
             );
         }
 
-    public AdqlQuery validate(final Level level, final AdqlQueryBase.Syntax.State status, final String adql)
+    public GreenQuery validate(final Level level, final AdqlQueryBase.Syntax.State status, final String adql)
     throws QueryProcessingException
         {
         return validate(
@@ -705,7 +705,7 @@ extends TestPropertiesBase
      * Debug display of a query.
      *
      */
-    public void debug(final AdqlQuery query)
+    public void debug(final GreenQuery query)
         {
         log.debug("Query -- ");
         log.debug("Mode   [{}]", query.mode());

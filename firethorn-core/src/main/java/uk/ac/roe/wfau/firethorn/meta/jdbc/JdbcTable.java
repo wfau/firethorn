@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -167,7 +167,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Used by AdqlQuery.
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final AdqlQuery query);
+        public JdbcTable create(final JdbcSchema parent, final GreenQuery query);
 
         /**
          * Get the next set of tables for garbage collection ..

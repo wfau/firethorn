@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -37,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
 
 /**
- * Spring MVC controller to handle the {@link AdqlQuery} for an {@link AdqlSchema}.
+ * Spring MVC controller to handle the {@link GreenQuery} for an {@link AdqlSchema}.
  * <br/>Controller path : [{@value AdqlSchemaLinkFactory.SCHEMA_QUERY_PATH}]
  *
  */
@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_QUERY_PATH)
 public class AdqlSchemaQueryController
-extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
+extends AbstractEntityController<GreenQuery, AdqlQueryBean>
     {
     @Override
     public Path path()
@@ -65,37 +65,37 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * MVC property for the {@link AdqlQuery} name, [{@value}].
+     * MVC property for the {@link GreenQuery} name, [{@value}].
      *
      */
     public static final String CREATE_NAME = "adql.schema.query.create.name" ;
 
     /**
-     * MVC property for the {@link AdqlQuery} input, [{@value}].
+     * MVC property for the {@link GreenQuery} input, [{@value}].
      *
      */
     public static final String CREATE_QUERY = "adql.schema.query.create.query" ;
 
     /**
-     * MVC property for the {@link AdqlQuery} store, [{@value}].
+     * MVC property for the {@link GreenQuery} store, [{@value}].
      *
      */
     public static final String CREATE_STORE = "adql.schema.query.create.store" ;
 
     /**
-     * MVC property for the {@link AdqlQuery.Mode} mode, [{@value}].
+     * MVC property for the {@link GreenQuery.Mode} mode, [{@value}].
      *
      */
     public static final String CREATE_MODE = "adql.schema.query.create.mode" ;
 
     /**
-     * MVC property for the {@link AdqlQuery.Syntax.Level} level, [{@value}].
+     * MVC property for the {@link GreenQuery.Syntax.Level} level, [{@value}].
      *
      */
     public static final String CREATE_LEVEL = "adql.schema.query.create.level" ;
 
     @Override
-    public AdqlQueryBean bean(final AdqlQuery entity)
+    public AdqlQueryBean bean(final GreenQuery entity)
         {
         return new AdqlQueryBean(
             entity
@@ -103,7 +103,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     @Override
-    public Iterable<AdqlQueryBean> bean(final Iterable<AdqlQuery> iter)
+    public Iterable<AdqlQueryBean> bean(final Iterable<GreenQuery> iter)
         {
         return new AdqlQueryBean.Iter(
             iter
@@ -131,7 +131,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * {@link RequestMethod#GET} request to select all the {@link AdqlQuery} linked to this {@link AdqlSchema}.
+     * {@link RequestMethod#GET} request to select all the {@link GreenQuery} linked to this {@link AdqlSchema}.
      * <br/>Request path : [{@value #SELECT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
@@ -150,14 +150,14 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * {@link RequestMethod#POST} request to create a new {@link AdqlQuery}.
+     * {@link RequestMethod#POST} request to create a new {@link GreenQuery}.
      * <br/>Request path : [{@value #CREATE_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
-     * @param name The {@link AdqlQuery} name, [{@value #CREATE_NAME}].
-     * @param name The {@link AdqlQuery.Mode} mode, [{@value #CREATE_MODE}].
-     * @param name The {@link AdqlQuery.Syntax.Level} level, [{@value #CREATE_LEVEL}].
-     * @return An {@link AdqlQueryBean} wrapping the new {@link AdqlQuery}.
+     * @param name The {@link GreenQuery} name, [{@value #CREATE_NAME}].
+     * @param name The {@link GreenQuery.Mode} mode, [{@value #CREATE_MODE}].
+     * @param name The {@link GreenQuery.Syntax.Level} level, [{@value #CREATE_LEVEL}].
+     * @return An {@link AdqlQueryBean} wrapping the new {@link GreenQuery}.
      * @todo Rejects duplicate names.
      * 
      */
@@ -171,9 +171,9 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         @RequestParam(value=CREATE_NAME, required=false)
         final String name,
         @RequestParam(value=CREATE_MODE, required=false)
-        final AdqlQuery.Mode mode,
+        final GreenQuery.Mode mode,
         @RequestParam(value=CREATE_LEVEL, required=false)
-        final AdqlQuery.Syntax.Level level
+        final GreenQuery.Syntax.Level level
         ) throws QueryProcessingException {
         return created(
             schema.greens().create(

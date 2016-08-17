@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.name;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -28,13 +28,13 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * An {@link AdqlQuery.LinkFactory} implementation.
+ * An {@link GreenQuery.LinkFactory} implementation.
  *
  */
 @Component
 public class AdqlQueryLinkFactory
-extends WebappLinkFactory<AdqlQuery>
-implements AdqlQuery.LinkFactory
+extends WebappLinkFactory<GreenQuery>
+implements GreenQuery.LinkFactory
     {
     /**
      * Protected constructor.
@@ -54,7 +54,7 @@ implements AdqlQuery.LinkFactory
     protected static final String SERVICE_PATH = "/adql/query" ;
 
     /**
-     * The URI path for an {@link AdqlQuery}, [{@value}].
+     * The URI path for an {@link GreenQuery}, [{@value}].
      *
      */
     public static final String ENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
@@ -88,7 +88,7 @@ implements AdqlQuery.LinkFactory
     public static final String DATATABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN + DATATABLE_NAME;
 
     @Override
-    public String link(final AdqlQuery entity)
+    public String link(final GreenQuery entity)
         {
         return link(
             ENTITY_PATH,
@@ -97,9 +97,9 @@ implements AdqlQuery.LinkFactory
         }
 
     @Autowired
-    private AdqlQuery.EntityFactory factory ;
+    private GreenQuery.EntityFactory factory ;
     @Override
-    public AdqlQuery resolve(String link)
+    public GreenQuery resolve(String link)
     throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
         {
         if (this.matches(link))

@@ -21,19 +21,19 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * An {@link AdqlQuery.IdentFactory} implementation.
+ * An {@link GreenQuery.IdentFactory} implementation.
  * @todo Use PURLs.
  *
  */
 @Component
 public class AdqlQueryIdentFactory
-extends WebappIdentFactory<AdqlQuery>
-implements AdqlQuery.IdentFactory
+extends WebappIdentFactory<GreenQuery>
+implements GreenQuery.IdentFactory
     {
     /**
      * The type URI for this type.

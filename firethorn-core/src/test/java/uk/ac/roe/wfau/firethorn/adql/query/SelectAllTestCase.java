@@ -34,7 +34,7 @@ extends TwomassQueryTestBase
     public void test000()
     throws Exception
         {
-        final AdqlQuery query = this.schema.greens().create(
+        final GreenQuery query = this.schema.greens().create(
             factories().adql().greens().params().create(),
             "SELECT"
             + "    *"
@@ -56,7 +56,7 @@ extends TwomassQueryTestBase
     public void test001()
     throws Exception
         {
-        final AdqlQuery query = this.schema.greens().create(
+        final GreenQuery query = this.schema.greens().create(
             factories().adql().greens().params().create(),
             "SELECT"
             + "    twomass.*"

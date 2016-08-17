@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +73,7 @@ public class LoggedQueryTestCase
         log.debug("--------");
         log.debug("ADQL [{}][{}]", linenum, linestr);
 
-        final AdqlQuery query = testschema().greens().create(
+        final GreenQuery query = testschema().greens().create(
             factories().greens().params().create(),
             linestr
             );

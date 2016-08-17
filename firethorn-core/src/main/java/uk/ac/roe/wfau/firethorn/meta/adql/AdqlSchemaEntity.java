@@ -35,8 +35,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -687,7 +687,7 @@ implements AdqlSchema
 
             @Override
             @Deprecated
-            public AdqlTable create(final AdqlQuery query)
+            public AdqlTable create(final GreenQuery query)
                 {
                 return factories().adql().tables().entities().create(
                     AdqlSchemaEntity.this,
@@ -794,7 +794,7 @@ implements AdqlSchema
         return new Greens()
             {
             @Override
-            public AdqlQuery create(final QueryParam param, final String query)
+            public GreenQuery create(final QueryParam param, final String query)
             throws QueryProcessingException
                 {
                 return factories().adql().greens().entities().create(
@@ -805,7 +805,7 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlQuery create(final QueryParam param, final String query, final String name)
+            public GreenQuery create(final QueryParam param, final String query, final String name)
             throws QueryProcessingException
                 {
                 return factories().adql().greens().entities().create(
@@ -817,7 +817,7 @@ implements AdqlSchema
                 }
 
             @Override
-            public Iterable<AdqlQuery> select()
+            public Iterable<GreenQuery> select()
                 {
                 return factories().adql().greens().entities().select(
                     AdqlSchemaEntity.this

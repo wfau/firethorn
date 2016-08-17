@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -32,32 +32,32 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlQueryLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 
 /**
- * An {@link EntityBean} wrapper for an {@link AdqlQuery}.
+ * An {@link EntityBean} wrapper for an {@link GreenQuery}.
  *
  */
 public class AdqlQueryBean
-extends NamedEntityBeanImpl<AdqlQuery>
+extends NamedEntityBeanImpl<GreenQuery>
     {
     /**
-     * An {@link EntityBean.Iter} wrapper for an {@link AdqlQuery} {@link Iterable}.
+     * An {@link EntityBean.Iter} wrapper for an {@link GreenQuery} {@link Iterable}.
      *
      */
     public static class Iter
-    extends AbstractEntityBeanIter<AdqlQuery, AdqlQueryBean>
+    extends AbstractEntityBeanIter<GreenQuery, AdqlQueryBean>
         {
         /**
          * Public constructor.
-         * @param iterable The {@link AdqlQuery} {@link Iterable} to wrap.
+         * @param iterable The {@link GreenQuery} {@link Iterable} to wrap.
          *
          */
-        public Iter(final Iterable<AdqlQuery> iterable)
+        public Iter(final Iterable<GreenQuery> iterable)
             {
             super(
                 iterable
                 );
             }
         @Override
-        public AdqlQueryBean bean(final AdqlQuery entity)
+        public AdqlQueryBean bean(final GreenQuery entity)
             {
             return new AdqlQueryBean(
                 entity
@@ -67,10 +67,10 @@ extends NamedEntityBeanImpl<AdqlQuery>
 
     /**
      * Public constructor.
-     * @param entity The {@link AdqlQuery} to wrap.
+     * @param entity The {@link GreenQuery} to wrap.
      *
      */
-    protected AdqlQueryBean(final AdqlQuery entity)
+    protected AdqlQueryBean(final GreenQuery entity)
         {
         super(
             AdqlQueryIdentFactory.TYPE_URI,
@@ -262,7 +262,7 @@ extends NamedEntityBeanImpl<AdqlQuery>
         }
 
     /**
-     * The {@link AdqlQuery} results.
+     * The {@link GreenQuery} results.
      * @todo Simplify this to just the {@link AdqlTable} results.
      *
      */
@@ -298,7 +298,7 @@ extends NamedEntityBeanImpl<AdqlQuery>
         }
 
     /**
-     * The {@link AdqlQuery} results.
+     * The {@link GreenQuery} results.
      *
      */
     public Results getResults()

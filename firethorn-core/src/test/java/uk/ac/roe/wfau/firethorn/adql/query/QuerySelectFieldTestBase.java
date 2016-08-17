@@ -40,7 +40,7 @@ extends TwomassQueryTestBase
      *
      */
     public static class ExpectedField
-    implements AdqlQuery.SelectField
+    implements GreenQuery.SelectField
         {
         public ExpectedField(final String name, final AdqlColumn.AdqlType type, final Integer size)
             {
@@ -66,7 +66,7 @@ extends TwomassQueryTestBase
             {
             return this.name;
             }
-        void validate(final AdqlQuery.SelectField field)
+        void validate(final GreenQuery.SelectField field)
             {
             log.debug("validate(SelectField)");
             log.debug("  name [{}][{}]", this.name, field.name());
@@ -87,14 +87,14 @@ extends TwomassQueryTestBase
             }
         }
 
-    public void validate(final AdqlQuery query, final ExpectedField[] results)
+    public void validate(final GreenQuery query, final ExpectedField[] results)
     throws Exception
         {
-        final Iterator<AdqlQuery.SelectField> iter = query.fields().iterator();
+        final Iterator<GreenQuery.SelectField> iter = query.fields().iterator();
         int i = 0 ;
         while (iter.hasNext())
             {
-            final AdqlQuery.SelectField field = iter.next();
+            final GreenQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
             results[i++].validate(
                 field

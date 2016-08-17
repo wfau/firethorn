@@ -136,7 +136,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClien
      )
 public class AdqlQueryEntity
 extends JobEntity
-implements AdqlQuery, AdqlParserQuery
+implements GreenQuery, AdqlParserQuery
     {
     /**
      * Hibernate table mapping.
@@ -184,7 +184,7 @@ implements AdqlQuery, AdqlParserQuery
      */
     @Component
     public static class ParamFactory
-    implements AdqlQuery.ParamFactory
+    implements GreenQuery.ParamFactory
         {
         @Value("${firethorn.adql.level:LEGACY}")
         private Level level ;
@@ -202,9 +202,9 @@ implements AdqlQuery, AdqlParserQuery
         private String endpoint ;
 
         @Override
-        public AdqlQuery.QueryParam create()
+        public GreenQuery.QueryParam create()
             {
-            return new AdqlQuery.QueryParam()
+            return new GreenQuery.QueryParam()
                 {
                 @Override
                 public String endpoint()
@@ -230,9 +230,9 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        public AdqlQuery.QueryParam create(final Level level, final Mode mode)
+        public GreenQuery.QueryParam create(final Level level, final Mode mode)
             {
-            return new AdqlQuery.QueryParam()
+            return new GreenQuery.QueryParam()
                 {
                 @Override
                 public String endpoint()
@@ -260,13 +260,13 @@ implements AdqlQuery, AdqlParserQuery
 
 
     /**
-     * {@link AdqlQuery.EntityFactory} implementation.
+     * {@link GreenQuery.EntityFactory} implementation.
      *
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<AdqlQuery>
-    implements AdqlQuery.EntityFactory
+    extends AbstractEntityFactory<GreenQuery>
+    implements GreenQuery.EntityFactory
         {
         @Override
         public Class<?> etype()
@@ -276,7 +276,7 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateMethod
-        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input)
+        public GreenQuery create(final AdqlSchema schema, final QueryParam params, final String input)
         throws QueryProcessingException
             {
             return create(
@@ -289,7 +289,7 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateMethod
-        public AdqlQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
+        public GreenQuery create(final AdqlSchema schema, final QueryParam params, final String input, final String name)
         throws QueryProcessingException
             {
             log.debug("AdqlQuery create(AdqlSchema, QueryParam, String, String)");
@@ -307,7 +307,7 @@ implements AdqlQuery, AdqlParserQuery
                 );
             //
             // Make the query persistent.
-            final AdqlQuery query = this.insert(
+            final GreenQuery query = this.insert(
                 entity
                 );
             //
@@ -321,15 +321,15 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Autowired
-        public AdqlQuery.NameFactory names;
-        public AdqlQuery.NameFactory names()
+        public GreenQuery.NameFactory names;
+        public GreenQuery.NameFactory names()
             {
             return this.names;
             }
 
         @Override
         @SelectMethod
-        public Iterable<AdqlQuery> select()
+        public Iterable<GreenQuery> select()
             {
             return super.list(
                 super.query(
@@ -340,7 +340,7 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @SelectMethod
-        public Iterable<AdqlQuery> select(final AdqlSchema schema)
+        public Iterable<GreenQuery> select(final AdqlSchema schema)
             {
             return super.list(
                 super.query(
@@ -354,7 +354,7 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @SelectMethod
-        public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text)
+        public Iterable<GreenQuery> search(final AdqlSchema schema, final String text)
             {
             return super.iterable(
                 super.query(
@@ -373,13 +373,13 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     /**
-     * {@link AdqlQuery.EntityServices} implementation.
+     * {@link GreenQuery.EntityServices} implementation.
      * 
      */
     @Slf4j
     @Component
     public static class EntityServices
-    implements AdqlQuery.EntityServices
+    implements GreenQuery.EntityServices
         {
         /**
          * Our singleton instance.
@@ -425,33 +425,33 @@ implements AdqlQuery, AdqlParserQuery
             }
         
         @Autowired
-        private AdqlQuery.IdentFactory idents;
+        private GreenQuery.IdentFactory idents;
         @Override
-        public AdqlQuery.IdentFactory idents()
+        public GreenQuery.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        private AdqlQuery.LinkFactory links;
+        private GreenQuery.LinkFactory links;
         @Override
-        public AdqlQuery.LinkFactory links()
+        public GreenQuery.LinkFactory links()
             {
             return this.links;
             }
 
         @Autowired
-        private AdqlQuery.NameFactory names;
+        private GreenQuery.NameFactory names;
         @Override
-        public AdqlQuery.NameFactory names()
+        public GreenQuery.NameFactory names()
             {
             return this.names;
             }
         
         @Autowired
-        private AdqlQuery.EntityFactory entities;
+        private GreenQuery.EntityFactory entities;
         @Override
-        public AdqlQuery.EntityFactory entities()
+        public GreenQuery.EntityFactory entities()
             {
             return this.entities;
             }
@@ -465,9 +465,9 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Autowired
-        private AdqlQuery.ParamFactory params;
+        private GreenQuery.ParamFactory params;
         @Override
-        public AdqlQuery.ParamFactory params()
+        public GreenQuery.ParamFactory params()
             {
             return this.params;
             }
@@ -482,14 +482,14 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Override
-    protected AdqlQuery.EntityFactory factory()
+    protected GreenQuery.EntityFactory factory()
         {
         log.debug("factory()");
         return AdqlQueryEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
-    protected AdqlQuery.EntityServices services()
+    protected GreenQuery.EntityServices services()
         {
         log.debug("services()");
         return AdqlQueryEntity.EntityServices.instance() ; 
@@ -516,7 +516,7 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final String input, final String name)
+    protected AdqlQueryEntity(final GreenQuery.QueryParam params, final AdqlSchema schema, final String input, final String name)
     throws NameFormatException
         {
         super(
@@ -716,7 +716,7 @@ implements AdqlQuery, AdqlParserQuery
         )
     private String endpoint ;
 
-    protected void params(final AdqlQuery.QueryParam params)
+    protected void params(final GreenQuery.QueryParam params)
         {
         this.dqp      = params.dqp();
         this.mode     = params.mode();
@@ -725,9 +725,9 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Override
-    public AdqlQuery.QueryParam params()
+    public GreenQuery.QueryParam params()
         {
-        return new AdqlQuery.QueryParam()
+        return new GreenQuery.QueryParam()
             {
             @Override
             public String endpoint()
@@ -745,7 +745,7 @@ implements AdqlQuery, AdqlParserQuery
                 return AdqlQueryEntity.this.mode;
                 }
             @Override
-            public AdqlQuery.Syntax.Level level()
+            public GreenQuery.Syntax.Level level()
                 {
                 return AdqlQueryEntity.this.level;
                 }
@@ -1190,7 +1190,7 @@ implements AdqlQuery, AdqlParserQuery
                 try {
                 
                     log.debug("-- AdqlQuery resolving [{}]", ident());
-                    final AdqlQuery query = services().entities().select(
+                    final GreenQuery query = services().entities().select(
                             ident()
                             );
                     //
@@ -1516,7 +1516,7 @@ implements AdqlQuery, AdqlParserQuery
     private AdqlQueryLimits limits;
     
     @Override
-    public AdqlQuery.Limits limits()
+    public GreenQuery.Limits limits()
         {
         /*
          * Need to check for null.

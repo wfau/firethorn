@@ -89,7 +89,7 @@ extends TwomassQueryTestBase
             return this.jdbcname;
             }
 
-        void validate(final AdqlQuery.SelectField field)
+        void validate(final GreenQuery.SelectField field)
             {
             log.debug("validate(SelectField)");
             log.debug("  name [{}][{}]", this.adqlname, field.name());
@@ -150,7 +150,7 @@ extends TwomassQueryTestBase
             }
         }
 
-    public void validate(final AdqlQuery query, final ExpectedColumn[] expected)
+    public void validate(final GreenQuery query, final ExpectedColumn[] expected)
     throws Exception
         {
         if (expected.length > 0)
@@ -164,7 +164,7 @@ extends TwomassQueryTestBase
                 query.fields()
                 );
             int i = 0 ;
-            for (final AdqlQuery.SelectField field : query.fields())
+            for (final GreenQuery.SelectField field : query.fields())
                 {
                 expected[i++].validate(
                     field
