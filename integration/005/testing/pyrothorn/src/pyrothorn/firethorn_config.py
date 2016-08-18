@@ -51,13 +51,13 @@ schema_import_uri = "/tables/import"
 
 query_create_uri = "/queries/create"
 query_update_uri = "/queries/update"
-query_name_param = "adql.schema.query.create.name"
-query_limit_rows_param = "adql.query.update.limit.rows"
-query_limit_time_param = "adql.query.update.limit.time"
+query_name_param = "adql.query.name"
+query_limit_rows_param = "adql.query.limit.rows"
+query_limit_time_param = "adql.query.limit.time"
 
-query_mode_param = "adql.schema.query.create.mode"
+query_mode_param = "adql.query.mode"
 
-query_param = "adql.schema.query.create.query"
+query_param = "adql.query.input"
 query_status_update = "adql.query.update.status"
 
 schema_create_uri = '/schemas/create'

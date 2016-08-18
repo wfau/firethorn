@@ -69,31 +69,31 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
      * MVC property for the {@link GreenQuery} name, [{@value}].
      *
      */
-    public static final String QUERY_NAME_PARAM = "adql.schema.query.create.name" ;
+    public static final String QUERY_NAME_PARAM = "adql.query.name" ;
 
     /**
      * MVC property for the {@link GreenQuery} input, [{@value}].
      *
      */
-    public static final String QUERY_INPUT_PARAM = "adql.schema.query.create.query" ;
+    public static final String QUERY_INPUT_PARAM = "adql.query.input" ;
 
     /**
      * MVC property for the {@link GreenQuery} store, [{@value}].
      *
      */
-    public static final String QUERY_STORE_PARAM = "adql.schema.query.create.store" ;
+    public static final String QUERY_STORE_PARAM = "adql.query.store" ;
 
     /**
      * MVC property for the {@link GreenQuery.Mode} mode, [{@value}].
      *
      */
-    public static final String QUERY_MODE_PARAM = "adql.schema.query.create.mode" ;
+    public static final String QUERY_MODE_PARAM = "adql.query.mode" ;
 
     /**
      * MVC property for the {@link GreenQuery.Syntax.Level} level, [{@value}].
      *
      */
-    public static final String QUERY_LEVEL_PARAM = "adql.schema.query.create.level" ;
+    public static final String QUERY_LEVEL_PARAM = "adql.query.syntax" ;
 
     @Override
     public GreenQueryBean bean(final GreenQuery entity)

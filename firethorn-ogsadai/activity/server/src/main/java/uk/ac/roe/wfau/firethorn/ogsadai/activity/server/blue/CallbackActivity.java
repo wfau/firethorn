@@ -361,7 +361,7 @@ implements SecureActivity
 	protected static final String ENDPOINT_IDENT = "ident" ; 
 	protected static final String ENDPOINT_TEMPLATE = "{" + ENDPOINT_BASE + "}/blue/query/callback/{" + ENDPOINT_IDENT + "}" ; 
 
-	protected static final String BLUE_QUERY_NEXT_KEY = "blue.query.next.status" ; 
+	protected static final String BLUE_QUERY_NEXT_KEY = "adql.query.status.next" ; 
 	protected static final String BLUE_QUERY_TEXT_KEY = "blue.query.text" ; 
 
 	protected String ident;

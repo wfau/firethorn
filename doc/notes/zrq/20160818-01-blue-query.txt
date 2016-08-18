@@ -20,10 +20,36 @@
 #
 #
 
-#---------------------------------------------------------------------
-# Update the form param names.
-#[user@methionine] 
+    #
+    # Update the form param names.
+    # Both client and server at the same time.
+    #
 
+    #
+    # Needed to replace GreenQuery with BlueQuery
+    #
+
+    adql.schema.query.create.name   adql.query.name
+    adql.schema.query.create.query  adql.query.input
+    adql.schema.query.create.store  adql.query.store
+    adql.schema.query.create.mode   adql.query.mode
+    adql.schema.query.create.level  adql.query.syntax
+
+
+    adql.query.update.name          adql.query.name
+    adql.query.update.query         adql.query.input
+
+    adql.query.update.delay.first   adql.query.delay.first
+    adql.query.update.delay.every   adql.query.delay.every
+    adql.query.update.delay.last    adql.query.delay.last
+
+    adql.query.update.limit.rows    adql.query.limit.rows
+    adql.query.update.limit.cells   adql.query.limit.cells
+    adql.query.update.limit.time    adql.query.limit.time
+
+    #
+    # Needed to replace GreenQuery with BlueQuery
+    #
 
     blue.query.name                 adql.query.name
     blue.query.input                adql.query.input
@@ -31,8 +57,8 @@
     blue.query.mode                 adql.query.mode
     blue.query.syntax               adql.query.syntax
 
-    blue.query.prev.status          adql.query.prev.status
-    blue.query.next.status          adql.query.next.status
+    blue.query.prev.status          adql.query.status.prev
+    blue.query.next.status          adql.query.status.next
     
     blue.query.limit.rows           adql.query.limit.rows
     blue.query.limit.cells          adql.query.limit.cells
@@ -50,11 +76,12 @@
 
 
 
-    adql.schema.query.create.name   adql.query.name
-    adql.schema.query.create.query  adql.query.input
-    adql.schema.query.create.store  adql.query.store
-    adql.schema.query.create.mode   adql.query.mode
-    adql.schema.query.create.level  adql.query.syntax
+
+    #
+    # Optional changes for later.
+    #
+
+
 
     urn:adql.query.entity           green.table.entity
 
@@ -96,16 +123,6 @@
     adql.table.update.name              adql.table.name
 
 
-    adql.query.update.name          adql.query.name
-    adql.query.update.query         adql.query.input
-
-    adql.query.update.delay.first   adql.query.delay.first
-    adql.query.update.delay.every   adql.query.delay.every
-    adql.query.update.delay.last    adql.query.delay.last
-
-    adql.query.update.limit.rows    adql.query.limit.rows
-    adql.query.update.limit.cells   adql.query.limit.cells
-    adql.query.update.limit.time    adql.query.limit.time
 
 
     ivoa.resource.schema.name       ivoa.schema.name

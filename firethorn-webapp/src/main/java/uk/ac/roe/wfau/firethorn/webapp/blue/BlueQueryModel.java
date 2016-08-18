@@ -78,97 +78,97 @@ public abstract class BlueQueryModel
      * Request param name for the {@link BlueQuery} name, [{@value}].
      *
      */
-    public static final String QUERY_NAME_PARAM = "blue.query.name" ;
+    public static final String QUERY_NAME_PARAM = "adql.query.name" ;
 
     /**
      * Request param name for the {@link BlueQuery} input, [{@value}].
      *
      */
-    public static final String QUERY_INPUT_PARAM = "blue.query.input" ;
+    public static final String QUERY_INPUT_PARAM = "adql.query.input" ;
 
     /**
      * Request param name for the previous {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String STATUS_PREV_PARAM = "blue.query.prev.status" ;
+    public static final String STATUS_PREV_PARAM = "adql.query.status.prev" ;
 
     /**
      * Request param name for the next {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String STATUS_NEXT_PARAM = "blue.query.next.status" ;
+    public static final String STATUS_NEXT_PARAM = "adql.query.status.next" ;
 
     /**
      * How long to wait for a {@link BlueTask.TaskState} change, [{@value}].
      *
      */
-    public static final String STATUS_WAIT_PARAM = "blue.query.wait" ;
+    public static final String STATUS_WAIT_PARAM = "adql.query.wait.time" ;
 
     /**
      * Request param name for the row limit, [{@value}].
      *
      */
-    public static final String QUERY_LIMT_ROWS = "blue.query.limit.rows" ;
+    public static final String QUERY_LIMT_ROWS = "adql.query.limit.rows" ;
 
     /**
      * Request param name for the total cell limit, [{@value}].
      *
      */
-    public static final String QUERY_LIMT_CELLS = "blue.query.limit.cells" ;
+    public static final String QUERY_LIMT_CELLS = "adql.query.limit.cells" ;
 
     /**
      * Request param name for the execution time limit, [{@value}].
      *
      */
-    public static final String QUERY_LIMT_TIME = "blue.query.limit.time" ;
+    public static final String QUERY_LIMT_TIME = "adql.query.limit.time" ;
 
     /**
      * Request param name for the first row delay, [{@value}].
      *
      */
-    public static final String QUERY_DELAY_FIRST = "blue.query.delay.first" ;
+    public static final String QUERY_DELAY_FIRST = "adql.query.delay.first" ;
 
     /**
      * Request param name for the every row delay, [{@value}].
      *
      */
-    public static final String QUERY_DELAY_EVERY = "blue.query.delay.every" ;
+    public static final String QUERY_DELAY_EVERY = "adql.query.delay.every" ;
 
     /**
      * Request param name for the last row delay, [{@value}].
      *
      */
-    public static final String QUERY_DELAY_LAST = "blue.query.delay.last" ;
+    public static final String QUERY_DELAY_LAST = "adql.query.delay.last" ;
 
     /**
      * Request param name for the {@link BlueQuery.CallbackEvent} result state, [{@value}].
      *
      */
-    public static final String QUERY_MODE = "blue.query.mode" ;
+    public static final String QUERY_MODE = "adql.query.mode" ;
 
     /**
      * Request param name for the {@link AdqlQueryBase.Syntax.Level} syntax, [{@value}].
      *
      */
-    public static final String QUERY_SYNTAX = "blue.query.syntax" ;
+    public static final String QUERY_SYNTAX = "adql.query.syntax" ;
     
     /**
      * Request param name for the {@link BlueQuery.CallbackEvent} {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String CALLBACK_TASK_STATE = "blue.query.status" ;
+    public static final String CALLBACK_TASK_STATE = "adql.query.wait.status" ;
 
     /**
      * Request param name for the {@link BlueQuery.CallbackEvent} row count, [{@value}].
      *
      */
-    public static final String CALLBACK_RESULT_COUNT = "blue.query.results.count" ;
+    public static final String CALLBACK_RESULT_COUNT = "adql.query.results.count" ;
 
     /**
      * Request param name for the {@link BlueQuery.CallbackEvent} results status, [{@value}].
      *
      */
-    public static final String CALLBACK_RESULT_STATE = "blue.query.results.state" ;
+    public static final String CALLBACK_RESULT_STATE = "adql.query.results.state" ;
         
     /**
      * Our{@link BlueQuery.IdentFactory} implementation.

@@ -77,14 +77,14 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
      * @see GreenQuery#name(String)
      *
      */
-    public static final String QUERY_NAME_PARAM = "adql.query.update.name" ;
+    public static final String QUERY_NAME_PARAM = "adql.query.name" ;
 
     /**
      * MVC property for the {@link GreenQuery} input, [{@value}].
      * @see GreenQuery#input(String)
      *
      */
-    public static final String QUERY_INPUT_PARAM = "adql.query.update.query" ;
+    public static final String QUERY_INPUT_PARAM = "adql.query.input" ;
 
     /**
      * MVC property for the {@link GreenJob.Status}, [{@value}].
@@ -105,42 +105,42 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
      * @see GreenQuery.Delays#first(Integer)
      *
      */
-    public static final String DELAY_FIRST_PARAM = "adql.query.update.delay.first" ;
+    public static final String DELAY_FIRST_PARAM = "adql.query.delay.first" ;
     
     /**
      * MVC property for the delay between every row, [{@value}].
      * @see GreenQuery.Delays#every(Integer)
      *
      */
-    public static final String DELAY_EVERY_PARAM = "adql.query.update.delay.every" ;
+    public static final String DELAY_EVERY_PARAM = "adql.query.delay.every" ;
 
     /**
      * MVC property for the delay after the last row, [{@value}].
      * @see GreenQuery.Delays#last(Integer)
      *
      */
-    public static final String DELAY_LAST_PARAM = "adql.query.update.delay.last" ;
+    public static final String DELAY_LAST_PARAM = "adql.query.delay.last" ;
 
     /**
      * MVC property for the row limit, [{@value}].
      * @see GreenQuery.ModifiableLimits#rows(Long)
      *
      */
-    public static final String LIMT_ROWS_PARAM = "adql.query.update.limit.rows" ;
+    public static final String LIMT_ROWS_PARAM = "adql.query.limit.rows" ;
 
     /**
      * MVC property for the cell limit, [{@value}].
      * @see GreenQuery.ModifiableLimits#cells(Long)
      *
      */
-    public static final String LIMT_CELLS_PARAM = "adql.query.update.limit.cells" ;
+    public static final String LIMT_CELLS_PARAM = "adql.query.limit.cells" ;
 
     /**
      * MVC property for the time limit, [{@value}].
      * @see GreenQuery.ModifiableLimits#time(Long)
      *
      */
-    public static final String LIMT_TIME_PARAM = "adql.query.update.limit.time" ;
+    public static final String LIMT_TIME_PARAM = "adql.query.limit.time" ;
     
     @Override
     public GreenQueryBean bean(final GreenQuery entity)
