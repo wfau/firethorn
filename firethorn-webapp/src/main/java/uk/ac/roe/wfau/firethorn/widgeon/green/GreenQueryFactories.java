@@ -45,7 +45,7 @@ public class GreenQueryFactories
      */
     @Component
     @Deprecated
-    public class NameFactory
+    public static class NameFactory
     extends BaseNameFactory<GreenQuery>
     implements GreenQuery.NameFactory
         {
@@ -99,7 +99,7 @@ public class GreenQueryFactories
      */
     @Component
     @Deprecated
-    public class LinkFactory
+    public static class LinkFactory
     extends WebappLinkFactory<GreenQuery>
     implements GreenQuery.LinkFactory
         {

@@ -29,8 +29,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data "jdbc.resource.create.url=spring:RoeTWOMASS" \
-    --data "jdbc.resource.create.name=jdbc-resource-$(unique)" \
+    --data "jdbc.connection.url=spring:RoeTWOMASS" \
+    --data "jdbc.resource.name=jdbc-resource-$(unique)" \
     "${basename}/jdbc/resource/create"
 
 #

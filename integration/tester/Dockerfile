@@ -21,6 +21,9 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 RUN yum -y install perl
 RUN yum -y install perl-JSON
 
+RUN yum install -y jq
+RUN yum install -y xmlstarlet
+
 COPY bin/  /tester/bin 
 COPY meta/ /tester/meta 
 COPY vosi/ /tester/vosi 

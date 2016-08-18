@@ -120,20 +120,20 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClien
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "AdqlQuery-select-all",
-            query = "FROM AdqlQueryEntity ORDER BY name asc, ident desc"
+            name  = "GreenQuery-select-all",
+            query = "FROM GreenQueryEntity ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "AdqlQuery-select-schema",
-            query = "FROM AdqlQueryEntity WHERE schema = :schema ORDER BY name asc, ident desc"
+            name  = "GreenQuery-select-schema",
+            query = "FROM GreenQueryEntity WHERE schema = :schema ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "AdqlQuery-select-schema.name",
-            query = "FROM AdqlQueryEntity WHERE ((schema = :schema) AND (name = :name)) ORDER BY name asc, ident desc"
+            name  = "GreenQuery-select-schema.name",
+            query = "FROM GreenQueryEntity WHERE ((schema = :schema) AND (name = :name)) ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "AdqlQuery-search-resource.text",
-            query = "FROM AdqlQueryEntity WHERE ((schema = :schema) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            name  = "GreenQuery-search-schema.text",
+            query = "FROM GreenQueryEntity WHERE ((schema = :schema) AND (name LIKE :text)) ORDER BY name asc, ident desc"
             )
         }
      )
@@ -336,7 +336,7 @@ implements GreenQuery, AdqlParserQuery
             {
             return super.list(
                 super.query(
-                    "AdqlQuery-select-all"
+                    "GreenQuery-select-all"
                     )
                 );
             }
@@ -347,7 +347,7 @@ implements GreenQuery, AdqlParserQuery
             {
             return super.list(
                 super.query(
-                    "AdqlQuery-select-schema"
+                    "GreenQuery-select-schema"
                     ).setEntity(
                         "schema",
                         schema
@@ -361,7 +361,7 @@ implements GreenQuery, AdqlParserQuery
             {
             return super.iterable(
                 super.query(
-                    "AdqlQuery-search-schema.text"
+                    "GreenQuery-search-schema.text"
                     ).setEntity(
                         "schema",
                         schema

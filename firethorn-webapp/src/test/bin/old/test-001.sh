@@ -13,30 +13,30 @@ echo ""
 echo "POST create"
 curl -v \
     -H 'Accept: application/json' \
-    --data 'jdbc.resource.create.name=jdbc-resource-001' \
-    --data 'jdbc.resource.create.url=spring:PgsqlLocalTest' \
+    --data 'jdbc.resource.name=jdbc-resource-001' \
+    --data 'jdbc.connection.url=spring:PgsqlLocalTest' \
     "${basename}/jdbc/resources/create"
 
 echo ""
 echo "POST create"
 curl -v \
     -H 'Accept: application/json' \
-    --data 'jdbc.resource.create.name=jdbc-resource-002' \
-    --data 'jdbc.resource.create.url=spring:MysqlLocalTest' \
+    --data 'jdbc.resource.name=jdbc-resource-002' \
+    --data 'jdbc.connection.url=spring:MysqlLocalTest' \
     "${basename}/jdbc/resources/create"
 
 echo ""
 echo "POST create for 003"
 curl -v \
     -H 'Accept: application/json' \
-    --data 'jdbc.resource.create.name=jdbc-resource-003' \
+    --data 'jdbc.resource.name=jdbc-resource-003' \
     "${basename}/jdbc/resources/create"
 
 echo ""
 echo "POST create for 004"
 curl -v \
     -H 'Accept: application/json' \
-    --data 'jdbc.resource.create.name=jdbc-resource-004' \
+    --data 'jdbc.resource.name=jdbc-resource-004' \
     "${basename}/jdbc/resources/create"
 
 echo ""

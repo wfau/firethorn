@@ -70,7 +70,7 @@ jdbc_creator = web_services_url + "/jdbc/resource/create"
 
 
 resource_create_name_params = {
-                               'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json' : 'jdbc.resource.create.name', 
+                               'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json' : 'jdbc.resource.name', 
                                'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json' : 'adql.resource.create.name',
                                'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-service-1.0.json' : 'adql.resource.create.name',
                                'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-schema-1.0.json' : 'adql.resource.schema.create.name'
@@ -78,7 +78,7 @@ resource_create_name_params = {
 
 
 resource_create_url_params = {
-                              'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json' : 'jdbc.resource.create.url',
+                              'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json' : 'jdbc.connection.url',
                               'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json' : 'adql.resource.create.url',
                               'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-service-1.0.json' : 'adql.resource.create.url'
 
@@ -86,14 +86,14 @@ resource_create_url_params = {
 
 
 resource_create_username_params = {
-                                   'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json' : 'jdbc.resource.create.user',
+                                   'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json' : 'jdbc.connection.user',
                                    'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json' : 'adql.resource.create.user',
                                    'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-service-1.0.json' : 'adql.resource.create.user'
                                    }
 
 
 resource_create_password_params = {
-                                   'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json' : 'jdbc.resource.create.pass',
+                                   'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json' : 'jdbc.connection.pass',
                                    'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json' : 'adql.resource.create.pass',
                                    'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-service-1.0.json' : 'adql.resource.create.pass'
                                    }
@@ -168,7 +168,7 @@ db_select_with_text_params = {
 
 
 db_select_by_name_params = {
-                            'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json': 'jdbc.resource.select.name',
+                            'http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json': 'jdbc.resource.name',
                             'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json': 'adql.resource.select.name',
                             'http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-service-1.0.json': 'adql.resource.select.name'
                             }

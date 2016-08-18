@@ -23,9 +23,8 @@
 # Create our TWOMASS resource.
 jdbctwomass=$(
     POST "/jdbc/resource/create" \
-        -d "jdbc.resource.create.url=spring:RoeTWOMASS" \
-        -d "jdbc.resource.create.name=twomass-$(unique)" \
-        -d "jdbc.resource.create.ogsadai=twomass" \
+        -d "jdbc.connection.url=spring:RoeTWOMASS" \
+        -d "jdbc.resource.name=twomass-$(unique)" \
         | ident
         )
 
@@ -51,9 +50,8 @@ for jdbcschema in $(
 # Create our UKIDSS resource.
 jdbcukidss=$(
     POST "/jdbc/resource/create" \
-        -d "jdbc.resource.create.url=spring:RoeUKIDSS" \
-        -d "jdbc.resource.create.name=ukidss-$(unique)" \
-        -d "jdbc.resource.create.ogsadai=ukidss" \
+        -d "jdbc.connection.url=spring:RoeUKIDSS" \
+        -d "jdbc.resource.name=ukidss-$(unique)" \
         | ident
         )
 

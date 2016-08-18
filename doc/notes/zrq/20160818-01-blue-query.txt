@@ -47,6 +47,11 @@
     adql.query.update.limit.cells   adql.query.limit.cells
     adql.query.update.limit.time    adql.query.limit.time
 
+
+    adql.resource.query.create.query    adql.query.input
+    adql.resource.query.create.name     adql.query.name
+
+
     #
     # Needed to replace GreenQuery with BlueQuery
     #
@@ -74,8 +79,25 @@
     blue.query.results.count        adql.query.results.count
     blue.query.results.state        adql.query.results.state
 
+    #
+    # Changes already made.
+    #
+
+    jdbc.resource.select.name       jdbc.resource.name
+    jdbc.resource.create.name       jdbc.resource.name
 
 
+    jdbc.resource.select.name       jdbc.resource.name
+    jdbc.resource.create.catalog    jdbc.catalog.name
+    jdbc.resource.create.driver     jdbc.connection.driver
+    jdbc.resource.create.url        jdbc.connection.url
+    jdbc.resource.create.user       jdbc.connection.user
+    jdbc.resource.create.pass       jdbc.connection.pass
+
+
+# Deleted
+jdbc.resource.create.ogsadai
+jdbc.resource.create.ogsadai
 
     #
     # Optional changes for later.
@@ -145,14 +167,6 @@
     jdbc.resource.schema.select.catalog jdbc.catalog.name
 
 
-    jdbc.resource.select.name       jdbc.resource.name
-    jdbc.resource.create.catalog    jdbc.catalog.name
-
-
-    jdbc.resource.create.driver     jdbc.connection.driver
-    jdbc.resource.create.url        jdbc.connection.url
-    jdbc.resource.create.user       jdbc.connection.user
-    jdbc.resource.create.pass       jdbc.connection.pass
 
 
     jdbc.table.column.select.name   jdbc.column.name

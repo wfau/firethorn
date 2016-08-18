@@ -33,10 +33,9 @@ curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:jdbc.copy.depth=${jdbccopydepth:-FULL}" \
-    --data   "jdbc.resource.create.url=${resourceuri:?}" \
-    --data   "jdbc.resource.create.name=${resourcename:?}" \
-    --data   "jdbc.resource.create.catalog=${catalogname:?}" \
-    --data   "jdbc.resource.create.ogsadai=${ogsadainame:?}" \
+    --data   "jdbc.connection.url=${resourceuri:?}" \
+    --data   "jdbc.resource.name=${resourcename:?}" \
+    --data   "jdbc.resource.catalog=${catalogname:?}" \
     "${endpointurl:?}/jdbc/resource/create" \
     | bin/pp | tee jdbc-space.json
 

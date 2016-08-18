@@ -64,46 +64,46 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
      * MVC property for the select name.
      *
      */
-    public static final String RESOURCE_NAME_PARAM = "jdbc.resource.select.name" ;
+    public static final String RESOURCE_NAME_PARAM = "jdbc.resource.name" ;
 
     /**
      * MVC property for the initial name.
      *
-    public static final String CREATE_NAME = "jdbc.resource.create.name" ;
+    public static final String CREATE_NAME = "jdbc.resource.name" ;
      */
 
     /**
      * MVC property for the initial catalog name.
      *
      */
-    public static final String CATALOG_NAME_PARAM = "jdbc.resource.create.catalog" ;
+    public static final String CATALOG_NAME_PARAM = "jdbc.resource.catalog" ;
 
     /**
      * MVC property for the JDBC driver name.
      * TODO Use value from JdbcResourceController 
      *
      */
-    public static final String CONNECTION_DRIVER_PARAM = "jdbc.resource.create.driver" ;
+    public static final String CONNECTION_DRIVER_PARAM = "jdbc.connection.driver" ;
 
     /**
      * MVC property for the initial connection URL.
      * TODO Use value from JdbcResourceController 
      *
      */
-    public static final String CONNECTION_URL_PARAM = "jdbc.resource.create.url" ;
+    public static final String CONNECTION_URL_PARAM = "jdbc.connection.url" ;
 
     /**
      * MVC property for the initial connection user name.
      * TODO Use value from JdbcResourceController 
      *
      */
-    public static final String CONNECTION_USER_PARAM = "jdbc.resource.create.user" ;
+    public static final String CONNECTION_USER_PARAM = "jdbc.connection.user" ;
 
     /**
      * MVC property for the initial connection password.
      *
      */
-    public static final String CONNECTION_PASS_PARAM = "jdbc.resource.create.pass" ;
+    public static final String CONNECTION_PASS_PARAM = "jdbc.connection.pass" ;
 
     @Override
     public JdbcResourceBean bean(final JdbcResource entity)

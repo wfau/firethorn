@@ -22,9 +22,8 @@
 #
 # Create our user data store.
 POST "/jdbc/resource/create" \
-    -d "jdbc.resource.create.url=spring:FireThornUserData" \
-    -d "jdbc.resource.create.name=userdate-$(unique)" \
-    -d "jdbc.resource.create.ogsadai=user" \
+    -d "jdbc.connection.url=spring:FireThornUserData" \
+    -d "jdbc.resource.name=userdate-$(unique)" \
     | tee jdbc-user-resource.json | ./pp
 
 
