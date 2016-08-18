@@ -84,8 +84,8 @@ public class GreenQueryFactories
         {
         /**
          * The type URI for this type.
-         * @todo Move this to entity type interface.
-         * @todo Use PURLs.
+         * TODO Move this to entity type interface.
+         * TODO Use PURLs.
          *
          */
         public static final URI TYPE_URI = URI.create(

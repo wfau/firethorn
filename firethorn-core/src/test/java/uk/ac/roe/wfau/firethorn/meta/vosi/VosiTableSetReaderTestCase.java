@@ -18,14 +18,11 @@
 package uk.ac.roe.wfau.firethorn.meta.vosi;
 
 import java.io.FileReader;
-import java.net.URL;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
-import uk.ac.roe.wfau.firethorn.meta.vosi.VosiTableSetReader;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**

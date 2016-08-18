@@ -67,12 +67,6 @@ public class JdbcSchemaController
      */
     public static final String TARGET_ENTITY = "urn:jdbc.schema.entity" ;
 
-    /**
-     * MVC property for updating the name.
-     *
-     */
-    public static final String UPDATE_NAME = "jdbc.schema.update.name" ;
-
     @Override
     public Iterable<JdbcSchemaBean> bean(final Iterable<JdbcSchema> iter)
         {
@@ -122,5 +116,4 @@ public class JdbcSchemaController
             entity
             );
         }
-
     }

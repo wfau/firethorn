@@ -67,10 +67,10 @@ public class JdbcColumnController
     public static final String TARGET_ENTITY = "urn:jdbc.column.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * MVC property for the {@link JdbcColumn} name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.column.update.name" ;
+    public static final String COLUMN_NAME_PARAM = "jdbc.column.update.name" ;
 
     @Override
     public Iterable<JdbcColumnBean> bean(final Iterable<JdbcColumn> iter)

@@ -73,41 +73,41 @@ public class JdbcResourceController
     public static final String TARGET_ENTITY = "urn:jdbc.resource.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * MVC property for the {@link JdbcResource} name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.resource.update.name" ;
+    public static final String RESOURCE_NAME_PARAM = "jdbc.resource.update.name" ;
 
     /**
-     * MVC property for updating the status.
+     * MVC property for the {@link JdbcResource} status.
      *
      */
-    public static final String UPDATE_STATUS = "jdbc.resource.update.status" ;
+    public static final String RESOURCE_STATUS_PARAM = "jdbc.resource.update.status" ;
 
     /**
-     * MVC property for updating the connection URL.
+     * MVC property for the {@link JdbcConnector} URL.
      *
      */
-    public static final String UPDATE_CONN_URL = "jdbc.resource.connection.url" ;
+    public static final String CONNECTION_URL_PARAM = "jdbc.resource.connection.url" ;
 
     /**
-     * MVC property for updating the connection user name.
+     * MVC property for the {@link JdbcConnector} user name.
      *
      */
-    public static final String UPDATE_CONN_USER = "jdbc.resource.connection.user" ;
+    public static final String CONNECTION_USER_PARAM = "jdbc.resource.connection.user" ;
 
     /**
-     * MVC property for updating the connection password.
+     * MVC property for the {@link JdbcConnector} password.
      *
      */
-    public static final String UPDATE_CONN_PASS = "jdbc.resource.connection.pass" ;
+    public static final String CONNECTION_PASS_PARAM = "jdbc.resource.connection.pass" ;
 
     /**
-     * MVC property for updating the connection status.
+     * MVC property for the {@link JdbcConnector} JDBC driver.
      *
      */
-    public static final String UPDATE_CONN_STATUS = "jdbc.resource.connection.status" ;
-
+    public static final String CONNECTION_DRIVER_PARAM = "jdbc.resource.driver" ;
+    
     @Override
     public JdbcResourceBean bean(final JdbcResource entity)
         {
@@ -167,18 +167,16 @@ public class JdbcResourceController
     public EntityBean<JdbcResource> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity,
-        @RequestParam(value=UPDATE_NAME, required=false) final
+        @RequestParam(value=RESOURCE_NAME_PARAM, required=false) final
         String name,
-        @RequestParam(value=UPDATE_STATUS, required=false) final
+        @RequestParam(value=RESOURCE_STATUS_PARAM, required=false) final
         String status,
-        @RequestParam(value=UPDATE_CONN_URL, required=false) final
+        @RequestParam(value=CONNECTION_URL_PARAM, required=false) final
         String url,
-        @RequestParam(value=UPDATE_CONN_USER, required=false) final
+        @RequestParam(value=CONNECTION_USER_PARAM, required=false) final
         String user,
-        @RequestParam(value=UPDATE_CONN_PASS, required=false) final
-        String pass,
-        @RequestParam(value=UPDATE_CONN_STATUS, required=false) final
-        String action
+        @RequestParam(value=CONNECTION_PASS_PARAM, required=false) final
+        String pass
         ){
 
         if (name != null)

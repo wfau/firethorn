@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.util.xml;
 
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.events.XMLEvent;
 
 /**
  *

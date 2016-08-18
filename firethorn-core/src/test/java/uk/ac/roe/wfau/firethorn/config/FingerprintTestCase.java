@@ -24,10 +24,10 @@ import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Properties;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.jsoftbiz.utils.OS;
 import org.junit.Test;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *

@@ -23,10 +23,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateRequestException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateRequestException;
 
 /**
  *

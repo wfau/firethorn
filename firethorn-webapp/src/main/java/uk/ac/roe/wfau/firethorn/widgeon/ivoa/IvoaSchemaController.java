@@ -71,7 +71,7 @@ public class IvoaSchemaController
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "urn:ivoa.schema.name" ;
+    public static final String SCHEMA_NAME_PARAM = "ivoa.schema.name" ;
 
     @Override
     public Iterable<IvoaSchemaBean> bean(final Iterable<IvoaSchema> iter)

@@ -19,12 +19,6 @@ package uk.ac.roe.wfau.firethorn.adql.query.green;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Limits;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.SelectField;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Limits.Factory;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;

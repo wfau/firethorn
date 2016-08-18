@@ -27,12 +27,11 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.junit.*;
-import lombok.extern.slf4j.Slf4j;
-
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 

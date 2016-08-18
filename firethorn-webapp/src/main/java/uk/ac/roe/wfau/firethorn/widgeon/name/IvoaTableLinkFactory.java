@@ -44,43 +44,50 @@ implements IvoaTable.LinkFactory
         }
 
     /**
-     * The URI path for the service.
+     * The URI path for the tables service.
+     * TODO Move these to a model class.
      *
      */
     public static final String SERVICE_PATH = "/ivoa/table";
 
     /**
      * The URI path for individual tables.
+     * TODO Move these to a model class.
      *
      */
     public static final String TABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
      * The URI path for table columns.
+     * TODO Move these to a model class.
      *
      */
     public static final String TABLE_COLUMN_PATH = TABLE_PATH + "/columns" ;
 
     /**
      * The URI path for the VOTable representation.
+     * TODO Move these to a model class.
      *
      */
     public static final String VOTABLE_NAME = "/votable";
 
     /**
      * The URI path for the VOTable representation.
+     * TODO Move these to a model class.
      *
      */
     public static final String VOTABLE_PATH = TABLE_PATH + "/" + VOTABLE_NAME;
 
     /**
      * The URI path for the DataTable representation.
+     * TODO Move these to a model class.
      *
      */
     public static final String DATATABLE_NAME = "/datatable";
 
     /**
      * The URI path for the DataTable representation.
+     * TODO Move these to a model class.
      *
      */
     public static final String DATATABLE_PATH = TABLE_PATH + "/" + DATATABLE_NAME;

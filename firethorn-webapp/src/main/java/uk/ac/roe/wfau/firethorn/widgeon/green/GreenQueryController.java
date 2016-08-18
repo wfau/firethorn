@@ -77,70 +77,70 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
      * @see GreenQuery#name(String)
      *
      */
-    public static final String UPDATE_NAME = "adql.query.update.name" ;
+    public static final String QUERY_NAME_PARAM = "adql.query.update.name" ;
 
     /**
      * MVC property for the {@link GreenQuery} input, [{@value}].
      * @see GreenQuery#input(String)
      *
      */
-    public static final String UPDATE_INPUT = "adql.query.update.query" ;
+    public static final String QUERY_INPUT_PARAM = "adql.query.update.query" ;
 
     /**
      * MVC property for the {@link GreenJob.Status}, [{@value}].
      * @see GreenQuery#status(Status)
      *
      */
-    public static final String UPDATE_STATUS = "adql.query.update.status" ;
+    public static final String UPDATE_STATUS_PARAM = "adql.query.update.status" ;
 
     /**
      * MVC property for the {@link HttpRequest} timeout, [{@value}].
      * The number of seconds to wait for a {@link GreenJob.Status} change before returning a response.
      *
      */
-    public static final String UPDATE_TIMEOUT = "adql.query.update.timeout" ;
+    public static final String UPDATE_TIMEOUT_PARAM = "adql.query.update.timeout" ;
 
     /**
      * MVC property for the delay before the first row, [{@value}].
      * @see GreenQuery.Delays#first(Integer)
      *
      */
-    public static final String UPDATE_DELAY_FIRST = "adql.query.update.delay.first" ;
+    public static final String DELAY_FIRST_PARAM = "adql.query.update.delay.first" ;
     
     /**
      * MVC property for the delay between every row, [{@value}].
      * @see GreenQuery.Delays#every(Integer)
      *
      */
-    public static final String UPDATE_DELAY_EVERY = "adql.query.update.delay.every" ;
+    public static final String DELAY_EVERY_PARAM = "adql.query.update.delay.every" ;
 
     /**
      * MVC property for the delay after the last row, [{@value}].
      * @see GreenQuery.Delays#last(Integer)
      *
      */
-    public static final String UPDATE_DELAY_LAST = "adql.query.update.delay.last" ;
+    public static final String DELAY_LAST_PARAM = "adql.query.update.delay.last" ;
 
     /**
      * MVC property for the row limit, [{@value}].
      * @see GreenQuery.ModifiableLimits#rows(Long)
      *
      */
-    public static final String UPDATE_LIMT_ROWS = "adql.query.update.limit.rows" ;
+    public static final String LIMT_ROWS_PARAM = "adql.query.update.limit.rows" ;
 
     /**
      * MVC property for the cell limit, [{@value}].
      * @see GreenQuery.ModifiableLimits#cells(Long)
      *
      */
-    public static final String UPDATE_LIMT_CELLS = "adql.query.update.limit.cells" ;
+    public static final String LIMT_CELLS_PARAM = "adql.query.update.limit.cells" ;
 
     /**
      * MVC property for the time limit, [{@value}].
      * @see GreenQuery.ModifiableLimits#time(Long)
      *
      */
-    public static final String UPDATE_LIMT_TIME = "adql.query.update.limit.time" ;
+    public static final String LIMT_TIME_PARAM = "adql.query.update.limit.time" ;
     
     @Override
     public GreenQueryBean bean(final GreenQuery entity)
@@ -186,19 +186,19 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
      * <br/>Request path : [{@value GreenQueryLinkFactory#ENTITY_PATH}]
      * @param ident The {@link GreenQuery} identifier from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * <br/>Optional {@link GreenQuery} params :
-     * @param name  The {@link GreenQuery} name, [{@value #UPDATE_NAME}].
-     * @param input The {@link GreenQuery} input, [{@value #UPDATE_INPUT}].
+     * @param name  The {@link GreenQuery} name, [{@value #QUERY_NAME_PARAM}].
+     * @param input The {@link GreenQuery} input, [{@value #QUERY_INPUT_PARAM}].
      * <br/>Optional {@link AdqlQueryBase.Delays} params :
-     * @param first The {@link AdqlQueryBase.Delays} delay before the first row, [{@value #UPDATE_DELAY_FIRST}].
-     * @param every The {@link AdqlQueryBase.Delays} delay between the every row, [{@value #UPDATE_DELAY_EVERY}].
-     * @param last  The {@link AdqlQueryBase.Delays} delay after the last row, [{@value #UPDATE_DELAY_LAST}].
+     * @param first The {@link AdqlQueryBase.Delays} delay before the first row, [{@value #DELAY_FIRST_PARAM}].
+     * @param every The {@link AdqlQueryBase.Delays} delay between the every row, [{@value #DELAY_EVERY_PARAM}].
+     * @param last  The {@link AdqlQueryBase.Delays} delay after the last row, [{@value #DELAY_LAST_PARAM}].
      * <br/>Optional {@link AdqlQueryBase.Limits} params :
-     * @param limitrows  The {@link AdqlQueryBase.Limits} row limit, [{@value #UPDATE_LIMT_ROWS}].
-     * @param limitcells The {@link AdqlQueryBase.Limits} cell limit, [{@value #UPDATE_LIMT_CELLS}].
-     * @param limittime  The {@link AdqlQueryBase.Limits} time limit, [{@value #UPDATE_LIMT_TIME}].
+     * @param limitrows  The {@link AdqlQueryBase.Limits} row limit, [{@value #LIMT_ROWS_PARAM}].
+     * @param limitcells The {@link AdqlQueryBase.Limits} cell limit, [{@value #LIMT_CELLS_PARAM}].
+     * @param limittime  The {@link AdqlQueryBase.Limits} time limit, [{@value #LIMT_TIME_PARAM}].
      * <br/>Optional {@link GreenJob.Status} params :
-     * @param status  The {@link GreenQuery} {@link GreenJob.Status}, [{@value #UPDATE_STATUS}].
-     * @param timeout The timeout to wait for a status change, [{@value #UPDATE_TIMEOUT}].
+     * @param status  The {@link GreenQuery} {@link GreenJob.Status}, [{@value #UPDATE_STATUS_PARAM}].
+     * @param timeout The timeout to wait for a status change, [{@value #UPDATE_TIMEOUT_PARAM}].
      * @return The updated {@link GreenQuery} wrapped in a {@link GreenQueryBean}.
      * @throws EntityNotFoundException If the {@link GreenQuery} could not be found.
      *
@@ -206,25 +206,25 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public GreenQueryBean update(
-        @RequestParam(value=UPDATE_NAME, required=false)
+        @RequestParam(value=QUERY_NAME_PARAM, required=false)
         final String name,
-        @RequestParam(value=UPDATE_INPUT, required=false)
+        @RequestParam(value=QUERY_INPUT_PARAM, required=false)
         final String input,
-        @RequestParam(value=UPDATE_DELAY_FIRST, required=false)
+        @RequestParam(value=DELAY_FIRST_PARAM, required=false)
         final Integer first,
-        @RequestParam(value=UPDATE_DELAY_EVERY, required=false)
+        @RequestParam(value=DELAY_EVERY_PARAM, required=false)
         final Integer every,
-        @RequestParam(value=UPDATE_DELAY_LAST, required=false)
+        @RequestParam(value=DELAY_LAST_PARAM, required=false)
         final Integer last,
-        @RequestParam(value=UPDATE_STATUS, required=false)
+        @RequestParam(value=UPDATE_STATUS_PARAM, required=false)
         final Status status,
-        @RequestParam(value=UPDATE_TIMEOUT, required=false)
+        @RequestParam(value=UPDATE_TIMEOUT_PARAM, required=false)
         final Integer timeout,
-        @RequestParam(value=UPDATE_LIMT_ROWS, required=false)
+        @RequestParam(value=LIMT_ROWS_PARAM, required=false)
         final Long limitrows,
-        @RequestParam(value=UPDATE_LIMT_CELLS, required=false)
+        @RequestParam(value=LIMT_CELLS_PARAM, required=false)
         final Long limitcells,
-        @RequestParam(value=UPDATE_LIMT_TIME, required=false)
+        @RequestParam(value=LIMT_TIME_PARAM, required=false)
         final Long limittime,
         @PathVariable("ident")
         final String ident

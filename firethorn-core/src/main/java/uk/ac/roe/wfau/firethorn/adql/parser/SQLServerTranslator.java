@@ -19,10 +19,11 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import lombok.extern.slf4j.Slf4j;
+
 import adql.db.DBColumn;
 import adql.db.DBTable;
+import adql.db.DBType;
+import adql.db.DBType.DBDatatype;
 import adql.db.exception.UnresolvedJoinException;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
@@ -34,6 +35,7 @@ import adql.query.SelectItem;
 import adql.query.constraint.ConstraintsGroup;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.StringConstant;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
@@ -46,6 +48,8 @@ import adql.query.operand.function.geometry.ContainsFunction;
 import adql.query.operand.function.geometry.DistanceFunction;
 import adql.query.operand.function.geometry.ExtractCoord;
 import adql.query.operand.function.geometry.ExtractCoordSys;
+import adql.query.operand.function.geometry.GeometryFunction;
+import adql.query.operand.function.geometry.GeometryFunction.GeometryValue;
 import adql.query.operand.function.geometry.IntersectsFunction;
 import adql.query.operand.function.geometry.PointFunction;
 import adql.query.operand.function.geometry.PolygonFunction;
@@ -53,11 +57,9 @@ import adql.query.operand.function.geometry.RegionFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
-import adql.query.operand.StringConstant;
-import adql.query.operand.function.geometry.GeometryFunction;
-import adql.query.operand.function.geometry.GeometryFunction.GeometryValue;
-import adql.db.DBType;
-import adql.db.DBType.DBDatatype;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.atlas.RedmineBug450TestCase;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /*
  * This file is part of ADQLLibrary.

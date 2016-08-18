@@ -23,11 +23,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.After;
 import org.junit.Before;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**

@@ -65,7 +65,7 @@ extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
      * MVC property for the Resource name.
      *
      */
-    public static final String SELECT_NAME = "urn:ivoa.column.name" ;
+    public static final String COLUMN_NAME_PARAM = "urn:ivoa.column.name" ;
 
     @Override
     public IvoaColumnBean bean(final IvoaColumn entity)
@@ -122,11 +122,11 @@ extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
     public IvoaColumnBean select(
         @ModelAttribute(IvoaTableController.TARGET_ENTITY)
         final IvoaTable table,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(COLUMN_NAME_PARAM)
         final String name
         ) throws EntityNotFoundException {
         log.debug("select(String) [{}]", name);

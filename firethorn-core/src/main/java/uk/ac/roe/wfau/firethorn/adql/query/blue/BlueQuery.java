@@ -20,11 +20,6 @@ package uk.ac.roe.wfau.firethorn.adql.query.blue;
 import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Delays;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Limits;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;

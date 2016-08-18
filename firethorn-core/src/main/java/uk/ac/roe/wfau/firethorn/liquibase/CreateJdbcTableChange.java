@@ -1,7 +1,5 @@
 package uk.ac.roe.wfau.firethorn.liquibase;
 
-import java.sql.JDBCType;
-
 import liquibase.change.ChangeMetaData;
 import liquibase.change.ColumnConfig;
 import liquibase.change.DatabaseChange;

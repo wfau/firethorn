@@ -134,11 +134,6 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         @RequestParam(value=BlueQueryModel.QUERY_SYNTAX, required=false)
         final AdqlQueryBase.Syntax.Level syntax,
         
-        @RequestParam(value=BlueQueryModel.STATUS_NEXT_PARAM, required=false)
-        final TaskState next,
-        @RequestParam(value=BlueQueryModel.STATUS_WAIT_PARAM, required=false)
-        final Long wait,
-
         @RequestParam(value=BlueQueryModel.QUERY_LIMT_CELLS, required=false)
         final Long cells,
         @RequestParam(value=BlueQueryModel.QUERY_LIMT_ROWS, required=false)
@@ -151,7 +146,13 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         @RequestParam(value=BlueQueryModel.QUERY_DELAY_EVERY, required=false)
         final Integer every,
         @RequestParam(value=BlueQueryModel.QUERY_DELAY_LAST, required=false)
-        final Integer last
+        final Integer last,
+
+        @RequestParam(value=BlueQueryModel.STATUS_NEXT_PARAM, required=false)
+        final TaskState next,
+        @RequestParam(value=BlueQueryModel.STATUS_WAIT_PARAM, required=false)
+        final Long wait
+
         ) throws
         InvalidRequestException,
         InternalServerErrorException 
@@ -160,6 +161,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         return created(
             schema.resource().blues().create(
                 input,
+                mode,
+                syntax,
                 factories().blues().limits().create(
                     rows,
                     cells,
@@ -171,9 +174,7 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
                     last
                     ),
                 next,
-                wait,
-                mode,
-                syntax
+                wait
                 )
             );
         }

@@ -66,12 +66,6 @@ public class IvoaColumnController
      */
     public static final String TARGET_ENTITY = "urn:ivoa.column.entity" ;
 
-    /**
-     * MVC property for updating the name.
-     *
-     */
-    public static final String UPDATE_NAME = "urn:ivoa.column.name" ;
-
     @Override
     public Iterable<IvoaColumnBean> bean(final Iterable<IvoaColumn> iter)
         {

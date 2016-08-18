@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.util.xml;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 
 /**
  *

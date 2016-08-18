@@ -85,13 +85,13 @@ public class IvoaResourceController
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "ivoa.resource.name" ;
+    public static final String RESOURCE_NAME_PARAM = "ivoa.resource.name" ;
 
     /**
      * MVC property for updating the status.
      *
      */
-    public static final String UPDATE_STATUS = "ivoa.resource.status" ;
+    public static final String RESOURCE_STATUS_PARAM = "ivoa.resource.status" ;
 
     @Override
     public IvoaResourceBean bean(final IvoaResource entity)
@@ -152,9 +152,9 @@ public class IvoaResourceController
     public EntityBean<IvoaResource> update(
         @ModelAttribute(TARGET_ENTITY)
         final IvoaResource entity,
-        @RequestParam(value=UPDATE_NAME, required=false) final
+        @RequestParam(value=RESOURCE_NAME_PARAM, required=false) final
         String name,
-        @RequestParam(value=UPDATE_STATUS, required=false) final
+        @RequestParam(value=RESOURCE_STATUS_PARAM, required=false) final
         String status
         ){
 

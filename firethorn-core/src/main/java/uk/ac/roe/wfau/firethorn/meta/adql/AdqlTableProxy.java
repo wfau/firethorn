@@ -18,12 +18,12 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import java.util.Iterator;
-import javax.persistence.Transient;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.persistence.Transient;
 
 import org.joda.time.DateTime;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;

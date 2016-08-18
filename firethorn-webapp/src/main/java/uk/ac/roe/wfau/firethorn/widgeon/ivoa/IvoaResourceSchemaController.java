@@ -62,17 +62,10 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
         }
 
     /**
-     * MVC property for the select (full)name.
+     * MVC property for the schema name.
      *
      */
-    public static final String SELECT_NAME = "ivoa.resource.schema.name" ;
-
-    /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "ivoa.resource.schema.text" ;
-
+    public static final String SCHEMA_NAME_PARAM = "ivoa.resource.schema.name" ;
 
     @Override
     public IvoaSchemaBean bean(final IvoaSchema entity)
@@ -129,11 +122,11 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
     public IvoaSchemaBean select(
         @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
         final IvoaResource resource,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(SCHEMA_NAME_PARAM)
         final String name
         ) throws EntityNotFoundException {
         log.debug("select(String) [{}]", name);

@@ -64,43 +64,46 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
      * MVC property for the select name.
      *
      */
-    public static final String SELECT_NAME = "jdbc.resource.select.name" ;
+    public static final String RESOURCE_NAME_PARAM = "jdbc.resource.select.name" ;
 
     /**
      * MVC property for the initial name.
      *
-     */
     public static final String CREATE_NAME = "jdbc.resource.create.name" ;
+     */
 
     /**
      * MVC property for the initial catalog name.
      *
      */
-    public static final String CREATE_CATALOG = "jdbc.resource.create.catalog" ;
+    public static final String CATALOG_NAME_PARAM = "jdbc.resource.create.catalog" ;
 
     /**
      * MVC property for the JDBC driver name.
+     * TODO Use value from JdbcResourceController 
      *
      */
-    public static final String CREATE_DRIVER = "jdbc.resource.create.driver" ;
+    public static final String CONNECTION_DRIVER_PARAM = "jdbc.resource.create.driver" ;
 
     /**
      * MVC property for the initial connection URL.
+     * TODO Use value from JdbcResourceController 
      *
      */
-    public static final String CREATE_CONN_URL = "jdbc.resource.create.url" ;
+    public static final String CONNECTION_URL_PARAM = "jdbc.resource.create.url" ;
 
     /**
      * MVC property for the initial connection user name.
+     * TODO Use value from JdbcResourceController 
      *
      */
-    public static final String CREATE_CONN_USER = "jdbc.resource.create.user" ;
+    public static final String CONNECTION_USER_PARAM = "jdbc.resource.create.user" ;
 
     /**
      * MVC property for the initial connection password.
      *
      */
-    public static final String CREATE_CONN_PASS = "jdbc.resource.create.pass" ;
+    public static final String CONNECTION_PASS_PARAM = "jdbc.resource.create.pass" ;
 
     @Override
     public JdbcResourceBean bean(final JdbcResource entity)
@@ -139,17 +142,17 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<JdbcResourceBean> create(
-        @RequestParam(value=CREATE_NAME, required=true)
+        @RequestParam(value=RESOURCE_NAME_PARAM, required=true)
         final String name,
-        @RequestParam(value=CREATE_CONN_URL, required=false)
+        @RequestParam(value=CONNECTION_URL_PARAM, required=false)
         final String url,
-        @RequestParam(value=CREATE_CONN_USER, required=false)
+        @RequestParam(value=CONNECTION_USER_PARAM, required=false)
         final String user,
-        @RequestParam(value=CREATE_CONN_PASS, required=false)
+        @RequestParam(value=CONNECTION_PASS_PARAM, required=false)
         final String pass,
-        @RequestParam(value=CREATE_DRIVER, required=false)
+        @RequestParam(value=CONNECTION_DRIVER_PARAM, required=false)
         final String driver,
-        @RequestParam(value=CREATE_CATALOG, required=false)
+        @RequestParam(value=CATALOG_NAME_PARAM, required=false)
         final String catalog
         ){
         return created(

@@ -19,10 +19,9 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver;
 
 import java.sql.SQLException;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;

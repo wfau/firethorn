@@ -213,7 +213,15 @@ class UWSJobFactory extends AbstractComponent {
 			BlueQuery query = null;
 			
 			try {
-				query = resource.blues().create("");
+				query = resource.blues().create(
+			        "",
+			        null, // Default mode
+			        null, // Default syntax
+			        null, // No limits
+			        null, // No delays
+			        null, // Nothing to wait for
+			        null  // No wait time 
+			        );
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();
@@ -235,7 +243,15 @@ class UWSJobFactory extends AbstractComponent {
 			
 			try {
 				
-				query = resource.blues().create(querystring);
+				query = resource.blues().create(
+			        querystring,
+                    null, // Default mode
+                    null, // Default syntax
+                    null, // No limits
+                    null, // No delays
+                    null, // Nothing to wait for
+                    null  // No wait time 
+			        );
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();

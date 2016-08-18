@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  * Public interface for an operation.

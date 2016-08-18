@@ -23,9 +23,6 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.meta.DataSpace;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *

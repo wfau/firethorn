@@ -18,9 +18,9 @@
 
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
+import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
 

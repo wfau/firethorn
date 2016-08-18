@@ -62,10 +62,10 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
         }
 
     /**
-     * MVC property for the Resource name.
+     * MVC property for the {@link IvoaTable} name.
      *
      */
-    public static final String SELECT_NAME = "urn:ivoa.table.name" ;
+    public static final String TABLE_NAME_PARAM = "urn:ivoa.table.name" ;
 
     @Override
     public IvoaTableBean bean(final IvoaTable entity)
@@ -121,11 +121,11 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params=TABLE_NAME_PARAM, produces=JSON_MIME)
     public IvoaTableBean select(
         @ModelAttribute(IvoaSchemaController.TARGET_ENTITY)
         final IvoaSchema schema,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(TABLE_NAME_PARAM)
         final String name
         ) throws EntityNotFoundException {
         log.debug("select(String) [{}]", name);

@@ -19,13 +19,12 @@ package uk.ac.roe.wfau.firethorn.hibernate;
 
 import java.io.Serializable;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Interceptor;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 

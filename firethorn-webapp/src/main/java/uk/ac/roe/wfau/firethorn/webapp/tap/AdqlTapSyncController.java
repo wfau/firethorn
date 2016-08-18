@@ -177,20 +177,35 @@ public class AdqlTapSyncController extends AbstractController {
 			} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)) {
 
 				try {
+				    // TODO Need to look at the default/absolute timeout values.
+				    // TODO I think Limits will have a default time limit.
+				    // TODO We want a TAP sync request to block for as long as possible.
 					BlueQuery query;
 					if (MAXREC!=null){
-						query = resource.blues().create(QUERY, 
+						query = resource.blues().create(
+						        QUERY, 
+                                null, // Mode.AUTO
+                                null, // Syntax.AUTO
 								factories().blues().limits().create(
-										Long.parseLong(MAXREC.trim()),
-										null,
-										null
-				                        ),
-								TaskState.COMPLETED,
-								factories().blues().limits().absolute().time());
+									Long.parseLong(MAXREC.trim()), // Row limit
+									null, // No cell limit
+                                    null  // No time limit
+			                        ),
+                                null, // No delays
+								TaskState.COMPLETED, // Wait for COMPLETED
+								factories().blues().limits().absolute().time() // TODO This is not the right value.
+								);
 						;
 					} else {
-						query = resource.blues().create(QUERY, TaskState.COMPLETED,
-								factories().blues().limits().absolute().time());
+						query = resource.blues().create(
+						        QUERY,
+						        null, // Mode.AUTO
+						        null, // Syntax.AUTO
+						        null, // No limits
+						        null, // No delays
+                                TaskState.COMPLETED, // Wait for COMPLETED
+								factories().blues().limits().absolute().time() // TODO This is not the right value.
+								);
 					}
 
 

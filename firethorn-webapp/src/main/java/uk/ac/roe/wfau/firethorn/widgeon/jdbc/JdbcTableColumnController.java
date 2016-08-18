@@ -62,29 +62,11 @@ extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
         }
 
     /**
-     * MVC property for the Resource name.
+     * MVC property for the {@link JdbcColumn} name.
+     * TODO Move this to a model class.
      *
      */
-    public static final String SELECT_NAME = "jdbc.table.column.select.name" ;
-
-    /**
-     * MVC property for the select results.
-     *
-     */
-    public static final String SELECT_RESULT = "jdbc.table.column.select.result" ;
-
-    /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "jdbc.table.column.search.text" ;
-
-    /**
-     * MVC property for the search results.
-     *
-     */
-    public static final String SEARCH_RESULT = "jdbc.table.column.search.result" ;
-
+    public static final String COLUMN_NAME_PARAM = "jdbc.table.column.select.name" ;
 
     @Override
     public JdbcColumnBean bean(final JdbcColumn entity)
@@ -141,11 +123,11 @@ extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
     public JdbcColumnBean select(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(COLUMN_NAME_PARAM)
         final String name
         ) throws EntityNotFoundException {
         log.debug("select(String) [{}]", name);

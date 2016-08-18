@@ -19,11 +19,11 @@ package uk.ac.roe.wfau.firethorn.adql.parser ;
 
 import java.util.Iterator;
 
+import adql.db.DBColumn;
+import adql.db.DBTable;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import adql.db.DBColumn;
-import adql.db.DBTable;
 
 
 /**

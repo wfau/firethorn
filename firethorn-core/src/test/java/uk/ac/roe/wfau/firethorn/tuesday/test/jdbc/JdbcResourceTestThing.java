@@ -17,17 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;

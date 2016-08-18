@@ -17,17 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertNotNull;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 

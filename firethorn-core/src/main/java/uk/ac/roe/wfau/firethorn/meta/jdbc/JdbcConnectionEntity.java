@@ -35,8 +35,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Transient;
 import javax.sql.DataSource;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.Parent;
 import org.hibernate.exception.internal.StandardSQLExceptionConverter;
 import org.hibernate.exception.spi.SQLExceptionConverter;
@@ -48,6 +46,7 @@ import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource.JdbcDriver;

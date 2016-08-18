@@ -17,13 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.vosi;
 
-import java.io.FileReader;
 import java.net.URL;
 
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
-import uk.ac.roe.wfau.firethorn.meta.vosi.VosiTableSetReader;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**

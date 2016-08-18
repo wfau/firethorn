@@ -70,19 +70,19 @@ public class JdbcTableController
     public static final String TARGET_ENTITY = "urn:jdbc.table.entity" ;
 
     /**
-     * POST param for the table name.
+     * POST param for the {@link JdbcTable} name.
      *
      */
     public static final String TABLE_NAME_PARAM = "urn:jdbc.table.name" ;
 
     /**
-     * POST param for the JDBC status.
+     * POST param for the {@link JdbcTable} status.
      *
      */
     public static final String JDBC_STATUS_PARAM = "urn:jdbc.table.jdbc.status" ;
 
     /**
-     * POST param for the ADQL status.
+     * POST param for the {@link AdqlTable} status.
      *
      */
     public static final String ADQL_STATUS_PARAM = "urn:jdbc.table.adql.status" ;

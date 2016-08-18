@@ -10,8 +10,6 @@ import javax.persistence.FetchType;
 import org.hibernate.annotations.Parent;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
-import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 
 /**
  * {@link IvoaResource.Endpoint} implementation.

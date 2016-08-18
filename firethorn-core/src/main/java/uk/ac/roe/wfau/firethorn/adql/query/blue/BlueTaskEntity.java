@@ -38,8 +38,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.Session;
 import org.hibernate.annotations.NamedQueries;
 import org.joda.time.DateTime;
@@ -49,6 +47,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -574,6 +573,7 @@ implements BlueTask<TaskType>
         /**
          * The default timeout.
          * TODO Make this configurable.
+         * TODO Provide settings for default and absolute values.
          *  
          */
         private static final long DEFAULT_TIMEOUT = 5000 ;
@@ -1148,6 +1148,7 @@ implements BlueTask<TaskType>
             }
         else if (wait <= 0)
 			{
+			// TODO Do we need an absolute max value of -1 for sync TAP requests ?
 			log.debug("Wait is zero - skipping wait");
 			}
 		else {

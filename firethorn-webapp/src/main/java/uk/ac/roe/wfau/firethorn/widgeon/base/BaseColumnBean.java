@@ -60,10 +60,14 @@ extends NamedEntityBeanImpl<ColumnType>
         return entity().root().link();
         }
 
+    /*
+     * 
     public String getAlias()
         {
         return entity().alias();
         }
+     * 
+     */
 
     public String getFullname()
         {
