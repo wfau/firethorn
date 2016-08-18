@@ -15,26 +15,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.adql;
+package uk.ac.roe.wfau.firethorn.widgeon.green;
 
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.name.GreenQueryIdentFactory;
-import uk.ac.roe.wfau.firethorn.widgeon.name.GreenQueryLinkFactory;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 
 /**
  * An {@link EntityBean} wrapper for an {@link GreenQuery}.
  *
  */
+@Deprecated
 public class GreenQueryBean
 extends NamedEntityBeanImpl<GreenQuery>
     {
@@ -70,10 +70,10 @@ extends NamedEntityBeanImpl<GreenQuery>
      * @param entity The {@link GreenQuery} to wrap.
      *
      */
-    protected GreenQueryBean(final GreenQuery entity)
+    public GreenQueryBean(final GreenQuery entity)
         {
         super(
-            GreenQueryIdentFactory.TYPE_URI,
+            GreenQueryFactories.IdentFactory.TYPE_URI,
             entity
             );
         }
@@ -331,7 +331,7 @@ extends NamedEntityBeanImpl<GreenQuery>
             public String getVotable()
                 {
                 return entity().link().concat(
-                    GreenQueryLinkFactory.VOTABLE_NAME
+                        GreenQueryFactories.LinkFactory.VOTABLE_NAME
                     );
                 }
            
@@ -342,7 +342,7 @@ extends NamedEntityBeanImpl<GreenQuery>
             	  if (entity().results().adql() != null)
                   {
             		  return entity().results().adql().link().concat(
-                              GreenQueryLinkFactory.DATATABLE_NAME
+            		          GreenQueryFactories.LinkFactory.DATATABLE_NAME
                            );
                   }
             	  else {

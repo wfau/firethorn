@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.adql;
-
-import lombok.extern.slf4j.Slf4j;
+package uk.ac.roe.wfau.firethorn.widgeon.green;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
@@ -27,14 +25,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.widgeon.name.GreenQueryLinkFactory;
 
 /**
  * Spring MVC controller to handle {@link GreenQuery} entities.
@@ -44,7 +43,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.GreenQueryLinkFactory;
  */
 @Slf4j
 @Controller
-@RequestMapping(GreenQueryLinkFactory.ENTITY_PATH)
+@Deprecated
+@RequestMapping(GreenQueryFactories.LinkFactory.ENTITY_PATH)
 public class GreenQueryController
 extends AbstractEntityController<GreenQuery, GreenQueryBean>
     {
@@ -53,7 +53,7 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
     public Path path()
         {
         return path(
-            GreenQueryLinkFactory.ENTITY_PATH
+                GreenQueryFactories.LinkFactory.ENTITY_PATH
             );
         }
 

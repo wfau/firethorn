@@ -223,7 +223,14 @@ extends BaseResource<AdqlSchema>
          */
         public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException;
-        
+
+        /**
+         * Create a new {@link BlueQuery}.
+         * 
+         */
+        public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState next, final Long wait, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax)
+        throws InvalidRequestException, InternalServerErrorException;
+
         }
 
     /**

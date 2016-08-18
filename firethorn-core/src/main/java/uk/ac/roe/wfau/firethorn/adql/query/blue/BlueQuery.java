@@ -95,24 +95,6 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
     extends Entity.LinkFactory<BlueQuery>
         {
         /**
-         * The URI path for a {@link BlueQuery} service, [{@value}].
-         *
-         */
-        public static final String SERVICE_PATH = "/blue/query" ;
-
-        /**
-         * The URI path for a {@link BlueQuery} entity, [{@value}].
-         *
-         */
-        public static final String ENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
-
-        /**
-         * The URI path for a {@link BlueQuery} callback, [{@value}].
-         *
-         */
-        public static final String CALLBACK_PATH = "/callback/" + IDENT_TOKEN ;
-
-        /**
          * Create a callback link (as a string).
          *
          */
@@ -138,28 +120,6 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
         {
 
         /**
-         * Create a new {@link BlueQuery}.
-         * http://redmine.roe.ac.uk/issues/311
-         *
-        public BlueQuery create(final AdqlResource resource)
-        throws InvalidRequestException, InternalServerErrorException;
-         */
-
-        /**
-         * Create a new {@link BlueQuery} with an ADQL string.
-         *
-        public BlueQuery create(final AdqlResource resource, final String input)
-        throws InvalidRequestException, InternalServerErrorException;
-         */
-
-        /**
-         * Create a new {@link BlueQuery} with an ADQL string and state.
-         *
-        public BlueQuery create(final AdqlResource resource, final String input, final TaskState next)
-        throws InvalidRequestException, InternalServerErrorException;
-         */
-
-        /**
          * Create a new {@link BlueQuery} with an ADQL string, {@link BlueQuery.TaskState} and a wait timeout.
          *
          */
@@ -180,13 +140,6 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException;
         
-        /**
-         * Update a {@link BlueQuery} with an ADQL string and state.
-         *
-        public BlueQuery update(final Identifier ident, final String input, final TaskState next)
-        throws InvalidStateTransitionException;
-         */
-
         /**
          * Update a {@link BlueQuery} with an ADQL string, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
          *
@@ -222,7 +175,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
         public Iterable<BlueQuery> select(final AdqlResource resource);
 
         /**
-         * Handle a {@link CallbackEvent} message. 
+         * Handle a {@link CallbackEvent} for a {@link BlueQuery}. 
          * 
          */
         public BlueQuery callback(final Identifier ident, final CallbackEvent message)

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2016 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,32 +25,34 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateTransitionException;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.blue.BlueQueryBean;
 import uk.ac.roe.wfau.firethorn.webapp.blue.BlueQueryController;
+import uk.ac.roe.wfau.firethorn.webapp.blue.BlueQueryModel;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
 
 /**
- * Spring MVC controller to handle the {@link AdqlSchema} in an {@link AdqlResource}.
- * <br/>Controller path : [{@value AdqlResourceLinkFactory#RESOURCE_SCHEMAS_PATH}]
+ * Spring MVC controller to handle the {@link BlueQuery}s linked to an {@link AdqlResource}.
+ * <br/>Controller path : [{@value AdqlResourceLinkFactory#RESOURCE_QUERIES_PATH}]
  *
  */
 @Slf4j
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_QUERIES_PATH)
-public class AdqlResourceBlueQueryController
+public class AdqlResourceBlueController
 extends AbstractEntityController<BlueQuery, BlueQueryBean>
     {
     @Override
@@ -67,7 +67,7 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
      * Public constructor.
      *
      */
-    public AdqlResourceBlueQueryController()
+    public AdqlResourceBlueController()
         {
         super();
         }
@@ -119,6 +119,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The parent {@link AdqlResource} identifier in the request path.
      * @param input The {@link BlueQuery} input, [{@value BlueQueryController#QUERY_INPUT_PARAM}].
+
+     * 
      * @return A new {@link BlueQuery} wrapped in an {@link BlueQueryBean}.
      * @throws InvalidStateTransitionException 
      * @throws IdentifierFormatException 
@@ -130,26 +132,32 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
     public ResponseEntity<BlueQueryBean> create(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
-        @RequestParam(value=BlueQueryController.QUERY_INPUT_PARAM, required=false)
+
+        @RequestParam(value=BlueQueryModel.QUERY_INPUT_PARAM, required=false)
         final String input,
-        @RequestParam(value=BlueQueryController.NEXT_STATUS_PARAM, required=false)
+        @RequestParam(value=BlueQueryModel.NEXT_STATUS_PARAM, required=false)
         final TaskState next,
-        @RequestParam(value=BlueQueryController.REQUEST_WAIT_PARAM, required=false)
+        @RequestParam(value=BlueQueryModel.REQUEST_WAIT_PARAM, required=false)
         final Long wait,
 
-        @RequestParam(value=BlueQueryController.QUERY_LIMT_CELLS, required=false)
+        @RequestParam(value=BlueQueryModel.QUERY_LIMT_CELLS, required=false)
         final Long cells,
-        @RequestParam(value=BlueQueryController.QUERY_LIMT_ROWS, required=false)
+        @RequestParam(value=BlueQueryModel.QUERY_LIMT_ROWS, required=false)
         final Long rows,
-        @RequestParam(value=BlueQueryController.QUERY_LIMT_TIME, required=false)
+        @RequestParam(value=BlueQueryModel.QUERY_LIMT_TIME, required=false)
         final Long time,
 
-        @RequestParam(value=BlueQueryController.QUERY_DELAY_FIRST, required=false)
+        @RequestParam(value=BlueQueryModel.QUERY_DELAY_FIRST, required=false)
         final Integer first,
-        @RequestParam(value=BlueQueryController.QUERY_DELAY_EVERY, required=false)
+        @RequestParam(value=BlueQueryModel.QUERY_DELAY_EVERY, required=false)
         final Integer every,
-        @RequestParam(value=BlueQueryController.QUERY_DELAY_LAST, required=false)
-        final Integer last
+        @RequestParam(value=BlueQueryModel.QUERY_DELAY_LAST, required=false)
+        final Integer last,
+
+        @RequestParam(value=BlueQueryModel.QUERY_MODE, required=false)
+        final AdqlQueryBase.Mode mode,
+        @RequestParam(value=BlueQueryModel.QUERY_SYNTAX, required=false)
+        final AdqlQueryBase.Syntax.Level syntax
 
         ) throws
         IdentifierNotFoundException,

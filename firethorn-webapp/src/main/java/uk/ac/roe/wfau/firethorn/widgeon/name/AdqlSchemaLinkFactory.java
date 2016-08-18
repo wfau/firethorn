@@ -20,10 +20,11 @@ package uk.ac.roe.wfau.firethorn.widgeon.name;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -66,10 +67,18 @@ implements AdqlSchema.LinkFactory
     public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
 
     /**
-     * The URI path for the {@link AdqlSchema} queries, [{@value}].
+     * The URI path for the {@link AdqlSchema} {@link GreenQuery} queries, [{@value}].
      *
      */
-    public static final String SCHEMA_QUERY_PATH = SCHEMA_PATH + "/queries" ;
+    @Deprecated
+    public static final String SCHEMA_GREEN_PATH = SCHEMA_PATH + "/greens" ;
+
+    /**
+     * The URI path for the {@link AdqlSchema} {@link BlueQuery} queries, [{@value}].
+     *
+     */
+    @Deprecated
+    public static final String SCHEMA_BLUE_PATH = SCHEMA_PATH + "/blues" ;
 
     @Override
     public String link(final AdqlSchema entity)
