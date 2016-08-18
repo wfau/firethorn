@@ -24,13 +24,12 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.green.GreenQueryBean.Syntax;
 
 /**
  * An {@link EntityBean} wrapper for an {@link BlueQuery}.

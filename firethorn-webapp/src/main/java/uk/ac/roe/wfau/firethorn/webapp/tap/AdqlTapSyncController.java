@@ -17,45 +17,30 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import uk.ac.roe.wfau.firethorn.webapp.votable.*;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.*;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
-import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapValidator;
-import uk.ac.roe.wfau.firethorn.webapp.tap.CapabilitiesGenerator;
 
 @Slf4j
 @Controller

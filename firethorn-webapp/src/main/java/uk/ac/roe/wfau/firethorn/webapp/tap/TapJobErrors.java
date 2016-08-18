@@ -1,8 +1,5 @@
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
-import java.util.List;
-
-
 public class TapJobErrors  {
 
 

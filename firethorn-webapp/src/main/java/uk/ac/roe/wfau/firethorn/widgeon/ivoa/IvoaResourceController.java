@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -32,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;

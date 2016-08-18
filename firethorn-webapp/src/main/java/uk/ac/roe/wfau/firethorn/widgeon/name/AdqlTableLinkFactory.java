@@ -20,12 +20,9 @@ package uk.ac.roe.wfau.firethorn.widgeon.name;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 

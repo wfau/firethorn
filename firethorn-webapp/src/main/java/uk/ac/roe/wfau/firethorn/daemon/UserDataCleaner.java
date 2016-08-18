@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.daemon;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.joda.time.DateTime;
 import org.joda.time.MutablePeriod;
 import org.joda.time.ReadablePeriod;
@@ -28,6 +26,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;

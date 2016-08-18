@@ -1,10 +1,6 @@
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 import java.io.IOException;
-import java.io.PrintWriter;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -12,16 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import uk.ac.roe.wfau.firethorn.adql.query.blue.*;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateRequestException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
 
    
 @Slf4j

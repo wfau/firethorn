@@ -3,11 +3,10 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.scheduled;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**

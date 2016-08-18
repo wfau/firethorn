@@ -19,12 +19,10 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
-import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;

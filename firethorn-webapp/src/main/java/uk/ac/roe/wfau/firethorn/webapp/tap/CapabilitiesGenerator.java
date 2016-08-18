@@ -1,23 +1,15 @@
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
-import java.io.PrintWriter;
-
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import javax.servlet.ServletContext;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**

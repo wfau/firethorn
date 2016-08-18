@@ -20,12 +20,11 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**

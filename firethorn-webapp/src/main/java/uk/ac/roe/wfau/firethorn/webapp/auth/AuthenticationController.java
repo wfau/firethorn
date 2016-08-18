@@ -17,11 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.auth;
 
-import org.springframework.stereotype.Component;
-
-import uk.ac.roe.wfau.firethorn.identity.Authentication;
-import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
-
 /**
   * Spring MVC controller for <code>Authentication</code>.
  *
