@@ -58,7 +58,6 @@ import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.atlas.RedmineBug450TestCase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /*
