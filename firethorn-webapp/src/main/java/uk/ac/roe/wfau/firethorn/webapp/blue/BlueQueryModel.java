@@ -34,7 +34,9 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Spring MVC model to handle {@link BlueQuery} entities.
+ * Spring MVC controller base class for {@link BlueQuery} entities.
+ * @todo Separate this to extend AbstractEntityModel<> rather than AbstractEntityController<>.
+ * @todo Apply this separation to all of our controllers.  
  *
  */
 @Slf4j
