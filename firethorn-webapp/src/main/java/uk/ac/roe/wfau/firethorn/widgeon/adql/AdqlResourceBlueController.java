@@ -135,9 +135,9 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
 
         @RequestParam(value=BlueQueryModel.QUERY_INPUT_PARAM, required=false)
         final String input,
-        @RequestParam(value=BlueQueryModel.NEXT_STATUS_PARAM, required=false)
+        @RequestParam(value=BlueQueryModel.STATUS_NEXT_PARAM, required=false)
         final TaskState next,
-        @RequestParam(value=BlueQueryModel.REQUEST_WAIT_PARAM, required=false)
+        @RequestParam(value=BlueQueryModel.STATUS_WAIT_PARAM, required=false)
         final Long wait,
 
         @RequestParam(value=BlueQueryModel.QUERY_LIMT_CELLS, required=false)

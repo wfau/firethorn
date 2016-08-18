@@ -30,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
- *
+ * TODO Move this to a OperationModel
  *
  */
 @Slf4j

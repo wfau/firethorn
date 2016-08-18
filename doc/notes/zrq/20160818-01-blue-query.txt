@@ -1,0 +1,102 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Update the form param names.
+#[user@methionine] 
+
+
+    blue.query.name
+    blue.query.input
+
+    blue.query.mode
+    blue.query.syntax
+
+    blue.query.prev.status
+    blue.query.next.status
+    
+    blue.query.limit.rows
+    blue.query.limit.cells
+    blue.query.limit.time
+
+    blue.query.delay.first
+    blue.query.delay.every
+    blue.query.delay.last
+    
+    blue.query.wait                 blue.task.wait
+    
+    blue.query.status               blue.task.state
+    blue.query.results.count
+    blue.query.results.state
+
+
+    adql.schema.query.create.name   green.query.name
+    adql.schema.query.create.query  green.query.input
+    adql.schema.query.create.store  green.query.store
+    adql.schema.query.create.mode   green.query.mode
+    adql.schema.query.create.level  green.query.syntax
+
+    urn:adql.copy.depth             adql.copy.depth
+
+
+    urn:adql.column.entity          adql.column.entity
+    adql.column.update.name         adql.column.name
+
+
+    urn:adql.resource.entity        adql.resource.entity
+    urn:adql.schema.entity          adql.schema.entity
+    urn:adql.table.entity           adql.table.entity
+
+    adql.resource.update.name       adql.resource.name
+    adql.resource.update.status     adql.resource.status
+
+    urn:schema.metadoc.file         metadoc.import.file
+    urn:schema.metadoc.base         metadoc.import.base
+
+
+    adql.resource.schema.select.name    adql.schema.name
+    adql.resource.schema.create.name    adql.schema.name
+    adql.resource.schema.import.name    adql.schema.name
+    adql.resource.schema.import.base    adql.schema.base
+
+    adql.resource.create.name           adql.resource.name
+
+    adql.schema.update.name             adql.schema.name
+
+    adql.schema.table.select.name       adql.table.name
+    adql.schema.table.import.name       adql.table.name
+
+    adql.schema.table.import.base       base.table.ident
+
+    adql.table.column.select.name       adql.column.name
+    adql.table.update.name              adql.table.name
+
+
+
+
+
+
+
+
+
+
+

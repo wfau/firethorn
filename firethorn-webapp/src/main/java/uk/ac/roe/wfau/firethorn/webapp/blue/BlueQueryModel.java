@@ -90,14 +90,20 @@ public abstract class BlueQueryModel
      * Request param name for the previous {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String PREV_STATUS_PARAM = "blue.query.prev.status" ;
+    public static final String STATUS_PREV_PARAM = "blue.query.prev.status" ;
 
     /**
      * Request param name for the next {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String NEXT_STATUS_PARAM = "blue.query.next.status" ;
-    
+    public static final String STATUS_NEXT_PARAM = "blue.query.next.status" ;
+
+    /**
+     * How long to wait for a {@link BlueTask.TaskState} change, [{@value}].
+     *
+     */
+    public static final String STATUS_WAIT_PARAM = "blue.query.wait" ;
+
     /**
      * Request param name for the row limit, [{@value}].
      *
@@ -146,12 +152,6 @@ public abstract class BlueQueryModel
      */
     public static final String QUERY_SYNTAX = "blue.query.syntax" ;
     
-    /**
-     * Request param name for the request wait, [{@value}].
-     *
-     */
-    public static final String REQUEST_WAIT_PARAM = "blue.query.wait" ;
-
     /**
      * Request param name for the {@link BlueQuery.CallbackEvent} {@link BlueTask.TaskState}, [{@value}].
      *

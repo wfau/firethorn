@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -74,7 +72,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * MVC property for the {@link AdqlColumn} name, [{@value}].
      *
      */
-    public static final String UPDATE_NAME = "adql.column.update.name" ;
+    public static final String COLUMN_NAME_PARAM = "adql.column.update.name" ;
 
     @Override
     public AdqlColumnBean bean(final AdqlColumn entity)
@@ -137,7 +135,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param column The {@link AdqlColumn} selected using the {@Identifier} in the request path.
      * <br/>Optional {@link AdqlColumn} params :
-     * @param name  The {@link AdqlColumn} name, [{@value #UPDATE_NAME}].
+     * @param name  The {@link AdqlColumn} name, [{@value #COLUMN_NAME_PARAM}].
      * @return The updated {@link AdqlColumn} wrapped in a {@link AdqlColumnBean}.
      * 
      */
@@ -145,7 +143,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public AdqlColumnBean update(
-        @RequestParam(value=UPDATE_NAME, required=false)
+        @RequestParam(value=COLUMN_NAME_PARAM, required=false)
         final String name,
         @ModelAttribute(TARGET_ENTITY)
         final AdqlColumn column

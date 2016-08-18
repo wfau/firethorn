@@ -17,11 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlTableDataTableController;
+import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlTableVOTableController;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableIdentFactory;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
@@ -75,7 +76,11 @@ extends BaseTableBean<AdqlTable>
 
     public String getQuery()
         {
-        if (entity().greenquery() != null)
+        if (entity().bluequery() != null)
+            {
+            return entity().bluequery().link();
+            }
+        else if (entity().greenquery() != null)
             {
             return entity().greenquery().link();
             }
@@ -83,17 +88,6 @@ extends BaseTableBean<AdqlTable>
             return null ;
             }
         }
-    
-    public String getBlueQuery()
-    {
-    if (entity().bluequery() != null)
-        {
-        return entity().bluequery().link();
-        }
-    else {
-        return null ;
-        }
-    }
 
     public interface MetadataBean
     extends BaseTableBean.MetadataBean

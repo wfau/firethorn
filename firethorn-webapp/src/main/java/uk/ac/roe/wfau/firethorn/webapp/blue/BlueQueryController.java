@@ -100,11 +100,11 @@ public class BlueQueryController
         @PathVariable(value=BlueQueryModel.IDENT_FIELD)
         final String ident,
 
-        @RequestParam(value=PREV_STATUS_PARAM, required=false)
+        @RequestParam(value=STATUS_PREV_PARAM, required=false)
         final TaskState prev,
-        @RequestParam(value=NEXT_STATUS_PARAM, required=false)
+        @RequestParam(value=STATUS_NEXT_PARAM, required=false)
         final TaskState next,
-        @RequestParam(value=REQUEST_WAIT_PARAM, required=false)
+        @RequestParam(value=STATUS_WAIT_PARAM, required=false)
         final Long wait
         ) throws IdentifierNotFoundException {
         log.debug("select(String, TaskStatus, TaskStatus, Long)");
@@ -149,11 +149,11 @@ public class BlueQueryController
         @RequestParam(value=QUERY_INPUT_PARAM, required=false)
         final String input,
 
-        @RequestParam(value=PREV_STATUS_PARAM, required=false)
+        @RequestParam(value=STATUS_PREV_PARAM, required=false)
         final TaskState prev,
-        @RequestParam(value=NEXT_STATUS_PARAM, required=false)
+        @RequestParam(value=STATUS_NEXT_PARAM, required=false)
         final TaskState next,
-        @RequestParam(value=REQUEST_WAIT_PARAM, required=false)
+        @RequestParam(value=STATUS_WAIT_PARAM, required=false)
         final Long wait,
 
         @RequestParam(value=QUERY_LIMT_ROWS, required=false)

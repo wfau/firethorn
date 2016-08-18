@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -71,30 +70,17 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
 
     /**
      * MVC property for the {@link AdqlSchema} name, [{@value}].
-     * @todo Merge create, select and import.
+     * TODO Move these to a ResourceModel
      *
      */
-    public static final String SELECT_NAME = "adql.resource.schema.select.name" ;
-
-    /**
-     * MVC property for the {@link AdqlSchema} name, [{@value}].
-     * @todo Merge create, select and import.
-     *
-     */
-    public static final String CREATE_NAME = "adql.resource.schema.create.name" ;
+    public static final String SCHEMA_NAME_PARAM = "adql.resource.schema.select.name" ;
 
     /**
      * MVC property for the {@Identifier} of the {@link BaseSchema} to copy, [{@value}].
+     * TODO Move these to a ResourceModel
      * 
      */
-    public static final String IMPORT_SCHEMA_BASE = "adql.resource.schema.import.base" ;
-
-    /**
-     * MVC property for the {@link AdqlSchema} name, [{@value}].
-     * @todo Merge create, select and import.
-     *
-     */
-    public static final String IMPORT_SCHEMA_NAME = "adql.resource.schema.import.name" ;
+    public static final String SCHEMA_BASE_PARAM = "adql.resource.schema.import.base" ;
 
     @Override
     public AdqlSchemaBean bean(final AdqlSchema entity)
@@ -157,17 +143,17 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * <br/>Request path : [{@value #SELECT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
-     * @param name The {@link AdqlSchema} name to look for, [{@value #SELECT_NAME}].
+     * @param name The {@link AdqlSchema} name to look for, [{@value #SCHEMA_NAME_PARAM}].
      * @return The matching {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @throws NameNotFoundException If a matching {@link AdqlSchema} could not be found.
      * 
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
     public AdqlSchemaBean select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(SCHEMA_NAME_PARAM)
         final String name
         ) throws NameNotFoundException {
         log.debug("select(String) [{}]", name);
@@ -183,17 +169,17 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * <br/>Request path : [{@value #CREATE_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
-     * @param name The {@link AdqlSchema} name, [{@value #CREATE_NAME}].
+     * @param name The {@link AdqlSchema} name, [{@value #SCHEMA_NAME_PARAM}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @todo Rejects duplicate names.
      * 
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=CREATE_PATH, params={SCHEMA_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> create(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(value=CREATE_NAME, required=true)
+        @RequestParam(value=SCHEMA_NAME_PARAM, required=true)
         final String name
         ){
         log.debug("create(String) [{}][{}]", name);
@@ -209,8 +195,8 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * <br/>Request path : [{@value #IMPORT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
-     * @param base     The {@Identifier} of the {@link BaseSchema} to copy, [{@value #IMPORT_SCHEMA_BASE}].
-     * @param depth    The {@link TreeComponent.CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param base     The {@Identifier} of the {@link BaseSchema} to copy, [{@value #SCHEMA_BASE_PARAM}].
+     * @param depth    The {@link TreeComponent.CopyDepth} of the new {@link AdqlSchema}, [{@value #COPY_DEPTH_PARAM}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
@@ -219,13 +205,13 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_BASE_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
+        @RequestParam(value=COPY_DEPTH_PARAM, required=false)
         final TreeComponent.CopyDepth depth,
-        @RequestParam(value=IMPORT_SCHEMA_BASE, required=true)
+        @RequestParam(value=SCHEMA_BASE_PARAM, required=true)
         final String base
         ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", depth, base);
@@ -244,8 +230,8 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * <br/>Request path : [{@value #IMPORT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
-     * @param base     The The {@Identifier} of the {@link BaseSchema} to copy, [{@value #IMPORT_SCHEMA_BASE}].
-     * @param depth    The {@link TreeComponent.CopyDepth} of the new {@link AdqlSchema}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param base     The The {@Identifier} of the {@link BaseSchema} to copy, [{@value #SCHEMA_BASE_PARAM}].
+     * @param depth    The {@link TreeComponent.CopyDepth} of the new {@link AdqlSchema}, [{@value #COPY_DEPTH_PARAM}].
      * @param name     The name of the new {@link AdqlSchema}, [{@value #IMPORT_SCHEMA_NAME}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @throws EntityNotFoundException 
@@ -255,15 +241,15 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE, IMPORT_SCHEMA_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_BASE_PARAM, SCHEMA_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
+        @RequestParam(value=COPY_DEPTH_PARAM, required=false)
         final TreeComponent.CopyDepth depth,
-        @RequestParam(value=IMPORT_SCHEMA_BASE, required=true)
+        @RequestParam(value=SCHEMA_BASE_PARAM, required=true)
         final String base,
-        @RequestParam(value=IMPORT_SCHEMA_NAME, required=true)
+        @RequestParam(value=SCHEMA_NAME_PARAM, required=true)
         final String name
         ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", depth, base, name);

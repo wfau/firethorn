@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,10 +30,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.xml.MetaDocReader;
@@ -90,6 +89,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      */
     public static final String METADOC_IMPORT_BASE = "urn:schema.metadoc.base" ;
 
+    // TODO Move these to a bean factory ?
     @Override
     public AdqlSchemaBean bean(final AdqlSchema entity)
         {
@@ -98,6 +98,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
             );
         }
 
+    // TODO Move these to a bean factory ?
     @Override
     public Iterable<AdqlSchemaBean > bean(final Iterable<AdqlSchema> iter)
         {
@@ -107,7 +108,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * Get the parent entity based on the request ident.
+     * Get the parent {@link AdqlResource} based on the ident in the request.
      * @throws EntityNotFoundException
      *
      */

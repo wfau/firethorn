@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.webapp.blue.BlueQueryController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
@@ -66,7 +64,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * MVC property for the {@link AdqlResource} name, [{@value}].
      *
      */
-    public static final String CREATE_NAME = "adql.resource.create.name" ;
+    public static final String RESOURCE_NAME_PARAM = "adql.resource.create.name" ;
 
     @Override
     public AdqlResourceBean bean(final AdqlResource entity)
@@ -121,14 +119,14 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * {@link RequestMethod#POST} request to create a new {@link AdqlResource}.
      * <br/>Request path : [{@value #CREATE_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
-     * @param name The {@link AdqlResource} name, [{@value #CREATE_NAME}]
+     * @param name The {@link AdqlResource} name, [{@value #RESOURCE_NAME_PARAM}]
      * @return A new {@link AdqlResource} wrapped in an {@link AdqlResourceBean}.
      * 
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=CREATE_PATH, params={RESOURCE_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlResourceBean> create(
-        @RequestParam(value=CREATE_NAME, required=true)
+        @RequestParam(value=RESOURCE_NAME_PARAM, required=true)
         final String name
         ){
         log.debug("create(String)");

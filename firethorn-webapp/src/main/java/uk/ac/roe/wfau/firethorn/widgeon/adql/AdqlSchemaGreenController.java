@@ -69,31 +69,31 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
      * MVC property for the {@link GreenQuery} name, [{@value}].
      *
      */
-    public static final String CREATE_NAME = "adql.schema.query.create.name" ;
+    public static final String QUERY_NAME_PARAM = "adql.schema.query.create.name" ;
 
     /**
      * MVC property for the {@link GreenQuery} input, [{@value}].
      *
      */
-    public static final String CREATE_QUERY = "adql.schema.query.create.query" ;
+    public static final String QUERY_INPUT_PARAM = "adql.schema.query.create.query" ;
 
     /**
      * MVC property for the {@link GreenQuery} store, [{@value}].
      *
      */
-    public static final String CREATE_STORE = "adql.schema.query.create.store" ;
+    public static final String QUERY_STORE_PARAM = "adql.schema.query.create.store" ;
 
     /**
      * MVC property for the {@link GreenQuery.Mode} mode, [{@value}].
      *
      */
-    public static final String CREATE_MODE = "adql.schema.query.create.mode" ;
+    public static final String QUERY_MODE_PARAM = "adql.schema.query.create.mode" ;
 
     /**
      * MVC property for the {@link GreenQuery.Syntax.Level} level, [{@value}].
      *
      */
-    public static final String CREATE_LEVEL = "adql.schema.query.create.level" ;
+    public static final String QUERY_LEVEL_PARAM = "adql.schema.query.create.level" ;
 
     @Override
     public GreenQueryBean bean(final GreenQuery entity)
@@ -136,9 +136,9 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
      * <br/>Request path : [{@value #CREATE_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
-     * @param name The {@link GreenQuery} name, [{@value #CREATE_NAME}].
-     * @param name The {@link GreenQuery.Mode} mode, [{@value #CREATE_MODE}].
-     * @param name The {@link GreenQuery.Syntax.Level} level, [{@value #CREATE_LEVEL}].
+     * @param name The {@link GreenQuery} name, [{@value #QUERY_NAME_PARAM}].
+     * @param name The {@link GreenQuery.Mode} mode, [{@value #QUERY_MODE_PARAM}].
+     * @param name The {@link GreenQuery.Syntax.Level} level, [{@value #QUERY_LEVEL_PARAM}].
      * @return An {@link GreenQueryBean} wrapping the new {@link GreenQuery}.
      * @todo Rejects duplicate names.
      * 
@@ -148,13 +148,13 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
     public ResponseEntity<GreenQueryBean> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(value=CREATE_QUERY, required=true)
+        @RequestParam(value=QUERY_INPUT_PARAM, required=true)
         final String query,
-        @RequestParam(value=CREATE_NAME, required=false)
+        @RequestParam(value=QUERY_NAME_PARAM, required=false)
         final String name,
-        @RequestParam(value=CREATE_MODE, required=false)
+        @RequestParam(value=QUERY_MODE_PARAM, required=false)
         final GreenQuery.Mode mode,
-        @RequestParam(value=CREATE_LEVEL, required=false)
+        @RequestParam(value=QUERY_LEVEL_PARAM, required=false)
         final GreenQuery.Syntax.Level level
         ) throws QueryProcessingException {
         return created(
