@@ -35,9 +35,9 @@
     adql.schema.query.create.mode   adql.query.mode
     adql.schema.query.create.level  adql.query.syntax
 
-
     adql.query.update.name          adql.query.name
     adql.query.update.query         adql.query.input
+    adql.query.update.status        adql.query.status
 
     adql.query.update.delay.first   adql.query.delay.first
     adql.query.update.delay.every   adql.query.delay.every

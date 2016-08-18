@@ -31,8 +31,8 @@ echo "--------"
 curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   "adql.schema.query.create.mode=${adqlmode:?}" \
-    --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \
+    --data   "adql.query.mode=${adqlmode:?}" \
+    --data-urlencode "adql.query.input@${adqlfile:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
      | ./pp | tee query-job.json
 

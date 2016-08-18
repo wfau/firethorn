@@ -91,7 +91,7 @@ extends AbstractEntityController<GreenQuery, GreenQueryBean>
      * @see GreenQuery#status(Status)
      *
      */
-    public static final String UPDATE_STATUS_PARAM = "adql.query.update.status" ;
+    public static final String UPDATE_STATUS_PARAM = "adql.query.status" ;
 
     /**
      * MVC property for the {@link HttpRequest} timeout, [{@value}].

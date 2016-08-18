@@ -66,9 +66,9 @@ schema_import_schema_base = "adql.schema.table.import.base"
 schema_import_uri = "/tables/import"
 
 query_create_uri = "/queries/create"
-query_name_param = "adql.resource.query.create.name"
-query_param = "adql.resource.query.create.query"
-query_status_update = "adql.query.update.status"
+query_name_param = "adql.query.name"
+query_param = "adql.query.input"
+query_status_update = "adql.query.status"
 
 schema_create_uri = '/schemas/create'
 table_create_uri = '/tables/create'

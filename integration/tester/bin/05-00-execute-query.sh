@@ -29,7 +29,7 @@ curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.schema.query.create.rowid=${rowidcol:?}" \
-    --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \
+    --data-urlencode "adql.query.input@${adqlfile:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
      | bin/pp | tee query-job.json
 

@@ -26,7 +26,7 @@ adqltext=${1:?}
 curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data-urlencode "adql.schema.query.create.query=${adqltext:?}" \
+    --data-urlencode "adql.query.input=${adqltext:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
      | bin/pp | tee query-job.json
 

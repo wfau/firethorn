@@ -34,8 +34,8 @@ EOF
 #
 # Create the ADQL query.
 POST "${atlasschema?}/queries/create" \
-    --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
-    --data-urlencode "adql.schema.query.create.query@atlas-query-001.adql" \
+    --data-urlencode "adql.query.name=query-$(unique)" \
+    --data-urlencode "adql.query.input@atlas-query-001.adql" \
     | tee atlas-query.json | ./pp
 atlasquery=$(cat atlas-query.json | ident)
 

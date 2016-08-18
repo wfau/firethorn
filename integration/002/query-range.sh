@@ -33,8 +33,8 @@ EOF
 POST "${queryschema?}/queries/create" \
     --header "firethorn.auth.identity:${identity}" \
     --header "firethorn.auth.community:${community}" \
-    --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
-    --data-urlencode "adql.schema.query.create.query@atlas-query-00x.adql" \
+    --data-urlencode "adql.query.name=query-$(unique)" \
+    --data-urlencode "adql.query.input@atlas-query-00x.adql" \
     | tee atlas-query.json | ./pp
 atlasquery=$(cat atlas-query.json | ident)
 

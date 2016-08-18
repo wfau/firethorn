@@ -87,7 +87,7 @@ runquery()
     local query=${1?}
     local status=$(
         POST "${query?}" \
-            --data-urlencode "adql.query.update.status=RUNNING" \
+            --data-urlencode "adql.query.status=RUNNING" \
             | status
             )
 

@@ -34,8 +34,8 @@ EOF
 #
 # Create the ADQL query.
 POST "${wfauschema?}/queries/create" \
-    --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
-    --data-urlencode "adql.schema.query.create.query@wfau-query-001.adql" \
+    --data-urlencode "adql.query.name=query-$(unique)" \
+    --data-urlencode "adql.query.input@wfau-query-001.adql" \
     | tee wfau-query.json | ./pp
 wfauquery=$(cat wfau-query.json | ident)
 

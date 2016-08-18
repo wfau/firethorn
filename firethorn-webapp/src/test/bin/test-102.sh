@@ -102,8 +102,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data-urlencode "adql.resource.query.create.name=test-query" \
-    --data-urlencode "adql.resource.query.create.query@-" \
+    --data-urlencode "adql.query.name=test-query" \
+    --data-urlencode "adql.query.input@-" \
     "${basename}/adql/resource/4/queries/create"  \
 << EOF
     SELECT
@@ -132,8 +132,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data-urlencode "adql.resource.query.create.name=test-query" \
-    --data-urlencode "adql.resource.query.create.query@-" \
+    --data-urlencode "adql.query.name=test-query" \
+    --data-urlencode "adql.query.input@-" \
     "${basename}/adql/resource/4/queries/create"  \
 << EOF
     SELECT

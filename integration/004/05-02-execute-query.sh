@@ -26,7 +26,7 @@ adqltext=${1:?}
 curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data-urlencode "adql.schema.query.create.query=${adqltext:?}" \
+    --data-urlencode "adql.query.input=${adqltext:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
      | ./pp | tee query-job.json
 
@@ -37,9 +37,9 @@ queryident=$(
 curl \
     --header "firethorn.auth.identity:${identity:?}"    \
     --header "firethorn.auth.community:${community:?}"  \
-    --data-urlencode "adql.query.update.delay.first=10000" \
-    --data-urlencode "adql.query.update.delay.every=10" \
-    --data-urlencode "adql.query.update.delay.last=10000"  \
+    --data-urlencode "adql.query.delay.first=10000" \
+    --data-urlencode "adql.query.delay.every=10" \
+    --data-urlencode "adql.query.delay.last=10000"  \
     "${endpointurl:?}/${queryident:?}" \
      | ./pp
 
