@@ -31,8 +31,13 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Delays;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Limits;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -421,6 +426,8 @@ implements AdqlResource
                     AdqlResourceEntity.this
                     );
                 }
+            /*
+             * 
             @Override
             public BlueQuery create(final String input)
             throws InvalidRequestException, InternalServerErrorException
@@ -462,6 +469,24 @@ implements AdqlResource
                 return services().blues().create(
                     AdqlResourceEntity.this,
                     input,
+                    limits,
+                    delays,
+                    next,
+                    wait
+                    );
+                }
+             * 
+             */
+
+            @Override
+            public BlueQuery create(String input, AdqlQueryBase.Mode mode, AdqlQueryBase.Syntax.Level syntax, AdqlQueryBase.Limits limits, AdqlQueryBase.Delays delays, BlueTask.TaskState next, Long wait)
+                throws InvalidRequestException, InternalServerErrorException
+                {
+                return services().blues().create(
+                    AdqlResourceEntity.this,
+                    input,
+                    mode,
+                    syntax,    
                     limits,
                     delays,
                     next,

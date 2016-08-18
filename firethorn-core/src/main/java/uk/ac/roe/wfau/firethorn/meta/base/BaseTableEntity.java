@@ -192,12 +192,6 @@ implements BaseTable<TableType, ColumnType>
         }
 
     @Override
-    public String fullname()
-        {
-        return namebuilder().toString();
-        }
-
-    @Override
     public abstract BaseTable<?, ?> base();
     @Override
     public abstract BaseTable<?, ?> root();

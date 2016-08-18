@@ -44,8 +44,12 @@ public class InvalidQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			INVALID_QUERY,
-			null,
-			null
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -69,6 +73,10 @@ public class InvalidQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			INVALID_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);
@@ -95,6 +103,10 @@ public class InvalidQueryTestCase
 			testspace(),
 			INVALID_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -119,6 +131,10 @@ public class InvalidQueryTestCase
 			testspace(),
 			INVALID_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -142,6 +158,10 @@ public class InvalidQueryTestCase
 			testspace(),
 			INVALID_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -164,6 +184,10 @@ public class InvalidQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			INVALID_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);
@@ -190,6 +214,10 @@ public class InvalidQueryTestCase
 			testspace(),
 			INVALID_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -212,6 +240,10 @@ public class InvalidQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			INVALID_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);

@@ -97,12 +97,6 @@ extends TreeComponent
     public Schemas<SchemaType> schemas();
 
     /**
-     * The fully qualified resource name.
-     *
-     */
-    public StringBuilder namebuilder();
-
-    /**
      * The {@link BaseResource} metadata.
      *
      */

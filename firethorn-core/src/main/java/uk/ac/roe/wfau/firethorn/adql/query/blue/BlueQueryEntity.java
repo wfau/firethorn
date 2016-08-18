@@ -254,6 +254,8 @@ implements BlueQuery
             return BlueQueryEntity.class;
             }
 
+        /*
+         * 
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource source, final String input, final BlueQuery.TaskState next, final Long wait)
@@ -283,10 +285,12 @@ implements BlueQuery
                 wait
                 );
             }
+         * 
+         */
 
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
             log.debug("create(AdqlResource, String, Limits, Delays, TaskState, Long)");

@@ -192,22 +192,11 @@ extends TreeComponent
     public BlueQuery bluequery();
 
     /**
-     * The OGSA-DAI DQP table alias.
+     * The unique name.
+     * TODO Rename this to uniquename ?
      *
      */
     public String alias();
-
-    /**
-     * The fully qualified table name.
-     *
-     */
-    public StringBuilder namebuilder();
-
-    /**
-     * The fully qualified table name.
-     *
-     */
-    public String fullname();
 
     /**
      * The {@link BaseTable} metadata.

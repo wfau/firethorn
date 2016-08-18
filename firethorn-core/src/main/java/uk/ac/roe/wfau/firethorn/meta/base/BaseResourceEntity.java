@@ -91,4 +91,9 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
             this.name()
             );
         }
+    @Override
+    public String fullname()
+        {
+        return this.name();
+        }
     }

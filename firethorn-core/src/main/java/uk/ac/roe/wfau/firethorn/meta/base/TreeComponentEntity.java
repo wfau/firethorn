@@ -121,4 +121,10 @@ implements TreeComponent
         {
         this.depth = type;
         }
+
+    @Override
+    public String fullname()
+        {
+        return namebuilder().toString();
+        }
     }

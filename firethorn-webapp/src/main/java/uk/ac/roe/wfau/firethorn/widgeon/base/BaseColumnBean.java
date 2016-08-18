@@ -67,7 +67,7 @@ extends NamedEntityBeanImpl<ColumnType>
 
     public String getFullname()
         {
-        return entity().namebuilder().toString();
+        return entity().fullname();
         }
 
     public String getDepth()

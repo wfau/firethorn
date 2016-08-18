@@ -23,6 +23,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateRequestException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
@@ -43,6 +44,10 @@ public class EmptyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
+            null,
+            null,
+            null,
+            null,
             null,
             null,
             null
@@ -70,6 +75,10 @@ public class EmptyQueryTestCase
             testspace(),
             null,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -95,6 +104,10 @@ public class EmptyQueryTestCase
             testspace(),
             null,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -116,6 +129,10 @@ public class EmptyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
             testspace(),
+            null,
+            null,
+            null,
+            null,
             null,
             null,
             null
@@ -141,6 +158,10 @@ public class EmptyQueryTestCase
             testspace(),
             null,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -162,6 +183,10 @@ public class EmptyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
             testspace(),
+            null,
+            null,
+            null,
+            null,
             null,
             null,
             null
@@ -189,6 +214,10 @@ public class EmptyQueryTestCase
             testspace(),
             null,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -210,6 +239,10 @@ public class EmptyQueryTestCase
         {
     	final BlueQuery query = factories().blues().entities().create(
             testspace(),
+            null,
+            null,
+            null,
+            null,
             null,
             null,
             null
