@@ -239,15 +239,17 @@ EOF
 # Build our webapp containers.
 #[user@desktop] 
 
+# TODO Experiment using unix: sockets
+
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         pushd firethorn-ogsadai/webapp
-            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+            mvn -D "docker.host=tcp://${dockerip:?}:2375" docker:package
         popd
         
         pushd firethorn-webapp
-            mvn -D "docker.host=http://${dockerip:?}:2375" docker:package
+            mvn -D "docker.host=tcp://${dockerip:?}:2375" docker:package
         popd
 
     popd
@@ -357,6 +359,7 @@ EOF
 #[root@tester]
 
         curl \
+            --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             "${endpointurl:?}/system/info" \
@@ -400,6 +403,7 @@ EOF
         # Import the static VOSI file
         vosifile='vosi/gavo/gavo-tableset.xml'
         curl \
+            --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --form   "vosi.tableset=@${vosifile:?}" \
@@ -411,6 +415,7 @@ EOF
         gavospace=${ivoaspace:?}
         schemaname=twomass
         curl \
+            --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --data   "ivoa.resource.schema.name=${schemaname:?}" \
@@ -434,6 +439,7 @@ EOF
 
         adqlname=twomass
         curl \
+            --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
@@ -470,6 +476,7 @@ EOF
         # Import the static VOSI file
         vosifile='vosi/gaia/gaia-tableset.xml'
         curl \
+            --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --form   "vosi.tableset=@${vosifile:?}" \
@@ -481,6 +488,7 @@ EOF
         gaiaspace=${ivoaspace:?}
         schemaname=public
         curl \
+            --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --data   "ivoa.resource.schema.name=${schemaname:?}" \
@@ -497,6 +505,9 @@ EOF
 
         source "bin/04-01-create-query-space.sh"  'Test workspace'
         source "bin/04-03-import-query-schema.sh" "${atlasadql:?}"   'ATLASDR1' 'atlas'
+
+# BUG The schema is called ATLASDR1 not atlas.
+# Webapp is ignoring the name.
 
         #
         # BUG - the param names are different for adql and ivoa schema/select 
@@ -534,7 +545,7 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 2000 ra, dec FROM atlas.atlasSource" \
+            --data "adql.query.input=SELECT TOP 2000 ra, dec FROM ATLASDR1.atlasSource" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \

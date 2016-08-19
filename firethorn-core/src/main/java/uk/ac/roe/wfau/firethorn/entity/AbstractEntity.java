@@ -75,7 +75,7 @@ implements Entity
      * Hibernate table name prefix.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT020001";
+    protected static final String DB_TABLE_PREFIX = "FT020020";
 
     /**
      * Hibernate column mapping.
@@ -266,6 +266,8 @@ implements Entity
      * Note - unique=false because @Id already adds a unique primary key.
      * https://hibernate.onjira.com/browse/HHH-5376
      * http://sourceforge.net/projects/hsqldb/forums/forum/73674/topic/4537620
+     * Support for 'hilo' generator has been removed
+     * http://stackoverflow.com/questions/33103355/hilo-generator-strategy-not-working
      *
      */
     @Id
@@ -280,7 +282,7 @@ implements Entity
         )
     @GenericGenerator(
         name="ident-generator",
-        strategy="hilo"
+        strategy="seqhilo"
         )
     private Long ident ;
 
