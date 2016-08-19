@@ -65,7 +65,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
      * MVC property for the {@link JdbcSchema} name.
      *
      */
-    public static final String SCHEMA_NAME_PARAM = "jdbc.resource.schema.select.name" ;
+    public static final String SCHEMA_NAME_PARAM = "jdbc.resource.schema.select.schema" ;
 
     /**
      * MVC property for the catalog name.

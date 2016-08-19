@@ -450,10 +450,10 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=SELECT TOP 2000 raj2000, dej2000 FROM twomass.data" \
-            --data "blue.query.next.status=COMPLETED" \
-            --data "blue.query.wait=600000" \
-            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            --data "adql.query.input=SELECT TOP 2000 raj2000, dej2000 FROM twomass.data" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
 
 # --------------------------------------
@@ -520,10 +520,23 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=SELECT TOP 2000 ra, dec FROM public.tmass_original_valid" \
-            --data "blue.query.next.status=COMPLETED" \
-            --data "blue.query.wait=600000" \
-            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            --data "adql.query.input=SELECT TOP 2000 ra, dec FROM public.tmass_original_valid" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
 
+# -----------------------------------------------------
+# Test query ...
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 ra, dec FROM atlas.atlasSource" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
 

@@ -81,7 +81,9 @@ implements HandlerInterceptor
             {
             log.debug("Operation threw an exception");
             log.debug(" type [{}]", ouch.getClass().getName());
-            log.debug(" text [{}]", ouch.getMessage());
+            // Include the stack trace in the message
+            // http://slf4j.org/faq.html#paramException
+            log.debug(" text [{}]", ouch.getMessage(), ouch);
             }
         }
     }

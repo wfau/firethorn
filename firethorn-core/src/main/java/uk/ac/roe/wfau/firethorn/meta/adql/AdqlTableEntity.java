@@ -291,12 +291,18 @@ public class AdqlTableEntity
         @CreateMethod
         public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
-            return create(
+            final AdqlTableEntity table = new AdqlTableEntity(
                 depth,
+                (BlueQuery) null,
                 schema,
                 base,
                 name
                 );
+            super.insert(
+                table
+                );
+            table.realize();
+            return table ;
             }
 
         @Override
@@ -609,6 +615,7 @@ public class AdqlTableEntity
             schema,
             name
             );
+        this.bluequery   = null;
         this.greenquery  = query;
         this.base   = base;
         this.schema = schema;
