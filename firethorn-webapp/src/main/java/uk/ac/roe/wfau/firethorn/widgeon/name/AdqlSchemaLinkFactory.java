@@ -78,7 +78,7 @@ implements AdqlSchema.LinkFactory
      *
      */
     @Deprecated
-    public static final String SCHEMA_BLUE_PATH = SCHEMA_PATH + "/blues" ;
+    public static final String SCHEMA_BLUE_PATH = SCHEMA_PATH + "/queries" ;
 
     @Override
     public String link(final AdqlSchema entity)
