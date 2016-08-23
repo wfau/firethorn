@@ -73,6 +73,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * TODO Move these to a ResourceModel
      *
      */
+    public static final String SCHEMA_CREATE_NAME_PARAM = "adql.schema.name" ;
     public static final String SCHEMA_SELECT_NAME_PARAM = "adql.resource.schema.select.name" ;
     public static final String SCHEMA_IMPORT_NAME_PARAM = "adql.resource.schema.import.name" ;
 
@@ -176,11 +177,11 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={SCHEMA_SELECT_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=CREATE_PATH, params={SCHEMA_CREATE_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> create(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(value=SCHEMA_SELECT_NAME_PARAM, required=true)
+        @RequestParam(value=SCHEMA_CREATE_NAME_PARAM, required=true)
         final String name
         ){
         log.debug("create(String) [{}][{}]", name);
