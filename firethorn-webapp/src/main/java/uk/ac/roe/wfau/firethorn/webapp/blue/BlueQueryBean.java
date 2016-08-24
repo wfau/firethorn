@@ -30,6 +30,9 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean.FormatsBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
 
 /**
  * An {@link EntityBean} wrapper for an {@link BlueQuery}.
@@ -342,6 +345,20 @@ public class BlueQueryBean
          *
          */
         public ResultState getState();
+
+        /**
+		 * Direct access to the result data. 
+		 * 
+		 */
+        public interface Formats extends AdqlTableBean.FormatsBean
+        	{
+        	}
+        
+        /**
+		 * Direct access to the result data. 
+		 * 
+		 */
+        public Formats getFormats();
         
         }
 
@@ -374,6 +391,42 @@ public class BlueQueryBean
                 {
                 return entity().results().state();
                 }
+			@Override
+			public Formats getFormats()
+				{
+				return new Formats()
+					{
+					private AdqlTable adql = entity().results().adql();
+					
+					@Override
+					public String getVotable()
+						{
+						if (adql != null)
+							{
+							return adql.link().concat(
+			                    AdqlTableLinkFactory.VOTABLE_NAME
+			                    );
+							}
+						else {
+							return null;
+							}
+						}
+
+					@Override
+					public String getDatatable()
+						{
+						if (adql != null)
+							{
+							return adql.link().concat(
+								AdqlTableLinkFactory.DATATABLE_NAME
+								);
+							}
+						else {
+							return null;
+							}
+						}
+					};
+				}
             };
         }
     
