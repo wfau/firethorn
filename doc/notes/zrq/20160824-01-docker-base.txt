@@ -1,0 +1,197 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create a new container.
+#[user@trop01] 
+
+    docker run \
+        -it \
+        --rm \
+        --volume /var/lib/libvirt/images:/images \
+        --volume /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
+        fedora:23 \
+            bash        
+
+# -----------------------------------------------------
+# Create a new virtual machine.
+#[user@trop01] 
+
+    createvm
+    
+        INFO : Node name [Gworewia]
+        INFO : Base name [fedora-23-docker-20160822.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-23-docker-20160822.qcow]
+        INFO : Disc name [Gworewia.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to ur virtual machine.
+#[user@trop01] 
+
+    ssh Gworewia
+
+# -----------------------------------------------------
+# Set our target filenames.
+#[root@virtual] 
+
+    oldfile=fedora-23-docker-20160822.qcow
+    newfile=fedora-23-docker-20160824.qcow
+
+# -----------------------------------------------------
+# Install libvirt service
+#[root@virtual] 
+
+    dnf install -y libvirt
+
+    systemctl start libvirtd.service
+
+# -----------------------------------------------------
+# Install libvirt tools
+#[root@virtual] 
+
+    dnf install -y libguestfs-tools
+
+# -----------------------------------------------------
+# Download our image
+#[root@virtual] 
+
+    dnf install -y wget
+
+    mkdir -p /images/base
+    pushd /images/base
+
+        wget http://data.metagrid.co.uk/ischnura/base/${oldfile:?}.gz
+
+        gunzip ${oldfile:?}.gz
+
+    popd
+
+# -----------------------------------------------------
+# Create our new image.
+#[root@virtual] 
+
+    pushd /images/base
+
+        qemu-img \
+            create \
+                -f qcow2 \
+                -b "${oldfile}" \
+                "${newfile:?}"
+
+        qemu-img \
+            info \
+                --backing-chain \
+                "${newfile:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Download our SSH keys.
+#[root@virtual] 
+
+    dnf install -y wget
+    
+    wget -P /tmp http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.rsa.pub
+    wget -P /tmp http://data.metagrid.co.uk/sshkeys/stv.roe.ac.uk.rsa.pub
+    wget -P /tmp http://data.metagrid.co.uk/sshkeys/msh.roe.ac.uk.rsa.pub
+
+# -----------------------------------------------------
+# Add our SSH keys and schedule a restorecon.
+#[root@virtual] 
+
+    pushd /images/base
+    
+        virt-sysprep \
+            --add "${newfile:?}" \
+            --root-password random \
+            --ssh-inject root:file:/tmp/dmr.roe.ac.uk.rsa.pub \
+            --ssh-inject root:file:/tmp/stv.roe.ac.uk.rsa.pub \
+            --ssh-inject root:file:/tmp/msh.roe.ac.uk.rsa.pub \
+            --firstboot-command 'restorecon -Rv /root/.ssh'
+
+    popd
+
+# virt-sysprep: Setting random password of root to kqkQtvVCKaEGrCb0
+
+# -----------------------------------------------------
+# Pull the new image to our host.
+#[user@trop01] 
+
+    newfile=fedora-23-docker-20160824.qcow
+
+    scp "Gworewia:/images/base/${newfile:?}" /tmp
+
+    sudo -s
+
+        newfile=fedora-23-docker-20160824.qcow
+
+        pushd /var/lib/libvirt/images/base
+        
+            mv "/tmp/${newfile:?}" .
+
+            qemu-img \
+                info \
+                    --backing-chain \
+                    "${newfile:?}"
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Try using the new image.
+#[user@trop01] 
+
+    source ${HOME:?}/helio.settings
+
+    virsh \
+        -c ${connection:?} \
+        vol-list \
+            --pool base
+
+         Name                 Path                                    
+        ------------------------------------------------------------------------------
+         fedora-23-docker-20160822.qcow /var/lib/libvirt/images/base/fedora-23-docker-20160822.qcow
+
+    virsh \
+        -c ${connection:?} \
+        pool-refresh \
+            base
+
+    virsh \
+        -c ${connection:?} \
+        vol-list \
+            --pool base
+
+         Name                 Path                                    
+        ------------------------------------------------------------------------------
+         fedora-23-docker-20160822.qcow /var/lib/libvirt/images/base/fedora-23-docker-20160822.qcow
+         fedora-23-docker-20160824.qcow /var/lib/libvirt/images/base/fedora-23-docker-20160824.qcow
+
+    createvm
+
+    ssh Erennon
+
+
+
+
