@@ -347,17 +347,17 @@ public class BlueQueryBean
         public ResultState getState();
 
         /**
-		 * Direct access to the result data. 
-		 * 
-		 */
+    	 * Direct access to the result data. 
+    	 * 
+    	 */
         public interface Formats extends AdqlTableBean.FormatsBean
-        	{
-        	}
+            {
+            }
         
         /**
-		 * Direct access to the result data. 
-		 * 
-		 */
+    	 * Direct access to the result data. 
+    	 * 
+    	 */
         public Formats getFormats();
         
         }
@@ -391,42 +391,42 @@ public class BlueQueryBean
                 {
                 return entity().results().state();
                 }
-			@Override
-			public Formats getFormats()
-				{
-				return new Formats()
-					{
-					private AdqlTable adql = entity().results().adql();
-					
-					@Override
-					public String getVotable()
-						{
-						if (adql != null)
-							{
-							return adql.link().concat(
-			                    AdqlTableLinkFactory.VOTABLE_NAME
-			                    );
-							}
-						else {
-							return null;
-							}
-						}
+    		@Override
+    		public Formats getFormats()
+    			{
+    			return new Formats()
+    				{
+    				private AdqlTable adql = entity().results().adql();
+    				
+    				@Override
+    				public String getVotable()
+    					{
+    					if (adql != null)
+    						{
+    						return adql.link().concat(
+    		                    AdqlTableLinkFactory.VOTABLE_NAME
+    		                    );
+    						}
+    					else {
+    						return null;
+    						}
+    					}
 
-					@Override
-					public String getDatatable()
-						{
-						if (adql != null)
-							{
-							return adql.link().concat(
-								AdqlTableLinkFactory.DATATABLE_NAME
-								);
-							}
-						else {
-							return null;
-							}
-						}
-					};
-				}
+    				@Override
+    				public String getDatatable()
+    					{
+    					if (adql != null)
+    						{
+    						return adql.link().concat(
+    							AdqlTableLinkFactory.DATATABLE_NAME
+    							);
+    						}
+    					else {
+    						return null;
+    						}
+    					}
+    				};
+    			}
             };
         }
     
