@@ -288,7 +288,7 @@ implements BlueQuery
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
-            log.debug("create(AdqlResource, String, Limits, Delays, TaskState, Long)");
+            log.debug("create(AdqlResource, String, Mode, Syntax, Limits, Delays, TaskState, Long)");
             log.debug("  state [{}]", next);
             log.debug("  wait  [{}]", wait);
 
@@ -324,6 +324,8 @@ implements BlueQuery
                 				inner,
                 				source,
                 				input,
+                				mode,
+                				syntax,
                 				limits,
                 				delays
                 				)
@@ -663,13 +665,14 @@ implements BlueQuery
      * Protected constructor.
      * 
      */
-    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
+    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
     throws InvalidStateTransitionException
         {
         super(
     		owner
             );
-        this.mode = Mode.AUTO;
+        this.mode = mode;
+        this.level = syntax ;
         this.source = source;
         this.limits(
             limits
@@ -770,15 +773,16 @@ implements BlueQuery
          nullable = false,
          updatable = true
          )
-     @Enumerated(
+    @Enumerated(
          EnumType.STRING
          )
-     private Mode mode ;
-     @Override
-     public Mode mode()
-         {
-         return this.mode;
-         }
+    private Mode mode = Mode.AUTO;
+    // TODO Make this configurable ?
+    @Override
+    public Mode mode()
+        {
+        return this.mode;
+        }
     
     /**
      * Our JDBC table.
@@ -1061,8 +1065,6 @@ implements BlueQuery
                     }
 
                 // Legacy SQLServer syntax
-                // TODO This should be part of the primary AqdlResource.
-                // TODO Platform specific pre-processing attached to the AdqlResource.
                 if (this.syntax().level() == Level.LEGACY)
                     {
                     //
@@ -1208,8 +1210,9 @@ implements BlueQuery
     @Enumerated(
         EnumType.STRING
         )
-    private Syntax.Level level ;
-
+    private Syntax.Level level = Syntax.Level.LEGACY;
+    // TODO Make this configurable ?
+    
     @Transient
     private final List<String> warnings = new ArrayList<String>();
     public void warning(final String warning)
