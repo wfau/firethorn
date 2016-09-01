@@ -1,0 +1,61 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Get our token
+    project=fcef6dd450f64a1ab4ffa5a7234c4161
+    authurl=http://local.keystone.ecdf.ed.ac.uk:5000/v2.0
+
+    #
+    # Create the image record.
+    tmpfile=$(mktemp)
+    cat > "${tmpfile:?}" << EOF
+        {
+        "container_format": "bare",
+        "disk_format": "qcow2",
+        "name": "fedora-23-docker-20160822",
+        }
+    EOF
+
+    curl \
+        --include \
+        --header "X-Auth-Token: $token" \
+        --data "@${tmpfile:?}" \
+        http://os-vrrp.ecdf.ed.ac.uk:9292/v2/images
+
+
+
+
+
+
+    #
+    # Upload the image content.
+    # http://developer.openstack.org/api-ref/image/v2/index.html?expanded=create-an-image-detail,upload-binary-image-data-detail#images
+
+    curl -i -X PUT \
+        -H "X-Auth-Token: $token" \
+        -H "Content-Type: application/octet-stream" \
+        -d @/home/glance/ubuntu-12.10.qcow2 \
+       $image_url/v2/images/{image_id}/file
+       
+       
+
