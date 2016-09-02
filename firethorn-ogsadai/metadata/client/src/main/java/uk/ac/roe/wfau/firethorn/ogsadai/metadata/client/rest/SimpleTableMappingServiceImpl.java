@@ -48,10 +48,9 @@ implements TableMappingService
      * Protected constructor.
      *
      */
-    protected SimpleTableMappingServiceImpl(final String endpoint, final RequestDetails request)
+    protected SimpleTableMappingServiceImpl(final RequestDetails request)
         {
         super(
-            endpoint,
             request
             );
         }

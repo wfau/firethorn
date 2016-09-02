@@ -48,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaDQPResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaExecResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
@@ -715,7 +716,30 @@ public class TestFactories
         @Component
         public static class ResourceFactories
             {
+            @Component
+            public static class DQPResourceFactories
+                {
+                @Component
+                public static class IdentFactory
+                extends AbstractIdentFactory<OgsaDQPResource>
+                implements OgsaDQPResource.IdentFactory
+                    {
+                    }
+                @Component
+                public static class LinkFactory
+                extends MockLinkFactory<OgsaExecResource>
+                implements OgsaExecResource.LinkFactory
+                    {
+                    public LinkFactory()
+                        {
+                        super(
+                            "/ogsa/dqp"
+                            );
+                        }
+                    }
+                }
 
+            
             @Component
             public static class ExecResourceFactories
                 {

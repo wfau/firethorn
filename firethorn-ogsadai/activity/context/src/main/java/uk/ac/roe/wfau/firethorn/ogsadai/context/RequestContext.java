@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue;
+package uk.ac.roe.wfau.firethorn.ogsadai.context;
 
 import uk.org.ogsadai.authorization.SecurityContext;
 
@@ -89,13 +89,6 @@ extends SecurityContext
      */
     public StringBuilder endpoint();
 
-    /**
-     * Our callback handler.
-     * 
-     */
-    public CallbackHandler handler();
-    
-    
     /**
      * Get the query identifier.
      *

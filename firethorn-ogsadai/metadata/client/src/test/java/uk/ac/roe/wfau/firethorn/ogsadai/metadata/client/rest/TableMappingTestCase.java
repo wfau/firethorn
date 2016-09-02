@@ -21,7 +21,6 @@ public class TableMappingTestCase
     public void test000()
         {
         final SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
-            "http://data.metagrid.co.uk/wfau/firethorn/test",
             null
             );
 
@@ -49,7 +48,6 @@ public class TableMappingTestCase
     public void test001()
         {
         final SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
-            "http://data.metagrid.co.uk/wfau/firethorn/test",
             null
             );
 
@@ -77,7 +75,6 @@ public class TableMappingTestCase
     public void test002()
         {
         final SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
-            "http://localhost:8080/firethorn",
             null
             );
         final TableMapping bean = service.getTableMapping(

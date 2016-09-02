@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue;
+package uk.ac.roe.wfau.firethorn.ogsadai.context;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,7 +44,7 @@ implements SecurityContextFactory
 	 * The default path, {@value}.
 	 * 
 	 */
-	protected static final String DEFAULT_BASE = "/firethorn" ;
+	protected static final String DEFAULT_BASE = "firethorn" ;
 	
 	/**
 	 * Public constructor. 
@@ -125,13 +125,6 @@ implements SecurityContextFactory
                     builder.append("/");
                     builder.append(this.base);
 
-                    builder.append(
-                        "/blue/query/callback/"
-                        );
-                    builder.append(
-                        ident()
-                        );
-
                     log.debug("endpoint [" + builder.toString() + "]");
                     return builder ;
                     }
@@ -142,6 +135,11 @@ implements SecurityContextFactory
 			    {
 			    return this.builder;
 			    }
+            @Override
+            public StringBuilder endpoint()
+                {
+                return this.builder.endpoint();
+                }
 
 			private String ident;
 			@Override
@@ -154,18 +152,6 @@ implements SecurityContextFactory
 				{
 				this.ident = ident;
 				}
-            @Override
-            public CallbackHandler handler()
-                {
-                return new CallbackHandler(
-                    this
-                    );
-                }
-            @Override
-            public StringBuilder endpoint()
-                {
-                return this.builder.endpoint();
-                }
 			};
 		}
 	}

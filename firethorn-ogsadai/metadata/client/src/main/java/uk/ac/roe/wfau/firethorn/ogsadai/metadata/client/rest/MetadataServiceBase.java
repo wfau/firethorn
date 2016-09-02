@@ -25,6 +25,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
+import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.dqp.common.RequestDetails;
 
 /**
@@ -64,34 +66,44 @@ class MetadataServiceBase
      * Protected constructor.
      *
      */
-    protected MetadataServiceBase(final String endpoint, final RequestDetails request)
+    protected MetadataServiceBase(final RequestDetails request)
         {
         log.debug("MetadataServiceBase(String, RequestDetails)");
-        log.debug("  Endpoint [" + endpoint + "]");
         log.debug("  Request  [" + request  + "]");
         this.request  = request  ;
-        this.endpoint = endpoint ;
 
+        final SecurityContext security = request.getSecurityContext();
+        if (security != null)
+            {
+            if (security instanceof RequestContext)
+                {
+                this.context = (RequestContext) security;
+                }
+            }
         }
 
-    private final RequestDetails request ;
-    public  RequestDetails request()
+    private RequestContext context ;
+    public RequestContext context()
+        {
+        return this.context;
+        }
+
+    private RequestDetails request ;
+    public RequestDetails request()
         {
         return this.request ;
         }
 
-    private final String endpoint ;
-    public  String endpoint()
+    public String endpoint()
         {
-        return this.endpoint ;
+        return this.context.endpoint().toString();
         }
 
-    public  String endpoint(final String path)
+    public String endpoint(final String path)
         {
-        final StringBuilder builder = new StringBuilder(
-            this.endpoint
-            );
-        if (this.endpoint.endsWith("/"))
+        final StringBuilder builder = this.context.endpoint();
+
+        if (builder.toString().endsWith("/"))
             {
             if (path.startsWith("/"))
                 {

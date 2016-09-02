@@ -41,10 +41,9 @@ implements StatisticsService
      *
      *
      */
-    public StatisticsServiceImpl(final String endpoint, final RequestDetails request)
+    public StatisticsServiceImpl(final RequestDetails request)
         {
         super(
-            endpoint,
             request
             );
         }

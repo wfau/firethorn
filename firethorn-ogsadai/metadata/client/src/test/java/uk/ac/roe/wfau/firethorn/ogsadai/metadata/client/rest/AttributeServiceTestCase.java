@@ -29,7 +29,6 @@ public class AttributeServiceTestCase
     public void test000()
         {
         final SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
-            "http://data.metagrid.co.uk/wfau/firethorn/test/",
             null
             );
         final Attribute attrib = service.getAttribute(
@@ -53,7 +52,6 @@ public class AttributeServiceTestCase
     public void test001()
         {
         final SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
-            "http://localhost:8080/firethorn/",
             null
             );
         final Attribute attrib = service.getAttribute(
@@ -84,7 +82,6 @@ public class AttributeServiceTestCase
     public void test002()
         {
         final SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
-            "http://localhost:8080/firethorn/",
             null
             );
         final Iterable<Attribute> iter = service.getAttributes(

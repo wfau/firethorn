@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource.Endpoint;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceWorkflow;
 
@@ -394,7 +394,7 @@ public class OgsaIvoaResourceEntity
                         );
                     }
     
-                final SimpleResourceWorkflowResult response = workflow.execute(
+                final ResourceWorkflowResult response = workflow.execute(
                     new IvoaCreateResourceWorkflow.Param()
                         {
                         @Override

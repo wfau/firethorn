@@ -120,7 +120,7 @@
     <!--bean id="uk.org.ogsadai.jersey.SecurityContextFactory"
           class="uk.ac.roe.wfau.firethorn.ogsadai.security.FirethornSecurityContextFactory"/-->
     <bean id="uk.org.ogsadai.jersey.SecurityContextFactory"
-          class="uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.RequestContextFactory"/>
+          class="uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContextFactory"/>
     
     <!-- OPTIONAL RESOURCE AUTHORIZATION FOR JERSEY
     <bean id="uk.org.ogsadai.ResourceAuthorisation"

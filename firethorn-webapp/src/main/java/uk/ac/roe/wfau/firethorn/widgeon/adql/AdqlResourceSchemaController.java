@@ -243,7 +243,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_BASE_PARAM, SCHEMA_SELECT_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_BASE_PARAM, SCHEMA_IMPORT_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,

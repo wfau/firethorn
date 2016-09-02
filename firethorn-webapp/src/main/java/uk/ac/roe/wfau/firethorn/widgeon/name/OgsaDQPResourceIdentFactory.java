@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,34 +15,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta;
+package uk.ac.roe.wfau.firethorn.widgeon.name;
 
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import java.net.URI;
+
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaDQPResource;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Public interface for space in a database
- * @todo
- *   promote to a full Entity
- *   with an owner ..
- *   and quota etc.
+ *
  *
  */
-@Deprecated
-public interface DataSpace
-//extends Entity
+@Component
+public class OgsaDQPResourceIdentFactory
+extends WebappIdentFactory<OgsaDQPResource>
+implements OgsaDQPResource.IdentFactory
     {
-
     /**
-     * The JdbcSchema where the data is stored.
-     * 
+     * The type URI for this type.
+     *
      */
-    public JdbcSchema jdbc();
-
-    /**
-     * The AdqlSchema where the data appears.
-     * 
-     */
-    public AdqlSchema adql();
-
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/entity/ogsa-dqp-1.0.json"
+        );
     }

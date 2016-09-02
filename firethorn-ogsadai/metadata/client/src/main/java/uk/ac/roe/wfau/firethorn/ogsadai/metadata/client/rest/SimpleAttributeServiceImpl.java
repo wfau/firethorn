@@ -58,10 +58,9 @@ implements AttributeService
      * Protected constructor.
      *
      */
-    public SimpleAttributeServiceImpl(final String endpoint, final RequestDetails request)
+    public SimpleAttributeServiceImpl(final RequestDetails request)
         {
         super(
-            endpoint,
             request
             );
         }

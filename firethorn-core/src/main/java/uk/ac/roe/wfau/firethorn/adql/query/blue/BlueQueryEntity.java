@@ -1648,23 +1648,41 @@ implements BlueQuery
 		// Assumes a valid resource list for a DIRECT query.
 		// TODO fails on a DISTRIBUTED query.
 		// Need a default DQP resource
-        log.debug("Getting primary BaseResource");
+        log.debug("Getting base BaseResource");
         final BaseResource<?> base = resources().primary();
-        log.debug("Found primary BaseResource [{}]", base.name());
+        log.debug("Found base BaseResource [{}]", base.name());
 
-        final OgsaBaseResource from = base.ogsa().primary();
-        log.debug("Found primary OgsaBaseResource [{}]", from.name());
+        final OgsaBaseResource from ;
+        if (this.mode() == Mode.DIRECT)
+            {
+            log.debug("Getting direct resource");
+            from = base.ogsa().primary();
+            log.debug("Using direct resource [{}]", from.name());
+            }
+        else if (this.mode() == Mode.DISTRIBUTED)
+            {
+            log.debug("Getting DQP resource");
+            from = factories().ogsa().dqp().entities().primary();
+            log.debug("Found DQP resource [{}]", from.ogsaid());
+            }
+        else {
+            log.error("Unexpected query mode [{}]", this.mode());
+            transition(
+                TaskState.ERROR
+                );
+            return ;
+            }
         
-        log.debug("Getting primary OgsaService");
+        log.debug("Getting source OgsaService");
         final OgsaService service = from.service();
-        log.debug("Found primary OgsaService [{}]", service.name());
+        log.debug("Found source OgsaService [{}]", service.name());
 
         log.debug("Getting target table");
-        final String into = BlueQueryEntity.this.jdbctable.fullname() ; 
+        final String into = this.jdbctable.fullname() ; 
         log.debug("Found target table [{}]", into);
         
         log.debug("Getting target OgsaBaseResource");
-        final OgsaBaseResource dest = BlueQueryEntity.this.jdbctable.resource().ogsa().primary() ; 
+        final OgsaBaseResource dest = this.jdbctable.resource().ogsa().primary() ; 
         log.debug("Found target OgsaBaseResource [{}]", dest.name());
 
         //TODO Check all the resources are available through the same OgsaService.         

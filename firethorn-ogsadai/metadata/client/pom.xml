@@ -57,6 +57,24 @@
         </dependency>
 
         <!--+
+            | Firethorn Activity components.
+            +-->
+        <!--dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-context-server</artifactId>
+            <version>${project.version}</version>
+        </dependency-->
+
+        <!--+
+            | Firethorn Activity context.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-activity-context</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
             | JUnit test framework.
             | http://www.junit.org/
             +-->

@@ -24,9 +24,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.org.ogsadai.authorization.SecurityContext;
-import uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation;
 import uk.org.ogsadai.service.rest.authorisation.SecurityContextFactory;
 
+@Deprecated
 public class FirethornSecurityContextFactory
 implements SecurityContextFactory 
     {

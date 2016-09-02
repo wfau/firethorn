@@ -24,6 +24,7 @@ import uk.org.ogsadai.authorization.SecurityContext;
  * Simple security context that contains the request hostname or IP address.
  *
  */
+@Deprecated
 public interface FirethornSecurityContext
 extends SecurityContext
     {

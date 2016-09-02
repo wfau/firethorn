@@ -56,10 +56,9 @@ implements AttributeService
      * Protected constructor.
      *
      */
-    public CachingAttributeServiceImpl(final String endpoint, final RequestDetails request)
+    public CachingAttributeServiceImpl(final RequestDetails request)
         {
         this.service = new SimpleAttributeServiceImpl(
-            endpoint,
             request
             );
         }

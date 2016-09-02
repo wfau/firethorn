@@ -39,7 +39,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcCreateResourceWorkflow;
 
@@ -443,7 +443,7 @@ implements OgsaJdbcResource
         log.debug("Creating OGSA-DAI JDBC resource");
         log.debug("Executing JdbcCreateResourceWorkflow");
 
-        final SimpleResourceWorkflowResult response = workflow.execute(
+        final ResourceWorkflowResult response = workflow.execute(
             new JdbcCreateResourceWorkflow.Param()
                 {
                 @Override

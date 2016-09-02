@@ -25,9 +25,9 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -124,6 +124,12 @@ implements ResourceActivity, SecureActivity, ConfigurableActivity
             this.context = (RequestContext) context; 
             }
 		}
+
+    /**
+     * Our callback handler.
+     * 
+     */
+    private CallbackHandler callback;
     
     /**
      * Our results writer.
@@ -192,6 +198,10 @@ implements ResourceActivity, SecureActivity, ConfigurableActivity
         ActivityProcessingException,
         ActivityTerminatedException
         {
+		this.callback = new CallbackHandler(
+			this.context
+			); 	        
+
         try {
             validateOutput(
                 JdbcInsertDataParam.ACTIVITY_RESULTS
@@ -237,11 +247,6 @@ implements ResourceActivity, SecureActivity, ConfigurableActivity
         ActivityTerminatedException,
         ActivityUserException
         {
-    	//
-    	// Initialise our callback handler.
-//		final CallbackHandler callback = new CallbackHandler(
-//			context
-//			); 	        
     	//
     	// Initialise our table name.
         final String table = (String) inputs[0];
@@ -331,7 +336,7 @@ implements ResourceActivity, SecureActivity, ConfigurableActivity
     						{
     						if (context != null)
     						    {
-                                context.handler().running(
+                                callback.running(
                                     total
                                     );
     						    }
@@ -461,7 +466,7 @@ implements ResourceActivity, SecureActivity, ConfigurableActivity
             	{
             	if (context != null)
             	    {
-                    context.handler().completed(
+                    callback.completed(
                         total
                         );
             	    }
@@ -469,7 +474,7 @@ implements ResourceActivity, SecureActivity, ConfigurableActivity
             else {
                 if (context != null)
                     {
-                    context.handler().failed(
+                    callback.failed(
     					total
     					);
                     }
