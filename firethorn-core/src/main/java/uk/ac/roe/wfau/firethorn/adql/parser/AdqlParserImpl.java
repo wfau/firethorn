@@ -530,6 +530,24 @@ implements AdqlParser
                 );
             log.warn("Error translating query [{}]", ouch.getMessage());
             }
+        catch (final Exception ouch)
+            {
+            subject.syntax(
+                AdqlQueryBase.Syntax.State.PARSE_ERROR,
+                ouch.getMessage()
+                );
+            //log.warn("Error parsing query [{}]", ouch.getMessage());
+            log.warn("Error parsing query [{}]", ouch);
+            }
+        catch (final Throwable ouch)
+            {
+            subject.syntax(
+                AdqlQueryBase.Syntax.State.PARSE_ERROR,
+                ouch.getMessage()
+                );
+            //log.warn("Error parsing query [{}]", ouch.getMessage());
+            log.error("Error parsing query [{}]", ouch);
+            }
         }
 
     /**

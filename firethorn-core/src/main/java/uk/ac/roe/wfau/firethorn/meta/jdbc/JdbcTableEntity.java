@@ -46,6 +46,7 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
@@ -148,7 +149,13 @@ implements JdbcTable
      *
      */
     protected static final String DB_GREEN_QUERY_COL  = "greenquery" ;
-    
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_BLUE_QUERY_COL  = "bluequery" ;
+
     /**
      * {@link JdbcTable.Builder} implementation.
      *
@@ -322,6 +329,8 @@ implements JdbcTable
             return this.insert(
                 new JdbcTableEntity(
                     schema,
+                    null,
+                    null,
                     name,
                     type
                     )
@@ -330,18 +339,19 @@ implements JdbcTable
 
         @Override
         @CreateMethod
-        public JdbcTable create(final JdbcSchema schema, final GreenQuery query)
+        public JdbcTable create(final JdbcSchema schema, final GreenQuery greenquery)
             {
             final JdbcTable table = this.insert(
                 new JdbcTableEntity(
                     schema,
-                    query,
+                    greenquery,
+                    null,
                     null
                     )
                 );
             //
             // Add the select fields.
-            for (final GreenQuery.SelectField field : query.fields())
+            for (final GreenQuery.SelectField field : greenquery.fields())
                 {
                 final String name = field.name();
                 if (name == null)
@@ -374,6 +384,20 @@ implements JdbcTable
                 );
             }
 
+        @Override
+        @CreateMethod
+        public JdbcTable create(final JdbcSchema schema, final BlueQuery bluequery)
+            {
+            return this.insert(
+                new JdbcTableEntity(
+                    schema,
+                    null,
+                    bluequery,
+                    null
+                    )
+                );
+            }
+        
         @Override
         @SelectMethod
         public Iterable<JdbcTable> select(final JdbcSchema parent)
@@ -630,6 +654,7 @@ implements JdbcTable
         this(
             schema,
             null,
+            null,
             meta.jdbc().name(),
             meta.jdbc().type()
             );
@@ -648,6 +673,7 @@ implements JdbcTable
             schema,
             null,
             null,
+            null,
             JdbcType.TABLE
             );
         }
@@ -661,6 +687,7 @@ implements JdbcTable
         {
         this(
             schema,
+            null,
             null,
             name,
             JdbcType.TABLE
@@ -677,6 +704,7 @@ implements JdbcTable
         this(
             schema,
             null,
+            null,
             name,
             type
             );
@@ -686,11 +714,12 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery query, final String name)
+    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery greenquery, final BlueQuery bluequery, final String name)
         {
         this(
             schema,
-            query,
+            greenquery,
+            bluequery,
             name,
             JdbcType.TABLE
             );
@@ -700,13 +729,14 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery query, final String name, final JdbcType type)
+    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery greenquery, final BlueQuery query, final String name, final JdbcType type)
         {
         super(
             schema,
             name
             );
-        this.greenquery  = query;
+        this.greenquery  = greenquery;
+        this.bluequery  = bluequery;
         this.schema = schema;
 
         this.jdbctype   = type ;
@@ -1282,11 +1312,21 @@ implements JdbcTable
         return this.greenquery;
         }
 
+    @OneToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = BlueQueryEntity.class
+        )
+    @JoinColumn(
+        name = DB_BLUE_QUERY_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private BlueQuery bluequery;
     @Override
     public BlueQuery bluequery()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return this.bluequery;
         }
     
     protected JdbcTable.Metadata.Jdbc jdbcmeta()

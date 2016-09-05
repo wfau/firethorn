@@ -160,6 +160,9 @@ firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
 firethorn.user.driver=${userdriver:?}
 
+firethorn.cleaner.cron:0 0/1 * * * ?
+firethorn.cleaner.lifetime=PT20M
+
 EOF
 
     chmod a+r "${HOME:?}/firethorn.properties" 
@@ -380,6 +383,50 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=@" \
+            --data "adql.query.mode=DISTRIBUTED" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 20 ra, dec FROM atlas.atlasSource" \
+            --data "adql.query.mode=DISTRIBUTED" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 20 ra, dec FROM atlas.atlasSource" \
+            --data "adql.query.mode=DISTRIBUTED" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 200 ra, dec FROM atlas.atlasSource" \
+            --data "adql.query.mode=DISTRIBUTED" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
             --data "adql.query.input=SELECT TOP 2000 ra, dec FROM atlas.atlasSource" \
             --data "adql.query.mode=DISTRIBUTED" \
             --data "adql.query.status.next=COMPLETED" \
@@ -391,11 +438,61 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 200000 ra, dec FROM atlas.atlasSource" \
+            --data "adql.query.input=SELECT TOP 500000 ra, dec FROM atlas.atlasSource" \
             --data "adql.query.mode=DISTRIBUTED" \
             --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
+            --data "adql.query.wait.time=60000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
 
+
+        # OGSA-DAI continues to access database lng after the query completes.
+        # Unclear what it is actually doing ... 
+        # Initial tests suggest the data insert has completed
+        # In which case .... what is this for ?
+        # and in several cases OGSA-DAI crashes after ..
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+adqltmp=$(mktemp)
+cat > "${adqltmp:?}" << 'EOF'
+SELECT ATLASDR1.dbo.atlasSource.frameSetID FROM ATLASDR1.dbo.atlasSource WHERE ((ATLASDR1.dbo.atlasSource.priOrSec = 0) OR (ATLASDR1.dbo.atlasSource.priOrSec = ATLASDR1.dbo.atlasSource.frameSetID) ) AND ATLASDR1.dbo.atlasSource.iAperMag3 > 0.0 )  AND  ( ATLASDR1.dbo.atlasSource.gAperMag3 > 0.0 ) 
+EOF
+
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.mode=DISTRIBUTED" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            --data-urlencode "adql.query.input@${adqltmp:?}" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+
+
+
+
+
+
+2000	180.067892312368	180.577006355704
+2000	180.067892312368	180.577006355704
 

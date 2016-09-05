@@ -96,7 +96,8 @@ extends AbstractComponent
     Action action;
 
     /**
-     * The interval between each run.
+     *
+     * The maximum lifetime for a file, after which it gets deleted.
      * Expressed as a ISO_8601 duration.
      * https://en.wikipedia.org/wiki/ISO_8601#Durations
      *

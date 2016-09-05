@@ -270,12 +270,14 @@ implements BlueTask<TaskType>
 					throw (InvalidStateTransitionException) cause ;
 					}
 				else {
+				    // TODO Creator shouldn't return null ..
 					return null;
 					}
                 }
             catch (final InterruptedException ouch)
         	    {
                 log.error("Interrupted waiting for Creator [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
+                // TODO Creator shouldn't return null ..
                 return null;
         	    }
 /*

@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
@@ -243,6 +244,12 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *
          */
         public JdbcTable create(final GreenQuery query);
+
+        /**
+         *  Create a new {@link JdbcTable table}.
+         *
+         */
+        public JdbcTable create(final BlueQuery query);
 
         /**
          * Get the next set of tables for garbage collection ..

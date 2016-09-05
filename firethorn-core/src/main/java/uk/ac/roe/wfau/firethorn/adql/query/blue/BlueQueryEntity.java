@@ -1550,7 +1550,7 @@ implements BlueQuery
                 	}
                 else {
                 	log.debug("Query fails [DIRECT] validation.");
-                	}
+                    }
                 }
             else if (this.mode == Mode.DISTRIBUTED)
                 {
