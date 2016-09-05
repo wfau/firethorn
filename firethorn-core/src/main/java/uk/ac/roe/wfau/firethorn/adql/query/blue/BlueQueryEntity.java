@@ -671,9 +671,15 @@ implements BlueQuery
         super(
     		owner
             );
-        this.mode = mode;
-        this.level = syntax ;
         this.source = source;
+        if (mode != null)
+            {
+            this.mode = mode;
+            }
+        if (syntax != null)
+            {
+            this.level = syntax ;
+            }
         this.limits(
             limits
             );
@@ -1247,7 +1253,10 @@ implements BlueQuery
 			@Override
 			public void level(Level level)
 				{
-				BlueQueryEntity.this.level = level;
+				if (level != null)
+				    {
+				    BlueQueryEntity.this.level = level;
+				    }
 				}
 
 			@Override

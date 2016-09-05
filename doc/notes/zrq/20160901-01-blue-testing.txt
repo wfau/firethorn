@@ -387,3 +387,15 @@ EOF
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
 
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 200000 ra, dec FROM atlas.atlasSource" \
+            --data "adql.query.mode=DISTRIBUTED" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+
