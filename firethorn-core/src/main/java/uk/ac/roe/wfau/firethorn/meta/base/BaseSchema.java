@@ -145,18 +145,6 @@ extends TreeComponent
     public Tables<TableType> tables();
 
     /**
-     * The fully qualified schema name.
-     *
-     */
-    public StringBuilder namebuilder();
-
-    /**
-     * The fully qualified table name.
-     *
-     */
-    public String fullname();
-
-    /**
      * The {@link BaseSchema} metadata.
      *
      */

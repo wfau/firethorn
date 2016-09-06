@@ -19,10 +19,8 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
-import org.springframework.http.HttpStatus;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 

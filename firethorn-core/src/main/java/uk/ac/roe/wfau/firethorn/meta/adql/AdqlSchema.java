@@ -17,10 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -165,10 +164,11 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, final String name);
 
         /**
-         * Create a new {@link AdqlTable table}, importing the columns from a {@link AdqlQuery query}.
+         * Create a new {@link AdqlTable table}, importing the columns from a {@link GreenQuery query}.
          *
          */
-        public AdqlTable create(final AdqlQuery query);
+        @Deprecated
+        public AdqlTable create(final GreenQuery query);
         
         /**
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
@@ -188,43 +188,41 @@ extends BaseSchema<AdqlSchema, AdqlTable>
     public Tables tables();
 
     /**
-     * Access to the schema {@link AdqlQuery queries}.
-     * @todo Does this make sense ?
-     * @todo Does this depend on who is asking ?
+     * Access to the schema {@link GreenQuery queries}.
      *
      */
-    public interface Queries
+    @Deprecated
+    public interface Greens
         {
         /**
-         * Create a new {@link AdqlQuery}.
+         * Create a new {@link GreenQuery}.
          *
          */
-        public AdqlQuery create(final QueryParam param, final String query)
+        public GreenQuery create(final GreenQuery.QueryParam param, final String query)
         throws QueryProcessingException;
 
         /**
-         * Create a new {@link AdqlQuery}.
+         * Create a new {@link GreenQuery}.
          *
          */
-        public AdqlQuery create(final QueryParam param, final String query, final String name)
+        public GreenQuery create(final GreenQuery.QueryParam param, final String query, final String name)
         throws QueryProcessingException;
 
         /**
-         * Select all the {@link AdqlQuery} for this schema.
+         * Select all the {@link GreenQuery} for this schema.
          * @todo Does this make sense ?
          *
          */
-        public Iterable<AdqlQuery> select();
+        public Iterable<GreenQuery> select();
 
         }
 
     /**
-     * Access to the schema {@link AdqlQuery queries}.
-     * @todo Does this make sense ?
-     * @todo Does this depend on who is asking ?
+     * Access to the schema {@link GreenQuery queries}.
      *
      */
-    public Queries queries();
+    @Deprecated
+    public Greens greens();
 
     /**
      * The {@link AdqlSchema} metadata.

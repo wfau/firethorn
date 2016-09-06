@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,13 +25,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
@@ -78,7 +73,7 @@ public class AdqlSchemaController
      * @todo Merge create, select and update.
      *
      */
-    public static final String UPDATE_NAME = "adql.schema.update.name" ;
+    public static final String SCHEMA_NAME_PARAM = "adql.schema.update.name" ;
 
     @Override
     public Iterable<AdqlSchemaBean> bean(final Iterable<AdqlSchema> iter)
@@ -142,7 +137,7 @@ public class AdqlSchemaController
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param entity The {@link AdqlSchema} selected using the {@Identifier} in the request path.
      * <br/>Optional {@link AdqlSchema} params :
-     * @param name   The {@link AdqlSchema} name, [{@value #UPDATE_NAME}].
+     * @param name   The {@link AdqlSchema} name, [{@value #SCHEMA_NAME_PARAM}].
      * @return The updated {@link AdqlSchema} wrapped in a {@link AdqlSchemaBean}.
      * 
      */
@@ -152,7 +147,7 @@ public class AdqlSchemaController
     public AdqlSchemaBean update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlSchema entity,
-        @RequestParam(value=UPDATE_NAME, required=false)
+        @RequestParam(value=SCHEMA_NAME_PARAM, required=false)
         final String name
         ){
         log.debug("update(AdqlSchema, String)");

@@ -59,4 +59,16 @@ extends BaseComponent
      */
     public void depth(final CopyDepth depth);
 
+    /**
+     * The fully qualified name builder.
+     *
+     */
+    public StringBuilder namebuilder();
+
+    /**
+     * The fully qualified name.
+     *
+     */
+    public String fullname();
+
     }

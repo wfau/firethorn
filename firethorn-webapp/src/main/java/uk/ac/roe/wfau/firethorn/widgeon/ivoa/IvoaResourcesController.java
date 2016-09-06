@@ -20,11 +20,11 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -59,22 +59,16 @@ extends AbstractEntityController<IvoaResource, IvoaResourceBean>
         }
 
     /**
-     * MVC property for the select name.
+     * MVC property for the resource name.
      *
      */
-    public static final String SELECT_NAME = "ivoa.resource.name" ;
+    public static final String RESOURCE_NAME_PARAM = "ivoa.resource.name" ;
 
     /**
-     * MVC property for the initial name.
+     * MVC property for the resource endpoint.
      *
      */
-    public static final String CREATE_NAME = "ivoa.resource.name" ;
-    
-    /**
-     * MVC property for the initial endpoint.
-     *
-     */
-    public static final String CREATE_ENDPOINT = "ivoa.resource.endpoint" ;
+    public static final String RESOURCE_ENDPOINT_PARAM = "ivoa.resource.endpoint" ;
 
     @Override
     public IvoaResourceBean bean(final IvoaResource entity)
@@ -113,9 +107,9 @@ extends AbstractEntityController<IvoaResource, IvoaResourceBean>
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<IvoaResourceBean> create(
-        @RequestParam(value=CREATE_NAME, required=true)
+        @RequestParam(value=RESOURCE_NAME_PARAM, required=true)
         final String name,
-        @RequestParam(value=CREATE_ENDPOINT, required=false)
+        @RequestParam(value=RESOURCE_ENDPOINT_PARAM, required=false)
         final String endpoint
         ){
         return created(

@@ -20,8 +20,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data "jdbc.resource.create.url=spring:RoeTWOMASS" \
-    --data "jdbc.resource.create.name=jdbc_twomass" \
+    --data "jdbc.connection.url=spring:RoeTWOMASS" \
+    --data "jdbc.resource.name=jdbc_twomass" \
     "${basename}/jdbc/resource/create"
 
 
@@ -32,8 +32,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data "jdbc.resource.create.url=spring:RoeTWOXMM" \
-    --data "jdbc.resource.create.name=jdbc_twoxmm" \
+    --data "jdbc.connection.url=spring:RoeTWOXMM" \
+    --data "jdbc.resource.name=jdbc_twoxmm" \
     "${basename}/jdbc/resource/create"
 
 #
@@ -43,8 +43,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data "jdbc.resource.create.url=spring:RoeBestDR7" \
-    --data "jdbc.resource.create.name=jdbc_bestdr7" \
+    --data "jdbc.connection.url=spring:RoeBestDR7" \
+    --data "jdbc.resource.name=jdbc_bestdr7" \
     "${basename}/jdbc/resource/create"
 
 
@@ -102,8 +102,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data-urlencode "adql.resource.query.create.name=test-query" \
-    --data-urlencode "adql.resource.query.create.query@-" \
+    --data-urlencode "adql.query.name=test-query" \
+    --data-urlencode "adql.query.input@-" \
     "${basename}/adql/resource/4/queries/create"  \
 << EOF
     SELECT
@@ -132,8 +132,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data-urlencode "adql.resource.query.create.name=test-query" \
-    --data-urlencode "adql.resource.query.create.query@-" \
+    --data-urlencode "adql.query.name=test-query" \
+    --data-urlencode "adql.query.input@-" \
     "${basename}/adql/resource/4/queries/create"  \
 << EOF
     SELECT

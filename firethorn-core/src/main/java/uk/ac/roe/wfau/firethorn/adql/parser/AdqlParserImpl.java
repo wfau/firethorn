@@ -18,24 +18,10 @@
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery.DuplicateFieldException;
-import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryChecker;
-import uk.ac.roe.wfau.firethorn.adql.parser.green.MySearchTableList;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import adql.db.DBColumn;
 import adql.parser.ADQLParser;
 import adql.parser.ADQLQueryFactory;
@@ -62,6 +48,15 @@ import adql.query.operand.function.SQLFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.TranslationException;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery.DuplicateFieldException;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
+import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryChecker;
+import uk.ac.roe.wfau.firethorn.adql.parser.green.MySearchTableList;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
  * ADQL parser implementation.
@@ -81,7 +76,7 @@ implements AdqlParser
     implements AdqlParser.Factory
         {
         @Override
-        public AdqlParser create(final AdqlQuery.Mode mode, final AdqlResource resource)
+        public AdqlParser create(final AdqlQueryBase.Mode mode, final AdqlResource resource)
             {
             return new AdqlParserImpl(
                 this.tables,
@@ -103,7 +98,7 @@ implements AdqlParser
      * Protected constructor.
      *
      */
-    protected AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode, final AdqlResource resource)
+    protected AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQueryBase.Mode mode, final AdqlResource resource)
         {
         this.mode = mode ;
         //
@@ -453,7 +448,7 @@ implements AdqlParser
             }
         }
 
-    protected AdqlQuery.Mode mode ;
+    protected AdqlQueryBase.Mode mode ;
 
     protected ADQLParser parser ;
 
@@ -486,7 +481,7 @@ implements AdqlParser
             //
             // Translate the query into SQL.
             final ADQLTranslator translator ;
-            if (this.mode == Mode.DIRECT)
+            if (this.mode == AdqlQueryBase.Mode.DIRECT)
                 {
                 translator = new SQLServerTranslator();
                 }
@@ -506,13 +501,13 @@ implements AdqlParser
             //
             // If we got this far, then the query is valid.
             subject.syntax(
-                AdqlQuery.Syntax.State.VALID
+                AdqlQueryBase.Syntax.State.VALID
                 );
             }
         catch (final ParseException ouch)
             {
             subject.syntax(
-                AdqlQuery.Syntax.State.PARSE_ERROR,
+                AdqlQueryBase.Syntax.State.PARSE_ERROR,
                 ouch.getMessage()
                 );
             //log.warn("Error parsing query [{}]", ouch.getMessage());
@@ -521,7 +516,7 @@ implements AdqlParser
         catch (final AdqlParserException ouch)
             {
             subject.syntax(
-                AdqlQuery.Syntax.State.PARSE_ERROR,
+                AdqlQueryBase.Syntax.State.PARSE_ERROR,
                 ouch.getMessage()
                 );
             //log.warn("Error parsing query [{}]", ouch.getMessage());
@@ -530,10 +525,28 @@ implements AdqlParser
         catch (final TranslationException ouch)
             {
             subject.syntax(
-                AdqlQuery.Syntax.State.TRANS_ERROR,
+                AdqlQueryBase.Syntax.State.TRANS_ERROR,
                 ouch.getMessage()
                 );
             log.warn("Error translating query [{}]", ouch.getMessage());
+            }
+        catch (final Exception ouch)
+            {
+            subject.syntax(
+                AdqlQueryBase.Syntax.State.PARSE_ERROR,
+                ouch.getMessage()
+                );
+            //log.warn("Error parsing query [{}]", ouch.getMessage());
+            log.warn("Error parsing query [{}]", ouch);
+            }
+        catch (final Throwable ouch)
+            {
+            subject.syntax(
+                AdqlQueryBase.Syntax.State.PARSE_ERROR,
+                ouch.getMessage()
+                );
+            //log.warn("Error parsing query [{}]", ouch.getMessage());
+            log.error("Error parsing query [{}]", ouch);
             }
         }
 
@@ -665,10 +678,10 @@ implements AdqlParser
             }
         }
 
-    protected void legacy(final Level level, final Operation oper)
+    protected void legacy(final AdqlQueryBase.Syntax.Level level, final Operation oper)
     throws AdqlParserException
         {
-        if (level == Level.STRICT)
+        if (level == AdqlQueryBase.Syntax.Level.STRICT)
             {
             final OperationType type = oper.getOperation();
             if (type == OperationType.MOD)
@@ -1059,7 +1072,7 @@ implements AdqlParser
      *
      */
     public static interface MySelectField
-    extends AdqlQuery.SelectField
+    extends AdqlQueryBase.SelectField
         {
         }
 

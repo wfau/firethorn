@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,14 +26,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
-import uk.ac.roe.wfau.firethorn.webapp.blue.BlueQueryBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
@@ -87,39 +84,45 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
 
     /**
      * VOSI URL path, [{@value}].
+     * @todo Move to AdqlResourceModel
      *
      */
     public static final String VOSI_PATH = "vosi" ;
 
     /**
      * The VOSI JSP page name, [{@value}].
+     * @todo Move to AdqlResourceModel
      *
      */
     public static final String VOSI_VIEW = "adql/vosi-xml" ;
 
     /**
      * The VOSI content type, [{@value}].
+     * @todo Move to AdqlResourceModel
      *
      */
     public static final String VOSI_MIME = "application/x-vosi+xml" ;
 
     /**
      * MVC property for the {@link AdqlResource}, [{@value}].
+     * @todo Move to AdqlResourceModel
      *
      */
     public static final String TARGET_ENTITY = "urn:adql.resource.entity" ;
 
     /**
      * MVC property for the {@link AdqlResource} name, [{@value}].
+     * @todo Move to AdqlResourceModel
      *
      */
-    public static final String UPDATE_NAME = "adql.resource.update.name" ;
+    public static final String RESOURCE_NAME_PARAM = "adql.resource.update.name" ;
 
     /**
      * MVC property for the {@link AdqlResource} {@link BaseComponent.Status}, [{@value}].
+     * @todo Move to AdqlResourceModel
      *
      */
-    public static final String UPDATE_STATUS = "adql.resource.update.status" ;
+    public static final String RESOURCE_STATUS_PARAM = "adql.resource.update.status" ;
 
     @Override
     public Iterable<AdqlResourceBean> bean(final Iterable<AdqlResource> iter)
@@ -182,8 +185,8 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The {@link AdqlResource} selected using the {@Identifier} in the request path.
      * <br/>Optional {@link AdqlResource} params :
-     * @param name   The {@link AdqlResource} name, [{@value #UPDATE_NAME}].
-     * @param status The {@link AdqlResource} {@link BaseComponent.Status}, [{@value #UPDATE_STATUS}].
+     * @param name   The {@link AdqlResource} name, [{@value #RESOURCE_NAME_PARAM}].
+     * @param status The {@link AdqlResource} {@link BaseComponent.Status}, [{@value #RESOURCE_STATUS_PARAM}].
      * @return The updated {@link AdqlResource} wrapped in a {@link AdqlResourceBean}.
      * 
      */
@@ -193,9 +196,9 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
     public AdqlResourceBean update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(value=UPDATE_NAME, required=false)
+        @RequestParam(value=RESOURCE_NAME_PARAM, required=false)
         final String name,
-        @RequestParam(value=UPDATE_STATUS, required=false)
+        @RequestParam(value=RESOURCE_STATUS_PARAM, required=false)
         final String status
         ){
 

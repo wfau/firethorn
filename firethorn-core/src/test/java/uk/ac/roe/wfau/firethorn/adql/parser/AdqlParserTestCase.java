@@ -24,17 +24,17 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.test.TestBase;
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.db.DefaultDBColumn;
 import adql.db.DefaultDBTable;
 import adql.parser.ADQLParser;
 import adql.query.ADQLQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *
@@ -409,7 +409,7 @@ extends TestBase
 							);
 
         return tables().create(
-            AdqlQuery.Mode.DIRECT,
+            AdqlQueryBase.Mode.DIRECT,
     		adqlResource.schemas().select(
 				"adql_schema"
 				).tables().select(

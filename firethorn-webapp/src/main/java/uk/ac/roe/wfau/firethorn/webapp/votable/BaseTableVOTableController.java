@@ -27,13 +27,10 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery.ResultState;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.FieldFormatter;
 
 /**
  * Spring MVC controller to format a {@link BaseTable} as a <a href='http://www.ivoa.net/documents/VOTable/'>VOTable</a>.
@@ -173,14 +170,14 @@ extends AbstractTableController
         writer.append(table.link());
         writer.append("'");
         writer.append("/>");
-        if (table.query()!=null){
+        if (table.greenquery()!=null){
         	writer.append("<INFO name='QUERY_STATUS' value='OK'>");
         } else  if (table.bluequery()!=null){
 	        if (!table.bluequery().results().state().equals(ResultState.NONE) && !table.bluequery().results().state().equals(ResultState.EMPTY)) {
 	            writer.append("<INFO name='QUERY_STATUS' value='OK'>");
 	        } else  {
 	            writer.append("<INFO name='QUERY_STATUS' value='ERROR'>");
-	            writer.append(table.query().syntax().friendly());
+	            writer.append(table.greenquery().syntax().friendly());
 	        }
 	        writer.append("</INFO>");
 	        

@@ -23,10 +23,9 @@
 # Create our ATLAS resource.
 jdbcatlas=$(
     POST "/jdbc/resource/create" \
-        -d "jdbc.resource.create.url=spring:RoeATLAS" \
-        -d "jdbc.resource.create.name=atlas-$(unique)" \
-        -d "jdbc.resource.create.ogsadai=atlas" \
-        -d "jdbc.resource.create.catalog=*" \
+        -d "jdbc.connection.url=spring:RoeATLAS" \
+        -d "jdbc.resource.name=atlas-$(unique)" \
+        -d "jdbc.resource.catalog=*" \
         | ident
         )
 
@@ -73,7 +72,8 @@ GET "${atlasschema?}" \
 # Import the TWOMASS 'twomass_psc' table.
 jdbcschema=$(
     POST "${jdbcatlas?}/schemas/select" \
-        -d "jdbc.resource.schema.select.name=TWOMASS.dbo" \
+        -d "jdbc.resource.schema.select.catalog=TWOMASS" \
+        -d "jdbc.resource.schema.select.schema=dbo" \
         | ident
         )
 jdbctable=$(

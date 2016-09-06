@@ -22,12 +22,11 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceTestBase;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;

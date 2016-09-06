@@ -18,19 +18,12 @@
 package uk.ac.roe.wfau.firethorn.adql.parser.green;
 
 import java.util.Collection;
-import java.util.HashMap;
-
-import lombok.extern.slf4j.Slf4j;
 
 import adql.db.DBChecker;
 import adql.db.DBTable;
-import adql.db.SearchColumnList;
 import adql.db.SearchTableApi;
-import adql.db.SearchTableList;
-import adql.parser.ParseException;
 import adql.parser.QueryChecker;
-import adql.query.ADQLQuery;
-import adql.query.from.ADQLTable;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *

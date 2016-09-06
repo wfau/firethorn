@@ -17,17 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.sql.SQLException;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
 
 /**

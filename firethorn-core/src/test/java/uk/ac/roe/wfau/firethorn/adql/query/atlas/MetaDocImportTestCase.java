@@ -19,10 +19,9 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import java.io.FileReader;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;

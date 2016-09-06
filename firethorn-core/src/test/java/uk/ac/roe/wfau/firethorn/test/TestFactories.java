@@ -19,8 +19,9 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
@@ -35,10 +36,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.Job.Executor;
-import uk.ac.roe.wfau.firethorn.job.Job.Resolver;
-import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -51,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaDQPResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaExecResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
@@ -99,41 +97,19 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory<Job>
-            implements Job.IdentFactory
+            extends AbstractIdentFactory<GreenJob>
+            implements GreenJob.IdentFactory
                 {
                 }
             @Component
             public static class LinkFactory
-            extends MockLinkFactory<Job>
-            implements Job.LinkFactory
+            extends MockLinkFactory<GreenJob>
+            implements GreenJob.LinkFactory
                 {
                 public LinkFactory()
                     {
                     super(
                         "/job/base"
-                        );
-                    }
-                }
-            }
-        @Component
-        public static class TestJobFactories
-            {
-            @Component
-            public static class IdentFactory
-            extends AbstractIdentFactory<TestJob>
-            implements TestJob.IdentFactory
-                {
-                }
-            @Component
-            public static class LinkFactory
-            extends MockLinkFactory<TestJob>
-            implements TestJob.LinkFactory
-                {
-                public LinkFactory()
-                    {
-                    super(
-                        "/job/test"
                         );
                     }
                 }
@@ -284,14 +260,14 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends AbstractIdentFactory<AdqlQuery>
-            implements AdqlQuery.IdentFactory
+            extends AbstractIdentFactory<GreenQuery>
+            implements GreenQuery.IdentFactory
                 {
                 }
             @Component
             public static class NameFactory
-            extends DateNameFactory<AdqlQuery>
-            implements AdqlQuery.NameFactory
+            extends DateNameFactory<GreenQuery>
+            implements GreenQuery.NameFactory
                 {
 
 				@Override
@@ -302,8 +278,8 @@ public class TestFactories
                 }
             @Component
             public static class LinkFactory
-            extends MockLinkFactory<AdqlQuery>
-            implements AdqlQuery.LinkFactory
+            extends MockLinkFactory<GreenQuery>
+            implements GreenQuery.LinkFactory
                 {
                 public LinkFactory()
                     {
@@ -740,7 +716,30 @@ public class TestFactories
         @Component
         public static class ResourceFactories
             {
+            @Component
+            public static class DQPResourceFactories
+                {
+                @Component
+                public static class IdentFactory
+                extends AbstractIdentFactory<OgsaDQPResource>
+                implements OgsaDQPResource.IdentFactory
+                    {
+                    }
+                @Component
+                public static class LinkFactory
+                extends MockLinkFactory<OgsaExecResource>
+                implements OgsaExecResource.LinkFactory
+                    {
+                    public LinkFactory()
+                        {
+                        super(
+                            "/ogsa/dqp"
+                            );
+                        }
+                    }
+                }
 
+            
             @Component
             public static class ExecResourceFactories
                 {

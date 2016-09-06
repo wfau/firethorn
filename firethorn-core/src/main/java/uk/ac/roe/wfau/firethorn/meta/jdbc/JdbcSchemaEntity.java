@@ -34,8 +34,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
@@ -43,7 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -767,14 +767,23 @@ public class JdbcSchemaEntity
                 }
 
             @Override
-            public JdbcTable create(final AdqlQuery query)
+            public JdbcTable create(final GreenQuery query)
                 {
                 return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this,
                     query
                     );
                 }
-            
+
+            @Override
+            public JdbcTable create(final BlueQuery query)
+                {
+                return factories().jdbc().tables().entities().create(
+                    JdbcSchemaEntity.this,
+                    query
+                    );
+                }
+
             @Override
             public JdbcTable select(final Identifier ident)
             throws IdentifierNotFoundException

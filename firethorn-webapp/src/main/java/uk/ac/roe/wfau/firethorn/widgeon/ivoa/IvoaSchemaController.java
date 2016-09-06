@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -71,7 +70,7 @@ public class IvoaSchemaController
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "urn:ivoa.schema.name" ;
+    public static final String SCHEMA_NAME_PARAM = "ivoa.schema.name" ;
 
     @Override
     public Iterable<IvoaSchemaBean> bean(final Iterable<IvoaSchema> iter)

@@ -93,21 +93,24 @@ public interface Entity
         {
         /**
          * The name for an identifier field.
+         * TODO Move this to a webapp model class.
          * 
          */
         public static final String IDENT_FIELD = "ident" ;
 
         /**
          * The token to match an identifier field.
+         * TODO Move this to a webapp model class.
          * 
          */
         public static final String IDENT_TOKEN = "{ident}" ;
 
         /**
          * The regular expression pattern to match an identifier field.
+         * TODO Move this to a webapp model class.
          * 
-         */
         public static final String IDENT_REGEX = "\\{ident\\}" ;
+         */
         
         /**
          * Create an link (as a string).

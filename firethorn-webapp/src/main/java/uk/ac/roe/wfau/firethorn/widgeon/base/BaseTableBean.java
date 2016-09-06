@@ -58,14 +58,18 @@ extends NamedEntityBeanImpl<TableType>
         return entity().root().link();
         }
 
+    /*
+     * 
     public String getAlias()
         {
         return entity().alias();
         }
+     * 
+     */
 
     public String getFullname()
         {
-        return entity().namebuilder().toString();
+        return entity().fullname();
         }
 
     public String getDepth()
@@ -75,6 +79,7 @@ extends NamedEntityBeanImpl<TableType>
 
     public String getColumns()
         {
+        // TODO This should be in a model class. 
         return entity().link().concat("/columns/select");
         }
 

@@ -36,11 +36,12 @@ extends NamedEntityBeanImpl<ResourceType>
 
     public String getFullname()
         {
-        return entity().namebuilder().toString();
+        return entity().fullname();
         }
 
     public String getSchemas()
         {
+        // TODO This should be in a model class. 
         return entity().link().concat("/schemas/select");
         }
     }

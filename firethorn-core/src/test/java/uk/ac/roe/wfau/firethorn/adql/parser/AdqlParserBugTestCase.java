@@ -19,11 +19,8 @@ package uk.ac.roe.wfau.firethorn.adql.parser ;
 
 import java.util.Arrays;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.test.TestBase;
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.db.DefaultDBColumn;
@@ -32,6 +29,8 @@ import adql.parser.ADQLParser;
 import adql.query.ADQLQuery;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *

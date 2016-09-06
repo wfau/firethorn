@@ -65,28 +65,17 @@ extends BaseTableBean<JdbcTable>
             entity
             );
         }
-
+    
     public String getQuery()
         {
-        if (entity().query() != null)
+        if (entity().bluequery() != null)
             {
-            return entity().query().link();
+            return entity().bluequery().link();
             }
         else {
             return null ;
             }
         }
-    
-    public String getBlueQuery()
-    {
-    if (entity().bluequery() != null)
-        {
-        return entity().bluequery().link();
-        }
-    else {
-        return null ;
-        }
-    }
 
     public interface MetadataBean
     extends AdqlTableBean.MetadataBean

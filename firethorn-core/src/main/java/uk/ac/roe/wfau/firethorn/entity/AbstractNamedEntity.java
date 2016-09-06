@@ -24,17 +24,10 @@ import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
-import java.nio.ByteBuffer;
-
-import lombok.extern.slf4j.Slf4j;
-
-import com.google.common.base.Charsets;
-import com.google.common.io.BaseEncoding;
-
 import org.hibernate.annotations.Type;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**

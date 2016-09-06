@@ -96,7 +96,7 @@ runquery()
         POST "${query?}" \
             --header "firethorn.auth.identity:${identity}" \
             --header "firethorn.auth.community:${community}" \
-            --data-urlencode "adql.query.update.status=RUNNING" \
+            --data-urlencode "adql.query.status=RUNNING" \
             | status
             )
 

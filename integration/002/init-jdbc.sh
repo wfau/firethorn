@@ -25,10 +25,9 @@ jdbcatlas=$(
     POST "/jdbc/resource/create" \
         --header "firethorn.auth.identity:${identity}" \
         --header "firethorn.auth.community:${community}" \
-        --data   "jdbc.resource.create.url=spring:RoeATLAS" \
-        --data   "jdbc.resource.create.name=atlas-$(unique)" \
-        --data   "jdbc.resource.create.ogsadai=atlas" \
-        --data   "jdbc.resource.create.catalog=*" \
+        --data   "jdbc.connection.url=spring:RoeATLAS" \
+        --data   "jdbc.resource.name=atlas-$(unique)" \
+        --data   "jdbc.resource.catalog=*" \
         | ident
         )
 

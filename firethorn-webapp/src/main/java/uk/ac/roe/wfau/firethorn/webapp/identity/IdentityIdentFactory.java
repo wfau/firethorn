@@ -25,7 +25,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- *
+ * TODO Move this to a IdentityModel
  *
  */
 @Component

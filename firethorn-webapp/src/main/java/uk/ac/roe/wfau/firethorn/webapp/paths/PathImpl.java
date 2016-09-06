@@ -30,6 +30,7 @@ public class PathImpl
 implements Path
     {
 
+    // TODO These should be in a Model base class.
     public static final String DELIMITER = "/";
     public static final String IDENT_TOKEN = "{ident}" ;
     public static final String IDENT_REGEX = "\\{ident\\}" ;

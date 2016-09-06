@@ -28,9 +28,8 @@ community=$(date '+%A')
 POST "/jdbc/resource/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   "jdbc.resource.create.url=spring:FireThornUserData" \
-    --data   "jdbc.resource.create.name=userdata-$(unique)" \
-    --data   "jdbc.resource.create.ogsadai=userdata" \
+    --data   "jdbc.connection.url=spring:FireThornUserData" \
+    --data   "jdbc.resource.name=userdata-$(unique)" \
     | tee jdbc-user-resource.json | ./pp
 
 

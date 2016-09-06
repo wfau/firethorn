@@ -27,7 +27,7 @@ import javax.persistence.FetchType;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Delays;
 
 /**
  * Implementation of the query delays.
@@ -39,7 +39,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Delays;
     AccessType.FIELD
     )
 public class AdqlQueryDelays
-implements AdqlQuery.Delays
+implements Delays
     {
     /**
      * Value used to indicate no limit, {@value}.
@@ -53,10 +53,10 @@ implements AdqlQuery.Delays
      */
     @Component
     public static class Factory
-    implements AdqlQuery.Delays.Factory
+    implements Delays.Factory
         {
         @Override
-        public AdqlQuery.Delays create(final Integer first, final Integer every, final Integer last)
+        public Delays create(final Integer first, final Integer every, final Integer last)
             {
             return new AdqlQueryDelays(
                 first,
@@ -78,7 +78,7 @@ implements AdqlQuery.Delays
      * Public constructor.
      * 
      */
-    public AdqlQueryDelays(final AdqlQuery.Delays that)
+    public AdqlQueryDelays(final Delays that)
         {
         if (that != null)
             {

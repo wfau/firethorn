@@ -26,7 +26,7 @@ adqlfile=${1:?}
 POST "${queryschema:?}/queries/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \
+    --data-urlencode "adql.query.input@${adqlfile:?}" \
     | tee atlas-query.json | ./pp
 
 #

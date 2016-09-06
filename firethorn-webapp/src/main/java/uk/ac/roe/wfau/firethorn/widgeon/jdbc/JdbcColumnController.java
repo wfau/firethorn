@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -67,10 +66,10 @@ public class JdbcColumnController
     public static final String TARGET_ENTITY = "urn:jdbc.column.entity" ;
 
     /**
-     * MVC property for updating the name.
+     * MVC property for the {@link JdbcColumn} name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.column.update.name" ;
+    public static final String COLUMN_NAME_PARAM = "jdbc.column.update.name" ;
 
     @Override
     public Iterable<JdbcColumnBean> bean(final Iterable<JdbcColumn> iter)

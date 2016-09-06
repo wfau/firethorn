@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
@@ -139,11 +140,6 @@ implements SecureActivity
         {
         logger.debug("processIteration(Object[])");
         try {
-        	//
-        	// Initialise our callback tool.
-        	final CallbackHandler callback = new CallbackHandler(
-				context
-				); 	        
             //
             // Read our context inputs.
 	        final String proto = (String) inputs[0];
@@ -183,11 +179,6 @@ implements SecureActivity
         			ident
         			);
 	        	}
-	        //
-	        // Send a callback to indicate the pipeline is running.
-	        // BUG The callback arrives before the Hibernate Session has completed. 
-			//callback.running();	        
-
 			//
             // Pass on our pipeline data to the next activity. 
 	        final String value = (String) inputs[5];

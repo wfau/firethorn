@@ -17,11 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.liquibase;
 
-import liquibase.changelog.ChangeSet;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 
+import liquibase.changelog.ChangeSet;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**

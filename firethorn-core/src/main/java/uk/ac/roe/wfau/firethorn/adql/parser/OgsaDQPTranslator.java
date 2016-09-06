@@ -21,11 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-
-import lombok.extern.slf4j.Slf4j;
-
 import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.db.exception.UnresolvedJoinException;
@@ -44,11 +39,11 @@ import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
-import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * OGSA-DAI DQP ADQL Translator.

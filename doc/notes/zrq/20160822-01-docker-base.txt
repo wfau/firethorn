@@ -1,0 +1,315 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with thi++++++++++++++++++++++++++++s program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#---------------------------------------------------------------------
+# Initial settings
+#[user@methionine] 
+
+    : ${basepool:='base'}
+    : ${livepool:='live'}
+    : ${connection:='qemu:///system'}
+
+    baseos=fedora-23
+    basecpu=2
+    basemem=2048
+    basearch=x86_64
+
+    basesize=16G
+    basename=fedora-23-docker-20160701
+    basefile=${basename}.qcow
+    basepath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${basefile:?}")
+
+    tmpsize=16G
+    tmpname=temp-20160822
+    tmpfile=${tmpname}.qcow
+
+    newsize=16G
+    newname=fedora-23-docker-20160822
+    newfile=${newname}.qcow
+
+#---------------------------------------------------------------------
+# Create a new volume from our base volume.
+#[user@methionine] 
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${tmpfile:?}" \
+            "${tmpsize:?}" \
+            --format 'qcow2' \
+            --backing-vol "${basepath:?}" \
+            --backing-vol-format 'qcow2'
+
+    tmppath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${tmpfile:?}")
+
+#---------------------------------------------------------------------
+# Check the file info.
+#[user@methionine] 
+
+    sudo qemu-img \
+        info \
+            --backing-chain \
+            "${tmppath:?}"
+
+        image: /var/lib/libvirt/images/base/temp-20160822.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 196K
+        cluster_size: 65536
+        backing file: /var/lib/libvirt/images/base/fedora-23-docker-20160701.qcow
+        backing file format: qcow2
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+        image: /var/lib/libvirt/images/base/fedora-23-docker-20160701.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 675M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+#---------------------------------------------------------------------
+# Replace the SSH keys in our new volume.
+#[user@methionine] 
+
+    #
+    # Delete any existing VM.
+    virsh \
+        --connect "${connection:?}" \
+        undefine "${tmpname:?}"
+
+    #
+    # Define a VM based on our new volume.
+    template=/var/local/projects/metagrid/ischnura/github/src/dat/metagrid-template.xml
+
+    tempxml=$(mktemp)
+    sed '
+        s|<name>.*</name>|<name>'"${tmpname:?}"'</name>|
+        s|<source file='\''.*'\''/>|<source file='\'''"${tmppath:?}"''\''/>|
+        s|<mac address='\''.*'\''/>|<mac/>|
+        ' "${template}" > "${tempxml}"
+
+    #
+    # Define the new VM.
+    virsh \
+        --connect "${connection:?}" \
+        define "${tempxml:?}"
+
+    #
+    # Download our SSH keys.
+    wget -O /tmp/dmr.roe.ac.uk.rsa.pub http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.rsa.pub
+    wget -O /tmp/stv.roe.ac.uk.rsa.pub http://data.metagrid.co.uk/sshkeys/stv.roe.ac.uk.rsa.pub
+
+    #
+    # Add our SSH keys and schedule a restorecon.
+    sudo virt-sysprep \
+        --connect "${connection:?}" \
+        --domain "${tmpname:?}" \
+        --root-password random \
+        --ssh-inject root:file:/tmp/dmr.roe.ac.uk.rsa.pub \
+        --ssh-inject root:file:/tmp/stv.roe.ac.uk.rsa.pub \
+        --firstboot-command 'restorecon -Rv /root/.ssh'
+
+    #
+    # Boot the VM once, to run the restorecon.
+    virsh \
+        --connect "${connection:?}" \
+        start "${tmpname:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        shutdown "${tmpname:?}"
+
+    #
+    # Clean the image, skipping the ssh user dir).
+    sudo virt-sysprep \
+        --connect "${connection:?}" \
+        --domain "${tmpname:?}" \
+        --operations 'defaults,-ssh-userdir'
+
+   #
+   # Delete the VM, leaving the volume.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${tmpname:?}"
+
+#---------------------------------------------------------------------
+# Create a compressed copy of the image.
+#[user@methionine] 
+
+    tmpcopy=$(mktemp)
+    sudo qemu-img \
+        convert \
+            -c \
+            -O qcow2 \
+            "${tmppath:?}" \
+            "${tmpcopy:?}"
+
+#---------------------------------------------------------------------
+# Check the file info.
+#[user@methionine] 
+
+    sudo qemu-img \
+        info \
+            --backing-chain \
+            "${tmpcopy}"
+
+        image: /tmp/tmp.A5ujjUgeVd
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 672M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+#---------------------------------------------------------------------
+# Upload the new image to a volume.
+#[user@methionine] 
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${newfile:?}"  \
+            "${newsize:?}"  \
+            --format 'qcow2'
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${newfile:?}" \
+            "${tmpcopy:?}"
+
+    newpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "fedora-23-docker-20160822.qcow")
+
+#---------------------------------------------------------------------
+# Push the new image to our webserver.
+#[user@methionine] 
+
+    sudo chmod a+r ${newpath:?}
+
+    newgzip=${newfile:?}.gz
+    gzip -c "${newpath:?}" > "${newgzip:?}"
+
+    rsync \
+        --stats \
+        --progress \
+        --human-readable \
+        ${newgzip:?} \
+        root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base
+
+
+#---------------------------------------------------------------------
+#---------------------------------------------------------------------
+# Download our base image.
+#[user@trop01]
+
+    imgname=fedora-23-docker-20160822
+    imgfile=${imgname:?}.qcow
+    imggzip=${imgfile:?}.gz
+
+    wget "http://data.metagrid.co.uk/ischnura/base/${imggzip:?}"
+
+    gunzip "${imggzip:?}"
+
+#---------------------------------------------------------------------
+# Check the image contents.
+#[user@trop01]
+
+    qemu-img \
+        info \
+        --output json \
+        "${imgfile:?}"
+    
+        {
+        "virtual-size": 17179869184, 
+        "filename": "fedora-23-docker-20160822.qcow", 
+        "cluster-size": 65536, 
+        "format": "qcow2", 
+        "actual-size": 662593536, 
+        "format-specific": {
+            "type": "qcow2", 
+            "data": {
+                "compat": "1.1", 
+                "lazy-refcounts": false
+                }
+            }, 
+        "dirty-flag": false
+        }
+
+#---------------------------------------------------------------------
+# Get the image size.
+#[user@trop01]
+
+    imgsize=$(
+        qemu-img \
+            info \
+            --output json \
+            "${imgfile:?}" |
+                jq '.["virtual-size"]'
+                )
+
+    echo "Size [${imgsize:?}]"
+    
+#---------------------------------------------------------------------
+# Install the image in our our base pool.
+#[user@trop01]
+
+    source "${HOME:?}/helio.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool:?}" \
+            "${imgfile:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${imgfile:?}" \
+            "${imgsize:?}" \
+            --format 'qcow2'
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${imgfile:?}" \
+            "${imgfile:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-list \
+            --pool "${basepool:?}"
+

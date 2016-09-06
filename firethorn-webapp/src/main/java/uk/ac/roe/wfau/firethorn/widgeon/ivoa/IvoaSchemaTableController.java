@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
@@ -62,10 +62,10 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
         }
 
     /**
-     * MVC property for the Resource name.
+     * MVC property for the {@link IvoaTable} name.
      *
      */
-    public static final String SELECT_NAME = "urn:ivoa.table.name" ;
+    public static final String TABLE_NAME_PARAM = "urn:ivoa.table.name" ;
 
     @Override
     public IvoaTableBean bean(final IvoaTable entity)
@@ -121,11 +121,11 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params=TABLE_NAME_PARAM, produces=JSON_MIME)
     public IvoaTableBean select(
         @ModelAttribute(IvoaSchemaController.TARGET_ENTITY)
         final IvoaSchema schema,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(TABLE_NAME_PARAM)
         final String name
         ) throws EntityNotFoundException {
         log.debug("select(String) [{}]", name);

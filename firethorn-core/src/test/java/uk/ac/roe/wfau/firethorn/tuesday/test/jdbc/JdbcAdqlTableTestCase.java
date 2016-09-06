@@ -17,11 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;

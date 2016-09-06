@@ -19,11 +19,12 @@ package uk.ac.roe.wfau.firethorn.adql.query ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -70,7 +71,7 @@ extends TestBase
      * Debug display of a query.
      *
      */
-    public void debug(final AdqlQuery query)
+    public void debug(final GreenQuery query)
         {
         log.debug("Columns -- ");
         for (final AdqlColumn column : query.columns())
@@ -138,23 +139,23 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.queries().create(
-            factories().adql().queries().params().create(),
+        final GreenQuery query = schema.greens().create(
+            factories().adql().greens().params().create(),
             IMPORTED_000
             );
         //query.prepare();
         debug(query);
 
         assertEquals(
-            AdqlQuery.Status.READY,
+            GreenQuery.Status.READY,
             query.status()
             );
         assertEquals(
-            AdqlQuery.Mode.DIRECT,
+            AdqlQueryBase.Mode.DIRECT,
             query.mode()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(
@@ -212,23 +213,23 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.queries().create(
-            factories().adql().queries().params().create(),
+        final GreenQuery query = schema.greens().create(
+            factories().adql().greens().params().create(),
             IMPORTED_001
             );
         //query.prepare();
         debug(query);
 
         assertEquals(
-            AdqlQuery.Status.READY,
+            GreenQuery.Status.READY,
             query.status()
             );
         assertEquals(
-            AdqlQuery.Mode.DIRECT,
+            AdqlQueryBase.Mode.DIRECT,
             query.mode()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(
@@ -313,30 +314,30 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.queries().create(
-            factories().adql().queries().params().create(),
+        final GreenQuery query = schema.greens().create(
+            factories().adql().greens().params().create(),
             IMPORTED_002
             );
         //query.prepare();
         debug(query);
 
         assertEquals(
-            AdqlQuery.Status.READY,
+            GreenQuery.Status.READY,
             query.status()
             );
         assertEquals(
-            AdqlQuery.Mode.DISTRIBUTED,
+            AdqlQueryBase.Mode.DISTRIBUTED,
             query.mode()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(
             query.syntax().message()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(
@@ -396,23 +397,23 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = schema.queries().create(
-            factories().adql().queries().params().create(),
+        final GreenQuery query = schema.greens().create(
+            factories().adql().greens().params().create(),
             IMPORTED_002
             );
         //query.prepare();
         debug(query);
 
         assertEquals(
-            AdqlQuery.Status.READY,
+            GreenQuery.Status.READY,
             query.status()
             );
         assertEquals(
-            AdqlQuery.Mode.DIRECT,
+            AdqlQueryBase.Mode.DIRECT,
             query.mode()
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQueryBase.Syntax.State.VALID,
             query.syntax().state()
             );
         assertNull(

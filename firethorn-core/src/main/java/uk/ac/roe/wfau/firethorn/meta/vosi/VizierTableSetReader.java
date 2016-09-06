@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.meta.vosi;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;

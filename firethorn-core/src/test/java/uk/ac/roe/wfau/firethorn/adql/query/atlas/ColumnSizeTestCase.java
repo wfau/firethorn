@@ -27,10 +27,10 @@ import java.sql.Statement;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -72,7 +72,7 @@ public class ColumnSizeTestCase
     public void test001()
     throws SQLException, QueryProcessingException
         {
-        final AdqlQuery query = validate(
+        final GreenQuery query = validate(
             Level.LEGACY,
             State.VALID,
 

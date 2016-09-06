@@ -59,7 +59,7 @@ extends BaseTableDataTableController
         }
 
     /**
-     * VOTable GET request.
+     * DataTable GET request.
      *
      */
     @ResponseBody

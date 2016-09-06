@@ -17,19 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
@@ -44,9 +36,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource.Endpoint;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
-import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
  * {@link IvoaResource} implementation.

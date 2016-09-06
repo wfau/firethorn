@@ -142,22 +142,11 @@ extends TreeComponent
     public BaseResource<?> resource();
 
     /**
-     * The unique column alias, based on the identifier.
+     * The unique name.
+     * TODO Rename this to uniquename ?
      *
      */
     public String alias();
-
-    /**
-     * The full name, including parent table and schema.
-     *
-     */
-    public StringBuilder namebuilder();
-
-    /**
-     * The full name, including parent table and schema.
-     *
-     */
-    public String fullname();
 
     /**
      * The {@link BaseColumn} metadata interface.

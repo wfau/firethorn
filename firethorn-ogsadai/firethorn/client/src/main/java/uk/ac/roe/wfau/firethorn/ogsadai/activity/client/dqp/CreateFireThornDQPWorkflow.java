@@ -27,10 +27,6 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ogsa.OgsaServiceClient;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
 import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
-import uk.org.ogsadai.client.toolkit.exception.ClientException;
-import uk.org.ogsadai.client.toolkit.exception.ClientToolkitException;
-import uk.org.ogsadai.client.toolkit.exception.RequestException;
-import uk.org.ogsadai.client.toolkit.exception.ServerException;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**

@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- *
+ * TODO Move this to a OperationModel
  *
  */
 @Component

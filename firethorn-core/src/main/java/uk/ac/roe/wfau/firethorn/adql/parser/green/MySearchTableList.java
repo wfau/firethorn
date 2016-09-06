@@ -18,23 +18,18 @@
 package uk.ac.roe.wfau.firethorn.adql.parser.green;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import adql.db.DBTable;
+import adql.db.SearchTableApi;
+import adql.query.from.ADQLTable;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-
-import lombok.extern.slf4j.Slf4j;
-import adql.db.DBTable;
-import adql.db.SearchTableApi;
-import adql.db.SearchTableList;
-import adql.query.from.ADQLTable;
 
 /**
  *
@@ -79,13 +74,13 @@ implements SearchTableApi
      * Our AdqlQuery Mode.
      * 
      */
-    private AdqlQuery.Mode mode ;
+    private Mode mode ;
 
     /**
      * Our AdqlQuery Mode.
      * 
      */
-    public AdqlQuery.Mode mode()
+    public Mode mode()
         {
         return this.mode;
         }
@@ -94,7 +89,7 @@ implements SearchTableApi
      * Public constructor.
      * 
      */
-    public MySearchTableList(final AdqlResource resource, final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode)
+    public MySearchTableList(final AdqlResource resource, final AdqlParserTable.Factory factory, final Mode mode)
         {
         log.debug("MySearchTableList(AdqlResource, AdqlParserTable.Factory, AdqlQuery.Mode)");
         this.resource = resource;

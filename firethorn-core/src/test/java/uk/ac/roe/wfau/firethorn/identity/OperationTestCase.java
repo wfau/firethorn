@@ -17,12 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.junit.Test;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**

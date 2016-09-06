@@ -27,8 +27,8 @@ createadql=${2:?}
 curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   "adql.schema.query.create.mode=${createmode:?}" \
-    --data-urlencode "adql.schema.query.create.query=${createadql:?}" \
+    --data   "adql.query.mode=${createmode:?}" \
+    --data-urlencode "adql.query.input=${createadql:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
      | bin/pp | tee query-job.json
 
@@ -41,11 +41,11 @@ queryident=$(
 curl \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data-urlencode "adql.query.update.delay.first=${delayfirst:-0}" \
-    --data-urlencode "adql.query.update.delay.every=${delayevery:-0}" \
-    --data-urlencode "adql.query.update.delay.last=${delaylast:-0}" \
-    --data-urlencode "adql.query.update.limit.rows=${rowlimit:-0}" \
-    --data-urlencode "adql.query.update.limit.time=${timelimit:-0}" \
+    --data-urlencode "adql.query.delay.first=${delayfirst:-0}" \
+    --data-urlencode "adql.query.delay.every=${delayevery:-0}" \
+    --data-urlencode "adql.query.delay.last=${delaylast:-0}" \
+    --data-urlencode "adql.query.limit.rows=${rowlimit:-0}" \
+    --data-urlencode "adql.query.limit.time=${timelimit:-0}" \
     "${endpointurl:?}/${queryident:?}" \
 
 #

@@ -19,26 +19,19 @@ package uk.ac.roe.wfau.firethorn.webapp.votable;
 
 import java.io.PrintWriter;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.FieldFormatter;
-import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryDatatablesController.BaseFieldHandler;
-import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryDatatablesController.FieldHandler;
-import uk.ac.roe.wfau.firethorn.webapp.votable.AdqlQueryDatatablesController.StringFieldHandler;
 
 /**
  * Spring MVC Controller to generate a Datatable response for a table.

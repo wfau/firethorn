@@ -23,10 +23,9 @@
 # Create our WFAU resource.
 jdbcwfau=$(
     POST "/jdbc/resource/create" \
-        -d "jdbc.resource.create.url=spring:RoeWFAU" \
-        -d "jdbc.resource.create.name=wfau-$(unique)" \
-        -d "jdbc.resource.create.ogsadai=wfau" \
-        -d "jdbc.resource.create.catalog=*" \
+        -d "jdbc.connection.url=spring:RoeWFAU" \
+        -d "jdbc.resource.name=wfau-$(unique)" \
+        -d "jdbc.resource.catalog=*" \
         | ident
         )
 

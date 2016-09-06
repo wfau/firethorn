@@ -17,45 +17,30 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import uk.ac.roe.wfau.firethorn.webapp.votable.*;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
-import uk.ac.roe.wfau.firethorn.webapp.tap.CommonParams;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapValidator;
-import uk.ac.roe.wfau.firethorn.webapp.tap.CapabilitiesGenerator;
-import uk.ac.roe.wfau.firethorn.blue.*;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 
 @Slf4j
 @Controller
@@ -177,20 +162,35 @@ public class AdqlTapSyncController extends AbstractController {
 			} else if (REQUEST.equalsIgnoreCase(TapJobParams.REQUEST_DO_QUERY)) {
 
 				try {
+				    // TODO Need to look at the default/absolute timeout values.
+				    // TODO I think Limits will have a default time limit.
+				    // TODO We want a TAP sync request to block for as long as possible.
 					BlueQuery query;
 					if (MAXREC!=null){
-						query = resource.blues().create(QUERY, 
+						query = resource.blues().create(
+						        QUERY, 
+                                null, // Mode.AUTO
+                                null, // Syntax.AUTO
 								factories().blues().limits().create(
-										Long.parseLong(MAXREC.trim()),
-										null,
-										null
-				                        ),
-								TaskState.COMPLETED,
-								factories().blues().limits().absolute().time());
+									Long.parseLong(MAXREC.trim()), // Row limit
+									null, // No cell limit
+                                    null  // No time limit
+			                        ),
+                                null, // No delays
+								TaskState.COMPLETED, // Wait for COMPLETED
+								factories().blues().limits().absolute().time() // TODO This is not the right value.
+								);
 						;
 					} else {
-						query = resource.blues().create(QUERY, TaskState.COMPLETED,
-								factories().blues().limits().absolute().time());
+						query = resource.blues().create(
+						        QUERY,
+						        null, // Mode.AUTO
+						        null, // Syntax.AUTO
+						        null, // No limits
+						        null, // No delays
+                                TaskState.COMPLETED, // Wait for COMPLETED
+								factories().blues().limits().absolute().time() // TODO This is not the right value.
+								);
 					}
 
 

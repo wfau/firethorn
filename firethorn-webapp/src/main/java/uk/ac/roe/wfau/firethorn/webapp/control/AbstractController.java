@@ -19,12 +19,12 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -50,10 +50,11 @@ public abstract class AbstractController
     public static final String FORM_MIME = MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
     /**
-     * Request property for the copy depth.
+     * Request param name for the {@link TreeComponent.CopyDepth}, [{@value}].
+     * TODO Move this to AbstractModel
      *
      */
-    public static final String ADQL_COPY_DEPTH_URN = "urn:adql.copy.depth" ;
+    public static final String COPY_DEPTH_PARAM = "urn:adql.copy.depth" ;
 
     /**
      * URL path for the select method.

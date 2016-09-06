@@ -26,7 +26,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 
 /**
  * Implementation of the query timing statistics.
@@ -38,7 +38,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
     AccessType.FIELD
     )
 public class AdqlQueryTimings
-implements AdqlQuery.Timings
+implements AdqlQueryBase.Timings
     {
 
     /**
@@ -47,7 +47,7 @@ implements AdqlQuery.Timings
      */
     public AdqlQueryTimings()
         {
-        log.debug("AdqlQueryStats()");
+        log.debug("AdqlQueryTimings()");
         }
 
     /**
@@ -57,7 +57,7 @@ implements AdqlQuery.Timings
      */
     protected AdqlQueryTimings(boolean init)
         {
-        log.debug("AdqlQueryStats(boolean)");
+        log.debug("AdqlQueryTimings(boolean)");
         if (init)
             {
             start();

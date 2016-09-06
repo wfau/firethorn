@@ -22,7 +22,6 @@ import java.net.URI;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 

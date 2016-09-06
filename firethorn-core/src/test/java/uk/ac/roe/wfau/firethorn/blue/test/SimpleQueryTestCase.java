@@ -17,15 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.blue.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
-import uk.ac.roe.wfau.firethorn.blue.InvalidStateRequestException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateRequestException;
 
 /**
  *
@@ -44,6 +45,10 @@ public class SimpleQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);
@@ -67,6 +72,10 @@ public class SimpleQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);
@@ -93,6 +102,10 @@ public class SimpleQueryTestCase
 			testspace(),
 			SIMPLE_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -115,6 +128,10 @@ public class SimpleQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);
@@ -139,6 +156,10 @@ public class SimpleQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);
@@ -165,6 +186,10 @@ public class SimpleQueryTestCase
 			testspace(),
 			SIMPLE_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -187,6 +212,10 @@ public class SimpleQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);

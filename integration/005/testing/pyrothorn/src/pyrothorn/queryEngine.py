@@ -191,7 +191,7 @@ class QueryEngine(object):
     
             data = urllib.urlencode({ query_status_update : "RUNNING"})
             
-            #data = urllib.urlencode({ query_status_update : "RUNNING", 'adql.query.update.delay.every' : '10000', 'adql.query.update.delay.first':'10000', 'adql.query.update.delay.last':'10000'})
+            #data = urllib.urlencode({ query_status_update : "RUNNING", 'adql.query.delay.every' : '10000', 'adql.query.delay.first':'10000', 'adql.query.delay.last':'10000'})
             request = urllib2.Request(url, data, headers={"Accept" : "application/json", "firethorn.auth.identity" : test_email, "firethorn.auth.community" : "public (unknown)"})
             f_update = urllib2.urlopen(request)
             query_json =  json.loads(f_update.read())

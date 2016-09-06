@@ -311,7 +311,7 @@ implements OgsaExecResource
     @Override
 	public BaseResource<?> resource()
 		{
-		// This should not be here.
+        // TODO Remove this from the base class.
 		// A DRER is not linked to a BaseResource resource.
 		throw new NotImplementedException();
 		}

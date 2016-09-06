@@ -39,69 +39,20 @@ implements MetadataServiceFactory
     {
     private static Log log = LogFactory.getLog(MetadataServiceFactoryImpl.class);
 
-    public static final String DEFAULT_ENDPOINT = "http://localhost:8080/firethorn" ;
-
-    /**
-     *
-     *
-     */
-    private final String endpoint ;
-
-    /**
-     *
-     *
-     */
-    public  String endpoint()
-        {
-        return this.endpoint ;
-        }
-
     /**
      * Public constructor.
      *
      */
     public MetadataServiceFactoryImpl()
         {
-        this(
-            DEFAULT_ENDPOINT
-            );
         }
 
-    /**
-     * Public constructor.
-     *
-     */
-    public MetadataServiceFactoryImpl(final String endpoint)
-        {
-        log.debug("MetadataServiceFactoryImpl(String)");
-        log.debug("  Endpoint [" + endpoint + "]");
-        this.endpoint = endpoint ;
-        }
-
-    private String endpoint(final RequestDetails request)
-        {
-        final SecurityContext vanilla = request.getSecurityContext();
-        if ((vanilla != null) && (vanilla instanceof FirethornSecurityContext))
-            {
-            log.debug("Found FirethornSecurityContext");
-            final FirethornSecurityContext secure = (FirethornSecurityContext) vanilla ;
-            log.debug("Callback endpoint [" + secure.endpoint() + "]");
-            return secure.endpoint();
-            }
-        else {
-            return this.endpoint ;
-            }
-        }
-    
     @Override
     public AttributeService getAttributeService(final RequestDetails request)
         {
         log.debug("getAttributeService(RequestDetails)");
         log.debug("  Request [" + request + "]");
         return new CachingAttributeServiceImpl(
-            endpoint(
-                request
-                ),
             request
             );
         }
@@ -112,9 +63,6 @@ implements MetadataServiceFactory
         log.debug("getTableMappingService(RequestDetails)");
         log.debug("  Request [" + request + "]");
         return new CachingTableMappingServiceImpl(
-            endpoint(
-                request
-                ),
             request
             );
         }
@@ -125,9 +73,6 @@ implements MetadataServiceFactory
         log.debug("getStatisticsService(RequestDetails)");
         log.debug("  Request [" + request + "]");
         return new StatisticsServiceImpl(
-            endpoint(
-                request
-                ),
             request
             );
         }

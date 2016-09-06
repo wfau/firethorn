@@ -107,10 +107,9 @@
     <mvc:interceptors>
         <!--+
             | Hibernate Session interceptor.
-            | http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/orm/hibernate4/support/OpenSessionInViewInterceptor.html
             +-->
         <bean id="hibernate-session-interceptor"
-            class="org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor">
+            class="org.springframework.orm.hibernate5.support.OpenSessionInViewInterceptor">
             <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
         </bean>
 

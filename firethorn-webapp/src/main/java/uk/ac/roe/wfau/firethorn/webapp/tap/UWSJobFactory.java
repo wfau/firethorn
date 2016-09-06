@@ -1,10 +1,6 @@
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 import java.io.IOException;
-import java.io.PrintWriter;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -12,17 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateRequestException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.webapp.tap.UWSJob;
-import uk.ac.roe.wfau.firethorn.blue.*;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
 
    
 @Slf4j
@@ -214,7 +207,15 @@ class UWSJobFactory extends AbstractComponent {
 			BlueQuery query = null;
 			
 			try {
-				query = resource.blues().create("");
+				query = resource.blues().create(
+			        "",
+			        null, // Default mode
+			        null, // Default syntax
+			        null, // No limits
+			        null, // No delays
+			        null, // Nothing to wait for
+			        null  // No wait time 
+			        );
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();
@@ -236,7 +237,15 @@ class UWSJobFactory extends AbstractComponent {
 			
 			try {
 				
-				query = resource.blues().create(querystring);
+				query = resource.blues().create(
+			        querystring,
+                    null, // Default mode
+                    null, // Default syntax
+                    null, // No limits
+                    null, // No delays
+                    null, // Nothing to wait for
+                    null  // No wait time 
+			        );
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();

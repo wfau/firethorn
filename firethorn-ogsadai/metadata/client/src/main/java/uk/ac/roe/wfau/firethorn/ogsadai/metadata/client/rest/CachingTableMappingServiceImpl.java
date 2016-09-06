@@ -50,10 +50,9 @@ implements TableMappingService
      * Public constructor.
      *
      */
-    public CachingTableMappingServiceImpl(final String endpoint, final RequestDetails request)
+    public CachingTableMappingServiceImpl(final RequestDetails request)
         {
         this.service = new SimpleTableMappingServiceImpl(
-            endpoint,
             request
             );
         }

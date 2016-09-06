@@ -21,11 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.votable.TableElement;
 import uk.ac.starlink.votable.VOElement;

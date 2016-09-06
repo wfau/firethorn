@@ -52,11 +52,17 @@ public interface OgsaFactories
      * 
      */
     public OgsaIvoaResource.EntityServices ivoa();
-
+    
     /**
      * Our {@link OgsaExecResource} factory.
      * 
      */
     public OgsaExecResource.EntityServices exec();
-    
+
+    /**
+     * Our {@link OgsaDQPResource} factory.
+     * 
+     */
+    public OgsaDQPResource.EntityServices dqp();
+
     }

@@ -29,10 +29,10 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.DelaysParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.LimitsParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -90,6 +90,12 @@ implements SecureActivity
             this.context  = (RequestContext) context;
             }
         }
+
+    /**
+     * Our callback handler.
+     * 
+     */
+    private CallbackHandler callback;
     
     /**
      * Public constructor.
@@ -136,6 +142,11 @@ implements SecureActivity
     throws ActivitySQLException, ActivityProcessingException
         {
         logger.debug("preprocess()");
+
+		this.callback = new CallbackHandler(
+			this.context
+			); 	        
+
     	try {
             validateOutput(
                 LimitsParam.TUPLE_OUTPUT
@@ -330,7 +341,7 @@ implements SecureActivity
             logger.debug("Cancelling Future");
             future.cancel(true);
             logger.debug("Future cancelled");
-            context.handler().truncated();
+            callback.truncated();
             throw new ActivityTerminatedException();
             }
         catch (TimeoutException ouch)
@@ -340,7 +351,7 @@ implements SecureActivity
             logger.debug("Cancelling Future");
             future.cancel(true);
             logger.debug("Future cancelled");
-            context.handler().truncated();
+            callback.truncated();
             throw new ActivityTerminatedException();
             }
         catch (ExecutionException ouch)
@@ -408,7 +419,7 @@ implements SecureActivity
                     if (rowcount >= maxrows)
                         {
                         logger.debug("STOP -- Row limit reached [{}]", maxrows);
-                        context.handler().truncated(
+                        callback.truncated(
                             rowcount
                             );
                         break ;

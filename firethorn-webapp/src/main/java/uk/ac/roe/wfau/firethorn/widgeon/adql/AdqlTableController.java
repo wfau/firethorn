@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -77,7 +75,7 @@ public class AdqlTableController
      * @todo Merge create, select and update.
      *
      */
-    public static final String UPDATE_NAME = "adql.table.update.name" ;
+    public static final String TABLE_NAME_PARAM = "adql.table.update.name" ;
 
     @Override
     public Iterable<AdqlTableBean> bean(final Iterable<AdqlTable> iter)
@@ -141,7 +139,7 @@ public class AdqlTableController
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param entity The {@link AdqlTable} selected using the {@Identifier} in the request path.
      * <br/>Optional {@link AdqlTable} params :
-     * @param name   The {@link AdqlTable} name, [{@value #UPDATE_NAME}].
+     * @param name   The {@link AdqlTable} name, [{@value #TABLE_NAME_PARAM}].
      * @return The updated {@link AdqlTable} wrapped in a {@link AdqlTableBean}.
      * 
      */
@@ -151,7 +149,7 @@ public class AdqlTableController
     public AdqlTableBean update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table,
-        @RequestParam(value=UPDATE_NAME, required=false)
+        @RequestParam(value=TABLE_NAME_PARAM, required=false)
         final String name
         ){
         log.debug("update(String)");

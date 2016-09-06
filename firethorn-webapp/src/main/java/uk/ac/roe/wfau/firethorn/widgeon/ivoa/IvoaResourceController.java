@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -32,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -85,13 +84,13 @@ public class IvoaResourceController
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "ivoa.resource.name" ;
+    public static final String RESOURCE_NAME_PARAM = "ivoa.resource.name" ;
 
     /**
      * MVC property for updating the status.
      *
      */
-    public static final String UPDATE_STATUS = "ivoa.resource.status" ;
+    public static final String RESOURCE_STATUS_PARAM = "ivoa.resource.status" ;
 
     @Override
     public IvoaResourceBean bean(final IvoaResource entity)
@@ -152,9 +151,9 @@ public class IvoaResourceController
     public EntityBean<IvoaResource> update(
         @ModelAttribute(TARGET_ENTITY)
         final IvoaResource entity,
-        @RequestParam(value=UPDATE_NAME, required=false) final
+        @RequestParam(value=RESOURCE_NAME_PARAM, required=false) final
         String name,
-        @RequestParam(value=UPDATE_STATUS, required=false) final
+        @RequestParam(value=RESOURCE_STATUS_PARAM, required=false) final
         String status
         ){
 

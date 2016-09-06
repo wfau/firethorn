@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaDQPResource.EntityServices;
+
 /**
  *
  *
@@ -74,5 +76,13 @@ implements OgsaFactories
     public OgsaExecResource.EntityServices exec()
         {
         return exec;
+        }
+
+    @Autowired
+    private OgsaDQPResource.EntityServices dqp;
+    @Override
+    public OgsaDQPResource.EntityServices dqp()
+        {
+        return dqp;
         }
     }

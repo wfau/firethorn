@@ -36,7 +36,6 @@ implements OgsaIvoaResource.IdentFactory
     {
     /**
      * The type URI for this type.
-     * TODO - Move to OgsaResource interface.
      *
      */
     public static final URI TYPE_URI = URI.create(

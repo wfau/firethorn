@@ -19,17 +19,13 @@ package uk.ac.roe.wfau.firethorn.ogsa.query;
 
 import static org.junit.Assert.assertNotNull;
 
-import javax.transaction.Transactional;
-
-import org.junit.Before;
 import org.junit.Test;
 
-
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
-import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
@@ -51,7 +47,7 @@ public class CombinedQueryTestCase
     JdbcResource jdbc ;
     AdqlResource adql ;
     AdqlSchema schema ;
-    AdqlQuery  query  ;
+    GreenQuery  query  ;
     
     @CreateAtomicMethod
     public void prepare()
@@ -89,10 +85,10 @@ public class CombinedQueryTestCase
             schema
             );
         
-        query = schema.queries().create(
-            factories().adql().queries().params().create(
-                AdqlQuery.Syntax.Level.LEGACY,
-                AdqlQuery.Mode.DIRECT
+        query = schema.greens().create(
+            factories().adql().greens().params().create(
+                GreenQuery.Syntax.Level.LEGACY,
+                AdqlQueryBase.Mode.DIRECT
                 ),
             "SELECT COUNT(ra) FROM atlasSource WHERE ra BETWEEN 80.0 AND 80.1"
             );
@@ -107,9 +103,9 @@ public class CombinedQueryTestCase
         {
         prepare();
 
-        factories().queries().executor().update(
+        factories().greens().executor().update(
             query.ident(),
-            Job.Status.RUNNING,
+            GreenJob.Status.RUNNING,
             10
             );
         }

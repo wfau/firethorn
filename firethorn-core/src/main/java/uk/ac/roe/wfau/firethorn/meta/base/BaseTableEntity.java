@@ -28,12 +28,10 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -191,12 +189,6 @@ implements BaseTable<TableType, ColumnType>
         }
 
     @Override
-    public String fullname()
-        {
-        return namebuilder().toString();
-        }
-
-    @Override
     public abstract BaseTable<?, ?> base();
     @Override
     public abstract BaseTable<?, ?> root();
@@ -206,12 +198,6 @@ implements BaseTable<TableType, ColumnType>
 
     @Override
     public abstract String alias();
-
-    @Override
-    public AdqlQuery query()
-        {
-        return root().query();
-        }
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
@@ -358,4 +344,34 @@ implements BaseTable<TableType, ColumnType>
                 }
             };
         }
+
+    /*
+     * 
+    @Override
+    @Deprecated
+    public AdqlQuery greenquery()
+        {
+        return root().greenquery();
+        }
+
+    @Override
+    public BlueQuery bluequery()
+        {
+        return root().bluequery();
+        }
+
+    @Override
+    @Deprecated
+    public AdqlQuery greenquery()
+        {
+        return null;
+        }
+
+    @Override
+    public BlueQuery bluequery()
+        {
+        return null;
+        }
+     * 
+     */
     }

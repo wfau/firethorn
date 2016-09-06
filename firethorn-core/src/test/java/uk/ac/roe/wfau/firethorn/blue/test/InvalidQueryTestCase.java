@@ -17,15 +17,15 @@
  */
 package uk.ac.roe.wfau.firethorn.blue.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.InvalidStateRequestException;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateRequestException;
 
 /**
  *
@@ -44,8 +44,12 @@ public class InvalidQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			INVALID_QUERY,
-			null,
-			null
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
 			);
     	assertEquals(
 			TaskState.EDITING,
@@ -69,6 +73,10 @@ public class InvalidQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			INVALID_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);
@@ -95,6 +103,10 @@ public class InvalidQueryTestCase
 			testspace(),
 			INVALID_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -119,6 +131,10 @@ public class InvalidQueryTestCase
 			testspace(),
 			INVALID_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -142,6 +158,10 @@ public class InvalidQueryTestCase
 			testspace(),
 			INVALID_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -164,6 +184,10 @@ public class InvalidQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			INVALID_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);
@@ -190,6 +214,10 @@ public class InvalidQueryTestCase
 			testspace(),
 			INVALID_QUERY,
             null,
+            null,
+            null,
+            null,
+            null,
             null
 			);
     	assertEquals(
@@ -212,6 +240,10 @@ public class InvalidQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			INVALID_QUERY,
+            null,
+            null,
+            null,
+            null,
             null,
             null
 			);

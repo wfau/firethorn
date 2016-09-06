@@ -19,17 +19,16 @@ package uk.ac.roe.wfau.firethorn.adql.parser ;
 
 import java.util.Iterator;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.db.DBType;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 
 /**
@@ -51,7 +50,7 @@ implements AdqlParserTable
     implements AdqlParserTable.Factory
         {
         @Override
-        public AdqlParserTableImpl create(final AdqlQuery.Mode mode, final AdqlTable table)
+        public AdqlParserTableImpl create(final AdqlQueryBase.Mode mode, final AdqlTable table)
             {
             return new AdqlParserTableImpl(
                 mode,
@@ -60,9 +59,9 @@ implements AdqlParserTable
             }
         }
 
-    private final AdqlQuery.Mode mode;
+    private final AdqlQueryBase.Mode mode;
     @Override
-    public AdqlQuery.Mode mode()
+    public AdqlQueryBase.Mode mode()
         {
         return this.mode;
         }
@@ -94,7 +93,7 @@ implements AdqlParserTable
      * Protected constructor.
      *
      */
-    private AdqlParserTableImpl(final AdqlQuery.Mode mode, final AdqlTable table)
+    private AdqlParserTableImpl(final AdqlQueryBase.Mode mode, final AdqlTable table)
         {
         this(
             mode,
@@ -108,7 +107,7 @@ implements AdqlParserTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlParserTableImpl(final AdqlQuery.Mode mode, final AdqlTable table, final String baseName, final String adqlName)
+    private AdqlParserTableImpl(final AdqlQueryBase.Mode mode, final AdqlTable table, final String baseName, final String adqlName)
         {
         log.debug("AdqlParserTableImpl(AdqlQuery.Mode mode, AdqlTable, String, String)");
         log.debug("real name [{}]", table.name());
@@ -224,7 +223,7 @@ implements AdqlParserTable
             return this.baseName ;
             }
         else {
-            if (this.mode() == AdqlQuery.Mode.DISTRIBUTED)
+            if (this.mode() == AdqlQueryBase.Mode.DISTRIBUTED)
                 {
                 return this.table.root().alias();
                 }
@@ -247,7 +246,7 @@ implements AdqlParserTable
             return null ;
             }
         else {
-            if (this.mode() == AdqlQuery.Mode.DISTRIBUTED)
+            if (this.mode() == AdqlQueryBase.Mode.DISTRIBUTED)
                 {
                 return null ;
                 }
@@ -270,7 +269,7 @@ implements AdqlParserTable
             return null ;
             }
         else {
-            if (this.mode() == AdqlQuery.Mode.DISTRIBUTED)
+            if (this.mode() == AdqlQueryBase.Mode.DISTRIBUTED)
                 {
                 return null ;
                 }

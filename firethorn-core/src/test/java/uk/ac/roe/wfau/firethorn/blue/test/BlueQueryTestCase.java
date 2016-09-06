@@ -17,12 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.blue.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 
 /**
  *
@@ -39,7 +40,11 @@ public class BlueQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
             null,
+            Mode.AUTO,
             null,
+            null,
+            null,
+			null,
 			null
 			);
     	assertEquals(
@@ -55,6 +60,10 @@ public class BlueQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            Mode.AUTO,
+            null,
+            null,
+            null,
             null,
             null
 			);
@@ -71,6 +80,10 @@ public class BlueQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			INVALID_QUERY,
+            Mode.AUTO,
+            null,
+            null,
+            null,
             null,
             null
 			);

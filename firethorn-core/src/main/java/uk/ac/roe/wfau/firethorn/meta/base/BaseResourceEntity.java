@@ -23,9 +23,9 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Repository;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link BaseResource} implementation.
@@ -90,5 +90,10 @@ public abstract class BaseResourceEntity<ResourceType extends BaseResource<Schem
         return new StringBuilder(
             this.name()
             );
+        }
+    @Override
+    public String fullname()
+        {
+        return this.name();
         }
     }

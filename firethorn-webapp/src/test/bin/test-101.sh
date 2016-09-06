@@ -29,8 +29,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data "jdbc.resource.create.url=spring:RoeTWOMASS" \
-    --data "jdbc.resource.create.name=jdbc-resource-$(unique)" \
+    --data "jdbc.connection.url=spring:RoeTWOMASS" \
+    --data "jdbc.resource.name=jdbc-resource-$(unique)" \
     "${basename}/jdbc/resource/create"
 
 #
@@ -248,8 +248,8 @@ echo "----"
 echo ""
 curl \
     -H 'Accept: application/json' \
-    --data-urlencode "adql.resource.query.create.name=test-query" \
-    --data-urlencode "adql.resource.query.create.query@-" \
+    --data-urlencode "adql.query.name=test-query" \
+    --data-urlencode "adql.query.input@-" \
     "${basename}/adql/resource/2/queries/create"  \
 << EOF
     SELECT

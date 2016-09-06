@@ -21,7 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 
 /**
  *
@@ -65,11 +66,19 @@ public class AdqlFactoriesImpl
         }
 
     @Autowired
-    private AdqlQuery.EntityServices queries;
+    private GreenQuery.EntityServices greens;
     @Override
-    public AdqlQuery.EntityServices queries()
+    public GreenQuery.EntityServices greens()
         {
-        return this.queries;
+        return this.greens;
+        }
+
+    @Autowired
+    private BlueQuery.EntityServices blues;
+    @Override
+    public BlueQuery.EntityServices blues()
+        {
+        return this.blues;
         }
 
     @Autowired

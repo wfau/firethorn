@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
  * Link factory for <code>AdqlColumn</code>.
- * TODO
+ * TODO Move this to a IdentityModel
  *
  */
 @Component

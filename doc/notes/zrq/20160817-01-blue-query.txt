@@ -29,7 +29,7 @@
 
     devname=zrq-blue-query
 
-    doc/notes/zrq/20141130-01-hg-branch.txt
+    gedit doc/notes/zrq/20141130-01-hg-branch.txt &
 
 
 

@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+
 
 /**
  *
@@ -34,8 +36,8 @@ extends TwomassQueryTestBase
     public void test000()
     throws Exception
         {
-        final AdqlQuery query = this.schema.queries().create(
-            factories().adql().queries().params().create(),
+        final GreenQuery query = this.schema.greens().create(
+            factories().adql().greens().params().create(),
             "SELECT"
             + "    TOP 5"
             + "    ra,"
@@ -58,8 +60,8 @@ extends TwomassQueryTestBase
     public void test001()
     throws Exception
         {
-        final AdqlQuery query = this.schema.queries().create(
-            factories().adql().queries().params().create(),
+        final GreenQuery query = this.schema.greens().create(
+            factories().adql().greens().params().create(),
             "SELECT"
             + "    TOP 5"
             + "    *"
@@ -81,8 +83,8 @@ extends TwomassQueryTestBase
     public void test002()
     throws Exception
         {
-        final AdqlQuery query = this.schema.queries().create(
-            factories().adql().queries().params().create(),
+        final GreenQuery query = this.schema.greens().create(
+            factories().adql().greens().params().create(),
             "SELECT"
             + "    TOP 5"
             + "    twomass.*"

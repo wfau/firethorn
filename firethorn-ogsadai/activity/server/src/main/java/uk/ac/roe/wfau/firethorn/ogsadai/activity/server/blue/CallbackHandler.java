@@ -27,6 +27,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.CallbackParam;
 
 /**
@@ -35,6 +36,11 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.CallbackParam;
  */
 public class CallbackHandler
     {
+    /**
+     * The callback URL path, {@value}.
+     * 
+     */
+    protected static final String CALLBACK_PATH = "/blue/query/callback/" ;
 
     /**
      * Our debug logger.
@@ -48,7 +54,7 @@ public class CallbackHandler
      * Protected constructor.
      *
      */
-    protected CallbackHandler(final RequestContext context)
+    public CallbackHandler(final RequestContext context)
         {
         super();
         this.context = context;
@@ -166,8 +172,10 @@ public class CallbackHandler
 				//
 				// Build our callback endpoint.
 				final StringBuilder endpoint = context.endpoint();
-				
-		        logger.debug("Before callback");
+                endpoint.append(CALLBACK_PATH);
+                endpoint.append(context.ident());
+
+                logger.debug("Before callback");
 		        logger.debug("  Ident    [{}]", context.ident());
 		        logger.debug("  Endpoint [{}]", endpoint.toString());
 		        try {

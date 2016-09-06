@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -66,12 +65,6 @@ public class JdbcSchemaController
      *
      */
     public static final String TARGET_ENTITY = "urn:jdbc.schema.entity" ;
-
-    /**
-     * MVC property for updating the name.
-     *
-     */
-    public static final String UPDATE_NAME = "jdbc.schema.update.name" ;
 
     @Override
     public Iterable<JdbcSchemaBean> bean(final Iterable<JdbcSchema> iter)
@@ -122,5 +115,4 @@ public class JdbcSchemaController
             entity
             );
         }
-
     }

@@ -18,7 +18,7 @@
 FROM firethorn/java:8.1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV TOMCAT_VERSION 8.0.14
+ENV TOMCAT_VERSION 8.5.4
 
 ENV TOMCAT_USER tomcat
 ENV TOMCAT_ROOT /var/local/tomcat
@@ -65,26 +65,27 @@ RUN mv apache-tomcat-${TOMCAT_VERSION} ${TOMCAT_ROOT}
 
 #
 # Remove the default webapps.
-RUN rm -rf ${TOMCAT_ROOT}/webapps/docs
-RUN rm -rf ${TOMCAT_ROOT}/webapps/ROOT
-RUN rm -rf ${TOMCAT_ROOT}/webapps/examples
-RUN rm -rf ${TOMCAT_ROOT}/webapps/manager
-RUN rm -rf ${TOMCAT_ROOT}/webapps/host-manager
+RUN rm -rf ${TOMCAT_ROOT}/webapps/*
 
 #
 # Change ownership of our working directories.
 # ** This needs to be done externally if they are mounted as host volumes.
-RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/logs
-RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/work
-RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/temp
+RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/logs
+RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/work
+RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/temp
 
 #RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/logs
 #RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/work
 #RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/temp
 
 #
-# Allow read access to the config files.
-RUN chmod a+r ${TOMCAT_ROOT}/conf/*
+# Allow read access to everything.
+RUN find ${TOMCAT_ROOT} -type d -exec chmod a+rx '{}' \;
+RUN find ${TOMCAT_ROOT} -type f -exec chmod a+r  '{}' \;
+
+#
+# Allow execute access to the scripts.
+RUN find ${TOMCAT_ROOT}/bin -name '*.sh' -exec chmod a+rx '{}' \;
 
 #
 # Create our config directory.

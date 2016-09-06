@@ -35,10 +35,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -686,7 +686,8 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlTable create(final AdqlQuery query)
+            @Deprecated
+            public AdqlTable create(final GreenQuery query)
                 {
                 return factories().adql().tables().entities().create(
                     AdqlSchemaEntity.this,
@@ -788,15 +789,15 @@ implements AdqlSchema
         }
 
     @Override
-    public Queries queries()
+    public Greens greens()
         {
-        return new Queries()
+        return new Greens()
             {
             @Override
-            public AdqlQuery create(final QueryParam param, final String query)
+            public GreenQuery create(final QueryParam param, final String query)
             throws QueryProcessingException
                 {
-                return factories().adql().queries().entities().create(
+                return factories().adql().greens().entities().create(
                     AdqlSchemaEntity.this,
                     param,
                     query
@@ -804,10 +805,10 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlQuery create(final QueryParam param, final String query, final String name)
+            public GreenQuery create(final QueryParam param, final String query, final String name)
             throws QueryProcessingException
                 {
-                return factories().adql().queries().entities().create(
+                return factories().adql().greens().entities().create(
                     AdqlSchemaEntity.this,
                     param,
                     query,
@@ -816,9 +817,9 @@ implements AdqlSchema
                 }
 
             @Override
-            public Iterable<AdqlQuery> select()
+            public Iterable<GreenQuery> select()
                 {
-                return factories().adql().queries().entities().select(
+                return factories().adql().greens().entities().select(
                     AdqlSchemaEntity.this
                     );
                 }

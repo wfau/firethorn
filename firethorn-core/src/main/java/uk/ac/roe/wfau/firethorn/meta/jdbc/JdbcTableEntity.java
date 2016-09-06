@@ -45,9 +45,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -58,7 +59,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.exception.IllegalStateTransition;
-import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -80,7 +80,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
             columnList = JdbcTableEntity.DB_PARENT_COL
             ),
         @Index(
-            columnList = JdbcTableEntity.DB_JDBC_QUERY_COL
+            columnList = JdbcTableEntity.DB_GREEN_QUERY_COL
             )
         },
     uniqueConstraints={
@@ -148,8 +148,14 @@ implements JdbcTable
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_JDBC_QUERY_COL  = "adqlquery"  ;
-    
+    protected static final String DB_GREEN_QUERY_COL  = "greenquery" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_BLUE_QUERY_COL  = "bluequery" ;
+
     /**
      * {@link JdbcTable.Builder} implementation.
      *
@@ -323,6 +329,8 @@ implements JdbcTable
             return this.insert(
                 new JdbcTableEntity(
                     schema,
+                    null,
+                    null,
                     name,
                     type
                     )
@@ -331,18 +339,19 @@ implements JdbcTable
 
         @Override
         @CreateMethod
-        public JdbcTable create(final JdbcSchema schema, final AdqlQuery query)
+        public JdbcTable create(final JdbcSchema schema, final GreenQuery greenquery)
             {
             final JdbcTable table = this.insert(
                 new JdbcTableEntity(
                     schema,
-                    query,
+                    greenquery,
+                    null,
                     null
                     )
                 );
             //
             // Add the select fields.
-            for (final AdqlQuery.SelectField field : query.fields())
+            for (final GreenQuery.SelectField field : greenquery.fields())
                 {
                 final String name = field.name();
                 if (name == null)
@@ -375,6 +384,20 @@ implements JdbcTable
                 );
             }
 
+        @Override
+        @CreateMethod
+        public JdbcTable create(final JdbcSchema schema, final BlueQuery bluequery)
+            {
+            return this.insert(
+                new JdbcTableEntity(
+                    schema,
+                    null,
+                    bluequery,
+                    null
+                    )
+                );
+            }
+        
         @Override
         @SelectMethod
         public Iterable<JdbcTable> select(final JdbcSchema parent)
@@ -631,6 +654,7 @@ implements JdbcTable
         this(
             schema,
             null,
+            null,
             meta.jdbc().name(),
             meta.jdbc().type()
             );
@@ -649,6 +673,7 @@ implements JdbcTable
             schema,
             null,
             null,
+            null,
             JdbcType.TABLE
             );
         }
@@ -662,6 +687,7 @@ implements JdbcTable
         {
         this(
             schema,
+            null,
             null,
             name,
             JdbcType.TABLE
@@ -678,6 +704,7 @@ implements JdbcTable
         this(
             schema,
             null,
+            null,
             name,
             type
             );
@@ -687,11 +714,12 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name)
+    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery greenquery, final BlueQuery bluequery, final String name)
         {
         this(
             schema,
-            query,
+            greenquery,
+            bluequery,
             name,
             JdbcType.TABLE
             );
@@ -701,13 +729,14 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final JdbcType type)
+    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery greenquery, final BlueQuery query, final String name, final JdbcType type)
         {
         super(
             schema,
             name
             );
-        this.query  = query;
+        this.greenquery  = greenquery;
+        this.bluequery  = bluequery;
         this.schema = schema;
 
         this.jdbctype   = type ;
@@ -1268,21 +1297,38 @@ implements JdbcTable
     // http://improvingsoftware.com/2010/03/26/creating-a-unique-constraint-that-ignores-nulls-in-sql-server/
     @OneToOne(
         fetch = FetchType.LAZY,
-        targetEntity = AdqlQueryEntity.class
+        targetEntity = GreenQueryEntity.class
         )
     @JoinColumn(
-        name = DB_JDBC_QUERY_COL,
+        name = DB_GREEN_QUERY_COL,
         unique = false,
         nullable = true,
         updatable = false
         )
-    private AdqlQuery query;
+    private GreenQuery greenquery;
     @Override
-    public AdqlQuery query()
+    public GreenQuery greenquery()
         {
-        return this.query;
+        return this.greenquery;
         }
 
+    @OneToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = BlueQueryEntity.class
+        )
+    @JoinColumn(
+        name = DB_BLUE_QUERY_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private BlueQuery bluequery;
+    @Override
+    public BlueQuery bluequery()
+        {
+        return this.bluequery;
+        }
+    
     protected JdbcTable.Metadata.Jdbc jdbcmeta()
         {
         return new JdbcTable.Metadata.Jdbc()
@@ -1359,10 +1405,4 @@ implements JdbcTable
         {
         // TODO Auto-generated method stub
         }
-
-	@Override
-	public BlueQuery bluequery() {
-		// TODO Auto-generated method stub
-		return null;
-	}
     }

@@ -24,9 +24,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Repository;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link TreeComponent} implementation.
@@ -120,5 +120,11 @@ implements TreeComponent
     public void depth(final CopyDepth type)
         {
         this.depth = type;
+        }
+
+    @Override
+    public String fullname()
+        {
+        return namebuilder().toString();
         }
     }

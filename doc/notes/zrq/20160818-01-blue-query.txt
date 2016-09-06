@@ -1,0 +1,180 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Update the form param names.
+    # Both client and server at the same time.
+    #
+
+    #
+    # Needed to replace GreenQuery with BlueQuery
+    #
+
+    adql.schema.query.create.name   adql.query.name
+    adql.schema.query.create.query  adql.query.input
+    adql.schema.query.create.store  adql.query.store
+    adql.schema.query.create.mode   adql.query.mode
+    adql.schema.query.create.level  adql.query.syntax
+
+    adql.query.update.name          adql.query.name
+    adql.query.update.query         adql.query.input
+    adql.query.update.status        adql.query.status
+
+    adql.query.update.delay.first   adql.query.delay.first
+    adql.query.update.delay.every   adql.query.delay.every
+    adql.query.update.delay.last    adql.query.delay.last
+
+    adql.query.update.limit.rows    adql.query.limit.rows
+    adql.query.update.limit.cells   adql.query.limit.cells
+    adql.query.update.limit.time    adql.query.limit.time
+
+
+    adql.resource.query.create.query    adql.query.input
+    adql.resource.query.create.name     adql.query.name
+
+
+    #
+    # Needed to replace GreenQuery with BlueQuery
+    #
+
+    blue.query.name                 adql.query.name
+    blue.query.input                adql.query.input
+
+    blue.query.mode                 adql.query.mode
+    blue.query.syntax               adql.query.syntax
+
+    blue.query.prev.status          adql.query.status.prev
+    blue.query.next.status          adql.query.status.next
+    
+    blue.query.limit.rows           adql.query.limit.rows
+    blue.query.limit.cells          adql.query.limit.cells
+    blue.query.limit.time           adql.query.limit.time
+
+    blue.query.delay.first          adql.query.delay.first
+    blue.query.delay.every          adql.query.delay.every
+    blue.query.delay.last           adql.query.delay.last
+    
+    blue.query.wait                 adql.query.wait.time
+    blue.query.status               adql.query.wait.state
+
+    blue.query.results.count        adql.query.results.count
+    blue.query.results.state        adql.query.results.state
+
+    #
+    # Changes already made.
+    #
+
+    jdbc.resource.select.name       jdbc.resource.name
+    jdbc.resource.create.name       jdbc.resource.name
+
+
+    jdbc.resource.select.name       jdbc.resource.name
+    jdbc.resource.create.catalog    jdbc.catalog.name
+    jdbc.resource.create.driver     jdbc.connection.driver
+    jdbc.resource.create.url        jdbc.connection.url
+    jdbc.resource.create.user       jdbc.connection.user
+    jdbc.resource.create.pass       jdbc.connection.pass
+
+
+# Deleted
+jdbc.resource.create.ogsadai
+jdbc.resource.create.ogsadai
+
+    #
+    # Optional changes for later.
+    #
+
+
+
+    urn:adql.query.entity           green.table.entity
+
+    urn:adql.copy.depth             adql.copy.depth
+
+
+    urn:adql.column.entity          adql.column.entity
+    adql.column.update.name         adql.column.name
+
+
+    urn:adql.resource.entity        adql.resource.entity
+    urn:adql.schema.entity          adql.schema.entity
+    urn:adql.table.entity           adql.table.entity
+    urn:ivoa.table.name             ivoa.table.name
+    urn:ivoa.column.name            ivoa.column.name
+    urn:ivoa.table.entity           ivoa.table.entity
+
+    adql.resource.update.name       adql.resource.name
+    adql.resource.update.status     adql.resource.status
+
+    urn:schema.metadoc.file         metadoc.import.file
+    urn:schema.metadoc.base         metadoc.import.base
+
+    adql.resource.schema.select.name    adql.schema.name
+    adql.resource.schema.create.name    adql.schema.name
+    adql.resource.schema.import.name    adql.schema.name
+    adql.resource.schema.import.base    adql.schema.base
+
+    adql.resource.create.name           adql.resource.name
+
+    adql.schema.update.name             adql.schema.name
+
+    adql.schema.table.select.name       adql.table.name
+    adql.schema.table.import.name       adql.table.name
+
+    adql.schema.table.import.base       base.table.ident
+
+    adql.table.column.select.name       adql.column.name
+    adql.table.update.name              adql.table.name
+
+
+
+
+    ivoa.resource.schema.name       ivoa.schema.name
+
+
+    urn:jdbc.column.entity          jdbc.column.entity
+    jdbc.column.update.name         jdbc.column.name
+
+
+    urn:jdbc.resource.entity        jdbc.resource.entity
+    jdbc.resource.update.name       jdbc.resource.name
+    jdbc.resource.update.status     jdbc.resource.status
+
+
+    jdbc.resource.connection.url    jdbc.connection.url
+    jdbc.resource.connection.user   jdbc.connection.user
+    jdbc.resource.connection.pass   jdbc.connection.pass
+
+    jdbc.resource.schema.select.name    jdbc.schema.name
+    jdbc.resource.schema.select.catalog jdbc.catalog.name
+
+
+
+
+    jdbc.table.column.select.name   jdbc.column.name
+
+    urn:jdbc.table.entity           jdbc.table.entity
+    urn:jdbc.table.name             jdbc.table.name
+
+    urn:jdbc.table.jdbc.status      jdbc.table.status
+    urn:jdbc.table.adql.status      adql.table.status
+
+

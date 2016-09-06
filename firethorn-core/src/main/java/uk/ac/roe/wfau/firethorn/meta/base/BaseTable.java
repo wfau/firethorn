@@ -17,8 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -179,10 +179,11 @@ extends TreeComponent
     public Columns<ColumnType> columns();
 
     /**
-     * The {@link AdqlQuery} that generated this table.
+     * The {@link GreenQuery} that generated this table.
      *
      */
-    public AdqlQuery query();
+    @Deprecated
+    public GreenQuery greenquery();
 
     /**
      * The {@link BlueQuery} that generated this table.
@@ -191,22 +192,11 @@ extends TreeComponent
     public BlueQuery bluequery();
 
     /**
-     * The OGSA-DAI DQP table alias.
+     * The unique name.
+     * TODO Rename this to uniquename ?
      *
      */
     public String alias();
-
-    /**
-     * The fully qualified table name.
-     *
-     */
-    public StringBuilder namebuilder();
-
-    /**
-     * The fully qualified table name.
-     *
-     */
-    public String fullname();
 
     /**
      * The {@link BaseTable} metadata.

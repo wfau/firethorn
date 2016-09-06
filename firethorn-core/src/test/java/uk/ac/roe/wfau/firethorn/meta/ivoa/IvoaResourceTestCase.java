@@ -18,23 +18,16 @@
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import java.io.FileReader;
-import java.net.URL;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.junit.Before;
 import org.junit.Test;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
-import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.ExpectedField;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.vosi.VosiTableSetReader;
-import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *

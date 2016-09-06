@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -67,10 +66,10 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
 
     /**
      * MVC property for the {@link AdqlColumn} name, [{@value}].
-     * @todo Merge select and import.
+     * TODO Move this to a Model class.
      *
      */
-    public static final String SELECT_NAME = "adql.table.column.select.name" ;
+    public static final String COLUMN_NAME_PARAM = "adql.table.column.select.name" ;
 
     @Override
     public AdqlColumnBean bean(final AdqlColumn entity)
@@ -133,17 +132,17 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * <br/>Request path : [{@value #SELECT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param table The parent {@link AdqlTable} selected using the {@Identifier} in the request path.
-     * @param name  The {@link AdqlColumn} name to look for, [{@value #SELECT_NAME}].
+     * @param name  The {@link AdqlColumn} name to look for, [{@value #COLUMN_NAME_PARAM}].
      * @return The matching {@link AdqlColumn} wrapped in an {@link AdqlColumnBean}.
      * @throws NameNotFoundException If a matching {@link AdqlColumn} could not be found.
      * 
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
     public AdqlColumnBean select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(COLUMN_NAME_PARAM)
         final String name
         ) throws NameNotFoundException{
         log.debug("select(String) [{}]", name);

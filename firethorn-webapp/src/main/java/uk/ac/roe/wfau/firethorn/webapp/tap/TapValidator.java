@@ -1,9 +1,5 @@
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapError;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobParams;
-import uk.ac.roe.wfau.firethorn.webapp.tap.TapJobErrors;
-
 public class TapValidator {
 	
 	 	

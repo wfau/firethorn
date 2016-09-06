@@ -70,7 +70,7 @@ implements JdbcTable.LinkFactory
      * The URI path for the VOTable representation.
      *
      */
-    public static final String VOTABLE_PATH = ENTITY_PATH + "/" + VOTABLE_NAME;
+    public static final String VOTABLE_PATH = ENTITY_PATH + VOTABLE_NAME;
 
     /**
      * The URI path for the DataTable representation.
@@ -82,7 +82,7 @@ implements JdbcTable.LinkFactory
      * The URI path for the DataTable representation.
      *
      */
-    public static final String DATATABLE_PATH = ENTITY_PATH + "/" + DATATABLE_NAME;
+    public static final String DATATABLE_PATH = ENTITY_PATH + DATATABLE_NAME;
     
     @Override
     public String link(final JdbcTable entity)

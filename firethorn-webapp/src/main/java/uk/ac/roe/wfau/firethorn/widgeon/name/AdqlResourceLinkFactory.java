@@ -62,13 +62,13 @@ implements AdqlResource.LinkFactory
      * The URI path for the {@link AdqlResource} schema, [{@value}].
      *
      */
-    public static final String RESOURCE_SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
+    public static final String RESOURCE_SCHEMAS_PATH = RESOURCE_PATH + "/schemas" ;
 
     /**
      * The URI path for the {@link AdqlResource} blue queries, [{@value}].
      *
      */
-    public static final String RESOURCE_BLUE_PATH = RESOURCE_PATH + "/blue" ;
+    public static final String RESOURCE_QUERIES_PATH = RESOURCE_PATH + "/queries" ;
 
     /**
      * The URI path for the {@link AdqlResource} metadoc, [{@value}].

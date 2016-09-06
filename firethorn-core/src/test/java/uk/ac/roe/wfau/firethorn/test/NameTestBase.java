@@ -20,12 +20,11 @@ package uk.ac.roe.wfau.firethorn.test;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.BaseEncoding;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *

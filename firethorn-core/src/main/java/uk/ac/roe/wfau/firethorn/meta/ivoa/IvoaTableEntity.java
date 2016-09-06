@@ -28,16 +28,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -561,12 +560,6 @@ public class IvoaTableEntity
         }
 
     @Override
-    public AdqlQuery query()
-        {
-        return null;
-        }
-
-    @Override
     protected void scanimpl()
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
@@ -656,9 +649,16 @@ public class IvoaTableEntity
             }
         }
 
-	@Override
-	public BlueQuery bluequery() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    @Deprecated
+    public GreenQuery greenquery()
+        {
+        return null;
+        }
+
+    @Override
+    public BlueQuery bluequery()
+        {
+        return null;
+        }
     }

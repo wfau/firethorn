@@ -41,7 +41,7 @@
     <!--+
         | Hibernate SessionFactory.
         +-->
-    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 
         <!--+
             | Hibernate Interceptor.
@@ -104,7 +104,7 @@
     <!--+
         | Create our HibernateTransactionManager instance.
         +-->
-    <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+    <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
         <property name="nestedTransactionAllowed" value="true"/>
     </bean>

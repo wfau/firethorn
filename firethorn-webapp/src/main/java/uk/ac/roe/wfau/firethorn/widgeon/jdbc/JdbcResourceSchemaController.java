@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
@@ -62,29 +62,16 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         }
 
     /**
-     * MVC property for the select (full)name.
+     * MVC property for the {@link JdbcSchema} name.
      *
      */
-    public static final String SELECT_NAME = "jdbc.resource.schema.select.name" ;
+    public static final String SCHEMA_NAME_PARAM = "jdbc.resource.schema.select.schema" ;
 
     /**
-     * MVC property for the select catalog.
+     * MVC property for the catalog name.
      *
      */
-    public static final String SELECT_CATALOG = "jdbc.resource.schema.select.catalog" ;
-
-    /**
-     * MVC property for the select schema.
-     *
-     */
-    public static final String SELECT_SCHEMA = "jdbc.resource.schema.select.schema" ;
-
-    /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "jdbc.resource.schema.search.text" ;
-
+    public static final String CATALOG_NAME_PARAM = "jdbc.resource.schema.select.catalog" ;
 
     @Override
     public JdbcSchemaBean bean(final JdbcSchema entity)
@@ -141,11 +128,11 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
     public JdbcSchemaBean select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(SCHEMA_NAME_PARAM)
         final String name
         ) throws EntityNotFoundException {
         log.debug("select(String) [{}]", name);
@@ -157,17 +144,17 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         }
 
     /**
-     * JSON request to select by schema and catalog.
+     * JSON request to select by schema and catalog name.
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params={SELECT_CATALOG, SELECT_SCHEMA}, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params={CATALOG_NAME_PARAM, SCHEMA_NAME_PARAM}, produces=JSON_MIME)
     public JdbcSchemaBean select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
-        @RequestParam(SELECT_CATALOG)
+        @RequestParam(CATALOG_NAME_PARAM)
         final String catalog,
-        @RequestParam(SELECT_SCHEMA)
+        @RequestParam(SCHEMA_NAME_PARAM)
         final String schema
         ) throws EntityNotFoundException {
         log.debug("select(String, String) [{}][{}]", catalog, schema);

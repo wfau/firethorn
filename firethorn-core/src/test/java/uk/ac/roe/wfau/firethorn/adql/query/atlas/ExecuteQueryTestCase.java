@@ -19,12 +19,11 @@ package uk.ac.roe.wfau.firethorn.adql.query.atlas;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase.ExpectedField;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 
@@ -40,8 +39,8 @@ public class ExecuteQueryTestCase
     public void notTest000()
     throws Exception
         {
-        final AdqlQuery query = testschema().queries().create(
-            factories().queries().params().create(
+        final GreenQuery query = testschema().greens().create(
+            factories().greens().params().create(
                 Level.STRICT,
                 Mode.AUTO
                 ),
@@ -52,7 +51,7 @@ public class ExecuteQueryTestCase
             "    atlasSource"
             );
 
-        factories().queries().executor().update(
+        factories().greens().executor().update(
             query.ident(),
             Status.RUNNING,
             10

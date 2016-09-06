@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -70,19 +69,19 @@ public class JdbcTableController
     public static final String TARGET_ENTITY = "urn:jdbc.table.entity" ;
 
     /**
-     * POST param for the table name.
+     * POST param for the {@link JdbcTable} name.
      *
      */
     public static final String TABLE_NAME_PARAM = "urn:jdbc.table.name" ;
 
     /**
-     * POST param for the JDBC status.
+     * POST param for the {@link JdbcTable} status.
      *
      */
     public static final String JDBC_STATUS_PARAM = "urn:jdbc.table.jdbc.status" ;
 
     /**
-     * POST param for the ADQL status.
+     * POST param for the {@link AdqlTable} status.
      *
      */
     public static final String ADQL_STATUS_PARAM = "urn:jdbc.table.adql.status" ;

@@ -19,8 +19,6 @@ package uk.ac.roe.wfau.firethorn.test ;
 
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +30,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**

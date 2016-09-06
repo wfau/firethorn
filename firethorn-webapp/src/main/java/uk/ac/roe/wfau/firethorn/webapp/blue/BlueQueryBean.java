@@ -17,22 +17,22 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.blue;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.blue.BlueQueryEntity;
-import uk.ac.roe.wfau.firethorn.blue.BlueTask;
-import uk.ac.roe.wfau.firethorn.blue.BlueQuery.ResultState;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean.FormatsBean;
+import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
 
 /**
  * An {@link EntityBean} wrapper for an {@link BlueQuery}.
@@ -82,17 +82,17 @@ public class BlueQueryBean
         }
 
     /**
-     * The {@link BlueQuery} workspace.
+     * Get the {@link BlueQuery} {@link AdqlResource} workspace.
      *
+     */
     public String getWorkspace()
         {
-        if (entity().target() != null)
+        if (entity().source() != null)
             {
-            return entity().target().link();
+            return entity().source().link();
             }
         return null ;
         }
-     */
 
     /**
      * The {@link BlueQuery} input.
@@ -104,10 +104,10 @@ public class BlueQueryBean
         }
 
     /**
-     * The {@link BlueQuery} {@link AdqlQuery.Mode} mode.
+     * The {@link BlueQuery} {@link AdqlQueryBase.Mode} mode.
      *
      */
-    public AdqlQuery.Mode getMode()
+    public AdqlQueryBase.Mode getMode()
         {
         return entity().mode();
         }
@@ -119,15 +119,6 @@ public class BlueQueryBean
     public BlueTask.TaskState getStatus()
         {
         return entity().state();
-        }
-
-    /**
-     * The {@link BlueQuery} callback URL.
-     * 
-     */
-    public String getCallback()
-        {
-        return entity().callback();
         }
 
     /**
@@ -146,6 +137,15 @@ public class BlueQueryBean
     public String getOsql()
         {
         return entity().osql();
+        }
+
+    /**
+     * The {@link BlueQuery} callback URL.
+     * 
+     */
+    public String getCallback()
+        {
+        return entity().callback();
         }
 
     /**
@@ -251,6 +251,78 @@ public class BlueQueryBean
         }
 
     /**
+     * The {@link BlueQuery} query parser results.
+     *
+     */
+    public interface Syntax
+        {
+        /**
+         * The parser result {@link AdqlQueryBase.Syntax.State}.
+         *
+         */
+        public AdqlQueryBase.Syntax.State getStatus();
+
+        /**
+         * The parser message.
+         * TODO Make this into list of results.
+         *
+         */
+        public String getMessage();
+
+        /**
+         * The parser message.
+         * TODO Make this into list of results.
+         *
+         */
+        public String getFriendly();
+        }
+
+    /**
+     * Get the {@link BlueQuery} query parser results.
+     * 
+     *
+     */
+    public Syntax getSyntax()
+        {
+        return new Syntax()
+            {
+            @Override
+            public AdqlQueryBase.Syntax.State getStatus()
+                {
+                if (entity().syntax() != null)
+                    {
+                    return entity().syntax().state();
+                    }
+                else {
+                    return AdqlQueryBase.Syntax.State.UNKNOWN;
+                    }
+                }
+            @Override
+            public String getMessage()
+                {
+                if (entity().syntax() != null)
+                    {
+                    return entity().syntax().message();
+                    }
+                else {
+                    return null ;
+                    }
+                }
+            @Override
+            public String getFriendly()
+                {
+                if (entity().syntax() != null)
+                    {
+                    return entity().syntax().friendly();
+                    }
+                else {
+                    return null ;
+                    }
+                }
+            };
+        }
+    
+    /**
      * The {@link BlueQuery} results.
      *
      */
@@ -260,14 +332,7 @@ public class BlueQueryBean
          * A URL to access the {@link AdqlTable} results
          *
          */
-        public String getAdql();
-        
-        /**
-         * A URL to access the {@link JdbcTable} results
-         * @deprecated Use the {@link AdqlTable#base()}
-         *
-         */
-        public String getJdbc();
+        public String getTable();
         
         /**
          * The result row count.
@@ -280,6 +345,20 @@ public class BlueQueryBean
          *
          */
         public ResultState getState();
+
+        /**
+    	 * Direct access to the result data. 
+    	 * 
+    	 */
+        public interface Formats extends AdqlTableBean.FormatsBean
+            {
+            }
+        
+        /**
+    	 * Direct access to the result data. 
+    	 * 
+    	 */
+        public Formats getFormats();
         
         }
 
@@ -292,7 +371,7 @@ public class BlueQueryBean
         return new Results()
             {
             @Override
-            public String getAdql()
+            public String getTable()
                 {
                 if (entity().results().adql() != null)
                     {
@@ -301,17 +380,6 @@ public class BlueQueryBean
                 else {
                     return null ;
                 }
-                }
-            @Override
-            public String getJdbc()
-                {
-                if (entity().results().jdbc() != null)
-                    {
-                    return entity().results().jdbc().link();
-                    }
-                else {
-                    return null ;
-                    }
                 }
             @Override
             public Long getCount()
@@ -323,11 +391,47 @@ public class BlueQueryBean
                 {
                 return entity().results().state();
                 }
+    		@Override
+    		public Formats getFormats()
+    			{
+    			return new Formats()
+    				{
+    				private AdqlTable adql = entity().results().adql();
+    				
+    				@Override
+    				public String getVotable()
+    					{
+    					if (adql != null)
+    						{
+    						return adql.link().concat(
+    		                    AdqlTableLinkFactory.VOTABLE_NAME
+    		                    );
+    						}
+    					else {
+    						return null;
+    						}
+    					}
+
+    				@Override
+    				public String getDatatable()
+    					{
+    					if (adql != null)
+    						{
+    						return adql.link().concat(
+    							AdqlTableLinkFactory.DATATABLE_NAME
+    							);
+    						}
+    					else {
+    						return null;
+    						}
+    					}
+    				};
+    			}
             };
         }
     
     /**
-     * An {@link AdqlQuery.SelectField} bean.
+     * A {@BlueQuery} {@link AdqlQueryBase.SelectField}.
      *
      */
     public interface FieldBean
@@ -340,7 +444,7 @@ public class BlueQueryBean
         }
 
     /**
-     * The {@BlueQuery} select {@link AdqlQuery.SelectField}s.
+     * The list of {@BlueQuery} {@link AdqlQueryBase.SelectField}s.
      *
      */
     public Iterable<FieldBean> getFields()
@@ -352,8 +456,8 @@ public class BlueQueryBean
                 {
                 return new Iterator<FieldBean>()
                     {
-                    final Iterator<AdqlQuery.SelectField> iter = entity().fields().select().iterator();
-                    protected Iterator<AdqlQuery.SelectField> iter()
+                    final Iterator<AdqlQueryBase.SelectField> iter = entity().fields().select().iterator();
+                    protected Iterator<AdqlQueryBase.SelectField> iter()
                         {
                         return this.iter;
                         }
@@ -366,7 +470,7 @@ public class BlueQueryBean
                     public FieldBean next()
                         {
                         return new FieldBean(){
-                            final AdqlQuery.SelectField field = iter().next();
+                            final AdqlQueryBase.SelectField field = iter().next();
                             @Override
                             public String getName()
                                 {
@@ -396,7 +500,7 @@ public class BlueQueryBean
         }
 
     /**
-     * An {@link AdqlQuery.Limits} bean.
+     * A {@BlueQuery} {@link AdqlQueryBase.Limits}.
      *
      */
     public interface LimitsBean
@@ -407,7 +511,7 @@ public class BlueQueryBean
         }
 
     /**
-     * The query {@link AdqlQuery.Limits}.
+     * Get the {@BlueQuery} {@link AdqlQueryBase.Limits}.
      *
      */
     public LimitsBean getLimits()
@@ -428,21 +532,32 @@ public class BlueQueryBean
                 }
             };
         }
-
     
     /**
-     * An {@link AdqlQuery.Delays} bean.
+     * A {@BlueQuery} {@link AdqlQueryBase.Delays}.
      *
      */
     public interface DelaysBean
         {
+        /**
+         * The delay for the first row.
+         * 
+         */
         public Integer getFirst();
+        /**
+         * The delay for every row.
+         * 
+         */
         public Integer getEvery();
+        /**
+         * The delay for the last row.
+         * 
+         */
         public Integer getLast();
         }
 
     /**
-     * The query {@link AdqlQuery.Delays}.
+     * Get the {@BlueQuery} {@link AdqlQueryBase.Delays}.
      *
      */
     public DelaysBean getDelays()

@@ -60,14 +60,18 @@ extends NamedEntityBeanImpl<ColumnType>
         return entity().root().link();
         }
 
+    /*
+     * 
     public String getAlias()
         {
         return entity().alias();
         }
+     * 
+     */
 
     public String getFullname()
         {
-        return entity().namebuilder().toString();
+        return entity().fullname();
         }
 
     public String getDepth()

@@ -17,10 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.spring;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Helper class which is able to autowire a specified class.

@@ -60,7 +60,7 @@ extends NamedEntityBeanImpl<SchemaType>
 
     public String getFullname()
         {
-        return entity().namebuilder().toString();
+        return entity().fullname();
         }
 
     public String getDepth()
@@ -70,6 +70,7 @@ extends NamedEntityBeanImpl<SchemaType>
 
     public String getTables()
         {
+        // TODO This should be in a model class. 
         return entity().link().concat("/tables/select");
         }
     }

@@ -20,17 +20,16 @@ package uk.ac.roe.wfau.firethorn.webapp.oper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
- *
+ * TODO Move this to a OperationModel
  *
  */
 @Slf4j
@@ -82,7 +81,9 @@ implements HandlerInterceptor
             {
             log.debug("Operation threw an exception");
             log.debug(" type [{}]", ouch.getClass().getName());
-            log.debug(" text [{}]", ouch.getMessage());
+            // Include the stack trace in the message
+            // http://slf4j.org/faq.html#paramException
+            log.debug(" text [{}]", ouch.getMessage(), ouch);
             }
         }
     }

@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
-import java.net.URL;
-
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;

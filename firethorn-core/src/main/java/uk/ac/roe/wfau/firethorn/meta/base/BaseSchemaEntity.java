@@ -185,12 +185,6 @@ implements BaseSchema<SchemaType, TableType>
             }
         }
 
-    @Override
-    public String fullname()
-        {
-        return namebuilder().toString();
-        }
-
     /**
      * Generate the {@link AdqlSchema.Metadata.Adql adql} metadata.
      *

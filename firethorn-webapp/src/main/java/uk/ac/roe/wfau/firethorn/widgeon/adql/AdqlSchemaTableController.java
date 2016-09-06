@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,12 +26,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -70,23 +70,17 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
 
     /**
      * MVC property for the {@link AdqlTable} name, [{@value}].
-     * @todo Merge select and import.
+     * TODO Merge select and import.
+     * TODO Move to a AdqlTableModel.
      *
      */
-    public static final String SELECT_NAME = "adql.schema.table.select.name" ;
+    public static final String TABLE_NAME_PARAM = "adql.schema.table.select.name" ;
 
     /**
      * MVC property for the {@Identifier} of the {@link BaseTable} to copy, [{@value}].
      * 
      */
-    public static final String IMPORT_BASE = "adql.schema.table.import.base" ;
-
-    /**
-     * MVC property for the {@link AdqlTable} name, [{@value}].
-     * @todo Merge select and import.
-     *
-     */
-    public static final String IMPORT_NAME = "adql.schema.table.import.name" ;
+    public static final String BASE_TABLE_PARAM = "adql.schema.table.import.base" ;
 
     @Override
     public AdqlTableBean bean(final AdqlTable entity)
@@ -149,17 +143,17 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * <br/>Request path : [{@value #SELECT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
-     * @param name The {@link AdqlTable} name to look for, [{@value #SELECT_NAME}].
+     * @param name The {@link AdqlTable} name to look for, [{@value #TABLE_NAME_PARAM}].
      * @return The matching {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
      * @throws NameNotFoundException If a matching {@link AdqlTable} could not be found.
      * 
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, params=TABLE_NAME_PARAM, produces=JSON_MIME)
     public AdqlTableBean select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(TABLE_NAME_PARAM)
         final String name
         ) throws NameNotFoundException {
         log.debug("select(String) [{}]", name);
@@ -176,7 +170,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
      * @param base   The The {@Identifier} of the {@link BaseTable} to copy, [{@value #IMPORT_TABLE_BASE}].
-     * @param depth  The {@link TreeComponent.CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param depth  The {@link TreeComponent.CopyDepth} of the new {@link AdqlTable}, [{@value #COPY_DEPTH_PARAM}].
      * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
@@ -184,13 +178,13 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=IMPORT_PATH, params={BASE_TABLE_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlTableBean > inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
+        @RequestParam(value=COPY_DEPTH_PARAM, required=false)
         final TreeComponent.CopyDepth type,
-        @RequestParam(value=IMPORT_BASE, required=true)
+        @RequestParam(value=BASE_TABLE_PARAM, required=true)
         final String base
         ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", type, base);
@@ -210,7 +204,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
      * @param base   The The {@Identifier} of the {@link BaseTable} to copy, [{@value #IMPORT_TABLE_BASE}].
-     * @param depth  The {@link TreeComponent.CopyDepth} of the new {@link AdqlTable}, [{@value #ADQL_COPY_DEPTH_URN}].
+     * @param depth  The {@link TreeComponent.CopyDepth} of the new {@link AdqlTable}, [{@value #COPY_DEPTH_PARAM}].
      * @param name   The name of the new {@link AdqlTable}, [{@value #IMPORT_TABLE_NAME}].
      * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
      * @throws EntityNotFoundException 
@@ -220,15 +214,15 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=IMPORT_PATH, params={BASE_TABLE_PARAM, TABLE_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlTableBean> inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
+        @RequestParam(value=COPY_DEPTH_PARAM, required=false)
         final TreeComponent.CopyDepth type,
-        @RequestParam(value=IMPORT_BASE, required=true)
+        @RequestParam(value=BASE_TABLE_PARAM, required=true)
         final String base,
-        @RequestParam(value=IMPORT_NAME, required=true)
+        @RequestParam(value=TABLE_NAME_PARAM, required=true)
         final String name
         ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", type, base, name);

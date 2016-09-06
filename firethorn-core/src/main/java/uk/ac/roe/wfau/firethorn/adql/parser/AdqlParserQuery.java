@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
@@ -44,7 +44,7 @@ public interface AdqlParserQuery
      * Reset the query state.
      *
      */
-    public void reset(final AdqlQuery.Mode mode);
+    public void reset(final AdqlQueryBase.Mode mode);
 
     /**
      * Set the processed ADQL query.
@@ -80,13 +80,13 @@ public interface AdqlParserQuery
         {
         private static final long serialVersionUID = -7933054733777146904L;
 
-        private final AdqlQuery.SelectField field ;
-        public AdqlQuery.SelectField field()
+        private final AdqlQueryBase.SelectField field ;
+        public AdqlQueryBase.SelectField field()
             {
             return this.field;
             }
 
-        public DuplicateFieldException(final AdqlQuery.SelectField field)
+        public DuplicateFieldException(final AdqlQueryBase.SelectField field)
             {
             super(
                 "Duplicate SELECT field [" + field.name() + "]"
@@ -99,7 +99,7 @@ public interface AdqlParserQuery
      * Add the metadata for a SELECT field.
      *
      */
-    public void add(final AdqlQuery.SelectField field)
+    public void add(final AdqlQueryBase.SelectField field)
     throws DuplicateFieldException;
 
     /**
@@ -107,18 +107,18 @@ public interface AdqlParserQuery
      *
      */
     @Deprecated
-    public AdqlQuery.Syntax syntax();
+    public AdqlQueryBase.Syntax syntax();
 
     /**
      * Set the ADQL syntax status.
      *
      */
-    public void syntax(final AdqlQuery.Syntax.State status);
+    public void syntax(final AdqlQueryBase.Syntax.State status);
 
     /**
      * Set the ADQL syntax status.
      *
      */
-    public void syntax(final AdqlQuery.Syntax.State status, final String message);
+    public void syntax(final AdqlQueryBase.Syntax.State status, final String message);
 
     }
