@@ -1,0 +1,784 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+2016-09-02 16:47:25,794 DEBUG [http-nio-8080-exec-2] [BlueQueryEntity] services()
+2016-09-02 16:47:25,794 DEBUG [http-nio-8080-exec-2] [BlueQueryEntity] services()
+2016-09-02 16:47:25,794 DEBUG [http-nio-8080-exec-2] [IdentityEntity] services()
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-8] [OperationInterceptor] preHandle()
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-8] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod]
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [AnonymousAuthenticator] postHandle()
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [HttpHeaderAuthenticator] postHandle()
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [OperationInterceptor] postHandle()
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [OperationInterceptor] Operation [204678][http://peter:8080/firethorn/blue/query/204677]
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod]
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [AnonymousAuthenticator] afterCompletion()
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [HttpHeaderAuthenticator] afterCompletion()
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [OperationInterceptor] afterCompletion()
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [OperationInterceptor] Operation [204678][http://peter:8080/firethorn/blue/query/204677]
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-2] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod]
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-8] [AbstractEntity] init(Identity)
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-8] [AbstractEntity] Using identity from context
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-8] [AbstractEntity]   owner   [4][test@test.roe.ac.uk]
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-8] [AbstractEntity]   created [2016-09-02T16:47:25.797-04:00]
+2016-09-02 16:47:25,797 DEBUG [http-nio-8080-exec-8] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[null]]]
+2016-09-02 16:47:25,801 DEBUG [http-nio-8080-exec-8] [OperationInterceptor] Operation [204680][http://peter:8080/firethorn/blue/query/204677]
+2016-09-02 16:47:25,801 DEBUG [http-nio-8080-exec-8] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod]
+2016-09-02 16:47:25,801 DEBUG [http-nio-8080-exec-8] [HttpHeaderAuthenticator] preHandle()
+2016-09-02 16:47:25,801 DEBUG [http-nio-8080-exec-8] [HttpHeaderAuthenticator] Identity  [test@test.roe.ac.uk]
+2016-09-02 16:47:25,801 DEBUG [http-nio-8080-exec-8] [HttpHeaderAuthenticator] Community [public (unknown)]
+2016-09-02 16:47:25,801 DEBUG [http-nio-8080-exec-8] [HttpHeaderAuthenticator] Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[204680]]]
+2016-09-02 16:47:25,802 DEBUG [http-nio-8080-exec-8] [CommunityEntity] create(String, String) [public (unknown)][public (unknown)]
+2016-09-02 16:47:25,802 DEBUG [http-nio-8080-exec-8] [CommunityEntity] select(String) [public (unknown)]
+2016-09-02 16:47:25,803 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,803 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,803 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.community.CommunityEntity]
+2016-09-02 16:47:25,803 DEBUG [http-nio-8080-exec-8] [CommunityEntity] Found existing community [public (unknown)][3]
+2016-09-02 16:47:25,805 DEBUG [http-nio-8080-exec-8] [CommunityEntity] services()
+2016-09-02 16:47:25,806 DEBUG [http-nio-8080-exec-8] [IdentityEntity] create(Community, String) [public (unknown)][test@test.roe.ac.uk]
+2016-09-02 16:47:25,808 DEBUG [http-nio-8080-exec-8] [OperationEntity] create(Identity, String)
+2016-09-02 16:47:25,808 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,808 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,808 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.identity.IdentityEntity]
+2016-09-02 16:47:25,808 DEBUG [http-nio-8080-exec-8] [OperationEntity]   Identity [test@test.roe.ac.uk]
+2016-09-02 16:47:25,808 DEBUG [http-nio-8080-exec-8] [OperationEntity]   Method   [http:header]
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AuthenticationEntity] create(Operation, Identity, String)
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AuthenticationEntity]   Operation [POST]
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AuthenticationEntity]   Identity  [test@test.roe.ac.uk]
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AuthenticationEntity]   Method    [http:header]
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AbstractEntity] init(Identity)
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AbstractEntity] Using identity from context
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AbstractEntity]   owner   [null]
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AbstractEntity]   created [2016-09-02T16:47:25.809-04:00]
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AuthenticationEntity] AuthenticationEntity(Operation, Identity, String)
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AuthenticationEntity]   Operation [POST]
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AuthenticationEntity]   Identity  [test@test.roe.ac.uk]
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AuthenticationEntity]   Method    [http:header]
+2016-09-02 16:47:25,809 DEBUG [http-nio-8080-exec-8] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.identity.AuthenticationEntity] ident[null]]]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [OperationEntity] primary(Authentication)
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [OperationEntity]   Authentication [entity[class[uk.ac.roe.wfau.firethorn.identity.AuthenticationEntity] ident[204681]]]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[4]]]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [HttpHeaderAuthenticator] Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[204680]]]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [HttpHeaderAuthenticator] Primary   [entity[class[uk.ac.roe.wfau.firethorn.identity.AuthenticationEntity] ident[204681]]]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [AnonymousAuthenticator] preHandle()
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [AnonymousAuthenticator]  Oper [204680]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [AnonymousAuthenticator]  Auth [http:header][4][test@test.roe.ac.uk]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [BlueQueryController] update(String, TaskStatus, Long)
+
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [BlueQueryController]   ident [204677]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [BlueQueryController]   prev  [null]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [BlueQueryController]   next  [COMPLETED]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [BlueQueryController]   wait  [60000]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [AbstractIdentFactory] ident(String) [204677]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [AdqlQueryDelays] AdqlQueryDelays(Integer, Integer, Integer)
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [AdqlQueryDelays]   first [null]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [AdqlQueryDelays]   every [null]
+2016-09-02 16:47:25,812 DEBUG [http-nio-8080-exec-8] [AdqlQueryDelays]   last  [null]
+2016-09-02 16:47:25,813 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity] update(Identifier , String, TaskStatus, TaskStatus, Long)
+2016-09-02 16:47:25,813 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity]   ident [204677]
+2016-09-02 16:47:25,813 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity]   prev  [null]
+2016-09-02 16:47:25,813 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity]   next  [COMPLETED]
+2016-09-02 16:47:25,813 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity]   wait  [60000]
+2016-09-02 16:47:25,814 DEBUG [http-nio-8080-exec-8] [AdqlQueryTimings] AdqlQueryTimings()
+2016-09-02 16:47:25,814 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,814 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,814 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity]
+2016-09-02 16:47:25,814 DEBUG [http-nio-8080-exec-8] [AdqlQueryTimings] AdqlQueryTimings()
+2016-09-02 16:47:25,814 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity] Starting update(String, Limits)
+2016-09-02 16:47:25,814 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity]   ident [204677]
+2016-09-02 16:47:25,814 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity]   state [READY]
+2016-09-02 16:47:25,814 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity] services()
+2016-09-02 16:47:25,815 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner] update(Updator)
+2016-09-02 16:47:25,815 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner]   ident [204677]
+2016-09-02 16:47:25,815 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner]   thread [40][http-nio-8080-exec-8]
+2016-09-02 16:47:25,815 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner] Before execute()
+2016-09-02 16:47:25,816 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner] After execute()
+2016-09-02 16:47:25,816 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner] Before future()
+2016-09-02 16:47:25,816 DEBUG [FireThornTaskExecutor-7] [BlueTaskEntity$TaskRunner] execute(Updator)
+2016-09-02 16:47:25,816 DEBUG [FireThornTaskExecutor-7] [BlueTaskEntity$TaskRunner]   ident [204677]
+2016-09-02 16:47:25,816 DEBUG [FireThornTaskExecutor-7] [BlueTaskEntity$TaskRunner]   thread [54][FireThornTaskExecutor-7]
+2016-09-02 16:47:25,816 DEBUG [FireThornTaskExecutor-7] [BlueQueryEntity] Converting current instance [204677]
+2016-09-02 16:47:25,816 DEBUG [FireThornTaskExecutor-7] [BlueQueryEntity] services()
+2016-09-02 16:47:25,817 DEBUG [FireThornTaskExecutor-7] [AdqlQueryTimings] AdqlQueryTimings()
+2016-09-02 16:47:25,818 DEBUG [FireThornTaskExecutor-7] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,818 DEBUG [FireThornTaskExecutor-7] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,818 DEBUG [FireThornTaskExecutor-7] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity]
+2016-09-02 16:47:25,818 DEBUG [FireThornTaskExecutor-7] [AdqlQueryTimings] AdqlQueryTimings()
+2016-09-02 16:47:25,818 DEBUG [FireThornTaskExecutor-7] [BlueQueryEntity] services()
+2016-09-02 16:47:25,819 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner] After future()
+2016-09-02 16:47:25,819 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner]   result [READY]
+2016-09-02 16:47:25,820 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity] Finished thread()
+2016-09-02 16:47:25,820 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity]   state [READY]
+2016-09-02 16:47:25,820 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity] Refreshing state
+2016-09-02 16:47:25,820 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity] Refreshing entity [204677]
+2016-09-02 16:47:25,823 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,823 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,823 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity]
+2016-09-02 16:47:25,823 DEBUG [http-nio-8080-exec-8] [AdqlQueryTimings] AdqlQueryTimings()
+2016-09-02 16:47:25,823 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,823 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,823 DEBUG [http-nio-8080-exec-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity]
+2016-09-02 16:47:25,823 DEBUG [http-nio-8080-exec-8] [AdqlQueryTimings] AdqlQueryTimings()
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity] Finished update(String, Limits)
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity]   state [READY]
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity] advance(TaskState, TaskState, Long)
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity]   ident [204677]
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity]   prev  [null]
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity]   curr  [READY]
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity]   next  [COMPLETED]
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity]   wait  [60000]
+
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity] Starting running()
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity]   ident [204677]
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity]   state [READY]
+2016-09-02 16:47:25,825 DEBUG [http-nio-8080-exec-8] [BlueQueryEntity] services()
+2016-09-02 16:47:25,826 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner] update(Updator)
+2016-09-02 16:47:25,826 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner]   ident [204677]
+2016-09-02 16:47:25,826 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner]   thread [40][http-nio-8080-exec-8]
+2016-09-02 16:47:25,826 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner] Before execute()
+2016-09-02 16:47:25,826 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner] After execute()
+2016-09-02 16:47:25,826 DEBUG [http-nio-8080-exec-8] [BlueTaskEntity$TaskRunner] Before future()
+
+2016-09-02 16:47:25,827 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity$TaskRunner] execute(Updator)
+2016-09-02 16:47:25,827 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity$TaskRunner]   ident [204677]
+2016-09-02 16:47:25,827 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity$TaskRunner]   thread [55][FireThornTaskExecutor-8]
+2016-09-02 16:47:25,827 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Converting current instance [204677]
+2016-09-02 16:47:25,827 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] services()
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [AdqlQueryTimings] AdqlQueryTimings()
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity]
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [AdqlQueryTimings] AdqlQueryTimings()
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity] Before prepare()
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity]   state [READY]
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] prepare()
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   ident [204677]
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   state [READY]
+2016-09-02 16:47:25,828 INFO  [FireThornTaskExecutor-8] [AdqlQueryTimings] TIMING - adqlstart()
+2016-09-02 16:47:25,828 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] MySearchTableList(AdqlResource, AdqlParserTable.Factory, AdqlQuery.Mode)
+2016-09-02 16:47:25,829 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] MySearchTableList(AdqlResource, AdqlParserTable.Factory, AdqlQuery.Mode)
+2016-09-02 16:47:25,829 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Query mode [DISTRIBUTED]
+2016-09-02 16:47:25,829 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Processing as [DISTRIBUTED] query
+2016-09-02 16:47:25,829 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] createNumericConstant(String)
+2016-09-02 16:47:25,829 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   value [1000000]
+2016-09-02 16:47:25,829 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] search(ADQLTable)
+2016-09-02 16:47:25,829 DEBUG [FireThornTaskExecutor-8] [MySearchTableList]   target [null][null][atlassourcexDR8photoobj]
+2016-09-02 16:47:25,829 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] null search schema
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity]
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [AdqlResourceEntity] schemas() for [202648][workspace-160902_153602]
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [202648][workspace-160902_153602]
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [202648][workspace-160902_153602]
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [AdqlResourceEntity] factory()
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:36:02.877-04:00]
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,831 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] schema [ATLASDR1]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] tables() for [202654][ATLASDR1]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [202654][ATLASDR1]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [202654][ATLASDR1]
+
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] factory()
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:36:03.140-04:00]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] tables() for [199938][ATLASDR1]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [199938][ATLASDR1]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [199938][ATLASDR1]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] factory()
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:35:31.320-04:00]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,834 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [MySearchTableList]   found [ATLASDR1.atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] AdqlParserTableImpl(AdqlQuery.Mode mode, AdqlTable, String, String)
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] real name [atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] BASE name [null]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] ADQL name [null]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] schema [query_schema]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] tables() for [202651][query_schema]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [202651][query_schema]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [202651][query_schema]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] factory()
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:36:03.143-04:00]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,837 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] copy(String, String)
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] BASE name [null]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] ADQL name [neighbours]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] AdqlParserTableImpl(AdqlQuery.Mode mode, AdqlTable, String, String)
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] real name [atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] BASE name [null]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] ADQL name [neighbours]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] search(ADQLTable)
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [MySearchTableList]   target [null][null][atlasSource]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] null search schema
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [AdqlResourceEntity] schemas() for [202648][workspace-160902_153602]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [202648][workspace-160902_153602]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [202648][workspace-160902_153602]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [AdqlResourceEntity] factory()
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:36:02.877-04:00]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,839 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] schema [ATLASDR1]
+
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] tables() for [202654][ATLASDR1]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [202654][ATLASDR1]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [202654][ATLASDR1]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] factory()
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:36:03.140-04:00]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] tables() for [199938][ATLASDR1]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [199938][ATLASDR1]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [199938][ATLASDR1]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] factory()
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:35:31.320-04:00]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,840 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,844 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,844 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [MySearchTableList]   found [ATLASDR1.atlasSource]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] AdqlParserTableImpl(AdqlQuery.Mode mode, AdqlTable, String, String)
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] real name [atlasSource]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] BASE name [null]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] ADQL name [null]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [MySearchTableList] schema [query_schema]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] tables() for [202651][query_schema]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [202651][query_schema]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [202651][query_schema]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] factory()
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:36:03.143-04:00]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,845 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] Iterator<DBColumn> iterator()
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [AdqlTableEntity] columns() for [201874][ATLASDR1.atlasSource]
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [201874][atlasSource]
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [201874][atlasSource]
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [AdqlTableEntity] factory()
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:35:54.707-04:00]
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,847 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+
+2016-09-02 16:47:25,856 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,856 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,856 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity]
+2016-09-02 16:47:25,856 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,856 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,856 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity]
+...........
+...........
+2016-09-02 16:47:25,861 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,861 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,861 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity]
+2016-09-02 16:47:25,861 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,861 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,861 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity]
+
+2016-09-02 16:47:25,862 DEBUG [FireThornTaskExecutor-8] [AdqlColumnProxy] ProxyIterable(Iterable<BaseColumn<?>>, AdqlTable)
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity]
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [AdqlParserTableImpl] Iterator<DBColumn> iterator()
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [AdqlTableEntity] columns() for [201499][ATLASDR1.atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [201499][atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [201499][atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [AdqlTableEntity] factory()
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,867 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,868 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:35:47.793-04:00]
+2016-09-02 16:47:25,868 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,868 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity]
+2016-09-02 16:47:25,870 DEBUG [FireThornTaskExecutor-8] [AdqlColumnProxy] ProxyIterable(Iterable<BaseColumn<?>>, AdqlTable)
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [AdqlTableEntity] columns() for [201499][ATLASDR1.atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [201499][atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [201499][atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [AdqlTableEntity] factory()
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:35:47.793-04:00]
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,871 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [AdqlTableEntity] columns() for [201499][ATLASDR1.atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [201499][atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [201499][atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [AdqlTableEntity] factory()
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T11:35:47.793-04:00]
+
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,875 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,881 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,881 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,881 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity]
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ADQLQuery)
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.ClauseSelect]
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ClauseSelect
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ClauseSelect)
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  Select item ----
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   name  [distanceMins]
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   alias [null]
+2016-09-02 16:47:25,882 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   class [adql.query.SelectItem]
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity]
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] add(SelectField)
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Name [distanceMins]
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Size [0]
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Type [FLOAT]
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.from.CrossJoin]
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.from.ADQLTable]
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLTable [neighbours]
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ADQLTable)
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]    ----
+2016-09-02 16:47:25,883 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]    AdqlTable [ATLASDR1.atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,885 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]    BaseTable [ATLASDR1.atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]    RootTable [ATLASDR1.dbo.atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] add(AdqlTable)
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Name [atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] add(BaseResource)
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Name [ATLASDR1]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.from.ADQLTable]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLTable [sources]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ADQLTable)
+
+2016-09-02 16:47:25,886 WARN  [FireThornTaskExecutor-8] [AdqlParserImpl] ADQLTable getDBLink() is unexpected class [adql.db.DefaultDBTable]
+
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.ClauseConstraints]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.constraint.Comparison]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.operand.Operation]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  Operation [SUB]
+
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Operation)
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  Operation ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   name [SUB]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   type [-]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.operand.ADQLColumn]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLColumn [masterObjID]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ADQLColumn)
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   ----
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   AdqlColumn [ATLASDR1.atlasSourceXDR8PhotoObj.masterObjID]
+2016-09-02 16:47:25,886 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   BaseColumn [ATLASDR1.atlasSourceXDR8PhotoObj.masterObjID]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   RootColumn [ATLASDR1.dbo.atlasSourceXDR8PhotoObj.masterObjID]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] add(AdqlColumn)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Name [masterObjID]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] add(AdqlTable)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Name [atlasSourceXDR8PhotoObj]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] add(BaseResource)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Name [ATLASDR1]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.operand.ADQLColumn]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLColumn [ident]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ADQLColumn)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   ----
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   AdqlColumn [ATLASDR1.atlasSource.sourceID]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   BaseColumn [ATLASDR1.atlasSource.sourceID]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]   RootColumn [ATLASDR1.dbo.atlasSource.sourceID]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] add(AdqlColumn)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Name [sourceID]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] add(AdqlTable)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Name [atlasSource]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] add(BaseResource)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   Name [ATLASDR1]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.operand.NumericConstant]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.ClauseADQL]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.ClauseConstraints]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ----
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl]  ADQLObject [adql.query.ClauseADQL]
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [OgsaDQPTranslator] translate(ADQLQuery)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [OgsaDQPTranslator] translate(ClauseSelect)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] services()
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [OgsaDQPTranslator] translate(ADQLQuery)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [OgsaDQPTranslator] translate(ClauseSelect)
+2016-09-02 16:47:25,887 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] services()
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] services()
+
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] services()
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [OgsaDQPTranslator] translate(ADQLList<>)
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [OgsaDQPTranslator]   list [WHERE][adql.query.ClauseConstraints]
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [OgsaDQPTranslator]   result [WHERE neighbours.masterObjID-sources.sourceID < 1000000]
+2016-09-02 16:47:25,888 INFO  [FireThornTaskExecutor-8] [AdqlQueryTimings] TIMING - adqldone()
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity] transition(TaskState)
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity]   ident [204677]
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity]   state [READY][READY]
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity] No-op status change [READY]
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity] After prepare()
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity]   state [READY]
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity] Before execute()
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity]   state [READY]
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] execute()
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   ident [204677]
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   state [READY]
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] build()
+2016-09-02 16:47:25,888 INFO  [FireThornTaskExecutor-8] [AdqlQueryTimings] TIMING - jdbcstart()
+2016-09-02 16:47:25,888 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]  Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[4]]]
+2016-09-02 16:47:25,889 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]  Identity [4][test@test.roe.ac.uk]
+2016-09-02 16:47:25,889 DEBUG [FireThornTaskExecutor-8] [IdentityEntity] jdbcschema()
+2016-09-02 16:47:25,897 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,897 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,897 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity]
+2016-09-02 16:47:25,897 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]  JDBC space [56][DEVFirethornUserdataSHEP20151116.dbo]
+2016-09-02 16:47:25,897 DEBUG [FireThornTaskExecutor-8] [IdentityEntity] adqlschema()
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]  ADQL space [64087][temp]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [JdbcSchemaEntity] tables() for [56][DEVFirethornUserdataSHEP20151116.dbo]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [56][DEVFirethornUserdataSHEP20151116.dbo]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [56][DEVFirethornUserdataSHEP20151116.dbo]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [JdbcSchemaEntity] factory()
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-01T18:50:01.213-04:00]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,902 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [AbstractEntity] init(Identity)
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [AbstractEntity] Using identity from context
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [AbstractEntity]   owner   [null]
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [AbstractEntity]   created [2016-09-02T16:47:25.903-04:00]
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [AbstractNamedEntity] AbstractNamedEntity(String)
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [AbstractNamedEntity]   Name  [null]
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity] ident[null]]]
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] tables() for [64087][temp]
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [64087][temp]
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [64087][temp]
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [AdqlSchemaEntity] factory()
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,903 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T06:57:16.697-04:00]
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [AbstractEntity] init(Identity)
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [AbstractEntity] Using identity from context
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [AbstractEntity]   owner   [null]
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [AbstractEntity]   created [2016-09-02T16:47:25.904-04:00]
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [AbstractNamedEntity] AbstractNamedEntity(String)
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [AbstractNamedEntity]   Name  [XX_K2V4FKOELEQYAAAAAFLOZJ7T6Y]
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity] ident[null]]]
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [AdqlTableEntity] realize() [204683][XX_K2V4FKOELEQYAAAAAFLOZJ7T6Y]
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] columns() for [204682][DEVFirethornUserdataSHEP20151116.dbo.XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,904 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] factory()
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [null]
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is null - scanning
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Checking for existing lock [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] No existing lock found [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Adding new lock [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4][2016-09-02T16:47:25.905-04:00]
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Running scan [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,905 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] scanimpl() for [204682][DEVFirethornUserdataSHEP20151116.dbo.XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,906 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:25,906 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:25,906 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity]
+2016-09-02 16:47:25,917 DEBUG [FireThornTaskExecutor-8] [MSSQLMetadataScanner] Openning a new connection
+2016-09-02 16:47:25,917 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116][1]
+2016-09-02 16:47:25,917 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116]
+2016-09-02 16:47:25,917 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116]
+2016-09-02 16:47:25,917 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116]
+2016-09-02 16:47:25,917 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] Source is null, updating to EMPTY
+2016-09-02 16:47:25,917 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] State is EMPTY, initialising DataSource
+2016-09-02 16:47:25,917 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] State is READY, initialising Connection
+2016-09-02 16:47:25,918 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] With user/pass
+2016-09-02 16:47:25,918 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] connecting ....
+2016-09-02 16:47:25,923 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] .... connected
+2016-09-02 16:47:25,960 DEBUG [FireThornTaskExecutor-8] [MSSQLMetadataScanner] schemas() for [DEVFirethornUserdataSHEP20151116]
+2016-09-02 16:47:25,960 DEBUG [FireThornTaskExecutor-8] [MSSQLMetadataScanner] schemas().select(String) for [DEVFirethornUserdataSHEP20151116][dbo]
+2016-09-02 16:47:25,970 DEBUG [FireThornTaskExecutor-8] [MSSQLMetadataScanner] Found schema [dbo]
+2016-09-02 16:47:25,970 DEBUG [FireThornTaskExecutor-8] [MSSQLMetadataScanner] tables() for [DEVFirethornUserdataSHEP20151116][dbo]
+2016-09-02 16:47:25,970 DEBUG [FireThornTaskExecutor-8] [MSSQLMetadataScanner] tables().select(String) for [DEVFirethornUserdataSHEP20151116][dbo][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] scanning table [null]
+
+2016-09-02 16:47:25,996 WARN  [FireThornTaskExecutor-8] [JdbcTableEntity] Null table
+
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116][1]
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116]
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] columns() scan done for [204682][DEVFirethornUserdataSHEP20151116.dbo.XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] Matching columns [0]
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] Listed but not matched [0]
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Releasing locks [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Found existing lock [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4][2016-09-02T16:47:25.905-04:00]
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Removing ....
+2016-09-02 16:47:25,996 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Notifying ....
+2016-09-02 16:47:25,997 DEBUG [FireThornTaskExecutor-8] [AbstractEntity] init(Identity)
+
+2016-09-02 16:47:25,999 DEBUG [FireThornTaskExecutor-8] [AbstractEntity] Using identity from context
+2016-09-02 16:47:25,999 DEBUG [FireThornTaskExecutor-8] [AbstractEntity]   owner   [null]
+2016-09-02 16:47:25,999 DEBUG [FireThornTaskExecutor-8] [AbstractEntity]   created [2016-09-02T16:47:25.999-04:00]
+2016-09-02 16:47:25,999 DEBUG [FireThornTaskExecutor-8] [AbstractNamedEntity] AbstractNamedEntity(String)
+2016-09-02 16:47:25,999 DEBUG [FireThornTaskExecutor-8] [AbstractNamedEntity]   Name  [distanceMins]
+2016-09-02 16:47:25,999 DEBUG [FireThornTaskExecutor-8] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity] ident[null]]]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Creating JDBC table
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [JdbcResourceEntity] jdbcdriver() for [Userdata resource]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] jdbcdriver() for [MSSQL]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [SQLServerDriver] Create JdbcTable [XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] columns() for [204682][DEVFirethornUserdataSHEP20151116.dbo.XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [204682][XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [JdbcTableEntity] factory()
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T16:47:25.996-04:00]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT25H]
+2016-09-02 16:47:26,000 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:26,081 DEBUG [FireThornTaskExecutor-8] [AdqlQueryTimings] AdqlQueryTimings()
+2016-09-02 16:47:26,085 DEBUG [FireThornTaskExecutor-8] [SQLServerDriver] SQL statement [CREATE TABLE [DEVFirethornUserdataSHEP20151116].[dbo].[XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4] ([XX_7CPV75C3WDTDKAAAAFLOZJ7XFU] FLOAT )]
+2016-09-02 16:47:26,085 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116][1]
+2016-09-02 16:47:26,085 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116]
+2016-09-02 16:47:26,085 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116]
+2016-09-02 16:47:26,085 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116]
+2016-09-02 16:47:26,085 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] State is CLOSED, updating to READY
+2016-09-02 16:47:26,085 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] State is READY, initialising Connection
+2016-09-02 16:47:26,085 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] With user/pass
+2016-09-02 16:47:26,085 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] connecting ....
+2016-09-02 16:47:26,091 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] .... connected
+2016-09-02 16:47:26,369 DEBUG [FireThornTaskExecutor-8] [SQLServerDriver] SQL result [0]
+2016-09-02 16:47:26,369 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116][1]
+2016-09-02 16:47:26,369 DEBUG [FireThornTaskExecutor-8] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://edward/DEVFirethornUserdataSHEP20151116]
+2016-09-02 16:47:26,369 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] JDBC table created
+2016-09-02 16:47:26,369 INFO  [FireThornTaskExecutor-8] [AdqlQueryTimings] TIMING - jdbcdone()
+2016-09-02 16:47:26,369 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Getting base BaseResource
+2016-09-02 16:47:26,369 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Found base BaseResource [ATLASDR1]
+2016-09-02 16:47:26,369 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Getting DQP resource
+2016-09-02 16:47:26,369 DEBUG [FireThornTaskExecutor-8] [OgsaServiceEntity] primary()
+2016-09-02 16:47:26,378 DEBUG [FireThornTaskExecutor-8] [OgsaDQPResourceEntity] Requesting list of [ACTIVE] DQP resources.
+2016-09-02 16:47:26,378 DEBUG [FireThornTaskExecutor-8] [OgsaDQPResourceEntity] Processing list of [ACTIVE] DQP resources.
+2016-09-02 16:47:26,382 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:26,382 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:26,382 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaDQPResourceEntity]
+2016-09-02 16:47:26,382 DEBUG [FireThornTaskExecutor-8] [OgsaDQPResourceEntity] Checking [ACTIVE] DQP resource [194972][ACTIVE]
+2016-09-02 16:47:26,382 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] scantest()
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   name   [XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ident  [194972]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ogsaid [ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] prevscan   [2016-09-02T14:44:20.557-04:00]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] start time [2016-09-02T06:53:09.152-04:00]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaDQPResourceEntity] factory()
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT11M]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT11M]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T14:44:20.557-04:00]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT11M]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan period expired - scanning
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Checking for existing lock [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] No existing lock found [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Adding new lock [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY][2016-09-02T16:47:26.383-04:00]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Running scan [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] scanimpl()
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   name   [XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ident  [194972]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ogsaid [ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] ping()
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   name   [XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ident  [194972]
+2016-09-02 16:47:26,383 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ogsaid [ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,384 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:26,384 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:26,384 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaServiceEntity]
+2016-09-02 16:47:26,385 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] Service request [194972][http://timothy:8080/ogsadai/services/dataResources/ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] Service response [194972][null]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] Ping test passed [194972][ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] status(status)
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   name   [XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ident  [194972]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ogsaid [ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   status [ACTIVE]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Releasing locks [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Found existing lock [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY][2016-09-02T16:47:26.383-04:00]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Removing ....
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Notifying ....
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaDQPResourceEntity] Found [ACTIVE] DQP resource [194972][ACTIVE]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] scantest()
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   name   [XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ident  [194972]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ogsaid [ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] prevscan   [2016-09-02T16:47:26.410-04:00]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] start time [2016-09-02T06:53:09.152-04:00]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [194972][XX_TUHWLOQSZFB7AAAAAFLOVC5MFY]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaDQPResourceEntity] factory()
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT11M]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT11M]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T16:47:26.410-04:00]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT11M]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prev scan is recent - skipping
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Found DQP resource [ogsadai-d9170871-a728-4d75-96ee-40929051a957]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Getting source OgsaService
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Found source OgsaService [http://timothy:8080/ogsadai/services]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Getting target table
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Found target table [DEVFirethornUserdataSHEP20151116.dbo.XX_DRWCMBZJE4GAEAAAAFLOZJ7WZ4]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Getting target OgsaBaseResource
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaJdbcResourceEntity$EntityFactory] primary(JdbcResource) [2]
+2016-09-02 16:47:26,410 DEBUG [FireThornTaskExecutor-8] [OgsaServiceEntity] primary()
+
+2016-09-02 16:47:26,419 DEBUG [FireThornTaskExecutor-8] [OgsaJdbcResourceEntity$EntityFactory] primary(OgsaService, JdbcResource) [64096][2]
+2016-09-02 16:47:26,437 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor] onLoad(....)
+2016-09-02 16:47:26,437 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   factories [uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl@1b2df4ab]
+2016-09-02 16:47:26,437 DEBUG [FireThornTaskExecutor-8] [HibernateInterceptor]   entity [uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResourceEntity]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaJdbcResourceEntity$EntityFactory] Found primary OgsaJdbcResource [194973]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaJdbcResourceEntity$EntityFactory] Checking ogsaid ...
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-22fa7e8c-8814-48e6-a715-31430c85643b]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan for [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] scantest()
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   name   [XX_OILELGJXXTDQOAAAAFLOVC5UVQ]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ident  [194973]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity]   ogsaid [ogsadai-22fa7e8c-8814-48e6-a715-31430c85643b]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] prevscan   [2016-09-02T14:44:20.583-04:00]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaBaseResourceEntity] start time [2016-09-02T06:53:09.152-04:00]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scantest for [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [OgsaJdbcResourceEntity] factory()
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory] scanperiod()
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity$EntityFactory]   value [PT11M]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Factory scanperiod  [PT11M]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] prevscan   [2016-09-02T14:44:20.583-04:00]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scanperiod [PT11M]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] scan period expired - scanning
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Checking for existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Found existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Found lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:26,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Waiting on lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:26,938 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Checking for existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ]
+2016-09-02 16:47:26,938 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Found existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:26,938 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Waiting on lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:27,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Checking for existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ]
+2016-09-02 16:47:27,438 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Found existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:27,439 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Waiting on lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:27,939 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Checking for existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ]
+2016-09-02 16:47:27,939 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Found existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:27,939 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Waiting on lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:28,439 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Checking for existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ]
+2016-09-02 16:47:28,439 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Found existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:28,439 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Waiting on lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ][2016-09-02T15:47:13.345-04:00]
+2016-09-02 16:47:28,939 DEBUG [FireThornTaskExecutor-8] [BaseComponentEntity] Checking for existing lock [194973][XX_OILELGJXXTDQOAAAAFLOVC5UVQ]
+

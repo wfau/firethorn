@@ -394,7 +394,7 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 20 ra, dec FROM atlas.atlasSource" \
+            --data "adql.query.input=SELECT TOP 2 ra, dec FROM atlas.atlasSource" \
             --data "adql.query.mode=DISTRIBUTED" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
@@ -452,29 +452,22 @@ EOF
         # In which case .... what is this for ?
         # and in several cases OGSA-DAI crashes after ..
 
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 adqltmp=$(mktemp)
 cat > "${adqltmp:?}" << 'EOF'
-SELECT ATLASDR1.dbo.atlasSource.frameSetID FROM ATLASDR1.dbo.atlasSource WHERE ((ATLASDR1.dbo.atlasSource.priOrSec = 0) OR (ATLASDR1.dbo.atlasSource.priOrSec = ATLASDR1.dbo.atlasSource.frameSetID) ) AND ATLASDR1.dbo.atlasSource.iAperMag3 > 0.0 )  AND  ( ATLASDR1.dbo.atlasSource.gAperMag3 > 0.0 ) 
+SELECT ATLASDR1.dbo.atlasSource.frameSetID FROM ATLASDR1.dbo.atlasSource WHERE ( ( ATLASDR1.dbo.atlasSource.priOrSec = 0) OR (ATLASDR1.dbo.atlasSource.priOrSec = ATLASDR1.dbo.atlasSource.frameSetID) ) AND ( ATLASDR1.dbo.atlasSource.iAperMag3 > 0.0 )  AND  ( ATLASDR1.dbo.atlasSource.gAperMag3 > 0.0 ) 
 EOF
 
+    2016-09-05 20:36:19,040 DEBUG [FireThornTaskExecutor-7] [MySearchTableList]   target [ATLASDR1][dbo][atlasSource] 
+    2016-09-05 20:36:19,040 DEBUG [FireThornTaskExecutor-7] [MySearchTableList] search catalog [ATLASDR1] 
+    2016-09-05 20:36:19,041 WARN  [FireThornTaskExecutor-7] [AdqlParserImpl] Error parsing query [{}] 
+    uk.ac.roe.wfau.firethorn.exception.NotImplementedException: Call to a method that has not been implemented
+	    at uk.ac.roe.wfau.firethorn.adql.parser.green.MySearchTableList.search(MySearchTableList.java:111)
+
+adqltmp=$(mktemp)
+cat > "${adqltmp:?}" << 'EOF'
+SELECT atlas.atlasSource.frameSetID FROM atlas.atlasSource WHERE ( ( atlas.atlasSource.priOrSec = 0) OR (atlas.atlasSource.priOrSec = atlas.atlasSource.frameSetID) ) AND ( atlas.atlasSource.iAperMag3 > 0.0 )  AND  ( atlas.atlasSource.gAperMag3 > 0.0 ) 
+EOF
 
         curl \
             --silent \
@@ -487,12 +480,4 @@ EOF
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
 
-
-
-
-
-
-
-2000	180.067892312368	180.577006355704
-2000	180.067892312368	180.577006355704
 
