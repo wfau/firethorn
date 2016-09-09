@@ -42,6 +42,9 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public class SQLServerDriver
 implements JdbcResource.JdbcDriver 
     {
+	
+	final int MAX_CHAR_SIZE = 1024;
+
 	@Override
 	public void create(JdbcSchema schema)
 		{
@@ -183,6 +186,7 @@ implements JdbcResource.JdbcDriver
 
     protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
     	{
+
     	switch(meta.jdbctype())
 	        {
 	        case DATE :
@@ -206,23 +210,17 @@ implements JdbcResource.JdbcDriver
 	        case NCHAR:	 
 	        case VARCHAR:	 
 	        case NVARCHAR: 
-	        	if (meta.arraysize()==null){
-        	  		builder.append(
-        	  			"VARCHAR"
-	        		);
-    	    		builder.append("(MAX)");
-    	    		
-    	    	} else {
-	    		    builder.append(
-	 	                meta.jdbctype().name()
-	 	            );
-	    	        builder.append("(");
-	    	        builder.append(
-	    	            meta.arraysize()
-	    	            );
-	    	        builder.append(")");
-	    	        
-	    	        }
+
+	        	if ((meta.arraysize()!=null) && (meta.arraysize() > 0) && (meta.arraysize() < MAX_CHAR_SIZE)){
+		        	builder.append(meta.jdbctype().name());
+		        	builder.append("(");
+		        	builder.append(meta.arraysize());
+		        	builder.append(")");
+	        	} else {
+	        		builder.append("VARCHAR");
+	    	    	builder.append("(MAX)");
+	        	}
+	       
 	        	break;
 	        default :
 	        	builder.append(
@@ -315,5 +313,10 @@ implements JdbcResource.JdbcDriver
 			name.replace("]", "]]")
 			);
     	builder.append("]");
+    	}
+    
+    protected void sqlchar()
+    	{
+    	
     	}
     }
