@@ -269,10 +269,6 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					stmt.executeUpdate(sql);
 
 					for (AdqlColumn column : table.columns().select()) {
-						log.debug("*******************************88");
-
-						log.debug(column.name());
-
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"columns\" VALUES (";
 						String columnName = column.name().replace("'", "''");
                         if (columnName.toLowerCase().equals("timestamp") || columnName.toLowerCase().equals("coord2") || columnName.toLowerCase().equals("coord1")){  
@@ -340,8 +336,6 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 								} else {
 									sql += "'',";
 								}
-								log.debug(meta.adql().arraysize()
-										.toString());
 
 								if ((meta.adql().arraysize() != null)
 										&& (meta.adql().arraysize() != 0)) {
@@ -361,8 +355,6 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 						sql += " 0, '',''";
 						sql += ")";
 						stmt.executeUpdate(sql);
-						log.debug(sql);
-						log.debug("*******************************");
 
 					}
 				}

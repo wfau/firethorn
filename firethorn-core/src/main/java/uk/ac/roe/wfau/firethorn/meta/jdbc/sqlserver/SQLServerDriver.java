@@ -220,24 +220,7 @@ implements JdbcResource.JdbcDriver
 	        		builder.append("VARCHAR");
 	    	    	builder.append("(MAX)");
 	        	}
-	        	/*
-	        	if (meta.arraysize()==null){
-        	  		builder.append(
-        	  			"VARCHAR"
-	        		);
-    	    		builder.append("(MAX)");
-    	    		
-    	    	} else {
-	    		    builder.append(
-	 	                meta.jdbctype().name()
-	 	            );
-	    	        builder.append("(");
-	    	        builder.append(
-	    	            meta.arraysize()
-	    	            );
-	    	        builder.append(")");
-	    	        
-	    	        }*/
+	       
 	        	break;
 	        default :
 	        	builder.append(
