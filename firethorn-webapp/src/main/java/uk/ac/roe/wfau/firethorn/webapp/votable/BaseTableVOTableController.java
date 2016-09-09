@@ -273,7 +273,7 @@ extends AbstractTableController
                     if (column.meta().adql().arraysize() == AdqlColumn.NON_ARRAY_SIZE)
                         {
                         }
-                    else if (column.meta().adql().arraysize() == AdqlColumn.VAR_ARRAY_SIZE || column.meta.adql().arraysize() <= 0)
+                    else if (column.meta().adql().arraysize() == AdqlColumn.VAR_ARRAY_SIZE || column.meta().adql().arraysize() <= 0)
                         {
                         writer.append(" arraysize='*'");
                         }
