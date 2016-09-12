@@ -157,9 +157,9 @@ cat  "${databasefile:?}"
 # Copy scripts from local to VM
 #
    source "${HOME:?}/firethorn.settings"
-   pushd "${FIRETHORN_CODE:?}"
+   pushd "${PYROTHORN_CODE:?}"
 
-       scp -r integration/005/scripts/* root@Cadelicia:/root/
+       scp -r scripts/* root@Froeseth:/root/
 
    popd
 
@@ -186,7 +186,7 @@ cat  "${databasefile:?}"
 
     secret 'firethorn.user.host'
    
-    source run.sh 09   default  ${newversion:?} 1.2.3-genius
+    source run.sh 11  default  ${newversion:?} 
 
 
 
