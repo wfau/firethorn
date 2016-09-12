@@ -312,6 +312,33 @@ cat  "${databasefile:?}"
 # Test query ...
 #[root@tester]
 
+
+query001=$(mktemp)
+cat > "${query001:?}" << EOF
+    SELECT
+        atlasSource.ra  as atlasra,
+        atlasSource.dec as atlasdec,
+        twomass_psc.raj2000  as twomassra,
+        twomass_psc.dej2000 as twomassdec
+    FROM
+        atlas.atlasSource
+    JOIN
+        atlasSourceXtwomass_psc
+    ON
+        atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
+    JOIN
+        twomass.data as twomass_psc
+    ON
+        twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
+    WHERE
+        atlasSource.ra  BETWEEN 354 AND 355
+    AND
+        atlasSource.dec BETWEEN -40 AND -39
+    AND
+        twomass_psc.raj2000  BETWEEN 354 AND 355
+    AND
+        twomass_psc.dej2000 BETWEEN -40 AND -39
+EOF
         curl \
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
@@ -321,6 +348,18 @@ cat  "${databasefile:?}"
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
+
+      curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input="${query001:?}" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+
 
 # --------------------------------------
 # Create the GAIA TWOMASS resource.
