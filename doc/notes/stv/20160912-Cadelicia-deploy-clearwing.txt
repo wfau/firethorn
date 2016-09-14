@@ -159,7 +159,7 @@ cat  "${databasefile:?}"
    source "${HOME:?}/firethorn.settings"
    pushd "${PYROTHORN_CODE:?}"
 
-       scp -r scripts/* root@Froeseth:/root/
+       scp -r scripts/* root@Cadelicia:/root/
 
    popd
 
@@ -186,7 +186,7 @@ cat  "${databasefile:?}"
 
     secret 'firethorn.user.host'
    
-    source run.sh 11  default  ${newversion:?} 
+    source run.sh 09  default  ${newversion:?} 1.2.3-genius  488482 488581
 
 
 
