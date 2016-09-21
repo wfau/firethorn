@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21.1
+FROM firethorn/fedora:23-2.0.22
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-RUN yum -y install openssh-clients
+RUN dnf -y install openssh-clients
 

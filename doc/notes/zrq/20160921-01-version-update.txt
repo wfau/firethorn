@@ -1,0 +1,90 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Create a new branch.
+#[user@laptop] 
+
+    devname=zrq-version-update
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        gedit doc/notes/zrq/20141130-01-hg-branch.txt &
+
+    popd
+
+# -----------------------------------------------------
+# Remove existing containers.
+#[user@desktop]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove existing images.
+#[user@desktop]
+
+    docker rmi -f $(docker images -q)
+
+#---------------------------------------------------------------------
+# Update our Docker base images.
+#[user@laptop] 
+
+    dockerset=2.0.22
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/fedora:23-${dockerset:?} \
+            docker/fedora/23
+
+        docker build \
+            --tag firethorn/java:8-${dockerset:?} \
+            docker/java/8
+
+        docker build \
+            --tag firethorn/tomcat:8-${dockerset:?} \
+            docker/tomcat/8
+
+        docker build \
+            --tag firethorn/postgres:9-${dockerset:?} \
+            docker/postgres/9
+
+        docker build \
+            --tag firethorn/builder:${dockerset:?} \
+            docker/builder
+
+        docker build \
+            --tag firethorn/sql-proxy:${dockerset:?} \
+            docker/sql-proxy
+
+        docker build \
+            --tag firethorn/sql-tunnel:${dockerset:?} \
+            docker/sql-tunnel
+
+        docker build \
+            --tag firethorn/ssh-client:${dockerset:?} \
+            docker/ssh-client
+
+    popd
+

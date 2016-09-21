@@ -15,40 +15,43 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21.1
+FROM firethorn/fedora:23-2.0.22
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Create our projects directory.
 RUN mkdir /var/local/projects
-#RUN chgrp users /var/local/projects
-#RUN chmod g+rwx /var/local/projects
+RUN chgrp users /var/local/projects
+RUN chmod g+rwx /var/local/projects
 VOLUME /var/local/projects
 
 #
 # Create our cache directory.
 RUN mkdir /var/local/cache
-#RUN chgrp users /var/local/cache
-#RUN chmod g+rwx /var/local/cache
+RUN chgrp users /var/local/cache
+RUN chmod g+rwx /var/local/cache
 VOLUME /var/local/cache
 
 #
 # Install system tools.
-RUN yum -y install iputils
-RUN yum -y install bind-utils
+RUN dnf -y install iputils
+RUN dnf -y install bind-utils
 
 #
 # Install Docker client.
-RUN yum -y install docker-io
+#RUN dnf -y install docker-io
+COPY etc/docker.repo /etc/yum.repos.d/docker.repo
+RUN dnf -y install docker-engine
+
 
 #
 # Install Mercurial
-RUN yum -y install mercurial
+RUN dnf -y install mercurial
 
 #
 # Install Java
-RUN yum -y install java-1.8.0-openjdk-devel
-RUN yum -y install java-1.8.0-openjdk-headless
+RUN dnf -y install java-1.8.0-openjdk-devel
+RUN dnf -y install java-1.8.0-openjdk-headless
 
 #
 # Install Maven

@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/java:8.1
+FROM firethorn/java:8-2.0.22
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV TOMCAT_VERSION 8.5.4
+ENV TOMCAT_VERSION 8.5.5
 
 ENV TOMCAT_USER tomcat
 ENV TOMCAT_ROOT /var/local/tomcat
@@ -28,12 +28,8 @@ ENV TOMCAT_ROOT /var/local/tomcat
 EXPOSE :8080
 
 #
-# Install tar to extract the archive.
-RUN yum -y install tar
-
-#
 # Install the Tomcat Native Library
-# RUN yum -y install tomcat-native
+RUN dnf -y install tomcat-native
 
 #
 # Create the Tomcat user.

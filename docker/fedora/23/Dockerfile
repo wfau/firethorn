@@ -23,10 +23,6 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 VOLUME /var/cache/
 
 #
-# Enable delta rpms.
-#RUN dnf install -y  deltarpm
-
-#
 # Install common admin tools.
 RUN dnf install -y sed
 RUN dnf install -y tar

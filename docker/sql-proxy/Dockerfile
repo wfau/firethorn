@@ -15,13 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21.1
+FROM firethorn/fedora:23-2.0.22
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 EXPOSE 1433
 
-RUN yum -y install socat
-RUN yum -y install bind-utils
+RUN dnf -y install socat
+RUN dnf -y install bind-utils
 
 COPY bin/sql-proxy.sh /bin/sql-proxy.sh
 RUN chmod a+x /bin/sql-proxy.sh
