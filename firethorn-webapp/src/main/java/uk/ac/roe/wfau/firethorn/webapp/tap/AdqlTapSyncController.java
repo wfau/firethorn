@@ -110,7 +110,6 @@ public class AdqlTapSyncController extends AbstractController {
         //
         // Let's obtains parameters name here! 
         //
-		log.debug("**********");
 		Enumeration<?> enumeration = request.getParameterNames();
 		while (enumeration.hasMoreElements()) {
 			String parameterName = (String) enumeration.nextElement();
@@ -139,14 +138,9 @@ public class AdqlTapSyncController extends AbstractController {
 				maxrec = request.getParameter(parameterName);
 			}
 			
-			log.debug(parameterName);
-			log.debug(request.getParameter(parameterName));
-			
 			
 		}
 		
-		log.debug(LANG);
-
 		
 
 		// Check input parameters and return VOTable with appropriate message if
