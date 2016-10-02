@@ -193,6 +193,18 @@ EOF
         postgres
 
 # -----------------------------------------------------
+# Get our version number.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
 # Build our tester container.
 #[user@desktop] 
 
@@ -202,7 +214,7 @@ EOF
         source "bin/util.sh"
 
         docker build \
-            --tag firethorn/tester:1.1 \
+            --tag firethorn/tester:${version:?} \
             integration/tester
 
     popd
@@ -244,19 +256,6 @@ EOF
 
     docker stop ${firename:?}
     docker rm -f -v ${firename:?}
-
-
-# -----------------------------------------------------
-# Get our version number.
-#[user@desktop] 
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        version=$(getversion)
-
-    popd
 
 # -----------------------------------------------------
 # Start our OGSA-DAI container.
@@ -320,7 +319,7 @@ EOF
         --env "endpointurl=http://${firelink:?}:8080/firethorn" \
         --link "${firename:?}:${firelink:?}" \
         --volume /etc/localtime:/etc/localtime:ro \
-        "firethorn/tester:1.1" \
+        "firethorn/tester:${version:?}" \
         bash
 
 # -----------------------------------------------------

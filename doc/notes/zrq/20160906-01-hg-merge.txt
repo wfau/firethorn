@@ -177,16 +177,9 @@
     # ONLY DO THIS IF THE TESTS PASS
     #
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source bin/util.sh
-
-        docker tag -f "firethorn/firethorn:$(getversion)" "firethorn/firethorn:latest"
-        docker tag -f "firethorn/ogsadai:$(getversion)"   "firethorn/ogsadai:latest"
-        docker tag -f "firethorn/tester:$(getversion)"    "firethorn/tester:latest"
-
-    popd
+    docker tag "firethorn/firethorn:${version}" "firethorn/firethorn:latest"
+    docker tag "firethorn/ogsadai:${version}"   "firethorn/ogsadai:latest"
+    docker tag "firethorn/tester:${version}"    "firethorn/tester:latest"
 
 # -------------------------------------------------------------------------------------------
 # Push our containers to our Docker repo.
