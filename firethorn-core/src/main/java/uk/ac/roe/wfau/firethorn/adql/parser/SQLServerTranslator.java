@@ -55,7 +55,7 @@ import adql.query.operand.function.geometry.PointFunction;
 import adql.query.operand.function.geometry.PolygonFunction;
 import adql.query.operand.function.geometry.RegionFunction;
 import adql.translator.ADQLTranslator;
-import adql.translator.PostgreSQLTranslator;
+import adql.translator.MAST_ObsCore_SQLServerTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -86,7 +86,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  */
 @Slf4j
-public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTranslator {
+public class SQLServerTranslator extends MAST_ObsCore_SQLServerTranslator implements ADQLTranslator {
 
 	private final String schemaName = "dbo";
 
