@@ -1,0 +1,61 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+git clone https://github.com/stvoutsin/comet-docker.git
+
+
+cd comet-docker
+
+docker build --tag comet-broker comet-docker
+
+
+chmod 755 "${HOME:?}/comet-docker/comet-docker/bin/setup-comet.sh" 
+chmod 755 "${HOME:?}/comet-docker/comet-docker/bin/send-alert.sh" 
+chcon -t svirt_sandbox_file_t "${HOME:?}/comet-docker/comet-docker/bin/setup-comet.sh" 
+chcon -t svirt_sandbox_file_t "${HOME:?}/comet-docker/comet-docker/bin/send-alert.sh" 
+
+
+## Setup comet Broker
+docker run \
+	--detach \
+	--publish 8089:8089 \
+	--name "comet-broker" \
+	--memory 512M \
+	--volume "${HOME:?}/comet-docker/comet-docker/bin/setup-comet.sh:/home/setup-comet.sh" \
+	--volume "${HOME:?}/comet-docker/comet-docker/fourpisky:/home/comet/src" \
+	--volume "/var/logs/comet/:/home/comet/logs" \
+	"comet-broker" bash -c '/home/setup-comet.sh'
+
+
+
+
+
+## Setup comet Author, send alert
+docker run \
+	--detach \
+	--name "comet-client" \
+	--memory 512M \
+	--link "comet-broker:comet-broker" \
+	--volume "${HOME:?}/comet-docker/comet-docker/bin/send-alert.sh:/home/send-alert.sh" \
+	--volume "${HOME:?}/comet-docker/comet-docker/fourpisky:/home/comet/src" \
+	"comet-broker" bash -c '/home/send-alert.sh'
+
