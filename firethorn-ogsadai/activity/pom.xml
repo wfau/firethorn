@@ -37,7 +37,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>1.10.5-stv-paper-queries</version>
+        <version project='firethorn'>2.0.22-stv-geometry</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-activity</artifactId>
