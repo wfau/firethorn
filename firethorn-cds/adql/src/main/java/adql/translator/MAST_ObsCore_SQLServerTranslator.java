@@ -217,14 +217,14 @@ public class MAST_ObsCore_SQLServerTranslator extends SQLServerTranslator {
 
 	@Override
 	public String translate(final PointFunction point) throws TranslationException {
-		return ("dbo.fnObsCore_SearchSTCSFootprint('point " +
+		return ("dbo.fnSpatial_SearchSTCSFootprint('point " +
 				((NumericConstant)(point.getCoord1())).getValue() + " " +
 				((NumericConstant)(point.getCoord2())).getValue() + "')"); 
 	}
 
 	@Override
 	public String translate(final CircleFunction circle) throws TranslationException {
-		return ("dbo.fnObsCore_SearchSTCSFootprint('circle " +
+		return ("dbo.fnSpatial_SearchSTCSFootprint('circle " +
 				circle.getCoord1().toADQL() + " " +
 				circle.getCoord2().toADQL() + " " +
 				circle.getRadius().toADQL() + "')");
@@ -232,7 +232,7 @@ public class MAST_ObsCore_SQLServerTranslator extends SQLServerTranslator {
 
 	@Override
 	public String translate(final BoxFunction box) throws TranslationException {
-		return ("dbo.fnObsCore_SearchSTCSFootprint('box " +
+		return ("dbo.fnSpatial_SearchSTCSFootprint('box " +
 				box.getCoord1().toADQL() + " " +
 				box.getCoord2().toADQL() + " " +
 				box.getWidth().toADQL() + " " +
@@ -241,7 +241,7 @@ public class MAST_ObsCore_SQLServerTranslator extends SQLServerTranslator {
 
 	@Override
 	public String translate(final PolygonFunction polygon) throws TranslationException {
-		StringBuilder fnCall = new StringBuilder("dbo.fnObsCore_SearchSTCSFootprint('polygon ");
+		StringBuilder fnCall = new StringBuilder("dbo.fnSpatial_SearchSTCSFootprint('polygon ");
 		ADQLOperand[] operands = polygon.getParameters();
 		for( int i = 0; i < operands.length; ++i) {
 			if( operands[i] instanceof NumericConstant || operands[i] instanceof NegativeOperand)
