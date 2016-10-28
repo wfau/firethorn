@@ -169,7 +169,7 @@ cat  "${databasefile:?}"
 
     ssh Cadelicia
 
-    newversion=2.0.22
+    newversion=2.0.22-stv-geom
 
 # -----------------------------------------------------
 # Create our secret function.
@@ -186,7 +186,7 @@ cat  "${databasefile:?}"
 
     secret 'firethorn.user.host'
    
-    source run.sh 09  default  ${newversion:?} 1.2.3-genius  488482 488581
+    source run.sh 10   ${newversion:?}  ${newversion:?} 1.2.3-genius  488482 488581
 
 
 
@@ -313,51 +313,20 @@ cat  "${databasefile:?}"
 #[root@tester]
 
 
-query001=$(mktemp)
-cat > "${query001:?}" << EOF
-    SELECT
-        atlasSource.ra  as atlasra,
-        atlasSource.dec as atlasdec,
-        twomass_psc.raj2000  as twomassra,
-        twomass_psc.dej2000 as twomassdec
-    FROM
-        atlas.atlasSource
-    JOIN
-        atlasSourceXtwomass_psc
-    ON
-        atlasSource.sourceID = atlasSourceXtwomass_psc.masterObjID 
-    JOIN
-        twomass.data as twomass_psc
-    ON
-        twomass_psc.pts_key = atlasSourceXtwomass_psc.slaveObjID
-    WHERE
-        atlasSource.ra  BETWEEN 354 AND 355
-    AND
-        atlasSource.dec BETWEEN -40 AND -39
-    AND
-        twomass_psc.raj2000  BETWEEN 354 AND 355
-    AND
-        twomass_psc.dej2000 BETWEEN -40 AND -39
-EOF
+query001="SELECT count(*) FROM atlas.atlasDetection WHERE 1=CONTAINS(POINT('ICRS',266.41683,-29.00781),CIRCLE('ICRS',266.41683,-29.00781, 0.08333333))"
+
         curl \
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 2000 raj2000, dej2000 FROM twomass.data" \
+            --data "adql.query.input=${query001:?}" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
 
-      curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input="${query001:?}" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
-            "${endpointurl:?}/${queryspace:?}/queries/create" \
-            | bin/pp | tee blue-query.json
+
+
 
 
 
