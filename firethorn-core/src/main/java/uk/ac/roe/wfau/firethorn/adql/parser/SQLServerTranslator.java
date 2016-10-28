@@ -470,76 +470,7 @@ public class SQLServerTranslator extends MAST_ObsCore_SQLServerTranslator implem
 	@Override
 	public String translate(StringConstant strConst) throws TranslationException {
 		return "'" + strConst.getValue() + "'";
-	}
 
-	/* *********************************** */
-	/* ****** GEOMETRICAL FUNCTIONS ****** */
-	/* *********************************** */
-
-	@Override
-	public String translate(GeometryValue<? extends GeometryFunction> geomValue) throws TranslationException {
-		return translate(geomValue.getValue());
-	}
-
-	@Override
-	public String translate(ExtractCoord extractCoord) throws TranslationException {
-		return getDefaultADQLFunction(extractCoord);
-	}
-
-	@Override
-	public String translate(ExtractCoordSys extractCoordSys) throws TranslationException {
-		return getDefaultADQLFunction(extractCoordSys);
-	}
-
-	@Override
-	public String translate(AreaFunction areaFunction) throws TranslationException {
-		return getDefaultADQLFunction(areaFunction);
-	}
-
-	@Override
-	public String translate(CentroidFunction centroidFunction) throws TranslationException {
-		return getDefaultADQLFunction(centroidFunction);
-	}
-
-	@Override
-	public String translate(DistanceFunction fct) throws TranslationException {
-		return getDefaultADQLFunction(fct);
-	}
-
-	@Override
-	public String translate(ContainsFunction fct) throws TranslationException {
-		return getDefaultADQLFunction(fct);
-	}
-
-	@Override
-	public String translate(IntersectsFunction fct) throws TranslationException {
-		return getDefaultADQLFunction(fct);
-	}
-
-	@Override
-	public String translate(BoxFunction box) throws TranslationException {
-		return getDefaultADQLFunction(box);
-	}
-
-	@Override
-	public String translate(CircleFunction circle) throws TranslationException {
-		return getDefaultADQLFunction(circle);
-	}
-
-	@Override
-	public String translate(PointFunction point) throws TranslationException {
-		return getDefaultADQLFunction(point);
-	}
-
-	@Override
-	public String translate(PolygonFunction polygon) throws TranslationException {
-		return getDefaultADQLFunction(polygon);
-	}
-
-	@Override
-	public String translate(RegionFunction region) throws TranslationException {
-		return getDefaultADQLFunction(region);
-	}
 	
 	@Override
 	public DBType convertTypeFromDB(final int dbmsType, final String rawDbmsTypeName, String dbmsTypeName, final String[] params){
