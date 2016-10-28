@@ -678,8 +678,8 @@ public class SQLServerTranslator extends MAST_ObsCore_SQLServerTranslator implem
 	@Override
 	public String translate(final PointFunction point) throws TranslationException {
 		return ("dbo.fnSpatial_SearchSTCSFootprint('point " +
-				((NumericConstant)(point.getCoord1())).getValue() + " " +
-				((NumericConstant)(point.getCoord2())).getValue() + "')"); 
+				point.getCoord1() + " " +
+				point.getCoord2() + "')"); 
 	}
 
 	@Override
