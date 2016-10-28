@@ -1,0 +1,282 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+newversion=2.0.5-stv-char-fix
+
+# -------------------------------------------------------------------------------------------
+# Create new metadata and userdata database(s).
+# (uses the test VM to run sqsh)
+#[user@desktop]
+
+  source "${deploylist:?}"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+	newversion=2.0.5-stv-char-fix
+        #
+        # Set the new database name.
+        dbuser=SHEP
+        dbtype=LIVE
+        dbdate=$(date +%Y%m%d)
+
+        metadataname="${dbtype:?}FirethornMetadata${dbuser:?}${dbdate:?}"
+        userdataname="${dbtype:?}FirethornUserdata${dbuser:?}${dbdate:?}"
+
+        #
+        # Load the SQLServer properties
+        sqshtype=live
+        source "${HOME:?}/sqsh${sqshtype:?}.properties"
+
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"    
+
+            hg pull
+            hg update ${newversion:?}
+            
+            pushd 'firethorn-sqlserver/src/sql'
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${metadataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                databasefile="${HOME:?}/firethorn-$(date +%Y%m%d%H%M%S).properties"
+                cat >> "${databasefile:?}" << EOF
+#
+# Metadata database
+firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old metadata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new metadata database.
+                sqlsed 'create-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Set the template values
+                databasehost="${sqshhost:?}"
+                databaseport="1433"
+                databasename="${userdataname:?}"
+                databasepath="${sqshpath:?}"
+                databaseuser="${databasename:?}User"
+                databaselogin="${databasename:?}Login"
+                databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+                cat >> "${databasefile:?}" << EOF
+#
+# Userdata database
+firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
+
+                #
+                # Delete our old userdata database.
+                sqlsed 'delete-user.sql'     | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-login.sql'    | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'delete-database.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+                #
+                # Create our new userdata database (including empty table).
+                sqlsed 'create-database.sql'   | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-login.sql'      | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-user.sql'       | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+                sqlsed 'create-emptytable.sql' | sqsh -S "${sqshhost:?}" -U "${sqshuser:?}" -P "${sqshpass:?}" -D "${sqshdata:?}"
+
+echo "Config [${databasefile:?}]"
+cat  "${databasefile:?}"
+
+            popd
+        popd
+    exit
+# -----------------------------------------------------------------------------------
+# Update our shep secret store settings
+
+
+
+    createvm
+
+        INFO : Node name [Cadelicia]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [Cadelicia.qcow]
+        INFO : Disc size [16GiB]
+
+   exit
+
+
+# -----------------------------------------
+# Copy scripts from local to VM
+#
+   source "${HOME:?}/firethorn.settings"
+   pushd "${PYROTHORN_CODE:?}"
+
+       scp -r scripts/* root@Cadelicia:/root/
+
+   popd
+
+# -----------------------------------------
+# Login to the the VM
+#[stv@shep]
+
+    ssh Cadelicia
+
+    newversion=2.0.22-stv-geom
+
+# -----------------------------------------------------
+# Create our secret function.
+#[root@hebenu]
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store.blue'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'firethorn.user.host'
+   
+    source run.sh 10   ${newversion:?}  ${newversion:?} 
+
+
+
+
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "datadata=${datadata:?}" \
+        --env "datalink=${datalink:?}" \
+        --env "datauser=${datauser:?}" \
+        --env "datapass=${datapass:?}" \
+        --env "datadriver=${datadriver:?}" \
+        --env "endpointurl=http://${firelink:?}:8080/firethorn" \
+        --link "${firename:?}:${firelink:?}" \
+        --volume /etc/localtime:/etc/localtime:ro \
+        "firethorn/tester:1.1" \
+        bash
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | bin/pp | tee system-info.json
+
+
+# -----------------------------------------------------
+# Load the ATLASDR1 resource.
+#[root@tester]
+
+        database=ATLASDR1
+        
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
+
+
+
+# -----------------------------------------------------
+# Create our query workspace
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}"   'ATLASDR1' 'atlas'
+
+      
+# -----------------------------------------------------
+# Test query ...
+#[root@tester]
+
+
+query001="SELECT count(*) FROM atlas.atlasDetection WHERE 1=CONTAINS(POINT('ICRS',266.41683,-29.00781),CIRCLE('ICRS',266.41683,-29.00781, 0.08333333))"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=${query001:?}" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+
+
+
+
