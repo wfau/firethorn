@@ -1,0 +1,93 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+# -----------------------------------------------------------------------------------
+# Createvm
+#
+
+
+    createvm
+
+        INFO : Node name [Cadelicia]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/home/dave/projects/libvirt/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [Cadelicia.qcow]
+        INFO : Disc size [16GiB]
+
+   exit
+
+
+
+
+# -----------------------------------------
+# Fetch latest from pyrothorn
+#
+   source "${HOME:?}/firethorn.settings"
+   pushd "${PYROTHORN_CODE:?}"
+
+      git update -C 1.1
+
+   popd
+
+
+# -----------------------------------------
+# Copy scripts from local to VM
+#
+   source "${HOME:?}/firethorn.settings"
+   pushd "${PYROTHORN_CODE:?}"
+
+       scp -r scripts/* root@Cadelicia:/root/
+
+   popd
+
+# -----------------------------------------
+# Login to the the VM
+#[stv@shep]
+
+    ssh Cadelicia
+
+    newversion=2.0.22-stv-geom
+
+# -----------------------------------------------------
+# Create our secret function.
+#[root@hebenu]
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store.blue'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'firethorn.user.host'
+   
+    source run.sh 09   ${newversion:?}  ${newversion:?} 1.2.3-genius 
+
+
+
+
