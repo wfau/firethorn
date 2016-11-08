@@ -24,14 +24,10 @@
 # Initial settings
 #[user@desktop] 
 
-    datpath=src/dat
-    cfgfile=src/config
-
     : ${basepool:='base'}
     : ${livepool:='live'}
     : ${connection:='qemu:///system'}
 
-    baseos=fedora-23
     baseos=fedora-24
     basecpu=2
     basemem=2048
@@ -72,9 +68,17 @@
         --backing-chain \
         "${basepath:?}"
 
+        image: /var/lib/libvirt/images/base/fedora-24-base-20161108.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 196K
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
     #
     # Install the OS. 
-    netinst=http://mirrorservice.org/sites/download.fedora.redhat.com/pub/fedora/linux/releases/23/Server/x86_64/os
     netinst=http://mirrorservice.org/sites/download.fedora.redhat.com/pub/fedora/linux/releases/24/Server/x86_64/os
 
     virt-install \
@@ -83,25 +87,32 @@
         --memory "${basemem:?}" \
         --vcpus  "${basecpu:?}" \
         --location "${netinst:?}" \
-        --disk "vol=${basepool:?}/${basefile:?}"
+        --disk "vol=${basepool:?}/${basefile:?}" \
+        &
 
-        Minimal install
-            root password set
-            no user
-            London timezone
-            UK keyboard
-            
         BTRFS filesystem
             /boot ext4 256M
              swap swap   2G
             /     btrfs ...
 
+        Minimal install
+
+            root password set
+            No user created
+            London timezone
+            UK keyboard
+            
+
     #
     # Shutdown the vm.
+    # Need to do this twice to avoid the reboot.
     virsh \
-       --connect "${connection:?}" \
-       shutdown "${basename:?}"
+        --connect "${connection:?}" \
+        shutdown "${basename:?}"
 
+    virsh \
+        --connect "${connection:?}" \
+        shutdown "${basename:?}"
 
     #
     # Check the image file.
@@ -110,7 +121,7 @@
         --backing-chain \
         "${basepath:?}"
 
-        image: /var/lib/libvirt/images/base/fedora-24-base-20161107.qcow
+        image: /var/lib/libvirt/images/base/fedora-24-base-20161108.qcow
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
         disk size: 1.6G
@@ -120,12 +131,20 @@
             refcount bits: 16
 
     #
-    # Add our SSH key and trigger a restorecon.
+    # Get copies of our public keys.
+    wget http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.rsa.pub
+    wget http://data.metagrid.co.uk/sshkeys/stv.roe.ac.uk.rsa.pub
+    wget http://data.metagrid.co.uk/sshkeys/msh.roe.ac.uk.rsa.pub
+
+    #
+    # Add our SSH keys and trigger a restorecon.
     sudo virt-sysprep \
         --connect "${connection:?}" \
         --domain "${basename:?}" \
         --root-password random \
-        --ssh-inject root:file:/home/Zarquan/.ssh/dmr.roe.ac.uk.rsa.pub \
+        --ssh-inject root:file:dmr.roe.ac.uk.rsa.pub \
+        --ssh-inject root:file:stv.roe.ac.uk.rsa.pub \
+        --ssh-inject root:file:msh.roe.ac.uk.rsa.pub \
         --firstboot-command 'restorecon -Rv /root/.ssh'
 
 #
@@ -216,10 +235,10 @@
         --backing-chain \
         "${tmpfile:?}"
 
-        image: /tmp/tmp.rkJRXfhgOt
+        image: /tmp/tmp.oDDDEHPMUK
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
-        disk size: 788M
+        disk size: 784M
         cluster_size: 65536
         Format specific information:
             compat: 1.1
@@ -350,6 +369,13 @@ EOF
     systemctl enable docker.service
 
 #---------------------------------------------------------------------
+# Update the system.
+#[root@virtual] 
+#
+#   dnf -y update
+#   dnf clean all
+#
+#---------------------------------------------------------------------
 # Shutdown the VM.
 #[root@virtual] 
 
@@ -370,18 +396,18 @@ EOF
         image: /var/lib/libvirt/images/live/eta.qcow
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
-        disk size: 676M
+        disk size: 670M
         cluster_size: 65536
-        backing file: /var/lib/libvirt/images/base/fedora-24-base-20161107.qcow
+        backing file: /var/lib/libvirt/images/base/fedora-24-base-20161108.qcow
         backing file format: qcow2
         Format specific information:
             compat: 0.10
             refcount bits: 16
 
-        image: /var/lib/libvirt/images/base/fedora-24-base-20161107.qcow
+        image: /var/lib/libvirt/images/base/fedora-24-base-20161108.qcow
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
-        disk size: 791M
+        disk size: 787M
         cluster_size: 65536
         Format specific information:
             compat: 1.1
@@ -420,10 +446,10 @@ EOF
         --backing-chain \
         "${tmpfile:?}"
 
-        image: /tmp/tmp.IjLTT1Io7Q
+        image: /tmp/tmp.OMcSAplCsK
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
-        disk size: 799M
+        disk size: 797M
         cluster_size: 65536
         Format specific information:
             compat: 1.1
@@ -468,7 +494,7 @@ EOF
         image: /var/lib/libvirt/images/base/fedora-24-docker-20161108.qcow
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
-        disk size: 802M
+        disk size: 801M
         cluster_size: 65536
         Format specific information:
             compat: 1.1
@@ -494,7 +520,6 @@ EOF
         ${dockgzip:?} \
         root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base
 
-
 #---------------------------------------------------------------------
 # Test the image ...
 #[user@methionine] 
@@ -508,9 +533,9 @@ EOF
 
         cat /etc/fstab 
 
-            UUID=5fc74ef3-350b-4e2b-ad9b-fe64c745d850 /                       btrfs   subvol=root     0 0
-            UUID=7d71e288-8c3a-4510-9ebe-bb7cb40e0caa /boot                   ext4    defaults        1 2
-            UUID=afd3b337-652e-4e04-a7be-1cee756c7470 swap                    swap    defaults        0 0
+            UUID=c589525d-8b80-4a77-b393-0f023908f1df /                       btrfs   subvol=root     0 0
+            UUID=0c4640cd-829c-4267-9ec7-fc1f8b61f06b /boot                   ext4    defaults        1 2
+            UUID=764a9367-0a71-4cf9-8c8e-9422cab6c769 swap                    swap    defaults        0 0
 
         df -h
 
@@ -523,10 +548,6 @@ EOF
             tmpfs           497M  4.0K  497M   1% /tmp
             /dev/vda1       240M  138M   86M  62% /boot
             tmpfs           100M     0  100M   0% /run/user/0
-
-        docker --version
-        
-            Docker version 1.12.3, build 6b644ec
 
         docker info
 
@@ -555,11 +576,129 @@ EOF
             CPUs: 2
             Total Memory: 992.5 MiB
             Name: eta
-            ID: S2LF:RNS3:V2ZQ:MEXT:4VCQ:34SZ:5VK7:HAFL:DAWV:O4NJ:RGJM:JE25
+            ID: QECR:OLFT:3BLH:NZD4:72X2:QJ6M:E7NK:ALQF:K5MN:2KKJ:KLPY:X7WJ
             Docker Root Dir: /var/lib/docker
             Debug Mode (client): false
             Debug Mode (server): false
             Registry: https://index.docker.io/v1/
             Insecure Registries:
              127.0.0.0/8
+
+#---------------------------------------------------------------------
+# Install the new image.
+#[user@shep] 
+#[user@trop01] 
+#[user@trop02] 
+
+    : ${basepool:='base'}
+    : ${livepool:='live'}
+    : ${connection:='qemu:///system'}
+
+    baseos=fedora-24
+    basecpu=2
+    basemem=2048
+    nodearch=x86_64
+
+    basepool=base
+
+    docksize=16G
+    dockname=${baseos}-docker-$(date +%Y%m%d)
+    dockfile=${dockname}.qcow
+    dockgzip=${dockfile}.gz
+
+    wget "http://data.metagrid.co.uk/ischnura/base/${dockgzip:?}"
+
+    gunzip "${dockgzip:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${dockfile:?}" \
+            "${docksize:?}" \
+            --format 'qcow2'
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${dockfile:?}" \
+            "${dockfile:?}"
+
+#---------------------------------------------------------------------
+# Delete the exiting VMs.
+#[user@shep] 
+#[user@trop01] 
+#[user@trop02] 
+
+    virsh \
+        --connect "${connection:?}" \
+        list --all --state-shutoff --name |
+        tee vmlist
+
+    while read vmname
+    do
+        if [ -n "${vmname}" ]
+        then
+            echo "VM [${vmname}]"
+
+            virsh \
+                --connect "${connection:?}" \
+                undefine "${vmname:?}" \
+                --remove-all-storage
+
+        fi
+    done < vmlist
+
+#---------------------------------------------------------------------
+# Create a new VM.
+#[user@shep] 
+
+    createvm
+
+    ssh amarna
+    ssh Delild
+    ssh Araybwyn
+
+        uname -rv
+
+            4.8.6-201.fc24.x86_64 #1 SMP Thu Nov 3 14:38:57 UTC 2016
+
+        docker info
+
+            Containers: 0
+             Running: 0
+             Paused: 0
+             Stopped: 0
+            Images: 0
+            Server Version: 1.12.3
+            Storage Driver: btrfs
+             Build Version: Btrfs v4.5.2
+             Library Version: 101
+            Logging Driver: json-file
+            Cgroup Driver: cgroupfs
+            Plugins:
+             Volume: local
+             Network: bridge null host overlay
+            Swarm: inactive
+            Runtimes: runc
+            Default Runtime: runc
+            Security Options: seccomp
+            Kernel Version: 4.8.6-201.fc24.x86_64
+            Operating System: Fedora 24 (Twenty Four)
+            OSType: linux
+            Architecture: x86_64
+            CPUs: 2
+            Total Memory: 1.954 GiB
+            Name: amarna
+            ID: O7Q2:DM4F:3INM:LFYD:RQQC:3USF:4QWQ:D56Z:Z52Z:EVLD:V5DA:SBVN
+            Docker Root Dir: /var/lib/docker
+            Debug Mode (client): false
+            Debug Mode (server): false
+            Registry: https://index.docker.io/v1/
+            Insecure Registries:
+             127.0.0.0/8
+
+
+
 
