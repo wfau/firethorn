@@ -1,0 +1,155 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Set virsh configuration.
+#[user@trop01] 
+
+cat > settings << 'EOF'
+ : ${basepool:='base'}
+ : ${livepool:='live'}
+ : ${connection:='qemu:///system'}
+export basepool
+export livepool
+export connection
+EOF
+
+    chmod a+x settings
+    source settings
+
+#---------------------------------------------------------------------
+# List the current VMs.
+#[user@trop01] 
+
+    virsh \
+        --connect "${connection:?}" \
+        list --all
+
+         Id    Name                           State
+        ----------------------------------------------------
+         3     Cadelicia                      running
+         5     Delild                         running
+         6     Froeseth                       running
+
+#---------------------------------------------------------------------
+# List the networks.
+#[user@trop01] 
+
+    virsh \
+        --connect "${connection:?}" \
+        net-list \
+            --all
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         default              active     yes           yes
+
+    virsh \
+        --connect "${connection:?}" \
+        net-dumpxml \
+            default
+
+        <network connections='3' ipv6='yes'>
+          <name>default</name>
+          <uuid>98ef498d-cf1d-47a8-9894-656756f5cb92</uuid>
+          <forward mode='nat'>
+            <nat>
+              <port start='1024' end='65535'/>
+            </nat>
+          </forward>
+          <bridge name='virbr0' stp='on' delay='0'/>
+          <mac address='52:54:00:02:01:01'/>
+          <ip family='ipv4' address='192.168.201.1' netmask='255.255.255.0'>
+            <dhcp>
+              <range start='192.168.201.8' end='192.168.201.15'/>
+              <host mac='52:54:00:02:01:08' name='Delild' ip='192.168.201.8'/>
+              <host mac='52:54:00:02:01:09' name='Abecien' ip='192.168.201.9'/>
+              <host mac='52:54:00:02:01:0A' name='Saewan' ip='192.168.201.10'/>
+              <host mac='52:54:00:02:01:0B' name='Cadelicia' ip='192.168.201.11'/>
+              <host mac='52:54:00:02:01:0C' name='Froeseth' ip='192.168.201.12'/>
+              <host mac='52:54:00:02:01:0D' name='Astoalith' ip='192.168.201.13'/>
+              <host mac='52:54:00:02:01:0E' name='Erennon' ip='192.168.201.14'/>
+              <host mac='52:54:00:02:01:0F' name='Gworewia' ip='192.168.201.15'/>
+            </dhcp>
+          </ip>
+        </network>
+
+#---------------------------------------------------------------------
+# Create the bridged network.
+#[user@trop01] 
+
+cat > bridged.xml << EOF
+<network ipv6='no'>
+    <name>bridged</name>
+    <uuid/>
+    <forward mode='bridge'/>
+    <bridge name='br0'/>
+</network>
+EOF
+
+    virsh -c ${connection:?} \
+        net-define \
+            bridged.xml
+
+    virsh -c ${connection:?} \
+        net-dumpxml \
+            bridged
+
+        <network>
+          <name>bridged</name>
+          <uuid>bf792d0e-9643-483f-b5a3-d1fc11fba269</uuid>
+          <forward mode='bridge'/>
+          <bridge name='br0'/>
+        </network>
+
+    virsh -c ${connection:?} \
+        net-start \
+            bridged
+
+    virsh -c ${connection:?} \
+        net-autostart \
+            bridged
+
+#---------------------------------------------------------------------
+# Attach a bridged interface to a VM.
+#[user@trop02] 
+
+    vmname=....
+    
+    #
+    # Attach the interface.
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac '52:54:00:03:03:01' \
+            --live \
+            --config
+
+    #
+    # Check the XML.
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+

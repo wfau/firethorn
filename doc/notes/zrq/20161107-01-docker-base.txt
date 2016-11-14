@@ -653,6 +653,8 @@ EOF
 #---------------------------------------------------------------------
 # Create a new VM.
 #[user@shep] 
+#[user@trop01] 
+#[user@trop02] 
 
     createvm
 

@@ -1,0 +1,559 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# List the current interfaces.
+#[user@trop02] 
+
+    /sbin/ifconfig 
+
+        br0       Link encap:Ethernet  HWaddr 0c:c4:7a:35:12:06  
+                  inet addr:129.215.175.97  Bcast:129.215.175.255  Mask:255.255.255.0
+                  inet6 addr: fe80::ec4:7aff:fe35:1206/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:1254378 errors:0 dropped:553 overruns:0 frame:0
+                  TX packets:241820 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:0 
+                  RX bytes:1267066730 (1.1 GiB)  TX bytes:16601039 (15.8 MiB)
+
+        br1       Link encap:Ethernet  HWaddr 0c:c4:7a:35:12:07  
+                  inet addr:192.168.137.233  Bcast:192.168.137.255  Mask:255.255.255.0
+                  inet6 addr: fe80::ec4:7aff:fe35:1207/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:1391695 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:8 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:0 
+                  RX bytes:174066545 (166.0 MiB)  TX bytes:648 (648.0 B)
+
+        eth0      Link encap:Ethernet  HWaddr 0c:c4:7a:35:12:06  
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:2134262 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:241826 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:1000 
+                  RX bytes:1380759256 (1.2 GiB)  TX bytes:16601435 (15.8 MiB)
+
+        eth1      Link encap:Ethernet  HWaddr 0c:c4:7a:35:12:07  
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:1392203 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:8 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:1000 
+                  RX bytes:193782951 (184.8 MiB)  TX bytes:648 (648.0 B)
+
+        lo        Link encap:Local Loopback  
+                  inet addr:127.0.0.1  Mask:255.0.0.0
+                  inet6 addr: ::1/128 Scope:Host
+                  UP LOOPBACK RUNNING  MTU:65536  Metric:1
+                  RX packets:1 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:1 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:0 
+                  RX bytes:88 (88.0 B)  TX bytes:88 (88.0 B)
+
+        virbr0    Link encap:Ethernet  HWaddr 52:54:00:02:02:01  
+                  inet addr:192.168.202.1  Bcast:192.168.202.255  Mask:255.255.255.0
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:35020 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:40954 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:0 
+                  RX bytes:1940234 (1.8 MiB)  TX bytes:140022648 (133.5 MiB)
+
+        vnet0     Link encap:Ethernet  HWaddr fe:54:00:02:02:08  
+                  inet6 addr: fe80::fc54:ff:fe02:208/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:16094 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:21939 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:500 
+                  RX bytes:1124520 (1.0 MiB)  TX bytes:70026847 (66.7 MiB)
+
+        vnet1     Link encap:Ethernet  HWaddr fe:54:00:02:02:09  
+                  inet6 addr: fe80::fc54:ff:fe02:209/64 Scope:Link
+                  UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+                  RX packets:18926 errors:0 dropped:0 overruns:0 frame:0
+                  TX packets:24968 errors:0 dropped:0 overruns:0 carrier:0
+                  collisions:0 txqueuelen:500 
+                  RX bytes:1305994 (1.2 MiB)  TX bytes:70306592 (67.0 MiB)
+
+#---------------------------------------------------------------------
+# List the current VMs.
+#[user@trop02] 
+
+cat > settings << 'EOF'
+ : ${basepool:='base'}
+ : ${livepool:='live'}
+ : ${connection:='qemu:///system'}
+export basepool
+export livepool
+export connection
+EOF
+
+chmod a+x settings
+source settings
+
+
+    virsh \
+        --connect "${connection:?}" \
+        list --all
+
+         Id    Name                           State
+        ----------------------------------------------------
+         2     Araybwyn                       running
+         -     Lothigometh                    shut off
+
+#---------------------------------------------------------------------
+# List the default network.
+#[user@trop02] 
+
+    virsh \
+        --connect "${connection:?}" \
+        net-list \
+            --all
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         default              active     yes           yes
+
+    virsh \
+        --connect "${connection:?}" \
+        net-dumpxml \
+            default
+
+        <network connections='1' ipv6='yes'>
+          <name>default</name>
+          <uuid>cf1c4ff6-440e-4b57-87e5-ed8887991b60</uuid>
+          <forward mode='nat'>
+            <nat>
+              <port start='1024' end='65535'/>
+            </nat>
+          </forward>
+          <bridge name='virbr0' stp='on' delay='0'/>
+          <mac address='52:54:00:02:02:01'/>
+          <ip family='ipv4' address='192.168.202.1' netmask='255.255.255.0'>
+            <dhcp>
+              <range start='192.168.202.8' end='192.168.202.15'/>
+              <host mac='52:54:00:02:02:08' name='Araybwyn' ip='192.168.202.8'/>
+              <host mac='52:54:00:02:02:09' name='Lothigometh' ip='192.168.202.9'/>
+              <host mac='52:54:00:02:02:0A' name='Ulov' ip='192.168.202.10'/>
+              <host mac='52:54:00:02:02:0B' name='Dwiema' ip='192.168.202.11'/>
+              <host mac='52:54:00:02:02:0C' name='Ibalehar' ip='192.168.202.12'/>
+              <host mac='52:54:00:02:02:0D' name='Eterathiel' ip='192.168.202.13'/>
+              <host mac='52:54:00:02:02:0E' name='Siamond' ip='192.168.202.14'/>
+              <host mac='52:54:00:02:02:0F' name='Acilamwen' ip='192.168.202.15'/>
+            </dhcp>
+          </ip>
+        </network>
+
+#---------------------------------------------------------------------
+# Create the bridged network.
+#[user@trop02] 
+
+cat > bridged.xml << EOF
+<network ipv6='no'>
+    <name>bridged</name>
+    <uuid/>
+    <forward mode='bridge'/>
+    <bridge name='br0'/>
+</network>
+EOF
+
+    virsh -c ${connection:?} \
+        net-define \
+            bridged.xml
+
+    virsh -c ${connection:?} \
+        net-dumpxml \
+            bridged
+
+        <network>
+          <name>bridged</name>
+          <uuid>4bbf0225-7378-439f-bee4-78ef6fb0cbe5</uuid>
+          <forward mode='bridge'/>
+          <bridge name='br0'/>
+        </network>
+
+    virsh -c ${connection:?} \
+        net-start \
+            bridged
+
+    virsh -c ${connection:?} \
+        net-autostart \
+            bridged
+
+#---------------------------------------------------------------------
+# Dump the current VM definition.
+#[user@trop02] 
+
+    vmname=Araybwyn
+
+    virsh -c ${connection:?} \
+        start \
+            "${vmname:?}"
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+
+        <domain type='kvm' id='2'>
+          <name>Araybwyn</name>
+          <uuid>20af5864-44e6-4e02-a10e-640f6675a022</uuid>
+          <memory unit='KiB'>2097152</memory>
+          <currentMemory unit='KiB'>2097152</currentMemory>
+          <vcpu placement='static'>2</vcpu>
+          <resource>
+            <partition>/machine</partition>
+          </resource>
+          <os>
+            <type arch='x86_64' machine='pc-1.1'>hvm</type>
+            <boot dev='hd'/>
+          </os>
+          <features>
+            <acpi/>
+            <apic/>
+            <pae/>
+          </features>
+          <clock offset='utc'/>
+          <on_poweroff>destroy</on_poweroff>
+          <on_reboot>restart</on_reboot>
+          <on_crash>restart</on_crash>
+          <devices>
+            <emulator>/usr/bin/kvm</emulator>
+            <disk type='file' device='disk'>
+              <driver name='qemu' type='qcow2'/>
+              <source file='/var/lib/libvirt/images/live/Araybwyn.qcow'/>
+              <backingStore type='file' index='1'>
+                <format type='qcow2'/>
+                <source file='/var/lib/libvirt/images/base/fedora-24-docker-20161108.qcow'/>
+                <backingStore/>
+              </backingStore>
+              <target dev='vda' bus='virtio'/>
+              <alias name='virtio-disk0'/>
+              <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+            </disk>
+            <controller type='usb' index='0'>
+              <alias name='usb0'/>
+              <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
+            </controller>
+            <controller type='pci' index='0' model='pci-root'>
+              <alias name='pci.0'/>
+            </controller>
+            <interface type='network'>
+              <mac address='52:54:00:02:02:08'/>
+              <source network='default'/>
+              <target dev='vnet0'/>
+              <model type='virtio'/>
+              <alias name='net0'/>
+              <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+            </interface>
+            <serial type='pty'>
+              <source path='/dev/pts/1'/>
+              <target port='0'/>
+              <alias name='serial0'/>
+            </serial>
+            <console type='pty' tty='/dev/pts/1'>
+              <source path='/dev/pts/1'/>
+              <target type='serial' port='0'/>
+              <alias name='serial0'/>
+            </console>
+            <input type='mouse' bus='ps2'/>
+            <input type='keyboard' bus='ps2'/>
+            <graphics type='vnc' port='5900' autoport='yes' listen='127.0.0.1'>
+              <listen type='address' address='127.0.0.1'/>
+            </graphics>
+            <video>
+              <model type='cirrus' vram='9216' heads='1'/>
+              <alias name='video0'/>
+              <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+            </video>
+            <memballoon model='virtio'>
+              <alias name='balloon0'/>
+              <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+            </memballoon>
+          </devices>
+        </domain>
+
+#---------------------------------------------------------------------
+# Attach a bridged interface to the VM.
+#[user@trop02] 
+    
+    #
+    # Attach the interface.
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac '52:54:00:03:03:01' \
+            --live \
+            --config
+
+    #
+    # Check the XML.
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+
+            <interface type='network'>
+              <mac address='52:54:00:02:02:08'/>
+              <source network='default'/>
+              <target dev='vnet0'/>
+              <model type='virtio'/>
+              <alias name='net0'/>
+              <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+            </interface>
+
+            <interface type='bridge'>
+              <mac address='52:54:00:03:03:01'/>
+              <source bridge='br0'/>
+              <target dev='vnet1'/>
+              <model type='virtio'/>
+              <alias name='net1'/>
+              <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+            </interface>
+
+#---------------------------------------------------------------------
+# Configure the VM.
+#[root@virtual] 
+
+    #
+    # Check the config.
+    ifconfig
+
+        ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet6 fe80::772e:31dd:67fa:4b2d  prefixlen 64  scopeid 0x20<link>
+            ether 52:54:00:03:03:01  txqueuelen 1000  (Ethernet)
+            RX packets 75  bytes 5148 (5.0 KiB)
+            RX errors 0  dropped 0  overruns 0  frame 0
+            TX packets 24  bytes 3984 (3.8 KiB)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+    #
+    # Edit the config.
+    vi /etc/sysconfig/network-scripts/ifcfg-ens5
+
+        NAME="ens5"
+        DEVICE="ens5"
+        ONBOOT=yes
+        TYPE=Ethernet
+        BOOTPROTO=static
+        IPV4INIT=yes
+        IPV6INIT=yes
+        HWADDR=52:54:00:03:03:01
+        NETWORK=129.215.175.0
+        NETMASK=255.255.255.0
+        GATEWAY=129.215.175.126
+        IPADDR=129.215.175.100
+
+        #PEERDNS=no
+        #DNS1=195.194.120.1
+        #DNS2=195.194.120.2
+        #dns-search roe.ac.uk
+
+    ifdown ens5
+
+        Device 'ens5' successfully disconnected.
+
+    ifup ens5
+
+        Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/23)
+
+    #
+    # Check the config.
+    ifconfig
+
+        ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+            inet6 fe80::5054:ff:fe03:301  prefixlen 64  scopeid 0x20<link>
+            ether 52:54:00:03:03:01  txqueuelen 1000  (Ethernet)
+            RX packets 2140  bytes 142449 (139.1 KiB)
+            RX errors 0  dropped 2  overruns 0  frame 0
+            TX packets 265  bytes 45722 (44.6 KiB)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+#---------------------------------------------------------------------
+# Start VMs after boot.
+#[root@trop02]
+
+    virsh -c ${connection:?} \
+        autostart \
+            Araybwyn
+
+#---------------------------------------------------------------------
+# Insert the routes manually, or just wait for them to figure it out ...
+#[root@trop02]
+
+    #ip route add 129.215.175.100 dev vnet1
+    #ip route
+
+        default via 129.215.175.126 dev br0 
+        129.215.175.0/24 dev br0  proto kernel  scope link  src 129.215.175.97 
+        129.215.175.100 dev vnet1  scope link 
+        192.168.137.0/24 dev br1  proto kernel  scope link  src 192.168.137.233 
+        192.168.202.0/24 dev virbr0  proto kernel  scope link  src 192.168.202.1 
+
+#[root@trop01]
+
+    #ip route add 129.215.175.100 via 129.215.175.97
+    #ip route
+
+        default via 129.215.175.126 dev br0 
+        129.215.175.0/24 dev br0  proto kernel  scope link  src 129.215.175.96 
+        129.215.175.100 via 129.215.175.97 dev br0 
+        172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1 
+        192.168.137.0/24 dev br1  proto kernel  scope link  src 192.168.137.228 
+        192.168.201.0/24 dev virbr0  proto kernel  scope link  src 192.168.201.1 
+
+#---------------------------------------------------------------------
+# Need to prevent bridged traffic from being filtered.
+#[root@trop02]
+
+    #
+    # http://wiki.libvirt.org/page/Net.bridge.bridge-nf-call_and_sysctl.conf
+    
+    # Deprecated, see below
+    # echo "0" > /proc/sys/net/bridge/bridge-nf-call-iptables
+
+    # http://ebtables.netfilter.org/misc/brnf-faq.html
+    # http://unix.stackexchange.com/questions/136918/why-does-my-firewall-iptables-interfere-in-my-bridge-brctl
+
+    #
+    # Default settings
+    sysctl -a | grep bridge-nf
+
+        net.bridge.bridge-nf-call-arptables = 1
+        net.bridge.bridge-nf-call-ip6tables = 1
+        net.bridge.bridge-nf-call-iptables = 1
+        net.bridge.bridge-nf-filter-pppoe-tagged = 0
+        net.bridge.bridge-nf-filter-vlan-tagged = 0
+        net.bridge.bridge-nf-pass-vlan-input-dev = 0
+
+    #
+    # Disable filtering of bridge traffic.
+    sysctl -w net.bridge.bridge-nf-call-arptables=0
+    sysctl -w net.bridge.bridge-nf-call-iptables=0
+    sysctl -w net.bridge.bridge-nf-call-ip6tables=0
+
+    #
+    # Reboot and check settings - not permanent.
+    reboot
+    sysctl -a | grep bridge-nf
+
+        net.bridge.bridge-nf-call-arptables = 1
+        net.bridge.bridge-nf-call-ip6tables = 1
+        net.bridge.bridge-nf-call-iptables = 1
+        net.bridge.bridge-nf-filter-pppoe-tagged = 0
+        net.bridge.bridge-nf-filter-vlan-tagged = 0
+        net.bridge.bridge-nf-pass-vlan-input-dev = 0
+
+
+#---------------------------------------------------------------------
+# Use /etc/sysctl.conf to make changes permanent.
+# http://askubuntu.com/questions/311053/how-to-make-ip-forwarding-permanent
+#[root@trop02]
+
+cat >> /etc/sysctl.conf << 'EOF'
+###################################################################
+# Netfilter bridge settings.
+#
+# http://wiki.libvirt.org/page/Net.bridge.bridge-nf-call_and_sysctl.conf
+# http://ebtables.netfilter.org/misc/brnf-faq.html
+# http://unix.stackexchange.com/questions/136918/why-does-my-firewall-iptables-interfere-in-my-bridge-brctl
+net.bridge.bridge-nf-call-iptables  = 0
+net.bridge.bridge-nf-call-arptables = 0
+net.bridge.bridge-nf-call-ip6tables = 0
+EOF
+
+    #
+    # Load the settings from /etc/sysctl.conf
+    # (in theory, this should be done at boot)
+    sysctl -p
+
+    # In practice, this doesn't work.
+    # .....
+
+#---------------------------------------------------------------------
+# Side note - these params are not set in Fedora
+#[root@desktop]
+
+    # These params are not set in Fedora 23.
+    # As far as I can tell, bridge traffic is not restriced by iptables
+    sysctl -a | grep bridge-nf
+
+        (none)
+
+
+
+
+    # These params are set in CentOS 6.8.
+    # As far as I can tell, bridge traffic is not restriced by iptables
+    # As far as I know, this is out of the box config.
+    sysctl -a | grep bridge-nf
+
+        net.bridge.bridge-nf-call-arptables = 0
+        net.bridge.bridge-nf-call-iptables = 0
+        net.bridge.bridge-nf-call-ip6tables = 0
+        net.bridge.bridge-nf-filter-vlan-tagged = 0
+        net.bridge.bridge-nf-filter-pppoe-tagged = 0
+
+
+
+#---------------------------------------------------------------------
+# Side note - lots of dropped UDP packets 
+#[root@trop02]
+
+    journalctl -f | grep 'kernel: drop'
+
+
+        Nov 10 15:26:19 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:b9:48:d6:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Nov 10 15:26:19 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:b9:58:53:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Nov 10 15:26:19 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:25:90:a8:71:db:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Nov 10 15:26:20 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:9c:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Nov 10 15:26:20 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:79:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Nov 10 15:26:20 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:1a:5a:dc:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Nov 10 15:26:21 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:25:90:2b:bf:66:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Nov 10 15:26:21 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:af:33:20:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Nov 10 15:26:21 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:89:fc:15:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Nov 10 15:26:21 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:79:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Nov 10 15:26:21 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:9c:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Nov 10 15:26:21 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:79:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Nov 10 15:26:21 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:9c:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Nov 10 15:26:21 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:6e:03:aa:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Nov 10 15:26:22 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:25:90:fe:a8:71:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Nov 10 15:26:22 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+        Nov 10 15:26:22 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:b9:48:d6:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Nov 10 15:26:22 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:25:90:a8:71:db:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Nov 10 15:26:23 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:1a:5a:dc:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Nov 10 15:26:23 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:79:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Nov 10 15:26:23 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:9c:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Nov 10 15:26:24 trop02 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:25:90:2b:bf:66:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Nov 10 15:26:24 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:af:33:20:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Nov 10 15:26:24 trop02 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:6e:05:60:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+
+
+
+
+
+
+
+
+
+
+
+
