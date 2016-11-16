@@ -42,7 +42,7 @@
 
     WFCAM
     
-        Most recent is UDF release
+        Most recent is UDS (Ultra Deep Survey) release
         Most uses new format UCDs, but detection table uses old format
 
         Most of Multi-frame uses new format, but some blanks (???) and some old format.
