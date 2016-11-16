@@ -1,0 +1,306 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Disable filtering of bridge traffic.
+#[root@trop01] 
+
+    sysctl -w net.bridge.bridge-nf-call-arptables=0
+    sysctl -w net.bridge.bridge-nf-call-iptables=0
+    sysctl -w net.bridge.bridge-nf-call-ip6tables=0
+
+#---------------------------------------------------------------------
+# Allow ssh and http traffic from the VM addresses.
+#[root@trop01] 
+
+    vi /var/lib/iptables/active 
+
+    +   # SSH and HTTP Access for local VMs
+    +   [0:0] -A INPUT -s 129.215.175.100/255.255.255.252 -p tcp -m tcp --dport 22 -j ACCEPT
+    +   [0:0] -A INPUT -s 129.215.175.100/255.255.255.252 -p tcp -m tcp --dport 80 -j ACCEPT
+    +   [0:0] -A INPUT -s 192.168.201.0/255.255.255.0 -p tcp -m tcp --dport 22 -j ACCEPT
+    +   [0:0] -A INPUT -s 192.168.201.0/255.255.255.0 -p tcp -m tcp --dport 80 -j ACCEPT
+
+    /sbin/iptables-restore /var/lib/iptables/active
+
+#---------------------------------------------------------------------
+# Set virsh configuration.
+#[user@trop01] 
+
+cat > settings << 'EOF'
+ : ${basepool:='base'}
+ : ${livepool:='live'}
+ : ${connection:='qemu:///system'}
+export basepool
+export livepool
+export connection
+EOF
+
+    chmod a+x settings
+    source settings
+
+#---------------------------------------------------------------------
+# List the current VMs.
+#[user@trop01] 
+
+    source "${HOME:?}/settings"
+    virsh \
+        --connect "${connection:?}" \
+        list --all
+
+         Id    Name                           State
+        ----------------------------------------------------
+         3     Cadelicia                      running
+         5     Delild                         running
+         6     Froeseth                       running
+
+#---------------------------------------------------------------------
+# List the networks.
+#[user@trop01] 
+
+    source "${HOME:?}/settings"
+    virsh \
+        --connect "${connection:?}" \
+        net-list \
+            --all
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         bridged              active     yes           yes
+         default              active     yes           yes
+
+#---------------------------------------------------------------------
+# Create the routed network.
+#[user@trop01] 
+
+cat > routed.xml << EOF
+<network>
+  <name>routed</name>
+  <uuid/>
+  <forward mode='route'/>
+  <bridge name='virbr1' stp='on' delay='2'/>
+  <mac address='52:54:00:04:00:01'/>
+  <ip family='ipv4' address='129.215.175.100' netmask='255.255.255.252'>
+    <dhcp>
+      <range start='129.215.175.101' end='129.215.175.103'/>
+      <host mac='52:54:00:04:00:01' name='Delild'  ip='129.215.175.101'/>
+      <host mac='52:54:00:04:00:02' name='Abecien' ip='129.215.175.102'/>
+      <host mac='52:54:00:04:00:03' name='Saewan'  ip='129.215.175.103'/>
+    </dhcp>
+  </ip>
+</network>
+EOF
+
+    virsh -c ${connection:?} \
+        net-define \
+            routed.xml
+
+    virsh -c ${connection:?} \
+        net-dumpxml \
+            routed
+
+            <network>
+              <name>routed</name>
+              <uuid>6cc337ae-8f44-4031-aa32-7b77cccc4daf</uuid>
+              <forward mode='route'/>
+              <bridge name='virbr1' stp='on' delay='2'/>
+              <mac address='52:54:00:04:00:01'/>
+              <ip family='ipv4' address='129.215.175.100' netmask='255.255.255.252'>
+                <dhcp>
+                  <range start='129.215.175.101' end='129.215.175.103'/>
+                  <host mac='52:54:00:04:00:01' name='Delild' ip='129.215.175.101'/>
+                  <host mac='52:54:00:04:00:02' name='Abecien' ip='129.215.175.102'/>
+                  <host mac='52:54:00:04:00:03' name='Saewan' ip='129.215.175.103'/>
+                </dhcp>
+              </ip>
+            </network>
+
+    virsh -c ${connection:?} \
+        net-start \
+            routed
+
+#    virsh -c ${connection:?} \
+#        net-autostart \
+#            routed
+#
+
+#---------------------------------------------------------------------
+# Create a new VM.
+#[user@trop02] 
+
+    createvm
+
+#---------------------------------------------------------------------
+# Check the VM interfaces.
+#[root@virtual] 
+
+    ifconfig
+
+        docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+            inet 172.17.0.1  netmask 255.255.0.0  broadcast 0.0.0.0
+            ether 02:42:dc:3a:79:56  txqueuelen 0  (Ethernet)
+            RX packets 0  bytes 0 (0.0 B)
+            RX errors 0  dropped 0  overruns 0  frame 0
+            TX packets 0  bytes 0 (0.0 B)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+        ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 192.168.201.8  netmask 255.255.255.0  broadcast 192.168.201.255
+            inet6 fe80::5054:ff:fe02:108  prefixlen 64  scopeid 0x20<link>
+            ether 52:54:00:02:01:08  txqueuelen 1000  (Ethernet)
+            RX packets 99  bytes 12598 (12.3 KiB)
+            RX errors 0  dropped 6  overruns 0  frame 0
+            TX packets 56  bytes 7938 (7.7 KiB)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    
+#---------------------------------------------------------------------
+# Attach a routed interface to the VM.
+#[user@trop02] 
+
+    vmname=Delild
+
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'routed' \
+            --model 'virtio' \
+            --mac '52:54:00:04:00:02' \
+            --live \
+            --config
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+
+            <domain type='kvm' id='8'>
+              <name>Delild</name>
+              <uuid>817b6a07-b06a-49b2-822e-efd692e2c966</uuid>
+              ....
+              <devices>
+                ....
+                <interface type='network'>
+                  <mac address='52:54:00:02:01:08'/>
+                  <source network='default'/>
+                  <target dev='vnet0'/>
+                  <model type='virtio'/>
+                  <alias name='net0'/>
+                  <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+                </interface>
+                <interface type='network'>
+                  <mac address='52:54:00:04:00:02'/>
+                  <source network='routed'/>
+                  <target dev='vnet3'/>
+                  <model type='virtio'/>
+                  <alias name='net1'/>
+                  <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+                </interface>
+                ....
+              </devices>
+            </domain>
+
+#---------------------------------------------------------------------
+# Check the VM interfaces.
+#[root@virtual] 
+
+    ifconfig
+
+        docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+            inet 172.17.0.1  netmask 255.255.0.0  broadcast 0.0.0.0
+            ether 02:42:dc:3a:79:56  txqueuelen 0  (Ethernet)
+            RX packets 0  bytes 0 (0.0 B)
+            RX errors 0  dropped 0  overruns 0  frame 0
+            TX packets 0  bytes 0 (0.0 B)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+        ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 192.168.201.8  netmask 255.255.255.0  broadcast 192.168.201.255
+            inet6 fe80::5054:ff:fe02:108  prefixlen 64  scopeid 0x20<link>
+            ether 52:54:00:02:01:08  txqueuelen 1000  (Ethernet)
+            RX packets 356  bytes 33337 (32.5 KiB)
+            RX errors 0  dropped 6  overruns 0  frame 0
+            TX packets 172  bytes 25211 (24.6 KiB)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+        ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 129.215.175.102  netmask 255.255.255.252  broadcast 129.215.175.103
+            inet6 fe80::eb41:3334:eff0:b197  prefixlen 64  scopeid 0x20<link>
+            ether 52:54:00:04:00:02  txqueuelen 1000  (Ethernet)
+            RX packets 75  bytes 4646 (4.5 KiB)
+            RX errors 0  dropped 0  overruns 0  frame 0
+            TX packets 10  bytes 1589 (1.5 KiB)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+        lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+            inet 127.0.0.1  netmask 255.0.0.0
+            inet6 ::1  prefixlen 128  scopeid 0x10<host>
+            loop  txqueuelen 1  (Local Loopback)
+            RX packets 32  bytes 2960 (2.8 KiB)
+            RX errors 0  dropped 0  overruns 0  frame 0
+            TX packets 32  bytes 2960 (2.8 KiB)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+#---------------------------------------------------------------------
+# Check access from vm to external.
+#[root@virtual] 
+
+    # vm -> trop01 - PASS
+    ssh dmr@129.215.175.96
+
+    # vm -> trop02 - FAIL
+    ssh dmr@129.215.175.97
+
+    # vm -> data - FAIL
+    ssh Zarquan@data.metagrid.co.uk
+
+
+#---------------------------------------------------------------------
+# Check access from external systems.
+#[user@trop01] 
+
+
+    Multiple fails, including things that used to work
+    
+
+
+
+#---------------------------------------------------------------------
+# Stop stuff ....
+#[user@trop01] 
+
+    virsh -c ${connection:?} \
+        destroy \
+            ${vmname}
+
+    virsh -c ${connection:?} \
+        net-destroy \
+            routed
+
+    virsh -c ${connection:?} \
+        undefine \
+            ${vmname}
+
+    virsh -c ${connection:?} \
+        net-undefine \
+            routed
+

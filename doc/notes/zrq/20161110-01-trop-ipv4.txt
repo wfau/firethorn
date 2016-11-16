@@ -131,7 +131,7 @@ EOF
 
 #---------------------------------------------------------------------
 # Attach a bridged interface to a VM.
-#[user@trop02] 
+#[user@trop01] 
 
     vmname=....
     
