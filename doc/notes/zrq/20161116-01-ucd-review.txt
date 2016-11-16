@@ -1,0 +1,77 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    http://horus.roe.ac.uk/vsa/www/vsa_browser.html
+    http://ssa.roe.ac.uk/www/ssa_browser.html
+    http://horus.roe.ac.uk/wsa/
+    http://osa.roe.ac.uk/
+
+    Looking at UCDs and metadata on WFAU catalogs with Nick.
+
+
+
+        Convention - add a .? or ;? to a UCD if not sure.
+        Flags it for review later.
+
+        Firethorn will truncate ? before publishing.
+
+
+    Vista
+    
+        Uses new UCDs, but some are missing
+
+    WFCAM
+    
+        Most recent is UDF release
+        Most uses new format UCDs, but detection table uses old format
+
+        Most of Multi-frame uses new format, but some blanks (???) and some old format.
+
+        Source table and detection table using all old format ....
+            Equivalent tables in VSA have already been done, so we can copy from them.
+            Fairly easy to do, using values from tables already done.
+
+        Curation table - using new format, but several blanks.
+
+    VSA
+
+        Quite a few blanks, especially hierarchical ESA keywords.
+
+        Things like temperature of the mirror .. what UCDs do we use ?
+
+        Some mantion units (deg K) in the text but not in the units column.
+        
+    Akari, Eros, 
+    
+        ra, dec and cartesian HTM are filled in, rest are blank
+
+    External catalogs
+
+        Quite a few, but reasonably obvious.
+        Automated compare with other sources, CDS etc.
+
+        Deep K band mag, and K band at epoch 1 and epoch 2 .. all have the same UCD ?
+
+
+
+
