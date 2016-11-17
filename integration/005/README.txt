@@ -20,6 +20,5 @@
 #
 #
 
-
-    Add Python tests .....
+PYROTHORN MOVED TO: https://github.com/stvoutsin/pyrothorn
 
