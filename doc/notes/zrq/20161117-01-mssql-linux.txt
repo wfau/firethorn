@@ -1,0 +1,243 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Create a new VM.
+#[user@trop02] 
+
+    createvm 
+
+        ....
+        
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-24-docker-20161108.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-24-docker-20161108.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+#---------------------------------------------------------------------
+# Login to the VM.
+#[user@trop02]
+
+    ssh Araybwyn
+
+#---------------------------------------------------------------------
+# Create a CentOS container.
+#[root@virtual]
+
+    docker run \
+        -it \
+        --name mssql \
+        --expose 1433 \
+        centos:7 \
+            bash
+
+#---------------------------------------------------------------------
+# Install and run SQLServer.
+#[root@container]
+
+    #
+    # Install the Microsoft yum repo.
+    curl \
+        --output /etc/yum.repos.d/mssql-server.repo \
+        https://packages.microsoft.com/config/rhel/7/mssql-server.repo
+        
+    #
+    # Install SQL Server.
+    yum install -y mssql-server
+    
+    #
+    # Run the configuration script.
+    /opt/mssql/bin/sqlservr-setup
+
+        /opt/mssql/bin/sqlservr-setup: line 38: pidof: command not found
+        Microsoft(R) SQL Server(R) Setup
+
+        You can abort setup at anytime by pressing Ctrl-C. Start this program
+        with the --help option for information about running it in unattended
+        mode.
+
+        Please enter a password for the system administrator (SA) account: 
+        The specified password does not meet SQL Server password policy requirements
+        because it is not complex enough. The password must be at least 8 characters
+        long and contain characters from three of the following five sets: uppercase
+        letters, lowercase letters, numbers, non-alphanumeric characters, or unicode
+        characters that are categorized as alphabetic characters, but are not
+        uppercase or lowercase.
+
+        Please enter a password for the system administrator (SA) account: 
+        Please confirm the password for the system administrator (SA) account: 
+
+        91-EightyOne
+
+        Setting system administrator (SA) account password...
+        /opt/mssql/bin/sqlservr-setup: line 191: sudo: command not found
+        Microsoft(R) SQL Server(R) setup failed with error code 127. 
+        Please check the setup log in /var/opt/mssql/log/setup-20161117-174339.log
+        for more information.
+
+
+    #
+    # Install the things that the SQLServer rpm missed.
+
+        yum install -y sudo
+        yum install -y sysvinit-tools
+
+    #
+    # Run the configuration script.
+    /opt/mssql/bin/sqlservr-setup
+
+        Please enter a password for the system administrator (SA) account: 
+        Please confirm the password for the system administrator (SA) account: 
+
+        sqlservr: This program requires a machine with at least 3250 megabytes of memory.
+        Microsoft(R) SQL Server(R) setup failed with error code 1. 
+        Please check the setup log in /var/opt/mssql/log/setup-20161117-174822.log
+
+
+#---------------------------------------------------------------------
+#---------------------------------------------------------------------
+# Create a DigitalOcean VM.
+#[user@laptop]
+
+    ssh root@138.68.149.152
+
+#---------------------------------------------------------------------
+# Install and run SQLServer.
+#[root@ocean]
+
+    #
+    # Configure the firewall.
+    systemctl start  firewalld
+    systemctl enable firewalld
+    firewall-cmd --permanent --add-service=ssh
+    firewall-cmd --permanent --add-port=1433/tcp
+
+    #
+    # Install the things that the SQLServer rpm missed.
+    yum install -y sudo
+    yum install -y sysvinit-tools
+
+    #
+    # Install the Microsoft mssql repo.
+    curl \
+        --output /etc/yum.repos.d/mssql-server.repo \
+        https://packages.microsoft.com/config/rhel/7/mssql-server.repo
+        
+    #
+    # Install SQL Server.
+    yum install -y mssql-server
+
+    #
+    # Run the configuration script.
+    /opt/mssql/bin/sqlservr-setup
+
+        Please enter a password for the system administrator (SA) account: 
+            91-EightyOne
+
+        Please confirm the password for the system administrator (SA) account: 
+            91-EightyOne
+
+        Setting system administrator (SA) account password...
+
+        Do you wish to start the SQL Server service now? [y/n]: y
+        Do you wish to enable SQL Server to start on boot? [y/n]: y
+        Created symlink from /etc/systemd/system/multi-user.target.wants/mssql-server.service to /usr/lib/systemd/system/mssql-server.service.
+        Created symlink from /etc/systemd/system/multi-user.target.wants/mssql-server-telemetry.service to /usr/lib/systemd/system/mssql-server-telemetry.service.
+
+        Setup completed successfully.
+
+#---------------------------------------------------------------------
+# Install and run client tools.
+#[root@ocean]
+
+    #
+    # Install the Microsoft prod repo.
+    curl \
+        --output /etc/yum.repos.d/msprod.repo \
+        https://packages.microsoft.com/config/rhel/7/prod.repo
+
+    yum install mssql-tools
+
+
+    #
+    # Connect to localhost.
+    sqlcmd -S localhost -U SA -P '91-EightyOne'
+    
+    #
+    # List the local databases.
+    SELECT Name from sys.Databases;
+    GO
+
+    #
+    # Create a test database.
+    CREATE DATABASE testdb;
+    GO
+
+    USE testdb;
+    GO
+
+    #
+    # Copied from cosmo ...
+    CREATE TABLE alpha_source
+        (
+        id   INTEGER NOT NULL IDENTITY PRIMARY KEY,
+        ra   DOUBLE PRECISION NOT NULL,
+        decl DOUBLE PRECISION NOT NULL
+        );
+    GO
+    
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  0.0) ;
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  1.0) ;
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  2.0) ;
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  3.0) ;
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  4.0) ;
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  5.0) ;
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  6.0) ;
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  7.0) ;
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  8.0) ;
+    INSERT INTO alpha_source (ra, decl) VALUES (0.0,  9.0) ;
+    GO
+
+
+    --
+    -- Select the current database.
+    SELECT DB_NAME() ;
+
+    --
+    -- Test modulo with -ve numbers.
+    SELECT
+        id,
+        decl,
+        CAST( decl AS INTEGER) %  5,
+        CAST(-decl AS INTEGER) %  5,
+        CAST( decl AS INTEGER) % -5,
+        CAST(-decl AS INTEGER) % -5
+    FROM
+        alpha_source
+    WHERE
+        id >= 0
+    AND
+        id <= 10
+    ;
+
+

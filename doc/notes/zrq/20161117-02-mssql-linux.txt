@@ -1,0 +1,113 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Create a new VM.
+#[user@trop02] 
+
+    createvm 
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-24-docker-20161108.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-24-docker-20161108.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+#---------------------------------------------------------------------
+# Login to the VM are run SQLServer in Docker.
+# https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-docker
+#[root@vm] 
+
+    #
+    # Allow 1433 through the firewall.
+    firewall-cmd --permanent --add-port=1433/tcp
+
+    #
+    # Run the SQLServer container.
+    docker run \
+        --name sqlserver \
+        --env 'ACCEPT_EULA=Y' \
+        --env 'SA_PASSWORD=91.2-EightyOnePointFive' \
+        -p 1433:1433 \
+        -d \
+        microsoft/mssql-server-linux
+
+    docker ps -a
+
+        CONTAINER ID        IMAGE                          COMMAND                  CREATED             STATUS                     PORTS               NAMES
+        21c08ff6c914        microsoft/mssql-server-linux   "/bin/sh -c /opt/mssq"   11 seconds ago      Exited (1) 9 seconds ago                       sqlserver
+
+    docker logs sqlserver
+
+        ERROR: This machine must have at least 3.25 gigabytes of memory to install Microsoft(R) SQL Server(R).
+
+    exit
+        
+#---------------------------------------------------------------------
+# Increase the available memory.
+#[user@trop02] 
+
+    source ${HOME}/ischnura.settings
+    virsh \
+        -c ${connection}
+
+        list
+
+             Id    Name                           State
+            ----------------------------------------------------
+             4     Araybwyn                       running
+
+        shutdown Araybwyn
+
+        edit Araybwyn
+
+            <domain type='kvm'>
+              <name>Araybwyn</name>
+              <uuid>0029009a-9285-402f-91a6-4677eb287961</uuid>
+        -     <memory unit='KiB'>2097152</memory>
+        +     <memory unit='GiB'>4</memory>
+        -     <currentMemory unit='KiB'>2097152</currentMemory>
+        +     <currentMemory unit='GiB'>4</currentMemory>
+              ....
+            </domain>
+
+        start Araybwyn
+
+#---------------------------------------------------------------------
+# Login to the VM and run SQLServer in Docker.
+# https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-docker
+#[root@vm] 
+
+    #
+    # Run the SQLServer container.
+    docker run \
+        --name sqlserver \
+        --env 'ACCEPT_EULA=Y' \
+        --env 'SA_PASSWORD=91.2-EightyOnePointFive' \
+        -p 1433:1433 \
+        -d \
+        microsoft/mssql-server-linux
+
+
+
+
+
