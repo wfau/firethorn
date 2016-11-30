@@ -1,0 +1,235 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # This might avoid the virt-install reboot problem.
+    # https://linux.die.net/man/1/virt-install
+    virt-install \
+        .... \
+        --noreboot
+
+    #
+    # SELinux and virt-sysprep
+    # https://www.redhat.com/archives/libguestfs/2014-January/msg00183.html
+    # https://www.redhat.com/archives/libguestfs/2014-January/msg00183.html
+
+    #
+    # After our initial virt-sysprep, allow a reboot with 
+    # https://www.redhat.com/archives/libguestfs/2014-January/msg00195.html
+    # https://github.com/libguestfs/libguestfs/commit/20a4bfde9628cfeb8bea441cab7dcc94843b34e3    
+
+    #
+    # Setting SElinux to 'permissine' might solve the initial issue.
+    # firstboot.service: Failed at step EXEC spawning /usr/lib/virt-sysprep/firstboot.sh: Permission denied
+        
+        https://abi-laboratory.pro/tracker/changelog/libguestfs/1.24.9/log.html
+
+        commit c4be51d08e7d8c54ba9134483390bfd6591a8ad5
+        Author: Richard W.M. Jones <rjones@redhat.com>
+        Date:   Tue Jan 21 17:15:11 2014 +0000
+
+            builder: Add tip for how to relabel SELinux guest at build time.
+            
+            Thanks: purpleidea/James.
+            (cherry picked from commit 20a4bfde9628cfeb8bea441cab7dcc94843b34e3)    
+
+
+        https://github.com/tiran/pki-vagans/blob/master/vagrantbuilder/boxbuilder#L170
+        """boot machine once to run the selinux relabelling
+
+    #
+    # SELinux autorelabel is a separate (minimal) boot target.
+    # http://www.mail-archive.com/devel@lists.fedoraproject.org/msg102421.html
+
+
+
+
+    #
+    # Create our initial (btrfs) image
+    virt-install \
+        .... \
+        --noreboot
+
+    #
+    # Remove the root password.
+    virt-sysprep \
+        ....
+        --root-password random \
+
+    #
+    # Fix the kernel issue (CVE-2016-5195).
+
+        dnf update -y kernel
+
+    #
+    # Reboot and relabel
+    # https://github.com/libguestfs/libguestfs/commit/20a4bfde9628cfeb8bea441cab7dcc94843b34e3
+    # https://www.redhat.com/archives/libguestfs/2014-January/msg00183.html
+
+
+
+
+    #
+    # Install Docker engine.
+
+        dnf -y install docker-engine
+
+    #
+    # Reboot and relabel
+    # https://github.com/libguestfs/libguestfs/commit/20a4bfde9628cfeb8bea441cab7dcc94843b34e3
+    # https://www.redhat.com/archives/libguestfs/2014-January/msg00183.html
+
+        touch '/.autorelabel'
+
+        qemu-system-x86_64 \
+            -no-reboot \
+            -nographic \
+            -machine accel=kvm:tcg \
+            -cpu host \
+            -m 2048 \
+            -serial stdio
+            -drive file=disk.img,format=raw,if=virtio \
+
+        
+    #
+    # Install SSH keys.
+    virt-sysprep \
+        ....
+        --ssh-inject root:file:dmr.roe.ac.uk.rsa.pub \
+        --ssh-inject root:file:stv.roe.ac.uk.rsa.pub \
+
+    #
+    # Set the SElinux attribute.
+    # https://linux.die.net/man/1/getfattr
+    # https://linux.die.net/man/1/setfattr
+
+        setfattr \
+            --name 'security.selinux' \
+            --value 'unconfined_u:object_r:ssh_home_t:s0' \
+            '/root/.ssh/authorized_keys'    
+
+    #
+    # Set root password.
+    virt-sysprep \
+        ....
+        --root-password "password:${rootpass:?}" \
+
+    #
+    # Add the public interface.
+    virsh -c ${connection:?} \
+        attach-interface \
+        
+    #
+    # Set public IP address.
+    virt-customize \
+        ....
+
+        /etc/sysconfig/network-scripts/ifcfg-ens5
+
+            NAME="ens5"
+            DEVICE="ens5"
+            ONBOOT=yes
+            TYPE=Ethernet
+            BOOTPROTO=static
+            IPV4INIT=yes
+            IPV6INIT=yes
+            HWADDR=52:54:00:03:03:01
+            NETWORK=129.215.175.0
+            NETMASK=255.255.255.0
+            GATEWAY=129.215.175.126
+            IPADDR=129.215.175.100
+        
+
+    --run-command 'CMD+ARGS'
+        setfattr \
+            --name 'security.selinux' \
+            --value 'unconfined_u:object_r:net_conf_t:s0' \
+            '..../ifcfg-ens5'    
+
+
+
+    #
+    # Create our 'Stevedore' user account.
+
+
+    #
+    # Because we are using Fedora, we could use a kickstart file to create the initial image.
+    # http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html
+
+    clearpart \
+        --all \
+        --disklabel 'gpt'
+
+    reqpart \
+        --add-boot
+
+    partition \
+        swap \
+        --size 1024 \
+        --ondisk sda
+
+    partition \
+        btrfs.01 \
+s        --grow \
+        --ondisk sda
+
+    btrfs none \
+        --data=0 \
+        --metadata=1 \
+        --label=f17 \
+        btrfs.01
+
+btrfs / --subvol --name=root LABEL=f17
+btrfs /home --subvol --name=home f17
+        
+
+    #
+    # Links 
+
+    Virt-builder users and passwords
+    http://libguestfs.org/virt-builder.1.html#users-and-passwords
+
+    Virt-install
+    https://linux.die.net/man/1/virt-install
+
+    Avoiding SELinux relabelling, virt-builder & virt-sysprep
+    https://www.redhat.com/archives/libguestfs/2014-January/msg00183.html
+
+    Extended attributes
+    https://linux.die.net/man/1/setfattr
+    https://linux.die.net/man/5/attr
+
+    Kickstart partitioning    
+    http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html#id41
+    
+    GUID Partition Table
+    https://en.wikipedia.org/wiki/GUID_Partition_Table
+
+
+
+    Add a second NIC for a libvirt guest
+    https://kashyapc.fedorapeople.org/virt/add-network-card-in-guest.txt
+
+    Stevedore
+    https://en.wikipedia.org/wiki/Stevedore
+    
+

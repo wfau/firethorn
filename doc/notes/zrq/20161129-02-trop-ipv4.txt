@@ -1,0 +1,273 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Prevent bridge traffic being filtered.
+# Haven't figured out how to make this persitent yet.
+#[root@trop01] 
+
+    sysctl -w net.bridge.bridge-nf-call-arptables=0
+    sysctl -w net.bridge.bridge-nf-call-iptables=0
+    sysctl -w net.bridge.bridge-nf-call-ip6tables=0
+
+#---------------------------------------------------------------------
+# Create our libvirt settings.
+#[user@trop01] 
+
+cat > "${HOME}/libvirt.settings" << 'EOF'
+ : ${basepool:='base'}
+ : ${livepool:='live'}
+ : ${connection:='qemu:///system'}
+export basepool
+export livepool
+export connection
+EOF
+
+#---------------------------------------------------------------------
+# List the current VMs.
+#[user@trop01] 
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        list --all
+
+         Id    Name                           State
+        ----------------------------------------------------
+         3     Abecien                        running
+         6     Delild                         running
+         7     Cadelicia                      running
+         -     Froeseth                       shut off
+
+#---------------------------------------------------------------------
+# List the current networks.
+#[user@trop01] 
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        net-list \
+            --all
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         bridged              active     yes           yes
+         default              active     yes           yes
+
+#---------------------------------------------------------------------
+# Check the bridged network.
+#[user@trop01] 
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        net-dumpxml \
+            bridged
+
+        <network>
+          <name>bridged</name>
+          <uuid>bf792d0e-9643-483f-b5a3-d1fc11fba269</uuid>
+          <forward mode='bridge'/>
+          <bridge name='br0'/>
+        </network>
+
+#---------------------------------------------------------------------
+# Create a new virtual machine.
+#[user@trop01] 
+
+    createvm
+
+        INFO : Node name [Froeseth]
+        INFO : Base name [fedora-24-docker-20161108.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-24-docker-20161108.qcow]
+        INFO : Disc name [Froeseth.qcow]
+        INFO : Disc size [16GiB]
+
+#---------------------------------------------------------------------
+# Attach a bridged interface to the VM.
+#[user@trop01] 
+
+    source "${HOME}/libvirt.settings"
+
+    vmname=Froeseth
+    vmmac='52:54:00:03:03:01'
+
+    vmname=Astoalith
+    vmmac='52:54:00:03:03:02'
+
+    vmname=Araybwyn
+    vmmac='52:54:00:03:04:01'
+    
+    #
+    # Attach the interface.
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${vmmac:?}" \
+            --live \
+            --config
+
+    #
+    # Check the XML.
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+
+        ...
+        <interface type='network'>
+          <mac address='52:54:00:02:01:0c'/>
+          <source network='default'/>
+          <target dev='vnet3'/>
+          <model type='virtio'/>
+          <alias name='net0'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+        </interface>
+
+        ...
+        <interface type='bridge'>
+          <mac address='52:54:00:03:03:01'/>
+          <source bridge='br0'/>
+          <target dev='vnet4'/>
+          <model type='virtio'/>
+          <alias name='net1'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+        </interface>
+
+#---------------------------------------------------------------------
+# Configure the VM.
+#[user@trop01] 
+
+    ssh "${vmname:?}"
+
+#---------------------------------------------------------------------
+# Check the interface config.
+#[root@virtual] 
+
+    ifconfig ens5
+
+        ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+                inet6 fe80::b521:4050:5905:2e63  prefixlen 64  scopeid 0x20<link>
+                ether 52:54:00:03:03:01  txqueuelen 1000  (Ethernet)
+                RX packets 163  bytes 10873 (10.6 KiB)
+                RX errors 0  dropped 0  overruns 0  frame 0
+                TX packets 52  bytes 9336 (9.1 KiB)
+                TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+#---------------------------------------------------------------------
+# Edit the interface config.
+#[root@virtual] 
+
+    pushd /etc/sysconfig/network-scripts
+
+        cat > ifcfg-ens5 << 'EOF'
+
+NAME="ens5"
+DEVICE="ens5"
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=52:54:00:03:03:01
+NETWORK=129.215.175.0
+NETMASK=255.255.255.0
+GATEWAY=129.215.175.126
+IPADDR=129.215.175.100
+
+EOF
+
+#        setfattr \
+#           --name 'security.selinux' \
+#           --value 'system_u:object_r:net_conf_t:s0' \
+#           'ifcfg-ens5'    
+
+        chcon \
+            --user system_u \
+            --role object_r \
+            --type net_conf_t \
+            'ifcfg-ens5'    
+    
+    popd
+
+#---------------------------------------------------------------------
+# Restart the interface.
+#[root@virtual] 
+
+    ifdown ens5
+
+        Device 'ens5' successfully disconnected.
+
+    ifup ens5
+
+        Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/23)
+
+#---------------------------------------------------------------------
+# Check the interface config.
+#[root@virtual] 
+
+    ifconfig ens5
+
+        ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+            inet6 fe80::5054:ff:fe03:301  prefixlen 64  scopeid 0x20<link>
+            ether 52:54:00:03:03:01  txqueuelen 1000  (Ethernet)
+            RX packets 766  bytes 51263 (50.0 KiB)
+            RX errors 0  dropped 1  overruns 0  frame 0
+            TX packets 118  bytes 20212 (19.7 KiB)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+#---------------------------------------------------------------------
+# Run our test web server.
+#[root@virtual] 
+
+    docker run \
+        -d \
+        -p 80:80 \
+        yrvafhom/docker-demo
+
+#---------------------------------------------------------------------
+# Check we can access it from outside.
+#[user@anywhere] 
+
+    curl --head http://froeseth.metagrid.xyz/
+
+    curl --head http://erennon.metagrid.xyz/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
