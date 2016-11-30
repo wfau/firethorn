@@ -32,6 +32,10 @@
 # Allow ssh and http traffic from the VM addresses.
 #[root@trop01] 
 
+#
+# We don't need both of these ..
+#
+
     vi /var/lib/iptables/active 
 
     +   # SSH and HTTP Access for local VMs
