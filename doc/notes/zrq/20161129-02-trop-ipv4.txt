@@ -119,6 +119,9 @@ EOF
 
     vmname=Araybwyn
     vmmac='52:54:00:03:04:01'
+
+    vmname=Lothigometh
+    vmmac='52:54:00:03:04:02'
     
     #
     # Attach the interface.
@@ -256,16 +259,7 @@ EOF
 
     curl --head http://froeseth.metagrid.xyz/
 
-    curl --head http://erennon.metagrid.xyz/
-
-
-
-
-
-
-
-
-
+    curl --head http://siamond.metagrid.xyz/
 
 
 

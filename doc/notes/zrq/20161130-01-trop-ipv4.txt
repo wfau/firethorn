@@ -30,6 +30,19 @@
 
 
 #---------------------------------------------------------------------
+# Check the bridge traffic routing.
+#[user@trop01] 
+
+    /sbin/sysctl -a | grep bridge-nf
+
+        net.bridge.bridge-nf-call-arptables = 0
+        net.bridge.bridge-nf-call-ip6tables = 0
+        net.bridge.bridge-nf-call-iptables = 0
+        net.bridge.bridge-nf-filter-pppoe-tagged = 0
+        net.bridge.bridge-nf-filter-vlan-tagged = 0
+        net.bridge.bridge-nf-pass-vlan-input-dev = 0
+
+#---------------------------------------------------------------------
 # List the current VMs.
 #[user@trop01] 
 
@@ -48,35 +61,82 @@
          9     Astoalith                      running
 
 #---------------------------------------------------------------------
-# Test login to each VM.
+# List the current networks.
 #[user@trop01] 
 
-    ssh Abecien
-    ssh Delild
-    ssh Cadelicia
-    ssh Froeseth
-    ssh Astoalith
+    source "${HOME}/libvirt.settings"
 
-        ssh: connect to host abecien port 22: No route to host
+    virsh \
+        --connect "${connection:?}" \
+        net-list \
+            --all
 
-    ssh -v Abecien
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         bridged              active     yes           yes
+         default              active     yes           yes
 
-        OpenSSH_6.7p1 Debian-5+deb8u3, OpenSSL 1.0.1t  3 May 2016
-        debug1: Reading configuration data /home/dmr/.ssh/config
-        debug1: /home/dmr/.ssh/config line 10: Applying options for Abecien
-        debug1: Reading configuration data /etc/ssh/ssh_config
-        debug1: /etc/ssh/ssh_config line 19: Applying options for *
-        debug1: Connecting to abecien [192.168.201.9] port 22.
-        debug1: connect to address 192.168.201.9 port 22: No route to host
-        ssh: connect to host abecien port 22: No route to host
+#---------------------------------------------------------------------
+# Check the default network.
+#[user@trop01] 
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        net-dumpxml \
+            default
+
+        <network connections='5' ipv6='yes'>
+          <name>default</name>
+          <uuid>98ef498d-cf1d-47a8-9894-656756f5cb92</uuid>
+          <forward mode='nat'>
+            <nat>
+              <port start='1024' end='65535'/>
+            </nat>
+          </forward>
+          <bridge name='virbr0' stp='on' delay='0'/>
+          <mac address='52:54:00:02:01:01'/>
+          <ip family='ipv4' address='192.168.201.1' netmask='255.255.255.0'>
+            <dhcp>
+              <range start='192.168.201.8' end='192.168.201.15'/>
+              <host mac='52:54:00:02:01:08' name='Delild' ip='192.168.201.8'/>
+              <host mac='52:54:00:02:01:09' name='Abecien' ip='192.168.201.9'/>
+              <host mac='52:54:00:02:01:0A' name='Saewan' ip='192.168.201.10'/>
+              <host mac='52:54:00:02:01:0B' name='Cadelicia' ip='192.168.201.11'/>
+              <host mac='52:54:00:02:01:0C' name='Froeseth' ip='192.168.201.12'/>
+              <host mac='52:54:00:02:01:0D' name='Astoalith' ip='192.168.201.13'/>
+              <host mac='52:54:00:02:01:0E' name='Erennon' ip='192.168.201.14'/>
+              <host mac='52:54:00:02:01:0F' name='Gworewia' ip='192.168.201.15'/>
+            </dhcp>
+          </ip>
+        </network>
+
+#---------------------------------------------------------------------
+# Check the bridged network.
+#[user@trop01] 
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        net-dumpxml \
+            bridged
+
+        <network connections='2'>
+          <name>bridged</name>
+          <uuid>bf792d0e-9643-483f-b5a3-d1fc11fba269</uuid>
+          <forward mode='bridge'/>
+          <bridge name='br0'/>
+        </network>
 
 #---------------------------------------------------------------------
 # Check local routing.
 #[user@trop01] 
 
-    ip route get 192.168.201.9
+    ip route get 192.168.201.8
 
-        192.168.201.9 dev virbr0  src 192.168.201.1 
+        192.168.201.8 dev virbr0  src 192.168.201.1 
 
     ip neigh
 
@@ -92,6 +152,627 @@
         129.215.175.117 dev br0 lladdr 00:15:17:de:44:51 STALE
         129.215.175.102 dev br0 lladdr 52:54:00:03:04:01 STALE
         192.168.201.12 dev virbr0  FAILED
+	
+#---------------------------------------------------------------------
+# Check external routing.
+#[user@trop01] 
+
+    ip route get 129.215.175.100
+        129.215.175.100 dev br0  src 129.215.175.96 
+        cache 
+
+    ip route get 129.215.175.101
+        129.215.175.101 dev br0  src 129.215.175.96 
+        cache 
+
+    ip route get 129.215.175.102
+        129.215.175.102 dev br0  src 129.215.175.96 
+        cache 
+
+    ip route get 129.215.175.103
+        129.215.175.103 dev br0  src 129.215.175.96 
+        cache 
+
+#---------------------------------------------------------------------
+# Test local login.
+#[user@trop01] 
+
+    #
+    # Local only VMs.
+    ssh Delild
+    ssh Abecien
+    ssh Cadelicia
+
+    #
+    # Dual interface VMs.
+    ssh Froeseth
+    ssh Astoalith
+
+
+
+    ssh -v Delild
+        ....
+        debug1: Connecting to delild [192.168.201.8] port 22.
+        debug1: connect to address 192.168.201.8 port 22: No route to host
+        ssh: connect to host delild port 22: No route to host
+
+    ssh -v Abecien
+        ....
+        debug1: Connecting to abecien [192.168.201.9] port 22.
+        debug1: connect to address 192.168.201.9 port 22: No route to host
+        ssh: connect to host abecien port 22: No route to host
+
+
+
+    ssh -v Froeseth
+        ....
+        debug1: Connecting to froeseth [192.168.201.12] port 22.
+        debug1: connect to address 192.168.201.12 port 22: No route to host
+        ssh: connect to host froeseth port 22: No route to host
+
+    ssh -v Astoalith
+        ....
+        debug1: Connecting to astoalith [192.168.201.13] port 22.
+        debug1: connect to address 192.168.201.13 port 22: No route to host
+        ssh: connect to host astoalith port 22: No route to host
+
+
+#---------------------------------------------------------------------
+# Check external DNS records.
+#[user@trop01] 
+
+    #
+    # trop01 dual interface VMs.
+    froeseth.metagrid.xyz   129.215.175.100 <-- Froeseth
+    astoalith.metagrid.xyz  129.215.175.101 <-- Astoalith (incomplete)
+
+    #
+    # trop02 dual interface VMs.
+    siamond.metagrid.xyz    129.215.175.102 <-- Araybwyn
+    acilamwen.metagrid.xyz   129.215.175.103 <-- Lothigometh
+
+
+#---------------------------------------------------------------------
+# Test external login.
+#[user@trop01] 
+
+    #
+    # trop01 dual interface VMs.
+
+    ssh -v root@froeseth.metagrid.xyz
+        ....
+        debug1: Connecting to froeseth.metagrid.xyz [129.215.175.100] port 22.
+        debug1: Connection established.
+
+    ssh -v root@astoalith.metagrid.xyz
+        ....
+        debug1: Connecting to astoalith.metagrid.xyz [129.215.175.101] port 22.
+        debug1: connect to address 129.215.175.101 port 22: No route to host
+        ssh: connect to host astoalith.metagrid.xyz port 22: No route to host
+
+    #
+    # trop02 dual interface VMs.
+
+    ssh -v root@siamond.metagrid.xyz
+        ....
+        debug1: Connecting to siamond.metagrid.xyz [129.215.175.102] port 22.
+        debug1: Connection established.
+
+
+    ssh -v root@acilamwen.metagrid.xyz
+        ....
+        debug1: Connecting to acilamwen.metagrid.xyz [129.215.175.103] port 22.
+        debug1: Connection established.
+
+#---------------------------------------------------------------------
+# Run Apache container on each VM.
+#[user@trop01] 
+
+    ssh root@froeseth.metagrid.xyz
+    ssh root@astoalith.metagrid.xyz <-- fail (unable to login)
+    ssh root@siamond.metagrid.xyz
+    ssh root@acilamwen.metagrid.xyz
+
+        docker run \
+            -d \
+            -p 80:80 \
+            yrvafhom/docker-demo
+
+#---------------------------------------------------------------------
+# Check we can access via HTTP.
+#[user@linode] 
+
+    curl --head http://froeseth.metagrid.xyz/
+        ....
+        HTTP/1.1 200 OK
+
+    curl --head http://astoalith.metagrid.xyz/
+    
+        Apache not installed
+
+    curl --head http://siamond.metagrid.xyz/
+        ....
+        HTTP/1.1 200 OK
+
+    curl --head http://acilamwen.metagrid.xyz/
+        ....
+        HTTP/1.1 200 OK
+        # Works after re-booting the VM.
+
+        
+#---------------------------------------------------------------------
+# Log traffic.
+#[root@trop02]
+
+    apt-get update
+    apt-get install tcpdump
+    
+    #
+    # Filter for SSH
+    tcpdump 'port 22'
+
+    #
+    # Filter for DHCP requests
+    tcpdump 'udp[247:4] = 0x63350101'
+    tcpdump '((port 67 or port 68) and (udp[8:1] = 0x1))'
+    tcpdump '(port 67 or port 68)'
+
+
+    # Filter out SSH and DHCP
+    tcpdump \
+        --interface any \
+        '(port not 22) and (port not 67) and (port not 68)'
+
+
+#---------------------------------------------------------------------
+# Debugging ...
+#[user@trop01]
+
+    # Unreachable via local address.
+    ssh Delild
+    ssh Abecien
+    ssh Cadelicia
+
+    # Unreachable via local address.
+    ssh Froeseth
+
+    # Reachable via external address.
+    ssh root@froeseth.metagrid.xyz
+
+    # Outbound network not working.
+    ssh root@froeseth.metagrid.xyz
+        curl --head http://data.metagrid.co.uk/
+        curl: (6) Could not resolve host: data.metagrid.co.uk
+    
+    # Unreachable via local address.
+    ssh Astoalith
+
+    # External address not configured.
+    ssh root@astoalith.metagrid.xyz
+
+#---------------------------------------------------------------------
+# Debugging ...
+#[user@trop02]
+
+    # Reachable via local address.
+    ssh Araybwyn
+    ssh Lothigometh
+
+    # Reachable via local address.
+    curl --head http://araybwyn/
+    curl --head http://lothigometh/
+
+    # Reachable via external address.
+    ssh root@siamond.metagrid.xyz
+    ssh root@acilamwen.metagrid.xyz
+
+    # Reachable via local address.
+    curl --head http://siamond.metagrid.xyz/
+    curl --head http://acilamwen.metagrid.xyz/
+
+    # Outbound network working.
+    ssh Araybwyn
+        curl --head http://data.metagrid.co.uk/
+    ssh Lothigometh
+        curl --head http://data.metagrid.co.uk/
+
+
+#---------------------------------------------------------------------
+# Delete existing viertual machines.
+#[user@trop01]
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        list --all
+
+         Id    Name                           State
+        ----------------------------------------------------
+         3     Abecien                        running
+         7     Cadelicia                      running
+         8     Froeseth                       running
+         9     Astoalith                      running
+         10    Delild                         running
+
+    virsh \
+        --connect "${connection:?}" \
+        destroy \
+
+        Abecien
+        Cadelicia
+        Froeseth
+        Astoalith
+        Delild
+
+    virsh \
+        --connect "${connection:?}" \
+        undefine \
+
+        Abecien
+        Cadelicia
+        Froeseth
+        Astoalith
+        Delild
+
+#---------------------------------------------------------------------
+# Stop the virtual networks.
+#[user@trop01]
+
+    virsh \
+        --connect "${connection:?}" \
+        net-list \
+            --all
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         bridged              active     yes           yes
+         default              active     yes           yes
+
+    virsh \
+        --connect "${connection:?}" \
+        net-destroy \
+            bridged
+
+    virsh \
+        --connect "${connection:?}" \
+        net-destroy \
+            default
+
+    virsh \
+        --connect "${connection:?}" \
+        net-dumpxml \
+            bridged
+
+        <network>
+          <name>bridged</name>
+          <uuid>bf792d0e-9643-483f-b5a3-d1fc11fba269</uuid>
+          <forward mode='bridge'/>
+          <bridge name='br0'/>
+        </network>
+
+    virsh \
+        --connect "${connection:?}" \
+        net-dumpxml \
+            default
+
+        <network ipv6='yes'>
+          <name>default</name>
+          <uuid>98ef498d-cf1d-47a8-9894-656756f5cb92</uuid>
+          <forward mode='nat'>
+            <nat>
+              <port start='1024' end='65535'/>
+            </nat>
+          </forward>
+          <bridge name='virbr0' stp='on' delay='0'/>
+          <mac address='52:54:00:02:01:01'/>
+          <ip family='ipv4' address='192.168.201.1' netmask='255.255.255.0'>
+            <dhcp>
+              <range start='192.168.201.8' end='192.168.201.15'/>
+              <host mac='52:54:00:02:01:08' name='Delild' ip='192.168.201.8'/>
+              <host mac='52:54:00:02:01:09' name='Abecien' ip='192.168.201.9'/>
+              <host mac='52:54:00:02:01:0A' name='Saewan' ip='192.168.201.10'/>
+              <host mac='52:54:00:02:01:0B' name='Cadelicia' ip='192.168.201.11'/>
+              <host mac='52:54:00:02:01:0C' name='Froeseth' ip='192.168.201.12'/>
+              <host mac='52:54:00:02:01:0D' name='Astoalith' ip='192.168.201.13'/>
+              <host mac='52:54:00:02:01:0E' name='Erennon' ip='192.168.201.14'/>
+              <host mac='52:54:00:02:01:0F' name='Gworewia' ip='192.168.201.15'/>
+            </dhcp>
+          </ip>
+        </network>
+
+#---------------------------------------------------------------------
+# Start the default network.
+#[user@trop01]
+
+    virsh \
+        --connect "${connection:?}" \
+        net-start \
+            default
+
+#---------------------------------------------------------------------
+# Start the bridged network.
+#[user@trop01]
+
+    virsh \
+        --connect "${connection:?}" \
+        net-start \
+            bridged
+
+#---------------------------------------------------------------------
+# Create a virtual machine.
+#[user@trop01]
+
+    createvm
+
+        INFO : Node name [Froeseth]
+        INFO : Base name [fedora-24-docker-20161108.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-24-docker-20161108.qcow]
+        INFO : Disc name [Froeseth.qcow]
+        INFO : Disc size [16GiB]
+
+
+#---------------------------------------------------------------------
+#[user@trop01]
+
+    vmname=Froeseth
+    vmmac='52:54:00:03:03:01'
+    vmipv4='129.215.175.100'
+
+    vmname=Astoalith
+    vmmac='52:54:00:03:03:02'
+    vmipv4='129.215.175.101'
+
+#---------------------------------------------------------------------
+#[user@trop02]
+
+    vmname=Siamond
+    vmmac='52:54:00:03:04:03'
+    vmipv4='129.215.175.102'
+
+    vmname=Acilamwen
+    vmmac='52:54:00:03:04:04'
+    vmipv4='129.215.175.103'
+
+#---------------------------------------------------------------------
+# Login and run Apache.
+#[user@trop01]
+
+    ssh "${vmname:?}"
+
+        docker run \
+            -d \
+            -p 80:80 \
+            yrvafhom/docker-demo
+
+        exit
+        
+#---------------------------------------------------------------------
+# Test the local connection.
+#[user@trop01]
+
+    curl --head "http://${vmname:?}/"
+
+#---------------------------------------------------------------------
+# Attach a bridged interface to the VM.
+#[user@trop01] 
+
+    source "${HOME}/libvirt.settings"
+    
+    #
+    # Attach the interface.
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${vmmac:?}" \
+            --live \
+            --config
+
+    #
+    # Check the XML.
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+
+#---------------------------------------------------------------------
+# Configure the VM.
+#[user@trop01] 
+
+    ssh "${vmname:?}"
+
+#---------------------------------------------------------------------
+# Edit the interface config.
+#[root@virtual] 
+
+        pushd /etc/sysconfig/network-scripts
+
+            cat > ifcfg-ens5 << 'EOF'
+
+NAME="ens5"
+DEVICE="ens5"
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=52:54:00:03:04:04
+NETWORK=129.215.175.0
+NETMASK=255.255.255.0
+GATEWAY=129.215.175.126
+IPADDR=129.215.175.103
+
+EOF
+
+#            setfattr \
+#               --name 'security.selinux' \
+#               --value 'system_u:object_r:net_conf_t:s0' \
+#               'ifcfg-ens5'    
+
+            chcon \
+                --user system_u \
+                --role object_r \
+                --type net_conf_t \
+                'ifcfg-ens5'    
+    
+        popd
+
+#---------------------------------------------------------------------
+# Restart the interface.
+#[root@virtual] 
+
+        ifdown ens5
+
+            Device 'ens5' successfully disconnected.
+
+        ifup ens5
+
+            Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/23)
+
+#---------------------------------------------------------------------
+# Check the interface config.
+#[root@virtual] 
+
+        ifconfig ens5
+
+            ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+                inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+                inet6 fe80::5054:ff:fe03:301  prefixlen 64  scopeid 0x20<link>
+                ether 52:54:00:03:03:01  txqueuelen 1000  (Ethernet)
+                RX packets 766  bytes 51263 (50.0 KiB)
+                RX errors 0  dropped 1  overruns 0  frame 0
+                TX packets 118  bytes 20212 (19.7 KiB)
+                TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+        exit
+
+#---------------------------------------------------------------------
+#
+
+    trop01
+
+        froeseth    129.215.175.100
+        astoalith   129.215.175.101
+        erennon     
+        gworewia    
+
+    trop02
+
+        ibalehar    
+        eterathiel  
+        siamond     129.215.175.102
+        acilamwen   129.215.175.103
+
+#---------------------------------------------------------------------
+# Test external connection.
+#[user@trop01]
+#[user@trop02]
+#[user@shep]
+#[user@djer]
+#[user@fenrir]
+#[user@linode]
+#[user@desktop]
+
+    vmname=froeseth     [.....xx]
+    vmname=astoalith    [.....xx]
+
+    vmname=siamond      [.....xx]
+    vmname=acilamwen    [.....xx]
+
+    curl --head "http://${vmname:?}.metagrid.xyz/"
+
+#---------------------------------------------------------------------
+# Reboot one guest on each host.
+
+    vmname=Froeseth
+    vmname=Siamond
+
+    ssh "${vmname:?}" 'reboot'
+    ssh "${vmname:?}" 'docker run -d -p 80:80 yrvafhom/docker-demo'
+
+#---------------------------------------------------------------------
+# Test external connection.
+#[user@trop01]
+#[user@trop02]
+#[user@shep]
+#[user@djer]
+#[user@fenrir]
+#[user@linode]
+#[user@desktop]
+
+    vmname=froeseth     [.......]
+    vmname=astoalith    [.....xx]
+
+    vmname=siamond      [.......]
+    vmname=acilamwen    [.....xx]
+
+    curl --head "http://${vmname:?}.metagrid.xyz/"
+
+#---------------------------------------------------------------------
+# Test local connection.
+#[user@trop01]
+#[user@trop02]
+
+    vmname=froeseth     [.x]
+    vmname=astoalith    [.x]
+
+    vmname=siamond      [x.]
+    vmname=acilamwen    [x.]
+
+    curl --head "http://${vmname:?}/"
+
+
+
+Two VMs on trop-01
+    curl --head 'http://froeseth/'
+    curl --head 'http://astoalith/'
+
+Two VMs on trop-02
+    curl --head 'http://siamond/'
+    curl --head 'http://acilamwen/'
+
+Two VMs on trop-01 have external addresses
+    curl --head 'http://froeseth.metagrid.xyz/'     [.]
+    curl --head 'http://astoalith.metagrid.xyz/'    [x]
+
+Two VMs on trop-02 have external addresses
+    curl --head 'http://siamond.metagrid.xyz/'      [.]
+    curl --head 'http://acilamwen.metagrid.xyz/'    [x]
+
+#---------------------------------------------------------------------
+# Reboot the other guest on each host.
+
+    vmname=Astoalith
+    vmname=Acilamwen
+
+    ssh "${vmname:?}" 'reboot'
+    ssh "${vmname:?}" 'docker run -d -p 80:80 yrvafhom/docker-demo'
+
+
+#---------------------------------------------------------------------
+# Test external connection.
+#[user@trop01]
+#[user@trop02]
+#[user@shep]
+#[user@djer]
+#[user@fenrir]
+#[user@linode]
+#[user@desktop]
+
+    vmname=froeseth     [.......]
+    vmname=astoalith    [.......]
+
+    vmname=siamond      [.......]
+    vmname=acilamwen    [.......]
+
+    curl --head "http://${vmname:?}.metagrid.xyz/"
+
+    #
+    # All reachable from inside and outside.
+
+
 
 
 
