@@ -31,7 +31,7 @@
 
 #---------------------------------------------------------------------
 # Check the bridge traffic routing.
-#[user@trop01] 
+#[trop@trop01] 
 
     /sbin/sysctl -a | grep bridge-nf
 
@@ -223,13 +223,13 @@
 
     #
     # trop01 dual interface VMs.
-    froeseth.metagrid.xyz   129.215.175.100 <-- Froeseth
-    astoalith.metagrid.xyz  129.215.175.101 <-- Astoalith (incomplete)
+    froeseth.metagrid.xyz   192.168.201.12  129.215.175.100 <-- Froeseth
+    astoalith.metagrid.xyz  192.168.201.13  129.215.175.101 <-- Astoalith (incomplete)
 
     #
     # trop02 dual interface VMs.
-    siamond.metagrid.xyz    129.215.175.102 <-- Araybwyn
-    acilamwen.metagrid.xyz   129.215.175.103 <-- Lothigometh
+    siamond.metagrid.xyz    192.168.202.14  129.215.175.102 <-- Araybwyn
+    acilamwen.metagrid.xyz  192.168.202.15  129.215.175.103 <-- Lothigometh
 
 
 #---------------------------------------------------------------------

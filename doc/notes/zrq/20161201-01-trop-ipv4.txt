@@ -1,0 +1,621 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Working config ..
+#[root@trop01]
+
+    date
+
+        Thu  1 Dec 11:48:49 GMT 2016
+
+    ip neigh
+
+        192.168.137.21 dev br1 lladdr a0:36:9f:43:30:64 STALE
+        192.168.137.1 dev br1 lladdr a0:36:9f:47:f9:4a STALE
+        192.168.201.12 dev virbr0 lladdr 52:54:00:02:01:0c REACHABLE
+        129.215.175.101 dev br0 lladdr 52:54:00:03:03:02 STALE
+        192.168.201.13 dev virbr0 lladdr 52:54:00:02:01:0d STALE
+        192.168.201.8 dev virbr0  FAILED
+        129.215.175.126 dev br0 lladdr 3c:08:f6:21:6f:00 DELAY
+        129.215.175.117 dev br0 lladdr 00:15:17:de:44:51 STALE
+        129.215.175.102 dev br0 lladdr 52:54:00:03:04:03 STALE
+        192.168.137.24 dev br1 lladdr a0:36:9f:43:30:06 STALE
+        192.168.201.14 dev virbr0  FAILED
+        129.215.175.103 dev br0 lladdr 52:54:00:03:04:04 STALE
+        129.215.175.100 dev br0 lladdr 52:54:00:03:03:01 STALE
+
+    ip route
+
+        default via 129.215.175.126 dev br0 
+        129.215.175.0/24 dev br0  proto kernel  scope link  src 129.215.175.96 
+        172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1 
+        192.168.137.0/24 dev br1  proto kernel  scope link  src 192.168.137.228 
+        192.168.201.0/24 dev virbr0  proto kernel  scope link  src 192.168.201.1 
+
+#---------------------------------------------------------------------
+# Logging traffic ..
+#[root@trop01]
+
+    # Listen on the virtual bridge
+    tcpdump \
+        --interface virbr0
+
+
+    # Listen on all interfaces
+    # Filter out SSH and DHCP
+    tcpdump \
+        --interface any \
+        '(port not 22) and (port not 67) and (port not 68)'
+
+#---------------------------------------------------------------------
+# Logging dropped packets ..
+#[root@trop01]
+
+    journalctl -f
+
+        Dec 01 13:18:04 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f0:d0:08:00 SRC=129.215.175.1 DST=129.215.175.255 LEN=78 TOS=0x00 PREC=0x00 TTL=128 ID=5680 PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Dec 01 13:18:05 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:6e:05:7f:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Dec 01 13:18:05 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:25:90:2b:bf:66:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Dec 01 13:18:05 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:ad:9f:34:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:18:05 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f0:d0:08:00 SRC=129.215.175.1 DST=129.215.175.255 LEN=78 TOS=0x00 PREC=0x00 TTL=128 ID=5682 PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Dec 01 13:18:05 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:1a:5a:dc:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:18:06 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:b9:48:d6:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Dec 01 13:18:06 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f0:d0:08:00 SRC=129.215.175.1 DST=129.215.175.255 LEN=78 TOS=0x00 PREC=0x00 TTL=128 ID=5683 PROTO=UDP SPT=137 DPT=137 LEN=58 
+        Dec 01 13:18:06 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:b9:58:53:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Dec 01 13:18:06 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:25:90:a8:71:db:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Dec 01 13:18:07 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:6e:05:27:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Dec 01 13:18:07 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:25:90:fe:a8:71:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+        Dec 01 13:18:07 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:0c:c4:7a:6d:f1:35:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=576 TOS=0x00 PREC=0x00 TTL=64 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=556 
+
+#---------------------------------------------------------------------
+# Add an iptables rule to exclude DHCP requests from the logs ..
+#[root@trop01]
+
+    vi /var/lib/iptables/active
+
+        #
+        # The INPUT chain.
+        #
+        [0:0] -A INPUT -j override
+        [0:0] -A INPUT -i lo -j ACCEPT
+        ....
+        ....
+    +   # DHCP requests - drop
+    +   [0:0] -A INPUT -s 0.0.0.0 -d 255.255.255.255  -p udp -m udp --sport 68 --dport 67 -j DROP
+        # All else, log and drop.
+        [0:0] -A INPUT -j LOG --log-prefix "drop "
+        [0:0] -A INPUT -j DROP
+
+    /sbin/iptables-restore /var/lib/iptables/active
+
+#---------------------------------------------------------------------
+# Logged packets is clearer.
+#[root@trop01]
+
+    journalctl -f
+
+        Dec 01 13:16:43 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=65 TOS=0x00 PREC=0x00 TTL=63 ID=59268 DF PROTO=UDP SPT=40063 DPT=53 LEN=45 
+        Dec 01 13:16:43 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=65 TOS=0x00 PREC=0x00 TTL=63 ID=59269 DF PROTO=UDP SPT=40063 DPT=53 LEN=45 
+        Dec 01 13:16:48 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=77 TOS=0x00 PREC=0x00 TTL=64 ID=13329 DF PROTO=UDP SPT=38351 DPT=53 LEN=57 
+        Dec 01 13:16:48 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=77 TOS=0x00 PREC=0x00 TTL=64 ID=13330 DF PROTO=UDP SPT=38351 DPT=53 LEN=57 
+        Dec 01 13:16:48 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=65 TOS=0x00 PREC=0x00 TTL=63 ID=59893 DF PROTO=UDP SPT=42988 DPT=53 LEN=45 
+        Dec 01 13:16:48 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=65 TOS=0x00 PREC=0x00 TTL=63 ID=59894 DF PROTO=UDP SPT=42988 DPT=53 LEN=45 
+        Dec 01 13:16:53 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=77 TOS=0x00 PREC=0x00 TTL=64 ID=18104 DF PROTO=UDP SPT=38351 DPT=53 LEN=57 
+        Dec 01 13:16:53 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=77 TOS=0x00 PREC=0x00 TTL=64 ID=18105 DF PROTO=UDP SPT=38351 DPT=53 LEN=57 
+        Dec 01 13:16:53 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=65 TOS=0x00 PREC=0x00 TTL=63 ID=60926 DF PROTO=UDP SPT=42988 DPT=53 LEN=45 
+        Dec 01 13:16:53 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=65 TOS=0x00 PREC=0x00 TTL=63 ID=60927 DF PROTO=UDP SPT=42988 DPT=53 LEN=45 
+        Dec 01 13:16:58 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=77 TOS=0x00 PREC=0x00 TTL=64 ID=18627 DF PROTO=UDP SPT=53821 DPT=53 LEN=57 
+        Dec 01 13:16:58 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=77 TOS=0x00 PREC=0x00 TTL=64 ID=18628 DF PROTO=UDP SPT=53821 DPT=53 LEN=57 
+        Dec 01 13:16:58 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=65 TOS=0x00 PREC=0x00 TTL=63 ID=64169 DF PROTO=UDP SPT=41809 DPT=53 LEN=45 
+        Dec 01 13:16:58 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=65 TOS=0x00 PREC=0x00 TTL=63 ID=64170 DF PROTO=UDP SPT=41809 DPT=53 LEN=45 
+
+    #
+    # Almost all are DNS packets.
+    #
+
+#---------------------------------------------------------------------
+# DNS inside the VM is not working.
+#[root@virtual]
+
+    host data.metagrid.co.uk
+
+        ;; connection timed out; no servers could be reached
+
+    #
+    # Recent change when we tweaked iptables.
+    #
+
+#---------------------------------------------------------------------
+# Add an iptables rule to allow DNS requests to our NAT node.
+#[root@trop01]
+
+    vi /var/lib/iptables/active
+
+        #
+        # The INPUT chain.
+        #
+        [0:0] -A INPUT -j override
+        [0:0] -A INPUT -i lo -j ACCEPT
+        ....
+        ....
+    +   # DNS requests  - allow
+    +   [0:0] -A INPUT -s 192.168.201.0/255.255.255.0 -d 192.168.201.1  -p udp -m udp --dport 53 -j ACCEPT
+        # DHCP requests - drop
+        [0:0] -A INPUT -s 0.0.0.0 -d 255.255.255.255  -p udp -m udp --sport 68 --dport 67 -j DROP
+        # All else, log and drop.
+        [0:0] -A INPUT -j LOG --log-prefix "drop "
+        [0:0] -A INPUT -j DROP
+
+    /sbin/iptables-restore /var/lib/iptables/active
+
+#---------------------------------------------------------------------
+# Logged packets is clearer.
+#[root@trop01]
+
+    journalctl -f
+
+        Dec 01 13:47:08 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=4924 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:47:12 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+        Dec 01 13:47:21 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=13700 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:47:24 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=38895 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:47:33 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=46868 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:47:39 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=26278 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:47:47 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+        Dec 01 13:47:48 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=53918 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:47:53 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=36837 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:47:59 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=37593 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:48:06 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=676 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 13:48:17 trop01 kernel: drop IN=virbr0 OUT= MAC=52:54:00:02:01:01:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=192.168.201.1 LEN=328 TOS=0x00 PREC=0x00 TTL=64 ID=51904 DF PROTO=UDP SPT=68 DPT=67 LEN=308 
+
+        Dec 01 14:00:32 trop01 kernel: drop IN=virbr0 OUT= MAC=ff:ff:ff:ff:ff:ff:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=255.255.255.255 LEN=328 TOS=0x10 PREC=0x00 TTL=128 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 14:00:41 trop01 kernel: drop IN=virbr0 OUT= MAC=ff:ff:ff:ff:ff:ff:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=255.255.255.255 LEN=328 TOS=0x10 PREC=0x00 TTL=128 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 14:00:47 trop01 kernel: drop IN=virbr0 OUT= MAC=ff:ff:ff:ff:ff:ff:52:54:00:02:01:0c:08:00 SRC=192.168.201.12 DST=255.255.255.255 LEN=328 TOS=0x10 PREC=0x00 TTL=128 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+        Dec 01 14:01:00 trop01 kernel: drop IN=virbr0 OUT= MAC=ff:ff:ff:ff:ff:ff:52:54:00:02:01:0d:08:00 SRC=192.168.201.13 DST=255.255.255.255 LEN=328 TOS=0x10 PREC=0x00 TTL=128 ID=0 PROTO=UDP SPT=68 DPT=67 LEN=308 
+
+    #
+    # Almost all are our own DHCP requests .. which we want.
+    #
+
+#---------------------------------------------------------------------
+# Add iptables rules to allow our own DHCP requests.
+#[root@trop01]
+
+    vi /var/lib/iptables/active
+
+        #
+        # The INPUT chain.
+        #
+        [0:0] -A INPUT -j override
+        [0:0] -A INPUT -i lo -j ACCEPT
+        ....
+        ....
+        # DNS requests  - allow
+        [0:0] -A INPUT -s 192.168.201.0/255.255.255.0 -d 192.168.201.1  -p udp -m udp --dport 53 -j ACCEPT
+    +   # DHCP requests - allow
+    +   [0:0] -A INPUT -p udp --sport 68 --dport 67 -m mac --mac-source 52:54:00:02:01:0c -j ACCEPT
+    +   [0:0] -A INPUT -p udp --sport 68 --dport 67 -m mac --mac-source 52:54:00:02:01:0d -j ACCEPT
+        # DHCP requests - drop
+        [0:0] -A INPUT -s 0.0.0.0 -d 255.255.255.255  -p udp -m udp --sport 68 --dport 67 -j DROP
+        # All else, log and drop.
+        [0:0] -A INPUT -j LOG --log-prefix "drop "
+        [0:0] -A INPUT -j DROP
+        ....
+        ....
+
+    /sbin/iptables-restore /var/lib/iptables/active
+
+#---------------------------------------------------------------------
+# DHCP requests are ok, DHCP responses getting dropped.
+#[root@trop01]
+
+    journalctl -f
+
+        Dec 01 14:10:21 trop01 dnsmasq-dhcp[5663]: DHCPDISCOVER(virbr0) 192.168.201.12 52:54:00:02:01:0c
+        Dec 01 14:10:21 trop01 dnsmasq-dhcp[5663]: DHCPOFFER(virbr0) 192.168.201.12 52:54:00:02:01:0c
+        Dec 01 14:10:21 trop01 kernel: drop IN= OUT=virbr0 SRC=192.168.201.1 DST=192.168.201.12 LEN=330 TOS=0x00 PREC=0xC0 TTL=64 ID=19565 PROTO=UDP SPT=67 DPT=68 LEN=310 
+        Dec 01 14:10:25 trop01 dnsmasq-dhcp[5663]: DHCPDISCOVER(virbr0) 192.168.201.12 52:54:00:02:01:0c
+        Dec 01 14:10:25 trop01 dnsmasq-dhcp[5663]: DHCPOFFER(virbr0) 192.168.201.12 52:54:00:02:01:0c
+        Dec 01 14:10:25 trop01 kernel: drop IN= OUT=virbr0 SRC=192.168.201.1 DST=192.168.201.12 LEN=330 TOS=0x00 PREC=0xC0 TTL=64 ID=20344 PROTO=UDP SPT=67 DPT=68 LEN=310 
+        Dec 01 14:10:33 trop01 dnsmasq-dhcp[5663]: DHCPDISCOVER(virbr0) 192.168.201.12 52:54:00:02:01:0c
+        Dec 01 14:10:33 trop01 dnsmasq-dhcp[5663]: DHCPOFFER(virbr0) 192.168.201.12 52:54:00:02:01:0c
+        Dec 01 14:10:33 trop01 kernel: drop IN= OUT=virbr0 SRC=192.168.201.1 DST=192.168.201.12 LEN=330 TOS=0x00 PREC=0xC0 TTL=64 ID=20423 PROTO=UDP SPT=67 DPT=68 LEN=310 
+        Dec 01 14:10:48 trop01 dnsmasq-dhcp[5663]: DHCPDISCOVER(virbr0) 192.168.201.12 52:54:00:02:01:0c
+        Dec 01 14:10:48 trop01 dnsmasq-dhcp[5663]: DHCPOFFER(virbr0) 192.168.201.12 52:54:00:02:01:0c
+
+#---------------------------------------------------------------------
+# Add iptables rule to the OUTPUT chain to allow our own DHCP responses.
+#[root@trop01]
+
+    vi /var/lib/iptables/active
+
+        #
+        # The OUTPUT chain.
+        #
+        [0:0] -A OUTPUT -j override
+        [0:0] -A OUTPUT -o lo -j ACCEPT
+        ....
+        ....
+    +   # DHCP offers - allow
+    +   [0:0] -A OUTPUT -s 192.168.201.1 -d 192.168.201.0/255.255.255.0 -p udp -m udp --sport 67 --dport 68 -j ACCEPT
+        # Allow outgoing TCP.
+        [0:0] -A OUTPUT -p tcp -j ACCEPT
+        # All else, log and drop.
+        [0:0] -A OUTPUT -j LOG --log-prefix "drop "
+        [0:0] -A OUTPUT -j DROP
+
+    /sbin/iptables-restore /var/lib/iptables/active
+
+
+    # Refine the rules to just -i virbr0
+    # Replace list of MAC address with the interface -i virbr0
+
+
+#---------------------------------------------------------------------
+# And then I discover the thing that explains it all ...
+#[root@trop01]
+
+
+    https://libvirt.org/firewall.html
+    https://libvirt.org/formatnwfilter.html
+
+        "Finally, in terms of problems we have in deployment. The biggest problem
+        is that if the admin does service iptables restart all our work gets blown
+        away. We've experimented with using lokkit to record our custom rules in
+        a persistent config file, but that caused different problem. Admins who
+        were not using lokkit for their config found that all their own rules got
+        blown away. So we threw away our lokkit code. Instead we document that if
+        you run service iptables restart, you need to send SIGHUP to libvirt to
+        make it recreate its rules."
+
+
+        ** If you run restart or reload iptables, you need to send SIGHUP to libvirt 
+
+    #
+    # Sending signal to Processes
+    # https://bash.cyberciti.biz/guide/Sending_signal_to_Processes
+
+    kill -HUP $(cat /run/libvirtd.pid)
+
+
+#---------------------------------------------------------------------
+# Current rules to enable virtual machines to work.
+#[root@trop01]
+
+    vi /var/lib/iptables/active
+
+        #
+        # The INPUT chain.
+        #
+        [0:0] -A INPUT -j override
+        [0:0] -A INPUT -i lo -j ACCEPT
+        ....
+        ....
+    +   # DNS requests - allow
+    +   [0:0] -A INPUT -i virbr0 -p udp --dport 53 -j ACCEPT
+    +   # DHCP requests - allow
+    +   [0:0] -A INPUT -i virbr0 -p udp --sport 68 --dport 67 -j ACCEPT
+    +   # DHCP requests - drop
+    +   [0:0] -A INPUT -i br0 -p udp --sport 68 --dport 67 -j DROP
+    +   [0:0] -A INPUT -i br1 -p udp --sport 68 --dport 67 -j DROP
+        # All else, log and drop.
+        [0:0] -A INPUT -j LOG --log-prefix "drop "
+        [0:0] -A INPUT -j DROP
+
+        ....
+        ....
+
+        #
+        # The OUTPUT chain.
+        #
+        [0:0] -A OUTPUT -j override
+        [0:0] -A OUTPUT -o lo -j ACCEPT
+        ....
+        ....
+    +   # DHCP offers - allow
+    +   [0:0] -A OUTPUT -o virbr0 -p udp -m udp --sport 67 --dport 68 -j ACCEPT
+        # Allow outgoing TCP.
+        [0:0] -A OUTPUT -p tcp -j ACCEPT
+        # All else, log and drop.
+        [0:0] -A OUTPUT -j LOG --log-prefix "drop "
+        [0:0] -A OUTPUT -j DROP
+
+    
+#---------------------------------------------------------------------
+# Experiments ..
+#
+
+    #
+    # Log current config
+    iptables -L | tee "$(date +%Y%m%d%H%M%S)-iptables.log"
+
+    #
+    # Reload from file
+    /sbin/iptables-restore /var/lib/iptables/active
+    iptables -L | tee "$(date +%Y%m%d%H%M%S)-iptables.log"
+
+    #
+    # Reload libvirt
+    #kill -HUP $(cat /run/libvirtd.pid)
+    #iptables -L | tee "$(date +%Y%m%d%H%M%S)-iptables.log"
+
+
+#---------------------------------------------------------------------
+# Checking the config on trop02
+#[root@trop02]
+
+    #
+    # Log current config
+    iptables --list --verbose | tee "iptables-$(hostname -s)-$(date +%Y%m%d%H%M%S).log"
+
+    #
+    # Check the current rules.
+    vi /var/lib/iptables/active
+
+#---------------------------------------------------------------------
+# Reload iptables from file.
+#[root@trop02]
+
+    /sbin/iptables-restore /var/lib/iptables/active
+    iptables --list --verbose | tee "iptables-$(hostname -s)-$(date +%Y%m%d%H%M%S).log"
+
+    #
+    # DHCP requests get blocked.
+    # Guest network connection fails
+
+        Dec 01 19:56:20 float03 dhclient[26307]: DHCPDISCOVER on ens3 to 255.255.255.255 port 67 interval 8 (xid=0xafa32618)
+        Dec 01 19:56:28 float03 dhclient[26307]: DHCPDISCOVER on ens3 to 255.255.255.255 port 67 interval 10 (xid=0xafa32618)
+        Dec 01 19:56:38 float03 dhclient[26307]: DHCPDISCOVER on ens3 to 255.255.255.255 port 67 interval 9 (xid=0xafa32618)
+        Dec 01 19:56:47 float03 dhclient[26307]: DHCPDISCOVER on ens3 to 255.255.255.255 port 67 interval 14 (xid=0xafa32618)
+
+#---------------------------------------------------------------------
+# Reload libvirt networks.
+#[root@trop02]
+
+    kill -HUP $(cat /run/libvirtd.pid)
+    iptables -L | tee "$(date +%Y%m%d%H%M%S)-iptables.log"
+
+    #
+    # DHCP requests succeed.
+
+        Dec 01 19:58:04 float03 dhclient[26329]: DHCPDISCOVER on ens3 to 255.255.255.255 port 67 interval 10 (xid=0xeea0e82c)
+        Dec 01 19:58:04 float03 dhclient[26329]: DHCPREQUEST on ens3 to 255.255.255.255 port 67 (xid=0xeea0e82c)
+        Dec 01 19:58:04 float03 dhclient[26329]: DHCPOFFER from 192.168.202.1
+        Dec 01 19:58:04 float03 dhclient[26329]: DHCPACK from 192.168.202.1 (xid=0xeea0e82c)
+        Dec 01 19:58:04 float03 NetworkManager[1618]: <info>  [1480622284.8765]   address 192.168.202.14
+        Dec 01 19:58:04 float03 NetworkManager[1618]: <info>  [1480622284.8765]   plen 24 (255.255.255.0)
+        Dec 01 19:58:04 float03 NetworkManager[1618]: <info>  [1480622284.8766]   gateway 192.168.202.1
+        Dec 01 19:58:04 float03 NetworkManager[1618]: <info>  [1480622284.8766]   server identifier 192.168.202.1
+        Dec 01 19:58:04 float03 NetworkManager[1618]: <info>  [1480622284.8766]   lease time 3600
+        Dec 01 19:58:04 float03 NetworkManager[1618]: <info>  [1480622284.8766]   hostname 'Siamond'
+        Dec 01 19:58:04 float03 NetworkManager[1618]: <info>  [1480622284.8767]   nameserver '192.168.202.1'
+        Dec 01 19:58:04 float03 NetworkManager[1618]: <info>  [1480622284.8767] dhcp4 (ens3): state changed unknown -> bound
+        Dec 01 19:58:04 float03 NetworkManager[1618]: <info>  [1480622284.8781] device (ens3): state change: ip-config -> ip-check (reason 'none') [70 80 0]
+        Dec 01 19:58:04 float03 dhclient[26329]: bound to 192.168.202.14 -- renewal in 1737 seconds.
+
+#---------------------------------------------------------------------
+# Diff between the before and after logs.
+#[root@trop02]
+
+        Chain INPUT (policy DROP 0 packets, 0 bytes)
+         pkts bytes target     prot opt in     out     source               destination         
+    +   12622  895K ACCEPT     udp  --  virbr1 any     anywhere             anywhere             udp dpt:domain
+    +       0     0 ACCEPT     tcp  --  virbr1 any     anywhere             anywhere             tcp dpt:domain
+    +     921  302K ACCEPT     udp  --  virbr1 any     anywhere             anywhere             udp dpt:bootps
+    +       0     0 ACCEPT     tcp  --  virbr1 any     anywhere             anywhere             tcp dpt:bootps
+        3848K 1550M override   all  --  any    any     anywhere             anywhere            
+
+        Chain FORWARD (policy DROP 0 packets, 0 bytes)
+         pkts bytes target     prot opt in     out     source               destination         
+    +    210K 1306M ACCEPT     all  --  any    virbr1  anywhere             192.168.202.0/24     ctstate RELATED,ESTABLISHED
+    +    131K 9001K ACCEPT     all  --  virbr1 any     192.168.202.0/24     anywhere            
+    +       0     0 ACCEPT     all  --  virbr1 virbr1  anywhere             anywhere            
+    +       0     0 REJECT     all  --  any    virbr1  anywhere             anywhere             reject-with icmp-port-unreachable
+    +       0     0 REJECT     all  --  virbr1 any     anywhere             anywhere             reject-with icmp-port-unreachable
+            0     0 LOG        all  --  any    any     anywhere             anywhere             LOG level warning prefix "drop "
+            0     0 DROP       all  --  any    any     anywhere             anywhere            
+
+        Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+         pkts bytes target     prot opt in     out     source               destination         
+    +     921  304K ACCEPT     udp  --  any    virbr1  anywhere             anywhere             udp dpt:bootpc
+        69311 6672K override   all  --  any    any     anywhere             anywhere            
+
+#---------------------------------------------------------------------
+# Modify our rules to match.
+#[root@trop02]
+
+    vi /var/lib/iptables/active
+
+        #
+        # The INPUT chain.
+        #
+    +   # Internal DNS requests - allow
+    +   [0:0] -A INPUT -i virbr1 -p udp --dport 53 -j ACCEPT
+    +   [0:0] -A INPUT -i virbr1 -p tcp --dport 53 -j ACCEPT
+    +   # Internal DHCP requests - allow
+    +   [0:0] -A INPUT -i virbr1 -p udp --dport 67 -j ACCEPT
+    +   [0:0] -A INPUT -i virbr1 -p tcp --dport 67 -j ACCEPT
+    +   # Standard chain
+        [0:0] -A INPUT -j override
+        [0:0] -A INPUT -i lo -j ACCEPT
+        ....
+        ....
+        # External DHCP requests - drop
+    +   [0:0] -A INPUT -i br0 -p udp --dport 67 -j DROP
+    +   [0:0] -A INPUT -i br0 -p tcp --dport 67 -j DROP
+    +   [0:0] -A INPUT -i br1 -p udp --dport 67 -j DROP
+    +   [0:0] -A INPUT -i br1 -p tcp --dport 67 -j DROP
+        # All else, log and drop.
+        [0:0] -A INPUT -j LOG --log-prefix "drop "
+        [0:0] -A INPUT -j DROP
+
+        ....
+        ....
+
+        #
+        # The FORWARD chain.
+        #
+    +   [0:0] -A FORWARD -o virbr1 -d 192.168.202.0/255.255.255.0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    +   [0:0] -A FORWARD -i virbr1 -s 192.168.202.0/255.255.255.0 -j ACCEPT
+    +   [0:0] -A FORWARD -i virbr1 -o virbr1 -j ACCEPT
+    +   [0:0] -A FORWARD -o virbr1 -j REJECT --reject-with icmp-port-unreachable
+    +   [0:0] -A FORWARD -i virbr1 -j REJECT --reject-with icmp-port-unreachable
+    +   [0:0] -A FORWARD -o virbr1 -d 192.168.202.0/255.255.255.0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        [0:0] -A FORWARD -j LOG --log-prefix "drop "
+        [0:0] -A FORWARD -j DROP
+
+        #
+        # The OUTPUT chain.
+        #
+    +   # Internal DHCP offers - allow
+    +   [0:0] -A OUTPUT -o virbr1 -p udp -m udp --dport 68 -j ACCEPT
+        [0:0] -A OUTPUT -j override
+        [0:0] -A OUTPUT -o lo -j ACCEPT
+        ....
+        ....
+        # Allow outgoing TCP.
+        [0:0] -A OUTPUT -p tcp -j ACCEPT
+        # All else, log and drop.
+        [0:0] -A OUTPUT -j LOG --log-prefix "drop "
+        [0:0] -A OUTPUT -j DROP
+
+#---------------------------------------------------------------------
+# Reload iptables from file.
+#[root@trop02]
+
+    /sbin/iptables-restore /var/lib/iptables/active
+    iptables --list --verbose | tee "iptables-$(hostname -s)-$(date +%Y%m%d%H%M%S).log"
+
+#---------------------------------------------------------------------
+# Diff between the before and after logs.
+#[root@trop02]
+
+    # Looks good :-)
+
+#---------------------------------------------------------------------
+# Reload libvirt networks.
+#[root@trop02]
+
+    kill -HUP $(cat /run/libvirtd.pid)
+    iptables --list --verbose | tee "iptables-$(hostname -s)-$(date +%Y%m%d%H%M%S).log"
+
+#---------------------------------------------------------------------
+# Diff between the before and after logs.
+#[root@trop02]
+
+    # Looks good :-)
+
+#---------------------------------------------------------------------
+#---------------------------------------------------------------------
+# Apply the same changes to trop01.
+#[root@trop01]
+
+    #
+    # Note change
+    # virbr1 and 192.168.202.0
+    # becomes
+    # virbr0 and 192.168.201.0
+
+    vi /var/lib/iptables/active
+
+        #
+        # The INPUT chain.
+        #
+    +   # Internal DNS requests - allow
+    +   [0:0] -A INPUT -i virbr0 -p udp --dport 53 -j ACCEPT
+    +   [0:0] -A INPUT -i virbr0 -p tcp --dport 53 -j ACCEPT
+    +   # Internal DHCP requests - allow
+    +   [0:0] -A INPUT -i virbr0 -p udp --dport 67 -j ACCEPT
+    +   [0:0] -A INPUT -i virbr0 -p tcp --dport 67 -j ACCEPT
+    +   # Standard chain
+        [0:0] -A INPUT -j override
+        [0:0] -A INPUT -i lo -j ACCEPT
+        ....
+        ....
+        # External DHCP requests - drop
+    +   [0:0] -A INPUT -i br0 -p udp --dport 67 -j DROP
+    +   [0:0] -A INPUT -i br0 -p tcp --dport 67 -j DROP
+    +   [0:0] -A INPUT -i br1 -p udp --dport 67 -j DROP
+    +   [0:0] -A INPUT -i br1 -p tcp --dport 67 -j DROP
+        # All else, log and drop.
+        [0:0] -A INPUT -j LOG --log-prefix "drop "
+        [0:0] -A INPUT -j DROP
+
+        ....
+        ....
+
+        #
+        # The FORWARD chain.
+        #
+    +   [0:0] -A FORWARD -o virbr0 -d 192.168.201.0/255.255.255.0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    +   [0:0] -A FORWARD -i virbr0 -s 192.168.201.0/255.255.255.0 -j ACCEPT
+    +   [0:0] -A FORWARD -i virbr0 -o virbr0 -j ACCEPT
+    +   [0:0] -A FORWARD -o virbr0 -j REJECT --reject-with icmp-port-unreachable
+    +   [0:0] -A FORWARD -i virbr0 -j REJECT --reject-with icmp-port-unreachable
+    +   [0:0] -A FORWARD -o virbr0 -d 192.168.201.0/255.255.255.0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        [0:0] -A FORWARD -j LOG --log-prefix "drop "
+        [0:0] -A FORWARD -j DROP
+
+        #
+        # The OUTPUT chain.
+        #
+    +   # Internal DHCP offers - allow
+    +   [0:0] -A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
+        [0:0] -A OUTPUT -j override
+        [0:0] -A OUTPUT -o lo -j ACCEPT
+        ....
+        ....
+        # Allow outgoing TCP.
+        [0:0] -A OUTPUT -p tcp -j ACCEPT
+        # All else, log and drop.
+        [0:0] -A OUTPUT -j LOG --log-prefix "drop "
+        [0:0] -A OUTPUT -j DROP
+
+#---------------------------------------------------------------------
+# Reload iptables from file.
+#[root@trop01]
+
+    iptables --list --verbose | tee "iptables-$(hostname -s)-$(date +%Y%m%d%H%M%S).log"
+
+    /sbin/iptables-restore /var/lib/iptables/active
+
+    iptables --list --verbose | tee "iptables-$(hostname -s)-$(date +%Y%m%d%H%M%S).log"
+
+#---------------------------------------------------------------------
+# Diff between the before and after logs.
+#[root@trop01]
+
+    # Looks good :-)
+
+#---------------------------------------------------------------------
+# Reload libvirt networks.
+#[root@trop01]
+
+    kill -HUP $(cat /run/libvirtd.pid)
+    iptables --list --verbose | tee "iptables-$(hostname -s)-$(date +%Y%m%d%H%M%S).log"
+
+#---------------------------------------------------------------------
+# Diff between the before and after logs.
+#[root@trop02]
+
+    # Looks good :-)
+
