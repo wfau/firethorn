@@ -189,7 +189,7 @@
 
     partition \
         btrfs.01 \
-s        --grow \
+        --grow \
         --ondisk sda
 
     btrfs none \
