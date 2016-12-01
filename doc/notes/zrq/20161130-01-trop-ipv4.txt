@@ -773,6 +773,19 @@ Two VMs on trop-02 have external addresses
     # All reachable from inside and outside.
 
 
+    (froeseth astoalith siamond acilamwen)
+
+
+    for loop in {1..100000}
+    do
+
+        for vmname in froeseth astoalith siamond acilamwen
+        do
+            echo "[${loop:?}][${vmname:?}]"
+            curl --head "http://${vmname:?}.metagrid.xyz/"
+            sleep 1
+        done
+    done
 
 
 
