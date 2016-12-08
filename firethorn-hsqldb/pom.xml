@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.0.22</version>
+        <version project='firethorn'>2.0.22-stv-public-ip</version>
     </parent>
 
     <artifactId>firethorn-hsqldb</artifactId>
