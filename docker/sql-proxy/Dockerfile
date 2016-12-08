@@ -22,7 +22,6 @@ EXPOSE 1433
 
 RUN yum -y install socat
 RUN yum -y install bind-utils
-RUN yum -y install hostname
 
 COPY bin/sql-proxy.sh /bin/sql-proxy.sh
 RUN chmod a+x /bin/sql-proxy.sh

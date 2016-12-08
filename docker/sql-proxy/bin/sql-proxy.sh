@@ -21,7 +21,7 @@
 #
 #
 
-targetip=$(hostname -I | awk '{print $1}')
+targetip=$(host -t A ${target:?} | cut -d ' ' -f 4)
 echo "Target name [${target:?}]"
 echo "Target IP   [${targetip:?}]"
 
