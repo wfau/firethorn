@@ -1,0 +1,301 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+###########
+## Issue ##
+###########
+
+Unable to connect to ramses2 from froeseth using containers. Connection refused errors.
+
+
+
+##########
+## Info ##
+##########
+
+Server: trop01
+VM: froeseth.metagrid.xyz
+IP address: 129.215.175.100
+User & Metadata Database: ramses 2
+Database IP: 192.168.137.21
+
+
+##########
+## Logs ##
+##########
+
+docker logs patricia
+
+2016/12/07 09:51:41 socat[161] E connect(3, AF=2 192.168.137.21:1433, 16): Connection refused
+2016/12/07 09:51:41 socat[162] E connect(3, AF=2 192.168.137.21:1433, 16): Connection refused
+
+
+
+
+# Firethorn logs
+
+tail -f -n 1000 /var/logs/gillian/firethorn.log
+
+2016-12-07 09:51:41,083 WARN  [Task-Thread-for-com.mchange.v2.async.ThreadPerTaskAsynchronousRunner@372a6052] [BasicResourcePool] com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@55eaec40 -- Acquisition Attempt Failed!!! Clearing pending acquires. While trying to acquire a needed new resource, we failed to succeed more than the maximum number of allowed acquisition attempts (30). Last acquisition attempt exception:  
+java.sql.SQLException: I/O Error: DB server closed connection.
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2481)
+	at net.sourceforge.jtds.jdbc.TdsCore.login(TdsCore.java:632)
+	at net.sourceforge.jtds.jdbc.JtdsConnection.<init>(JtdsConnection.java:371)
+	at net.sourceforge.jtds.jdbc.Driver.connect(Driver.java:184)
+	at com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134)
+	at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182)
+	at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171)
+	at com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
+	at com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
+	at com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
+	at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
+	at com.mchange.v2.async.ThreadPerTaskAsynchronousRunner$TaskThread.run(ThreadPerTaskAsynchronousRunner.java:255)
+Caused by: java.io.IOException: DB server closed connection.
+	at net.sourceforge.jtds.jdbc.SharedSocket.readPacket(SharedSocket.java:852)
+	at net.sourceforge.jtds.jdbc.SharedSocket.getNetPacket(SharedSocket.java:731)
+	at net.sourceforge.jtds.jdbc.ResponseStream.getPacket(ResponseStream.java:477)
+	at net.sourceforge.jtds.jdbc.ResponseStream.read(ResponseStream.java:114)
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2368)
+	... 11 common frames omitted
+2016-12-07 09:51:41,090 WARN  [Task-Thread-for-com.mchange.v2.async.ThreadPerTaskAsynchronousRunner@372a6052] [BasicResourcePool] com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@48aac331 -- Acquisition Attempt Failed!!! Clearing pending acquires. While trying to acquire a needed new resource, we failed to succeed more than the maximum number of allowed acquisition attempts (30). Last acquisition attempt exception:  
+java.sql.SQLException: I/O Error: DB server closed connection.
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2481)
+	at net.sourceforge.jtds.jdbc.TdsCore.login(TdsCore.java:632)
+	at net.sourceforge.jtds.jdbc.JtdsConnection.<init>(JtdsConnection.java:371)
+	at net.sourceforge.jtds.jdbc.Driver.connect(Driver.java:184)
+	at com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134)
+	at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182)
+	at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171)
+	at com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
+	at com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
+	at com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
+	at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
+	at com.mchange.v2.async.ThreadPerTaskAsynchronousRunner$TaskThread.run(ThreadPerTaskAsynchronousRunner.java:255)
+Caused by: java.io.IOException: DB server closed connection.
+	at net.sourceforge.jtds.jdbc.SharedSocket.readPacket(SharedSocket.java:852)
+	at net.sourceforge.jtds.jdbc.SharedSocket.getNetPacket(SharedSocket.java:731)
+	at net.sourceforge.jtds.jdbc.ResponseStream.getPacket(ResponseStream.java:477)
+	at net.sourceforge.jtds.jdbc.ResponseStream.read(ResponseStream.java:114)
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2368)
+	... 11 common frames omitted
+
+
+
+docker logs elayne
+
+Target name [ramses2]
+Target IP [192.168.137.21]
+
+
+
+
+
+###########
+## Notes ##
+###########
+
+
+# Can we see anything in the journalctl logs
+
+Nothing in the system logs on trop01 apart from these
+.... SRC=192.168.2.220 DST=192.168.137.255
+
+
+
+
+# What can we find in tcdump
+
+tcpdump --interface any '(port 1433)'
+
+14:08:24.139052 IP ramses2.ms-sql-s > float01.58940: Flags [R.], seq 0, ack 1, win 29200, length 0
+14:08:24.156528 IP float01.58944 > ramses2.ms-sql-s: Flags [S], seq 1841226917, win 29200, options [mss 1460,sackOK,TS val 595295216 ecr 0,nop,wscale 7], length 0
+
+
+
+
+
+# Looking at logs in wireshark
+In the float01 log, most of the conversations are between (172.17.0.2 and 172.17.0.6) and (192.168.137.21 and 172.17.0.2)
+
+In the trop01 log, most of the conversation is between 192.168.137.21 and 129.215.175.100
+
+Looks like packets are sent with the source IP being the public IP Address..Should this be the internal one? 192.168.137.xx ..?
+
+
+
+
+
+# Does ramses2 resolve?
+
+ssh Froeseth
+host ramses2
+ramses2 has address 192.168.137.21
+
+
+ssh trop01
+host ramses2
+Host ramses2 not found: 3(NXDOMAIN)
+
+
+
+# Can the other VMs on trop see ramses2
+
+Started a docker chain on Cadelicia, logs show that connection between VM and ramses2 is fine
+
+Cadelicia IP Address: 192.168.201.11
+
+tcpdump         --interface any         '(port 1433)'
+
+13:59:37.502810 IP Cadelicia.51968 > ramses2.ms-sql-s: Flags [.], ack 1, win 237, options [nop,nop,TS val 2327225 ecr 260213939,nop,nop,sack 1 {0:1}], length 0
+13:59:37.502810 IP Cadelicia.51968 > ramses2.ms-sql-s: Flags [.], ack 1, win 237, options [nop,nop,TS val 2327225 ecr 260213939,nop,nop,sack 1 {0:1}], length 0
+13:59:37.502839 IP trop01-p.51968 > ramses2.ms-sql-s: Flags [.], ack 1, win 237, options [nop,nop,TS val 2327225 ecr 260213939,nop,nop,sack 1 {0:1}], length 0
+13:59:37.502845 IP trop01-p.51968 > ramses2.ms-sql-s: Flags [.], ack 1, win 237, options [nop,nop,TS val 2327225 ecr 260213939,nop,nop,sack 1 {0:1}], length 0
+13:59:37.502860 IP Cadelicia.51970 > ramses2.ms-sql-s: Flags [.], ack 1, win 237, options [nop,nop,TS val 2327225 ecr 260213939,nop,nop,sack 1 {0:1}], length 0
+13:59:37.502860 IP Cadelicia.51970 > ramses2.ms-sql-s: Flags [.], ack 1, win 237, options [nop,nop,TS val 2327225 ecr 260213939,nop,nop,sack 1 {0:1}], length 0
+13:59:37.502871 IP trop01-p.51970 > ramses2.ms-sql-s: Flags [.], ack 1, win 237, options [nop,nop,TS val 2327225 ecr 260213939,nop,nop,sack 1 {0:1}], length 0
+13:59:37.502880 IP trop01-p.51970 > ramses2.ms-sql-s: Flags [.], ack 1, win 237, options [nop,nop,TS val 2327225 ecr 260213939,nop,nop,sack 1 {0:1}], length 0
+13:59:41.872224 IP ramses2.ms-sql-s > trop01-p.59010: Flags [.], seq 0:1, ack 1, win 510, length 1
+13:59:41.872224 IP ramses2.ms-sql-s > trop01-p.59010: Flags [.], seq 0:1, ack 1, win 510, length 1
+13:59:41.872253 IP ramses2.ms-sql-s > Cadelicia.59010: Flags [.], seq 0:1, ack 1, win 510, length 1
+13:59:41.872257 IP ramses2.ms-sql-s > Cadelicia.59010: Flags [.], seq 0:1, ack 1, win 510, length 1
+13:59:41.872497 IP Cadelicia.59010 > ramses2.ms-sql-s: Flags [.], ack 1, win 1444, options [nop,nop,TS val 2331595 ecr 260091375,nop,nop,sack 1 {0:1}], length 0
+13:59:41.872497 IP Cadelicia.59010 > ramses2.ms-sql-s: Flags [.], ack 1, win 1444, options [nop,nop,TS val 2331595 ecr 260091375,nop,nop,sack 1 {0:1}], length 0
+13:59:41.872528 IP trop01-p.59010 > ramses2.ms-sql-s: Flags [.], ack 1, win 1444, options [nop,nop,TS val 2331595 ecr 260091375,nop,nop,sack 1 {0:1}], length 0
+13:59:41.872543 IP trop01-p.59010 > ramses2.ms-sql-s: Flags [.], ack 1, win 1444, options [nop,nop,TS val 2331595 ecr 260091375,nop,nop,sack 1 {0:1}], length 0
+
+
+journalctl -f
+
+Dec 08 14:00:03 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:9c:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=43491 PROTO=ICMP TYPE=8 CODE=0 ID=43491 SEQ=14 
+Dec 08 14:00:19 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+Dec 08 14:00:54 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+Dec 08 14:01:28 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+Dec 08 14:02:03 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+Dec 08 14:02:38 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+Dec 08 14:02:38 trop01 kernel: drop IN=br0 OUT= MAC=01:00:5e:00:00:01:3c:08:f6:21:6f:00:08:00 SRC=129.215.175.126 DST=224.0.0.1 LEN=36 TOS=0x00 PREC=0x00 TTL=1 ID=36147 PROTO=ICMP TYPE=9 CODE=0 
+Dec 08 14:03:12 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+Dec 08 14:03:39 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:79:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+Dec 08 14:03:39 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:9c:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=17767 PROTO=ICMP TYPE=8 CODE=0 ID=17767 SEQ=0 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=9158 PROTO=ICMP TYPE=8 CODE=0 ID=9158 SEQ=1 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=39017 PROTO=ICMP TYPE=8 CODE=0 ID=39017 SEQ=2 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=18547 PROTO=ICMP TYPE=8 CODE=0 ID=18547 SEQ=3 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=56401 PROTO=ICMP TYPE=8 CODE=0 ID=56401 SEQ=4 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=23807 PROTO=ICMP TYPE=8 CODE=0 ID=23807 SEQ=5 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=37962 PROTO=ICMP TYPE=8 CODE=0 ID=37962 SEQ=6 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=22764 PROTO=ICMP TYPE=8 CODE=0 ID=22764 SEQ=7 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=7977 PROTO=ICMP TYPE=8 CODE=0 ID=7977 SEQ=8 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=31949 PROTO=ICMP TYPE=8 CODE=0 ID=31949 SEQ=9 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=22714 PROTO=ICMP TYPE=8 CODE=0 ID=22714 SEQ=10 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=55211 PROTO=ICMP TYPE=8 CODE=0 ID=55211 SEQ=11 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=16882 PROTO=ICMP TYPE=8 CODE=0 ID=16882 SEQ=12 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=7931 PROTO=ICMP TYPE=8 CODE=0 ID=7931 SEQ=13 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=19:02:16:08:13:07:00:e0:81:4d:5f:79:08:00 SRC=0.0.0.0 DST=255.255.255.255 LEN=28 TOS=0x00 PREC=0x00 TTL=64 ID=43491 PROTO=ICMP TYPE=8 CODE=0 ID=43491 SEQ=14 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:79:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+Dec 08 14:03:40 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:9c:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+Dec 08 14:03:42 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:9c:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+Dec 08 14:03:42 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:9c:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+Dec 08 14:03:42 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:79:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+Dec 08 14:03:42 trop01 kernel: drop IN=br1 OUT= MAC=ff:ff:ff:ff:ff:ff:00:e0:81:4d:5f:79:08:00 SRC=192.168.2.220 DST=192.168.137.255 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=137 DPT=137 LEN=58 
+Dec 08 14:03:46 trop01 kernel: drop IN=br0 OUT= MAC=ff:ff:ff:ff:ff:ff:00:07:43:12:f2:80:08:00 SRC=129.215.175.5 DST=255.255.255.255 LEN=68 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP SPT=51479 DPT=1947 LEN=48 
+
+
+[root@Cadelicia ~]# docker logs patricia 
+Target name [ramses2]
+Target IP   [192.168.137.21]
+
+[root@Cadelicia ~]# docker logs elayne 
+Target name [ramses2]
+Target IP   [192.168.137.21]
+
+
+
+Wireshark logs show communication between the VM ipaddress and ramses2
+
+30	0.011050	192.168.201.11	192.168.137.21	TCP	80	52026 > ms-sql-s [ACK] Seq=1 Ack=2 Win=237 Len=0 TSval=3077229 TSecr=260288945 SLE=1 SRE=2
+48	29.997979	192.168.201.11	192.168.137.21	TCP	80	[TCP Keep-Alive ACK] 51998 > ms-sql-s [ACK] Seq=1 Ack=2 Win=237 Len=0 TSval=3107216 TSecr=260273943 SLE=1 SRE=2
+436	195.015192	192.168.137.21	192.168.201.11	TCP	57	[TCP Keep-Alive] ms-sql-s > 52034 [ACK] Seq=532 Ack=557 Win=131328 Len=1
+
+
+Does this work because the ip address is the internal one (192..)?
+
+
+###################################
+## Script used to run containers ##
+###################################
+
+
+
+
+
+# -----------------------------------------
+# Fetch latest from pyrothorn
+#
+   source "${HOME:?}/firethorn.settings"
+   pushd "${PYROTHORN_CODE:?}"
+
+      git pull
+
+   popd
+
+
+# -----------------------------------------
+# Copy scripts from local to VM
+#
+   source "${HOME:?}/firethorn.settings"
+   pushd "${PYROTHORN_CODE:?}"
+
+       scp -r scripts/* root@Cadelicia:/root/
+
+   popd
+
+# -----------------------------------------
+# Login to the the VM
+#[stv@shep]
+
+    ssh Cadelicia
+
+    newversion=2.0.22-stv-geom
+
+# -----------------------------------------------------
+# Create our secret function.
+#[root@hebenu]
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store.blue'
+
+    secret()
+        {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+        }
+
+    secret 'firethorn.user.host'
+   
+    source run.sh 09   ${newversion:?}  ${newversion:?} 1.2.3-genius 
+
+
+
+
+
