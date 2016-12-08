@@ -27,5 +27,5 @@ echo "Target IP   [${targetip:?}]"
 
 #
 # Proxy a SQLServer connection.
-socat "TCP-LISTEN:1433,fork,reuseaddr" "TCP:${targetip:?}:1433"
+socat "TCP-LISTEN:1433,bind=192.168.201.12,fork,reuseaddr" "TCP:${targetip:?}:1433"
 
