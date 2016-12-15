@@ -6,8 +6,8 @@ RUN apt-get update
 RUN apt-get install -y python-numpy python-scipy
 RUN apt-get install -y pwgen
 RUN apt-get install -y python-pycurl
-RUN wget https://pyodbc.googlecode.com/files/pyodbc-3.0.7.zip
-RUN unzip pyodbc-3.0.7.zip  && cd pyodbc-3.0.7/ && python setup.py install
+RUN apt-get install unixodbc-dev
+RUN pip install --allow-external pyodbc --allow-unverified pyodbc pyodbc
 RUN apt-get -y install python-matplotlib
 RUN pip install --no-deps astropy
 
