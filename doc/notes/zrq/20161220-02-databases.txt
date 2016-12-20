@@ -1,0 +1,157 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+Separate science archives
+
+    OSA
+    
+        ATLASDR1
+        ATLASDR2
+        ATLASDR3
+        ....
+
+        SSA-SSA
+        SSA-PSSA
+        ....
+
+        SDSS-BESTDR2
+        SDSS-BESTDR3
+        SDSS-BESTDR5
+        ....
+
+        VSA-SV-NGC253
+        VSA-SV-ORION
+        VSA-UltraVISTA
+        ....
+        
+        WSA-UKIDSS
+        WSA-UHS
+        WSA-TRANSIT
+        ....
+
+        FIRST
+        GLIMPSE
+        IRAS
+        ....
+
+        
+    WSA
+    
+        WSA-UKIDSS
+        WSA-UHS
+        WSA-TRANSIT
+        ....
+
+        SSA-SSA
+        SSA-PSSA
+        ....
+
+        SDSS-BESTDR2
+        SDSS-BESTDR3
+        SDSS-BESTDR5
+        ....
+
+        FIRST
+        GLIMPSE
+        IRAS
+        ....
+        
+    VSA
+
+        VSA-SV-NGC253
+        VSA-SV-ORION
+        VSA-UltraVISTA
+        ....
+
+        SSA-SSA
+        SSA-PSSA
+        ....
+        
+        SDSS-BESTDR7
+        SDSS-BESTDR8
+        SDSS-BESTDR9
+        ....
+
+        WSA-UKIDSS
+        WSA-UHS
+        WSA-TRANSIT
+        ....
+
+        FIRST
+        GLIMPSE
+        IRAS
+        ....
+
+    
+    SSA
+
+        SSA-SSA
+        SSA-PSSA
+        ....
+
+        SDSS-EDR
+        SDSS-BESTDR2
+        SDSS-BESTDR5
+        ....
+
+        TWOMASS
+        TWOMPZ
+        WISExSCOSPZ
+        
+
+Single institute
+
+    WFAU
+
+        ATLASDR1
+        ATLASDR2
+        ATLASDR3
+        ....
+
+        SSA-SSA
+        SSA-PSSA
+        ....
+
+        SDSS-BESTDR2
+        SDSS-BESTDR3
+        SDSS-BESTDR5
+        ....
+
+        VSA-SV-NGC253
+        VSA-SV-ORION
+        VSA-UltraVISTA
+        ....
+
+        WSA-UKIDSS
+        WSA-UHS
+        WSA-TRANSIT
+        ....
+
+        FIRST
+        GLIMPSE
+        IRAS
+        ....
+
+
+
