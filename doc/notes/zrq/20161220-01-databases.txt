@@ -1,0 +1,160 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+Separate science archives
+
+    OSA
+    
+        ATLASDR1
+        ATLASDR2
+        ATLASDR3
+        ....
+        ....
+        
+        DENIS
+        FIRST
+        GLIMPSE
+        IRAS
+        MGC
+        NVSS
+        ROSAT
+        TWOMASS
+        WISE
+        TWOXMM
+
+        VSA
+        WSA
+        SSA
+
+        SDSS-BESTDR2
+        SDSS-BESTDR3
+        SDSS-BESTDR5
+        SDSS-BESTDR7
+        SDSS-BESTDR8
+        SDSS-BESTDR9        
+        SDSS-SEGUEDR6
+        
+    WSA
+    
+        WSA-UKIDSS
+        WSA-UHS
+        WSA-TRANSIT
+        WSA-NON-SURVEY
+        WSACALIBRATION
+        ....
+        ....
+        
+    VSA
+
+        VSA-SV-NGC253
+        VSA-SV-ORION
+        VSA-UltraVISTA
+        VSA-VHS
+        VSA-VIDEO
+        VSA-VIKING
+        VSA-VMC
+        VSA-VVV
+        VSA-CALIBRATION
+        VSA-QC
+
+        WSA-UKIDSS
+        WSA-UHS
+        WSA-TRANSIT
+        WSA-NON-SURVEY
+        WSACALIBRATION
+        ....
+        ....
+
+        SSA
+        ....
+        
+        SDSS
+        ....
+
+        AKARI
+        COMBO17
+        DENIS
+        EROS
+        EXTINCT
+        FIRST
+        GLIMPSE
+        IRAS
+        MACHO
+        MCPS
+        MGC
+        NVSS
+        OGLE
+        ROSAT
+        SIXDF
+        SPITZER
+        TWODFGRS
+        TWOMASS
+        WISE
+        XMM
+        GALEX
+    
+    SSA
+
+        SSA
+        PSSA
+        TWOMASS
+        TWOMPZ
+        WISExSCOSPZ
+        SDSS-EDR
+        SDSS-BESTDR2
+        SDSS-BESTDR5
+        
+
+    
+Single institute
+
+    WFAU
+
+        DENIS
+        FIRST
+        GALEX
+        GLIMPSE
+        IRAS
+
+        MGC
+        NVSS
+
+        OSA
+
+        ROSAT
+        SSA
+
+        SDSS
+
+        TWOMASS
+        TWOXMM
+
+        UKIDSS
+        UHS
+
+        VSA
+        WSA
+
+        WISE
+
