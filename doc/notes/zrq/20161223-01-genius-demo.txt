@@ -1,0 +1,569 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Bug list
+
+    Clear query button doesn't work
+
+    CSV, HTML, FITS and VOTable downloads all point to
+    http://shepseskaf.roe.ac.uk:8080/data_tables_processing
+
+    Parser fails with trailing -- comment
+
+    Parser fails with dots in ORDER clause
+
+        ORDER BY
+            GAIADR1.tmass_original_valid.ra,
+            GAIADR1.tmass_original_valid.dec
+
+
+
+    #
+    # Target query
+
+    SELECT
+        something
+    FROM
+        GAIADR1.tmass_original_valid,
+        ATLASDR1.atlasSource,
+        ATLASDR1.atlasSourceXtwomass_psc
+    WHERE
+        ATLASDR1.atlasSourceXtwomass_psc.masterObjID = ATLASDR1.atlasSource.sourceID
+    AND
+        ATLASDR1.atlasSourceXtwomass_psc.slaveObjID  = GAIADR1.tmass_original_valid.something
+    AND
+        ATLASDR1.atlasSource.ra  BETWEEN ?? AND ??
+    AND
+        ATLASDR1.atlasSource.dec BETWEEN ?? AND ??
+    AND
+        GAIADR1.atlasSource.ra   BETWEEN ?? AND ??
+    AND
+        GAIADR1.atlasSource.dec  BETWEEN ?? AND ??
+    AND
+        something
+
+
+
+    #
+    # Find a useful patch of data.
+    SELECT
+        'GACS' AS site,
+        count(ra) AS many,
+        min(ra)   AS minra,
+        max(ra)   AS maxra,
+        min(dec)  AS mindec,
+        max(dec)  AS maxdec
+    FROM
+        GAIADR1.tmass_original_valid
+    WHERE
+        GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND 1.25
+     -- GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND 2.5
+     -- GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND   5
+     -- GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND  15
+     -- GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND  45
+     -- GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND  90
+     -- GAIADR1.tmass_original_valid.ra  BETWEEN  90 AND 180
+     -- GAIADR1.tmass_original_valid.ra  BETWEEN 180 AND 270
+     -- GAIADR1.tmass_original_valid.ra  BETWEEN 270 AND 360
+    AND
+        GAIADR1.tmass_original_valid.dec BETWEEN   0 AND 1.25
+
+     -- BUG fails with trailing comment
+     -- GAIADR1.tmass_original_valid.dec BETWEEN   0 AND 2.5
+     -- GAIADR1.tmass_original_valid.dec BETWEEN   0 AND   5
+     -- GAIADR1.tmass_original_valid.dec BETWEEN   0 AND  15
+     -- GAIADR1.tmass_original_valid.dec BETWEEN   0 AND  45
+     -- GAIADR1.tmass_original_valid.dec BETWEEN   0 AND  45
+     -- GAIADR1.tmass_original_valid.dec BETWEEN   0 AND  90
+
+
+
+    #
+    # Find a useful patch of data.
+    SELECT
+        'WFAU' AS site,
+        count(ra) AS many,
+        min(ra)   AS minra,
+        max(ra)   AS maxra,
+        min(dec)  AS mindec,
+        max(dec)  AS maxdec
+    FROM
+        TWOMASS.twomass_psc
+    WHERE
+        TWOMASS.twomass_psc.ra  BETWEEN   0 AND 1.25
+     -- TWOMASS.twomass_psc.ra  BETWEEN   0 AND 2.5
+     -- TWOMASS.twomass_psc.ra  BETWEEN   0 AND   5
+     -- TWOMASS.twomass_psc.ra  BETWEEN   0 AND  15
+     -- TWOMASS.twomass_psc.ra  BETWEEN   0 AND  45
+     -- TWOMASS.twomass_psc.ra  BETWEEN   0 AND  90
+     -- TWOMASS.twomass_psc.ra  BETWEEN  90 AND 180
+     -- TWOMASS.twomass_psc.ra  BETWEEN 180 AND 270
+     -- TWOMASS.twomass_psc.ra  BETWEEN 270 AND 360
+    AND
+        TWOMASS.twomass_psc.dec BETWEEN 0 AND 1.25
+
+     -- BUG fails with trailing comment
+     -- TWOMASS.twomass_psc.dec BETWEEN 0 AND 1.25
+     -- TWOMASS.twomass_psc.dec BETWEEN 0 AND  5
+     -- TWOMASS.twomass_psc.dec BETWEEN 0 AND 15
+     -- TWOMASS.twomass_psc.dec BETWEEN 0 AND 45
+     -- TWOMASS.twomass_psc.dec BETWEEN 0 AND 90
+
+
+    site    many        minra       maxra       mindec      maxdec
+
+
+    GACS	2563	    0.000664	1.249635	0.000523	1.249053
+    WFAU	2563	    0.000664	1.249635	0.000523	1.249053
+
+    GACS	10656	    0.000045	2.499701	0.000123	2.499835
+    WFAU	10656	    0.000045	2.499701	0.000123	2.499835
+
+    GACS	42511	    0.000045	4.999994	0.000123	4.999647
+    WFAU	42511	    0.000045	4.999994	0.000123	4.999647
+
+    GACS	373153	    0.000045	14.999963	0.00002	    14.999853
+    WFAU	373153	    0.000045	14.999963	0.00002	    14.999853
+
+    GACS	1642736	    0.000016	14.999988	0.00002	    45
+    WFAU	1642736	    0.000016	14.999988	0.00002	    45
+
+    GACS	5080044	    0.000016	44.99999	0.000003	45
+    WFAU	5080044	    0.000016	44.99999	0.000003	45
+
+    GACS    41761174    0.000002    89.999999   0.000002    89.989044
+    WFAU    41761174    0.000002    89.999999   0.000002    89.989044
+
+    GACS	22192730	90.000001	180	        0.000001	89.983841
+    WFAU	22192730	90.000001	180	        0.000001	89.983841
+
+    GACS	13744113	180	        269.999998	0.000001	89.990128
+    WFAU	13744113	180	        269.999998	0.000001	89.990128
+    
+    GACS	100058880	270.000003	359.999997	0	        89.982071
+    WFAU	100058880	270.000003	359.999997	0	        89.982071
+
+
+    #
+    # Target query ...
+
+    SELECT
+        GAIADR1.tmass_best_neighbour.original_ext_source_id AS external_source_id,
+
+        GAIADR1.tmass_best_neighbour.source_id              AS neighbour_source_id,
+        GAIADR1.gaia_source.source_id                       AS gaia_source_id,
+
+        GAIADR1.tmass_best_neighbour.tmass_oid              AS neighbour_oid, 
+        GAIADR1.tmass_original_valid.tmass_oid              AS twomass_oid,
+
+        GAIADR1.tmass_original_valid.ra                     AS twomass_ra,
+        GAIADR1.gaia_source.ra                              AS gaia_ra,
+
+        GAIADR1.tmass_original_valid.dec                    AS twomass_dec,
+        GAIADR1.gaia_source.dec                             AS gaia_dec
+
+    FROM
+        GAIADR1.gaia_source,
+        GAIADR1.tmass_best_neighbour,
+        GAIADR1.tmass_original_valid
+
+    WHERE
+        GAIADR1.tmass_best_neighbour.source_id = GAIADR1.gaia_source.source_id
+    AND
+        GAIADR1.tmass_best_neighbour.tmass_oid = GAIADR1.tmass_original_valid.tmass_oid
+    AND
+        GAIADR1.gaia_source.ra  BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.gaia_source.dec BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.tmass_original_valid.dec BETWEEN   0 AND 1.25
+
+  
+    #
+    # Simpler
+
+    SELECT
+        GAIADR1.tmass_best_neighbour.original_ext_source_id AS external_source_id,
+
+        GAIADR1.tmass_best_neighbour.source_id              AS neighbour_source_id,
+        GAIADR1.gaia_source.source_id                       AS gaia_source_id,
+
+        GAIADR1.tmass_best_neighbour.tmass_oid              AS neighbour_oid, 
+        GAIADR1.tmass_original_valid.tmass_oid              AS twomass_oid,
+
+        GAIADR1.tmass_original_valid.ra                     AS twomass_ra,
+        GAIADR1.gaia_source.ra                              AS gaia_ra,
+
+        GAIADR1.tmass_original_valid.dec                    AS twomass_dec,
+        GAIADR1.gaia_source.dec                             AS gaia_dec
+    FROM
+        GAIADR1.gaia_source,
+        GAIADR1.tmass_best_neighbour,
+        GAIADR1.tmass_original_valid
+    WHERE
+        GAIADR1.tmass_best_neighbour.source_id = GAIADR1.gaia_source.source_id
+    AND
+        GAIADR1.tmass_best_neighbour.tmass_oid = GAIADR1.tmass_original_valid.tmass_oid
+    AND
+        GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.tmass_original_valid.dec BETWEEN   0 AND 1.25
+
+
+    #
+    # Simpler still
+    SELECT
+        GAIADR1.tmass_best_neighbour.original_ext_source_id AS external_source_id,
+        GAIADR1.tmass_best_neighbour.source_id              AS neighbour_source_id,
+
+        GAIADR1.tmass_best_neighbour.tmass_oid              AS neighbour_oid, 
+        GAIADR1.tmass_original_valid.tmass_oid              AS twomass_oid,
+
+        GAIADR1.tmass_original_valid.ra                     AS twomass_ra,
+        GAIADR1.tmass_original_valid.dec                    AS twomass_dec
+    FROM
+        GAIADR1.tmass_best_neighbour,
+        GAIADR1.tmass_original_valid
+    WHERE
+        GAIADR1.tmass_best_neighbour.tmass_oid = GAIADR1.tmass_original_valid.tmass_oid
+    AND
+        GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.tmass_original_valid.dec BETWEEN   0 AND 1.25
+    ORDER BY
+        ra,
+        dec
+
+
+    #
+    # Stupid test
+    SELECT
+        GAIADR1.tmass_original_valid.ra,
+        GAIADR1.tmass_original_valid.dec
+    FROM
+        GAIADR1.tmass_original_valid
+    WHERE
+        GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.tmass_original_valid.dec BETWEEN   0 AND 1.25
+    ORDER BY
+        GAIADR1.tmass_original_valid.ra,
+        GAIADR1.tmass_original_valid.dec
+    
+    #
+    # Explicit join ...    
+    SELECT
+        GAIADR1.tmass_best_neighbour.original_ext_source_id AS external_source_id,
+        GAIADR1.tmass_best_neighbour.source_id              AS neighbour_source_id,
+
+        GAIADR1.tmass_best_neighbour.tmass_oid              AS neighbour_oid, 
+        GAIADR1.tmass_original_valid.tmass_oid              AS twomass_oid,
+
+        GAIADR1.tmass_original_valid.ra                     AS twomass_ra,
+        GAIADR1.tmass_original_valid.dec                    AS twomass_dec
+    FROM
+        GAIADR1.tmass_original_valid
+    JOIN
+        GAIADR1.tmass_best_neighbour
+    ON
+        GAIADR1.tmass_best_neighbour.tmass_oid = GAIADR1.tmass_original_valid.tmass_oid
+    WHERE
+        GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.tmass_original_valid.dec BETWEEN   0 AND 1.25
+    ORDER BY
+        ra,
+        dec
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #
+    # Remote query ...
+    SELECT
+        GAIADR1.tmass_best_neighbour.original_ext_source_id AS external_source_id,
+
+        GAIADR1.tmass_best_neighbour.source_id              AS neighbour_source_id,
+        GAIADR1.gaia_source.source_id                       AS gaia_source_id,
+
+        GAIADR1.tmass_best_neighbour.tmass_oid              AS neighbour_oid, 
+        GAIADR1.tmass_original_valid.tmass_oid              AS twomass_oid,
+
+        GAIADR1.tmass_original_valid.ra                     AS twomass_ra,
+        GAIADR1.gaia_source.ra                              AS gaia_ra,
+
+        GAIADR1.tmass_original_valid.dec                    AS twomass_dec,
+        GAIADR1.gaia_source.dec                             AS gaia_dec
+
+    FROM
+        GAIADR1.gaia_source,
+        GAIADR1.tmass_best_neighbour,
+        GAIADR1.tmass_original_valid
+
+    WHERE
+        GAIADR1.tmass_best_neighbour.source_id = GAIADR1.gaia_source.source_id
+    AND
+        GAIADR1.tmass_best_neighbour.tmass_oid = GAIADR1.tmass_original_valid.tmass_oid
+    AND
+        GAIADR1.gaia_source.ra  BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.gaia_source.dec BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.tmass_original_valid.dec BETWEEN   0 AND 1.25
+    ORDER BY
+        twomass_ra,
+        twomass_dec,
+        gaia_ra,
+        gaia_dec
+
+    #
+    # Test query ...
+    SELECT
+        TWOMASS.twomass_psc.pts_key,    -- 1098563210
+        TWOMASS.twomass_psc.ext_key     -- ...
+        TWOMASS.twomass_psc.designation -- 00000015+0048353 
+    FROM
+        TWOMASS.twomass_psc
+    WHERE
+        TWOMASS.twomass_psc.ra = 0.000664
+    AND
+        TWOMASS.twomass_psc.dec = 0.809816
+
+        
+
+    #
+    # Distributed query ...
+    SELECT
+        GAIADR1.tmass_best_neighbour.original_ext_source_id AS external_ident,
+        TWOMASS.twomass_psc.designation                     AS twomass_ident,
+
+        GAIADR1.tmass_best_neighbour.source_id              AS neighbour_source_id,
+        GAIADR1.gaia_source.source_id                       AS gaia_source_id,
+
+        TWOMASS.twomass_psc.ra                              AS twomass_ra,
+        GAIADR1.gaia_source.ra                              AS gaia_ra,
+
+        TWOMASS.twomass_psc.ra                              AS twomass_dec,
+        GAIADR1.gaia_source.dec                             AS gaia_dec
+
+    FROM
+        GAIADR1.gaia_source,
+        GAIADR1.tmass_best_neighbour,
+        TWOMASS.twomass_psc
+
+    WHERE
+        GAIADR1.tmass_best_neighbour.source_id = GAIADR1.gaia_source.source_id
+    AND
+        GAIADR1.tmass_best_neighbour.original_ext_source_id = TWOMASS.twomass_psc.designation
+    AND
+        GAIADR1.gaia_source.ra  BETWEEN   0 AND 1.25
+    AND
+        GAIADR1.gaia_source.dec BETWEEN   0 AND 1.25
+    AND
+        TWOMASS.twomass_psc.ra  BETWEEN   0 AND 1.25
+    AND
+        TWOMASS.twomass_psc.dec BETWEEN   0 AND 1.25
+
+    -- BUG
+    -- OGSA_DAI gets given the aliases ?
+    ORDER BY
+        twomass_ra,
+        twomass_dec,
+        gaia_ra,
+        gaia_dec
+
+
+
+    -- NOTE
+    -- Local query looks good
+    2016-12-23 14:44:58,297 DEBUG sql.SQLQueryActivity [pool-1-thread-746,debug:84] SQL QUERY:
+
+SELECT table_23.ra_21, table_23.designation_22 FROM (SELECT TWOMASS.dbo.twomass_psc.ra AS ra_21, TWOMASS.dbo.twomass_psc.designation AS designation_22 FROM TWOMASS.dbo.twomass_psc WHERE  ( TWOMASS.dbo.twomass_psc.ra < 1.25 )  AND  ( TWOMASS.dbo.twomass_psc.ra > 0 )  AND  ( TWOMASS.dbo.twomass_psc.dec < 1.25 )  AND  ( TWOMASS.dbo.twomass_psc.dec > 0 ) ) AS table_23 WHERE table_23.designation_22 IN (00032893+0105536 ,00020453+0107523 ,00025788+0042238 ,00025235+0107018 ,00005956+0014047 ,00001165+0025462 ,00044152+0106297 ,00023768+0100559 ,00020464+0055063 ,00033481+0048269 ,00010849+0109115 ,00003458+0054564 ,00020265+0038359 ,00003856+0032127 ,00044219+0107548 ,00022194+0111556 ,00045709+0109380 ,00021917+0031120 ,00001869+0052189 ,00011840+0034324 ,00044769+0109366 ,00042654+0114004 ,00002456+0037525 ,00001093+0012488 ,00024800+0109468 ,00005335+0112347 ,00000129+0054135 ,00000230+0037391 ,00011303+0034232 ,00013424+0110587 ,00025699+0107139 ,00010274+0052292 ,00004122+0052163) ....
+
+    -- BUG
+    -- String to int where it shouldn't
+
+    2016-12-23 14:46:50,165 DEBUG sql.SQLQueryActivity [pool-1-thread-746,debug:84] CallableStatement encountered problem in query execution
+    2016-12-23 14:46:50,166 DEBUG activity.MatchedIterativeActivity [pool-1-thread-746,debug:84] performing clean-up
+    2016-12-23 14:46:50,170 DEBUG event.LoggingActivityListener [pool-1-thread-746,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+        at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:293)
+        at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+        at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+        at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+        at java.lang.Thread.run(Thread.java:745)
+    Caused by: java.sql.SQLException: Conversion failed when converting the varchar value '00033006+0015426 ' to data type int.
+        at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+        at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+        at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+        at net.sourceforge.jtds.jdbc.TdsCore.isDataInResultSet(TdsCore.java:838)
+        at net.sourceforge.jtds.jdbc.JtdsResultSet.<init>(JtdsResultSet.java:149)
+        at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:511)
+        at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+        at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+        at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+        at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+        at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:30)
+        ... 4 more
+
+    -- BUG
+    -- Downstream exception
+    
+    2016-12-23 14:46:50,184 WARN  event.LoggingActivityListener [pool-1-thread-749,warnExceptionAndChildren:343] #1482522410183:5986# A problem has occurred during processing of activity uk.org.ogsadai.MetadataRename with instance name uk.org.ogsadai.MetadataRename-ogsadai-1fd0749a-5de7-4969-a87d-749ceb1937c5.
+    2016-12-23 14:46:50,184 WARN  event.LoggingActivityListener [pool-1-thread-749,warnExceptionAndChildren:343] #1482522410183:5986# The pipe has been closed due to an error that occurred at the data producer.
+    2016-12-23 14:46:50,185 DEBUG execute.Coordinator [pool-1-thread-741,debug:84] EXECUTION EXCEPTION: LOCAL PARTITION (EvaluationNode [URL=http://www.example.org:8080/service])(NIL (RENAME (PROJECT (INNER_THETA_JOIN (RENAME (TABLE_SCAN null)) (TABLE_SCAN null)))))
+    2016-12-23 14:46:50,186 DEBUG execute.Coordinator [pool-1-thread-741,debug:84] uk.org.ogsadai.dqp.execute.ExecutionException: [1482522410185:5991] uk.org.ogsadai.EXECUTION_ERROR
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.executeConnectedPipeline(SQLQueryActivity.java:617)
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.executePipeline(SQLQueryActivity.java:502)
+	    at uk.org.ogsadai.dqp.execute.partition.LocalPartition.execute(LocalPartition.java:152)
+	    at uk.org.ogsadai.dqp.execute.Coordinator$1.call(Coordinator.java:386)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	    at java.lang.Thread.run(Thread.java:745)
+    Caused by: uk.org.ogsadai.activity.io.DataError: The pipe has been closed due to an error that occurred at the data producer.
+	    at uk.org.ogsadai.activity.io.BufferedPipe.read(BufferedPipe.java:154)
+	    at uk.org.ogsadai.activity.event.EventfulPipe.read(EventfulPipe.java:118)
+	    at uk.org.ogsadai.activity.dqp.OutputInputConnector.call(OutputInputConnector.java:107)
+	    at uk.org.ogsadai.activity.dqp.OutputInputConnector.call(OutputInputConnector.java:38)
+	    ... 6 more
+
+
+
+#
+# Tested the SQL query on the WSA database access page.
+# http://wsa.roe.ac.uk:8080/wsa/WSASQL 
+
+    #
+    # Without quotes - throws the same fonversion failed exception
+    # With quotes works fine.
+
+
+    SELECT
+        table_23.ra_21,
+        table_23.designation_22
+    FROM
+        (
+        SELECT
+            TWOMASS.dbo.twomass_psc.ra AS ra_21,
+            TWOMASS.dbo.twomass_psc.designation AS designation_22
+        FROM
+            TWOMASS.dbo.twomass_psc
+        WHERE
+            (
+            TWOMASS.dbo.twomass_psc.ra < 1.25
+            )
+        AND (
+            TWOMASS.dbo.twomass_psc.ra > 0
+            )
+        AND (
+            TWOMASS.dbo.twomass_psc.dec < 1.25
+            )
+        AND (
+            TWOMASS.dbo.twomass_psc.dec > 0
+            )
+        ) AS table_23
+    WHERE
+        table_23.designation_22 IN
+            (
+            '00032893+0105536',
+            '00020453+0107523',
+            '00025788+0042238',
+            '00025235+0107018'
+            )
+
+    #
+    # Best guess is the problem is here.
+    # ogsa-dai/trunk/extensions/basic/server/src/main/java/uk/org/ogsadai/activity/transform/StringReplaceActivity.java
+
+    public class StringReplaceActivity extends MatchedIterativeActivity
+        {
+        ....
+
+        private static class StringReplacer
+            {
+            ....
+            
+            public String createString(Tuple tuple)
+                {
+                StringBuilder result = new StringBuilder();
+                for (int i=0; i<mColumns.size(); i++)
+                    {
+                    result.append(mFixed.get(i));
+                    result.append(tuple.getString(mColumns.get(i)));
+                    }
+                result.append(mFixed.get(mFixed.size()-1));
+                return result.toString();
+                }
+            }
+        }
+
+    #
+    # Specifically
+    tuple.getString(
+        mColumns.get(i)
+        )
+
+    We need to know the data type of the column so that we can convert
+    to the appropriate SQL form, e.g. adding quotes where necessary.
+    
+        WHERE
+            table_23.designation_22 IN
+                (
+                '00032893+0105536',
+                '00020453+0107523',
+                '00025788+0042238',
+                '00025235+0107018'
+                )
+
+
+
+
