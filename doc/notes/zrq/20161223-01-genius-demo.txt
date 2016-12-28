@@ -63,7 +63,6 @@
         something
 
 
-
     #
     # Find a useful patch of data.
     SELECT
@@ -163,10 +162,8 @@
     GACS	100058880	270.000003	359.999997	0	        89.982071
     WFAU	100058880	270.000003	359.999997	0	        89.982071
 
-
     #
     # Target query ...
-
     SELECT
         GAIADR1.tmass_best_neighbour.original_ext_source_id AS external_source_id,
 
@@ -203,7 +200,6 @@
   
     #
     # Simpler
-
     SELECT
         GAIADR1.tmass_best_neighbour.original_ext_source_id AS external_source_id,
 
@@ -298,68 +294,9 @@
         dec
     
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     #
-    # Remote query ...
-    SELECT
-        GAIADR1.tmass_best_neighbour.original_ext_source_id AS external_source_id,
+    # Comparing oid, pts_key, ext_key and designation.
 
-        GAIADR1.tmass_best_neighbour.source_id              AS neighbour_source_id,
-        GAIADR1.gaia_source.source_id                       AS gaia_source_id,
-
-        GAIADR1.tmass_best_neighbour.tmass_oid              AS neighbour_oid, 
-        GAIADR1.tmass_original_valid.tmass_oid              AS twomass_oid,
-
-        GAIADR1.tmass_original_valid.ra                     AS twomass_ra,
-        GAIADR1.gaia_source.ra                              AS gaia_ra,
-
-        GAIADR1.tmass_original_valid.dec                    AS twomass_dec,
-        GAIADR1.gaia_source.dec                             AS gaia_dec
-
-    FROM
-        GAIADR1.gaia_source,
-        GAIADR1.tmass_best_neighbour,
-        GAIADR1.tmass_original_valid
-
-    WHERE
-        GAIADR1.tmass_best_neighbour.source_id = GAIADR1.gaia_source.source_id
-    AND
-        GAIADR1.tmass_best_neighbour.tmass_oid = GAIADR1.tmass_original_valid.tmass_oid
-    AND
-        GAIADR1.gaia_source.ra  BETWEEN   0 AND 1.25
-    AND
-        GAIADR1.gaia_source.dec BETWEEN   0 AND 1.25
-    AND
-        GAIADR1.tmass_original_valid.ra  BETWEEN   0 AND 1.25
-    AND
-        GAIADR1.tmass_original_valid.dec BETWEEN   0 AND 1.25
-    ORDER BY
-        twomass_ra,
-        twomass_dec,
-        gaia_ra,
-        gaia_dec
-
-    #
-    # Test query ...
     SELECT
         TWOMASS.twomass_psc.pts_key,    -- 1098563210
         TWOMASS.twomass_psc.ext_key     -- ...
@@ -371,7 +308,17 @@
     AND
         TWOMASS.twomass_psc.dec = 0.809816
 
-        
+
+
+
+    # designation
+    # Sexagesimal, equatorial position-based source name in the form: hhmmssss+ddmmsss[ABC...].
+    # http://www.ipac.caltech.edu/2mass/releases/allsky/doc/sec2_2a.html
+
+    # Referencing 2MASS
+    # 2MASS Source Naming Convention
+    # http://www.ipac.caltech.edu/2mass/releases/allsky/doc/sec1_8a.html
+
 
     #
     # Distributed query ...
@@ -423,7 +370,7 @@
 SELECT table_23.ra_21, table_23.designation_22 FROM (SELECT TWOMASS.dbo.twomass_psc.ra AS ra_21, TWOMASS.dbo.twomass_psc.designation AS designation_22 FROM TWOMASS.dbo.twomass_psc WHERE  ( TWOMASS.dbo.twomass_psc.ra < 1.25 )  AND  ( TWOMASS.dbo.twomass_psc.ra > 0 )  AND  ( TWOMASS.dbo.twomass_psc.dec < 1.25 )  AND  ( TWOMASS.dbo.twomass_psc.dec > 0 ) ) AS table_23 WHERE table_23.designation_22 IN (00032893+0105536 ,00020453+0107523 ,00025788+0042238 ,00025235+0107018 ,00005956+0014047 ,00001165+0025462 ,00044152+0106297 ,00023768+0100559 ,00020464+0055063 ,00033481+0048269 ,00010849+0109115 ,00003458+0054564 ,00020265+0038359 ,00003856+0032127 ,00044219+0107548 ,00022194+0111556 ,00045709+0109380 ,00021917+0031120 ,00001869+0052189 ,00011840+0034324 ,00044769+0109366 ,00042654+0114004 ,00002456+0037525 ,00001093+0012488 ,00024800+0109468 ,00005335+0112347 ,00000129+0054135 ,00000230+0037391 ,00011303+0034232 ,00013424+0110587 ,00025699+0107139 ,00010274+0052292 ,00004122+0052163) ....
 
     -- BUG
-    -- String to int where it shouldn't
+    -- String to int where it shouldn't ?
 
     2016-12-23 14:46:50,165 DEBUG sql.SQLQueryActivity [pool-1-thread-746,debug:84] CallableStatement encountered problem in query execution
     2016-12-23 14:46:50,166 DEBUG activity.MatchedIterativeActivity [pool-1-thread-746,debug:84] performing clean-up
@@ -478,12 +425,12 @@ SELECT table_23.ra_21, table_23.designation_22 FROM (SELECT TWOMASS.dbo.twomass_
 
 
 
-#
-# Tested the SQL query on the WSA database access page.
-# http://wsa.roe.ac.uk:8080/wsa/WSASQL 
+    #
+    # Tested the SQL query on the WSA SQL query page.
+    # http://wsa.roe.ac.uk:8080/wsa/WSASQL 
 
     #
-    # Without quotes - throws the same fonversion failed exception
+    # Without quotes - throws the same conversion failed exception
     # With quotes works fine.
 
 
@@ -523,7 +470,6 @@ SELECT table_23.ra_21, table_23.designation_22 FROM (SELECT TWOMASS.dbo.twomass_
     #
     # Best guess is the problem is here.
     # ogsa-dai/trunk/extensions/basic/server/src/main/java/uk/org/ogsadai/activity/transform/StringReplaceActivity.java
-
     public class StringReplaceActivity extends MatchedIterativeActivity
         {
         ....
@@ -552,8 +498,8 @@ SELECT table_23.ra_21, table_23.designation_22 FROM (SELECT TWOMASS.dbo.twomass_
         mColumns.get(i)
         )
 
-    We need to know the data type of the column so that we can convert
-    to the appropriate SQL form, e.g. adding quotes where necessary.
+    # We need to know the data type of the column so that we can convert
+    # to the appropriate SQL form, e.g. adding quotes where necessary.
     
         WHERE
             table_23.designation_22 IN
@@ -565,5 +511,45 @@ SELECT table_23.ra_21, table_23.designation_22 FROM (SELECT TWOMASS.dbo.twomass_
                 )
 
 
+    #
+    # StringReplaceActivity is used to build the IN expression here
+    # ogsa-dai/code/sandbox/dqp/server/src/main/java/uk/org/ogsadai/dqp/execute/workflow/BatchTableScanBuilder.java
 
+        // Construct the StringReplace activity
+        GenericActivity stringReplace =
+            new GenericActivity("uk.org.ogsadai.StringReplace");
+        stringReplace.createInput("template");
+        stringReplace.createInput("data");
+        stringReplace.createOutput("result");
+
+        // Put an IN expression into the filtered table scan
+        operator = addAndImplodeSelect(operator);
+
+        // Need to repeat the template input for each instance of the
+        // data input so we add a controlled repeater
+        GenericActivity controlledRepeater =
+            BuilderUtils.createControlledRepeat();
+        controlledRepeater.addInput(
+            "repeatedInput", 
+            operator.getPhysicalDatabaseQuery().replace(
+                "DQP_REPLACE", "$REPLACE"));
+        controlledRepeater.connectInput(
+            "input", ifEmptyList.getOutput("outputNonEmpty"));
+        
+        stringReplace.connectInput(
+            "template", controlledRepeater.getOutput("repeatedOutput"));
+        stringReplace.connectInput(
+            "data", controlledRepeater.getOutput("output"));
+        
+        // Construct the SQLQuery activity
+        GenericActivity query = new GenericActivity("uk.org.ogsadai.SQLQuery");
+        query.createInput("expression");
+        query.createOutput("data");
+        query.setResourceID(operator.getDataNode().getResourceID());
+        query.connectInput("expression", stringReplace.getOutput("result"));
+
+
+    #
+    # Note for later, logical query plan builder ... LQPBuilder
+    
 
