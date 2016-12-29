@@ -15,44 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21.1
+FROM firethorn/fedora:25-2.1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-#
-# Create our projects directory.
-RUN mkdir /var/local/projects
-#RUN chgrp users /var/local/projects
-#RUN chmod g+rwx /var/local/projects
-VOLUME /var/local/projects
-
-#
-# Create our cache directory.
-RUN mkdir /var/local/cache
-#RUN chgrp users /var/local/cache
-#RUN chmod g+rwx /var/local/cache
-VOLUME /var/local/cache
-
-#
-# Install system tools.
-RUN yum -y install iputils
-RUN yum -y install bind-utils
-
-#
-# Install Docker client.
-RUN yum -y install docker-io
-
-#
-# Install Mercurial
-RUN yum -y install mercurial
-
-#
-# Install Java
-RUN yum -y install java-1.8.0-openjdk-devel
-RUN yum -y install java-1.8.0-openjdk-headless
-
-#
-# Install Maven
-COPY bin/install-maven.sh /tmp/install-maven.sh
-RUN /bin/bash -c 'source /tmp/install-maven.sh'
-
+RUN dnf -y install openssh-clients
 

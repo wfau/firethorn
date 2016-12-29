@@ -15,14 +15,44 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21.1
+FROM firethorn/fedora:25-2.1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-RUN yum -y install socat
+#
+# Create our projects directory.
+RUN mkdir /var/local/projects
+#RUN chgrp users /var/local/projects
+#RUN chmod g+rwx /var/local/projects
+VOLUME /var/local/projects
 
-EXPOSE 2375
+#
+# Create our cache directory.
+RUN mkdir /var/local/cache
+#RUN chgrp users /var/local/cache
+#RUN chmod g+rwx /var/local/cache
+VOLUME /var/local/cache
 
-# Add a proxy from the unix socket to tcp/ip.
-# http://www.dest-unreach.org/socat/doc/socat.html
-CMD socat TCP-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
+#
+# Install system tools.
+RUN dnf -y install iputils
+RUN dnf -y install bind-utils
+
+#
+# Install Docker client.
+RUN dnf -y install docker-io
+
+#
+# Install Mercurial
+RUN dnf -y install mercurial
+
+#
+# Install Java JDK
+RUN dnf -y install java-1.8.0-openjdk-devel
+RUN dnf -y install java-1.8.0-openjdk-headless
+
+#
+# Install Maven
+COPY bin/install-maven.sh /tmp/install-maven.sh
+RUN /bin/bash -c 'source /tmp/install-maven.sh'
+
 

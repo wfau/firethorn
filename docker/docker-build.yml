@@ -1,0 +1,36 @@
+version: '2.0'
+
+services:
+
+    fedora:
+        image: "firethorn/fedora:${docktag}"
+        build:
+            context: 'fedora/25'
+
+    java:
+        image: "firethorn/java:${docktag}"
+        build:
+            context: 'java/8'
+
+    tomcat:
+        image: "firethorn/tomcat:${docktag}"
+        build:
+            context: 'tomcat/8'
+
+    postgres:
+        image: "firethorn/postgres:${docktag}"
+        build:
+            context: 'postgres/9'
+
+    sql-proxy:
+        image: "firethorn/sql-proxy:${docktag}"
+        build:
+            context: 'sql-proxy'
+
+    sql-tunnel:
+        image: "firethorn/sql-tunnel:${docktag}"
+        build:
+            context: 'sql-tunnel'
+
+
+

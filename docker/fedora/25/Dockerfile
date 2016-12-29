@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,19 +15,41 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21.1
+FROM fedora:25
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-EXPOSE 1433
+#
+# Declare the system cache as a volume.
+VOLUME /var/cache/
 
-RUN yum -y install socat
-RUN yum -y install bind-utils
+#
+# Enable delta rpms.
+#RUN dnf install -y  deltarpm
 
-COPY bin/sql-proxy.sh /bin/sql-proxy.sh
-RUN chmod a+x /bin/sql-proxy.sh
+#
+# Install common admin tools.
+RUN dnf install -y sed
+RUN dnf install -y tar
+RUN dnf install -y zip
+RUN dnf install -y wget
+RUN dnf install -y nano
+RUN dnf install -y gzip
+RUN dnf install -y pwgen
+RUN dnf install -y gnupg
+RUN dnf install -y which
 
-CMD /bin/sql-proxy.sh
+#
+# Set the terminal type for exec.
+# https://github.com/docker/docker/issues/9299
+ENV TERM xterm
 
+#
+# Add our install scripts. 
+COPY bin /usr/local/bin/
+RUN chmod a+x /usr/local/bin/*.sh
 
-
+#
+# Run our install scripts.
+RUN /usr/local/bin/install-locale.sh
+RUN /usr/local/bin/install-gosu.sh
 
