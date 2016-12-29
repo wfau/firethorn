@@ -3,34 +3,51 @@ version: '2.0'
 services:
 
     fedora:
-        image: "firethorn/fedora:${docktag}"
+        image: "firethorn/fedora:${version}"
         build:
             context: 'fedora/25'
 
     java:
-        image: "firethorn/java:${docktag}"
+        image: "firethorn/java:${version}"
         build:
             context: 'java/8'
+        depends_on:
+            - fedora
+
+    builder:
+        image: "firethorn/builder:${version}"
+        build:
+            context: 'builder'
+        depends_on:
+            - java
 
     tomcat:
-        image: "firethorn/tomcat:${docktag}"
+        image: "firethorn/tomcat:${version}"
         build:
             context: 'tomcat/8'
+        depends_on:
+            - java
 
     postgres:
-        image: "firethorn/postgres:${docktag}"
+        image: "firethorn/postgres:${version}"
         build:
             context: 'postgres/9'
+        depends_on:
+            - fedora
 
     sql-proxy:
-        image: "firethorn/sql-proxy:${docktag}"
+        image: "firethorn/sql-proxy:${version}"
         build:
             context: 'sql-proxy'
+        depends_on:
+            - fedora
 
     sql-tunnel:
-        image: "firethorn/sql-tunnel:${docktag}"
+        image: "firethorn/sql-tunnel:${version}"
         build:
             context: 'sql-tunnel'
+        depends_on:
+            - fedora
 
 
 
