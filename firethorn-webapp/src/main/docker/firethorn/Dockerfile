@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tomcat:8.1
+FROM firethorn/tomcat:2.0.22-zrq-update
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #

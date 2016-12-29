@@ -31,7 +31,7 @@ version=${1:?}
             " "${pom:?}"
     done
 
-    for temp in $(find docker -name 'Dockertemp')
+    for temp in $(find . -name 'Dockertemp')
     do
         file="$(dirname ${temp:?})/Dockerfile"
 

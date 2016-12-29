@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,23 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:2.0.22-zrq-update
+FROM firethorn/tomcat:{BUILD_VERSION}
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-RUN dnf -y install perl
-RUN dnf -y install perl-JSON
+#
+# ADD our webapp.
+ADD ${project.build.finalName} /var/local/tomcat/webapps/ogsadai
 
-RUN dnf install -y jq
-RUN dnf install -y xmlstarlet
+#
+# Make our webapp directory writeable.
+USER root
+RUN chown -R tomcat:tomcat /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
+RUN chmod -R u+rw,g+rw     /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
+USER tomcat
 
-COPY bin/  /tester/bin 
-COPY meta/ /tester/meta 
-COPY vosi/ /tester/vosi 
+#
+# Add our config properties
+COPY ogsadai.properties /var/local/tomcat/ogsadai.properties
 
-ADD https://github.com/micha/resty/raw/master/pp    /tester/bin/
-ADD https://github.com/micha/resty/raw/master/resty /tester/bin/
-
-RUN chmod a+x /tester/bin/pp
-RUN chmod a+x /tester/bin/resty
-
-WORKDIR /tester

@@ -25,7 +25,7 @@ IFS=$'\n\t'
 
 #
 # Version numbers
-gosuversion=1.7
+gosuversion=1.10
 #systemarch=$(uname --hardware-platform)
 systemarch=amd64
 

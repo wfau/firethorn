@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:{BUILD_VERSION}
+FROM firethorn/java:{BUILD_VERSION}
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
@@ -47,7 +47,7 @@ RUN dnf -y install mercurial
 
 #
 # Install Java JDK
-RUN dnf -y install java-1.8.0-openjdk-devel
+#RUN dnf -y install java-1.8.0-openjdk-devel
 RUN dnf -y install java-1.8.0-openjdk-headless
 
 #
