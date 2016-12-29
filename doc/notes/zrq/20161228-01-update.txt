@@ -367,11 +367,19 @@
     popd
 
 # -----------------------------------------------------
-# Update the dependency versions.
+# Update the Dockerfile tags.
 #[user@desktop] 
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
+
+
+docker/builder/Dockerfile
+docker/java/8/Dockerfile
+docker/sql-proxy/Dockerfile
+docker/sql-tunnel/Dockerfile
+docker/ssh-client/Dockerfile
+docker/tomcat/8/Dockerfile
 
 
 
