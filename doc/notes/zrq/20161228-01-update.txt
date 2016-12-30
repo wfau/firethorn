@@ -432,6 +432,7 @@
     dataname=elayne
     ogsaname=jarmila
     firename=gillian
+    testname=aaliyah
 
     metatype=pgsql
     metadata=postgres
@@ -622,19 +623,18 @@ EOF
 # Start our tester container.
 #[user@desktop] 
 
-TODO replace 'datalink'
-
     source "${HOME:?}/chain.properties"
     docker run \
         --rm \
         --tty \
         --interactive \
         --env "datadata=${datadata:?}" \
-        --env "datalink=${dataname:?}" \
+        --env "dataname=${dataname:?}" \
         --env "datauser=${datauser:?}" \
         --env "datapass=${datapass:?}" \
         --env "datadriver=${datadriver:?}" \
         --env "endpointurl=http://${firename:?}:8080/firethorn" \
+        --name    "${testname:?}" \
         --volume  '/etc/localtime:/etc/localtime:ro' \
         --network "${netspace:?}" \
         "firethorn/tester:${version:?}" \
@@ -671,7 +671,7 @@ TODO replace 'datalink'
         
         source "bin/02-02-create-jdbc-space.sh" \
             'Atlas JDBC conection' \
-            "jdbc:jtds:sqlserver://${datalink:?}/${database:?}" \
+            "jdbc:jtds:sqlserver://${dataname:?}/${database:?}" \
             "${datauser:?}" \
             "${datapass:?}" \
             "${datadriver:?}" \
@@ -753,8 +753,6 @@ TODO replace 'datalink'
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
 
-ZRQ - HERE
-
 # --------------------------------------
 # Create the GAIA TWOMASS resource.
 #[root@tester]
@@ -763,7 +761,7 @@ ZRQ - HERE
         # Create the IvoaResource
         source "bin/02-03-create-ivoa-space.sh" \
             'GAIA TAP service' \
-            'https://gaia.esac.esa.int/tap-server/tap'
+            'http://gea.esac.esa.int/tap-server/tap'
 
         #
         # Import the static VOSI file
@@ -778,7 +776,7 @@ ZRQ - HERE
         #
         # Find the twomass schema
         gaiaspace=${ivoaspace:?}
-        schemaname=public
+        schemaname=gaiadr1
         curl \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
@@ -819,9 +817,10 @@ ZRQ - HERE
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "blue.query.input=SELECT TOP 2000 ra, dec FROM public.tmass_original_valid" \
-            --data "blue.query.next.status=COMPLETED" \
-            --data "blue.query.wait=600000" \
-            "${endpointurl:?}/${queryspace:?}/blue/create" \
+            --data "adql.query.input=SELECT TOP 2000 ra, dec FROM public.tmass_original_valid" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
+
 
