@@ -20,7 +20,7 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Declare the system cache as a volume.
-VOLUME /var/cache/
+#VOLUME /var/cache/
 
 #
 # Enable delta rpms.

@@ -1,0 +1,228 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Get the build version.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        export version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Remove exsting containers and images.
+#[user@desktop] 
+
+    docker rm -vf $(docker ps -aq)
+
+    docker rmi -f $(docker images -q)
+    
+# -----------------------------------------------------
+# Build our tomcat container.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export cachedir=${HOME}/temp/cachedir
+        rm -rf ${cachedir:?}
+
+        export cachedir=/tmp/cachedir
+        mkdir  ${cachedir:?}
+        chmod a+rwx ${cachedir:?}
+
+        docker rmi -f $(docker images -q)
+
+        time docker-compose \
+            --file docker/docker-build.yml \
+            build \
+                fedora
+
+                fedora java tomcat
+
+    popd
+
+# No volumes.
+
+    real	7m32.702s
+    user	0m0.533s
+    sys	0m0.085s
+
+# Unmounted volume on fedora
+# volumes:
+#    - /var/cache
+
+
+    real	10m12.467s
+    user	0m0.536s
+    sys	0m0.095s
+
+# Unmounted volume on all
+# volumes:
+#    - /var/cache
+
+    real	7m35.626s
+    user	0m0.562s
+    sys	0m0.083s
+
+# Mount cachedir volume on fedora
+# volumes:
+#    - {cachedir}:/var/cache
+
+    real	7m35.668s
+    user	0m0.546s
+    sys	0m0.087s
+
+# Mount cachedir volume on all
+# cachedir=${HOME}/temp/cachedir
+# volumes:
+#    - {cachedir}:/var/cache
+
+    real	7m34.661s
+    user	0m0.562s
+    sys	0m0.076s
+
+# Mount cachedir volume on all
+# cachedir=/tmp/cachedir
+# volumes:
+#    - {cachedir}:/var/cache
+
+    real	7m32.026s
+    user	0m0.588s
+    sys	0m0.081s
+
+    real	7m44.319s
+    user	0m0.597s
+    sys	0m0.082s
+
+# No volumes.
+
+    real	7m26.420s
+    user	0m0.563s
+    sys	0m0.066s
+
+# -----------------------------------------------------
+# testing stuff ...
+#[user@desktop] 
+
+    time docker-compose \
+        --file docker/docker-build.yml \
+        build \
+            fedora
+
+        real    4m44.630s
+        user    0m0.485s
+        sys	    0m0.108s
+
+    docker images
+
+        REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+        firethorn/fedora    2.0.22-zrq-update   9861720da120        14 seconds ago      586.4 MB
+        fedora              25                  a1e614f0f30e        2 weeks ago         197.1 MB
+
+    docker rmi \
+        firethorn/fedora:2.0.22-zrq-update 
+
+    time docker-compose \
+        --file docker/docker-build.yml \
+        build \
+            fedora
+
+        real    3m33.187s
+        user    0m0.331s
+        sys     0m0.045s
+
+    docker rmi \
+        firethorn/fedora:2.0.22-zrq-update 
+
+    time docker-compose \
+        --file docker/docker-build.yml \
+        build \
+            fedora
+
+        real    3m45.082s
+        user    0m0.343s
+        sys     0m0.060s
+
+    -   #VOLUME /var/cache/
+    +   VOLUME /var/cache/
+
+        real    16m13.547s
+        user    0m0.322s
+        sys     0m0.047s
+
+        real    15m27.467s
+        user    0m0.327s
+        sys     0m0.056s
+
+    mkdir /tmp/cache
+    chmod a+rwx /tmp/cache
+
+    +   volumes:
+    +       - /tmp/cache:/var/cache
+
+    docker rmi \
+        firethorn/fedora:2.0.22-zrq-update 
+
+    time docker-compose \
+        --file docker/docker-build.yml \
+        build \
+            fedora
+
+        real    15m22.289s
+        user    0m0.337s
+        sys     0m0.050s
+
+    -   VOLUME /var/cache/
+    +   #VOLUME /var/cache/
+
+    docker rmi \
+        firethorn/fedora:2.0.22-zrq-update 
+
+    time docker-compose \
+        --file docker/docker-build.yml \
+        build \
+            fedora
+
+        real    3m45.423s
+        user    0m0.333s
+        sys     0m0.041s
+
+# -----------------------------------------------------
+# Conclusions ...
+#[user@desktop] 
+
+    Declaring a volume inside the Dockerfile slows the build from 3 min to 15 min.
+    
+    Declaring a volume in the composer file has no effect.
+
+
+    time docker-compose \
+        --verbose \
+        --file docker/docker-build.yml \
+        build \
+            fedora
+

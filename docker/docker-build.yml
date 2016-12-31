@@ -1,53 +1,73 @@
-version: '2.0'
+version: '2'
 
 services:
 
     fedora:
-        image: "firethorn/fedora:${version}"
+        image:
+            "firethorn/fedora:${version}"
+        labels:
+            uk.ac.roe.firethorn.version: "${version}"
         build:
             context: 'fedora/25'
+        volumes:
+            - /tmp/cache:/var/cache
 
     java:
-        image: "firethorn/java:${version}"
+        image:
+            "firethorn/java:${version}"
+        labels:
+            uk.ac.roe.firethorn.version: "${version}"
         build:
             context: 'java/8'
         depends_on:
             - fedora
 
     builder:
-        image: "firethorn/builder:${version}"
+        image:
+            "firethorn/builder:${version}"
+        labels:
+            uk.ac.roe.firethorn.version: "${version}"
         build:
             context: 'builder'
         depends_on:
             - java
 
     tomcat:
-        image: "firethorn/tomcat:${version}"
+        image:
+            "firethorn/tomcat:${version}"
+        labels:
+            uk.ac.roe.firethorn.version: "${version}"
         build:
             context: 'tomcat/8'
         depends_on:
             - java
 
-    postgres:
-        image: "firethorn/postgres:${version}"
-        build:
-            context: 'postgres/9'
-        depends_on:
-            - fedora
-
     sql-proxy:
-        image: "firethorn/sql-proxy:${version}"
+        image:
+            "firethorn/sql-proxy:${version}"
+        labels:
+            uk.ac.roe.firethorn.version: "${version}"
         build:
             context: 'sql-proxy'
         depends_on:
             - fedora
 
     sql-tunnel:
-        image: "firethorn/sql-tunnel:${version}"
+        image:
+            "firethorn/sql-tunnel:${version}"
+        labels:
+            uk.ac.roe.firethorn.version: "${version}"
         build:
             context: 'sql-tunnel'
         depends_on:
             - fedora
 
-
+#    postgres:
+#        image:
+#           "firethorn/postgres:${version}"
+#        build:
+#            context: 'postgres/9'
+#        depends_on:
+#            - fedora
+#
 

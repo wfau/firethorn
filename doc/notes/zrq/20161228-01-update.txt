@@ -239,8 +239,8 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean
-        mvn -P all install | grep 'WARNING'
+        mvn clean
+        mvn install | grep 'WARNING'
 
             [WARNING] Found duplicate and different classes in [/var/local/projects/edinburgh/firethorn/working/firethorn-ogsadai/astro/server/target/classes, uk.ac.roe.wfau:firethorn-ogsadai-dqp-server:2.0.22-zrq-update]:
             [WARNING]   uk.org.ogsadai.activity.derby.DerbyBulkLoad
@@ -334,18 +334,6 @@
     popd
 
 # -----------------------------------------------------
-# Remove existing containers.
-#[user@desktop]
-
-    docker rm -vf $(docker ps -aq)
-
-# -----------------------------------------------------
-# Remove existing images.
-#[user@desktop]
-
-    docker rmi -f $(docker images -q)
-
-# -----------------------------------------------------
 # Load our secret function.
 #[user@desktop] 
 
@@ -392,6 +380,18 @@
     popd
 
 # -----------------------------------------------------
+# Remove existing containers.
+#[user@desktop]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove existing images.
+#[user@desktop]
+
+    docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
 # Build our container images.
 #[user@desktop] 
 
@@ -402,8 +402,9 @@
         version=$(getversion)
 
         export version
+
         
-        docker-compose \
+        time docker-compose \
             --file docker/docker-build.yml \
             build
 
@@ -664,14 +665,12 @@ EOF
 # -----------------------------------------------------
 
 # -----------------------------------------------------
-# Load the ATLASDR1 resource.
+# Load the local ATLASDR1 resource.
 #[root@tester]
 
-        database=ATLASDR1
-        
         source "bin/02-02-create-jdbc-space.sh" \
             'Atlas JDBC conection' \
-            "jdbc:jtds:sqlserver://${dataname:?}/${database:?}" \
+            "jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1" \
             "${datauser:?}" \
             "${datapass:?}" \
             "${datadriver:?}" \
@@ -719,7 +718,7 @@ EOF
             )
 
 # -----------------------------------------------------
-# Create our query workspace
+# Create a workspace and add the Atlas and Gavo schemas.
 #[root@tester]
 
         source "bin/04-01-create-query-space.sh"  'Test workspace'
@@ -754,7 +753,7 @@ EOF
             | bin/pp | tee blue-query.json
 
 # --------------------------------------
-# Create the GAIA TWOMASS resource.
+# Create the GAIA TAP resource.
 #[root@tester]
 
         #
@@ -774,13 +773,13 @@ EOF
             | bin/pp
 
         #
-        # Find the twomass schema
+        # Find the Gaia DR1 schema
         gaiaspace=${ivoaspace:?}
-        schemaname=gaiadr1
+        gaianame=gaiadr1
         curl \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data   "ivoa.resource.schema.name=${schemaname:?}" \
+            --data   "ivoa.resource.schema.name=${gaianame:?}" \
             "${endpointurl:?}/${gaiaspace:?}/schemas/select" \
             | bin/pp | tee gaia-schema.json
 
@@ -789,22 +788,16 @@ EOF
             )
 
 # -----------------------------------------------------
-# Create our query workspace
+# Create a workspace and add the Gaia DR1 schema.
 #[root@tester]
 
         source "bin/04-01-create-query-space.sh"  'Test workspace'
-        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}"   'ATLASDR1' 'atlas'
 
-        #
-        # BUG - the param names are different for adql and ivoa schema/select 
-        #source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'twomass'  'twomass'
-
-        adqlname=public
         curl \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
-            --data   "adql.resource.schema.import.name=${adqlname:?}" \
+            --data   "adql.resource.schema.import.name=${gaianame:?}" \
             --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
             "${endpointurl:?}/${queryspace:?}/schemas/import" \
             | bin/pp | tee query-schema.json
@@ -817,10 +810,99 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 2000 ra, dec FROM public.tmass_original_valid" \
+            --data "adql.query.input=SELECT TOP 2000 ra, dec FROM gaiadr1.tmass_original_valid" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
+
+# -----------------------------------------------------
+# Load the local TWOMASS resource.
+#[root@tester]
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'TWOMASS JDBC conection' \
+            "jdbc:jtds:sqlserver://${dataname:?}/TWOMASS" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        tmassjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
+        tmassadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${tmassjdbc:?}" "${tmassadql:?}" 'TWOMASS' 'dbo' "meta/TWOMASS_TablesSchema.xml"
+
+# -----------------------------------------------------
+# Create a workspace and add the Twomass and Gaia DR1 schemas.
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${tmassadql:?}" 'TWOMASS' 'TWOMASS'
+
+        adqlname=gaiadr1
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${adqlname:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | bin/pp | tee query-schema.json
+
+# -----------------------------------------------------
+# Create our test query.
+#[root@tester]
+
+    cat > testquery << EOF
+
+    SELECT
+        gaiadr1.tmass_best_neighbour.original_ext_source_id AS external_ident,
+        TWOMASS.twomass_psc.designation                     AS twomass_ident,
+
+        gaiadr1.tmass_best_neighbour.source_id              AS neighbour_source_id,
+        gaiadr1.gaia_source.source_id                       AS gaia_source_id,
+
+        TWOMASS.twomass_psc.ra                              AS twomass_ra,
+        gaiadr1.gaia_source.ra                              AS gaia_ra,
+
+        TWOMASS.twomass_psc.ra                              AS twomass_dec,
+        gaiadr1.gaia_source.dec                             AS gaia_dec
+
+    FROM
+        gaiadr1.gaia_source,
+        gaiadr1.tmass_best_neighbour,
+        TWOMASS.twomass_psc
+
+    WHERE
+        gaiadr1.tmass_best_neighbour.source_id = gaiadr1.gaia_source.source_id
+    AND
+        gaiadr1.tmass_best_neighbour.original_ext_source_id = TWOMASS.twomass_psc.designation
+    AND
+        gaiadr1.gaia_source.ra  BETWEEN   0 AND 1.25
+    AND
+        gaiadr1.gaia_source.dec BETWEEN   0 AND 1.25
+    AND
+        TWOMASS.twomass_psc.ra  BETWEEN   0 AND 1.25
+    AND
+        TWOMASS.twomass_psc.dec BETWEEN   0 AND 1.25
+
+EOF
+
+# -----------------------------------------------------
+# Execute our test query.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@testquery" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
 
 
