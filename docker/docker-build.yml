@@ -62,12 +62,12 @@ services:
         depends_on:
             - fedora
 
-#    postgres:
-#        image:
-#           "firethorn/postgres:${version}"
-#        build:
-#            context: 'postgres/9'
-#        depends_on:
-#            - fedora
-#
+    postgres:
+        image:
+           "firethorn/postgres:${version}"
+        build:
+            context: 'postgres/9'
+        depends_on:
+            - fedora
+
 

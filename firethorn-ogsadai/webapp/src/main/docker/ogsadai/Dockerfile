@@ -27,6 +27,11 @@ ADD ${project.build.finalName} /var/local/tomcat/webapps/ogsadai
 USER root
 RUN chown -R tomcat:tomcat /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
 RUN chmod -R u+rw,g+rw     /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
+
+COPY userdir /var/local/tomcat/userdir
+RUN chown -R tomcat:tomcat /var/local/tomcat/userdir
+RUN chmod -R u+rw,g+rw     /var/local/tomcat/userdir
+
 USER tomcat
 
 #
