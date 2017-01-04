@@ -1,0 +1,948 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Create a branch for the update.
+#[user@desktop] 
+
+    devname=zrq-update
+
+    source "${HOME:?}/firethorn.settings"
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
+
+#---------------------------------------------------------------------
+# Check for updates
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Display Dependency Updates
+        mvn versions:display-dependency-updates
+
+            #
+            # Accept updates
+
+            [INFO]   com.google.guava:guava .............................. 19.0 -> 21.0-rc1
+            [INFO]   joda-time:joda-time ................................... 2.9.4 -> 2.9.7
+            [INFO]   org.apache.commons:commons-lang3 .......................... 3.4 -> 3.5
+            [INFO]   org.jadira.usertype:usertype.core ............... 6.0.0.GA -> 6.0.1.GA
+            [INFO]   org.projectlombok:lombok .......................... 1.16.10 -> 1.16.12
+
+            [INFO]   mysql:mysql-connector-java ............................ 6.0.3 -> 6.0.5
+            [INFO]   org.postgresql:postgresql .................. 9.4.1209 -> 9.4.1212.jre7
+
+            [INFO]   com.fasterxml.jackson.core:jackson-core ............... 2.8.1 -> 2.8.5
+            [INFO]   com.fasterxml.jackson.core:jackson-databind ........... 2.8.1 -> 2.8.5
+            [INFO]   org.aspectj:aspectjrt ................................ 1.8.9 -> 1.8.10
+            [INFO]   org.aspectj:aspectjweaver ............................ 1.8.9 -> 1.8.10
+            [INFO]   org.hibernate:hibernate-core .............. 5.2.2.Final -> 5.2.6.Final
+            [INFO]   org.hibernate:hibernate-validator ......... 5.2.4.Final -> 5.4.0.Beta1
+
+            [INFO]   ch.qos.logback:logback-access ......................... 1.1.7 -> 1.1.8
+            [INFO]   ch.qos.logback:logback-classic ........................ 1.1.7 -> 1.1.8
+            [INFO]   ch.qos.logback:logback-core ........................... 1.1.7 -> 1.1.8
+            [INFO]   org.slf4j:jcl-over-slf4j ............................ 1.7.21 -> 1.7.22
+            [INFO]   org.slf4j:jul-to-slf4j .............................. 1.7.21 -> 1.7.22
+            [INFO]   org.slf4j:log4j-over-slf4j .......................... 1.7.21 -> 1.7.22
+            [INFO]   org.slf4j:slf4j-api ................................. 1.7.21 -> 1.7.22
+
+            #
+            # Move Spring from 4.3.2.RELEASE to 4.3.5.RELEASE.
+            # Delay update to Spring-5 until later. 
+            [INFO]   org.springframework:spring-aop ............. 4.3.2.RELEASE -> 5.0.0.M3
+            [INFO]   org.springframework:spring-aspects ......... 4.3.2.RELEASE -> 5.0.0.M3
+            [INFO]   org.springframework:spring-beans ........... 4.3.2.RELEASE -> 5.0.0.M3
+            [INFO]   org.springframework:spring-context-support ...
+            [INFO]                                                4.3.2.RELEASE -> 5.0.0.M3
+            [INFO]   org.springframework:spring-core ............ 4.3.2.RELEASE -> 5.0.0.M3
+            [INFO]   org.springframework:spring-instrument ...... 4.3.2.RELEASE -> 5.0.0.M3
+            [INFO]   org.springframework:spring-orm ............. 4.3.2.RELEASE -> 5.0.0.M3
+            [INFO]   org.springframework:spring-test ............ 4.3.2.RELEASE -> 5.0.0.M3
+            [INFO]   org.springframework:spring-web ............. 4.3.2.RELEASE -> 5.0.0.M3
+            [INFO]   org.springframework:spring-webmvc .......... 4.3.2.RELEASE -> 5.0.0.M3
+
+            #
+            # Move Tomcat from 8.5.4 to 8.5.9.
+            # Delay update to Tomcat-9 until later. 
+            [INFO]   org.apache.tomcat:tomcat-catalina ................. 8.5.4 -> 9.0.0.M15
+            [INFO]   org.apache.tomcat:tomcat-servlet-api .............. 8.5.4 -> 9.0.0.M15
+
+            #
+            # Leave Liquibase at current version.
+            [INFO]   com.mattbertolini:liquibase-slf4j ..................... 1.2.1 -> 2.0.0
+            [INFO]   org.liquibase:liquibase-core .......................... 3.0.1 -> 3.5.3
+
+            #
+            # Leave Servlet API at current version.
+            [INFO]   javax.servlet:javax.servlet-api ................... 3.1.0 -> 4.0.0-b01
+
+        #
+        # Display Plugin Updates
+        mvn versions:display-plugin-updates
+
+        #
+        # Display Dependency Tree
+        mvn dependency:tree -D detail
+
+            [INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ firethorn-webapp ---
+            [INFO] uk.ac.roe.wfau:firethorn-webapp:war:2.0.22-zrq-update
+            [INFO] +- uk.ac.roe.wfau:firethorn-spring:pom:2.0.22-zrq-update:compile
+            [INFO] |  +- org.springframework:spring-core:jar:4.3.5.RELEASE:compile
+            [INFO] |  |  \- commons-logging:commons-logging:jar:1.2:compile
+            [INFO] |  +- org.springframework:spring-beans:jar:4.3.5.RELEASE:compile
+            [INFO] |  +- org.springframework:spring-context-support:jar:4.3.5.RELEASE:compile
+            [INFO] |  |  \- org.springframework:spring-context:jar:4.3.5.RELEASE:compile
+            [INFO] |  +- org.springframework:spring-aspects:jar:4.3.5.RELEASE:compile
+            [INFO] |  +- org.springframework:spring-aop:jar:4.3.5.RELEASE:compile
+            [INFO] |  +- org.aspectj:aspectjweaver:jar:1.8.10:compile
+            [INFO] |  +- org.aspectj:aspectjrt:jar:1.8.10:compile
+            [INFO] |  +- cglib:cglib:jar:3.2.4:compile
+            [INFO] |  |  +- org.ow2.asm:asm:jar:5.1:compile
+            [INFO] |  |  \- org.apache.ant:ant:jar:1.9.6:compile
+            [INFO] |  |     \- org.apache.ant:ant-launcher:jar:1.9.6:compile
+            [INFO] |  +- org.springframework:spring-test:jar:4.3.5.RELEASE:compile
+            [INFO] |  +- org.springframework:spring-orm:jar:4.3.5.RELEASE:compile
+            [INFO] |  |  +- org.springframework:spring-jdbc:jar:4.3.5.RELEASE:compile
+            [INFO] |  |  \- org.springframework:spring-tx:jar:4.3.5.RELEASE:compile
+            [INFO] |  +- org.springframework:spring-web:jar:4.3.5.RELEASE:compile
+            [INFO] |  +- org.springframework:spring-webmvc:jar:4.3.5.RELEASE:compile
+            [INFO] |  |  \- org.springframework:spring-expression:jar:4.3.5.RELEASE:compile
+            [INFO] |  +- org.springframework:spring-instrument:jar:4.3.5.RELEASE:compile
+            [INFO] |  +- org.hibernate:hibernate-core:jar:5.2.6.Final:compile
+            [INFO] |  |  +- org.jboss.logging:jboss-logging:jar:3.3.0.Final:compile
+            [INFO] |  |  +- org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar:1.0.0.Final:compile
+            [INFO] |  |  +- org.javassist:javassist:jar:3.20.0-GA:compile
+            [INFO] |  |  +- antlr:antlr:jar:2.7.7:compile
+            [INFO] |  |  +- org.apache.geronimo.specs:geronimo-jta_1.1_spec:jar:1.1.1:compile
+            [INFO] |  |  +- org.jboss:jandex:jar:2.0.3.Final:compile
+            [INFO] |  |  +- com.fasterxml:classmate:jar:1.3.0:compile
+            [INFO] |  |  +- dom4j:dom4j:jar:1.6.1:compile
+            [INFO] |  |  +- org.hibernate.common:hibernate-commons-annotations:jar:5.0.1.Final:compile
+            [INFO] |  |  \- javax.enterprise:cdi-api:jar:1.1:compile
+            [INFO] |  |     +- javax.el:el-api:jar:2.2:compile
+            [INFO] |  |     +- org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.0.Beta1:compile
+            [INFO] |  |     +- javax.annotation:jsr250-api:jar:1.0:compile
+            [INFO] |  |     \- javax.inject:javax.inject:jar:1:compile
+            [INFO] |  +- org.hibernate:hibernate-validator:jar:5.2.4.Final:compile
+            [INFO] |  |  \- javax.validation:validation-api:jar:1.1.0.Final:compile
+            [INFO] |  +- javax.servlet:jstl:jar:1.2:compile
+            [INFO] |  +- com.fasterxml.jackson.core:jackson-core:jar:2.8.5:compile
+            [INFO] |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.8.5:compile
+            [INFO] |     \- com.fasterxml.jackson.core:jackson-annotations:jar:2.8.0:compile
+            [INFO] +- uk.ac.roe.wfau:firethorn-logging:pom:2.0.22-zrq-update:compile
+            [INFO] |  +- org.slf4j:slf4j-api:jar:1.7.22:compile
+            [INFO] |  +- org.projectlombok:lombok:jar:1.16.12:compile
+            [INFO] |  +- ch.qos.logback:logback-core:jar:1.1.8:compile
+            [INFO] |  +- ch.qos.logback:logback-classic:jar:1.1.8:compile
+            [INFO] |  +- ch.qos.logback:logback-access:jar:1.1.8:compile
+            [INFO] |  +- org.slf4j:jul-to-slf4j:jar:1.7.22:compile
+            [INFO] |  +- org.slf4j:log4j-over-slf4j:jar:1.7.22:compile
+            [INFO] |  \- org.slf4j:jcl-over-slf4j:jar:1.7.22:compile
+            [INFO] +- uk.ac.roe.wfau:firethorn-jdbc:pom:2.0.22-zrq-update:compile
+            [INFO] |  +- org.liquibase:liquibase-core:jar:3.0.1:compile
+            [INFO] |  |  \- org.yaml:snakeyaml:jar:1.12:compile
+            [INFO] |  +- com.mattbertolini:liquibase-slf4j:jar:1.2.1:compile
+            [INFO] |  +- org.hsqldb:hsqldb:jar:2.3.4:compile
+            [INFO] |  +- org.postgresql:postgresql:jar:9.4.1212:compile
+            [INFO] |  +- mysql:mysql-connector-java:jar:6.0.5:compile
+            [INFO] |  +- net.sourceforge.jtds:jtds:jar:1.3.1:compile
+            [INFO] |  \- c3p0:c3p0:jar:0.9.1.2:compile
+            [INFO] +- uk.ac.roe.wfau:firethorn-testing:pom:2.0.22-zrq-update:test
+            [INFO] |  \- junit:junit:jar:4.12:test
+            [INFO] |     \- org.hamcrest:hamcrest-core:jar:1.3:test
+            [INFO] +- uk.ac.roe.wfau:firethorn-core:jar:2.0.22-zrq-update:compile
+            [INFO] |  +- uk.ac.roe.wfau:firethorn-cds-adql:jar:2.0.22-zrq-update:compile
+            [INFO] |  |  \- uk.ac.roe.wfau:firethorn-cds-depends:pom:2.0.22-zrq-update:compile
+            [INFO] |  +- uk.ac.roe.wfau:firethorn-ogsadai-activity-client:jar:2.0.22-zrq-update:compile
+            [INFO] |  |  +- uk.ac.roe.wfau:firethorn-ogsadai-activity-common:jar:2.0.22-zrq-update:compile
+            [INFO] |  |  +- uk.ac.roe.wfau:firethorn-ogsadai-astro-client:jar:2.0.22-zrq-update:compile
+            [INFO] |  |  |  \- org.apache.httpcomponents:httpclient:jar:4.5.2:compile
+            [INFO] |  |  |     +- org.apache.httpcomponents:httpcore:jar:4.4.4:compile
+            [INFO] |  |  |     \- commons-codec:commons-codec:jar:1.10:compile
+            [INFO] |  |  +- com.sun.jersey:jersey-client:jar:1.10:compile
+            [INFO] |  |  |  \- com.sun.jersey:jersey-core:jar:1.10:compile
+            [INFO] |  |  +- uk.org.ogsadai:ogsadai-common:jar:4.2.2198:compile
+            [INFO] |  |  +- uk.org.ogsadai:ogsadai-client:jar:4.2.2198:compile
+            [INFO] |  |  +- uk.org.ogsadai:ogsadai-basic-client:jar:4.2.2198:compile
+            [INFO] |  |  +- uk.org.ogsadai:ogsadai-jersey-client:jar:4.2.2198:compile
+            [INFO] |  |  +- uk.org.ogsadai:ogsadai-jersey-common:jar:4.2.2198:compile
+            [INFO] |  |  +- uk.org.ogsadai:ogsadai-clientserver:jar:4.2.2198:compile
+            [INFO] |  |  +- uk.org.ogsadai:ogsadai-relational-client:jar:4.2.2198:compile
+            [INFO] |  |  \- com.google.guava:guava:jar:20.0:compile
+            [INFO] |  +- uk.ac.roe.wfau:firethorn-ogsadai-firethorn-client:jar:2.0.22-zrq-update:compile
+            [INFO] |  |  +- uk.ac.roe.wfau:firethorn-ogsadai-dqp-common:jar:2.0.22-zrq-update:compile
+            [INFO] |  |  +- uk.ac.roe.wfau:firethorn-ogsadai-dqp-client:jar:2.0.22-zrq-update:compile
+            [INFO] |  |  \- uk.ac.roe.wfau:firethorn-ogsadai-firethorn-common:jar:2.0.22-zrq-update:compile
+            [INFO] |  +- uk.ac.starlink:stil-fits:jar:3.0.4:compile
+            [INFO] |  +- uk.ac.starlink:stil-tamfits:jar:3.0.4:compile
+            [INFO] |  +- uk.ac.starlink:stil-util:jar:3.0.4:compile
+            [INFO] |  +- uk.ac.starlink:stil-table:jar:3.0.4:compile
+            [INFO] |  +- uk.ac.starlink:stil-votable:jar:3.0.4:compile
+            [INFO] |  +- joda-time:joda-time:jar:2.9.7:compile
+            [INFO] |  +- org.jadira.usertype:usertype.core:jar:6.0.1.GA:compile
+            [INFO] |  |  +- org.hibernate:hibernate-entitymanager:jar:5.2.1.Final:compile
+            [INFO] |  |  \- org.jadira.usertype:usertype.spi:jar:6.0.1.GA:compile
+            [INFO] |  \- org.apache.commons:commons-lang3:jar:3.5:compile
+            [INFO] +- commons-fileupload:commons-fileupload:jar:1.3.2:compile
+            [INFO] +- commons-io:commons-io:jar:2.5:compile
+            [INFO] +- org.jsoftbiz:os-platform-finder:jar:1.0:compile
+            [INFO] +- org.apache.tomcat:tomcat-servlet-api:jar:8.5.9:provided
+            [INFO] \- org.apache.tomcat:tomcat-catalina:jar:8.5.9:provided
+            [INFO]    +- org.apache.tomcat:tomcat-jsp-api:jar:8.5.9:provided
+            [INFO]    |  \- org.apache.tomcat:tomcat-el-api:jar:8.5.9:provided
+            [INFO]    +- org.apache.tomcat:tomcat-juli:jar:8.5.9:provided
+            [INFO]    +- org.apache.tomcat:tomcat-annotations-api:jar:8.5.9:provided
+            [INFO]    +- org.apache.tomcat:tomcat-api:jar:8.5.9:provided
+            [INFO]    +- org.apache.tomcat:tomcat-jni:jar:8.5.9:provided
+            [INFO]    +- org.apache.tomcat:tomcat-coyote:jar:8.5.9:provided
+            [INFO]    +- org.apache.tomcat:tomcat-util:jar:8.5.9:provided
+            [INFO]    +- org.apache.tomcat:tomcat-util-scan:jar:8.5.9:provided
+            [INFO]    \- org.apache.tomcat:tomcat-jaspic-api:jar:8.5.9:provided
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Clean build.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean
+        mvn install | grep 'WARNING'
+
+            [WARNING] Found duplicate and different classes in [/var/local/projects/edinburgh/firethorn/working/firethorn-ogsadai/astro/server/target/classes, uk.ac.roe.wfau:firethorn-ogsadai-dqp-server:2.0.22-zrq-update]:
+            [WARNING]   uk.org.ogsadai.activity.derby.DerbyBulkLoad
+            [WARNING]   uk.org.ogsadai.activity.derby.DerbyJoinActivity
+            [WARNING]   uk.org.ogsadai.activity.derby.DerbyUtilities
+
+            [WARNING] Found duplicate and different classes in [commons-logging:commons-logging:1.2, org.slf4j:jcl-over-slf4j:1.7.22]:
+            [WARNING]   org.apache.commons.logging.Log
+            [WARNING]   org.apache.commons.logging.LogConfigurationException
+            [WARNING]   org.apache.commons.logging.LogFactory
+            [WARNING]   org.apache.commons.logging.impl.NoOpLog
+            [WARNING]   org.apache.commons.logging.impl.SimpleLog
+
+            [WARNING] Found duplicate and different classes in [uk.ac.roe.wfau:firethorn-ogsadai-astro-server:2.0.22-zrq-update, uk.ac.roe.wfau:firethorn-ogsadai-dqp-server:2.0.22-zrq-update]:
+            [WARNING]   uk.org.ogsadai.activity.derby.DerbyBulkLoad
+            [WARNING]   uk.org.ogsadai.activity.derby.DerbyJoinActivity
+            [WARNING]   uk.org.ogsadai.activity.derby.DerbyUtilities
+
+            [WARNING] Found duplicate and different classes in [/var/local/projects/edinburgh/firethorn/working/firethorn-ogsadai/distributed/client/target/classes, uk.org.ogsadai:ogsadai-relational-client:4.2.2198]:
+            [WARNING]   uk.org.ogsadai.client.toolkit.activities.transform.ByteArraysToTuple
+
+            [WARNING] Found duplicate and different classes in [commons-logging:commons-logging:1.2, org.slf4j:jcl-over-slf4j:1.7.22]:
+            [WARNING]   org.apache.commons.logging.Log
+            [WARNING]   org.apache.commons.logging.LogConfigurationException
+            [WARNING]   org.apache.commons.logging.LogFactory
+            [WARNING]   org.apache.commons.logging.impl.NoOpLog
+            [WARNING]   org.apache.commons.logging.impl.SimpleLog
+
+            [WARNING] Found duplicate and different classes in [uk.ac.roe.wfau:firethorn-ogsadai-dqp-client:2.0.22-zrq-update, uk.org.ogsadai:ogsadai-relational-client:4.2.2198]:
+            [WARNING]   uk.org.ogsadai.client.toolkit.activities.transform.ByteArraysToTuple
+
+            [WARNING] Found duplicate and different classes in [javax.annotation:jsr250-api:1.0, org.apache.tomcat:tomcat-annotations-api:8.5.9]:
+            [WARNING]   javax.annotation.Generated
+            [WARNING]   javax.annotation.PostConstruct
+            [WARNING]   javax.annotation.PreDestroy
+            [WARNING]   javax.annotation.Resource
+            [WARNING]   javax.annotation.Resources
+            [WARNING]   javax.annotation.security.DeclareRoles
+            [WARNING]   javax.annotation.security.DenyAll
+            [WARNING]   javax.annotation.security.PermitAll
+            [WARNING]   javax.annotation.security.RolesAllowed
+            [WARNING]   javax.annotation.security.RunAs
+
+            [WARNING] Found duplicate and different classes in [javax.el:el-api:2.2, org.apache.tomcat:tomcat-el-api:8.5.9]:
+            [WARNING]   javax.el.ArrayELResolver
+            [WARNING]   javax.el.BeanELResolver
+            [WARNING]   javax.el.CompositeELResolver
+            [WARNING]   javax.el.ELContext
+            [WARNING]   javax.el.ELContextEvent
+            [WARNING]   javax.el.ELContextListener
+            [WARNING]   javax.el.ELException
+            [WARNING]   javax.el.ELResolver
+            [WARNING]   javax.el.Expression
+            [WARNING]   javax.el.ExpressionFactory
+            [WARNING]   javax.el.FunctionMapper
+            [WARNING]   javax.el.ListELResolver
+            [WARNING]   javax.el.MapELResolver
+            [WARNING]   javax.el.MethodExpression
+            [WARNING]   javax.el.MethodInfo
+            [WARNING]   javax.el.MethodNotFoundException
+            [WARNING]   javax.el.PropertyNotFoundException
+            [WARNING]   javax.el.PropertyNotWritableException
+            [WARNING]   javax.el.ResourceBundleELResolver
+            [WARNING]   javax.el.ValueExpression
+            [WARNING]   javax.el.ValueReference
+            [WARNING]   javax.el.VariableMapper
+
+            [WARNING] Found duplicate and different classes in [org.apache.tomcat:tomcat-annotations-api:8.5.9, org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final]:
+            [WARNING]   javax.persistence.PersistenceContext
+            [WARNING]   javax.persistence.PersistenceContextType
+            [WARNING]   javax.persistence.PersistenceContexts
+            [WARNING]   javax.persistence.PersistenceProperty
+            [WARNING]   javax.persistence.PersistenceUnit
+            [WARNING]   javax.persistence.PersistenceUnits
+            [WARNING]   javax.persistence.SynchronizationType
+
+
+            [WARNING] Found duplicate and different classes in [javax.annotation:jsr250-api:1.0, org.apache.tomcat:tomcat-annotations-api:8.5.9]:
+            [WARNING]   javax.annotation.Generated
+            [WARNING]   javax.annotation.PostConstruct
+            [WARNING]   javax.annotation.PreDestroy
+            [WARNING]   javax.annotation.Resource
+            [WARNING]   javax.annotation.Resources
+            [WARNING]   javax.annotation.security.DeclareRoles
+            [WARNING]   javax.annotation.security.DenyAll
+            [WARNING]   javax.annotation.security.PermitAll
+            [WARNING]   javax.annotation.security.RolesAllowed
+            [WARNING]   javax.annotation.security.RunAs
+
+
+    popd
+
+# -----------------------------------------------------
+# Load our secret function.
+#[user@desktop] 
+
+    source ${HOME:?}/secret.sh
+    secret 'ping'
+
+# -----------------------------------------------------
+# Get our branch and version number.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        branch=$(hg branch)
+
+        source 'bin/util.sh'
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Remove existing containers.
+#[user@desktop]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove existing images.
+#[user@desktop]
+
+    docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
+# Update the Dockerfile versions.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        dockversions "$(getversion)"
+
+    popd
+
+# -----------------------------------------------------
+# Build our container images.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        export version=$(getversion)
+
+        docker-compose \
+            --file docker/docker-build.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Display our container images.
+#[user@desktop] 
+
+    alias dockviz="docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz"
+
+    dockviz images --tree
+
+# -----------------------------------------------------
+# Configure our docker chain.
+#[user@desktop] 
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    version=${version:?}
+
+    netspace=${version:?}
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metaname:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${username:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Start our network.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    docker \
+        network \
+            create \
+                "${netspace:?}"
+
+# -----------------------------------------------------
+# Start our userdata ambassador.
+#[user@desktop] 
+
+    #   --read-only \
+    #   debug1: read_passphrase: can't open /dev/tty: No such device or address
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --interactive \
+        --name "${username:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${userhost:?}" \
+        --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --network "${netspace:?}" \
+        "firethorn/sql-tunnel:${version:?}"
+
+# -----------------------------------------------------
+# Start our science data ambassador.
+#[user@desktop] 
+
+    #   --read-only \
+    #   debug1: read_passphrase: can't open /dev/tty: No such device or address
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --tmpfs /root/.ssh \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "tunneluser=${tunneluser:?}" \
+        --env  "tunnelhost=${tunnelhost:?}" \
+        --env  "targethost=${datahost:?}" \
+        --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --network "${netspace:?}" \
+        "firethorn/sql-tunnel:${version:?}"
+
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --read-only \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        --network "${netspace:?}" \
+        "firethorn/postgres:${version:?}"
+
+# -----------------------------------------------------
+# Build our Java components.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+        
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=unix:///var/run/docker.sock" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=unix:///var/run/docker.sock" docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[user@desktop] 
+
+    #   --read-only \
+    #   Caused by: uk.org.ogsadai.persistence.file.PersistenceFileAccessException:
+    #       There is a problem in interacting with persistence file
+    #           /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/resources/ogsadai-cb192673-2f79-4234-9391-535949edd6f5.
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --name    "${ogsaname:?}" \
+        --volume  '/etc/localtime:/etc/localtime:ro' \
+        --network "${netspace:?}" \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Start our FireThorn container.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --read-only \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --name    "${firename:?}" \
+        --volume  "${HOME:?}/firethorn.properties:/etc/firethorn.properties" \
+        --volume  '/etc/localtime:/etc/localtime:ro' \
+        --network "${netspace:?}" \
+        "firethorn/firethorn:${version:?}"
+
+# -----------------------------------------------------
+# Check the logs ..
+#[user@desktop] 
+
+# source "${HOME:?}/chain.properties"
+# docker exec -it "${firename:?}" tail -f logs/firethorn.log 
+
+
+# source "${HOME:?}/chain.properties"
+# docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
+
+# -----------------------------------------------------
+# Configure our tester container.
+#[user@desktop] 
+
+    testcfg=$(mktemp)
+    cat > "${testcfg:?}" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+# -----------------------------------------------------
+# Build our tester container.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/tester:${version:?} \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
+# Start our tester container.
+#[user@desktop] 
+
+    #   --read-only \
+    # Needs to write | tee to local temp files 
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --interactive \
+        --name    "${testname:?}" \
+        --volume  "${testcfg:?}:/testcfg" \
+        --volume  '/etc/localtime:/etc/localtime:ro' \
+        --network "${netspace:?}" \
+        "firethorn/tester:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Load our configuration.
+#[root@tester]
+
+        source /testcfg
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | bin/pp | tee system-info.json
+
+# -----------------------------------------------------
+# AstroGrid DAL service doesn't handle fully qualified names :-(
+# -----------------------------------------------------
+
+# -----------------------------------------------------
+# Load the local ATLASDR1 resource.
+#[root@tester]
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'Atlas JDBC conection' \
+            "jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        atlasjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+        atlasadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
+
+# -----------------------------------------------------
+# Create the GAVO TWOMASS resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAVO TAP service' \
+            'http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap'
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gavo/gavo-tableset.xml'
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${ivoaspace:?}/vosi/import" \
+            | bin/pp
+
+        #
+        # Find the twomass schema
+        gavospace=${ivoaspace:?}
+        schemaname=twomass
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${schemaname:?}" \
+            "${endpointurl:?}/${gavospace:?}/schemas/select" \
+            | bin/pp | tee gavo-schema.json
+
+        gavoschema=$(
+            cat gavo-schema.json | self
+            )
+
+# -----------------------------------------------------
+# Create a workspace and add the Atlas and Gavo schemas.
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}"   'ATLASDR1' 'atlas'
+
+        #
+        # BUG - the param names are different for adql and ivoa schema/select 
+        #source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'twomass'  'twomass'
+
+        adqlname=twomass
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${adqlname:?}" \
+            --data   "adql.resource.schema.import.base=${gavoschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | bin/pp | tee query-schema.json
+
+# -----------------------------------------------------
+# Test query ...
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 raj2000, dej2000 FROM twomass.data" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+# --------------------------------------
+# Create the GAIA TAP resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAIA TAP service' \
+            'http://gea.esac.esa.int/tap-server/tap'
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gaia/gaia-tableset.xml'
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${ivoaspace:?}/vosi/import" \
+            | bin/pp
+
+        #
+        # Find the Gaia DR1 schema
+        gaiaspace=${ivoaspace:?}
+        gaianame=gaiadr1
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${gaianame:?}" \
+            "${endpointurl:?}/${gaiaspace:?}/schemas/select" \
+            | bin/pp | tee gaia-schema.json
+
+        gaiaschema=$(
+            cat gaia-schema.json | self
+            )
+
+# -----------------------------------------------------
+# Create a workspace and add the Gaia DR1 schema.
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${gaianame:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | bin/pp | tee query-schema.json
+
+# -----------------------------------------------------
+# Test query ...
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 ra, dec FROM gaiadr1.tmass_original_valid" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+# -----------------------------------------------------
+# Load the local TWOMASS resource.
+#[root@tester]
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'TWOMASS JDBC conection' \
+            "jdbc:jtds:sqlserver://${dataname:?}/TWOMASS" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        tmassjdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
+        tmassadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${tmassjdbc:?}" "${tmassadql:?}" 'TWOMASS' 'dbo' "meta/TWOMASS_TablesSchema.xml"
+
+# -----------------------------------------------------
+# Create a workspace and add the Twomass and Gaia DR1 schemas.
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${tmassadql:?}" 'TWOMASS' 'TWOMASS'
+
+        adqlname=gaiadr1
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${adqlname:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | bin/pp | tee query-schema.json
+
+# -----------------------------------------------------
+# Create our test query.
+#[root@tester]
+
+    cat > testquery << EOF
+
+    SELECT
+        gaiadr1.tmass_best_neighbour.original_ext_source_id AS external_ident,
+        TWOMASS.twomass_psc.designation                     AS twomass_ident,
+
+        gaiadr1.tmass_best_neighbour.source_id              AS neighbour_source_id,
+        gaiadr1.gaia_source.source_id                       AS gaia_source_id,
+
+        TWOMASS.twomass_psc.ra                              AS twomass_ra,
+        gaiadr1.gaia_source.ra                              AS gaia_ra,
+
+        TWOMASS.twomass_psc.ra                              AS twomass_dec,
+        gaiadr1.gaia_source.dec                             AS gaia_dec
+
+    FROM
+        gaiadr1.gaia_source,
+        gaiadr1.tmass_best_neighbour,
+        TWOMASS.twomass_psc
+
+    WHERE
+        gaiadr1.tmass_best_neighbour.source_id = gaiadr1.gaia_source.source_id
+    AND
+        gaiadr1.tmass_best_neighbour.original_ext_source_id = TWOMASS.twomass_psc.designation
+    AND
+        gaiadr1.gaia_source.ra  BETWEEN   0 AND 1.25
+    AND
+        gaiadr1.gaia_source.dec BETWEEN   0 AND 1.25
+    AND
+        TWOMASS.twomass_psc.ra  BETWEEN   0 AND 1.25
+    AND
+        TWOMASS.twomass_psc.dec BETWEEN   0 AND 1.25
+
+EOF
+
+# -----------------------------------------------------
+# Execute our test query.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@testquery" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee blue-query.json
+
+
+#---------------------------------------------------------------------
+# remove of Dockerfiles to enable merge.
+#[user@desktop] 
+
+    rm docker/builder/Dockerfile
+    rm docker/java/8/Dockerfile
+    rm docker/tomcat/8/Dockerfile
+    rm docker/sql-proxy/Dockerfile
+    rm docker/sql-tunnel/Dockerfile
+    rm docker/ssh-client/Dockerfile
+
+#---------------------------------------------------------------------
+# Merge the changes back into main.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20160906-01-hg-merge.txt" &
+
+
+
+
+
