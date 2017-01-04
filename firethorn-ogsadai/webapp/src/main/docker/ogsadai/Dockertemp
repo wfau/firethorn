@@ -23,13 +23,22 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 ADD ${project.build.finalName} /var/local/tomcat/webapps/ogsadai
 
 #
-# Make our webapp directory writeable.
+# Change to root to modify permissions.
 USER root
-#RUN chown -R tomcat:tomcat /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
-#RUN chmod -R u+rw,g+rw     /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
+
+#
+# Make our webapp directory writeable.
+RUN chown -R tomcat:tomcat /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
+RUN chmod -R u+rw,g+rw     /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
+
+#
+# Create our data directory (mot used)
 RUN mkdir /var/local/tomcat/userdir
 RUN chown -R tomcat:tomcat /var/local/tomcat/userdir
 RUN chmod -R u+rw,g+rw     /var/local/tomcat/userdir
+
+#
+# Change back to the firethorn user.
 USER tomcat
 
 #

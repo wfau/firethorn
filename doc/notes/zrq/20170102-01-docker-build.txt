@@ -101,6 +101,10 @@ New bug .. fails to recover from stale metadata about OGSA-DAI resources.
 #           There is a problem in interacting with persistence file
 #               /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/resources/ogsadai-cb192673-2f79-4234-9391-535949edd6f5.
 
+    rmdir /tmp/logs
+    mkdir /tmp/logs
+    chmod a+rwx /tmp/logs
+
     source "${HOME:?}/chain.properties"
     docker run \
         --detach \
@@ -108,6 +112,7 @@ New bug .. fails to recover from stale metadata about OGSA-DAI resources.
         --tmpfs /tmp \
         --name    "${ogsaname:?}" \
         --volume  '/etc/localtime:/etc/localtime:ro' \
+        --volume  '/tmp/logs:/var/local/tomcat/logs' \
         --network "${netspace:?}" \
         "firethorn/ogsadai:${version:?}"
 
@@ -119,4 +124,6 @@ New bug .. fails to recover from stale metadata about OGSA-DAI resources.
     docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
 
 
+    tail -f /tmp/logs/ogsadai.log
+    
 

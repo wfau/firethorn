@@ -31,16 +31,16 @@ version=${1:?}
             " "${pom:?}"
     done
 
-    for temp in $(find . -name 'Dockertemp')
+    for template in $(find . -name 'Dockertemp')
     do
-        file="$(dirname ${temp:?})/Dockerfile"
+        dockerfile="$(dirname ${template:?})/Dockerfile"
 
-        echo "temp [${temp:?}]"
-        echo "file [${file:?}]"
+        echo "temp [${template:?}]"
+        echo "file [${dockerfile:?}]"
 
         sed '
             s/{BUILD_VERSION}/'${version:?}'/g
-            ' "${temp:?}" > "${file:?}"
+            ' "${template:?}" > "${dockerfile:?}"
 
     done
 

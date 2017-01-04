@@ -29,16 +29,6 @@
     source "${HOME:?}/firethorn.settings"
     gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
 
-
-##---------------------------------------------------------------------
-## Merge the changes back into main.
-##[user@desktop] 
-#
-#    source "${HOME:?}/firethorn.settings"
-#    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20160906-01-hg-merge.txt" &
-#
-#
-
 #---------------------------------------------------------------------
 # Check for updates
 #[user@desktop] 
@@ -355,31 +345,6 @@
     popd
 
 # -----------------------------------------------------
-# Update the Dockerfile versions.
-#[user@desktop] 
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        version=$(getversion)
-
-        for temp in $(find . -name 'Dockertemp')
-        do
-            file="$(dirname ${temp:?})/Dockerfile"
-
-            echo "temp [${temp:?}]"
-            echo "file [${file:?}]"
-
-            sed '
-                s/{BUILD_VERSION}/'${version:?}'/g
-                ' "${temp:?}" > "${file:?}"
-
-        done
-
-    popd
-
-# -----------------------------------------------------
 # Remove existing containers.
 #[user@desktop]
 
@@ -390,6 +355,18 @@
 #[user@desktop]
 
     docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
+# Update the Dockerfile versions.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        dockversions "$(getversion)"
+
+    popd
 
 # -----------------------------------------------------
 # Build our container images.
@@ -423,7 +400,7 @@
 
     version=${version:?}
 
-    netspace=penelope
+    netspace=${version:?}
 
     metaname=bethany
     username=patricia
@@ -497,8 +474,8 @@ EOF
 # Start our userdata ambassador.
 #[user@desktop] 
 
-        --read-only \
-        debug1: read_passphrase: can't open /dev/tty: No such device or address
+    #   --read-only \
+    #   debug1: read_passphrase: can't open /dev/tty: No such device or address
 
     source "${HOME:?}/chain.properties"
     docker run \
@@ -518,8 +495,8 @@ EOF
 # Start our science data ambassador.
 #[user@desktop] 
 
-        --read-only \
-        debug1: read_passphrase: can't open /dev/tty: No such device or address
+    #   --read-only \
+    #   debug1: read_passphrase: can't open /dev/tty: No such device or address
 
     source "${HOME:?}/chain.properties"
     docker run \
@@ -584,10 +561,10 @@ EOF
 # Start our OGSA-DAI container.
 #[user@desktop] 
 
-        --read-only \
-        Caused by: uk.org.ogsadai.persistence.file.PersistenceFileAccessException:
-            There is a problem in interacting with persistence file
-                /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/resources/ogsadai-cb192673-2f79-4234-9391-535949edd6f5.
+    #   --read-only \
+    #   Caused by: uk.org.ogsadai.persistence.file.PersistenceFileAccessException:
+    #       There is a problem in interacting with persistence file
+    #           /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/resources/ogsadai-cb192673-2f79-4234-9391-535949edd6f5.
 
     source "${HOME:?}/chain.properties"
     docker run \
@@ -619,14 +596,28 @@ EOF
 # Check the logs ..
 #[user@desktop] 
 
-# Separate terminal
 # source "${HOME:?}/chain.properties"
 # docker exec -it "${firename:?}" tail -f logs/firethorn.log 
 
 
-# Separate terminal
 # source "${HOME:?}/chain.properties"
 # docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
+
+# -----------------------------------------------------
+# Configure our tester container.
+#[user@desktop] 
+
+    testcfg=$(mktemp)
+    cat > "${testcfg:?}" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
 
 # -----------------------------------------------------
 # Build our tester container.
@@ -645,7 +636,8 @@ EOF
 # Start our tester container.
 #[user@desktop] 
 
-        --read-only \
+    #   --read-only \
+    # Needs to write | tee to local temp files 
 
     source "${HOME:?}/chain.properties"
     docker run \
@@ -654,17 +646,18 @@ EOF
         --tmpfs /run \
         --tmpfs /tmp \
         --interactive \
-        --env "datadata=${datadata:?}" \
-        --env "dataname=${dataname:?}" \
-        --env "datauser=${datauser:?}" \
-        --env "datapass=${datapass:?}" \
-        --env "datadriver=${datadriver:?}" \
-        --env "endpointurl=http://${firename:?}:8080/firethorn" \
         --name    "${testname:?}" \
+        --volume  "${testcfg:?}:/testcfg" \
         --volume  '/etc/localtime:/etc/localtime:ro' \
         --network "${netspace:?}" \
         "firethorn/tester:${version:?}" \
         bash
+
+# -----------------------------------------------------
+# Load our configuration.
+#[root@tester]
+
+        source /testcfg
 
 # -----------------------------------------------------
 # Configure our identity.
@@ -680,6 +673,7 @@ EOF
 #[root@tester]
 
         curl \
+            --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             "${endpointurl:?}/system/info" \
@@ -928,6 +922,16 @@ EOF
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee blue-query.json
+
+
+##---------------------------------------------------------------------
+## Merge the changes back into main.
+##[user@desktop] 
+#
+#    source "${HOME:?}/firethorn.settings"
+#    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20160906-01-hg-merge.txt" &
+#
+#
 
 
 
