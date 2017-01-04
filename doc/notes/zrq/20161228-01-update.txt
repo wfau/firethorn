@@ -924,14 +924,14 @@ EOF
             | bin/pp | tee blue-query.json
 
 
-##---------------------------------------------------------------------
-## Merge the changes back into main.
-##[user@desktop] 
-#
-#    source "${HOME:?}/firethorn.settings"
-#    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20160906-01-hg-merge.txt" &
-#
-#
+#---------------------------------------------------------------------
+# Merge the changes back into main.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20160906-01-hg-merge.txt" &
+
+
 
 
 
