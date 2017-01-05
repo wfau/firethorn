@@ -187,13 +187,49 @@
         Email:    zzzz
         Login Succeeded
 
-    docker push "firethorn/firethorn:${version}"
-    docker push "firethorn/ogsadai:${version}"
-    docker push "firethorn/tester:${version}"
+    docker push "firethorn/fedora:${version:?}"
+    docker push "firethorn/java:${version:?}"
+    docker push "firethorn/tomcat:${version:?}"
+    docker push "firethorn/firethorn:${version:?}"
+    docker push "firethorn/ogsadai:${version:?}"
 
+    docker push "firethorn/builder:${version:?}"
+    docker push "firethorn/tester:${version:?}"
+    docker push "firethorn/postgres:${version:?}"
+    docker push "firethorn/sql-tunnel:${version:?}"
+    docker push "firethorn/sql-proxy:${version:?}"
+
+# -------------------------------------------------------------------------------------------
+# Tag our images as latest.
+#[user@desktop]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    docker tag "firethorn/fedora:${version:?}"     "firethorn/fedora:latest"
+    docker tag "firethorn/java:${version:?}"       "firethorn/java:latest"
+    docker tag "firethorn/tomcat:${version:?}"     "firethorn/tomcat:latest"
+    docker tag "firethorn/firethorn:${version:?}"  "firethorn/firethorn:latest"
+    docker tag "firethorn/ogsadai:${version:?}"    "firethorn/ogsadai:latest"
+
+    docker tag "firethorn/builder:${version:?}"    "firethorn/builder:latest"
+    docker tag "firethorn/tester:${version:?}"     "firethorn/tester:latest"
+    docker tag "firethorn/postgres:${version:?}"   "firethorn/postgres:latest"
+    docker tag "firethorn/sql-tunnel:${version:?}" "firethorn/sql-tunnel:latest"
+    docker tag "firethorn/sql-proxy:${version:?}"  "firethorn/sql-proxy:latest"
+
+    docker push "firethorn/fedora:latest"
+    docker push "firethorn/java:latest"
+    docker push "firethorn/tomcat:latest"
     docker push "firethorn/firethorn:latest"
     docker push "firethorn/ogsadai:latest"
+
+    docker push "firethorn/builder:latest"
     docker push "firethorn/tester:latest"
+    docker push "firethorn/postgres:latest"
+    docker push "firethorn/sql-tunnel:latest"
+    docker push "firethorn/sql-proxy:latest"
 
 
 # -------------------------------------------------------------------------------------------
