@@ -1,0 +1,129 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+Trying to move the config dir outside the webapp .. enabling read-only container.
+
+
+    2017-01-02 15:55:07,002 INFO  context.OGSADAIContext [localhost-startStop-1,info:160] Registered configuration property: uk.org.ogsadai.CONFIG_DIR Class: java.io.File Value: /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai
+    2017-01-02 15:55:07,002 INFO  context.OGSADAIContext [localhost-startStop-1,info:160] Registered configuration property: ActivitySpecDAO Class: uk.org.ogsadai.persistence.file.activity.SimpleFileActivitySpecDAO Value: uk.org.ogsadai.persistence.file.activity.SimpleFileActivitySpecDAO@1c25e3df
+    2017-01-02 15:55:07,002 INFO  context.OGSADAIContext [localhost-startStop-1,info:160] Registered configuration property: uk.org.ogsadai.LOGIN_PROVIDER Class: uk.org.ogsadai.authorization.file.SimpleFileLoginProvider Value: uk.org.ogsadai.authorization.file.SimpleFileLoginProvider@6f1d570b
+    2017-01-02 15:55:07,004 DEBUG rest.JerseyStaticOGSADAIContextInitializer [localhost-startStop-1,debug:84] WebApp initialised. ConfigDir = /var/local/tomcat/webapps/ogsadai/WEB-INF/
+    2017-01-02 15:55:07,004 DEBUG rest.JerseyRootService [localhost-startStop-1,debug:84] **** JerseyOGSADAIContextInitializer was created
+
+
+New bug .. fails to recover from stale metadata about OGSA-DAI resources.
+
+    2017-01-02 18:35:10,545 ERROR drer.SimpleEventfulRequest [pool-2-thread-5,errorExceptionAndChildren:401] #1483382110544:74# A user problem has occured during activity processing.
+    2017-01-02 18:35:10,545 ERROR drer.SimpleEventfulRequest [pool-2-thread-5,errorExceptionAndChildren:401] #1483382110544:74# The resource ogsadai-dc275c5a-491d-4e3a-bef8-08edad5636ec is unknown.
+    2017-01-02 18:35:10,546 ERROR drer.SimpleEventfulRequest [pool-2-thread-5,logStackTraceError:567] uk.org.ogsadai.exception.RequestUserException: A user problem has occurred during request processing.
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.createActivities(ActivityPipelineProcessingTask.java:136)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.call(ActivityPipelineProcessingTask.java:103)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.call(ActivityPipelineProcessingTask.java:53)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	    at java.lang.Thread.run(Thread.java:745)
+    Caused by: uk.org.ogsadai.activity.ActivityUserException: A user problem has occured during activity processing.
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivity(SimpleActivityFactory.java:128)
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivities(SimpleActivityFactory.java:87)
+	    at uk.org.ogsadai.activity.extension.InitialisingActivityFactory.createActivities(InitialisingActivityFactory.java:66)
+	    at uk.org.ogsadai.activity.event.EventfulActivityFactory.createActivities(EventfulActivityFactory.java:67)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.createActivities(ActivityPipelineProcessingTask.java:127)
+	    ... 6 more
+    Caused by: uk.org.ogsadai.resource.ResourceUnknownException: The resource ogsadai-dc275c5a-491d-4e3a-bef8-08edad5636ec is unknown.
+	    at uk.org.ogsadai.persistence.file.resource.SimpleFileResourceStateDAO.getResourceState(SimpleFileResourceStateDAO.java:495)
+	    at uk.org.ogsadai.persistence.file.resource.SimpleFileResourceStateDAO.getResourceState(SimpleFileResourceStateDAO.java:597)
+	    at uk.org.ogsadai.resource.SimpleResourceManager.getResource(SimpleResourceManager.java:159)
+	    at uk.org.ogsadai.resource.SimpleResourceManager.getPublicResource(SimpleResourceManager.java:189)
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivity(SimpleActivityFactory.java:123)
+	    ... 10 more
+
+
+# -----------------------------------------------------
+
+    Two separate problems
+
+    1) Unable to relocate the webapp ConfigDir.
+    Need to be able to move the ConfigDir outside the webapp tree.
+    needed to be able to run OGSA-DAI container as read-only.
+
+    2) Firethorn failes to recover from stale metadata for OGSA-DAI resources 
+    Ping test fails, but resources are not re-created.
+
+
+# -----------------------------------------------------
+# Remove our OGSA-DAI container.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    docker rm -f -v "${ogsaname:?}"
+
+# -----------------------------------------------------
+# Re-build our OGSA-DAI container.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn clean install
+            mvn -D "docker.host=unix:///var/run/docker.sock" docker:package
+        popd
+        
+    popd
+
+# -----------------------------------------------------
+# Start our OGSA-DAI container.
+#[user@desktop] 
+
+#       --read-only \
+#       Caused by: uk.org.ogsadai.persistence.file.PersistenceFileAccessException:
+#           There is a problem in interacting with persistence file
+#               /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/resources/ogsadai-cb192673-2f79-4234-9391-535949edd6f5.
+
+    rmdir /tmp/logs
+    mkdir /tmp/logs
+    chmod a+rwx /tmp/logs
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --name    "${ogsaname:?}" \
+        --volume  '/etc/localtime:/etc/localtime:ro' \
+        --volume  '/tmp/logs:/var/local/tomcat/logs' \
+        --network "${netspace:?}" \
+        "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Follow our OGSA-DAI container logs.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
+
+
+    tail -f /tmp/logs/ogsadai.log
+    
+

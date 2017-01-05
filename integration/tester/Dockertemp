@@ -15,44 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21.1
+FROM firethorn/fedora:{BUILD_VERSION}
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-#
-# Create our projects directory.
-RUN mkdir /var/local/projects
-#RUN chgrp users /var/local/projects
-#RUN chmod g+rwx /var/local/projects
-VOLUME /var/local/projects
+RUN dnf -y install perl
+RUN dnf -y install perl-JSON
 
-#
-# Create our cache directory.
-RUN mkdir /var/local/cache
-#RUN chgrp users /var/local/cache
-#RUN chmod g+rwx /var/local/cache
-VOLUME /var/local/cache
+RUN dnf install -y jq
+RUN dnf install -y xmlstarlet
 
-#
-# Install system tools.
-RUN yum -y install iputils
-RUN yum -y install bind-utils
+COPY bin/  /tester/bin 
+COPY meta/ /tester/meta 
+COPY vosi/ /tester/vosi 
 
-#
-# Install Docker client.
-RUN yum -y install docker-io
+ADD https://github.com/micha/resty/raw/master/pp    /tester/bin/
+ADD https://github.com/micha/resty/raw/master/resty /tester/bin/
 
-#
-# Install Mercurial
-RUN yum -y install mercurial
+RUN chmod a+x /tester/bin/pp
+RUN chmod a+x /tester/bin/resty
 
-#
-# Install Java
-RUN yum -y install java-1.8.0-openjdk-devel
-RUN yum -y install java-1.8.0-openjdk-headless
-
-#
-# Install Maven
-COPY bin/install-maven.sh /tmp/install-maven.sh
-RUN /bin/bash -c 'source /tmp/install-maven.sh'
-
-
+WORKDIR /tester

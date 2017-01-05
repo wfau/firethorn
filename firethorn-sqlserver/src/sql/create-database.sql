@@ -25,7 +25,7 @@
         (
         NAME = N'{databasename}',
         FILENAME = N'{databasepath}\{databasename}.mdf',
-        SIZE = 3072KB ,
+        SIZE = 4096KB ,
         FILEGROWTH = 1024KB
         )
     LOG ON 

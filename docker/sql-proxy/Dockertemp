@@ -15,15 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21.1
+FROM firethorn/fedora:{BUILD_VERSION}
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 EXPOSE 1433
 
-RUN yum -y install openssh-clients
+RUN dnf -y install socat
+RUN dnf -y install bind-utils
 
-COPY bin/sql-tunnel.sh /bin/sql-tunnel.sh
-RUN chmod a+x /bin/sql-tunnel.sh
+COPY bin/sql-proxy.sh /bin/sql-proxy.sh
+RUN chmod a+x /bin/sql-proxy.sh
 
-CMD /bin/sql-tunnel.sh
+CMD /bin/sql-proxy.sh
+
+
+
 

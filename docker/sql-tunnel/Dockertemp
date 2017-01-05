@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,21 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tomcat:8.1
+FROM firethorn/fedora:{BUILD_VERSION}
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-#
-# ADD our webapp.
-ADD ${project.build.finalName} /var/local/tomcat/webapps/ogsadai
+EXPOSE 1433
 
-#
-# Make our webapp directory writeable.
-USER root
-RUN chown -R tomcat:tomcat /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
-RUN chmod -R u+rw,g+rw     /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/
-USER tomcat
+RUN dnf -y install openssh-clients
 
-#
-# Add our config properties
-COPY ogsadai.properties /var/local/tomcat/ogsadai.properties
+COPY bin/sql-tunnel.sh /bin/sql-tunnel.sh
+RUN chmod a+x /bin/sql-tunnel.sh
+
+CMD /bin/sql-tunnel.sh
 

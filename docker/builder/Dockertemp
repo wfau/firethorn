@@ -15,27 +15,44 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# TODO replace this with a Fedora based container, building sqsh from source.
-# http://www.bambams.ca/2010/07/sqshell-building-and-installing-sqsh-in.html
-
-FROM centos:6
+FROM firethorn/java:{BUILD_VERSION}
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Install the EPEL repository.
-RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+# Create our projects directory.
+RUN mkdir /var/local/projects
+#RUN chgrp users /var/local/projects
+#RUN chmod g+rwx /var/local/projects
+VOLUME /var/local/projects
 
 #
-# Install misc tools.
-RUN yum -y install sed
-RUN yum -y install pwgen
+# Create our cache directory.
+RUN mkdir /var/local/cache
+#RUN chgrp users /var/local/cache
+#RUN chmod g+rwx /var/local/cache
+VOLUME /var/local/cache
 
 #
-# Install the sqsh binary.
-RUN yum -y install http://downloads.sourceforge.net/project/sqsh/sqsh/sqsh-2.5/sqsh-2.5-1.el6.x86_64.x86_64.rpm
+# Install system tools.
+RUN dnf -y install iputils
+RUN dnf -y install bind-utils
 
 #
-# Install our sql scripts.
-COPY sql/ /builder/sql 
+# Install Docker client.
+RUN dnf -y install docker-io
 
-WORKDIR /builder/sql
+#
+# Install Mercurial
+RUN dnf -y install mercurial
+
+#
+# Install Java JDK
+#RUN dnf -y install java-1.8.0-openjdk-devel
+RUN dnf -y install java-1.8.0-openjdk-headless
+
+#
+# Install Maven
+COPY bin/install-maven.sh /tmp/install-maven.sh
+RUN /bin/bash -c 'source /tmp/install-maven.sh'
+
+

@@ -18,17 +18,30 @@
 
 #
 # Shell script to update the project version.
-newversion=${1:?}
+version=${1:?}
 
     #
     # Check all is up to date ..
     
     # Update the Maven POMs.    
-    for file in $(find . -name 'pom.xml')
+    for pom in $(find . -name 'pom.xml')
     do
         sed -i "
-            s/<version project='firethorn'>.*<\/version>/<version project='firethorn'>${newversion:?}<\/version>/
-            " "${file:?}"
+            s/<version project='firethorn'>.*<\/version>/<version project='firethorn'>${version:?}<\/version>/
+            " "${pom:?}"
+    done
+
+    for template in $(find . -name 'Dockertemp')
+    do
+        dockerfile="$(dirname ${template:?})/Dockerfile"
+
+        echo "temp [${template:?}]"
+        echo "file [${dockerfile:?}]"
+
+        sed '
+            s/{BUILD_VERSION}/'${version:?}'/g
+            ' "${template:?}" > "${dockerfile:?}"
+
     done
 
     #

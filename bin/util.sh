@@ -18,7 +18,7 @@
 
 
 #
-# Get the current verion.
+# Get the current version.
 getversion()
     {
     local pomfile=${1:-'pom.xml'}
@@ -35,34 +35,59 @@ getversion()
     }
 
 #
-# Set the current verion.
+# Set the current version.
 setversion()
     {
     local version=${1:?}
-    local pompath=${2:-'.'}
-    echo "setversion [${version:?}][${pompath:?}]"
+    local target=${2:-'.'}
 
-    if [ -d "${pompath:?}" ]
+    echo ""
+    echo "Set version [${version:?}][${target:?}]"
+
+    if [ -d "${target:?}" ]
     then
 
-        for pomfile in $(find "${pompath:?}" -name 'pom.xml')
-        do
-            pomversion "${version:?}" "${pomfile:?}"
-        done
+        pomversions "${version:?}" "${target:?}"
+
+        dockversions "${version:?}" "${target:?}"
 
     else
-        pomversion "${version:?}" "${pompath:?}"
+        if [ "${target:?}" == 'pom.xml' ]
+        then
+            pomversion "${version:?}" "${target:?}"
+        elif [ "${target:?}" == 'Dockertemp' ]
+        then
+            dockversion "${version:?}" "${target:?}"
+        fi
     fi
 
     }
 
+
 #
-# Set the current verion.
+# Set all the POM versions.
+pomversions()
+    {
+    local version=${1:?}
+    local target=${2:-'.'}
+
+    echo ""
+    echo "Maven POMs [${version:?}][${target:?}]"
+
+    for pomfile in $(find "${target:?}" -name 'pom.xml')
+    do
+        pomversion "${version:?}" "${pomfile:?}"
+    done
+    }
+
+#
+# Set a POM version.
 pomversion()
     {
     local version=${1:?}
     local pomfile=${2:-'pom.xml'}
-    echo "pomversion [${version:?}][${pomfile:?}]"
+
+    echo "Maven POM [${pomfile:?}]"
 
     if [ -d "${pomfile:?}" ]
     then
@@ -75,4 +100,36 @@ pomversion()
 
     }
 
+#
+# Find and set all the Dockerfile versions.
+dockversions()
+    {
+    local version=${1:?}
+    local target=${2:-'.'}
+
+    echo ""
+    echo "Dockerfiles [${target:?}]"
+
+    for docktemp in $(find "${target:?}" -name 'Dockertemp')
+    do
+        dockversion "${version:?}" "${docktemp:?}"
+    done
+    }
+
+#
+# Set a Dockerfile version
+dockversion()
+    {
+    local version=${1:?}
+    local docktemp=${2:-'Dockerfile'}
+
+    dockfile="$(dirname ${docktemp:?})/Dockerfile"
+
+    echo "Dockerfile [${dockfile:?}]"
+
+    sed '
+        s/{BUILD_VERSION}/'${version:?}'/g
+        ' "${docktemp:?}" > "${dockfile:?}"
+
+    }
 

@@ -424,6 +424,12 @@ SELECT table_23.ra_21, table_23.designation_22 FROM (SELECT TWOMASS.dbo.twomass_
 	    ... 6 more
 
 
+    #
+    # Exception at this stage is not passed back to the originating jib.
+    # No callback triggered.
+    # Firethorn is left waiting ....
+    #
+
 
     #
     # Tested the SQL query on the WSA SQL query page.
