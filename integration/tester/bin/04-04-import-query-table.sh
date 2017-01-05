@@ -31,10 +31,10 @@ curl \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.resource.schema.select.name=${baseschemaname:?}" \
     "${endpointurl:?}/${adqlspace:?}/schemas/select" \
-    | bin/pp | tee base-schema.json
+    | bin/pp | tee /tmp/base-schema.json
 
 baseschema=$(
-    cat base-schema.json | self | node
+    cat /tmp/base-schema.json | self | node
     )
 
 curl \
@@ -42,10 +42,10 @@ curl \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.schema.table.select.name=${basetablename:?}" \
     "${endpointurl:?}/${baseschema:?}/tables/select" \
-    | bin/pp | tee base-table.json
+    | bin/pp | tee /tmp/base-table.json
 
 basetable=$(
-    cat base-table.json | self
+    cat /tmp/base-table.json | self
     )
 
 curl \
@@ -55,9 +55,9 @@ curl \
     --data   "adql.schema.table.import.base=${basetable:?}" \
     --data   "adql.schema.table.import.name=${querytablename:?}" \
     "${endpointurl:?}/${queryschemaid:?}/tables/import" \
-    | bin/pp | tee query-table.json
+    | bin/pp | tee /tmp/query-table.json
 
 querytable=$(
-    cat query-table.json | self | node
+    cat /tmp/query-table.json | self | node
     )
 

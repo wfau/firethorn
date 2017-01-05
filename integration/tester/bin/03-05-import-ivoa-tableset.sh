@@ -27,10 +27,10 @@ curl \
     --header "firethorn.auth.community:${community:?}" \
     --form   "urn:schema.tableset.file=@${tablesetfile:?}" \
     "${endpointurl:?}/${ivoaspace:?}/tableset/import" \
-    | bin/pp | tee ivoa-schema.json
+    | bin/pp | tee /tmp/ivoa-schema.json
 
 ivoaschema=$(
-    cat adql-schema.json | self | node
+    cat /tmp/adql-schema.json | self | node
     )
 
 

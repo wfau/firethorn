@@ -30,10 +30,10 @@ curl \
     --data   "adql.query.mode=${createmode:?}" \
     --data-urlencode "adql.query.input=${createadql:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
-     | bin/pp | tee query-job.json
+     | bin/pp | tee /tmp/query-job.json
 
 queryident=$(
-    cat query-job.json | self | node
+    cat /tmp/query-job.json | self | node
     )
 
 #
@@ -54,6 +54,6 @@ runquery "${queryident:?}"
 
 #
 # Get the VOTable results.
-#curl "$(cat atlas-query.json | votable)"
+#curl "$(cat /tmp/atlas-query.json | votable)"
 
 

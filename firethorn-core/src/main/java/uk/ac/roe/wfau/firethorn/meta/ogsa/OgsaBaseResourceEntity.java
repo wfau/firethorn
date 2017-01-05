@@ -192,6 +192,7 @@ implements OgsaBaseResource
  */
        return this.ogsaid;
        }
+   
    @Override
    public OgsaStatus ogsaid(final OgsaStatus status, final String ogsaid)
        {
@@ -225,11 +226,13 @@ implements OgsaBaseResource
        EnumType.STRING
        )
    protected OgsaStatus ogstatus = OgsaStatus.UNKNOWN ;
+   
    @Override
    public OgsaStatus ogstatus()
        {
        return this.ogstatus;
        }
+   
    @Override
    public OgsaStatus ogstatus(final OgsaStatus status)
        {

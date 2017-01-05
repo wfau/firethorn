@@ -1,0 +1,780 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    PipelineWorkflow {
+      Activity {
+        name = uk.org.ogsadai.CreateEmptyTupleList
+        instance name = uk.org.ogsadai.CreateEmptyTupleList-ogsadai-2d4e6335-fc55-4a36-ba25-d68264145d54
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = resultColumnNames
+            literals:
+              [
+              JDBC_TABLE_9104.ra
+              JDBC_TABLE_9104.designation
+              ]
+          }
+          Occurrence with index 0:
+          Input {
+            name = resultColumnTypes
+            literals:
+              [
+              8
+              7
+              ]
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = result
+            connected = true
+            pipe = Pipe[ogsadai-da219c76-77a7-47a4-be98-ba5b9ca17266]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.IfEmptyList
+        instance name = uk.org.ogsadai.IfEmptyList-ogsadai-c52289c1-ee26-4cab-ad2d-255dd23c60d4
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = data
+            pipe = ogsadai-44d980b5-8094-4b48-a46d-5f23aa4f2514
+          }
+          Occurrence with index 0:
+          Input {
+            name = content
+            pipe = ogsadai-da219c76-77a7-47a4-be98-ba5b9ca17266
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = outputNonEmpty
+            connected = true
+            pipe = Pipe[ogsadai-ec71ee38-543a-45ad-9af6-5cb15b3ca846]
+          }
+          Occurrence with index 0:
+          Output {
+            name = outputEmpty
+            connected = true
+            pipe = Pipe[ogsadai-340e3877-4360-48cb-a6a7-3b196ccf0403]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ControlledRepeat
+        instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-d779aad7-7764-4a4f-afd8-0aaef6947153
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-ec71ee38-543a-45ad-9af6-5cb15b3ca846
+          }
+          Occurrence with index 0:
+          Input {
+            name = repeatedInput
+            literals:
+              SELECT table_3.ra_1, table_3.designation_2 FROM (SELECT TWOMASS.dbo.twomass_psc.ra AS ra_1, TWOMASS.dbo.twomass_psc.designation AS designation_2 FROM TWOMASS.dbo.twomass_psc WHERE  ( TWOMASS.dbo.twomass_psc.ra < 1.25 )  AND  ( TWOMASS.dbo.twomass_psc.ra > 0 )  AND  ( TWOMASS.dbo.twomass_psc.dec < 1.25 )  AND  ( TWOMASS.dbo.twomass_psc.dec > 0 ) ) AS table_3 WHERE table_3.designation_2 IN ($REPLACE(dqpBatchData_267276))
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-d8cfe0e0-0a49-4eec-b295-9c244ff744be]
+          }
+          Occurrence with index 0:
+          Output {
+            name = repeatedOutput
+            connected = true
+            pipe = Pipe[ogsadai-23a9273c-8d64-43de-82dd-5b0c5e9a0d5d]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.StringReplace
+        instance name = uk.org.ogsadai.StringReplace-ogsadai-2678fd55-d595-4066-bb78-0a8ad06ebe0c
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = template
+            pipe = ogsadai-23a9273c-8d64-43de-82dd-5b0c5e9a0d5d
+          }
+          Occurrence with index 0:
+          Input {
+            name = data
+            pipe = ogsadai-d8cfe0e0-0a49-4eec-b295-9c244ff744be
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = result
+            connected = true
+            pipe = Pipe[ogsadai-c0055da3-4341-4810-b02d-6829fb0de4aa]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.SQLQuery
+        instance name = uk.org.ogsadai.SQLQuery-ogsadai-c5e50038-c757-4da9-a2ba-76b3b6750721
+        resource ID = ogsadai-8853a0fc-e85b-4ea5-b996-1950b757f8c5
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = expression
+            pipe = ogsadai-c0055da3-4341-4810-b02d-6829fb0de4aa
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = data
+            connected = true
+            pipe = Pipe[ogsadai-f979e39f-ef0c-4934-9a7c-9d9406db9a0b]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.MetadataRename
+        instance name = uk.org.ogsadai.MetadataRename-ogsadai-8a1dd5e1-9cd9-4c91-a949-7ec2ba33d83c
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = resultColumnNames
+            pipe = ogsadai-9bfecad5-e6b5-4ffc-82a9-6de877d534fe
+          }
+          Occurrence with index 0:
+          Input {
+            name = data
+            pipe = ogsadai-baad387a-53f4-40a5-ab47-ef988108e60c
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = result
+            connected = true
+            pipe = Pipe[ogsadai-1d3ff443-bc40-4261-9dc0-5d9bd35ba369]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ControlledRepeat
+        instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-df30d327-064b-4762-9253-168b56a1f4c9
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-f979e39f-ef0c-4934-9a7c-9d9406db9a0b
+          }
+          Occurrence with index 0:
+          Input {
+            name = repeatedInput
+            literals:
+              [
+              JDBC_TABLE_9104.ra
+              JDBC_TABLE_9104.designation
+              ]
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-baad387a-53f4-40a5-ab47-ef988108e60c]
+          }
+          Occurrence with index 0:
+          Output {
+            name = repeatedOutput
+            connected = true
+            pipe = Pipe[ogsadai-9bfecad5-e6b5-4ffc-82a9-6de877d534fe]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.EndIf
+        instance name = uk.org.ogsadai.EndIf-ogsadai-8c5ed526-7d2c-40e0-9f1d-e1b912064954
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = falseInput
+            pipe = ogsadai-340e3877-4360-48cb-a6a7-3b196ccf0403
+          }
+          Occurrence with index 0:
+          Input {
+            name = trueInput
+            pipe = ogsadai-1d3ff443-bc40-4261-9dc0-5d9bd35ba369
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-863ca87d-03b0-4aa6-ab1d-2981ffac3e10]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.SQLQuery
+        instance name = uk.org.ogsadai.SQLQuery-ogsadai-99ed12f0-098d-44d0-8f9c-c1e5c5178971
+        resource ID = ogsadai-9ef46e2a-cc5f-45e9-8e27-422f0f10b017
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = expression
+            literals:
+              SELECT gaiadr1.tmass_best_neighbour.original_ext_source_id, gaiadr1.tmass_best_neighbour.source_id, gaiadr1.gaia_source.dec, gaiadr1.gaia_source.ra, gaiadr1.gaia_source.source_id FROM gaiadr1.tmass_best_neighbour, gaiadr1.gaia_source WHERE  ( gaiadr1.gaia_source.ra < 1.25 )  AND  ( gaiadr1.gaia_source.ra > 0 )  AND  ( gaiadr1.gaia_source.dec < 1.25 )  AND  ( gaiadr1.gaia_source.dec > 0 )  AND  ( gaiadr1.tmass_best_neighbour.source_id = gaiadr1.gaia_source.source_id ) 
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = data
+            connected = true
+            pipe = Pipe[ogsadai-32add262-5273-495d-b6ed-3698139cf11f]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.MetadataRename
+        instance name = uk.org.ogsadai.MetadataRename-ogsadai-91a35cf0-f199-46f3-bba3-2559fc8112b8
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = resultColumnNames
+            literals:
+              [
+              IVOA_TABLE_14953.original_ext_source_id
+              IVOA_TABLE_14953.source_id
+              IVOA_TABLE_14971.dec
+              IVOA_TABLE_14971.ra
+              IVOA_TABLE_14971.source_id
+              ]
+          }
+          Occurrence with index 0:
+          Input {
+            name = data
+            pipe = ogsadai-32add262-5273-495d-b6ed-3698139cf11f
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = result
+            connected = true
+            pipe = Pipe[ogsadai-a99fe6fe-f790-4faa-9077-de36ce52d616]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ControlledRepeat
+        instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-d310f3d0-d289-4f4f-adb1-5feab505abc6
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-378e67ba-8374-4475-bf1c-4f7021e76c6f
+          }
+          Occurrence with index 0:
+          Input {
+            name = repeatedInput
+            literals:
+              IVOA_TABLE_14953.original_ext_source_id = JDBC_TABLE_9104.designation
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-1864935d-c979-4000-a330-49cbc979ef33]
+          }
+          Occurrence with index 0:
+          Output {
+            name = repeatedOutput
+            connected = true
+            pipe = Pipe[ogsadai-ab669420-8f9b-40c4-a108-c0aba473bf58]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ControlledRepeat
+        instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-e05ab445-2c45-4497-bc64-73fcc34a381a
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-1864935d-c979-4000-a330-49cbc979ef33
+          }
+          Occurrence with index 0:
+          Input {
+            name = repeatedInput
+            literals:
+              data1
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-e417ba8b-ed82-4245-8594-7432f5a48094]
+          }
+          Occurrence with index 0:
+          Output {
+            name = repeatedOutput
+            connected = true
+            pipe = Pipe[ogsadai-4c2fffac-9d8a-4069-931f-3b33cea29e4e]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ControlledRepeat
+        instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-57ff14c2-bb84-4bad-9c22-9ce7172687e3
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-e417ba8b-ed82-4245-8594-7432f5a48094
+          }
+          Occurrence with index 0:
+          Input {
+            name = repeatedInput
+            literals:
+              original_ext_source_id
+          IVOA_TABLE_14953
+          null
+          null
+          7
+          2
+          0
+          0
+          source_id
+          IVOA_TABLE_14953
+          null
+          null
+          5
+          2
+          0
+          0
+          dec
+          IVOA_TABLE_14971
+          null
+          null
+          8
+          2
+          0
+          0
+          ra
+          IVOA_TABLE_14971
+          null
+          null
+          8
+          2
+          0
+          0
+          source_id
+          IVOA_TABLE_14971
+          null
+          null
+          5
+          2
+          0
+          0
+          
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-40aae98e-709f-49dc-a936-ffa10260e20e]
+          }
+          Occurrence with index 0:
+          Output {
+            name = repeatedOutput
+            connected = true
+            pipe = Pipe[ogsadai-a4a34f5a-11cf-4487-bc90-99d5a7ba13f7]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ControlledRepeat
+        instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-db224201-86e7-4d94-aead-e8009404bc4c
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-40aae98e-709f-49dc-a936-ffa10260e20e
+          }
+          Occurrence with index 0:
+          Input {
+            name = repeatedInput
+            literals:
+              ra
+          JDBC_TABLE_9104
+          null
+          null
+          8
+          2
+          0
+          0
+          designation
+          JDBC_TABLE_9104
+          null
+          null
+          7
+          2
+          0
+          0
+          
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-3c2b2614-e661-4459-aa79-1205070507db]
+          }
+          Occurrence with index 0:
+          Output {
+            name = repeatedOutput
+            connected = true
+            pipe = Pipe[ogsadai-1e71bb38-4199-4903-8f4e-24898f54afa2]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.TupleThetaJoin
+        instance name = uk.org.ogsadai.TupleThetaJoin-ogsadai-2071e269-d494-438a-8b7e-8c0011bf3aa6
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = condition
+            pipe = ogsadai-ab669420-8f9b-40c4-a108-c0aba473bf58
+          }
+          Occurrence with index 0:
+          Input {
+            name = data1Metadata
+            pipe = ogsadai-a4a34f5a-11cf-4487-bc90-99d5a7ba13f7
+          }
+          Occurrence with index 0:
+          Input {
+            name = data2
+            pipe = ogsadai-863ca87d-03b0-4aa6-ab1d-2981ffac3e10
+          }
+          Occurrence with index 0:
+          Input {
+            name = readFirst
+            pipe = ogsadai-4c2fffac-9d8a-4069-931f-3b33cea29e4e
+          }
+          Occurrence with index 0:
+          Input {
+            name = data1
+            pipe = ogsadai-3c2b2614-e661-4459-aa79-1205070507db
+          }
+          Occurrence with index 0:
+          Input {
+            name = data2Metadata
+            pipe = ogsadai-1e71bb38-4199-4903-8f4e-24898f54afa2
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = result
+            connected = true
+            pipe = Pipe[ogsadai-6c944843-cc00-48ee-9f3a-729e9ceac289]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ListSplit
+        instance name = uk.org.ogsadai.ListSplit-ogsadai-38f23d5a-5d50-4f49-8366-0deb97156f6a
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-a99fe6fe-f790-4faa-9077-de36ce52d616
+          }
+          Occurrence with index 0:
+          Input {
+            name = size
+            literals:
+              10000
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-d1fffb88-bb63-4e49-861d-4674bd1aff5d]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.Tee
+        instance name = uk.org.ogsadai.Tee-ogsadai-56e48e13-1a02-46bf-b76d-9e6fc4e1c6f2
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-d1fffb88-bb63-4e49-861d-4674bd1aff5d
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-378e67ba-8374-4475-bf1c-4f7021e76c6f]
+          }
+          Occurrence with index 1:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-c922ccfe-892d-45c0-a7ff-fe868d5c1847]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ToSingleList
+        instance name = uk.org.ogsadai.ToSingleList-ogsadai-b79ca1ac-81b3-4ca7-9162-6c5682d5d406
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-6c944843-cc00-48ee-9f3a-729e9ceac289
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-e60263da-be75-4146-9538-1dda1f3234f5]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.GroupBy
+        instance name = uk.org.ogsadai.GroupBy-ogsadai-58bfd872-0381-4e30-8e30-b1ec58dc00f2
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = resultColumnNames
+            pipe = ogsadai-09352116-d052-4c8d-817f-c3627bd77236
+          }
+          Occurrence with index 0:
+          Input {
+            name = data
+            pipe = ogsadai-31d921b6-a47f-4530-8eaa-232494409513
+          }
+          Occurrence with index 0:
+          Input {
+            name = columnIds
+            pipe = ogsadai-6cf6a42f-7800-4f2d-af5d-ffa1946f28ea
+          }
+          Occurrence with index 0:
+          Input {
+            name = aggregates
+            pipe = ogsadai-77a802d9-ae15-41fb-941d-baeb3ac78ee2
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = result
+            connected = true
+            pipe = Pipe[ogsadai-44d980b5-8094-4b48-a46d-5f23aa4f2514]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ControlledRepeat
+        instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-7f7d0e57-7ca9-4c3f-b960-c2f0cffc783e
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-c922ccfe-892d-45c0-a7ff-fe868d5c1847
+          }
+          Occurrence with index 0:
+          Input {
+            name = repeatedInput
+            literals:
+              [
+              ]
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-9322cd3c-7328-4b77-ac5c-944faa46a83f]
+          }
+          Occurrence with index 0:
+          Output {
+            name = repeatedOutput
+            connected = true
+            pipe = Pipe[ogsadai-6cf6a42f-7800-4f2d-af5d-ffa1946f28ea]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ControlledRepeat
+        instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-e86b4bbe-50bf-4363-9c28-2cc8d08e678c
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-9322cd3c-7328-4b77-ac5c-944faa46a83f
+          }
+          Occurrence with index 0:
+          Input {
+            name = repeatedInput
+            literals:
+              [
+              STRING_AGGREGATE(IVOA_TABLE_14953.original_ext_source_id)
+              ]
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-3bb1cde4-ba9f-41e0-8c1c-27e8a0062c81]
+          }
+          Occurrence with index 0:
+          Output {
+            name = repeatedOutput
+            connected = true
+            pipe = Pipe[ogsadai-77a802d9-ae15-41fb-941d-baeb3ac78ee2]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.ControlledRepeat
+        instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-32c24e64-14c4-45e5-a39e-2ad569f5f043
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = input
+            pipe = ogsadai-3bb1cde4-ba9f-41e0-8c1c-27e8a0062c81
+          }
+          Occurrence with index 0:
+          Input {
+            name = repeatedInput
+            literals:
+              [
+              dqpBatchData_267276
+              ]
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = output
+            connected = true
+            pipe = Pipe[ogsadai-31d921b6-a47f-4530-8eaa-232494409513]
+          }
+          Occurrence with index 0:
+          Output {
+            name = repeatedOutput
+            connected = true
+            pipe = Pipe[ogsadai-09352116-d052-4c8d-817f-c3627bd77236]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.TupleArithmeticProject
+        instance name = uk.org.ogsadai.TupleArithmeticProject-ogsadai-dae1c959-363e-4797-9e86-826073ac8560
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = resultColumnNames
+            literals:
+              [
+              IVOA_TABLE_14953.original_ext_source_id
+              JDBC_TABLE_9104.designation
+              IVOA_TABLE_14953.source_id
+              IVOA_TABLE_14971.source_id
+              JDBC_TABLE_9104.ra
+              IVOA_TABLE_14971.ra
+              wfau_dec
+              IVOA_TABLE_14971.dec
+              ]
+          }
+          Occurrence with index 0:
+          Input {
+            name = data
+            pipe = ogsadai-e60263da-be75-4146-9538-1dda1f3234f5
+          }
+          Occurrence with index 0:
+          Input {
+            name = expressions
+            literals:
+              [
+              IVOA_TABLE_14953.original_ext_source_id
+              JDBC_TABLE_9104.designation
+              IVOA_TABLE_14953.source_id
+              IVOA_TABLE_14971.source_id
+              JDBC_TABLE_9104.ra
+              IVOA_TABLE_14971.ra
+              JDBC_TABLE_9104.ra
+              IVOA_TABLE_14971.dec
+              ]
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = result
+            connected = true
+            pipe = Pipe[ogsadai-1e3dad61-e768-41b3-9e67-ed33ffb189d1]
+          }
+      }
+      Activity {
+        name = uk.org.ogsadai.MetadataRename
+        instance name = uk.org.ogsadai.MetadataRename-ogsadai-f70c5382-8f16-48b4-a087-312a842529bf
+        status = none
+        inputs:
+          Occurrence with index 0:
+          Input {
+            name = resultColumnNames
+            literals:
+              [
+              IVOA_TABLE_14953.gaia_ident
+              JDBC_TABLE_9104.wfau_ident
+              IVOA_TABLE_14953.neighbour_source_id
+              IVOA_TABLE_14971.gaia_source_id
+              JDBC_TABLE_9104.wfau_ra
+              IVOA_TABLE_14971.gaia_ra
+              wfau_dec
+              IVOA_TABLE_14971.wfau_dec
+              ]
+          }
+          Occurrence with index 0:
+          Input {
+            name = data
+            pipe = ogsadai-1e3dad61-e768-41b3-9e67-ed33ffb189d1
+          }
+        outputs:
+          Occurrence with index 0:
+          Output {
+            name = result
+            connected = false
+            pipe = Pipe[ogsadai-4599e31c-25ed-4db0-8f9b-93b046836ea1]
+          }
+      }
+    }
+

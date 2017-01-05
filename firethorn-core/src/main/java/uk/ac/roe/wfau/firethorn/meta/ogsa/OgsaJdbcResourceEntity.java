@@ -238,10 +238,10 @@ implements OgsaJdbcResource
                         OgsaStatus.ACTIVE.name()
                     )
                 );
+            // If we found one, check it works.
             if (found != null)
                 {
                 log.debug("Found primary OgsaJdbcResource [{}]", found.ident());
-
 // Temp fix to force a scan.
 // TODO Add a verify method ?
                 log.debug("Checking ogsaid ...");
@@ -262,6 +262,7 @@ implements OgsaJdbcResource
 	                    );
                 	}
                 }
+            // If we didn't find one, create a new one.
             else {
                 log.debug("No primary OgsaJdbcResource, creating a new one");
                 return create(

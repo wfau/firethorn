@@ -27,11 +27,11 @@ curl \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --data   "adql.resource.schema.create.name=${queryschemaname:?}" \
     "${endpointurl:?}/${queryspace?}/schemas/create" \
-    | bin/pp | tee query-schema.json
+    | bin/pp | tee /tmp/query-schema.json
 
 
 queryschema=$(
-    cat query-schema.json | self | node
+    cat /tmp/query-schema.json | self | node
     )
 
 

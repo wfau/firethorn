@@ -38,10 +38,10 @@ curl \
     --data   "jdbc.connection.driver=${drivername:?}" \
     --data   "jdbc.resource.catalog=${catalogname:?}" \
     "${endpointurl:?}/jdbc/resource/create" \
-    | bin/pp | tee jdbc-space.json
+    | bin/pp | tee /tmp/jdbc-space.json
 
 jdbcspace=$(
-    cat jdbc-space.json | self | node
+    cat /tmp/jdbc-space.json | self | node
     )
 
 
