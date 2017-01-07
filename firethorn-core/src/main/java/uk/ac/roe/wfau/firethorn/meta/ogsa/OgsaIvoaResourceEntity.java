@@ -39,7 +39,6 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource.Endpoint;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource.OgsaStatus;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;

@@ -1,0 +1,313 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # StringReplacerActivity replaced with InListBuilderActivity.
+    # Debug added to log how the IN string is built.
+
+
+        2017-01-06 15:12:00,291 DEBUG dqp.InListBuilderActivity [pool-1-thread-20,debug:84] ZRQ - StringReplacer(String, TupleMetadata)
+
+        2017-01-06 15:12:00,291 DEBUG join.ThetaJoin [pool-1-thread-23,debug:84] String tuple: [00031552+0016453 , 2546060530079576320, 0.27930304414226376, 0.8146575254267292, 2546060530079576320]
+        2017-01-06 15:12:00,292 DEBUG join.ThetaJoin [pool-1-thread-23,debug:84] Storing key: 00031552+0016453  of type : java.lang.String
+
+        2017-01-06 15:12:00,292 DEBUG dqp.InListBuilderActivity [pool-1-thread-20,debug:84] ZRQ - template
+            [
+            SELECT
+                table_3.ra_1,
+                table_3.designation_2
+            FROM (
+                SELECT
+                    TWOMASS.dbo.twomass_psc.ra AS ra_1,
+                    TWOMASS.dbo.twomass_psc.designation AS designation_2
+                FROM
+                    TWOMASS.dbo.twomass_psc
+                WHERE (
+                    TWOMASS.dbo.twomass_psc.dec < 1.25
+                    )
+                AND (
+                    TWOMASS.dbo.twomass_psc.dec > 0
+                    )
+                AND (
+                    TWOMASS.dbo.twomass_psc.ra < 1.25
+                    )
+                AND (
+                    TWOMASS.dbo.twomass_psc.ra > 0
+                    )
+                ) AS table_3
+            WHERE
+                table_3.designation_2 IN (
+                    $REPLACE(dqpBatchData_267276)
+                    )
+            ]
+
+        2017-01-06 15:12:00,292 DEBUG join.ThetaJoin [pool-1-thread-23,debug:84] String tuple: [00004538+0001090 , 2546035756708062720, 0.01912424252754608, 0.18901735896309513, 2546035756708062720]
+        2017-01-06 15:12:00,292 DEBUG join.ThetaJoin [pool-1-thread-23,debug:84] Storing key: 00004538+0001090  of type : java.lang.String
+
+        2017-01-06 15:12:00,292 DEBUG dqp.InListBuilderActivity [pool-1-thread-20,debug:84] ZRQ - column [0]
+
+        2017-01-06 15:12:00,293 DEBUG join.ThetaJoin [pool-1-thread-23,debug:84] String tuple: [00025038+0010437 , 2546053417613688064, 0.17877834943164378, 0.7099801586030109, 2546053417613688064]
+        2017-01-06 15:12:00,293 DEBUG join.ThetaJoin [pool-1-thread-23,debug:84] Storing key: 00025038+0010437  of type : java.lang.String
+
+        2017-01-06 15:12:00,293 DEBUG join.ThetaJoin [pool-1-thread-23,debug:84] String tuple: [00042745+0006060 , 2546005210900711808, 0.10171919709652218, 1.1144909139790706, 2546005210900711808]
+        2017-01-06 15:12:00,294 DEBUG join.ThetaJoin [pool-1-thread-23,debug:84] Storing key: 00042745+0006060  of type : java.lang.String
+
+        2017-01-06 15:12:00,293 DEBUG dqp.InListBuilderActivity [pool-1-thread-20,debug:84] ZRQ - fixed
+            [
+            SELECT
+                table_3.ra_1,
+                table_3.designation_2
+            FROM (
+                SELECT
+                    TWOMASS.dbo.twomass_psc.ra AS ra_1,
+                    TWOMASS.dbo.twomass_psc.designation AS designation_2
+                FROM
+                    TWOMASS.dbo.twomass_psc
+                WHERE (
+                    TWOMASS.dbo.twomass_psc.dec < 1.25
+                    )
+                AND (
+                    TWOMASS.dbo.twomass_psc.dec > 0
+                    )
+                AND (
+                    TWOMASS.dbo.twomass_psc.ra < 1.25
+                    )
+                AND (
+                    TWOMASS.dbo.twomass_psc.ra > 0
+                    )
+                ) AS table_3
+            WHERE
+                table_3.designation_2 IN (
+            ]
+
+        2017-01-06 15:12:00,294 DEBUG dqp.InListBuilderActivity [pool-1-thread-20,debug:84] ZRQ - value  [
+            00032893+0105536 ,00020453+0107523 ,00025788+0042238 ,00025235+0107018 ,00005956+0014047 ,00001165+0025462 ,00044152+0106297 ,
+            00023768+0100559 ,00020464+0055063 ,00033481+0048269 ,00010849+0109115 ,00003458+0054564 ,00020265+0038359 ,00003856+0032127 ,
+            00044219+0107548 ,00022194+0111556 ,00045709+0109380 ,00021917+0031120 ,00001869+0052189 ,00011840+0034324 ,00044769+0109366 ,
+            ....
+
+    #
+    # Dubug shows StringReplacerActivity (InListBuilderActivity) doesn't build the comma separated list.
+    # Next guess is ControlledRepeatActivity
+
+        GenericActivity controlledRepeater = BuilderUtils.createControlledRepeat();
+    
+        stringReplace.connectInput(
+            "data",
+            controlledRepeater.getOutput(
+                "output"
+                )
+            );
+
+
+    #
+    # BuilderUtils only has one method ...
+
+        public class BuilderUtils
+            {
+
+            public static GenericActivity createControlledRepeat()
+                {
+                GenericActivity controlledRepeat = new GenericActivity("uk.org.ogsadai.ControlledRepeat");
+                controlledRepeat.createInput("repeatedInput");
+                controlledRepeat.createInput("input");
+                controlledRepeat.createOutput("repeatedOutput");
+                controlledRepeat.createOutput("output");
+    
+                return controlledRepeat;  
+                }
+            }
+
+    #
+    # ControlledRepeat is declared as :
+
+        id=uk.org.ogsadai.ControlledRepeat
+        class=uk.org.ogsadai.activity.block.ControlledRepeatActivity
+
+
+        #
+        # Repeats the template for each block of IN values.
+        # Not responsible for building the IN list.
+
+    #
+    # Going back to BatchTableScanBuilder ..
+
+        #
+        # Convert column names and types into a TupleList
+        List<Attribute> attributes = operator.getHeading().getAttributes();
+        String[] resultColumnNames = new String[attributes.size()];
+        int[]    resultColumnTypes = new int[attributes.size()];
+        for (int i=0; i<resultColumnNames.length; i++)
+            {
+            resultColumnNames[i] = attributes.get(i).toString();
+            resultColumnTypes[i] = attributes.get(i).getType();
+            }
+
+
+
+    
+
+
+        // Put an IN expression into the filtered table scan
+        operator = addAndImplodeSelect(operator);
+
+
+
+         builder                CreateEmptyTupleList
+            |                           |
+            |                           +-- input "resultColumnNames" <-- String[] resultColumnNames
+            |                           +-- input "resultColumnTypes" <-- int[]    resultColumnTypes
+            |                           |
+            |                           +-- output "result"-------------\
+            |                                                           |
+            +-- output "data" --\                                       |
+                                |                                       |
+                                |    IfEmptyList                        |
+                                |       |                               |
+                                \-------+   input "data"                |
+                                        +-- input "content" ------------/
+                                        |
+                                        +-- output "outputEmpty"
+                                        +-- output "outputNonEmpty" ----\
+                                                                        |
+                                                                        |
+                                   ControlledRepeat                     |
+                                        |                               |
+                                        +-- input  "input" <------------/
+                                        +-- input  "repeatedInput" <------- operator.getPhysicalDatabaseQuery().replace("DQP_REPLACE", "$REPLACE"));
+                                        |
+                                        +-- output "output" ------------\
+                                        +-- output "repeatedOutput"-----|-\
+                                                                        | |
+                                                                        | |
+                                    StringReplace (InListBuilder)       | |
+                                        |                               | |
+                                        +-- input  "template" ----------|-/
+                                        +-- input  "data" --------------/
+                                        |
+                                        +-- output "result" ------------\
+                                                                        |
+                                                                        |
+                                    SQLQuery                            |
+                                        |                               |
+                                        +-- input  "expression" --------/
+                                        +-- output "data"
+            
+
+    #
+    # New directrion ....
+    
+
+    class BatchTableScanOptimiser
+        {
+        ....
+        
+        private void applyOpt(InnerThetaJoinOperator joinOperator,BranchTableScan scanOperator)
+            {
+            ....
+
+            QueryApplyOperator queryApplyOp =
+                new QueryApplyOperator(joinOperator, attrToBind);
+            
+            queryApplyOp.setChild(0, joinOperator.getChild(0));
+            queryApplyOp.setChild(1, joinOperator.getChild(1));
+
+            joinOperator.getParent().replaceChild(joinOperator, queryApplyOp);
+            joinOperator.disconnect();
+
+            FilteredTableScanOperator ftso =
+                new FilteredTableScanOperator(scanOperator.mOp, joinPredicate);
+            scanOperator.mOp.getParent().replaceChild(scanOperator.mOp, ftso);
+
+            scanOperator.mOp.disconnect();
+            queryApplyOp.getParent().update();
+
+            // Add the aggregate expression to the query apply op
+            queryApplyOp.setAggregateExpressions(new String[]{
+                "STRING_AGGREGATE(" + attrToBind.iterator().next() + ")"
+            });
+            
+            // Give this aggregate expression a unique name
+            String uniqueName = "dqpBatchData_267276";
+            queryApplyOp.setAggregateNames(new String[]{uniqueName});
+            
+            // Choose a batch size
+            // TODO: Need to do better here choosing the size. Keeping very
+            // low for testing
+            queryApplyOp.setBatchSize(20);
+            
+            // Put an IN expression into the filtered table scan
+            StringBuilder sb = new StringBuilder();
+            sb.append(attrForInClause.iterator().next());
+            sb.append(" IN ( DQP_REPLACE(").append(uniqueName).append(") )");
+
+            ....
+            }
+        ....
+        }
+
+    class QueryApplyOperator extends ApplyOperator
+        {
+        ....
+        }
+
+    class ApplyOperator extends BinaryOperator
+        {
+        ....
+        }
+
+    class BinaryOperator extends AbstractOperator
+        {
+        ....
+        }
+
+    #
+    # This is where the comma is added
+    class StringAggregate extends SQLAggregateFunction
+        {
+        ....
+        public void merge(SerialisableFunction function)
+            {
+            StringBuilder aggregate = ((StringAggregate)function).mAggregate;
+            if (aggregate != null)
+                {
+                if (mAggregate != null)
+                    {
+                    mAggregate.append(",");
+                    mAggregate.append(aggregate);
+                    }
+                else
+                    {
+                    mAggregate = aggregate;
+                    }
+                }
+            }
+        ....
+        }
+
+    class SQLAggregateFunction extends LogicalExecutableFunctionBase
+        {
+        ....
+        }
+    
+

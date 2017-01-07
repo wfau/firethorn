@@ -64,7 +64,7 @@ public class BatchTableScanBuilder implements ActivityPipelineBuilder
         "Copyright (c) The University of Edinburgh, 2011-2012";
 
     /**
-     * Logger.
+     * Debug logger.
      * 
      */
     private static final DAILogger LOG = DAILogger.getLogger(
@@ -124,7 +124,7 @@ public class BatchTableScanBuilder implements ActivityPipelineBuilder
         // Construct the StringReplace activity
 //ZRQ
 LOG.debug("ZRQ - Creating StringReplace");
-
+    
         GenericActivity stringReplace =
             new GenericActivity("uk.ac.roe.wfau.firethorn.InListBuilder");
         stringReplace.createInput("template");

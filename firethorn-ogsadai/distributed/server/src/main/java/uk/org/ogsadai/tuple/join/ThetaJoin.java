@@ -27,10 +27,12 @@ import uk.org.ogsadai.expression.ExpressionEvaluationException;
 import uk.org.ogsadai.expression.IncomparableTypesException;
 import uk.org.ogsadai.expression.arithmetic.ArithmeticExpression;
 import uk.org.ogsadai.relational.RelationalUtils;
+import uk.org.ogsadai.tuple.ColumnMetadata;
 import uk.org.ogsadai.tuple.ColumnNotFoundException;
 import uk.org.ogsadai.tuple.Null;
 import uk.org.ogsadai.tuple.Tuple;
 import uk.org.ogsadai.tuple.TupleMetadata;
+import uk.org.ogsadai.tuple.TupleTypes;
 import uk.org.ogsadai.tuple.TypeConverter;
 import uk.org.ogsadai.tuple.TypeMismatchException;
 
@@ -178,9 +180,14 @@ public class ThetaJoin extends Join
         
         if (LOG.isDebugEnabled())
         {
-            LOG.debug("String tuple: " + tuple);
-            LOG.debug("Storing key: " + key + " of type : " + 
-                      key.getClass().getName());
+            LOG.debug("Tuple value [" + tuple.toString() + "]");
+            LOG.debug("Tuple class [" + tuple.getClass().getName() + "]");
+            LOG.debug("Key value [" + key.toString() + "]");
+            LOG.debug("Key class [" + key.getClass().getName() + "]");
+            LOG.debug("Meta type [" + mStoredKey.getMetadata().getType() + "]");
+            LOG.debug("Meta name [" + mStoredKey.getMetadata().getName() + "]");
+
+            LOG.debug("Storing key [" + key + "] of type [" + key.getClass().getName() + "]");
         }
         if (key != Null.getValue())
         {

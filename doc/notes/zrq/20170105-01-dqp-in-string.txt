@@ -147,6 +147,8 @@ firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
 firethorn.user.driver=${userdriver:?}
 
+firethorn.ogsa.resource.scan=PT1M
+
 EOF
 
     chmod a+r "${HOME:?}/firethorn.properties" 
@@ -530,15 +532,15 @@ EOF
 
         #
         # Get URLs for the results as VOTable
-        wfauurl=$(cat /tmp/wfau-query.json | votable)
-        gavourl=$(cat /tmp/gavo-query.json | votable)
-        gaiaurl=$(cat /tmp/gaia-query.json | votable)
+        wfaudata=$(cat /tmp/wfau-query.json | votable)
+        gavodata=$(cat /tmp/gavo-query.json | votable)
+        gaiadata=$(cat /tmp/gaia-query.json | votable)
 
         #
         # Get the results as VOTable files
-        curl --silent "${wfauurl:?}" | xmlstarlet fo > /tmp/wfau-data.xml
-        curl --silent "${gavourl:?}" | xmlstarlet fo > /tmp/gavo-data.xml
-        curl --silent "${gaiaurl:?}" | xmlstarlet fo > /tmp/gaia-data.xml
+        curl --silent "${wfaudata:?}" | xmlstarlet fo > /tmp/wfau-data.xml
+        curl --silent "${gavodata:?}" | xmlstarlet fo > /tmp/gavo-data.xml
+        curl --silent "${gaiadata:?}" | xmlstarlet fo > /tmp/gaia-data.xml
 
         #
         # Remove XML namespaces
@@ -568,7 +570,7 @@ EOF
         wfau.twomass_psc.ra                              AS wfau_ra,
         gaia.gaia_source.ra                              AS gaia_ra,
 
-        wfau.twomass_psc.ra                              AS wfau_dec,
+        wfau.twomass_psc.dec                             AS wfau_dec,
         gaia.gaia_source.dec                             AS gaia_dec
 
     FROM
@@ -605,9 +607,32 @@ EOF
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | bin/pp | tee /tmp/join-query.json
 
+        #
+        # Get the URL for the results as VOTable
+        joindata=$(cat /tmp/join-query.json | votable)
+
+        #
+        # Get the results as VOTable
+        curl --silent "${joindata:?}" | xmlstarlet fo > /tmp/join-data.xml
+
+        #
+        # Remove XML namespaces
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/join-data.xml
+
+        #
+        # Select a specific row.
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/join-data.xml | xmlstarlet fo
 
 
 
+
+
+# -----------------------------------------------------
+# Stop our FireThorn container.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    docker stop "${firename:?}"
 
 # -----------------------------------------------------
 # Remove our FireThorn container.
@@ -670,6 +695,10 @@ EOF
 
         pushd firethorn-ogsadai
 
+            pushd firethorn/server
+                mvn clean install
+            popd
+
             pushd distributed/server
                 mvn clean install
             popd
@@ -686,11 +715,6 @@ EOF
 # Run our OGSA-DAI container.
 #[user@desktop] 
 
-    #   --read-only \
-    #   Caused by: uk.org.ogsadai.persistence.file.PersistenceFileAccessException:
-    #       There is a problem in interacting with persistence file
-    #           /var/local/tomcat/webapps/ogsadai/WEB-INF/etc/dai/resources/ogsadai-cb192673-2f79-4234-9391-535949edd6f5.
-
     source "${HOME:?}/chain.properties"
     docker run \
         --detach \
@@ -700,4 +724,18 @@ EOF
         --volume  '/etc/localtime:/etc/localtime:ro' \
         --network "${netspace:?}" \
         "firethorn/ogsadai:${version:?}"
+
+# -----------------------------------------------------
+# Pause ....
+#[user@desktop] 
+
+    sleep 10
+    
+# -----------------------------------------------------
+# Follow our OGSA-DAI container.
+#[user@desktop] 
+
+    docker exec -it \
+        "${ogsaname:?}" \
+        tail -f logs/ogsadai.log 
 
