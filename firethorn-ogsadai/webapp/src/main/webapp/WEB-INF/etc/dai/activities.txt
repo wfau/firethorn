@@ -742,5 +742,12 @@ dqp.context.template=DQPContextTemplate.xml
 dai.template.id=uk.org.ogsadai.DQP_RESOURCE_TEMPLATE
 END
 
+id=uk.ac.roe.wfau.firethorn.InListBuilder
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.dqp.InListBuilderActivity
+description=
+CONFIG
+END
+
+
 EOF
 

@@ -153,9 +153,9 @@ EOF
 
         #
         # Delete our old metadata database.
-        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
         #
         # Create our new metadata database.
@@ -186,9 +186,9 @@ EOF
 
         #
         # Delete our old userdata database.
-        sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
         #
         # Create our new userdata database (including empty table).

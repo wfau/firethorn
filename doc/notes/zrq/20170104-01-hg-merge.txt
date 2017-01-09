@@ -123,13 +123,12 @@
     source "${HOME:?}/firethorn.settings"
     gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20160906-02-mssql-create.txt" &
 
-
 # -------------------------------------------------------------------------------------------
 # Run our tests ....
 #[root@tester]
 
     source "${HOME:?}/firethorn.settings"
-    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20170104-02-query-testing.txt" &
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20170109-01-query-testing.txt" &
     
 # -------------------------------------------------------------------------------------------
 # Commit our changes into the main branch.

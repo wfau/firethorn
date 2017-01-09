@@ -1,7 +1,7 @@
 #
 # <meta:header>
 #   <meta:licence>
-#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
 #
 #     This information is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 # </meta:header>
 #
 #
+
 
 # -----------------------------------------------------
 # Remove existing containers.
@@ -83,7 +84,7 @@
 
     version=${version:?}
 
-    netspace=${version:?}
+    netspace=firethorn-${version:?}
 
     metaname=bethany
     username=patricia
@@ -92,12 +93,11 @@
     firename=gillian
     testname=aaliyah
 
-    metatype=mssql
-    metahost=$(secret 'firethorn.meta.host')
-    metadata=$(secret 'firethorn.meta.data')
-    metauser=$(secret 'firethorn.meta.user')
-    metapass=$(secret 'firethorn.meta.pass')
-    metadriver=net.sourceforge.jtds.jdbc.Driver
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
 
     usertype=mssql
     userhost=$(secret 'firethorn.user.host')
@@ -128,7 +128,7 @@ EOF
 firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
 
 firethorn.meta.type=${metatype:?}
-firethorn.meta.url=jdbc:jtds:sqlserver://${metaname:?}/${metadata:?}
+firethorn.meta.url=jdbc:postgresql://${metaname:?}/${metadata:?}
 firethorn.meta.user=${metauser:?}
 firethorn.meta.pass=${metapass:?}
 firethorn.meta.driver=${metadriver:?}
@@ -138,6 +138,8 @@ firethorn.user.url=jdbc:jtds:sqlserver://${username:?}/${userdata:?}
 firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
 firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
 
 EOF
 
@@ -149,31 +151,13 @@ EOF
 #[user@desktop] 
 
     source "${HOME:?}/chain.properties"
-    docker \
-        network \
-            create \
-                "${netspace:?}"
 
-# -----------------------------------------------------
-# Start our metadata ambassador.
-#[user@desktop] 
-
-    #   --read-only \
-    #   debug1: read_passphrase: can't open /dev/tty: No such device or address
-
-    source "${HOME:?}/chain.properties"
-    docker run \
-        --detach \
-        --tmpfs /run \
-        --tmpfs /tmp \
-        --interactive \
-        --name "${metaname:?}" \
-        --env  "tunneluser=${tunneluser:?}" \
-        --env  "tunnelhost=${tunnelhost:?}" \
-        --env  "targethost=${metahost:?}" \
-        --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
-        --network "${netspace:?}" \
-        "firethorn/sql-tunnel:${version:?}"
+    echo "Checking docker network [${netspace:?}]"
+    if [ $(docker network ls | grep -c "${netspace:?}") -eq 0 ]
+    then
+        echo "Creating docker network [${netspace:?}]"
+        docker network create "${netspace:?}"
+    fi
 
 # -----------------------------------------------------
 # Start our userdata ambassador.
@@ -217,6 +201,22 @@ EOF
         --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
         --network "${netspace:?}" \
         "firethorn/sql-tunnel:${version:?}"
+
+# -----------------------------------------------------
+# Start our PostgreSQL metadata container.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --read-only \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --name "${metaname:?}" \
+        --env "POSTGRES_USER=${metauser:?}" \
+        --env "POSTGRES_PASSWORD=${metapass:?}" \
+        --network "${netspace:?}" \
+        "firethorn/postgres:${version:?}"
 
 # -----------------------------------------------------
 # Build our Java components.
@@ -292,8 +292,23 @@ EOF
 # docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
 
 # -----------------------------------------------------
+# Build our tester container.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker build \
+            --tag firethorn/tester:${version:?} \
+            integration/tester
+
+    popd
+
+# -----------------------------------------------------
 # Configure our tester container.
 #[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
 
     testcfg=$(mktemp)
     cat > "${testcfg:?}" << EOF
@@ -308,33 +323,17 @@ EOF
 EOF
 
 # -----------------------------------------------------
-# Build our tester container.
-#[user@desktop] 
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        docker build \
-            --tag firethorn/tester:${version:?} \
-            integration/tester
-
-    popd
-
-# -----------------------------------------------------
 # Start our tester container.
 #[user@desktop] 
-
-    #   --read-only \
-    # Needs to write | tee to local temp files 
 
     source "${HOME:?}/chain.properties"
     docker run \
         --rm \
         --tty \
+        --read-only \
         --tmpfs /run \
         --tmpfs /tmp \
         --interactive \
-        --name    "${testname:?}" \
         --volume  "${testcfg:?}:/testcfg" \
         --volume  '/etc/localtime:/etc/localtime:ro' \
         --network "${netspace:?}" \
@@ -365,159 +364,7 @@ EOF
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             "${endpointurl:?}/system/info" \
-            | bin/pp | tee system-info.json
-
-# -----------------------------------------------------
-# Load the local ATLASDR1 resource.
-#[root@tester]
-
-        source "bin/02-02-create-jdbc-space.sh" \
-            'Atlas JDBC conection' \
-            "jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1" \
-            "${datauser:?}" \
-            "${datapass:?}" \
-            "${datadriver:?}" \
-            '*'
-        atlasjdbc=${jdbcspace:?}
-
-        source "bin/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
-        atlasadql=${adqlspace:?}
-
-        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_AtlasSource.xml"
-
-# -----------------------------------------------------
-# Create the GAVO TWOMASS resource.
-#[root@tester]
-
-        #
-        # Create the IvoaResource
-        source "bin/02-03-create-ivoa-space.sh" \
-            'GAVO TAP service' \
-            'http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap'
-
-        #
-        # Import the static VOSI file
-        vosifile='vosi/gavo/gavo-tableset.xml'
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --form   "vosi.tableset=@${vosifile:?}" \
-            "${endpointurl:?}/${ivoaspace:?}/vosi/import" \
-            | bin/pp
-
-        #
-        # Find the twomass schema
-        gavospace=${ivoaspace:?}
-        schemaname=twomass
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "ivoa.resource.schema.name=${schemaname:?}" \
-            "${endpointurl:?}/${gavospace:?}/schemas/select" \
-            | bin/pp | tee gavo-schema.json
-
-        gavoschema=$(
-            cat gavo-schema.json | self
-            )
-
-# -----------------------------------------------------
-# Create a workspace and add the Atlas and Gavo schemas.
-#[root@tester]
-
-        source "bin/04-01-create-query-space.sh"  'Test workspace'
-        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}"   'ATLASDR1' 'atlas'
-
-        #
-        # BUG - the param names are different for adql and ivoa schema/select 
-        #source "bin/04-03-import-query-schema.sh" "${twomassadql:?}" 'twomass'  'twomass'
-
-        adqlname=twomass
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
-            --data   "adql.resource.schema.import.name=${adqlname:?}" \
-            --data   "adql.resource.schema.import.base=${gavoschema:?}" \
-            "${endpointurl:?}/${queryspace:?}/schemas/import" \
-            | bin/pp | tee query-schema.json
-
-# -----------------------------------------------------
-# Test query ...
-#[root@tester]
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 2000 raj2000, dej2000 FROM twomass.data" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
-            "${endpointurl:?}/${queryspace:?}/queries/create" \
-            | bin/pp | tee blue-query.json
-
-# --------------------------------------
-# Create the GAIA TAP resource.
-#[root@tester]
-
-        #
-        # Create the IvoaResource
-        source "bin/02-03-create-ivoa-space.sh" \
-            'GAIA TAP service' \
-            'http://gea.esac.esa.int/tap-server/tap'
-
-        #
-        # Import the static VOSI file
-        vosifile='vosi/gaia/gaia-tableset.xml'
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --form   "vosi.tableset=@${vosifile:?}" \
-            "${endpointurl:?}/${ivoaspace:?}/vosi/import" \
-            | bin/pp
-
-        #
-        # Find the Gaia DR1 schema
-        gaiaspace=${ivoaspace:?}
-        gaianame=gaiadr1
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "ivoa.resource.schema.name=${gaianame:?}" \
-            "${endpointurl:?}/${gaiaspace:?}/schemas/select" \
-            | bin/pp | tee gaia-schema.json
-
-        gaiaschema=$(
-            cat gaia-schema.json | self
-            )
-
-# -----------------------------------------------------
-# Create a workspace and add the Gaia DR1 schema.
-#[root@tester]
-
-        source "bin/04-01-create-query-space.sh"  'Test workspace'
-
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
-            --data   "adql.resource.schema.import.name=${gaianame:?}" \
-            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
-            "${endpointurl:?}/${queryspace:?}/schemas/import" \
-            | bin/pp | tee query-schema.json
-
-# -----------------------------------------------------
-# Test query ...
-#[root@tester]
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 2000 ra, dec FROM gaiadr1.tmass_original_valid" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
-            "${endpointurl:?}/${queryspace:?}/queries/create" \
-            | bin/pp | tee blue-query.json
+            | bin/pp | tee /tmp/system-info.json
 
 # -----------------------------------------------------
 # Load the local TWOMASS resource.
@@ -530,90 +377,246 @@ EOF
             "${datapass:?}" \
             "${datadriver:?}" \
             '*'
-        tmassjdbc=${jdbcspace:?}
+        wfaujdbc=${jdbcspace:?}
 
         source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
-        tmassadql=${adqlspace:?}
+        wfauadql=${adqlspace:?}
 
-        source "bin/03-04-import-jdbc-metadoc.sh" "${tmassjdbc:?}" "${tmassadql:?}" 'TWOMASS' 'dbo' "meta/TWOMASS_TablesSchema.xml"
+        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'TWOMASS' 'dbo' "meta/TWOMASS_TablesSchema.xml"
 
 # -----------------------------------------------------
-# Create a workspace and add the Twomass and Gaia DR1 schemas.
+# Create a workspace and add the local TWOMASS schema.
 #[root@tester]
 
         source "bin/04-01-create-query-space.sh"  'Test workspace'
-        source "bin/04-03-import-query-schema.sh" "${tmassadql:?}" 'TWOMASS' 'TWOMASS'
+        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'TWOMASS' 'wfau'
 
-        adqlname=gaiadr1
+# -----------------------------------------------------
+# Create the GAVO TWOMASS resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAVO TAP service' \
+            'http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap'
+        gavoivoa=${ivoaspace:?}
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gavo/gavo-tableset.xml'
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${gavoivoa:?}/vosi/import" \
+            | bin/pp
+
+        #
+        # Find the Gavo twomass schema
+        findname=twomass
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${findname:?}" \
+            "${endpointurl:?}/${gavoivoa:?}/schemas/select" \
+            | bin/pp | tee /tmp/gavo-schema.json
+
+        gavoschema=$(
+            cat /tmp/gavo-schema.json | self
+            )
+
+# -----------------------------------------------------
+# Add the GAVO TWOMASS schema to our workspace.
+#[root@tester]
+
+        gavoname=gavo
         curl \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
-            --data   "adql.resource.schema.import.name=${adqlname:?}" \
-            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            --data   "adql.resource.schema.import.name=${gavoname:?}" \
+            --data   "adql.resource.schema.import.base=${gavoschema:?}" \
             "${endpointurl:?}/${queryspace:?}/schemas/import" \
-            | bin/pp | tee query-schema.json
+            | bin/pp | tee /tmp/query-schema.json
 
-# -----------------------------------------------------
-# Create our test query.
+# --------------------------------------
+# Create the GAIA TAP resource.
 #[root@tester]
 
-    cat > testquery << EOF
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAIA TAP service' \
+            'http://gea.esac.esa.int/tap-server/tap'
+        gaiaivoa=${ivoaspace:?}
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gaia/gaia-tableset.xml'
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${gaiaivoa:?}/vosi/import" \
+            | bin/pp
+
+        #
+        # Find the Gaia DR1 schema
+        findname=gaiadr1
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${findname:?}" \
+            "${endpointurl:?}/${gaiaivoa:?}/schemas/select" \
+            | bin/pp | tee /tmp/gaia-schema.json
+
+        gaiaschema=$(
+            cat /tmp/gaia-schema.json | self
+            )
+
+# -----------------------------------------------------
+# Add the Gaia DR1 schema to our workspace.
+#[root@tester]
+
+        gaianame=gaia
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${gaianame:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | bin/pp | tee /tmp/query-schema.json
+
+# -----------------------------------------------------
+# Test queries ...
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 designation, ra, dec FROM wfau.twomass_psc WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/wfau-query.json
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 mainid AS designation, raj2000 AS ra, dej2000 AS dec FROM gavo.data WHERE (raj2000 BETWEEN 0 AND 0.5) AND (dej2000 BETWEEN 0 AND 0.5)" \" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/gavo-query.json
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 designation, ra, dec  FROM gaia.tmass_original_valid WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/gaia-query.json
+
+        #
+        # Get URLs for the results as VOTable
+        wfaudata=$(cat /tmp/wfau-query.json | votable)
+        gavodata=$(cat /tmp/gavo-query.json | votable)
+        gaiadata=$(cat /tmp/gaia-query.json | votable)
+
+        #
+        # Get the results as VOTable files
+        curl --silent "${wfaudata:?}" | xmlstarlet fo > /tmp/wfau-data.xml
+        curl --silent "${gavodata:?}" | xmlstarlet fo > /tmp/gavo-data.xml
+        curl --silent "${gaiadata:?}" | xmlstarlet fo > /tmp/gaia-data.xml
+
+        #
+        # Remove XML namespaces
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/wfau-data.xml
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/gavo-data.xml
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/gaia-data.xml
+
+        #
+        # Select a specific row.
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/wfau-data.xml | xmlstarlet fo
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/gavo-data.xml | xmlstarlet fo
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/gaia-data.xml | xmlstarlet fo
+
+# -----------------------------------------------------
+# Create our join query ...
+#[root@tester]
+
+    cat > /tmp/join-query.adql << EOF
 
     SELECT
-        gaiadr1.tmass_best_neighbour.original_ext_source_id AS external_ident,
-        TWOMASS.twomass_psc.designation                     AS twomass_ident,
+        gaia.tmass_best_neighbour.original_ext_source_id AS gaia_ident,
+        wfau.twomass_psc.designation                     AS wfau_ident,
 
-        gaiadr1.tmass_best_neighbour.source_id              AS best_source_id,
-        gaiadr1.gaia_source.source_id                       AS gaia_source_id,
+        gaia.tmass_best_neighbour.source_id              AS best_source_id,
+        gaia.gaia_source.source_id                       AS gaia_source_id,
 
-        TWOMASS.twomass_psc.ra                              AS twomass_ra,
-        gaiadr1.gaia_source.ra                              AS gaia_ra,
+        wfau.twomass_psc.ra                              AS wfau_ra,
+        gaia.gaia_source.ra                              AS gaia_ra,
 
-        TWOMASS.twomass_psc.ra                              AS twomass_dec,
-        gaiadr1.gaia_source.dec                             AS gaia_dec
+        wfau.twomass_psc.dec                             AS wfau_dec,
+        gaia.gaia_source.dec                             AS gaia_dec
 
     FROM
-        gaiadr1.gaia_source,
-        gaiadr1.tmass_best_neighbour,
-        TWOMASS.twomass_psc
+        gaia.gaia_source,
+        gaia.tmass_best_neighbour,
+        wfau.twomass_psc
 
     WHERE
-        gaiadr1.tmass_best_neighbour.source_id = gaiadr1.gaia_source.source_id
+        gaia.tmass_best_neighbour.source_id = gaia.gaia_source.source_id
     AND
-        gaiadr1.tmass_best_neighbour.original_ext_source_id = TWOMASS.twomass_psc.designation
+        gaia.tmass_best_neighbour.original_ext_source_id = wfau.twomass_psc.designation
     AND
-        gaiadr1.gaia_source.ra  BETWEEN   0 AND 1.25
+        gaia.gaia_source.ra  BETWEEN 0 AND 1.25
     AND
-        gaiadr1.gaia_source.dec BETWEEN   0 AND 1.25
+        gaia.gaia_source.dec BETWEEN 0 AND 1.25
     AND
-        TWOMASS.twomass_psc.ra  BETWEEN   0 AND 1.25
+        wfau.twomass_psc.ra  BETWEEN 0 AND 1.25
     AND
-        TWOMASS.twomass_psc.dec BETWEEN   0 AND 1.25
+        wfau.twomass_psc.dec BETWEEN 0 AND 1.25
 
 EOF
 
 # -----------------------------------------------------
-# Execute our test query.
+# Execute our join query.
 #[root@tester]
 
         curl \
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data-urlencode "adql.query.input@testquery" \
+            --data-urlencode "adql.query.input@/tmp/join-query.adql" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
-            | bin/pp | tee blue-query.json
+            | bin/pp | tee /tmp/join-query.json
 
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data-urlencode "adql.query.input@testquery" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=30000" \
-            "${endpointurl:?}/${queryspace:?}/queries/create" \
-            | bin/pp | tee blue-query.json
+        #
+        # Get the URL for the results as VOTable
+        joindata=$(cat /tmp/join-query.json | votable)
+
+        #
+        # Get the results as VOTable
+        curl --silent "${joindata:?}" | xmlstarlet fo > /tmp/join-data.xml
+
+        #
+        # Remove XML namespaces
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/join-data.xml
+
+        #
+        # Select a specific row.
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/join-data.xml | xmlstarlet fo
+
+
+
+
 

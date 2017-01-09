@@ -202,15 +202,38 @@ public class OgsaIvoaResourceEntity
                         resource
                     )
                 );
-            // If we don't have one, create one.
-            if (found == null)
+            // If we found one, check it works.
+            if (found != null)
                 {
-                found = create(
+                log.debug("Found primary OgsaIvoaResource [{}]", found.ident());
+// Temp fix to force a scan.
+// TODO Add a verify method ?
+                log.debug("Checking ogsaid ...");
+                final String ogsaid = found.ogsaid();
+                log.debug("Found ogsaid [{}][{}]", ogsaid, found.ogstatus());
+                if (found.ogstatus() == OgsaStatus.ACTIVE)
+                    {
+                    return found ;
+                    }
+                else {
+// Assume this is because the scan failed.
+// TODO Better error handling.
+// TODO Prevent runaway errors creating a new resource a on every call
+                    log.debug("Primary OgsaIvoaResource failed ping test, creating a new one");
+                    return create(
+                        service,
+                        resource
+                        );
+                    }
+                }
+            // If we didn't find one, create a new one.
+            else {
+                log.debug("No primary OgsaIvoaResource, creating a new one");
+                return create(
                     service,
                     resource
                     );
                 }
-            return found ;
             }
         }
 

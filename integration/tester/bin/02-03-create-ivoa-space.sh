@@ -29,10 +29,10 @@ curl \
     --data   "ivoa.resource.name=${resourcename:?}" \
     --data   "ivoa.resource.endpoint=${resourceuri:?}" \
     "${endpointurl:?}/ivoa/resource/create" \
-    | bin/pp | tee ivoa-space.json
+    | bin/pp | tee /tmp/ivoa-space.json
 
 ivoaspace=$(
-    cat ivoa-space.json | self | node
+    cat /tmp/ivoa-space.json | self | node
     )
 
 

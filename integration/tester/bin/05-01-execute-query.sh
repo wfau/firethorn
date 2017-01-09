@@ -28,10 +28,10 @@ curl \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.query.input=${adqltext:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
-     | bin/pp | tee query-job.json
+     | bin/pp | tee /tmp/query-job.json
 
 queryident=$(
-    cat query-job.json | self | node
+    cat /tmp/query-job.json | self | node
     )
 
 #
@@ -40,6 +40,6 @@ runquery "${queryident:?}"
 
 #
 # Get the VOTable results.
-#curl "$(cat atlas-query.json | votable)"
+#curl "$(cat /tmp/atlas-query.json | votable)"
 
 

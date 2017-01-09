@@ -230,8 +230,13 @@ public class BatchTableScanOptimiser implements Optimiser
             queryApplyOp.getParent().update();
 
             // Add the aggregate expression to the query apply op
+//ZRQ
+Attribute attrib = attrToBind.iterator().next();
+LOG.debug("ZRQ Attribute name [" + attrib.getName() + "]");
+LOG.debug("ZRQ Attribute type [" + attrib.getType() + "]");
+LOG.debug("ZRQ Attribute from [" + attrib.getSource() + "]");
             queryApplyOp.setAggregateExpressions(new String[]{
-                "STRING_AGGREGATE(" + attrToBind.iterator().next() + ")"
+                "STRING_AGGREGATE(" + attrib + ")"
             });
             
             // Give this aggregate expression a unique name

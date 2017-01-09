@@ -26,6 +26,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import uk.org.ogsadai.common.msgs.DAILogger;
 import uk.org.ogsadai.tuple.Null;
 import uk.org.ogsadai.tuple.TupleTypes;
 import uk.org.ogsadai.tuple.TypeMismatchException;
@@ -41,7 +42,11 @@ public class StringAggregate extends SQLAggregateFunction
     /** Copyright notice */
     private static final String COPYRIGHT_NOTICE = 
         "Copyright (c) The University of Edinburgh, 2011.";
-    
+
+    /** Logger. */
+    private static final DAILogger LOG = 
+        DAILogger.getLogger(StringAggregate.class);
+
     /** The current aggregate string. */
     private StringBuilder mAggregate;
     
@@ -81,18 +86,33 @@ public class StringAggregate extends SQLAggregateFunction
      */
     public void put(Object... parameters)
     {
+    
         Object parameter = parameters[0];
+        LOG.debug("ZRQ put class [" + parameter.getClass().getName() + "]");
+        LOG.debug("ZRQ put value [" + parameter.toString() + "]");
+
         if (parameter != Null.VALUE)
         {
             if (mAggregate == null)
-            {
+                {
                 mAggregate = new StringBuilder();
-            }
+                }
             else
-            {
+                {
                 mAggregate.append(",");
-            }
-            mAggregate.append(parameter);
+                }
+// ZRQ -- Temporary fix.
+// ZRQ -- Need to check this doesn't interfere with other types.            
+// ZRQ -- WHY DO WE NEED THE TRIM !?
+            if (parameter instanceof String)
+                {
+                mAggregate.append('\'');
+                mAggregate.append(parameter.toString().trim());
+                mAggregate.append('\'');
+                }
+            else {
+                mAggregate.append(parameter.toString());
+                }
         }
     }
     
@@ -129,6 +149,9 @@ public class StringAggregate extends SQLAggregateFunction
     public void merge(SerialisableFunction function)
     {
         StringBuilder aggregate = ((StringAggregate)function).mAggregate;
+        LOG.debug("ZRQ merge [" + aggregate + "]");
+
+        
         if (aggregate != null)
         {
             if (mAggregate != null)
@@ -148,12 +171,17 @@ public class StringAggregate extends SQLAggregateFunction
      */
     public SerialisableFunction deserialise(DataInputStream input) throws IOException
     {
+    LOG.debug("deserialise [...]");
+    
         StringAggregate stringAggregate = new StringAggregate(this);
         // boolean indicating whether the value is null
         if (!input.readBoolean())
         {
             stringAggregate.mAggregate = new StringBuilder();
-            stringAggregate.mAggregate.append(input.readUTF());
+//ZRQ
+            String string = input.readUTF();
+            LOG.debug("ZRQ append [" + string + "]");
+            stringAggregate.mAggregate.append(string);
         }
         return stringAggregate;
     }
@@ -163,6 +191,7 @@ public class StringAggregate extends SQLAggregateFunction
      */
     public void serialise(DataOutputStream output) throws IOException
     {
+    LOG.debug("serialise [...]");
         output.writeBoolean(mAggregate == null);
         if (mAggregate != null)
         {

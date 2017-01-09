@@ -36,6 +36,8 @@ import uk.org.ogsadai.dqp.lqp.optimiser.join.DQPReplace;
 import uk.org.ogsadai.dqp.lqp.udf.repository.SimpleFunctionRepository;
 import uk.org.ogsadai.resource.dataresource.dqp.RequestDQPFederation;
 
+import uk.org.ogsadai.common.msgs.DAILogger;
+
 /**
  * Builds activities for TABLE SCAN operator such that the table
  * scan is implemented as multiple queries to the data source each time
@@ -60,6 +62,14 @@ public class BatchTableScanBuilder implements ActivityPipelineBuilder
     /** Copyright notice. */
     private static final String COPYRIGHT_NOTICE = 
         "Copyright (c) The University of Edinburgh, 2011-2012";
+
+    /**
+     * Debug logger.
+     * 
+     */
+    private static final DAILogger LOG = DAILogger.getLogger(
+        BatchTableScanBuilder.class
+        );
     
     private Optimiser mOptimiser;
 
@@ -112,8 +122,11 @@ public class BatchTableScanBuilder implements ActivityPipelineBuilder
             "content", createEmptyTupleList.getOutput("result"));
         
         // Construct the StringReplace activity
+//ZRQ
+LOG.debug("ZRQ - Creating StringReplace");
+    
         GenericActivity stringReplace =
-            new GenericActivity("uk.org.ogsadai.StringReplace");
+            new GenericActivity("uk.ac.roe.wfau.firethorn.InListBuilder");
         stringReplace.createInput("template");
         stringReplace.createInput("data");
         stringReplace.createOutput("result");
