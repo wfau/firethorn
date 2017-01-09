@@ -626,6 +626,89 @@ EOF
 
 
 
+# -----------------------------------------------------
+# Create our span query ...
+#[root@tester]
+
+    cat > /tmp/span-query.adql << EOF
+
+    SELECT
+        gaia.tmass_best_neighbour.original_ext_source_id AS gaia_ident,
+        gavo.data.mainid                                 AS gavo_ident,
+
+        gaia.tmass_best_neighbour.source_id              AS neighbour_source_id,
+        gaia.gaia_source.source_id                       AS gaia_source_id,
+
+        gavo.data.raj2000                                AS gavo_ra,
+        gaia.gaia_source.ra                              AS gaia_ra,
+
+        gavo.data.dej2000                                AS gavo_dec,
+        gaia.gaia_source.dec                             AS gaia_dec
+
+    FROM
+        gaia.gaia_source,
+        gaia.tmass_best_neighbour,
+        gavo.data
+
+    WHERE
+        gaia.tmass_best_neighbour.source_id = gaia.gaia_source.source_id
+    AND
+        gaia.tmass_best_neighbour.original_ext_source_id = gavo.data.mainid
+    AND
+        gaia.gaia_source.ra  BETWEEN 0 AND 1.25
+    AND
+        gaia.gaia_source.dec BETWEEN 0 AND 1.25
+    AND
+        gavo.data.raj2000    BETWEEN 0 AND 1.25
+    AND
+        gavo.data.dej2000    BETWEEN 0 AND 1.25
+
+EOF
+
+# -----------------------------------------------------
+# Execute our span query.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/span-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/span-query.json
+
+        #
+        # Get the URL for the results as VOTable
+        spandata=$(cat /tmp/span-query.json | votable)
+
+        #
+        # Get the results as VOTable
+        curl --silent "${spandata:?}" | xmlstarlet fo > /tmp/span-data.xml
+
+        #
+        # Remove XML namespaces
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/span-data.xml
+
+        #
+        # Select a specific row.
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/span-data.xml | xmlstarlet fo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # -----------------------------------------------------
 # Stop our FireThorn container.
