@@ -26,6 +26,8 @@
 # Merge the changes back into main.
 #[user@desktop] 
 
+    newversion=2.1.1
+
     source "${HOME:?}/firethorn.settings"
     gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20160906-01-hg-merge.txt" &
 
