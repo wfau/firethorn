@@ -186,6 +186,14 @@
         Email:    zzzz
         Login Succeeded
 
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        version=$(getversion)
+
+    popd
+            
     docker push "firethorn/fedora:${version:?}"
     docker push "firethorn/java:${version:?}"
     docker push "firethorn/tomcat:${version:?}"
