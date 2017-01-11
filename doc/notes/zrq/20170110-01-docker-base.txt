@@ -154,9 +154,6 @@
 # Nov 07 20:01:45 localhost.localdomain systemd[1]: Failed to start virt-sysprep firstboot service.
 #
 
-#virt-sysprep: Setting random password of root to Ty9hoUbZjgYXDEJn
-#virt-sysprep: Setting random password of root to WTV5zBHM3aMn6ko6
-
 #---------------------------------------------------------------------
 # Create a new VM
 #[user@desktop] 
@@ -513,8 +510,7 @@ EOF
 
     createvm
 
-    vmname=eta
-    ssh "${vmname:?}"
+    ssh eta
 
         cat /etc/fstab 
 

@@ -20,6 +20,19 @@
 #
 #
 
+# -----------------------------------------------------
+# Don't filter bridge packets ..
+#[user@desktop]
+
+    sudo sysctl -w net.bridge.bridge-nf-call-arptables=0
+    sudo sysctl -w net.bridge.bridge-nf-call-ip6tables=0
+    sudo sysctl -w net.bridge.bridge-nf-call-iptables=0
+
+# -----------------------------------------------------
+# Login as root..
+#[user@desktop]
+
+    ssh root@eta
 
 # -----------------------------------------------------
 # Create our projects directory.
@@ -49,6 +62,32 @@
 
     chcon -t svirt_sandbox_file_t "/var/local/projects" 
     chcon -t svirt_sandbox_file_t "/var/local/cache" 
+
+# -----------------------------------------------------
+# Install the selinux-dockersock SELinux policy.
+# https://github.com/dpw/selinux-dockersock
+#[root@virtual]
+
+    # Test if present
+    # semodule -l | grep dockersock
+
+    dnf install -y git
+    dnf install -y make
+    dnf install -y checkpolicy
+    dnf install -y policycoreutils policycoreutils-python
+    
+    pushd /var/local/projects
+
+        git clone https://github.com/dpw/selinux-dockersock
+
+        pushd selinux-dockersock
+
+            make dockersock.pp
+
+            semodule -i dockersock.pp
+
+        popd
+    popd
 
 # -----------------------------------------------------
 # Create our docker group.
@@ -118,7 +157,8 @@ EOF
 #[root@virtual]
 
     exit
-    ssh "Stevedore@${vmname:?}"
+
+    ssh "Stevedore@eta"
 
 # -----------------------------------------------------
 # Load our secret function.
@@ -172,6 +212,24 @@ EOF
 EOF
 
 # -----------------------------------------------------
+# Remove existing containers.
+#[user@virtual]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove existing images.
+#[user@virtual]
+
+    docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
+# Remove existing networks.
+#[user@virtual]
+
+    # TBD - how to only delete 'our' networks, leaving the ones created by docker.
+    
+# -----------------------------------------------------
 # Start our network.
 #[user@virtual]
 
@@ -190,6 +248,7 @@ EOF
 
       # --read-only \
       # --user "$(id -u)" \
+
 
     docker run \
         --rm \
@@ -244,66 +303,10 @@ EOF
         popd
     fi
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# -----------------------------------------------------
-# Remove existing containers.
-#[user@virtual]
-
-    docker rm -vf $(docker ps -aq)
-
-# -----------------------------------------------------
-# Remove existing images.
-#[user@virtual]
-
-    docker rmi -f $(docker images -q)
-
 # -----------------------------------------------------
 # Update the Dockerfile versions.
+# Technically, we only need to do this if we are on a branch,
+# but no harm in doing it anyway.
 #[user@virtual]
 
     source "${HOME:?}/firethorn.settings"
@@ -315,8 +318,14 @@ EOF
     popd
 
 # -----------------------------------------------------
+# Install docker compose.
+#[user@virtual]
+
+    dnf install -y docker-compose
+
+# -----------------------------------------------------
 # Build our container images.
-#[user@desktop] 
+#[user@virtual]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
