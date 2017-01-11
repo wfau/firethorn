@@ -293,9 +293,8 @@
 # Login using ssh keys.
 #[user@desktop] 
 
-    vmname=eta
     ssh \
-        "root@${vmname:?}"
+        root@eta
 
 #---------------------------------------------------------------------
 # Install useful admin tools.
@@ -364,6 +363,34 @@ EOF
     # Imstall docker-compose
     dnf -y install docker-compose
 
+# -----------------------------------------------------
+# Install the selinux-dockersock SELinux policy.
+# https://github.com/dpw/selinux-dockersock
+# TODO Add this to the VM image.
+#[root@virtual]
+
+    # Test if present
+    # semodule -l | grep dockersock
+
+    dnf install -y git
+    dnf install -y make
+    dnf install -y checkpolicy
+    dnf install -y policycoreutils policycoreutils-python
+    
+    pushd $(mktemp -d)
+
+        git clone https://github.com/dpw/selinux-dockersock
+
+        pushd selinux-dockersock
+
+            make dockersock.pp
+
+            semodule -i dockersock.pp
+
+        popd
+    popd
+
+
 #---------------------------------------------------------------------
 # Update the system.
 #[root@virtual] 
@@ -387,6 +414,7 @@ EOF
 # Check the image file(s).
 #[user@methionine] 
 
+    vmname=eta
     vmfile=${vmname:?}.qcow
     vmpath=$(virsh --connect "${connection:?}" vol-path --pool "${livepool:?}" "${vmfile:?}")
 
@@ -448,10 +476,10 @@ EOF
         --backing-chain \
         "${tmpfile:?}"
 
-        image: /tmp/tmp.YXAc0SD62C
+        image: /tmp/tmp.8O6JFZoAVZ
         file format: qcow2
         virtual size: 32G (34359738368 bytes)
-        disk size: 805M
+        disk size: 841M
         cluster_size: 65536
         Format specific information:
             compat: 1.1
@@ -493,10 +521,10 @@ EOF
         --backing-chain \
         "${dockpath:?}"
 
-        image: /var/lib/libvirt/images/base/fedora-25-docker-20170110.qcow
+        image: /var/lib/libvirt/images/base/fedora-25-docker-20170111.qcow
         file format: qcow2
         virtual size: 32G (34359738368 bytes)
-        disk size: 808M
+        disk size: 845M
         cluster_size: 65536
         Format specific information:
             compat: 1.1

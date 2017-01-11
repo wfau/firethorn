@@ -64,33 +64,6 @@
     chcon -t svirt_sandbox_file_t "/var/local/cache" 
 
 # -----------------------------------------------------
-# Install the selinux-dockersock SELinux policy.
-# https://github.com/dpw/selinux-dockersock
-# TODO Add this to the VM image.
-#[root@virtual]
-
-    # Test if present
-    # semodule -l | grep dockersock
-
-    dnf install -y git
-    dnf install -y make
-    dnf install -y checkpolicy
-    dnf install -y policycoreutils policycoreutils-python
-    
-    pushd /var/local/projects
-
-        git clone https://github.com/dpw/selinux-dockersock
-
-        pushd selinux-dockersock
-
-            make dockersock.pp
-
-            semodule -i dockersock.pp
-
-        popd
-    popd
-
-# -----------------------------------------------------
 # Create our docker group.
 # [root@virtual]
 
@@ -275,21 +248,11 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Install docker compose.
-# TODO Add this to the builder image.
-#[root@builder]
-
-    dnf install -y docker-compose
-
-# -----------------------------------------------------
 # Build our container images.
 #[root@builder]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        export version=$(getversion)
 
         docker-compose \
             --file docker/docker-build.yml \
