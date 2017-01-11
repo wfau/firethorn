@@ -38,8 +38,9 @@ RUN dnf -y install iputils
 RUN dnf -y install bind-utils
 
 #
-# Install Docker client.
+# Install Docker components.
 RUN dnf -y install docker-io
+RUN dnf -y install docker-compose
 
 #
 # Install Mercurial
@@ -47,7 +48,7 @@ RUN dnf -y install mercurial
 
 #
 # Install Java JDK
-#RUN dnf -y install java-1.8.0-openjdk-devel
+RUN dnf -y install java-1.8.0-openjdk-devel
 RUN dnf -y install java-1.8.0-openjdk-headless
 
 #
