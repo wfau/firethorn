@@ -36,6 +36,7 @@
 
 # -----------------------------------------------------
 # Create our projects directory.
+# TODO Add to the docker image ?
 #[root@virtual]
 
     if [ ! -e /var/local/projects ]
@@ -47,6 +48,7 @@
 
 # -----------------------------------------------------
 # Create our cache directory.
+# TODO Add to the docker image ?
 #[root@virtual]
 
     if [ ! -e /var/local/cache ]
@@ -58,6 +60,7 @@
 
 # -----------------------------------------------------
 # Allow access to Docker containers.
+# TODO Add to the docker image ?
 #[root@virtual]
 
     chcon -t svirt_sandbox_file_t "/var/local/projects" 
@@ -65,12 +68,14 @@
 
 # -----------------------------------------------------
 # Create our docker group.
+# TODO Add to the docker image ?
 # [root@virtual]
 
     groupadd docker
 
 # -----------------------------------------------------
 # Create our docker user.
+# TODO Add to the docker image ?
 # [root@virtual]
 
     dockeruser=Stevedore
@@ -89,17 +94,17 @@
 
 # -----------------------------------------------------
 # Allow our docker user to use sudo without password.
+# TODO Add to the docker image ?
 # [root@virtual]
 
     cat > /etc/sudoers.d/91-${dockeruser:?} << EOF
-
 # User rules for ${dockeruser:?}
 ${dockeruser:?} ALL=(ALL) NOPASSWD:ALL
-    
 EOF
 
 # -----------------------------------------------------
 # Install our ssh keys.
+# TODO Add to the docker image ?
 # [root@virtual]
 
     pushd "${dockerhome:?}"
@@ -172,15 +177,18 @@ EOF
       # --read-only \
       # --user "$(id -u)" \
       # --network "${netspace:?}" \
-      # --tmpfs  '/var/local/cache' \
+      # --volume '/var/local/cache' \
       # --volume '/var/local/projects' \
+
+        --tmpfs '/run' \
+        --tmpfs '/tmp' \
 
     docker run \
         --rm \
         --tty \
-        --tmpfs '/run' \
-        --tmpfs '/tmp' \
         --interactive \
+        --volume '/var/local/cache:/var/local/cache' \
+        --volume '/var/local/projects:/var/local/projects' \
         --volume "${HOME:?}/version.cfg:/version.cfg" \
         --volume '/etc/localtime:/etc/localtime:ro' \
         --volume '/var/run/docker.sock:/var/run/docker.sock' \
@@ -264,7 +272,7 @@ EOF
 # Save the version.
 #[root@builder]
 
-    cat >> /version.cfg << EOF
+    cat > /version.cfg << EOF
     export version=${version:?}
     export branch=${branch:?}
 EOF

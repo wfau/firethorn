@@ -63,24 +63,15 @@
     basepath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${basefile:?}")
 
     #
-    # Check the image file.
-    sudo qemu-img \
-        info \
-        --backing-chain \
-        "${basepath:?}"
-
-            image: /var/lib/libvirt/images/base/fedora-25-base-20170110.qcow
-            file format: qcow2
-            virtual size: 32G (34359738368 bytes)
-            disk size: 196K
-            cluster_size: 65536
-            Format specific information:
-                compat: 0.10
-                refcount bits: 16
-
-    #
     # Install the OS. 
     netinst=http://mirrorservice.org/sites/download.fedora.redhat.com/pub/fedora/linux/releases/${basever:?}/Server/x86_64/os
+
+    #   --nographics \
+    #   --extra-args "ks=http://webserver/kickstart.cfg" \
+    # https://www.centos.org/docs/4/html/rhel-sag-en-4/s1-kickstart2-startinginstall.html
+    # https://www.cyberciti.biz/faq/kvm-install-centos-redhat-using-kickstart-ks-cfg/
+    # https://www.redhat.com/archives/libvirt-users/2012-November/msg00081.html
+    # https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Virtualization_Deployment_and_Administration_Guide/sect-Guest_virtual_machine_installation_overview-Creating_guests_with_virt_install.html
 
     virt-install \
         --noreboot \
@@ -103,29 +94,12 @@
             No user created
             London timezone
             UK keyboard
-            
 
     #
     # Shutdown the vm.
     virsh \
         --connect "${connection:?}" \
         shutdown "${basename:?}"
-
-    #
-    # Check the image file.
-    sudo qemu-img \
-        info \
-        --backing-chain \
-        "${basepath:?}"
-
-        image: /var/lib/libvirt/images/base/fedora-25-base-20170110.qcow
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 1.3G
-        cluster_size: 65536
-        Format specific information:
-            compat: 0.10
-            refcount bits: 16
 
     #
     # Get copies of our public keys.
@@ -151,6 +125,9 @@
 # Nov 07 20:01:45 localhost.localdomain systemd[1]: firstboot.service: Main process exited, code=exited, status=203/EXEC
 # Nov 07 20:01:45 localhost.localdomain systemd[1]: Failed to start virt-sysprep firstboot service.
 #
+
+bwFgSdcyWPeSUArB
+NFnddtW5L3iCQ2G3
 
 #---------------------------------------------------------------------
 # Create a new VM
@@ -215,26 +192,6 @@
             "${tmpfile:?}"
 
 #---------------------------------------------------------------------
-# Check the image file.
-#[user@methionine] 
-
-    sudo qemu-img \
-        info \
-        --backing-chain \
-        "${tmpfile:?}"
-
-        image: /tmp/tmp.t8urTNfQYl
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 749M
-        cluster_size: 65536
-        Format specific information:
-            compat: 1.1
-            lazy refcounts: false
-            refcount bits: 16
-            corrupt: false
-
-#---------------------------------------------------------------------
 # Upload the new image.
 #[user@methionine] 
 
@@ -291,8 +248,7 @@
 # Login using ssh keys.
 #[user@desktop] 
 
-    ssh \
-        root@eta
+    ssh root@eta
 
 #---------------------------------------------------------------------
 # Install useful admin tools.
@@ -592,6 +548,10 @@ EOF
             Insecure Registries:
              127.0.0.0/8
             Registries: docker.io (secure)
+
+
+
+
 
 TODO
 #---------------------------------------------------------------------
