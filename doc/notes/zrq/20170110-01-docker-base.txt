@@ -28,7 +28,7 @@
     : ${livepool:='live'}
     : ${connection:='qemu:///system'}
 
-    basever=25
+    basever=24
     baseos=fedora-${basever:?}
     basecpu=4
     basemem=4096
@@ -118,7 +118,6 @@
         --backing-chain \
         "${basepath:?}"
 
-
         image: /var/lib/libvirt/images/base/fedora-25-base-20170110.qcow
         file format: qcow2
         virtual size: 32G (34359738368 bytes)
@@ -127,7 +126,6 @@
         Format specific information:
             compat: 0.10
             refcount bits: 16
-
 
     #
     # Get copies of our public keys.
@@ -192,7 +190,7 @@
 
 #---------------------------------------------------------------------
 # Clean the vm image.
-#[user@methionine] 
+#[user@desktop] 
 
     sudo virt-sysprep \
         --connect "${connection:?}" \
@@ -202,7 +200,7 @@
 
 #---------------------------------------------------------------------
 # Create a compressed copy of the image.
-#[user@methionine] 
+#[user@desktop] 
 
     vmfile=${vmname:?}.qcow
     vmpath=$(virsh --connect "${connection:?}" vol-path --pool "${livepool:?}" "${vmfile:?}")
@@ -375,7 +373,10 @@ EOF
     dnf install -y git
     dnf install -y make
     dnf install -y checkpolicy
-    dnf install -y policycoreutils policycoreutils-python
+    dnf install -y \
+        policycoreutils \
+        policycoreutils-python \
+        policycoreutils-python-utils
     
     pushd $(mktemp -d)
 
@@ -383,13 +384,10 @@ EOF
 
         pushd selinux-dockersock
 
-            make dockersock.pp
-
-            semodule -i dockersock.pp
+            make
 
         popd
     popd
-
 
 #---------------------------------------------------------------------
 # Update the system.

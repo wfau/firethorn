@@ -129,8 +129,9 @@ EOF
 # Login as our test user.
 #[root@virtual]
 
-    # exit
-    # ssh "Stevedore@eta"
+    exit
+    
+    ssh Stevedore@eta
 
 # -----------------------------------------------------
 # Remove existing containers.
@@ -151,18 +152,28 @@ EOF
     # TBD - how to only delete 'our' networks, leaving the ones created by docker.
 
 # -----------------------------------------------------
+# Set the intial version.
+#[user@virtual]
+
+    cat > "${HOME:?}/version.cfg" << EOF
+    export version=2.1.1
+    export branch=\${version}
+EOF
+
+    chmod a+rw "${HOME:?}/version.cfg" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/version.cfg"
+
+# -----------------------------------------------------
 # Run our build container.
 #[user@virtual]
+
+    source "${HOME:?}/version.cfg"
 
       # --read-only \
       # --user "$(id -u)" \
       # --network "${netspace:?}" \
       # --tmpfs  '/var/local/cache' \
       # --volume '/var/local/projects' \
-
-    touch "${HOME:?}/version.cfg"
-    chmod a+rw "${HOME:?}/version.cfg" 
-    chcon -t svirt_sandbox_file_t "${HOME:?}/version.cfg"
 
     docker run \
         --rm \
@@ -173,7 +184,7 @@ EOF
         --volume "${HOME:?}/version.cfg:/version.cfg" \
         --volume '/etc/localtime:/etc/localtime:ro' \
         --volume '/var/run/docker.sock:/var/run/docker.sock' \
-        firethorn/builder:2.1.1 \
+        "firethorn/builder:${branch:?}" \
         bash
 
 # -----------------------------------------------------
@@ -216,7 +227,28 @@ EOF
     fi
 
 # -----------------------------------------------------
-# Get the source code version.
+# Set the branch version.
+#[root@builder]
+
+    source /version.cfg
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        if [ -n "${branch}" ]
+        then
+            hg update "${branch:?}"
+        else
+            hg update 'default'
+        fi
+
+        source 'bin/util.sh'
+        setversion "$(getversion)"
+
+    popd
+
+# -----------------------------------------------------
+# Get the branch version.
 #[root@builder]
 
     source "${HOME:?}/firethorn.settings"
@@ -224,28 +256,18 @@ EOF
 
         source 'bin/util.sh'
         export version=$(getversion)
+        export branch=$(hg branch)
 
     popd
 
 # -----------------------------------------------------
-# Save the source code version.
+# Save the version.
 #[root@builder]
 
-    echo "export version=${version:?}" > /version.cfg
-
-# -----------------------------------------------------
-# Update the Dockerfile versions.
-# Technically, we only need to do this if we are on a branch,
-# but no harm in doing it anyway.
-#[root@builder]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        dockversions "${version:?}"
-
-    popd
+    cat >> /version.cfg << EOF
+    export version=${version:?}
+    export branch=${branch:?}
+EOF
 
 # -----------------------------------------------------
 # Build our container images.
@@ -270,6 +292,12 @@ EOF
         mvn clean install
         
     popd
+
+# -----------------------------------------------------
+# Install Java support for Unix sockets
+#[root@builder]
+
+    dnf -y install jnr-unixsocket
 
 # -----------------------------------------------------
 # Build our webapp containers.

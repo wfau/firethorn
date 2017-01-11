@@ -8,7 +8,7 @@ services:
         labels:
             uk.ac.roe.firethorn.version: "${version}"
         build:
-            context: 'fedora/25'
+            context: 'fedora/24'
         volumes:
             - /tmp/cache:/var/cache
 
