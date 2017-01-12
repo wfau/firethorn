@@ -137,6 +137,8 @@ EOF
     exit
     
     ssh Stevedore@eta
+    ssh Stevedore@Araybwyn
+    ssh Stevedore@Delild
 
 # -----------------------------------------------------
 # Remove existing containers.
@@ -181,7 +183,9 @@ EOF
       # --volume '/var/local/projects' \
 
       # --tmpfs '/run' \
-      # --tmpfs '/tmp' \
+      # --tmpfs '/tmp' \ # This causes problems with Java Unix sockets !?
+      # 'Could not initialize class org.newsclub.net.unix.NativeUnixSocket'
+      # Because the binary lib gets stored in /tmp !?
 
     docker run \
         --rm \
@@ -494,19 +498,6 @@ EOF
 EOF
 
 # -----------------------------------------------------
-# Start our network.
-#[user@virtual]
-
-    source "${HOME:?}/chain.properties"
-
-    echo "Checking docker network [${netspace:?}]"
-    if [ $(docker network ls | grep -c "${netspace:?}") -eq 0 ]
-    then
-        echo "Creating docker network [${netspace:?}]"
-        docker network create "${netspace:?}"
-    fi
-
-# -----------------------------------------------------
 # Create our FireThorn config.
 #[user@desktop] 
 
@@ -587,6 +578,19 @@ EOF
         --network "${netspace:?}" \
         "firethorn/sql-tunnel:${version:?}"
 
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --tmpfs /root/.ssh \
+        --interactive \
+        --name "${username:?}" \
+        --env  "target=${userhost:?}" \
+        --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --network "${netspace:?}" \
+        "firethorn/sql-proxy:${version:?}"
+
 # -----------------------------------------------------
 # Start our science data ambassador.
 #[user@desktop] 
@@ -608,6 +612,19 @@ EOF
         --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
         --network "${netspace:?}" \
         "firethorn/sql-tunnel:${version:?}"
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --detach \
+        --tmpfs /run \
+        --tmpfs /tmp \
+        --tmpfs /root/.ssh \
+        --interactive \
+        --name "${dataname:?}" \
+        --env  "target=${datahost:?}" \
+        --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --network "${netspace:?}" \
+        "firethorn/sql-proxy:${version:?}"
 
 # -----------------------------------------------------
 # Start our OGSA-DAI container.

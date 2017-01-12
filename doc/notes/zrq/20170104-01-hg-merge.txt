@@ -157,6 +157,11 @@
         hg update 'default'
         hg tag -f "version-$(getversion)"
 
+        #
+        # Get the new version
+        source 'bin/util.sh'
+        version=$(getversion)
+
     popd
 
 # -------------------------------------------------------------------------------------------

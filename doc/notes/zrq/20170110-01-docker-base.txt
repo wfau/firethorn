@@ -28,15 +28,22 @@
     : ${livepool:='live'}
     : ${connection:='qemu:///system'}
 
-    basever=24
-    baseos=fedora-${basever:?}
     basecpu=4
     basemem=4096
-    nodearch=x86_64
-
     basesize=32G
-    basename=${baseos}-base-$(date +%Y%m%d)
+    basearch=x86_64
+
+    basever=24
+    basedist=fedora-${basever:?}
+    basedate=$(date +%Y%m%d)
+    basename=${basedist}-base-${basedate:?}
     basefile=${basename}.qcow
+
+    docksize=${basesize:?}
+    dockdate=${basedate:?}
+    dockname=${basedist}-docker-${dockdate:?}
+    dockfile=${dockname}.qcow
+    dockgzip=${dockfile}.gz
 
 #---------------------------------------------------------------------
 # Create our base install
@@ -445,10 +452,6 @@ EOF
 # Upload the new image.
 #[user@methionine] 
 
-    docksize=32G
-    dockname=${baseos:?}-docker-$(date +%Y%m%d)
-    dockfile=${dockname:?}.qcow
-    
     virsh \
         --connect "${connection:?}" \
         vol-create-as \
@@ -582,18 +585,20 @@ TODO
     : ${livepool:='live'}
     : ${connection:='qemu:///system'}
 
-    basever=25
-    baseos=fedora-${basever:?}
     basecpu=4
     basemem=4096
-    nodearch=x86_64
-
     basesize=32G
-    basename=${baseos}-base-$(date +%Y%m%d)
+    basearch=x86_64
+
+    basever=24
+    basedist=fedora-${basever:?}
+    basedate=20170111
+    basename=${basedist}-base-${basedate}-${basedate:?}
     basefile=${basename}.qcow
 
-    docksize=32G
-    dockname=${baseos}-docker-$(date +%Y%m%d)
+    docksize=${basesize:?}
+    dockdate=${basedate:?}
+    dockname=${basedist}-docker-${docksize:?}-${dockdate:?}
     dockfile=${dockname}.qcow
     dockgzip=${dockfile}.gz
 
@@ -649,9 +654,14 @@ TODO
 
     createvm
 
-    ssh amarna
-    ssh Delild
-    ssh Araybwyn
+    [1] Araybwyn
+    [2] Lothigometh
+    [3] Ulov
+    [4] Dwiema
+    [5] Ibalehar
+    [6] Eterathiel
+    [7] Siamond
+    [8] Acilamwen
 
         uname -rv
 
