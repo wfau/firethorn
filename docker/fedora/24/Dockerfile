@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,11 +15,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tomcat:2.1.2
+FROM fedora:24
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# ADD our webapp.
-ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
+# Install common admin tools.
+RUN dnf install -y sed
+RUN dnf install -y tar
+RUN dnf install -y zip
+RUN dnf install -y wget
+RUN dnf install -y nano
+RUN dnf install -y gzip
+RUN dnf install -y pwgen
+RUN dnf install -y gnupg
+RUN dnf install -y which
 
+#
+# Set the terminal type for exec.
+# https://github.com/docker/docker/issues/9299
+ENV TERM xterm
+
+#
+# Add our install scripts. 
+COPY bin /usr/local/bin/
+RUN chmod a+x /usr/local/bin/*.sh
+
+#
+# Run our install scripts.
+RUN /usr/local/bin/install-locale.sh
+RUN /usr/local/bin/install-gosu.sh
 

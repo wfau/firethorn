@@ -1,5 +1,6 @@
+#!/bin/sh
 #
-# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -14,12 +15,21 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-FROM firethorn/tomcat:2.1.2
-MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+#
 
 #
-# ADD our webapp.
-ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
+# Strict error checking.
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
+#
+# Fix locale support
+# http://superuser.com/a/959587
+echo ""
+echo "Fixing locale support "
+echo "%_install_langs all" > /etc/rpm/macros.image-language-conf
+dnf -y update    glibc-common
+dnf -y reinstall glibc-common
 
 
