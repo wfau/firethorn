@@ -180,8 +180,8 @@ EOF
       # --volume '/var/local/cache' \
       # --volume '/var/local/projects' \
 
-        --tmpfs '/run' \
-        --tmpfs '/tmp' \
+      # --tmpfs '/run' \
+      # --tmpfs '/tmp' \
 
     docker run \
         --rm \
@@ -240,6 +240,8 @@ EOF
 
     source /version.cfg
 
+    branch=2.1.1-zrq-update
+
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
@@ -268,6 +270,9 @@ EOF
 
     popd
 
+    echo "Branch  [${branch:?}]"
+    echo "Version [${version:?}]"
+
 # -----------------------------------------------------
 # Save the version.
 #[root@builder]
@@ -278,7 +283,89 @@ EOF
 EOF
 
 # -----------------------------------------------------
-# Build our container images.
+# Build our builder image.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        docker-compose \
+            --file docker/docker-build.yml \
+            build fedora java builder
+
+    popd
+
+# -----------------------------------------------------
+# Exit back to our VM.
+#[root@builder]
+
+    exit
+
+# -----------------------------------------------------
+# Upate our version.
+#[user@virtual]
+
+    source "${HOME:?}/version.cfg"
+
+    echo "Branch  [${branch:?}]"
+    echo "Version [${version:?}]"
+
+# -----------------------------------------------------
+# Run our new build container.
+#[user@virtual]
+
+      # --read-only \
+      # --user "$(id -u)" \
+      # --network "${netspace:?}" \
+      # --volume '/var/local/cache' \
+      # --volume '/var/local/projects' \
+
+      # --tmpfs '/run' \
+      # --tmpfs '/tmp' \
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --volume '/var/local/cache:/var/local/cache' \
+        --volume '/var/local/projects:/var/local/projects' \
+        --volume "${HOME:?}/version.cfg:/version.cfg" \
+        --volume '/etc/localtime:/etc/localtime:ro' \
+        --volume '/var/run/docker.sock:/var/run/docker.sock' \
+        "firethorn/builder:${version:?}" \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Upate our version.
+#[user@virtual]
+
+    source "/version.cfg"
+
+    echo "Branch  [${branch:?}]"
+    echo "Version [${version:?}]"
+
+# -----------------------------------------------------
+# Set our source code path.
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/projects/firethorn
+EOF
+    fi
+
+# -----------------------------------------------------
+# Build all our images.
 #[root@builder]
 
     source "${HOME:?}/firethorn.settings"
@@ -300,12 +387,6 @@ EOF
         mvn clean install
         
     popd
-
-# -----------------------------------------------------
-# Install Java support for Unix sockets
-#[root@builder]
-
-    dnf -y install jnr-unixsocket
 
 # -----------------------------------------------------
 # Build our webapp containers.
@@ -357,6 +438,9 @@ EOF
 #[user@virtual]
 
     source "${HOME:?}/version.cfg"
+
+    echo "Branch  [${branch:?}]"
+    echo "Version [${version:?}]"
 
 # -----------------------------------------------------
 # Load our secret function.
@@ -487,23 +571,7 @@ EOF
     #   debug1: read_passphrase: can't open /dev/tty: No such device or address
 
     # Jan 11 07:15:15 eta audit[23488]: AVC avc:  denied  { write } for
-        pid=23488
-        comm="ssh"
-        name="agent.17645"
-        dev="tmpfs" ino=56890
-        scontext=system_u:system_r:container_t:s0:c7,c496
-        tcontext=unconfined_u:object_r:user_tmp_t:s0
-        tclass=sock_file
-        permissive=1
-        
     # Jan 11 07:15:15 eta audit[23488]: AVC avc:  denied  { connectto } for
-        pid=23488
-        comm="ssh"
-        path="/tmp/ssh-Lww1bN5v15/agent.17645"
-        scontext=system_u:system_r:container_t:s0:c7,c496
-        tcontext=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-        tclass=unix_stream_socket
-        permissive=1
 
     source "${HOME:?}/chain.properties"
     docker run \
