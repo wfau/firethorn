@@ -21,7 +21,7 @@
 #
 
 #---------------------------------------------------------------------
-# Initial settings
+# Build settings
 #[user@desktop] 
 
     : ${basepool:='base'}
@@ -89,6 +89,12 @@
 # Create our docker install
 #[user@desktop] 
 
+   #
+   # Delete any existing machine.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${dockname:?}"
+
     #
     # Delete any existing volume.
     virsh \
@@ -117,7 +123,9 @@
         --vcpus   "${basecpu:?}" \
         --disk "vol=${basepool:?}/${dockfile:?}" \
         --location "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
-        --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-docker-20170113.txt"
+        --extra-args "ks=http://data.metagrid.co.uk/temp/kickstart/figbert87.ks"
+
+#       --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-docker-20170113.txt"
 
    #
    # Delete the virtual machine.
@@ -135,33 +143,6 @@
 
 
 
-# -----------------------------------------------------
-# Install the selinux-dockersock SELinux policy.
-# https://github.com/dpw/selinux-dockersock
-# TODO Add this to the VM image.
-#[root@virtual]
-
-    # Test if present
-    # semodule -l | grep dockersock
-
-    dnf install -y git
-    dnf install -y make
-    dnf install -y checkpolicy
-    dnf install -y \
-        policycoreutils \
-        policycoreutils-python \
-        policycoreutils-python-utils
-    
-    pushd $(mktemp -d)
-
-        git clone https://github.com/dpw/selinux-dockersock
-
-        pushd selinux-dockersock
-
-            make
-
-        popd
-    popd
 
 
 
@@ -173,29 +154,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-TODO
 #---------------------------------------------------------------------
-# Push the docker image to our webserver.
-#[user@methionine] 
+# Push the image to our webserver.
+#[user@desktop] 
 
     dockpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${dockfile:?}")
     dockgzip=/tmp/${dockfile:?}.gz

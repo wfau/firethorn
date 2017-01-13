@@ -79,7 +79,6 @@ iputils
 net-tools
 bind-utils
 
-
 %end
 
 %pre
