@@ -166,7 +166,7 @@
 
     basever=24
     basedist=fedora-${basever:?}
-    basedate=20170111
+    basedate=20170113
     basename=${basedist}-base-${basedate}-${basedate:?}
     basefile=${basename}.qcow
 
