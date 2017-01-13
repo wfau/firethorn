@@ -72,157 +72,30 @@
     virt-install \
         --noreboot \
         --connect "${connection:?}" \
-        --name "${basename:?}" \
-        --memory "${basemem:?}" \
-        --vcpus  "${basecpu:?}" \
+        --name    "${basename:?}" \
+        --memory  "${basemem:?}" \
+        --vcpus   "${basecpu:?}" \
         --disk "vol=${basepool:?}/${basefile:?}" \
         --location "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
-        --extra-args "ks=http://data.metagrid.co.uk/temp/kickstart/figbert87.ks"
-        
-
-        &
-
-
-
-
-
-
-        BTRFS filesystem
-            /boot ext4 256M
-             swap swap   1G
-            /     btrfs ...
-
-        Minimal install
-
-            root password set
-            No user created
-            London timezone
-            UK keyboard
-
-    #
-    # Shutdown the vm.
-    virsh \
-        --connect "${connection:?}" \
-        shutdown "${basename:?}"
-
-    #
-    # Get copies of our public keys.
-    wget http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.rsa.pub
-    wget http://data.metagrid.co.uk/sshkeys/stv.roe.ac.uk.rsa.pub
-    wget http://data.metagrid.co.uk/sshkeys/msh.roe.ac.uk.rsa.pub
-
-    #
-    # Add our SSH keys and trigger a restorecon.
-    sudo virt-sysprep \
-        --connect "${connection:?}" \
-        --domain "${basename:?}" \
-        --root-password random \
-        --ssh-inject root:file:dmr.roe.ac.uk.rsa.pub \
-        --ssh-inject root:file:stv.roe.ac.uk.rsa.pub \
-        --ssh-inject root:file:msh.roe.ac.uk.rsa.pub \
-        --firstboot-command 'restorecon -Rv /root/.ssh'
-
-#
-# BUG - Looks like virt-sysprep firstboot has issues with SELinux in Fedora 24 and 25.
-# Nov 07 20:01:45 localhost.localdomain systemd[1]: Starting virt-sysprep firstboot service...
-# Nov 07 20:01:45 localhost.localdomain systemd[512]: firstboot.service: Failed at step EXEC spawning /usr/lib/virt-sysprep/firstboot.sh: Permission denied
-# Nov 07 20:01:45 localhost.localdomain systemd[1]: firstboot.service: Main process exited, code=exited, status=203/EXEC
-# Nov 07 20:01:45 localhost.localdomain systemd[1]: Failed to start virt-sysprep firstboot service.
-#
-
-bwFgSdcyWPeSUArB
-NFnddtW5L3iCQ2G3
-M7LfmtqQE6XCJ2sU
-
-#---------------------------------------------------------------------
-# Create a new VM
-#[user@desktop] 
-
-    createvm
-
-#---------------------------------------------------------------------
-# Login using password.
-#[user@desktop] 
-
-    vmname=eta
-
-    ssh \
-        -o 'PasswordAuthentication=yes' \
-        -o 'PubkeyAuthentication=no' \
-        "root@${vmname:?}"
-
-#---------------------------------------------------------------------
-# Fix the restorecon issue.
-#[root@virtual]
-
-    restorecon -Rv /root/.ssh
-
-#---------------------------------------------------------------------
-# Fix the kernel issue (CVE-2016-5195).
-# Technically not required, CVE-2016-5195 is no longer an issue.
-#[root@virtual]
-
-    dnf update -y kernel
-
-#---------------------------------------------------------------------
-# Shutdown the VM.
-#[root@virtual]
-
-    poweroff
-
-#---------------------------------------------------------------------
-# Clean the vm image.
-#[user@desktop] 
-
-    sudo virt-sysprep \
-        --connect "${connection:?}" \
-        --domain "${vmname:?}" \
-        --root-password random \
-        --operations 'defaults,-ssh-userdir'
-
-#---------------------------------------------------------------------
-# Create a compressed copy of the image.
-#[user@desktop] 
-
-    vmfile=${vmname:?}.qcow
-    vmpath=$(virsh --connect "${connection:?}" vol-path --pool "${livepool:?}" "${vmfile:?}")
-
-    tmpfile=$(mktemp)
-
-    sudo qemu-img \
-        convert \
-            -c \
-            -O qcow2 \
-            "${vmpath:?}" \
-            "${tmpfile:?}"
-
-#---------------------------------------------------------------------
-# Upload the new image.
-#[user@methionine] 
+        --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-base-20170113.txt"
 
    #
-   # Delete the existing VMs.
-   virsh \
-       --connect "${connection:?}" \
-       undefine "${vmname:?}"
-
+   # Delete the machine, leaving the image.
    virsh \
        --connect "${connection:?}" \
        undefine "${basename:?}"
 
-    #
-    # Delete the existing volumes.
-    virsh \
-        --connect "${connection:?}" \
-        vol-delete \
-            --pool "${livepool}" \
-            "${vmfile:?}"
+#---------------------------------------------------------------------
+# Create our docker install
+#[user@desktop] 
 
+    #
+    # Delete any existing volume.
     virsh \
         --connect "${connection:?}" \
         vol-delete \
             --pool "${basepool}" \
-            "${basefile:?}"
+            "${dockfile:?}"
 
     #
     # Create a new (empty) volume.
@@ -230,97 +103,37 @@ M7LfmtqQE6XCJ2sU
         --connect "${connection:?}" \
         vol-create-as \
             "${basepool:?}" \
-            "${basefile:?}" \
-            "${basesize:?}" \
+            "${dockfile:?}" \
+            "${docksize:?}" \
             --format qcow2
 
     #
-    # Upload the new image.
-    virsh \
+    # Create a new installation.
+    virt-install \
+        --noreboot \
         --connect "${connection:?}" \
-        vol-upload \
-            --pool "${basepool:?}" \
-            "${basefile:?}" \
-            "${tmpfile:?}"
+        --name    "${dockname:?}" \
+        --memory  "${basemem:?}" \
+        --vcpus   "${basecpu:?}" \
+        --disk "vol=${basepool:?}/${dockfile:?}" \
+        --location "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
+        --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-docker-20170113.txt"
 
-#---------------------------------------------------------------------
-# Create a new VM
-#[user@desktop] 
+   #
+   # Delete the virtual machine.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${dockname:?}"
 
-    createvm
 
-#---------------------------------------------------------------------
-# Login using ssh keys.
-#[user@desktop] 
 
-    ssh root@eta
 
-#---------------------------------------------------------------------
-# Install useful admin tools.
-#[root@virtual]
 
-    dnf -y install \
-        sed  \
-        vim  \
-        nano \
-        gawk
 
-    dnf -y install \
-        tar  \
-        zip  \
-        gzip
 
-    dnf -y install \
-        sudo \
-        htop \
-        pwgen
 
-    dnf -y install \
-        iputils   \
-        net-tools \
-        bind-utils
 
-# -----------------------------------------------------
-# Install and start the HAVEGE entropy generator.
-# http://redmine.roe.ac.uk/issues/828
-# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
-# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
-#[root@virtual]
 
-    #
-    # Install the entropy generator.
-    dnf install -y haveged
-
-    #
-    # Enable the service.
-    systemctl enable haveged.service
-
-#---------------------------------------------------------------------
-# Install our Docker tools.
-#[root@virtual] 
-
-    #
-    # Add the Docker repository.
-    cat << 'EOF' > /etc/yum.repos.d/docker.repo 
-[docker-repo]
-name=Docker Repository
-baseurl=https://yum.dockerproject.org/repo/main/fedora/$releasever/
-enabled=1
-gpgcheck=1
-gpgkey=https://yum.dockerproject.org/gpg
-EOF
-
-    #
-    # Install the docker engine
-    dnf -y install docker-engine
-
-    #
-    # Enable the Docker service.
-    systemctl enable docker.service
-
-    #
-    # Imstall docker-compose
-    dnf -y install docker-compose
 
 # -----------------------------------------------------
 # Install the selinux-dockersock SELinux policy.
@@ -350,205 +163,30 @@ EOF
         popd
     popd
 
-#---------------------------------------------------------------------
-# Update the system.
-#[root@virtual] 
-#
-#   dnf -y update
-#
 
-#---------------------------------------------------------------------
-# Clear the cache.
-#[root@virtual] 
 
-    dnf clean all
 
-#---------------------------------------------------------------------
-# Shutdown the VM.
-#[root@virtual] 
 
-    poweroff
 
-#---------------------------------------------------------------------
-# Check the image file(s).
-#[user@methionine] 
 
-    vmname=eta
-    vmfile=${vmname:?}.qcow
-    vmpath=$(virsh --connect "${connection:?}" vol-path --pool "${livepool:?}" "${vmfile:?}")
 
-    sudo qemu-img \
-        info \
-        --backing-chain \
-        "${vmpath:?}"
 
-        image: /var/lib/libvirt/images/live/eta.qcow
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 633M
-        cluster_size: 65536
-        backing file: /var/lib/libvirt/images/base/fedora-25-base-20170110.qcow
-        backing file format: qcow2
-        Format specific information:
-            compat: 0.10
-            refcount bits: 16
 
-        image: /var/lib/libvirt/images/base/fedora-25-base-20170110.qcow
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 752M
-        cluster_size: 65536
-        Format specific information:
-            compat: 1.1
-            lazy refcounts: false
-            refcount bits: 16
-            corrupt: false
 
-#---------------------------------------------------------------------
-# Clean the vm image.
-#[user@methionine] 
 
-    sudo virt-sysprep \
-        --connect "${connection:?}" \
-        --domain "${vmname:?}" \
-        --operations 'defaults,-ssh-userdir'
 
-#---------------------------------------------------------------------
-# Create a compressed copy of the image.
-#[user@methionine] 
 
-    tmpfile=$(mktemp)
 
-    sudo qemu-img \
-        convert \
-            -c \
-            -O qcow2 \
-            "${vmpath:?}" \
-            "${tmpfile:?}"
 
-#---------------------------------------------------------------------
-# Check the image file(s).
-#[user@methionine] 
 
-    sudo qemu-img \
-        info \
-        --backing-chain \
-        "${tmpfile:?}"
 
-        image: /tmp/tmp.8O6JFZoAVZ
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 841M
-        cluster_size: 65536
-        Format specific information:
-            compat: 1.1
-            lazy refcounts: false
-            refcount bits: 16
-            corrupt: false
 
-#---------------------------------------------------------------------
-# Upload the new image.
-#[user@methionine] 
 
-    virsh \
-        --connect "${connection:?}" \
-        vol-create-as \
-            "${basepool:?}" \
-            "${dockfile:?}" \
-            "${docksize:?}" \
-            --format 'qcow2'
 
-    virsh \
-        --connect "${connection:?}" \
-        vol-upload \
-            --pool "${basepool:?}" \
-            "${dockfile:?}" \
-            "${tmpfile:?}"
 
-#---------------------------------------------------------------------
-# Check the file info.
-#[user@methionine] 
 
-    dockpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${dockfile:?}")
 
-    sudo qemu-img \
-        info \
-        --backing-chain \
-        "${dockpath:?}"
 
-        image: /var/lib/libvirt/images/base/fedora-25-docker-20170111.qcow
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 845M
-        cluster_size: 65536
-        Format specific information:
-            compat: 1.1
-            lazy refcounts: false
-            refcount bits: 16
-            corrupt: false
-
-#---------------------------------------------------------------------
-# Test the image ...
-#[user@methionine] 
-
-    createvm
-
-    ssh eta
-
-        cat /etc/fstab 
-
-            UUID=ce9149e0-d0e9-4734-a236-d2dce600a29c /                       btrfs   subvol=root     0 0
-            UUID=05f8c849-cc47-48f1-941c-68942a5f53a7 /boot                   ext4    defaults        1 2
-            UUID=9ca616db-8eac-4293-a041-5eca89afc1cc swap                    swap    defaults        0 0
-
-        df -h
-
-            Filesystem      Size  Used Avail Use% Mounted on
-            devtmpfs        488M     0  488M   0% /dev
-            tmpfs           497M     0  497M   0% /dev/shm
-            tmpfs           497M  520K  496M   1% /run
-            tmpfs           497M     0  497M   0% /sys/fs/cgroup
-            /dev/vda3        31G  1.1G   28G   4% /
-            tmpfs           497M  4.0K  497M   1% /tmp
-            /dev/vda1       240M  137M   87M  62% /boot
-            tmpfs           100M     0  100M   0% /run/user/0
-
-        docker info
-
-            Containers: 0
-             Running: 0
-             Paused: 0
-             Stopped: 0
-            Images: 0
-            Server Version: 1.12.5
-            Storage Driver: btrfs
-             Build Version: Btrfs v4.6.1
-             Library Version: 101
-            Logging Driver: journald
-            Cgroup Driver: systemd
-            Plugins:
-             Volume: local
-             Network: overlay null host bridge
-            Swarm: inactive
-            Runtimes: runc oci
-            Default Runtime: oci
-            Security Options: seccomp selinux
-            Kernel Version: 4.8.15-300.fc25.x86_64
-            Operating System: Fedora 25 (Twenty Five)
-            OSType: linux
-            Architecture: x86_64
-            Number of Docker Hooks: 2
-            CPUs: 2
-            Total Memory: 992.5 MiB
-            Name: eta
-            ID: S6I2:V4SP:S4H4:3IPW:SN7L:IMYX:5H7N:AWYL:XJRI:GSEA:SGUE:3URG
-            Docker Root Dir: /var/lib/docker
-            Debug Mode (client): false
-            Debug Mode (server): false
-            Registry: https://index.docker.io/v1/
-            Insecure Registries:
-             127.0.0.0/8
-            Registries: docker.io (secure)
 
 
 
