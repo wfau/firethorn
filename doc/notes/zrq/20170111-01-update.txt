@@ -29,21 +29,4 @@
     source "${HOME:?}/firethorn.settings"
     gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt" &
 
-#---------------------------------------------------------------------
-# Initial settings
-#[user@desktop] 
-
-    : ${basepool:='base'}
-    : ${livepool:='live'}
-    : ${connection:='qemu:///system'}
-
-    basever=25
-    baseos=fedora-${basever:?}
-    basecpu=4
-    basemem=4096
-    nodearch=x86_64
-
-    basesize=32G
-    basename=${baseos}-base-$(date +%Y%m%d)
-    basefile=${basename}.qcow
 
