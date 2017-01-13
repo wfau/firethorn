@@ -33,9 +33,9 @@ zerombr
 bootloader --location=mbr --boot-drive=vda
 
 clearpart --all --initlabel
-partition /boot   --type ext4  --onpart=vda1 --size 256  --label boot
-partition swap    --type swap  --onpart=vda2 --size 1024 --label swap
-partition btrfs.1 --type btrfs --onpart=vda3 --grow      --label system
+partition /boot   --type ext4  --size 256  --label boot
+partition swap    --type swap  --size 1024 --label swap
+partition btrfs.1 --type btrfs --grow      --label system
 
 btrfs none --data single --label system btrfs.1
 btrfs /    --subvol --name root system  
