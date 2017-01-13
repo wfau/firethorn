@@ -196,31 +196,6 @@
             "${dockfile:?}"
 
 #---------------------------------------------------------------------
-# Delete the exiting VMs.
-#[user@shep] 
-#[user@trop01] 
-#[user@trop02] 
-
-    virsh \
-        --connect "${connection:?}" \
-        list --all --state-shutoff --name |
-        tee vmlist
-
-    while read vmname
-    do
-        if [ -n "${vmname}" ]
-        then
-            echo "VM [${vmname}]"
-
-            virsh \
-                --connect "${connection:?}" \
-                undefine "${vmname:?}" \
-                --remove-all-storage
-
-        fi
-    done < vmlist
-
-#---------------------------------------------------------------------
 # Create a new VM.
 #[user@shep] 
 #[user@trop01] 
