@@ -43,8 +43,6 @@ btrfs /    --subvol --name root system
 network  --bootproto=dhcp --device=ens3 --ipv6=auto --activate
 network  --hostname=localhost.localdomain
 
-#services --enabled ntp, haveged, docker
-
 firstboot --disable
 
 selinux   --permissive
@@ -135,6 +133,7 @@ EOF
 
 #
 # Install the dockersock SELinux policy.
+# https://github.com/dpw/selinux-dockersock
 pushd $(mktemp -d)
   wget https://raw.githubusercontent.com/dpw/selinux-dockersock/master/dockersock.te
   checkmodule -M -m -o dockersock.mod dockersock.te

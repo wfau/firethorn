@@ -122,37 +122,14 @@
         --memory  "${basemem:?}" \
         --vcpus   "${basecpu:?}" \
         --disk "vol=${basepool:?}/${dockfile:?}" \
-        --location "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
-        --extra-args "ks=http://data.metagrid.co.uk/temp/kickstart/figbert87.ks"
-
-#       --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-docker-20170113.txt"
+        --location   "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
+        --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-docker-20170113.txt"
 
    #
    # Delete the virtual machine.
    virsh \
        --connect "${connection:?}" \
        undefine "${dockname:?}"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #---------------------------------------------------------------------
 # Push the image to our webserver.
