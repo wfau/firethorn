@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;

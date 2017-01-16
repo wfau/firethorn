@@ -34,7 +34,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 
 /**
  *

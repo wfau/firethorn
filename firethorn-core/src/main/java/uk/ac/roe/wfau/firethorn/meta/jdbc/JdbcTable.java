@@ -23,7 +23,6 @@ import java.util.Map;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
@@ -162,13 +161,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public JdbcTable create(final JdbcSchema parent, final String name, final JdbcType type);
-
-        /**
-         * Create a new {@link JdbcTable}.
-         * Used by AdqlQuery.
-         *
-         */
-        public JdbcTable create(final JdbcSchema parent, final GreenQuery query);
 
         /**
          * Create a new {@link JdbcTable}.

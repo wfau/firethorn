@@ -31,7 +31,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 
 /**
  *

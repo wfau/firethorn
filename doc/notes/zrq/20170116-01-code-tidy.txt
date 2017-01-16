@@ -36,8 +36,16 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-
+        ....
+        ....
         ....
 
+        mvn -P all clean install eclipse:eclipse
+
+        meld .
+
+
+        hg commit -m "Removed list of GreenQuery from AdqlSchema, issue #972"
+        hg commit -m "Removed GreenQuery"
 
     popd

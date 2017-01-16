@@ -18,8 +18,6 @@
 package uk.ac.roe.wfau.firethorn.spring;
 
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
@@ -110,18 +108,6 @@ public interface ComponentFactories
      *
      */
     public ConfigProperty.EntityServices config();
-
-    /**
-     * Our {@link GreenJob.EntityServices} instance.
-     *
-     */
-    public GreenJob.EntityServices jobs();
-
-    /**
-     * Our {@link GreenQuery.EntityServices} instance.
-     *
-     */
-    public GreenQuery.EntityServices greens();
 
     /**
      * Our {@link BlueQuery.EntityServices} instance.

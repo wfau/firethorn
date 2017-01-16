@@ -80,10 +80,6 @@ extends BaseTableBean<AdqlTable>
             {
             return entity().bluequery().link();
             }
-        else if (entity().greenquery() != null)
-            {
-            return entity().greenquery().link();
-            }
         else {
             return null ;
             }

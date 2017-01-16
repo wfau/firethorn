@@ -47,8 +47,6 @@ import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -59,7 +57,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.exception.IllegalStateTransition;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
@@ -330,7 +327,6 @@ implements JdbcTable
                 new JdbcTableEntity(
                     schema,
                     null,
-                    null,
                     name,
                     type
                     )
@@ -339,60 +335,12 @@ implements JdbcTable
 
         @Override
         @CreateMethod
-        public JdbcTable create(final JdbcSchema schema, final GreenQuery greenquery)
-            {
-            final JdbcTable table = this.insert(
-                new JdbcTableEntity(
-                    schema,
-                    greenquery,
-                    null,
-                    null
-                    )
-                );
-            //
-            // Add the select fields.
-            for (final GreenQuery.SelectField field : greenquery.fields())
-                {
-                final String name = field.name();
-                if (name == null)
-                    {
-                    log.warn("Null field name [{}]", field.name());
-                    continue;
-                    }
-                
-                final AdqlColumn.AdqlType type = field.type();
-                if (type == null)
-                    {
-                    log.warn("Null field type [{}]", field.name());
-                    continue;
-                    }
-                if (type == AdqlColumn.AdqlType.UNKNOWN)
-                    {
-                    log.warn("Unknown field type [{}]", field.name());
-                    continue;
-                    }
-                
-                table.columns().create(
-                    name,
-                    type.jdbctype(),
-                    field.arraysize()
-                    );
-                }
-
-            return builder.create(
-                table
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public JdbcTable create(final JdbcSchema schema, final BlueQuery bluequery)
+        public JdbcTable create(final JdbcSchema schema, final BlueQuery query)
             {
             return this.insert(
                 new JdbcTableEntity(
                     schema,
-                    null,
-                    bluequery,
+                    query,
                     null
                     )
                 );
@@ -654,7 +602,6 @@ implements JdbcTable
         this(
             schema,
             null,
-            null,
             meta.jdbc().name(),
             meta.jdbc().type()
             );
@@ -673,7 +620,6 @@ implements JdbcTable
             schema,
             null,
             null,
-            null,
             JdbcType.TABLE
             );
         }
@@ -687,7 +633,6 @@ implements JdbcTable
         {
         this(
             schema,
-            null,
             null,
             name,
             JdbcType.TABLE
@@ -704,7 +649,6 @@ implements JdbcTable
         this(
             schema,
             null,
-            null,
             name,
             type
             );
@@ -714,12 +658,11 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery greenquery, final BlueQuery bluequery, final String name)
+    public JdbcTableEntity(final JdbcSchema schema, final BlueQuery query, final String name)
         {
         this(
             schema,
-            greenquery,
-            bluequery,
+            query,
             name,
             JdbcType.TABLE
             );
@@ -729,14 +672,13 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    public JdbcTableEntity(final JdbcSchema schema, final GreenQuery greenquery, final BlueQuery query, final String name, final JdbcType type)
+    public JdbcTableEntity(final JdbcSchema schema, final BlueQuery query, final String name, final JdbcType type)
         {
         super(
             schema,
             name
             );
-        this.greenquery  = greenquery;
-        this.bluequery  = bluequery;
+        this.bluequery = query;
         this.schema = schema;
 
         this.jdbctype   = type ;
@@ -1287,29 +1229,6 @@ implements JdbcTable
                     )
                 );
             }
-        }
-
-    // TODO
-    // Refactor this as mapped identity ?
-    // http://www.codereye.com/2009/04/hibernate-bi-directional-one-to-one.html
-    //
-    // SQLServer won't allow a unique column to have a null value.
-    // http://improvingsoftware.com/2010/03/26/creating-a-unique-constraint-that-ignores-nulls-in-sql-server/
-    @OneToOne(
-        fetch = FetchType.LAZY,
-        targetEntity = GreenQueryEntity.class
-        )
-    @JoinColumn(
-        name = DB_GREEN_QUERY_COL,
-        unique = false,
-        nullable = true,
-        updatable = false
-        )
-    private GreenQuery greenquery;
-    @Override
-    public GreenQuery greenquery()
-        {
-        return this.greenquery;
         }
 
     @OneToOne(

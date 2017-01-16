@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -51,11 +50,6 @@ public class AdqlTapSyncController extends AbstractController {
 	 * Timeout for query job in miliseconds
 	 */
 	static final Integer TIMEOUT = 600000;
-
-	/**
-	 * Param to start a job
-	 */
-	static final Status STARTJOB = Status.RUNNING;
 
 	@Autowired
 	private CapabilitiesGenerator capgenerator;

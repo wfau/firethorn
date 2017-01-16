@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
@@ -88,34 +86,6 @@ public class TestFactories
             }
         }
     
-    
-    @Component
-    public static class JobFactories
-        {
-        @Component
-        public static class BaseJobFactories
-            {
-            @Component
-            public static class IdentFactory
-            extends AbstractIdentFactory<GreenJob>
-            implements GreenJob.IdentFactory
-                {
-                }
-            @Component
-            public static class LinkFactory
-            extends MockLinkFactory<GreenJob>
-            implements GreenJob.LinkFactory
-                {
-                public LinkFactory()
-                    {
-                    super(
-                        "/job/base"
-                        );
-                    }
-                }
-            }
-        }
-
     @Component
     public static class AuthFactories
         {
@@ -254,41 +224,6 @@ public class TestFactories
     @Component
     public static class AdqlFactories
         {
-
-        @Component
-        public static class QueryFactories
-            {
-            @Component
-            public static class IdentFactory
-            extends AbstractIdentFactory<GreenQuery>
-            implements GreenQuery.IdentFactory
-                {
-                }
-            @Component
-            public static class NameFactory
-            extends DateNameFactory<GreenQuery>
-            implements GreenQuery.NameFactory
-                {
-
-				@Override
-				public String name() {
-					return datename("TEST_QUERY");
-				}
-            	
-                }
-            @Component
-            public static class LinkFactory
-            extends MockLinkFactory<GreenQuery>
-            implements GreenQuery.LinkFactory
-                {
-                public LinkFactory()
-                    {
-                    super(
-                        "/adql/query"
-                        );
-                    }
-                }
-            }
 
         @Component
         public static class ColumnFactories

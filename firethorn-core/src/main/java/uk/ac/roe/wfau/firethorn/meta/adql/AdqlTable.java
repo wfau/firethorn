@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -98,20 +97,6 @@ extends BaseTable<AdqlTable, AdqlColumn>
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
 
-        /**
-         * Create a new {@link AdqlTable}.
-         *
-         */
-        @Deprecated
-        public AdqlTable create(final AdqlSchema schema, final GreenQuery query);
-
-        /**
-         * Create a new {@link AdqlTable}.
-         *
-         */
-        @Deprecated
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final GreenQuery query);
-        
         /**
          * Create a new {@link AdqlTable}.
          *
