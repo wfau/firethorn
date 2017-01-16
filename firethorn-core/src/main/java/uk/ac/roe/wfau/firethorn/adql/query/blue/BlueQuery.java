@@ -132,7 +132,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
          */
 
         /**
-         * Create a new {@link BlueQuery}.
+         * Create a new {@link BlueQuery} for an {@link AdqlResource}.
          * 
          * @param source The {@link AdqlResource} to query.
          * @param input  The ADQL query.
@@ -145,6 +145,16 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
          *  
          */
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
+        throws InvalidRequestException, InternalServerErrorException;
+
+        /**
+         * Create a new {@link BlueQuery} for an {@link AdqlResource}.
+         * 
+         * @param source The {@link AdqlResource} to query.
+         * @param input  The ADQL query.
+         * 
+         */
+        public BlueQuery create(final AdqlResource source, final String input)
         throws InvalidRequestException, InternalServerErrorException;
 
         /**

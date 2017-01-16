@@ -789,44 +789,6 @@ implements AdqlSchema
         }
 
     @Override
-    public Greens greens()
-        {
-        return new Greens()
-            {
-            @Override
-            public GreenQuery create(final QueryParam param, final String query)
-            throws QueryProcessingException
-                {
-                return factories().adql().greens().entities().create(
-                    AdqlSchemaEntity.this,
-                    param,
-                    query
-                    );
-                }
-
-            @Override
-            public GreenQuery create(final QueryParam param, final String query, final String name)
-            throws QueryProcessingException
-                {
-                return factories().adql().greens().entities().create(
-                    AdqlSchemaEntity.this,
-                    param,
-                    query,
-                    name
-                    );
-                }
-
-            @Override
-            public Iterable<GreenQuery> select()
-                {
-                return factories().adql().greens().entities().select(
-                    AdqlSchemaEntity.this
-                    );
-                }
-            };
-        }
-
-    @Override
     protected void scanimpl()
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());

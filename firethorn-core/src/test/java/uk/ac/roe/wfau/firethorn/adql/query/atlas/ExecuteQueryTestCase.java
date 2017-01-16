@@ -22,8 +22,7 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob.Status;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 
@@ -35,29 +34,6 @@ public class ExecuteQueryTestCase
     extends AtlasQueryTestBase
     {
     
-    //@Test
-    public void notTest000()
-    throws Exception
-        {
-        final GreenQuery query = testschema().greens().create(
-            factories().greens().params().create(
-                Level.STRICT,
-                Mode.AUTO
-                ),
-            " SELECT TOP 100" +
-            "    ra," +
-            "    dec" +
-            " FROM" +
-            "    atlasSource"
-            );
-
-        factories().greens().executor().update(
-            query.ident(),
-            Status.RUNNING,
-            10
-            );
-        }
-
     /**
      * Simple query so that test class doesn't fail when running JUnit tests
      * @throws Exception

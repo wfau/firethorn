@@ -421,57 +421,16 @@ implements AdqlResource
                     AdqlResourceEntity.this
                     );
                 }
-            /*
-             * 
+
             @Override
             public BlueQuery create(final String input)
-            throws InvalidRequestException, InternalServerErrorException
-                {
-                return services().blues().create(
-                    AdqlResourceEntity.this,
-                    input,
-                    null,
-                    null
-                    );
-                }
-            @Override
-            public BlueQuery create(final String input, final BlueTask.TaskState next, final Long wait)
                 throws InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
                     AdqlResourceEntity.this,
-                    input,
-                    next,
-                    wait
+                    input
                     );
                 }
-            @Override
-            public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final BlueTask.TaskState next, final Long wait)
-                throws InvalidRequestException, InternalServerErrorException
-                {
-                return services().blues().create(
-                    AdqlResourceEntity.this,
-                    input,
-                    limits,
-                    next,
-                    wait
-                    );
-                }
-            @Override
-            public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
-                throws InvalidRequestException, InternalServerErrorException
-                {
-                return services().blues().create(
-                    AdqlResourceEntity.this,
-                    input,
-                    limits,
-                    delays,
-                    next,
-                    wait
-                    );
-                }
-             * 
-             */
 
             @Override
             public BlueQuery create(String input, AdqlQueryBase.Mode mode, AdqlQueryBase.Syntax.Level syntax, AdqlQueryBase.Limits limits, AdqlQueryBase.Delays delays, BlueTask.TaskState next, Long wait)

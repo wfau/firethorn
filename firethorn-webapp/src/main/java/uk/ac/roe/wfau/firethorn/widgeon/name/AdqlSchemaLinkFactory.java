@@ -67,13 +67,6 @@ implements AdqlSchema.LinkFactory
     public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
 
     /**
-     * The URI path for the {@link AdqlSchema} {@link GreenQuery} queries, [{@value}].
-     *
-     */
-    @Deprecated
-    public static final String SCHEMA_GREEN_PATH = SCHEMA_PATH + "/greens" ;
-
-    /**
      * The URI path for the {@link AdqlSchema} {@link BlueQuery} queries, [{@value}].
      *
      */

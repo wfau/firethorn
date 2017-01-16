@@ -22,6 +22,9 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
+
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -38,7 +41,7 @@ public class CaseSensitiveTestCase
      */
     @Test
     public void test001()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -70,7 +73,7 @@ public class CaseSensitiveTestCase
      */
     @Test
     public void test002()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -102,7 +105,7 @@ public class CaseSensitiveTestCase
      */
     @Test
     public void test003()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -133,7 +136,7 @@ public class CaseSensitiveTestCase
      */
     @Test
     public void test004()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -165,7 +168,7 @@ public class CaseSensitiveTestCase
      */
     @Test
     public void test005()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -197,7 +200,7 @@ public class CaseSensitiveTestCase
      */
     @Test
     public void test006()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,

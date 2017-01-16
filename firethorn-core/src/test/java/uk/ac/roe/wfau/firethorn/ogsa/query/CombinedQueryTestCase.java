@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AbstractQueryTestBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenJob;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
@@ -47,7 +48,7 @@ public class CombinedQueryTestCase
     JdbcResource jdbc ;
     AdqlResource adql ;
     AdqlSchema schema ;
-    GreenQuery  query  ;
+    BlueQuery  query  ;
     
     @CreateAtomicMethod
     public void prepare()
@@ -85,11 +86,7 @@ public class CombinedQueryTestCase
             schema
             );
         
-        query = schema.greens().create(
-            factories().adql().greens().params().create(
-                GreenQuery.Syntax.Level.LEGACY,
-                AdqlQueryBase.Mode.DIRECT
-                ),
+        query = schema.resource().blues().create(
             "SELECT COUNT(ra) FROM atlasSource WHERE ra BETWEEN 80.0 AND 80.1"
             );
         assertNotNull(

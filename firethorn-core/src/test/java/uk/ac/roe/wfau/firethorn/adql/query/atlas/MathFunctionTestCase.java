@@ -22,6 +22,8 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -38,7 +40,7 @@ public class MathFunctionTestCase
      *
      */
     public void test000SA()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -60,7 +62,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test000SB()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -89,7 +91,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test001S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -117,7 +119,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test002S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -145,7 +147,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test003S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -173,7 +175,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test004SA()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -193,7 +195,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test004SB()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -221,7 +223,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test005SA()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -240,7 +242,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test005SB()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -268,7 +270,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test06SA()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -287,7 +289,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test06SB()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -316,7 +318,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test007S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -335,7 +337,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test007L()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,
@@ -363,7 +365,7 @@ public class MathFunctionTestCase
      *
      */
     public void test008S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -382,7 +384,7 @@ public class MathFunctionTestCase
      */
     @Test
     public void test008L()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,

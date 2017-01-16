@@ -188,43 +188,6 @@ extends BaseSchema<AdqlSchema, AdqlTable>
     public Tables tables();
 
     /**
-     * Access to the schema {@link GreenQuery queries}.
-     *
-     */
-    @Deprecated
-    public interface Greens
-        {
-        /**
-         * Create a new {@link GreenQuery}.
-         *
-         */
-        public GreenQuery create(final GreenQuery.QueryParam param, final String query)
-        throws QueryProcessingException;
-
-        /**
-         * Create a new {@link GreenQuery}.
-         *
-         */
-        public GreenQuery create(final GreenQuery.QueryParam param, final String query, final String name)
-        throws QueryProcessingException;
-
-        /**
-         * Select all the {@link GreenQuery} for this schema.
-         * @todo Does this make sense ?
-         *
-         */
-        public Iterable<GreenQuery> select();
-
-        }
-
-    /**
-     * Access to the schema {@link GreenQuery queries}.
-     *
-     */
-    @Deprecated
-    public Greens greens();
-
-    /**
      * The {@link AdqlSchema} metadata.
      *
      */

@@ -33,6 +33,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 
 /**
@@ -410,8 +411,7 @@ extends AtlasQueryTestBase
                 final String  adql    = results.getString("query");
                 log.debug("[{}][{}]", catalog, adql);
 
-                final GreenQuery query = testschema().greens().create(
-                    factories().adql().greens().params().create(),
+                final BlueQuery query = testspace().blues().create(
                     adql
                     );
 

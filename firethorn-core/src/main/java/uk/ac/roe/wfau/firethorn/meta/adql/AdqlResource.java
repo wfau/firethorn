@@ -215,7 +215,6 @@ extends BaseResource<AdqlSchema>
         /**
          * Create a new {@link BlueQuery} for this {@link AdqlResource}.
          * 
-         * @param source The {@link AdqlResource} to query.
          * @param input  The ADQL query.
          * @param mode   The {@link AdqlQueryBase.Mode}.
          * @param syntax The {@link AdqlQueryBase.Syntax.Level}.
@@ -226,6 +225,15 @@ extends BaseResource<AdqlSchema>
          * 
          */
         public BlueQuery create(final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState next, final Long wait)
+        throws InvalidRequestException, InternalServerErrorException;
+
+        /**
+         * Create a new {@link BlueQuery} for this {@link AdqlResource}.
+         * 
+         * @param input  The ADQL query.
+         * @return
+         */
+        public BlueQuery create(String string)
         throws InvalidRequestException, InternalServerErrorException;
 
         }
