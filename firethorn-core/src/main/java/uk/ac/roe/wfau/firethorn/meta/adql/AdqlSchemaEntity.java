@@ -683,18 +683,6 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final BlueQuery bluequery)
-                {
-      
-                return factories().adql().tables().entities().create(
-                        depth,
-                        AdqlSchemaEntity.this,
-                        base,
-                        bluequery
-                        );
-                }
-
-            @Override
             public AdqlTable select(final Identifier ident)
             throws IdentifierNotFoundException
                 {

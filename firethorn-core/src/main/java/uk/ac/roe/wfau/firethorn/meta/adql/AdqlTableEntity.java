@@ -291,7 +291,6 @@ public class AdqlTableEntity
             {
             final AdqlTableEntity table = new AdqlTableEntity(
                 depth,
-                (BlueQuery) null,
                 schema,
                 base,
                 name
@@ -302,25 +301,6 @@ public class AdqlTableEntity
             table.realize();
             return table ;
             }
-
-        @Override
-        @CreateMethod
-        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base, final BlueQuery query)
-            {
-            final AdqlTableEntity table = new AdqlTableEntity(
-                depth,
-                query,
-                schema,
-                base,
-                query.name()
-                );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
-            }
-
 
         @Override
         @SelectMethod
@@ -521,19 +501,32 @@ public class AdqlTableEntity
         {
         super();
         }
-    
+
     /**
      * Protected constructor.
      *
      */
-    protected AdqlTableEntity(final CopyDepth type, final BlueQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+    protected AdqlTableEntity(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base)
+        {
+        this(
+            type,
+            schema,
+            base,
+            null
+            );
+        }
+
+    /**
+     * Protected constructor.
+     *
+     */
+    protected AdqlTableEntity(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         super(
             type,
             schema,
             name
             );
-        this.bluequery  = query;
         this.base   = base;
         this.schema = schema;
         }
@@ -806,25 +799,9 @@ public class AdqlTableEntity
         // TODO Auto-generated method stub
         }
 
-    /*
-     * TODO This should be part of JdbcTableEntity
-     * TODO This should just return root().bluequery()
-     * 
-     */
-    @OneToOne(
-        fetch = FetchType.LAZY,
-        targetEntity = BlueQueryEntity.class
-        )
-    @JoinColumn(
-        name = DB_BLUE_QUERY_COL,
-        unique = false,
-        nullable = true,
-        updatable = false
-        )
-    private BlueQuery bluequery;
     @Override
     public BlueQuery bluequery()
         {
-        return this.bluequery;
+        return root().bluequery();
         }
     }

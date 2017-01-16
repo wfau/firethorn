@@ -148,25 +148,19 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
-        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base);
-
-        /**
-         * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
-         *
-         */
         public AdqlTable create(final BaseTable<?,?> base, final String name);
 
         /**
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
-        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, final String name);
+        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base);
 
         /**
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
-        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, BlueQuery bluequery);
+        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, final String name);
 
         /**
          * Import a {@link AdqlTable table} from our base schema..

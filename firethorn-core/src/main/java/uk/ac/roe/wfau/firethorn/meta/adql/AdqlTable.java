@@ -97,12 +97,6 @@ extends BaseTable<AdqlTable, AdqlColumn>
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
 
-        /**
-         * Create a new {@link AdqlTable}.
-         *
-         */
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final BlueQuery bluequery);
-
         }
 
     /**

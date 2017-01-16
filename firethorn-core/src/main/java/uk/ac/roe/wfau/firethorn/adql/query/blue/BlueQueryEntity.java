@@ -1987,9 +1987,8 @@ implements BlueQuery
 
         this.jdbctable = jdbcspace.tables().create();
         this.adqltable = adqlspace.tables().create(
-    		CopyDepth.PARTIAL,
-    		jdbctable,
-    		this
+            CopyDepth.PARTIAL,
+            this.jdbctable
             );
 
     	// TODO Add the row number index column.
@@ -1997,7 +1996,7 @@ implements BlueQuery
         for(final SelectField field : this.fields)
         	{
         	// TODO Adql details depend on the field type - calculated, local Jdbc, remote Ivoa etc ..
-        	final JdbcColumn jdbccol =jdbctable.columns().create(
+        	final JdbcColumn jdbccol = jdbctable.columns().create(
     			new JdbcColumn.Metadata()
     				{
 					@Override
