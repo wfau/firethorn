@@ -4,9 +4,9 @@ services:
 
     fedora:
         image:
-            "firethorn/fedora:${version}"
+            "firethorn/fedora:${buildname}"
         labels:
-            uk.ac.roe.firethorn.version: "${version}"
+            uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'fedora/24'
         volumes:
@@ -14,9 +14,9 @@ services:
 
     java:
         image:
-            "firethorn/java:${version}"
+            "firethorn/java:${buildname}"
         labels:
-            uk.ac.roe.firethorn.version: "${version}"
+            uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'java/8'
         depends_on:
@@ -24,9 +24,9 @@ services:
 
     builder:
         image:
-            "firethorn/builder:${version}"
+            "firethorn/builder:${buildname}"
         labels:
-            uk.ac.roe.firethorn.version: "${version}"
+            uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'builder'
         depends_on:
@@ -34,9 +34,9 @@ services:
 
     tomcat:
         image:
-            "firethorn/tomcat:${version}"
+            "firethorn/tomcat:${buildname}"
         labels:
-            uk.ac.roe.firethorn.version: "${version}"
+            uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'tomcat/8'
         depends_on:
@@ -44,9 +44,9 @@ services:
 
     sql-proxy:
         image:
-            "firethorn/sql-proxy:${version}"
+            "firethorn/sql-proxy:${buildname}"
         labels:
-            uk.ac.roe.firethorn.version: "${version}"
+            uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'sql-proxy'
         depends_on:
@@ -54,9 +54,9 @@ services:
 
     sql-tunnel:
         image:
-            "firethorn/sql-tunnel:${version}"
+            "firethorn/sql-tunnel:${buildname}"
         labels:
-            uk.ac.roe.firethorn.version: "${version}"
+            uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'sql-tunnel'
         depends_on:
@@ -64,7 +64,7 @@ services:
 
     postgres:
         image:
-           "firethorn/postgres:${version}"
+           "firethorn/postgres:${buildname}"
         build:
             context: 'postgres/9'
         depends_on:

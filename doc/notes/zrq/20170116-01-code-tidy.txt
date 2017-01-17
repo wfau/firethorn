@@ -42,10 +42,24 @@
 
         mvn -P all clean install eclipse:eclipse
 
-        meld .
-
-
         hg commit -m "Removed list of GreenQuery from AdqlSchema, issue #972"
         hg commit -m "Removed GreenQuery"
+        hg commit -m "Removed explicit BlueQuery reference from AdqlTable"
+
+        meld .
 
     popd
+
+#---------------------------------------------------------------------
+# Run some tests ....
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20170116-02-query-testing.txt" &
+
+
+#---------------------------------------------------------------------
+# Merge the branch.
+#[user@desktop] 
+
+
