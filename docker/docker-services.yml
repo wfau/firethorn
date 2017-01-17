@@ -32,4 +32,9 @@ services:
         build:
             context: 'postgres/9'
 
+    tester:
+        image:
+           "firethorn/tester:${buildtag}"
+        build:
+            context: 'tester'
 
