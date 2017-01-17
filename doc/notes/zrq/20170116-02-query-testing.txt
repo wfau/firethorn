@@ -275,7 +275,7 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Set the container version.
+# Set the Docker build tag.
 #[root@builder]
 
     source "${HOME:?}/firethorn.settings"
@@ -313,6 +313,40 @@ EOF
             build
 
     popd
+
+# -----------------------------------------------------
+# Tag our build container.
+#[root@builder]
+
+    docker tag \
+        firethorn/builder:${buildtag:?} \
+        firethorn/builder:latest
+
+# -----------------------------------------------------
+# Exit from our old builder.
+#[root@builder]
+
+    exit
+    
+# -----------------------------------------------------
+# Run a new build container.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "branch=${branch:?}" \
+        --env "buildtag=${buildtag:?}" \
+        --volume "${buildvol:?}:/var/local/build" \
+        --volume "${cachevol:?}:/var/local/cache" \
+        --volume '/etc/localtime:/etc/localtime:ro' \
+        --volume '/var/run/docker.sock:/var/run/docker.sock' \
+        "firethorn/builder:latest" \
+        bash
+
+
 
 # -----------------------------------------------------
 # Build our service containers.
