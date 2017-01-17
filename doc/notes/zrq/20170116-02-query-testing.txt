@@ -214,6 +214,7 @@ EOF
 
 # -----------------------------------------------------
 # Update our path.
+# TODO Add this to the image
 #[root@builder]
 
     # ** this should be in the container **
@@ -221,6 +222,7 @@ EOF
 
 # -----------------------------------------------------
 # Configure our source path.
+# TODO Add this to the image
 #[root@builder]
 
     #
@@ -323,7 +325,7 @@ EOF
         firethorn/builder:latest
 
 # -----------------------------------------------------
-# Exit from our old builder.
+# Exit from the old builder.
 #[root@builder]
 
     exit
@@ -346,7 +348,27 @@ EOF
         "firethorn/builder:latest" \
         bash
 
+# -----------------------------------------------------
+# Update our path.
+# TODO Add this to the image
+#[root@builder]
 
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Configure our source path.
+# TODO Add this to the image
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/frog
+EOF
+    fi
 
 # -----------------------------------------------------
 # Build our service containers.
@@ -568,7 +590,7 @@ services:
 EOF
 
 # -----------------------------------------------------
-# Run our docker chain.
+# Start our docker chain.
 #[root@builder]
 
     source "${HOME:?}/chain.properties"
@@ -580,7 +602,7 @@ EOF
 
 # ssh Stevedore@Araybwyn
 # source "${HOME:?}/chain.properties"
-# docker exec -it "${firename:?}" tail -f logs/firethorn.log 
+# docker exec "${firename:?}" tail -f logs/firethorn.log 
 
 # ssh Stevedore@Araybwyn
 # source "${HOME:?}/chain.properties"

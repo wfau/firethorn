@@ -75,9 +75,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
     indexes={
         @Index(
             columnList = JdbcTableEntity.DB_PARENT_COL
-            ),
-        @Index(
-            columnList = JdbcTableEntity.DB_GREEN_QUERY_COL
             )
         },
     uniqueConstraints={
@@ -140,12 +137,6 @@ implements JdbcTable
      *
      */
     protected static final String DB_JDBC_STATUS_COL = "jdbcstatus" ;
-
-    /**
-     * Hibernate column mapping, {@value}.
-     *
-     */
-    protected static final String DB_GREEN_QUERY_COL  = "greenquery" ;
 
     /**
      * Hibernate column mapping, {@value}.
