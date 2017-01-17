@@ -26,5 +26,5 @@ packaging:
     
 #
 # Tag to use for images
-tag: firethorn/ogsadai:${project.version}
+tag: firethorn/ogsadai:${docker.buildtag}
 

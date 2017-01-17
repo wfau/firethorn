@@ -118,7 +118,8 @@ EOF
     branch=2.1.2-zrq-code-tidy
 
     spacetag=$(pwgen 8 1)
-    buildtag=\${branch:?}
+    #buildtag=\${branch:?}
+    buildtag=\${spacetag:?}
 
     netspace=rosana-\${spacetag:?}
     buildvol=\${netspace:?}-build
