@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -65,13 +64,6 @@ implements AdqlSchema.LinkFactory
      *
      */
     public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
-
-    /**
-     * The URI path for the {@link AdqlSchema} {@link GreenQuery} queries, [{@value}].
-     *
-     */
-    @Deprecated
-    public static final String SCHEMA_GREEN_PATH = SCHEMA_PATH + "/greens" ;
 
     /**
      * The URI path for the {@link AdqlSchema} {@link BlueQuery} queries, [{@value}].

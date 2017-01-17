@@ -32,7 +32,10 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.SelectField;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -508,7 +511,7 @@ extends TestPropertiesBase
      * Check the expected state.
      *
      */
-    public void validate(final GreenQuery query, final AdqlQueryBase.Syntax.State status)
+    public void validate(final BlueQuery query, final AdqlQueryBase.Syntax.State status)
         {
         assertEquals(
             status,
@@ -521,7 +524,7 @@ extends TestPropertiesBase
      *
      */
     public static class ExpectedField
-    implements GreenQuery.SelectField
+    implements BlueQuery.SelectField
         {
         public ExpectedField(final String name, final AdqlColumn.AdqlType type, final Integer size)
             {
@@ -547,7 +550,7 @@ extends TestPropertiesBase
             {
             return this.name;
             }
-        void validate(final GreenQuery.SelectField field)
+        void validate(final BlueQuery.SelectField field)
             {
             log.debug("validate(SelectField)");
             log.debug("  name [{}][{}]", this.name, field.name());
@@ -568,13 +571,13 @@ extends TestPropertiesBase
             }
         }
 
-    public void validate(final GreenQuery query, final ExpectedField[] fields)
+    public void validate(final BlueQuery query, final ExpectedField[] fields)
         {
-        final Iterator<GreenQuery.SelectField> iter = query.fields().iterator();
+        final Iterator<BlueQuery.SelectField> iter = query.fields().select().iterator();
         int i = 0 ;
         while (iter.hasNext())
             {
-            final GreenQuery.SelectField field = iter.next();
+            final BlueQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
             if ((i+1)<=fields.length){
 	            fields[i++].validate(
@@ -633,7 +636,7 @@ extends TestPropertiesBase
         return result ;
         }
     
-    public void validate(final GreenQuery query, final String input)
+    public void validate(final BlueQuery query, final String input)
         {
         log.debug("---- SQL ----");
         log.debug(query.osql());
@@ -651,19 +654,21 @@ extends TestPropertiesBase
             );
         }
 
-    public GreenQuery validate(final GreenQuery.Mode mode, final Level level, final AdqlQueryBase.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
-    throws QueryProcessingException
+    public BlueQuery validate(final BlueQuery.Mode mode, final Level level, final AdqlQueryBase.Syntax.State state, final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
-        final GreenQuery query = testschema().greens().create(
-            factories().greens().params().create(
-                level,
-                mode
-                ),
-            adql
+        final BlueQuery query = testspace().blues().create(
+            adql,
+            mode,
+            level,
+            null,
+            null,
+            null,
+            null
             );
-        if (status != null)
+        if (state != null)
             {
-            validate(query, status);
+            validate(query, state);
             }
         if (fields != null)
             {
@@ -676,21 +681,34 @@ extends TestPropertiesBase
         return query;
         }
 
-    public GreenQuery validate(final Level level, final AdqlQueryBase.Syntax.State status, final String adql, final String sql, final ExpectedField[] fields)
-    throws QueryProcessingException
+    public BlueQuery validate(final Level level, final AdqlQueryBase.Syntax.State state, final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         return validate(
             Mode.AUTO,
             level,
-            status,
+            state,
             adql,
             sql,
             fields
             );
         }
 
-    public GreenQuery validate(final Level level, final AdqlQueryBase.Syntax.State status, final String adql)
-    throws QueryProcessingException
+    public BlueQuery validate(final String adql, final String sql, final ExpectedField[] fields)
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
+        {
+        return validate(
+            Mode.AUTO,
+            Level.LEGACY,
+            State.VALID,
+            adql,
+            sql,
+            fields
+            );
+        }
+    
+    public BlueQuery validate(final Level level, final AdqlQueryBase.Syntax.State status, final String adql)
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         return validate(
             Mode.AUTO,
@@ -706,31 +724,31 @@ extends TestPropertiesBase
      * Debug display of a query.
      *
      */
-    public void debug(final GreenQuery query)
+    public void debug(final BlueQuery query)
         {
         log.debug("Query -- ");
         log.debug("Mode   [{}]", query.mode());
-        log.debug("Status [{}]", query.status());
+        log.debug("State  [{}]", query.state());
         log.debug("ADQL   [{}]", query.adql());
         log.debug("OSQL   [{}]", query.osql());
-        log.debug("Target [{}]", (query.primary() != null) ? query.primary().ident() : null);
+        log.debug("Target [{}]", (query.resources().primary() != null) ? query.resources().primary().ident() : null);
         log.debug("Resources -- ");
-        for (final BaseResource<?> target : query.resources())
+        for (final BaseResource<?> target : query.resources().select())
             {
             log.debug("Resource [{}]", target.namebuilder());
             }
         log.debug("Tables -- ");
-        for (final AdqlTable table : query.tables())
+        for (final AdqlTable table : query.tables().select())
             {
             log.debug("Table [{}]", table.namebuilder());
             }
         log.debug("Columns -- ");
-        for (final AdqlColumn column : query.columns())
+        for (final AdqlColumn column : query.columns().select())
             {
             log.debug("Column [{}]", column.namebuilder());
             }
         log.debug("Fields -- ");
-        for (final SelectField field : query.fields())
+        for (final SelectField field : query.fields().select())
             {
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
             }

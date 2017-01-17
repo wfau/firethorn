@@ -1,0 +1,910 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM
+#[user@trop02] 
+
+    createvm
+
+# -----------------------------------------------------
+# Login as root..
+#[user@trop02] 
+
+    ssh root@Araybwyn
+
+# -----------------------------------------------------
+# Create our Docker user.
+# TODO Add to the docker image ?
+# [root@virtual]
+
+    dockeruser=Stevedore
+    dockerhome=/home/${dockeruser:?}
+    dockerinfo='Docker user account'
+
+    useradd \
+        --create-home \
+        --comment  "${dockerinfo:?}" \
+        --home-dir "${dockerhome:?}" \
+        --shell  '/bin/bash' \
+        --groups 'root,wheel,users,docker' \
+        "${dockeruser:?}"
+
+    usermod --lock "${dockeruser:?}"
+
+# -----------------------------------------------------
+# Allow our docker user to use sudo without password.
+# TODO Add to the docker image ?
+# [root@virtual]
+
+    cat > /etc/sudoers.d/91-${dockeruser:?} << EOF
+# User rules for ${dockeruser:?}
+${dockeruser:?} ALL=(ALL) NOPASSWD:ALL
+EOF
+
+# -----------------------------------------------------
+# Install our ssh keys.
+# TODO Add to the docker image ?
+# [root@virtual]
+
+    pushd "${dockerhome:?}"
+        if [ ! -e '.ssh' ]
+        then
+            mkdir '.ssh'
+            chown -R "$(id -u  ${dockeruser:?})" '.ssh'
+            chgrp -R "$(id -g  ${dockeruser:?})" '.ssh'
+            chmod u=rxw,g=,o= '.ssh'
+        fi
+        pushd '.ssh'
+            if [ ! -e 'authorized_keys' ]
+            then
+                cp "${HOME}/.ssh/authorized_keys" \
+                   'authorized_keys'
+                chown "$(id -u  ${dockeruser:?})" 'authorized_keys'
+                chgrp "$(id -g  ${dockeruser:?})" 'authorized_keys'
+                chmod u=rw,g=,o= 'authorized_keys'
+            fi
+        popd
+
+        restorecon -Rv .ssh
+
+    popd
+
+# -----------------------------------------------------
+# Login as our Docker user.
+#[root@virtual]
+
+    exit
+    
+    ssh Stevedore@Araybwyn
+
+# -----------------------------------------------------
+# Load our secret function.
+#[user@virtual]
+
+    vi ${HOME:?}/secret.sh
+
+        ....
+
+    source ${HOME:?}/secret.sh
+    secret 'ping'
+
+# -----------------------------------------------------
+# Configure our version.
+#[user@virtual] 
+
+    # TODO
+    # This is a confusing manual step
+    
+    branch=2.1.2-zrq-code-tidy
+    version=${branch:?}
+
+    branch=default
+    version=2.1.3
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@virtual] 
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    branch=${branch:?}
+    version=${version:?}
+
+    spacetag=$(pwgen 8 1)
+    buildtag=\${spacetag:?}
+
+    netspace=rosana-\${spacetag:?}
+    buildvol=\${netspace:?}-build
+    cachevol=\${netspace:?}-cache
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Remove existing containers.
+#[user@virtual]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove existing images.
+#[user@virtual]
+
+    docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
+# Remove existing networks.
+#[user@virtual]
+
+    # TBD - how to only delete 'our' networks.
+
+# -----------------------------------------------------
+# Remove existing volumes.
+#[user@virtual]
+
+    # TBD - how to only delete 'our' volumes.
+
+
+# -----------------------------------------------------
+# Create our build volumes.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker volume \
+        create \
+            --name "${buildvol:?}"
+
+    docker volume \
+        create \
+            --name "${cachevol:?}"
+
+# -----------------------------------------------------
+# Run our build container.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "branch=${branch:?}" \
+        --env "buildtag=${buildtag:?}" \
+        --volume "${buildvol:?}:/var/local/build" \
+        --volume "${cachevol:?}:/var/local/cache" \
+        --volume '/etc/localtime:/etc/localtime:ro' \
+        --volume '/var/run/docker.sock:/var/run/docker.sock' \
+        "firethorn/builder:latest" \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+# TODO Add this to the image
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Configure our source path.
+# TODO Add this to the image
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/frog
+EOF
+    fi
+
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
+
+    #
+    # Clone our repository.
+    source "${HOME:?}/firethorn.settings"
+    if [  -e "${FIRETHORN_CODE:?}" ]
+    then
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update
+        
+        popd
+    else
+        pushd "$(dirname ${FIRETHORN_CODE:?})"
+
+            hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "$(basename ${FIRETHORN_CODE:?})"
+
+        popd
+    fi
+
+# -----------------------------------------------------
+# Set the branch version.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        if [ -n "${branch}" ]
+        then
+            hg update "${branch:?}"
+        else
+            hg update 'default'
+        fi
+
+        source 'bin/util.sh'
+        setversion "$(getversion)"
+
+    popd
+
+# -----------------------------------------------------
+# Set the Docker build tag.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        dockversions "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Build our common containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/docker-common.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Build our build container.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/docker-builder.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Tag our build container.
+#[root@builder]
+
+    docker tag \
+        firethorn/builder:${buildtag:?} \
+        firethorn/builder:latest
+
+# -----------------------------------------------------
+# Exit from the old builder.
+#[root@builder]
+
+    exit
+    
+# -----------------------------------------------------
+# Run a new build container.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "branch=${branch:?}" \
+        --env "buildtag=${buildtag:?}" \
+        --volume "${buildvol:?}:/var/local/build" \
+        --volume "${cachevol:?}:/var/local/cache" \
+        --volume '/etc/localtime:/etc/localtime:ro' \
+        --volume '/var/run/docker.sock:/var/run/docker.sock' \
+        "firethorn/builder:latest" \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+# TODO Add this to the image
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Configure our source path.
+# TODO Add this to the image
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/frog
+EOF
+    fi
+
+# -----------------------------------------------------
+# Build our service containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/docker-services.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java webapps.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+        
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Exit our builder.
+#[root@builder]
+
+    exit
+
+# -----------------------------------------------------
+# Display our container images.
+#[user@virtual] 
+
+    alias dockviz="docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz"
+
+    dockviz images --tree
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metaname:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${username:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Create our tester config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/tester.properties" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+    chmod a+r "${HOME:?}/tester.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties" 
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+
+    cat > "docker-compose.yml" << EOF
+
+version: '2'
+
+networks:
+
+    ${netspace:?}-front:
+        # Public facing network
+
+    ${netspace:?}-back:
+        # Internal only network
+
+services:
+
+    ${metaname}:
+        image:
+           "firethorn/postgres:${buildtag}"
+        read_only:
+            true
+        tmpfs:
+            - '/run'
+            - '/tmp'
+        environment:
+            POSTGRES_USER: "${metauser:?}"
+            POSTGRES_PASSWORD: "${metapass:?}"
+        networks:
+            - ${netspace:?}-back
+
+    ${username}:
+        image:
+           "firethorn/sql-proxy:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        environment:
+            target: "${userhost:?}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - ${netspace:?}-back
+
+    ${dataname}:
+        image:
+           "firethorn/sql-proxy:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        environment:
+            target: "${datahost:?}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - ${netspace:?}-back
+
+    ${ogsaname}:
+        image:
+           "firethorn/ogsadai:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+        networks:
+            - ${netspace:?}-back
+        depends_on:
+            - ${dataname}
+            - ${username}
+
+    ${firename}:
+        image:
+           "firethorn/firethorn:${buildtag}"
+        read_only:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME:?}/firethorn.properties:/etc/firethorn.properties
+        networks:
+            - ${netspace:?}-back
+            - ${netspace:?}-front
+        depends_on:
+            - ${metaname}
+            - ${dataname}
+            - ${username}
+            - ${ogsaname}
+
+    ${testname}:
+        image:
+           "firethorn/tester:${buildtag}"
+        read_only:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME:?}/tester.properties:/etc/tester.properties
+        networks:
+            - ${netspace:?}-back
+
+EOF
+
+# -----------------------------------------------------
+# Start our docker chain.
+#[root@builder]
+
+    source "${HOME:?}/chain.properties"
+    docker-compose up -d ${firename}
+
+# -----------------------------------------------------
+# Check the logs ..
+#[user@desktop] 
+
+# ssh Stevedore@Araybwyn
+# source "${HOME:?}/chain.properties"
+# docker exec "${firename:?}" tail -f logs/firethorn.log 
+
+# ssh Stevedore@Araybwyn
+# source "${HOME:?}/chain.properties"
+# docker exec -it "${ogsaname:?}" tail -f logs/ogsadai.log 
+
+# -----------------------------------------------------
+# Run our tester container.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    docker-compose run ${testname} bash
+
+# -----------------------------------------------------
+# Load our configuration.
+#[root@tester]
+
+        source /etc/tester.properties
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | bin/pp | tee /tmp/system-info.json
+
+# -----------------------------------------------------
+# Load the local TWOMASS resource.
+#[root@tester]
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'TWOMASS JDBC conection' \
+            "jdbc:jtds:sqlserver://${dataname:?}/TWOMASS" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        wfaujdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
+        wfauadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'TWOMASS' 'dbo' "meta/TWOMASS_TablesSchema.xml"
+
+# -----------------------------------------------------
+# Create the GAVO TWOMASS resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAVO TAP service' \
+            'http://dc.zah.uni-heidelberg.de/__system__/tap/run/tap'
+        gavoivoa=${ivoaspace:?}
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gavo/gavo-tableset.xml'
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${gavoivoa:?}/vosi/import" \
+            | bin/pp
+
+        #
+        # Find the Gavo twomass schema
+        findname=twomass
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${findname:?}" \
+            "${endpointurl:?}/${gavoivoa:?}/schemas/select" \
+            | bin/pp | tee /tmp/gavo-schema.json
+
+        gavoschema=$(
+            cat /tmp/gavo-schema.json | self
+            )
+
+# --------------------------------------
+# Create the GAIA TAP resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAIA TAP service' \
+            'http://gea.esac.esa.int/tap-server/tap'
+        gaiaivoa=${ivoaspace:?}
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gaia/gaia-tableset.xml'
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${gaiaivoa:?}/vosi/import" \
+            | bin/pp
+
+        #
+        # Find the Gaia DR1 schema
+        findname=gaiadr1
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${findname:?}" \
+            "${endpointurl:?}/${gaiaivoa:?}/schemas/select" \
+            | bin/pp | tee /tmp/gaia-schema.json
+
+        gaiaschema=$(
+            cat /tmp/gaia-schema.json | self
+            )
+
+# -----------------------------------------------------
+# Create a workspace and add the local TWOMASS schema.
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'TWOMASS' 'wfau'
+
+# -----------------------------------------------------
+# Add the GAVO TWOMASS schema to our workspace.
+#[root@tester]
+
+        gavoname=gavo
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${gavoname:?}" \
+            --data   "adql.resource.schema.import.base=${gavoschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | bin/pp | tee /tmp/query-schema.json
+
+# -----------------------------------------------------
+# Add the Gaia DR1 schema to our workspace.
+#[root@tester]
+
+        gaianame=gaia
+        curl \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${gaianame:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | bin/pp | tee /tmp/query-schema.json
+
+# -----------------------------------------------------
+# Test queries ...
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 designation, ra, dec FROM wfau.twomass_psc WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/wfau-query.json
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 mainid AS designation, raj2000 AS ra, dej2000 AS dec FROM gavo.data WHERE (raj2000 BETWEEN 0 AND 0.5) AND (dej2000 BETWEEN 0 AND 0.5)" \" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/gavo-query.json
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 designation, ra, dec  FROM gaia.tmass_original_valid WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/gaia-query.json
+
+        #
+        # Get URLs for the results as VOTable
+        wfaudata=$(cat /tmp/wfau-query.json | votable)
+        gavodata=$(cat /tmp/gavo-query.json | votable)
+        gaiadata=$(cat /tmp/gaia-query.json | votable)
+
+        #
+        # Get the results as VOTable files
+        curl --silent "${wfaudata:?}" | xmlstarlet fo > /tmp/wfau-data.xml
+        curl --silent "${gavodata:?}" | xmlstarlet fo > /tmp/gavo-data.xml
+        curl --silent "${gaiadata:?}" | xmlstarlet fo > /tmp/gaia-data.xml
+
+        #
+        # Remove XML namespaces
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/wfau-data.xml
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/gavo-data.xml
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/gaia-data.xml
+
+        #
+        # Select a specific row.
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/wfau-data.xml | xmlstarlet fo
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/gavo-data.xml | xmlstarlet fo
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/gaia-data.xml | xmlstarlet fo
+
+# -----------------------------------------------------
+# Create our join query ...
+#[root@tester]
+
+    cat > /tmp/join-query.adql << EOF
+
+    SELECT
+        gaia.tmass_best_neighbour.original_ext_source_id AS gaia_ident,
+        wfau.twomass_psc.designation                     AS wfau_ident,
+
+        gaia.tmass_best_neighbour.source_id              AS best_source_id,
+        gaia.gaia_source.source_id                       AS gaia_source_id,
+
+        wfau.twomass_psc.ra                              AS wfau_ra,
+        gaia.gaia_source.ra                              AS gaia_ra,
+
+        wfau.twomass_psc.dec                             AS wfau_dec,
+        gaia.gaia_source.dec                             AS gaia_dec
+
+    FROM
+        gaia.gaia_source,
+        gaia.tmass_best_neighbour,
+        wfau.twomass_psc
+
+    WHERE
+        gaia.tmass_best_neighbour.source_id = gaia.gaia_source.source_id
+    AND
+        gaia.tmass_best_neighbour.original_ext_source_id = wfau.twomass_psc.designation
+    AND
+        gaia.gaia_source.ra  BETWEEN 0 AND 1.25
+    AND
+        gaia.gaia_source.dec BETWEEN 0 AND 1.25
+    AND
+        wfau.twomass_psc.ra  BETWEEN 0 AND 1.25
+    AND
+        wfau.twomass_psc.dec BETWEEN 0 AND 1.25
+
+EOF
+
+# -----------------------------------------------------
+# Execute our join query.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/join-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/join-query.json
+
+        #
+        # Get the URL for the results as VOTable
+        joindata=$(cat /tmp/join-query.json | votable)
+
+        #
+        # Get the results as VOTable
+        curl --silent "${joindata:?}" | xmlstarlet fo > /tmp/join-data.xml
+
+        #
+        # Remove XML namespaces
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/join-data.xml
+
+        #
+        # Select a specific row.
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/join-data.xml | xmlstarlet fo
+
+
+
+
+

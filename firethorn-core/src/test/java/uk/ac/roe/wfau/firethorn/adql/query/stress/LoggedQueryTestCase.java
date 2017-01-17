@@ -28,7 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.atlas.AtlasQueryTestBase;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 
 /**
  *
@@ -68,13 +70,12 @@ public class LoggedQueryTestCase
         propagation=Propagation.REQUIRES_NEW
         )
     public void test(final int linenum, final String linestr)
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         log.debug("--------");
         log.debug("ADQL [{}][{}]", linenum, linestr);
 
-        final GreenQuery query = testschema().greens().create(
-            factories().greens().params().create(),
+        final BlueQuery query = testschema().resource().blues().create(
             linestr
             );
 

@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -71,29 +71,29 @@ extends TestBase
      * Debug display of a query.
      *
      */
-    public void debug(final GreenQuery query)
+    public void debug(final BlueQuery query)
         {
         log.debug("Columns -- ");
-        for (final AdqlColumn column : query.columns())
+        for (final AdqlColumn column : query.columns().select())
             {
             log.debug("Column [{}]", column.namebuilder());
             }
         log.debug("Tables -- ");
-        for (final AdqlTable table : query.tables())
+        for (final AdqlTable table : query.tables().select())
             {
             log.debug("Table [{}]", table.namebuilder());
             }
         log.debug("Resources -- ");
-        for (final BaseResource<?> target : query.resources())
+        for (final BaseResource<?> target : query.resources().select())
             {
             log.debug("Resource [{}]", target.namebuilder());
             }
         log.debug("Query -- ");
         log.debug("Mode   [{}]", query.mode());
-        log.debug("Status [{}]", query.status());
+        log.debug("State  [{}]", query.state());
         log.debug("ADQL   [{}]", query.adql());
         log.debug("OSQL   [{}]", query.osql());
-        log.debug("Target [{}]", query.primary().ident());
+        log.debug("Target [{}]", query.resources().primary().ident());
         }
 
     /**
@@ -139,17 +139,12 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final GreenQuery query = schema.greens().create(
-            factories().adql().greens().params().create(),
+        final BlueQuery query = workspace.blues().create(
             IMPORTED_000
             );
         //query.prepare();
         debug(query);
 
-        assertEquals(
-            GreenQuery.Status.READY,
-            query.status()
-            );
         assertEquals(
             AdqlQueryBase.Mode.DIRECT,
             query.mode()
@@ -213,17 +208,12 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final GreenQuery query = schema.greens().create(
-            factories().adql().greens().params().create(),
+        final BlueQuery query = workspace.blues().create(
             IMPORTED_001
             );
         //query.prepare();
         debug(query);
 
-        assertEquals(
-            GreenQuery.Status.READY,
-            query.status()
-            );
         assertEquals(
             AdqlQueryBase.Mode.DIRECT,
             query.mode()
@@ -314,17 +304,12 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final GreenQuery query = schema.greens().create(
-            factories().adql().greens().params().create(),
+        final BlueQuery query = workspace.blues().create(
             IMPORTED_002
             );
         //query.prepare();
         debug(query);
 
-        assertEquals(
-            GreenQuery.Status.READY,
-            query.status()
-            );
         assertEquals(
             AdqlQueryBase.Mode.DISTRIBUTED,
             query.mode()
@@ -397,17 +382,12 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final GreenQuery query = schema.greens().create(
-            factories().adql().greens().params().create(),
+        final BlueQuery query = workspace.blues().create(
             IMPORTED_002
             );
         //query.prepare();
         debug(query);
 
-        assertEquals(
-            GreenQuery.Status.READY,
-            query.status()
-            );
         assertEquals(
             AdqlQueryBase.Mode.DIRECT,
             query.mode()

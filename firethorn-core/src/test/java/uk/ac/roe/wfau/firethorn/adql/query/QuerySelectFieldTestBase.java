@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 
@@ -40,7 +40,7 @@ extends TwomassQueryTestBase
      *
      */
     public static class ExpectedField
-    implements GreenQuery.SelectField
+    implements BlueQuery.SelectField
         {
         public ExpectedField(final String name, final AdqlColumn.AdqlType type, final Integer size)
             {
@@ -66,7 +66,7 @@ extends TwomassQueryTestBase
             {
             return this.name;
             }
-        void validate(final GreenQuery.SelectField field)
+        void validate(final BlueQuery.SelectField field)
             {
             log.debug("validate(SelectField)");
             log.debug("  name [{}][{}]", this.name, field.name());
@@ -87,14 +87,14 @@ extends TwomassQueryTestBase
             }
         }
 
-    public void validate(final GreenQuery query, final ExpectedField[] results)
+    public void validate(final BlueQuery query, final ExpectedField[] results)
     throws Exception
         {
-        final Iterator<GreenQuery.SelectField> iter = query.fields().iterator();
+        final Iterator<BlueQuery.SelectField> iter = query.fields().select().iterator();
         int i = 0 ;
         while (iter.hasNext())
             {
-            final GreenQuery.SelectField field = iter.next();
+            final BlueQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
             results[i++].validate(
                 field

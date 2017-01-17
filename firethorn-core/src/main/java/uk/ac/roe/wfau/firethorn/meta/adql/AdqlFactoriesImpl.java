@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 
 /**
  *
@@ -63,14 +62,6 @@ public class AdqlFactoriesImpl
     public AdqlColumn.EntityServices columns()
         {
         return this.columns;
-        }
-
-    @Autowired
-    private GreenQuery.EntityServices greens;
-    @Override
-    public GreenQuery.EntityServices greens()
-        {
-        return this.greens;
         }
 
     @Autowired

@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
@@ -90,7 +90,7 @@ extends TwomassQueryTestBase
             return this.jdbcname;
             }
 
-        void validate(final GreenQuery.SelectField field)
+        void validate(final BlueQuery.SelectField field)
             {
             log.debug("validate(SelectField)");
             log.debug("  name [{}][{}]", this.adqlname, field.name());
@@ -151,7 +151,7 @@ extends TwomassQueryTestBase
             }
         }
 
-    public void validate(final GreenQuery query, final ExpectedColumn[] expected)
+    public void validate(final BlueQuery query, final ExpectedColumn[] expected)
     throws Exception
         {
         if (expected.length > 0)
@@ -165,7 +165,7 @@ extends TwomassQueryTestBase
                 query.fields()
                 );
             int i = 0 ;
-            for (final GreenQuery.SelectField field : query.fields())
+            for (final BlueQuery.SelectField field : query.fields().select())
                 {
                 expected[i++].validate(
                     field
@@ -208,7 +208,7 @@ extends TwomassQueryTestBase
                 query.syntax().state()
                 );
             assertTrue(
-                ! query.fields().iterator().hasNext()
+                ! query.fields().select().iterator().hasNext()
                 );
             assertNull(
                 query.results().adql()
@@ -224,8 +224,7 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
                 + "    ra,"
                 + "    dec"
@@ -252,8 +251,7 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
                 + "    frog"
                 + "    toad"
@@ -274,8 +272,7 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
                 + "    date as mydate"
                 + " FROM"
@@ -297,8 +294,7 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
                 + "    *"
                 + " FROM"
@@ -383,8 +379,7 @@ extends TwomassQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
 
                 + "    COUNT(ra),"

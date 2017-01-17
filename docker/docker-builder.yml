@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+
+    builder:
+        image:
+            "firethorn/builder:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: 'builder'
+

@@ -25,7 +25,6 @@ import org.joda.time.DateTime;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
@@ -311,12 +310,6 @@ public class AdqlTableProxy
         throw new UnsupportedOperationException(
             "Can't modify a read only table"
             );
-        }
-
-    @Override
-    public GreenQuery greenquery()
-        {
-        return base.greenquery();
         }
 
     @Override

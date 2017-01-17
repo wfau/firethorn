@@ -68,9 +68,9 @@ extends BaseTableBean<IvoaTable>
 
     public String getQuery()
         {
-        if (entity().greenquery() != null)
+        if (entity().bluequery() != null)
             {
-            return entity().greenquery().link();
+            return entity().bluequery().link();
             }
         else {
             return null ;

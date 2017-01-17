@@ -22,6 +22,8 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -38,7 +40,7 @@ public class ArithmeticOperatorCase
      */
     @Test
     public void test001S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -78,7 +80,7 @@ public class ArithmeticOperatorCase
      */
     @Test
     public void test002S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -103,7 +105,7 @@ public class ArithmeticOperatorCase
      */
     @Test
     public void test003S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -146,7 +148,7 @@ public class ArithmeticOperatorCase
      */
     @Test
     public void test004S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -170,7 +172,7 @@ public class ArithmeticOperatorCase
      */
     @Test
     public void test005S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -210,7 +212,7 @@ public class ArithmeticOperatorCase
      */
     @Test
     public void test006S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -237,7 +239,7 @@ public class ArithmeticOperatorCase
      */
     @Test
     public void test007()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,

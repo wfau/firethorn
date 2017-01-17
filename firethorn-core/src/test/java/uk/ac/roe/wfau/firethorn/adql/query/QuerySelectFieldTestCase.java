@@ -34,8 +34,7 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
                 + "    frog"
                 + "    toad"
@@ -57,8 +56,7 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
                 + "    date"
                 + " FROM"
@@ -80,8 +78,7 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
                 + "    MAX(ra)"
                 + " FROM"
@@ -103,8 +100,7 @@ extends QuerySelectFieldTestBase
     throws Exception
       {
       validate(
-          this.schema.greens().create(
-              factories().adql().greens().params().create(),
+          this.workspace.blues().create(
               "SELECT"
               + "    *"
               + " FROM"
@@ -191,8 +187,7 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
                 + "    ra +  dec as radec"
                 + " FROM"
@@ -214,8 +209,7 @@ extends QuerySelectFieldTestBase
     throws Exception
         {
         validate(
-            this.schema.greens().create(
-                factories().adql().greens().params().create(),
+            this.workspace.blues().create(
                 "SELECT"
                 + "    ra +  dec"
                 + " FROM"

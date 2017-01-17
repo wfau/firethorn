@@ -109,6 +109,35 @@
     popd
 
 # -----------------------------------------------------
+# Build our Java components.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+        
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn -D "docker.host=unix:///var/run/docker.sock" docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn -D "docker.host=unix:///var/run/docker.sock" docker:package
+        popd
+
+    popd
+
+
+# -----------------------------------------------------
 # Display our container images.
 #[user@desktop] 
 
@@ -172,9 +201,18 @@
     # ONLY DO THIS IF THE TESTS PASS
     #
 
-    docker tag "firethorn/firethorn:${version}" "firethorn/firethorn:latest"
-    docker tag "firethorn/ogsadai:${version}"   "firethorn/ogsadai:latest"
-    docker tag "firethorn/tester:${version}"    "firethorn/tester:latest"
+    docker tag "firethorn/fedora:${version}"     "firethorn/fedora:latest"
+    docker tag "firethorn/java:${version}"       "firethorn/java:latest"
+    docker tag "firethorn/tomcat:${version}"     "firethorn/tomcat:latest"
+    docker tag "firethorn/firethorn:${version}"  "firethorn/firethorn:latest"
+    docker tag "firethorn/ogsadai:${version}"    "firethorn/ogsadai:latest"
+
+    docker tag "firethorn/postgres:${version}"   "firethorn/postgres:latest"
+    docker tag "firethorn/builder:${version}"    "firethorn/builder:latest"
+    docker tag "firethorn/tester:${version}"     "firethorn/tester:latest"
+    docker tag "firethorn/sql-tunnel:${version}" "firethorn/sql-tunnel:latest"
+    docker tag "firethorn/sql-proxy:${version}"  "firethorn/sql-proxy:latest"
+
 
 # -------------------------------------------------------------------------------------------
 # Push our containers to our Docker repo.
@@ -210,26 +248,6 @@
     docker push "firethorn/postgres:${version:?}"
     docker push "firethorn/sql-tunnel:${version:?}"
     docker push "firethorn/sql-proxy:${version:?}"
-
-# -------------------------------------------------------------------------------------------
-# Tag our images as latest.
-#[user@desktop]
-
-    #
-    # ONLY DO THIS IF THE TESTS PASS
-    #
-
-    docker tag "firethorn/fedora:${version:?}"     "firethorn/fedora:latest"
-    docker tag "firethorn/java:${version:?}"       "firethorn/java:latest"
-    docker tag "firethorn/tomcat:${version:?}"     "firethorn/tomcat:latest"
-    docker tag "firethorn/firethorn:${version:?}"  "firethorn/firethorn:latest"
-    docker tag "firethorn/ogsadai:${version:?}"    "firethorn/ogsadai:latest"
-
-    docker tag "firethorn/builder:${version:?}"    "firethorn/builder:latest"
-    docker tag "firethorn/tester:${version:?}"     "firethorn/tester:latest"
-    docker tag "firethorn/postgres:${version:?}"   "firethorn/postgres:latest"
-    docker tag "firethorn/sql-tunnel:${version:?}" "firethorn/sql-tunnel:latest"
-    docker tag "firethorn/sql-proxy:${version:?}"  "firethorn/sql-proxy:latest"
 
     docker push "firethorn/fedora:latest"
     docker push "firethorn/java:latest"

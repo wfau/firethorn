@@ -170,14 +170,12 @@ extends AbstractTableController
         writer.append(table.link());
         writer.append("'");
         writer.append("/>");
-        if (table.greenquery()!=null){
-        	writer.append("<INFO name='QUERY_STATUS' value='OK'>");
-        } else  if (table.bluequery()!=null){
+        if (table.bluequery()!=null){
 	        if (!table.bluequery().results().state().equals(ResultState.NONE) && !table.bluequery().results().state().equals(ResultState.EMPTY)) {
 	            writer.append("<INFO name='QUERY_STATUS' value='OK'>");
 	        } else  {
 	            writer.append("<INFO name='QUERY_STATUS' value='ERROR'>");
-	            writer.append(table.greenquery().syntax().friendly());
+	            //writer.append(table.greenquery().syntax().friendly());
 	        }
 	        writer.append("</INFO>");
 	        

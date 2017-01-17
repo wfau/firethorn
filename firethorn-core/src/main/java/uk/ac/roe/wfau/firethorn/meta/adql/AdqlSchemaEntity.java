@@ -35,10 +35,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -686,28 +683,6 @@ implements AdqlSchema
                 }
 
             @Override
-            @Deprecated
-            public AdqlTable create(final GreenQuery query)
-                {
-                return factories().adql().tables().entities().create(
-                    AdqlSchemaEntity.this,
-                    query
-                    );
-                }
-            
-            @Override
-            public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final BlueQuery bluequery)
-                {
-      
-                return factories().adql().tables().entities().create(
-                        depth,
-                        AdqlSchemaEntity.this,
-                        base,
-                        bluequery
-                        );
-                }
-
-            @Override
             public AdqlTable select(final Identifier ident)
             throws IdentifierNotFoundException
                 {
@@ -784,44 +759,6 @@ implements AdqlSchema
                         "Import only available on FULL or PARTIAL nodes"
                         );
                     }
-                }
-            };
-        }
-
-    @Override
-    public Greens greens()
-        {
-        return new Greens()
-            {
-            @Override
-            public GreenQuery create(final QueryParam param, final String query)
-            throws QueryProcessingException
-                {
-                return factories().adql().greens().entities().create(
-                    AdqlSchemaEntity.this,
-                    param,
-                    query
-                    );
-                }
-
-            @Override
-            public GreenQuery create(final QueryParam param, final String query, final String name)
-            throws QueryProcessingException
-                {
-                return factories().adql().greens().entities().create(
-                    AdqlSchemaEntity.this,
-                    param,
-                    query,
-                    name
-                    );
-                }
-
-            @Override
-            public Iterable<GreenQuery> select()
-                {
-                return factories().adql().greens().entities().select(
-                    AdqlSchemaEntity.this
-                    );
                 }
             };
         }

@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -48,7 +48,7 @@ public class QueryResultsTestCase
     public void test001()
     throws Exception
         {
-        final GreenQuery query = validate(
+        final BlueQuery query = validate(
             Level.LEGACY,
             State.VALID,
 
@@ -105,7 +105,7 @@ public class QueryResultsTestCase
     public void test002()
     throws Exception
         {
-        final GreenQuery query = validate(
+        final BlueQuery query = validate(
             Level.LEGACY,
             State.VALID,
 

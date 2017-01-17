@@ -17,9 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -149,32 +148,19 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
-        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base);
-
-        /**
-         * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
-         *
-         */
         public AdqlTable create(final BaseTable<?,?> base, final String name);
 
         /**
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
-        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, final String name);
+        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base);
 
-        /**
-         * Create a new {@link AdqlTable table}, importing the columns from a {@link GreenQuery query}.
-         *
-         */
-        @Deprecated
-        public AdqlTable create(final GreenQuery query);
-        
         /**
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
          *
          */
-        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, BlueQuery bluequery);
+        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, final String name);
 
         /**
          * Import a {@link AdqlTable table} from our base schema..
@@ -186,43 +172,6 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         }
     @Override
     public Tables tables();
-
-    /**
-     * Access to the schema {@link GreenQuery queries}.
-     *
-     */
-    @Deprecated
-    public interface Greens
-        {
-        /**
-         * Create a new {@link GreenQuery}.
-         *
-         */
-        public GreenQuery create(final GreenQuery.QueryParam param, final String query)
-        throws QueryProcessingException;
-
-        /**
-         * Create a new {@link GreenQuery}.
-         *
-         */
-        public GreenQuery create(final GreenQuery.QueryParam param, final String query, final String name)
-        throws QueryProcessingException;
-
-        /**
-         * Select all the {@link GreenQuery} for this schema.
-         * @todo Does this make sense ?
-         *
-         */
-        public Iterable<GreenQuery> select();
-
-        }
-
-    /**
-     * Access to the schema {@link GreenQuery queries}.
-     *
-     */
-    @Deprecated
-    public Greens greens();
 
     /**
      * The {@link AdqlSchema} metadata.

@@ -24,7 +24,9 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -42,7 +44,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test002S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -62,9 +64,9 @@ public class QueryBugsTestCase
      */
     @Test
     public void test002L()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
-        final GreenQuery query = validate(
+        final BlueQuery query = validate(
             Level.LEGACY,
             State.VALID,
 
@@ -96,7 +98,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test003S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -121,9 +123,9 @@ public class QueryBugsTestCase
      */
     @Test
     public void test003L()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
-        final GreenQuery query = validate(
+        final BlueQuery query = validate(
             Level.LEGACY,
             State.VALID,
 
@@ -158,7 +160,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test004S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -187,7 +189,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test004L()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,
@@ -216,7 +218,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test005S()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.STRICT,
@@ -240,7 +242,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test005L()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,
@@ -277,7 +279,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test006L()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,
@@ -339,7 +341,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test006a()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,
@@ -401,7 +403,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test007L()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,
@@ -438,7 +440,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test008L()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,
@@ -482,7 +484,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test009a()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,
@@ -514,7 +516,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test009b()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,
@@ -535,7 +537,7 @@ public class QueryBugsTestCase
      */
     @Test
     public void test010()
-    throws QueryProcessingException
+    throws QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
         validate(
             Level.LEGACY,

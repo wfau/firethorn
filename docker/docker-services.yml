@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+
+    tomcat:
+        image:
+            "firethorn/tomcat:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: 'tomcat/8'
+
+    sql-proxy:
+        image:
+            "firethorn/sql-proxy:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: 'sql-proxy'
+
+    sql-tunnel:
+        image:
+            "firethorn/sql-tunnel:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: 'sql-tunnel'
+
+    postgres:
+        image:
+           "firethorn/postgres:${buildtag}"
+        build:
+            context: 'postgres/9'
+
+    tester:
+        image:
+           "firethorn/tester:${buildtag}"
+        build:
+            context: 'tester'
+

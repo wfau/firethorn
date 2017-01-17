@@ -30,7 +30,9 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.QueryProcessingException;
-import uk.ac.roe.wfau.firethorn.adql.query.green.GreenQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -66,16 +68,15 @@ public class ColumnSizeTestCase
 
     /**
      * VARCHAR column size.
+     * @throws InternalServerErrorException 
+     * @throws InvalidRequestException 
      *
      */
     @Test
     public void test001()
-    throws SQLException, QueryProcessingException
+    throws SQLException, QueryProcessingException, InvalidRequestException, InternalServerErrorException
         {
-        final GreenQuery query = validate(
-            Level.LEGACY,
-            State.VALID,
-
+        final BlueQuery query = validate(
             " SELECT" +
             "    project" +
             " FROM" +

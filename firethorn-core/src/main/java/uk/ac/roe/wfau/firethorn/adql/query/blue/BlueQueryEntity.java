@@ -285,6 +285,24 @@ implements BlueQuery
 
         @Override
         @CreateMethod
+        public BlueQuery create(final AdqlResource source, final String input)
+        throws InvalidRequestException, InternalServerErrorException
+            {
+            log.debug("create(AdqlResource, String)");
+            return create(
+                source,
+                input,
+                AdqlQueryBase.Mode.AUTO,
+                AdqlQueryBase.Syntax.Level.STRICT,
+                null,
+                null,
+                null,
+                null
+                );
+            }
+        
+        @Override
+        @CreateMethod
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
@@ -1969,9 +1987,8 @@ implements BlueQuery
 
         this.jdbctable = jdbcspace.tables().create();
         this.adqltable = adqlspace.tables().create(
-    		CopyDepth.PARTIAL,
-    		jdbctable,
-    		this
+            CopyDepth.PARTIAL,
+            this.jdbctable
             );
 
     	// TODO Add the row number index column.
@@ -1979,7 +1996,7 @@ implements BlueQuery
         for(final SelectField field : this.fields)
         	{
         	// TODO Adql details depend on the field type - calculated, local Jdbc, remote Ivoa etc ..
-        	final JdbcColumn jdbccol =jdbctable.columns().create(
+        	final JdbcColumn jdbccol = jdbctable.columns().create(
     			new JdbcColumn.Metadata()
     				{
 					@Override
