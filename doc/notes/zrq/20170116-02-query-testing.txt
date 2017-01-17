@@ -297,6 +297,20 @@ EOF
     popd
 
 # -----------------------------------------------------
+# Build our build containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildname
+        docker-compose \
+            --file docker/docker-builder.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
 # Build our service containers.
 #[root@builder]
 
