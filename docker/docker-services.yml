@@ -4,31 +4,31 @@ services:
 
     tomcat:
         image:
-            "firethorn/tomcat:${buildname}"
+            "firethorn/tomcat:${buildtag}"
         labels:
-            uk.ac.roe.firethorn.buildname: "${buildname}"
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
         build:
             context: 'tomcat/8'
 
     sql-proxy:
         image:
-            "firethorn/sql-proxy:${buildname}"
+            "firethorn/sql-proxy:${buildtag}"
         labels:
-            uk.ac.roe.firethorn.buildname: "${buildname}"
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
         build:
             context: 'sql-proxy'
 
     sql-tunnel:
         image:
-            "firethorn/sql-tunnel:${buildname}"
+            "firethorn/sql-tunnel:${buildtag}"
         labels:
-            uk.ac.roe.firethorn.buildname: "${buildname}"
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
         build:
             context: 'sql-tunnel'
 
     postgres:
         image:
-           "firethorn/postgres:${buildname}"
+           "firethorn/postgres:${buildtag}"
         build:
             context: 'postgres/9'
 

@@ -116,20 +116,20 @@ EOF
     cat > "${HOME:?}/chain.properties" << EOF
 
     branch=2.1.2-zrq-code-tidy
-    buildname=$(pwgen 8 1)
 
-    netspace=rosana-\${buildname:?}
-    volspace=alicia-\${buildname:?}
+    spacetag=$(pwgen 8 1)
+    buildtag=\${branch:?}
 
-    buildvol=\${volspace:?}-build
-    cachevol=\${volspace:?}-cache
+    netspace=rosana-\${spacetag:?}
+    buildvol=\${netspace:?}-build
+    cachevol=\${netspace:?}-cache
 
-    metaname=bethany-\${buildname:?}
-    username=patricia-\${buildname:?}
-    dataname=elayne-\${buildname:?}
-    ogsaname=jarmila-\${buildname:?}
-    firename=gillian-\${buildname:?}
-    testname=aaliyah-\${buildname:?}
+    metaname=bethany-\${buildtag:?}
+    username=patricia-\${buildtag:?}
+    dataname=elayne-\${buildtag:?}
+    ogsaname=jarmila-\${buildtag:?}
+    firename=gillian-\${buildtag:?}
+    testname=aaliyah-\${buildtag:?}
 
     metatype=pgsql
     metadata=postgres
@@ -204,7 +204,7 @@ EOF
         --tty \
         --interactive \
         --env "branch=${branch:?}" \
-        --env "buildname=${buildname:?}" \
+        --env "buildtag=${buildtag:?}" \
         --volume "${buildvol:?}:/var/local/build" \
         --volume "${cachevol:?}:/var/local/cache" \
         --volume '/etc/localtime:/etc/localtime:ro' \
@@ -220,7 +220,7 @@ EOF
     source /etc/bashrc
 
 # -----------------------------------------------------
-# Checkout a copy of our source code.
+# Configure our source path.
 #[root@builder]
 
     #
@@ -231,6 +231,10 @@ EOF
 FIRETHORN_CODE=/var/local/build/frog
 EOF
     fi
+
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
 
     #
     # Clone our repository.
@@ -278,7 +282,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
-        dockversions "${buildname:?}"
+        dockversions "${buildtag:?}"
 
     popd
 
@@ -289,7 +293,7 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        export buildname
+        export buildtag
         docker-compose \
             --file docker/docker-common.yml \
             build
@@ -297,13 +301,13 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Build our build containers.
+# Build our build container.
 #[root@builder]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        export buildname
+        export buildtag
         docker-compose \
             --file docker/docker-builder.yml \
             build
@@ -317,7 +321,7 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        export buildname
+        export buildtag
         docker-compose \
             --file docker/docker-services.yml \
             build
@@ -360,8 +364,9 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
+        export buildtag
         docker build \
-            --tag firethorn/tester:${version:?} \
+            --tag firethorn/tester:${buildtag:?} \
             integration/tester
 
     popd
@@ -435,7 +440,7 @@ EOF
         --env "POSTGRES_USER=${metauser:?}" \
         --env "POSTGRES_PASSWORD=${metapass:?}" \
         --network "${netspace:?}" \
-        "firethorn/postgres:${buildname:?}"
+        "firethorn/postgres:${buildtag:?}"
 
 # -----------------------------------------------------
 # Start our userdata ambassador.
@@ -459,7 +464,7 @@ EOF
         --env  "targethost=${userhost:?}" \
         --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
         --network "${netspace:?}" \
-        "firethorn/sql-tunnel:${buildname:?}"
+        "firethorn/sql-tunnel:${buildtag:?}"
 
     source "${HOME:?}/chain.properties"
     docker run \
@@ -472,7 +477,7 @@ EOF
         --env  "target=${userhost:?}" \
         --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
         --network "${netspace:?}" \
-        "firethorn/sql-proxy:${buildname:?}"
+        "firethorn/sql-proxy:${buildtag:?}"
 
 # -----------------------------------------------------
 # Start our science data ambassador.
@@ -494,7 +499,7 @@ EOF
         --env  "targethost=${datahost:?}" \
         --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
         --network "${netspace:?}" \
-        "firethorn/sql-tunnel:${buildname:?}"
+        "firethorn/sql-tunnel:${buildtag:?}"
 
     source "${HOME:?}/chain.properties"
     docker run \
@@ -507,7 +512,7 @@ EOF
         --env  "target=${datahost:?}" \
         --volume  "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
         --network "${netspace:?}" \
-        "firethorn/sql-proxy:${buildname:?}"
+        "firethorn/sql-proxy:${buildtag:?}"
 
 # -----------------------------------------------------
 # Start our OGSA-DAI container.
@@ -526,7 +531,7 @@ EOF
         --name    "${ogsaname:?}" \
         --volume  '/etc/localtime:/etc/localtime:ro' \
         --network "${netspace:?}" \
-        "firethorn/ogsadai:${buildname:?}"
+        "firethorn/ogsadai:${buildtag:?}"
 
 # -----------------------------------------------------
 # Start our FireThorn container.
@@ -542,7 +547,7 @@ EOF
         --volume  "${HOME:?}/firethorn.properties:/etc/firethorn.properties" \
         --volume  '/etc/localtime:/etc/localtime:ro' \
         --network "${netspace:?}" \
-        "firethorn/firethorn:${buildname:?}"
+        "firethorn/firethorn:${buildtag:?}"
 
 # -----------------------------------------------------
 # Check the logs ..
@@ -591,7 +596,7 @@ EOF
         --volume  "${HOME:?}/tester.settings:/tester.settings:ro" \
         --volume  '/etc/localtime:/etc/localtime:ro' \
         --network "${netspace:?}" \
-        "firethorn/tester:${buildname:?}" \
+        "firethorn/tester:${buildtag:?}" \
         bash
 
 # -----------------------------------------------------

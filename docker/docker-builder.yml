@@ -4,9 +4,9 @@ services:
 
     builder:
         image:
-            "firethorn/builder:${buildname}"
+            "firethorn/builder:${buildtag}"
         labels:
-            uk.ac.roe.firethorn.buildname: "${buildname}"
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
         build:
             context: 'builder'
 

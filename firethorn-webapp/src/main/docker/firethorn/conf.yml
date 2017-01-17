@@ -26,5 +26,5 @@ packaging:
     
 #
 # Tag to use for images
-tag: firethorn/firethorn:${project.version}
+tag: firethorn/firethorn:${env.buildtag}
 
