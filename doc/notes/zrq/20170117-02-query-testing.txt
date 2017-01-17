@@ -1,0 +1,54 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    SELECT
+        gaiadr1.tmass_best_neighbour.original_ext_source_id AS gaia_ident,
+        wfau.twomass_psc.designation                        AS wfau_ident,
+
+        gaiadr1.tmass_best_neighbour.source_id              AS best_source_id,
+        gaiadr1.gaia_source.source_id                       AS gaia_source_id,
+
+        wfau.twomass_psc.ra                                 AS wfau_ra,
+        gaiadr1.gaia_source.ra                              AS gaia_ra,
+
+        wfau.twomass_psc.dec                                AS wfau_dec,
+        gaiadr1.gaia_source.dec                             AS gaia_dec
+
+    FROM
+        gaiadr1.gaia_source,
+        gaiadr1.tmass_best_neighbour,
+        wfau.twomass_psc
+
+    WHERE
+        gaiadr1.tmass_best_neighbour.source_id = gaiadr1.gaia_source.source_id
+    AND
+        gaiadr1.tmass_best_neighbour.original_ext_source_id = wfau.twomass_psc.designation
+    AND
+        gaiadr1.gaia_source.ra  BETWEEN 0 AND 1.25
+    AND
+        gaiadr1.gaia_source.dec BETWEEN 0 AND 1.25
+    AND
+        wfau.twomass_psc.ra  BETWEEN 0 AND 1.25
+    AND
+        wfau.twomass_psc.dec BETWEEN 0 AND 1.25
+
