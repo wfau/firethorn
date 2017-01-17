@@ -47,7 +47,6 @@
     
     <properties>
         <tomcat.version>8.5.9</tomcat.version>
-        <docker.buildtag>${env.buildtag}</docker.buildtag>
     </properties>
 
     <repositories>

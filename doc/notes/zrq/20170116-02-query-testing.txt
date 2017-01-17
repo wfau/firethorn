@@ -347,11 +347,11 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         pushd firethorn-ogsadai/webapp
-            mvn -D "docker.host=unix:///var/run/docker.sock" docker:package
+            mvn docker:package
         popd
         
         pushd firethorn-webapp
-            mvn -D "docker.host=unix:///var/run/docker.sock" docker:package
+            mvn docker:package
         popd
 
     popd
