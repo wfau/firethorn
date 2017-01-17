@@ -25,11 +25,11 @@
 
 #
 # Load the local settings.
-source "${HOME:?}/firethorn.settings"
+#source "${HOME:?}/firethorn.settings"
 
 #
 # Set the Maven repo location.
-MAVEN_REPO=${MAVEN_REPO:-"${HOME:?}/.m2/repository"}
+#MAVEN_REPO=${MAVEN_REPO:-"${HOME:?}/.m2/repository"}
 
 #
 # Sync the FireThorn binaries.
@@ -47,8 +47,8 @@ rsync \
     --include='/uk/ac/roe/wfau' \
     --include='/uk/ac/roe/wfau/**' \
     --exclude='*' \
-    "${MAVEN_REPO:?}/" \
-    data.metagrid.co.uk:/var/local/websites/data/wfau/maven/firethorn
+    "${mvnlocal:?}/" \
+    "${mvnrepo:?}"
 
 #
 # Sync the OGSA-DAI binaries.
@@ -65,8 +65,8 @@ rsync \
     --include='/uk/org/ogsadai' \
     --include='/uk/org/ogsadai/**' \
     --exclude='*' \
-    "${MAVEN_REPO:?}/" \
-    data.metagrid.co.uk:/var/local/websites/data/wfau/maven/ogsadai
+    "${mvnlocal:?}/" \
+    "${mvnrepo:?}"
 
 #
 # Sync the 3rd party binaries.
@@ -81,8 +81,8 @@ rsync \
     --exclude='/uk/ac/roe/wfau/**' \
     --exclude='/uk/org/ogsadai/**' \
     --exclude='/.cache' \
-    "${MAVEN_REPO:?}/" \
-    data.metagrid.co.uk:/var/local/websites/data/wfau/maven/external
+    "${mvnlocal:?}/" \
+    "${mvnrepo:?}"
 
 #
 # Make everything read/write to users.
