@@ -17,5 +17,6 @@ services:
             uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'java/8'
-
+        depends_on:
+            - fedora
 
