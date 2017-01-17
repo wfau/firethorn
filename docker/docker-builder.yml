@@ -2,13 +2,6 @@ version: '2'
 
 services:
 
-    java:
-        extends:
-            file:
-                docker-base.yml
-            service:
-                java        
-
     builder:
         image:
             "firethorn/builder:${buildname}"
@@ -16,6 +9,4 @@ services:
             uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'builder'
-        depends_on:
-            - java
 

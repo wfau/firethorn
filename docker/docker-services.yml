@@ -2,20 +2,6 @@ version: '2'
 
 services:
 
-    fedora:
-        extends:
-            file:
-                docker-base.yml
-            service:
-                fedora
-
-    java:
-        extends:
-            file:
-                docker-base.yml
-            service:
-                java
-
     tomcat:
         image:
             "firethorn/tomcat:${buildname}"
@@ -23,8 +9,6 @@ services:
             uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'tomcat/8'
-        depends_on:
-            - java
 
     sql-proxy:
         image:
@@ -33,8 +17,6 @@ services:
             uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'sql-proxy'
-        depends_on:
-            - fedora
 
     sql-tunnel:
         image:
@@ -43,15 +25,11 @@ services:
             uk.ac.roe.firethorn.buildname: "${buildname}"
         build:
             context: 'sql-tunnel'
-        depends_on:
-            - fedora
 
     postgres:
         image:
            "firethorn/postgres:${buildname}"
         build:
             context: 'postgres/9'
-        depends_on:
-            - fedora
 
 
