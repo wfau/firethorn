@@ -116,10 +116,9 @@ EOF
     # This is a confusing manual step
     
     branch=2.1.2-zrq-code-tidy
-    version=${branch:?}
 
-    branch=default
-    version=2.1.3
+    #branch=default
+    #version=2.1.3
 
 # -----------------------------------------------------
 # Create our chain config.
@@ -128,7 +127,6 @@ EOF
     cat > "${HOME:?}/chain.properties" << EOF
 
     branch=${branch:?}
-    version=${version:?}
 
     spacetag=$(pwgen 8 1)
     buildtag=\${spacetag:?}
@@ -905,6 +903,6 @@ EOF
         xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/join-data.xml | xmlstarlet fo
 
 
-
+    
 
 

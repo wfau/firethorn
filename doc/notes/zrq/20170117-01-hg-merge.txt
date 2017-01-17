@@ -1,0 +1,441 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Run our build container.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "branch=${branch:?}" \
+        --env "buildtag=${buildtag:?}" \
+        --volume "${buildvol:?}:/var/local/build" \
+        --volume "${cachevol:?}:/var/local/cache" \
+        --volume '/etc/localtime:/etc/localtime:ro' \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume '/var/run/docker.sock:/var/run/docker.sock' \
+        "firethorn/builder:latest" \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+# TODO Add this to the image
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Configure our source path.
+# TODO Add this to the image
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/frog
+EOF
+    fi
+
+# -----------------------------------------------------
+# Set the new version.
+#[root@builder]
+
+    # TODO
+    # This is a confusing manual step
+
+    newversion=2.1.3
+    echo "newversion [${newversion:?}]"
+
+# -----------------------------------------------------
+# Merge the changes into main.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source "${FIRETHORN_CODE:?}/bin/util.sh"
+
+        #
+        # Get the current version
+        devbranch=$(getversion)
+        echo "devbranch [${devbranch:?}]"
+
+        #
+        # Check for changes
+        hg status
+
+        #
+        # Commit local changes
+        # Push/pull the latest changes
+
+        #
+        # Swap to the main branch and get the version.
+        hg update 'default'
+        oldversion=$(getversion)
+
+        echo "devbranch [${devbranch:?}]"
+        echo "oldversion [${oldversion:?}]"
+        echo "newversion [${newversion:?}]"
+
+        #
+        # Merge the dev branch.
+        hg merge "${devbranch:?}"
+
+        #
+        # Update the main version.
+        setversion "${newversion:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Set the build version.
+#[root@builder]
+
+    buildtag=${newversion:?}
+
+# -----------------------------------------------------
+# Set the branch version.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        setversion "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Set the Docker build tag.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        dockversions "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Build our service containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/docker-common.yml \
+            build
+
+        export buildtag
+        docker-compose \
+            --file docker/docker-builder.yml \
+            build
+
+        export buildtag
+        docker-compose \
+            --file docker/docker-services.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java webapps.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+        
+    popd
+
+# -----------------------------------------------------
+# Build our webapp containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+        
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Run tests ....
+#[root@builder]
+
+    #
+    # Run tests ....
+    #
+
+# -------------------------------------------------------------------------------------------
+# Commit our changes into the main branch.
+#[root@builder]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        echo "devbranch [${devbranch:?}]"
+
+
+        vi .hg/hgrc
+
+            [ui]
+            username = Dave Morris <dmr@roe.ac.uk>
+
+        #
+        # Commit the merge.
+        hg commit -m "Merging [branch-${devbranch:?}] into [default]"
+
+        #
+        # Close the dev branch.
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "Closing [branch-${devbranch:?}]"
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
+
+        #
+        # Get the new version
+        source 'bin/util.sh'
+        version=$(getversion)
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Tag our images as latest.
+#[root@builder]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    docker tag "firethorn/fedora:${version}"     "firethorn/fedora:latest"
+    docker tag "firethorn/java:${version}"       "firethorn/java:latest"
+    docker tag "firethorn/tomcat:${version}"     "firethorn/tomcat:latest"
+    docker tag "firethorn/ogsadai:${version}"    "firethorn/ogsadai:latest"
+    docker tag "firethorn/firethorn:${version}"  "firethorn/firethorn:latest"
+
+    docker tag "firethorn/postgres:${version}"   "firethorn/postgres:latest"
+    docker tag "firethorn/builder:${version}"    "firethorn/builder:latest"
+    docker tag "firethorn/tester:${version}"     "firethorn/tester:latest"
+    docker tag "firethorn/sql-tunnel:${version}" "firethorn/sql-tunnel:latest"
+    docker tag "firethorn/sql-proxy:${version}"  "firethorn/sql-proxy:latest"
+
+# -------------------------------------------------------------------------------------------
+# Logout of the builder.
+#[root@builder]
+
+    exit
+
+# -------------------------------------------------------------------------------------------
+# Push our containers to the Docker registry.
+#[user@virtual]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    docker login
+
+        Username: xxxx
+        Password: yyyy
+        Email:    zzzz
+        Login Succeeded
+
+
+    # TODO
+    # This is a confusing manual step
+    version=2.1.3
+
+    docker push "firethorn/fedora:${version:?}"
+    docker push "firethorn/java:${version:?}"
+    docker push "firethorn/tomcat:${version:?}"
+    docker push "firethorn/ogsadai:${version:?}"
+    docker push "firethorn/firethorn:${version:?}"
+
+    docker push "firethorn/builder:${version:?}"
+    docker push "firethorn/tester:${version:?}"
+    docker push "firethorn/postgres:${version:?}"
+    docker push "firethorn/sql-tunnel:${version:?}"
+    docker push "firethorn/sql-proxy:${version:?}"
+
+    docker push "firethorn/fedora:latest"
+    docker push "firethorn/java:latest"
+    docker push "firethorn/tomcat:latest"
+    docker push "firethorn/ogsadai:latest"
+    docker push "firethorn/firethorn:latest"
+
+    docker push "firethorn/builder:latest"
+    docker push "firethorn/tester:latest"
+    docker push "firethorn/postgres:latest"
+    docker push "firethorn/sql-tunnel:latest"
+    docker push "firethorn/sql-proxy:latest"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Run our build container.
+#[user@virtual]
+
+    chcon -t svirt_sandbox_file_t "${SSH_AUTH_SOCK:?}" 
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "branch=${branch:?}" \
+        --env "buildtag=${buildtag:?}" \
+        --env "SSH_AUTH_SOCK=/tmp/ssh_auth_sock" \
+        --volume "${buildvol:?}:/var/local/build" \
+        --volume "${cachevol:?}:/var/local/cache" \
+        --volume '/etc/localtime:/etc/localtime:ro' \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume '/var/run/docker.sock:/var/run/docker.sock' \
+        "firethorn/builder:latest" \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+# TODO Add this to the image
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Configure our source path.
+# TODO Add this to the image
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/frog
+EOF
+    fi
+
+    dnf install -y rsync
+    dnf install -y openssh-clients
+
+    sshuser=Zarquan
+    sshhost=wfau.metagrid.co.uk
+    sshport=22
+
+    ssh -v "${sshuser:?}@${sshhost:?}:${sshport:?}"
+
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Mercurial repo.
+#[root@builder]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    # ** needs SSH access to our Hg repo **
+    #
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hgport=22
+        hguser=Zarquan
+        hghost=data.metagrid.co.uk
+        hgpath=/var/local/wfau/projects/firethorn/code
+
+        cat > .hg/hgrc << EOF
+[paths]
+default   = http://wfau.metagrid.co.uk/code/firethorn
+push-repo = ssh://${hguser:?}@${hghost:?}/${hgpath:?}
+[ui]
+username = Dave Morris <dmr@roe.ac.uk>
+EOF
+
+        hg push 'push-repo'
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[root@builder]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    # ** needs SSH access to our Maven repo **
+    #
+
+    mvnport=22
+    mvnuser=Zarquan
+    mvnhost=data.metagrid.co.uk
+    mvnpath=/var/local/websites/data/wfau/maven/firethorn
+    mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
+
+    mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export mvnrepo
+        export mvnlocal
+        ./bin/rsync-repo.sh
+
+    popd
+
+
+
