@@ -19,17 +19,13 @@ FROM firethorn/java:{BUILD_VERSION}
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Create our projects directory.
-RUN mkdir /var/local/projects
-#RUN chgrp users /var/local/projects
-#RUN chmod g+rwx /var/local/projects
-VOLUME /var/local/projects
+# Create our build directory.
+RUN mkdir /var/local/build
+VOLUME /var/local/build
 
 #
 # Create our cache directory.
 RUN mkdir /var/local/cache
-#RUN chgrp users /var/local/cache
-#RUN chmod g+rwx /var/local/cache
 VOLUME /var/local/cache
 
 #
@@ -54,7 +50,8 @@ RUN dnf -y install java-1.8.0-openjdk-headless
 
 #
 # Install Maven
-COPY bin/install-maven.sh /tmp/install-maven.sh
-RUN /bin/bash -c 'source /tmp/install-maven.sh'
+RUN dnf -y install maven
+COPY settings.xml /root/.m2/settings.xml
+
 
 
