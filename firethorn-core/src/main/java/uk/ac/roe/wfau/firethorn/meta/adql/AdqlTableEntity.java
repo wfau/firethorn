@@ -67,9 +67,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
             ),
         @Index(
             columnList = AdqlTableEntity.DB_PARENT_COL 
-            ),
-        @Index(
-            columnList = AdqlTableEntity.DB_GREEN_QUERY_COL
             )
         },
     uniqueConstraints={
@@ -106,12 +103,6 @@ public class AdqlTableEntity
      *
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlTableEntity";
-
-    /**
-     * Hibernate column mapping, {@value}.
-     *
-     */
-    protected static final String DB_GREEN_QUERY_COL = "adqlquery" ;
 
     /**
      * Hibernate column mapping, {@value}.
