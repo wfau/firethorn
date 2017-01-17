@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+
+    fedora:
+        image:
+            "firethorn/fedora:${buildname}"
+        labels:
+            uk.ac.roe.firethorn.buildname: "${buildname}"
+        build:
+            context: 'fedora/24'
+
+    java:
+        image:
+            "firethorn/java:${buildname}"
+        labels:
+            uk.ac.roe.firethorn.buildname: "${buildname}"
+        build:
+            context: 'java/8'
+        depends_on:
+            - fedora
+
+

@@ -252,7 +252,7 @@ EOF
     fi
 
 # -----------------------------------------------------
-# Set the code branch.
+# Set the branch version.
 #[root@builder]
 
     source "${HOME:?}/firethorn.settings"
@@ -267,6 +267,18 @@ EOF
 
         source 'bin/util.sh'
         setversion "$(getversion)"
+
+    popd
+
+# -----------------------------------------------------
+# Set the container version.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        dockversions "${buildname:?}"
 
     popd
 

@@ -3,34 +3,18 @@ version: '2'
 services:
 
     fedora:
-        image:
-            "firethorn/fedora:${buildname}"
-        labels:
-            uk.ac.roe.firethorn.buildname: "${buildname}"
-        build:
-            context: 'fedora/24'
-        volumes:
-            - /tmp/cache:/var/cache
+        extends:
+            file:
+                docker-base.yml
+            service:
+                fedora
 
     java:
-        image:
-            "firethorn/java:${buildname}"
-        labels:
-            uk.ac.roe.firethorn.buildname: "${buildname}"
-        build:
-            context: 'java/8'
-        depends_on:
-            - fedora
-
-    builder:
-        image:
-            "firethorn/builder:${buildname}"
-        labels:
-            uk.ac.roe.firethorn.buildname: "${buildname}"
-        build:
-            context: 'builder'
-        depends_on:
-            - java
+        extends:
+            file:
+                docker-base.yml
+            service:
+                java
 
     tomcat:
         image:
