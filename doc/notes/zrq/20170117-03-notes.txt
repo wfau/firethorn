@@ -1,0 +1,142 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#---------------------------------------------------------------------
+
+    docker-compose yaml as part of the docker/builder code
+    ignored by the compose/build step
+    used by the compose/run step
+
+    compose/run interactive
+
+    set of 'actions' packaged as scripts
+    
+        branch <name>
+
+            build <tag>
+
+            hg-push
+            hg-pull
+
+            test <test>
+
+            test <test>
+
+        merge <version>
+
+
+    entity.log(LEVEL, String)
+    entity.log(LEVEL, String, Object ... )
+
+
+    Iterable<LogEntry> entity.log().select(Integer count) // last <count>
+    Iterable<LogEntry> entity.log().select(Ident) // everything since <ident>
+
+    Iterable<LogEntry> entity.log().select(Ident, Integer count) // last <count> since <ident>
+    Iterable<LogEntry> entity.log().select(Time time)     // last 20 min
+
+    Iterable<LogEntry> entity.log().select(LEVEL, Integer count)
+    Iterable<LogEntry> entity.log().select(LEVEL, Date from, Date to)
+
+    Use case - for a query, get events since query was submitted.
+    Use case - for a resource, get <count> events before <event>.
+
+
+    LogEntry extends Entity
+        Entity entity
+        Enum level
+        String message
+
+    Users can add LogEntries about an Entity.
+    Followups to a LogEntry are logged as children of that LogEntry.
+
+    Sumbitting a query creates a LogEntry.
+    Parser errors are logged against the submit entry.
+    
+    Executing a query creates a LogEntry.
+    OGSADAI callbacks are logged against the execute entry.
+    
+    Individual LogEntries have a URL.
+
+
+    LogEntry extends Entity
+        {
+        Entity subject
+        Enum level
+        String message
+        }
+
+    Entity {
+
+        EventLog {
+
+            LogEntry debug(String);
+            LogEntry debug(String, Object ..);
+
+            LogEntry error(String);
+            LogEntry error(String, Object ..);
+
+            LogEntry warn(String);
+            LogEntry warn(String, Object ..);
+
+            LogEntry info(String);
+            LogEntry info(String, Object ..);
+
+            Iterable<LogEntry> select(....);
+
+            }
+        EventLog log();
+        }
+
+
+    LogEntry start = query.log().info("Executing query");
+
+    LogEntry start();
+
+    query.start().log().info("Follow up ..")    
+
+    Lazy loading list.
+    
+
+
+#---------------------------------------------------------------------
+
+    Change BUILD_VERSION to BUILD_TAG
+    http://redmine.roe.ac.uk/issues/1015
+
+#---------------------------------------------------------------------
+
+    http://redmine.roe.ac.uk/issues/966    
+    Quoted identifiers for SQLServer metadata
+
+#---------------------------------------------------------------------
+
+    Message log for a job.
+    
+    DEBUG|ERROR|WARN|INFO <text>
+    
+    Separate transaction to add entries.
+
+    Callback transaction to add entries.
+
+    

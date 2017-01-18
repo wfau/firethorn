@@ -1,0 +1,257 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#---------------------------------------------------------------------
+
+    Old version deployed on trop01.Froeseth
+
+    New version deployed on trop01.Astoalith
+
+    Swap the public IP address from one VM to the other.
+
+#---------------------------------------------------------------------
+#[user@desktop]
+
+    ssh trop01
+
+#---------------------------------------------------------------------
+#[user@trop01]
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        list --all
+
+         Id    Name                           State
+        ----------------------------------------------------
+         12    Froeseth                       running
+         16    Cadelicia                      running
+         21    Delild                         running
+         22    Astoalith                      running
+
+    virsh \
+        --connect "${connection:?}" \
+        net-list
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         bridged              active     yes           yes
+         default              active     yes           yes
+
+#---------------------------------------------------------------------
+#[user@trop01]
+
+    vmname=Froeseth
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+
+        <domain>
+          ....
+          <devices>
+            ....
+            <interface type='network'>
+              <mac address='52:54:00:02:01:0c'/>
+              <source network='default'/>
+              <target dev='vnet0'/>
+              <model type='virtio'/>
+              <alias name='net0'/>
+              <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+            </interface>
+            <interface type='bridge'>
+              <mac address='52:54:00:03:03:01'/>
+              <source bridge='br0'/>
+              <target dev='vnet2'/>
+              <model type='virtio'/>
+              <alias name='net1'/>
+              <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+            </interface>
+            ....
+          </devices>
+          ....
+        </domain>
+
+
+
+#---------------------------------------------------------------------
+# List interface on Froeseth
+#[user@trop01]
+
+    # Note MAC address is ... 01
+
+    ssh root@Froeseth
+
+        cat /etc/sysconfig/network-scripts/ifcfg-ens5
+
+            NAME="ens5"
+            DEVICE="ens5"
+            ONBOOT=yes
+            TYPE=Ethernet
+            BOOTPROTO=static
+            IPV4INIT=yes
+            IPV6INIT=yes
+            HWADDR=52:54:00:03:03:01
+            NETWORK=129.215.175.0
+            NETMASK=255.255.255.0
+            GATEWAY=129.215.175.126
+            IPADDR=129.215.175.100
+
+#---------------------------------------------------------------------
+# Add interface to Astoalith
+#[user@trop01]
+
+    # Note MAC address is ... 02
+
+    ssh root@Astoalith
+
+        cat > /etc/sysconfig/network-scripts/ifcfg-ens5 << EOF
+NAME="ens5"
+DEVICE="ens5"
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=52:54:00:03:03:02
+NETWORK=129.215.175.0
+NETMASK=255.255.255.0
+GATEWAY=129.215.175.126
+IPADDR=129.215.175.100
+EOF
+
+#---------------------------------------------------------------------
+#[root@Froeseth]
+
+    ifconfig 
+
+        docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 172.17.0.1  netmask 255.255.0.0  broadcast 0.0.0.0
+            ....
+
+        ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 192.168.201.12  netmask 255.255.255.0  broadcast 192.168.201.255
+            inet6 fe80::5054:ff:fe02:10c  prefixlen 64  scopeid 0x20<link>
+            ....
+
+        ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+            inet6 fe80::5054:ff:fe03:301  prefixlen 64  scopeid 0x20<link>
+            ....
+
+#---------------------------------------------------------------------
+#[root@Astoalith]
+
+    ifconfig 
+
+        docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 172.17.0.1  netmask 255.255.0.0  broadcast 0.0.0.0
+            inet6 fe80::42:9dff:fe06:2e9  prefixlen 64  scopeid 0x20<link>
+            ....
+
+        ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 192.168.201.13  netmask 255.255.255.0  broadcast 192.168.201.255
+            inet6 fe80::5054:ff:fe02:10d  prefixlen 64  scopeid 0x20<link>
+            ....
+
+#---------------------------------------------------------------------
+# Disconnect floating IP from Froeseth
+#[user@trop01]
+
+    vmname=Froeseth
+    vmmac='52:54:00:03:03:01'
+    vmipv4='129.215.175.100'
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        detach-interface \
+            "${vmname:?}" \
+            'bridge' \
+            --mac "${vmmac:?}"
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+
+#---------------------------------------------------------------------
+# Connect floating IP to Astoalith
+#[user@trop01]
+
+    vmname=Astoalith
+    vmmac='52:54:00:03:03:02'
+    vmipv4='129.215.175.100'
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${vmmac:?}" \
+            --live \
+            --config
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+
+#---------------------------------------------------------------------
+#[root@Froeseth]
+
+    ifconfig 
+
+        docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+            inet 172.17.0.1  netmask 255.255.0.0  broadcast 0.0.0.0
+            inet6 fe80::42:fbff:fe5c:3ddd  prefixlen 64  scopeid 0x20<link>
+            ....
+
+        ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 192.168.201.12  netmask 255.255.255.0  broadcast 192.168.201.255
+            inet6 fe80::5054:ff:fe02:10c  prefixlen 64  scopeid 0x20<link>
+            ....
+
+#---------------------------------------------------------------------
+#[root@Astoalith]
+
+    ifconfig 
+
+        docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 172.17.0.1  netmask 255.255.0.0  broadcast 0.0.0.0
+            inet6 fe80::42:9dff:fe06:2e9  prefixlen 64  scopeid 0x20<link>
+            ....
+
+        ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 192.168.201.13  netmask 255.255.255.0  broadcast 192.168.201.255
+            inet6 fe80::5054:ff:fe02:10d  prefixlen 64  scopeid 0x20<link>
+            ....
+
+        ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+            inet6 fe80::5054:ff:fe03:302  prefixlen 64  scopeid 0x20<link>
+            ....
+    
+
+
+
