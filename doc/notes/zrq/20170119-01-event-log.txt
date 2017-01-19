@@ -60,6 +60,8 @@
 # Merge the branch.
 #[user@desktop] 
 
+    newversion=...
+    
     source "${HOME:?}/firethorn.settings"
     gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20170107-01-hg-merge.txt" &
 

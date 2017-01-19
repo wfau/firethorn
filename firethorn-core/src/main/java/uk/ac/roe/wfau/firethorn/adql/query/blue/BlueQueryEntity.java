@@ -52,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import liquibase.logging.LogLevel;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
@@ -66,6 +67,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.log.LogEntry;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -248,40 +250,6 @@ implements BlueQuery
             {
             return BlueQueryEntity.class;
             }
-
-        /*
-         * 
-        @Override
-        @CreateMethod
-        public BlueQuery create(final AdqlResource source, final String input, final BlueQuery.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException
-            {
-            return create(
-                source,
-                input,
-                null,
-                null,
-                next,
-                wait
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final BlueQuery.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException
-            {
-            return create(
-                source,
-                input,
-                limits,
-                null,
-                next,
-                wait
-                );
-            }
-         * 
-         */
 
         @Override
         @CreateMethod
@@ -666,22 +634,6 @@ implements BlueQuery
     /**
      * Protected constructor.
      * 
-    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input)
-    throws InvalidStateTransitionException
-        {
-        this(
-            owner,
-            source,
-            input,
-            null,
-            null
-            );
-        }
-     */
-
-    /**
-     * Protected constructor.
-     * 
      */
     protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
     throws InvalidStateTransitionException
@@ -801,7 +753,6 @@ implements BlueQuery
          EnumType.STRING
          )
     private Mode mode = Mode.AUTO;
-    // TODO Make this configurable ?
     @Override
     public Mode mode()
         {
@@ -851,17 +802,7 @@ implements BlueQuery
          updatable = true
          )
     private Long resultcount ;
-/*
-    protected void resultcount(final Long value)
-        {
-        log.debug("resultcount(Long)");
-        log.debug("  value [{}]", value);
-        if (value != null)
-            {
-            this.resultcount = value;
-            }
-        }
- */
+
     /**
      * The status of the results.
      *
@@ -1651,6 +1592,12 @@ implements BlueQuery
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
 
+        history().create(
+            this,
+            LogEntry.Level.INFO, 
+            "Executing query"
+            );
+        
         if (this.state() != TaskState.READY)
             {
             log.error("Call to execute() with invalid state [{}]", this.state().name());
@@ -1909,6 +1856,13 @@ implements BlueQuery
                         //
                         // Get the current instance for this Thread.
                         BlueQueryEntity entity = (BlueQueryEntity) rebase();
+
+                        entity.history().create(
+                            this,
+                            LogEntry.Level.INFO, 
+                            "Callback event [" + message.state() + "]"
+                            );
+                        
                         //
                         // Update the result state.
                         entity.transition(
@@ -2102,7 +2056,7 @@ implements BlueQuery
         log.debug("JDBC table created");
         //
         // Update the results status.
-        this.resultcount    = 0L;
+        this.resultcount = 0L;
         this.resultstate = ResultState.EMPTY;
         //
         // Log the end time.

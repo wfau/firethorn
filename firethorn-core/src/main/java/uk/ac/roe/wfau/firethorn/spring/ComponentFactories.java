@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.spring;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.entity.log.LogEntry;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -120,5 +121,11 @@ public interface ComponentFactories
      *
      */
     public Context.Factory contexts();
+
+    /**
+     * Our {@link LogEntry.EntityServices} instance.
+     *
+     */
+    public LogEntry.EntityServices logger();
 
     }

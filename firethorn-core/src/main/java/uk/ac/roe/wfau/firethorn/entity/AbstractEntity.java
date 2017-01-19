@@ -39,6 +39,8 @@ import org.joda.time.DateTime;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
+import uk.ac.roe.wfau.firethorn.entity.log.LogEntry;
+import uk.ac.roe.wfau.firethorn.entity.log.LogEntry.Level;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -78,17 +80,45 @@ implements Entity
     protected static final String DB_TABLE_PREFIX = "FT020020";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_PKEY_COL   = "ident" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_UID_LO_COL = "uidlo" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_UID_HI_COL = "uidhi" ;
 
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_OWNER_COL  = "owner" ;
 
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_CREATED_COL  = "created"  ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_MODIFIED_COL = "modified" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ACCESSED_COL = "accessed" ;
 
     /**
@@ -513,5 +543,62 @@ implements Entity
         return new SimpleEntityProtector(
             this
             );
+        }
+
+    
+    @Override
+    public History history()
+        {
+        return new History()
+            {
+            @Override
+            public LogEntry create(Level level, String message)
+                {
+                return factories().logger().entities().create(
+                    AbstractEntity.this,
+                    level,
+                    message
+                    );
+                }
+
+            @Override
+            public LogEntry create(Object source, Level level, String message)
+                {
+                return factories().logger().entities().create(
+                    source,
+                    AbstractEntity.this,
+                    level,
+                    message
+                    );
+                }
+
+            @Override
+            public Iterable<LogEntry> select()
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+
+            @Override
+            public Iterable<LogEntry> select(int count)
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+
+            @Override
+            public Iterable<LogEntry> select(Level level)
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+
+            @Override
+            public Iterable<LogEntry> select(int count, Level level)
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+            };
         }
     }

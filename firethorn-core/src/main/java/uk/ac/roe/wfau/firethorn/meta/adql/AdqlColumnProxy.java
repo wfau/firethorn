@@ -300,4 +300,10 @@ implements AdqlColumn
             "Can't change a read only copy"
             );
 		}
+
+    @Override
+    public History history()
+        {
+        return base().history();
+        }
     }

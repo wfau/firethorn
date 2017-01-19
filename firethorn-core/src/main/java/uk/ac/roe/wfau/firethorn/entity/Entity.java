@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.log.LogEntry;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -224,6 +225,56 @@ public interface Entity
      * 
      */
     public EntityProtector protector();
+    
+    /**
+     * Public interface for the {@link Entity} message log.
+     * 
+     */
+    public interface History
+        {
+        /**
+         * Create a new log entry.
+         * 
+         */
+        public LogEntry create(final LogEntry.Level level, final String message);
 
+        /**
+         * Create a new log entry.
+         * 
+         */
+        public LogEntry create(final Object source, final LogEntry.Level level, final String message);
+
+        /**
+         * Select the (most recent) log entries for this entity.
+         * 
+         */
+        public Iterable<LogEntry> select();
+
+        /**
+         * Select the (most recent) log entries for this entity.
+         * 
+         */
+        public Iterable<LogEntry> select(int count);
+
+        /**
+         * Select the (most recent) log entries for this entity.
+         * 
+         */
+        public Iterable<LogEntry> select(final LogEntry.Level level);
+
+        /**
+         * Select the (most recent) log entries for this entity.
+         * 
+         */
+        public Iterable<LogEntry> select(int count, final LogEntry.Level level);
+
+        }
+
+    /**
+     * Access to the {@link Entity} message log.
+     * 
+     */
+    public History history();
+    
     }
 
