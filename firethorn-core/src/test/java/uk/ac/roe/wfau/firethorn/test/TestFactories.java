@@ -31,6 +31,7 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.log.LogEntry;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
@@ -786,6 +787,29 @@ public class TestFactories
                     {
                     return "callback:" + query.ident();
                     }
+                }
+            }
+        }
+
+    @Component
+    public static class LogFactories
+        {
+        @Component
+        public static class IdentFactory
+        extends AbstractIdentFactory<LogEntry>
+        implements LogEntry.IdentFactory
+            {
+            }
+        @Component
+        public static class LinkFactory
+        extends MockLinkFactory<LogEntry>
+        implements LogEntry.LinkFactory
+            {
+            public LinkFactory()
+                {
+                super(
+                    "/log/entry"
+                    );
                 }
             }
         }
