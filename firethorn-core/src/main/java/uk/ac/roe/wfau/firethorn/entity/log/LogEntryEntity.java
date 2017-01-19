@@ -144,8 +144,9 @@ public class LogEntryEntity
         @CreateAtomicMethod
         public LogEntry create(final Entity subject, final Level level, final String message)
             {
+            String source = Thread.currentThread().getStackTrace()[1].getClassName();
             return create(
-                this,
+                source,
                 subject,
                 level,
                 message
@@ -156,11 +157,22 @@ public class LogEntryEntity
         @CreateAtomicMethod
         public LogEntry create(final Object source, final Entity subject, final Level level, final String message)
             {
+            return create(
+                identify(
+                    source
+                    ),
+                subject,
+                level,
+                message
+                );
+            }
+
+        @CreateAtomicMethod
+        public LogEntry create(final String source, final Entity subject, final Level level, final String message)
+            {
             return this.insert(
                 new LogEntryEntity(
-                    identify(
-                        source
-                        ),
+                    source,
                     subject,
                     level,
                     message

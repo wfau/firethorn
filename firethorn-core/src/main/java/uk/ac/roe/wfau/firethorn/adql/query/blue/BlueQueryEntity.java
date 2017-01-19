@@ -1593,7 +1593,6 @@ implements BlueQuery
         log.debug("  state [{}]", state().name());
 
         history().create(
-            this,
             LogEntry.Level.INFO, 
             "Executing query"
             );
@@ -1858,7 +1857,6 @@ implements BlueQuery
                         BlueQueryEntity entity = (BlueQueryEntity) rebase();
 
                         entity.history().create(
-                            this,
                             LogEntry.Level.INFO, 
                             "Callback event [" + message.state() + "]"
                             );
