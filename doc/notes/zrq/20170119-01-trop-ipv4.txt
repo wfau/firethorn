@@ -1,0 +1,213 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Create our target settings.
+#[user@trop01]
+
+    vmname=Erennon
+    vmmac='52:54:00:03:03:03'
+    vmipv4='129.215.175.101'
+
+#---------------------------------------------------------------------
+# Create our libvirt settings.
+#[user@trop01] 
+
+    cat > "${HOME}/libvirt.settings" << EOF
+ : \${basepool:='base'}
+ : \${livepool:='live'}
+ : \${connection:='qemu:///system'}
+export basepool
+export livepool
+export connection
+EOF
+
+#---------------------------------------------------------------------
+# Create a virtual machine.
+#[user@trop01]
+
+    createvm
+
+        INFO : Node name [Erennon]
+        INFO : Base name [fedora-24-docker-32G-20170113.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-24-docker-32G-20170113.qcow]
+        INFO : Disc name [Erennon.qcow]
+        INFO : Disc size [32GiB]
+
+#---------------------------------------------------------------------
+# Login and run Apache.
+#[user@trop01]
+
+    ssh "${vmname:?}"
+
+        docker run \
+            -d \
+            -p 80:80 \
+            yrvafhom/docker-demo
+
+        exit
+        
+#---------------------------------------------------------------------
+# Test the local connection.
+#[user@trop01]
+
+    curl --head "http://${vmname:?}/"
+
+#---------------------------------------------------------------------
+# Attach a bridged interface to the VM.
+#[user@trop01] 
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${vmmac:?}" \
+            --live \
+            --config
+
+
+        Interface attached successfully
+
+#---------------------------------------------------------------------
+# Check the VM configuration.
+#[user@trop01] 
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}"
+
+
+        <interface type='network'>
+          <mac address='52:54:00:02:01:0e'/>
+          <source network='default'/>
+          <target dev='vnet3'/>
+          <model type='virtio'/>
+          <alias name='net0'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+        </interface>
+        <interface type='bridge'>
+          <mac address='52:54:00:03:03:03'/>
+          <source bridge='br0'/>
+          <target dev='vnet6'/>
+          <model type='virtio'/>
+          <alias name='net1'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+        </interface>
+
+#---------------------------------------------------------------------
+# Configure the VM.
+#[user@trop01] 
+
+    ssh "${vmname:?}"
+
+#---------------------------------------------------------------------
+# Edit the interface config.
+#[root@virtual] 
+
+    # *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+    # *** Need to manually edit the HWADDR and IPADDR fields  ***
+    # *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+    pushd /etc/sysconfig/network-scripts
+
+        cat > ifcfg-ens5 << 'EOF'
+
+NAME="ens5"
+DEVICE="ens5"
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+NETWORK=129.215.175.0
+NETMASK=255.255.255.0
+GATEWAY=129.215.175.126
+
+HWADDR=52:54:00:03:03:03
+IPADDR=129.215.175.101
+
+EOF
+
+            chcon \
+                --user system_u \
+                --role object_r \
+                --type net_conf_t \
+                'ifcfg-ens5'    
+    
+        popd
+
+#---------------------------------------------------------------------
+# Restart the interface.
+#[root@virtual] 
+
+    ifdown ens5
+
+        Device 'ens5' successfully disconnected.
+
+    ifup ens5
+
+        Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/23)
+
+#---------------------------------------------------------------------
+# Check the interface config.
+#[root@virtual] 
+
+    ifconfig ens5
+
+        ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 129.215.175.101  netmask 255.255.255.0  broadcast 129.215.175.255
+            inet6 fe80::5054:ff:fe03:303  prefixlen 64  scopeid 0x20<link>
+            ether 52:54:00:03:03:03  txqueuelen 1000  (Ethernet)
+            RX packets 1226  bytes 249361 (243.5 KiB)
+            RX errors 0  dropped 3  overruns 0  frame 0
+            TX packets 57  bytes 9146 (8.9 KiB)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+#---------------------------------------------------------------------
+# Reboot the virtual machine.
+#[root@virtual] 
+
+    # *** *** *** *** *** *** *** *** *** *** *** *** ***
+    # *** ARP broadcast upstream isn't automatic yet  ***
+    # *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+    reboot
+
+#---------------------------------------------------------------------
+# Test the public address from the host machine.
+#[user@trop01]
+
+    curl --head 'http://astoalith.metagrid.xyz/'
+
+#---------------------------------------------------------------------
+# Test the public address from external machines.
+#[user@trop01]
+
+    curl --head 'http://astoalith.metagrid.xyz/'
+
+    shep - PASS
+    data - PASS
+    home - PASS
+
