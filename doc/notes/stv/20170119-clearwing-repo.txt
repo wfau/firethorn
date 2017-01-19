@@ -1,0 +1,123 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+# -----------------------------------------------------
+# Set the new version.
+#[root@builder]
+
+    version=1.2.3-genius
+    branch=default 
+# -----------------------------------------------------
+# Run our build container.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "branch=${branch:?}" \
+        --env "version=${version:?}" \
+        --env "buildtag=${buildtag:?}" \
+        --volume "${buildvol:?}:/var/local/build" \
+        --volume "${cachevol:?}:/var/local/cache" \
+        --volume '/etc/localtime:/etc/localtime:ro' \
+        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
+        --volume '/var/run/docker.sock:/var/run/docker.sock' \
+        "firethorn/builder:latest" \
+        bash
+
+# -----------------------------------------------------
+#[root@builder]
+    FIRETHORN_CODE=/projects/firethorn
+    CLEARWING_CODE=/projects/clearwing
+
+    source /etc/bashrc
+
+
+    source "${HOME:?}/firethorn.settings"
+    if [ ! -e "${FIRETHORN_CODE:?}" ]
+    then
+        pushd "$(dirname ${FIRETHORN_CODE:?})"
+
+            hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
+
+        popd
+    fi
+
+    #
+    # Pull and update from branch.
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg pull
+        hg update -C "${branch:?}"
+        hg branch
+    
+    popd
+
+pushd "${FIRETHORN_CODE:?}"
+
+
+    docker build \
+        --tag "firethorn/ubuntu:14.04" \
+        docker/ubuntu/14.04
+
+    docker build \
+        --tag "firethorn/python:3.4.2" \
+        docker/python/3.4.2
+
+    docker build \
+        --tag "firethorn/pythonlibs" \
+        docker/pythonlibs
+
+popd
+
+mkdir -p /projects/clearwing
+
+#
+# Clone our repository.
+pushd "${CLEARWING_CODE:?}/"
+	hg clone 'http://wfau.metagrid.co.uk/code/clearwing' .
+        hg pull
+	hg update -C ${version:?}
+popd
+
+
+ source "${HOME:?}/firethorn.settings"
+    pushd "${CLEARWING_CODE:?}"
+
+	echo "# Building Webpy/Clearwing image"
+	docker build \
+	--tag firethorn/clearwing:${version:?} \
+	src
+
+    popd
+
+
+# -------------------------------------------------------------------------------------------
+# Tag our images as latest and push.
+#[root@builder]
+
+  
+    docker tag "firethorn/clearwing:${version}"  "firethorn/clearwing:latest"
+    docker push "firethorn/clearwing:${version:?}"
+   
