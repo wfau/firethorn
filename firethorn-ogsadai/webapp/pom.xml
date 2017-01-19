@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>2.1.3</version>
+        <version project='firethorn'>2.1.3-zrq-event-log</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-webapp</artifactId>

@@ -116,6 +116,17 @@
     query.start().log().info("Follow up ..")    
 
     Lazy loading list.
+
+
+    Type of log message ?
+
+    The identity of the class that is logging the message ?
+
+        ADQL parser
+        DQP parser
+        TAP response
+        
+    
     
 
 
