@@ -32,7 +32,7 @@ implements Identifier
         this.value = value ;
         }
 
-    private final T value ;
+    protected final T value ;
 
     @Override
     public Serializable value()

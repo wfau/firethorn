@@ -19,6 +19,7 @@
 package uk.ac.roe.wfau.firethorn.entity.log;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
  * Public interface for a LogEntry.
@@ -108,8 +109,8 @@ public interface LogEntry
     /**
      * The target {@link Entity} that this event applies to. 
      * 
+    public Identifier subject();
      */
-    public Entity subject();
     
     /**
      * Public enum for event level.

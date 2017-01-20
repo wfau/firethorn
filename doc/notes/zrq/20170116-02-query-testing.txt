@@ -133,7 +133,7 @@ EOF
     #buildtag=\${spacetag:?}
     buildtag=${branch:?}
 
-    netspace=rosana-\${spacetag:?}
+    netspace=rosana
     buildvol=\${netspace:?}-build
     cachevol=\${netspace:?}-cache
 
@@ -490,6 +490,33 @@ EOF
 # Create our chain config.
 #[user@virtual] 
 
+#
+# This would be better done using a .env file
+# https://docs.docker.com/compose/environment-variables/#/the-env-file
+# 
+
+    source "${HOME:?}/chain.properties"
+
+    cat > '.env' << EOF
+netspace=${netspace:?}
+
+buildtag=${buildtag:?}
+
+metaname=${metaname:?}
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+dataname=${dataname:?}
+datahost=${datahost:?}
+
+username=${username:?}
+userhost=${userhost:?}
+
+ogsaname=${ogsaname:?}
+firename=${firename:?}
+testname=${testname:?}
+EOF
+
     source "${HOME:?}/chain.properties"
 
     cat > "docker-compose.yml" << EOF
@@ -498,10 +525,10 @@ version: '2'
 
 networks:
 
-    ${netspace:?}-front:
+    ${netspace}-front:
         # Public facing network
 
-    ${netspace:?}-back:
+    ${netspace}-back:
         # Internal only network
 
 services:
@@ -515,10 +542,10 @@ services:
             - '/run'
             - '/tmp'
         environment:
-            POSTGRES_USER: "${metauser:?}"
-            POSTGRES_PASSWORD: "${metapass:?}"
+            POSTGRES_USER: "${metauser}"
+            POSTGRES_PASSWORD: "${metapass}"
         networks:
-            - ${netspace:?}-back
+            - ${netspace}-back
 
     ${username}:
         image:
@@ -529,11 +556,11 @@ services:
             - /run
             - /tmp
         environment:
-            target: "${userhost:?}"
+            target: "${userhost}"
         volumes:
             - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
         networks:
-            - ${netspace:?}-back
+            - ${netspace}-back
 
     ${dataname}:
         image:
@@ -544,11 +571,11 @@ services:
             - /run
             - /tmp
         environment:
-            target: "${datahost:?}"
+            target: "${datahost}"
         volumes:
             - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
         networks:
-            - ${netspace:?}-back
+            - ${netspace}-back
 
     ${ogsaname}:
         image:
@@ -561,7 +588,7 @@ services:
         volumes:
             - /etc/localtime:/etc/localtime:ro
         networks:
-            - ${netspace:?}-back
+            - ${netspace}-back
         depends_on:
             - ${dataname}
             - ${username}
@@ -576,10 +603,10 @@ services:
             - /tmp
         volumes:
             - /etc/localtime:/etc/localtime:ro
-            - ${HOME:?}/firethorn.properties:/etc/firethorn.properties
+            - ${HOME}/firethorn.properties:/etc/firethorn.properties
         networks:
-            - ${netspace:?}-back
-            - ${netspace:?}-front
+            - ${netspace}-back
+            - ${netspace}-front
         depends_on:
             - ${metaname}
             - ${dataname}
@@ -596,18 +623,24 @@ services:
             - /tmp
         volumes:
             - /etc/localtime:/etc/localtime:ro
-            - ${HOME:?}/tester.properties:/etc/tester.properties
+            - ${HOME}/tester.properties:/etc/tester.properties
         networks:
-            - ${netspace:?}-back
+            - ${netspace}-back
 
 EOF
+
+# -----------------------------------------------------
+# Check our docker config.
+#[root@builder]
+
+    docker-compose --verbose config
 
 # -----------------------------------------------------
 # Start our docker chain.
 #[root@builder]
 
     source "${HOME:?}/chain.properties"
-    docker-compose up -d ${firename}
+    docker-compose up -p ${spacetag:?} -d ${firename}
 
 # -----------------------------------------------------
 # Check the logs ..

@@ -26,8 +26,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
@@ -57,8 +59,9 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
  *
  */
 @Slf4j
-@javax.persistence.Entity
-@Inheritance
+@MappedSuperclass
+//@javax.persistence.Entity
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Access(
     AccessType.FIELD
     )

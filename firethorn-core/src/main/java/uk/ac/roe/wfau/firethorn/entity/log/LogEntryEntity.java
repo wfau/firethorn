@@ -41,6 +41,8 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.LongIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 
@@ -188,7 +190,7 @@ public class LogEntryEntity
                     "LogEntryEntity-select-subject"
                     ).setParameter(
                         "subject",
-                        subject
+                        subject.ident()
                         )
                 );
             }
@@ -201,7 +203,7 @@ public class LogEntryEntity
                     "LogEntryEntity-select-subject"
                     ).setParameter(
                         "subject",
-                        subject
+                        subject.ident()
                         )
                 );
             }
@@ -215,7 +217,7 @@ public class LogEntryEntity
                     "LogEntryEntity-select-subject.level"
                     ).setParameter(
                         "subject",
-                        subject
+                        subject.ident()
                         ).setParameter(
                             "level",
                             level.name()
@@ -231,7 +233,7 @@ public class LogEntryEntity
                     "LogEntryEntity-select-subject.level"
                     ).setParameter(
                         "subject",
-                        subject
+                        subject.ident()
                         ).setParameter(
                             "level",
                             level.name()
@@ -354,7 +356,14 @@ public class LogEntryEntity
         super();
         this.level = level ;
         this.source = source;
-        this.subject = subject;
+
+        // This relies on having Long identifiers.
+        Identifier that = subject.ident();
+        if (that instanceof LongIdentifier)
+            {
+            this.subject = ((LongIdentifier) that).value();
+            }
+       
         this.message = message;
 
         log.debug("LogEntryEntity()");
@@ -365,8 +374,21 @@ public class LogEntryEntity
 
         }
 
+    /*
+     * Problems pointing a ManyToOne at an abstract class.
+     * Hibernate doesn't know what type the reference points to.
+     * 
+     * Longer term fix .. have a generic LogEntry<SubjectType>
+     * Each base type JdbcColumnEntity, AdqlTableEntity etc has a separate implementation.
+     * Verbose and complex to manage.
+     * 
+     * Polymorphic ManyToOne .. needs a discriminator.
+     * 
+     * Really short term .. the only things that needs log entries are BlueQueries.
+     * So the generic form works.
+     * 
     @ManyToOne(
-        fetch = FetchType.LAZY,
+        fetch = FetchType.LAZY
         targetEntity = AbstractEntity.class
         )
     @JoinColumn(
@@ -375,9 +397,19 @@ public class LogEntryEntity
         nullable = false,
         updatable = false
         )
-    private Entity subject;
-    @Override
-    public Entity subject()
+     *
+     */
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_SUBJECT_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private Long subject;
+    public Long subject()
         {
         return this.subject;
         }

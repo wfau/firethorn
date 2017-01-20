@@ -80,6 +80,15 @@ extends AbstractIdentifier<Long>
         }
 
     /**
+     * Access to the value as a Long.
+     * 
+     */
+    @Override
+    public Long value()
+        {
+        return this.value;
+        }
+    /**
      * Parse a String and return a Long value.
      * @param string The String to parse.
      * @throws IdentifierFormatException If the String failed to parse correctly. 
