@@ -61,11 +61,12 @@
             +-->
         <property name="packagesToScan">
             <list>
-                <value>uk.ac.roe.wfau.firethorn.job</value>
+                <!--value>uk.ac.roe.wfau.firethorn.job</value-->
                 <value>uk.ac.roe.wfau.firethorn.meta</value>
                 <value>uk.ac.roe.wfau.firethorn.adql</value>
                 <value>uk.ac.roe.wfau.firethorn.blue</value>
                 <value>uk.ac.roe.wfau.firethorn.config</value>
+                <value>uk.ac.roe.wfau.firethorn.entity</value>
                 <value>uk.ac.roe.wfau.firethorn.identity</value>
                 <value>uk.ac.roe.wfau.firethorn.community</value>
             </list>
