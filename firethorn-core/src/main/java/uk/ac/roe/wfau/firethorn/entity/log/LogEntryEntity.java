@@ -366,7 +366,8 @@ public class LogEntryEntity
         }
 
     @ManyToOne(
-        fetch = FetchType.LAZY
+        fetch = FetchType.LAZY,
+        targetEntity = AbstractEntity.class
         )
     @JoinColumn(
         name = DB_SUBJECT_COL,
