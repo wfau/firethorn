@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2017 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,9 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.log.LogEntry;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -58,72 +55,6 @@ extends AbstractController
     public LogEntryController()
         {
         super();
-        }
-
-    /**
-     * An {@link EntityBean} wrapper for a {@link LogEntry}.
-     *
-     */
-    public static class LogEntryBean
-    extends AbstractEntityBeanImpl<LogEntry>
-    implements EntityBean<LogEntry>
-        {
-        /**
-         * An {@link EntityBean.Iter} wrapper for a {@link LogEntry} {@link Iterable}.
-         *
-         */
-        public static class Iter
-        extends AbstractEntityBeanIter<LogEntry, LogEntryBean>
-            {
-            /**
-             * Public constructor.
-             * @param iterable The {@link LogEntry} {@link Iterable} to wrap.
-             *
-             */
-            public Iter(final Iterable<LogEntry> iterable)
-                {
-                super(
-                    iterable
-                    );
-                }
-            @Override
-            public LogEntryBean bean(final LogEntry entity)
-                {
-                return new LogEntryBean(
-                    entity
-                    );
-                }
-            }
-
-        /**
-         * Public constructor.
-         * @param entity The {@link LogEntry} to wrap.
-         *
-         */
-        public LogEntryBean(final LogEntry entity)
-            {
-            super(
-                LogEntryIdentFactory.TYPE_URI,
-                entity
-                );
-            }
-
-        /**
-         * Get a URL for the {@link LogEntry} subject.
-         * @return A URL for the {@link LogEntry} subject.
-         * @see LogEntry#subject()
-         *
-         */
-        public String getSubject()
-            {
-            if (entity().subject() != null)
-                {
-                return entity().subject().link();
-                }
-            else {
-                return null ;
-                }
-            }
         }
 
     /**

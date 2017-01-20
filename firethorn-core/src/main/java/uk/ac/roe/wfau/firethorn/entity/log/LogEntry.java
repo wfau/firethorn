@@ -80,16 +80,28 @@ public interface LogEntry
 
         
         /**
-         * Select the (most recent) log entries for a subject {@link Entity}.
+         * Select all the log entries for an {@link Entity}.
          * 
          */
         public Iterable<LogEntry> select(final Entity subject);
 
         /**
-         * Select the (most recent) log entries for a subject {@link Entity}.
+         * Select the most recent log entries for an {@link Entity}.
+         * 
+         */
+        public Iterable<LogEntry> select(final Entity subject, final Integer limit);
+
+        /**
+         * Select all the log entries with a specific level for an {@link Entity}.
          * 
          */
         public Iterable<LogEntry> select(final Entity subject, final LogEntry.Level level);
+
+        /**
+         * Select all the log entries with a specific level for an {@link Entity}.
+         * 
+         */
+        public Iterable<LogEntry> select(final Entity subject, final Integer limit, final LogEntry.Level level);
 
         }
     

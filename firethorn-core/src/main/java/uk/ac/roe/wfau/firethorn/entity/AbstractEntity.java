@@ -575,29 +575,37 @@ implements Entity
             @Override
             public Iterable<LogEntry> select()
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().logger().entities().select(
+                    AbstractEntity.this
+                    );
                 }
 
             @Override
-            public Iterable<LogEntry> select(int count)
+            public Iterable<LogEntry> select(final Integer limit)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().logger().entities().select(
+                    AbstractEntity.this,
+                    limit
+                    );
                 }
 
             @Override
-            public Iterable<LogEntry> select(Level level)
+            public Iterable<LogEntry> select(final Level level)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().logger().entities().select(
+                    AbstractEntity.this,
+                    level
+                    );
                 }
 
             @Override
-            public Iterable<LogEntry> select(int count, Level level)
+            public Iterable<LogEntry> select(final Integer limit, final Level level)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().logger().entities().select(
+                    AbstractEntity.this,
+                    limit,
+                    level
+                    );
                 }
             };
         }

@@ -38,11 +38,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 
 /**
@@ -182,7 +181,20 @@ public class LogEntryEntity
 
         @Override
         @SelectMethod
-        public Iterable<LogEntry> select(Entity subject)
+        public Iterable<LogEntry> select(final Entity subject)
+            {
+            return super.list(
+                super.query(
+                    "LogEntryEntity-select-subject"
+                    ).setParameter(
+                        "subject",
+                        subject
+                        )
+                );
+            }
+
+        @Override
+        public Iterable<LogEntry> select(final Entity subject, final Integer limit)
             {
             return super.list(
                 super.query(
@@ -196,7 +208,23 @@ public class LogEntryEntity
 
         @Override
         @SelectMethod
-        public Iterable<LogEntry> select(Entity subject, Level level)
+        public Iterable<LogEntry> select(final Entity subject, final Level level)
+            {
+            return super.list(
+                super.query(
+                    "LogEntryEntity-select-subject.level"
+                    ).setParameter(
+                        "subject",
+                        subject
+                        ).setParameter(
+                            "level",
+                            level.name()
+                            )
+                );
+            }
+
+        @Override
+        public Iterable<LogEntry> select(final Entity subject, final Integer limit, final Level level)
             {
             return super.list(
                 super.query(

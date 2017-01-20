@@ -245,28 +245,32 @@ public interface Entity
         public LogEntry create(final Object source, final LogEntry.Level level, final String message);
 
         /**
-         * Select the (most recent) log entries for this entity.
-         * 
+         * Select all the log entries for this entity.
+         * @Deprecated Use select(Integer count).
+ 
          */
+        @Deprecated
         public Iterable<LogEntry> select();
 
         /**
-         * Select the (most recent) log entries for this entity.
+         * Select the most recent log entries for this entity.
          * 
          */
-        public Iterable<LogEntry> select(int count);
+        public Iterable<LogEntry> select(final Integer limit);
 
         /**
-         * Select the (most recent) log entries for this entity.
+         * Select all the log entries with a specific level for this entity.
+         * @Deprecated Use select(Integer count, Level level).
          * 
          */
+        @Deprecated
         public Iterable<LogEntry> select(final LogEntry.Level level);
 
         /**
-         * Select the (most recent) log entries for this entity.
+         * Select the most recent log entries with a specific level for this entity.
          * 
          */
-        public Iterable<LogEntry> select(int count, final LogEntry.Level level);
+        public Iterable<LogEntry> select(final Integer limit, final LogEntry.Level level);
 
         }
 
