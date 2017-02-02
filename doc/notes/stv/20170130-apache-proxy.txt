@@ -1,0 +1,70 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#ssh into VM with Public IP
+
+ssh Erennon
+
+# bash into the apache config
+docker exec -it clearwing bash
+
+nano /etc/apache2/sites-enabled/000-default
+..
+
+
+
+<VirtualHost *:80>
+    ServerName osa.metagrid.xyz
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+
+    ProxyPass ^/(.*)$  http://192.168.201.11/$1
+    ProxyPassMatch ^/(.*)$  http://192.168.201.11/$1  retry=0 connectiontimeout=14400 timeout=14400
+    ProxyPassReverse  ^/(.*)$  http://192.168.201.11/$1
+</VirtualHost>
+
+
+<VirtualHost *:80>
+    ServerName genius.metagrid.xyz
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+
+    ProxyPass ^/(.*)$  http://192.168.201.12/$1
+    ProxyPassMatch ^/(.*)$  http://192.168.201.12/$1  retry=0 connectiontimeout=14400 timeout=14400
+    ProxyPassReverse  ^/(.*)$  http://192.168.201.12/$1
+
+</VirtualHost>
+
+
