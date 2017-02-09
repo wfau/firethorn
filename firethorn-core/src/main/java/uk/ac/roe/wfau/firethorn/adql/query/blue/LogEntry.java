@@ -16,10 +16,9 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.entity.log;
+package uk.ac.roe.wfau.firethorn.adql.query.blue;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
  * Public interface for a LogEntry.
@@ -40,6 +39,7 @@ public interface LogEntry
          *
          */
         public LogEntry.EntityFactory entities();
+
         }
 
     /**
@@ -71,46 +71,46 @@ public interface LogEntry
          * Create a new {@link LogEntry}.
          * 
          */
-        public LogEntry create(final Entity subject, final LogEntry.Level level, final String message);
+        public LogEntry create(final BlueTask<?> task, final LogEntry.Level level, final String message);
 
         /**
          * Create a new {@link LogEntry}.
          * 
          */
-        public LogEntry create(final Object source, final Entity subject, final LogEntry.Level level, final String message);
+        public LogEntry create(final Object source, final BlueTask<?> task, final LogEntry.Level level, final String message);
 
         
         /**
          * Select all the log entries for an {@link Entity}.
          * 
          */
-        public Iterable<LogEntry> select(final Entity subject);
+        public Iterable<LogEntry> select(final BlueTask<?> task);
 
         /**
          * Select the most recent log entries for an {@link Entity}.
          * 
          */
-        public Iterable<LogEntry> select(final Entity subject, final Integer limit);
+        public Iterable<LogEntry> select(final BlueTask<?> task, final Integer limit);
 
         /**
          * Select all the log entries with a specific level for an {@link Entity}.
          * 
          */
-        public Iterable<LogEntry> select(final Entity subject, final LogEntry.Level level);
+        public Iterable<LogEntry> select(final BlueTask<?> task, final LogEntry.Level level);
 
         /**
          * Select all the log entries with a specific level for an {@link Entity}.
          * 
          */
-        public Iterable<LogEntry> select(final Entity subject, final Integer limit, final LogEntry.Level level);
+        public Iterable<LogEntry> select(final BlueTask<?> task, final Integer limit, final LogEntry.Level level);
 
         }
     
     /**
-     * The target {@link Entity} that this event applies to. 
+     * The target {@link BlueTask} that this event applies to. 
      * 
-    public Identifier subject();
      */
+    public BlueTask<?> task();
     
     /**
      * Public enum for event level.
@@ -138,7 +138,7 @@ public interface LogEntry
     public String message();
 
     /**
-     * The name class of the Object that created the event.
+     * The class name of the Object that created the event.
      * 
      */
     public String source(); 

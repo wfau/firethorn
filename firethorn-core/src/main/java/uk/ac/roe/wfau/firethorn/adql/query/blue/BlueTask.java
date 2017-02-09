@@ -389,9 +389,63 @@ extends NamedEntity
         }
 
     /**
-     *  Access to the task parameters.
+     *  Access to the {@link BlueTask} parameters.
      *  
      */
     public Param param();
-    
+
+    /**
+     * Public interface for the {@link Entity} message log.
+     * 
+     */
+    public interface History
+        {
+        /**
+         * Create a new log entry.
+         * 
+         */
+        public LogEntry create(final LogEntry.Level level, final String message);
+
+        /**
+         * Create a new log entry.
+         * 
+         */
+        public LogEntry create(final Object source, final LogEntry.Level level, final String message);
+
+        /**
+         * Select all the log entries for this entity.
+         * @Deprecated Use select(Integer count).
+ 
+         */
+        @Deprecated
+        public Iterable<LogEntry> select();
+
+        /**
+         * Select the most recent log entries for this entity.
+         * 
+         */
+        public Iterable<LogEntry> select(final Integer limit);
+
+        /**
+         * Select all the log entries with a specific level for this entity.
+         * @Deprecated Use select(Integer count, Level level).
+         * 
+         */
+        @Deprecated
+        public Iterable<LogEntry> select(final LogEntry.Level level);
+
+        /**
+         * Select the most recent log entries with a specific level for this entity.
+         * 
+         */
+        public Iterable<LogEntry> select(final Integer limit, final LogEntry.Level level);
+
+        }
+
+    /**
+     * Access to the {@link BlueTask} message log.
+     * 
+     */
+    public History history();
+
     }

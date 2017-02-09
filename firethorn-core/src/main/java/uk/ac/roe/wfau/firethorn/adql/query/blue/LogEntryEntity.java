@@ -16,7 +16,7 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.entity.log;
+package uk.ac.roe.wfau.firethorn.adql.query.blue;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Access;
@@ -27,6 +27,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -41,8 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.LongIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 
@@ -54,6 +54,9 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 @javax.persistence.Entity
 @Access(
     AccessType.FIELD
+    )
+@Inheritance(
+    strategy = InheritanceType.TABLE_PER_CLASS
     )
 @Table(
     name = LogEntryEntity.DB_TABLE_NAME,
@@ -143,12 +146,12 @@ public class LogEntryEntity
 
         @Override
         @CreateAtomicMethod
-        public LogEntry create(final Entity subject, final Level level, final String message)
+        public LogEntry create(final BlueTask<?> task, final Level level, final String message)
             {
             String source = Thread.currentThread().getStackTrace()[1].getClassName();
             return create(
                 source,
-                subject,
+                task,
                 level,
                 message
                 );
@@ -156,25 +159,25 @@ public class LogEntryEntity
 
         @Override
         @CreateAtomicMethod
-        public LogEntry create(final Object source, final Entity subject, final Level level, final String message)
+        public LogEntry create(final Object source, final BlueTask<?> task, final Level level, final String message)
             {
             return create(
                 identify(
                     source
                     ),
-                subject,
+                task,
                 level,
                 message
                 );
             }
 
         @CreateAtomicMethod
-        public LogEntry create(final String source, final Entity subject, final Level level, final String message)
+        public LogEntry create(final String source, final BlueTask<?> task, final Level level, final String message)
             {
             return this.insert(
                 new LogEntryEntity(
                     source,
-                    subject,
+                    task,
                     level,
                     message
                     )
@@ -183,41 +186,41 @@ public class LogEntryEntity
 
         @Override
         @SelectMethod
-        public Iterable<LogEntry> select(final Entity subject)
+        public Iterable<LogEntry> select(final BlueTask<?> task)
             {
             return super.list(
                 super.query(
                     "LogEntryEntity-select-subject"
                     ).setParameter(
                         "subject",
-                        subject.ident()
+                        task.ident()
                         )
                 );
             }
 
         @Override
-        public Iterable<LogEntry> select(final Entity subject, final Integer limit)
+        public Iterable<LogEntry> select(final BlueTask<?> task, final Integer limit)
             {
             return super.list(
                 super.query(
                     "LogEntryEntity-select-subject"
                     ).setParameter(
                         "subject",
-                        subject.ident()
+                        task
                         )
                 );
             }
 
         @Override
         @SelectMethod
-        public Iterable<LogEntry> select(final Entity subject, final Level level)
+        public Iterable<LogEntry> select(final BlueTask<?> task, final Level level)
             {
             return super.list(
                 super.query(
                     "LogEntryEntity-select-subject.level"
                     ).setParameter(
                         "subject",
-                        subject.ident()
+                        task
                         ).setParameter(
                             "level",
                             level.name()
@@ -226,14 +229,14 @@ public class LogEntryEntity
             }
 
         @Override
-        public Iterable<LogEntry> select(final Entity subject, final Integer limit, final Level level)
+        public Iterable<LogEntry> select(final BlueTask<?> task, final Integer limit, final Level level)
             {
             return super.list(
                 super.query(
                     "LogEntryEntity-select-subject.level"
                     ).setParameter(
                         "subject",
-                        subject.ident()
+                        task.ident()
                         ).setParameter(
                             "level",
                             level.name()
@@ -351,19 +354,11 @@ public class LogEntryEntity
      * Protected constructor.
      * 
      */
-    protected LogEntryEntity(final String source, final Entity subject, final Level level, final String message)
+    protected LogEntryEntity(final String source, final BlueTask<?> subject, final Level level, final String message)
         {
         super();
-        this.level = level ;
+        this.level = level;
         this.source = source;
-
-        // This relies on having Long identifiers.
-        Identifier that = subject.ident();
-        if (that instanceof LongIdentifier)
-            {
-            this.subject = ((LongIdentifier) that).value();
-            }
-       
         this.message = message;
 
         log.debug("LogEntryEntity()");
@@ -374,22 +369,9 @@ public class LogEntryEntity
 
         }
 
-    /*
-     * Problems pointing a ManyToOne at an abstract class.
-     * Hibernate doesn't know what type the reference points to.
-     * 
-     * Longer term fix .. have a generic LogEntry<SubjectType>
-     * Each base type JdbcColumnEntity, AdqlTableEntity etc has a separate implementation.
-     * Verbose and complex to manage.
-     * 
-     * Polymorphic ManyToOne .. needs a discriminator.
-     * 
-     * Really short term .. the only things that needs log entries are BlueQueries.
-     * So the generic form works.
-     * 
     @ManyToOne(
-        fetch = FetchType.LAZY
-        targetEntity = AbstractEntity.class
+        fetch = FetchType.LAZY,
+        targetEntity = BlueTaskEntity.class
         )
     @JoinColumn(
         name = DB_SUBJECT_COL,
@@ -397,21 +379,10 @@ public class LogEntryEntity
         nullable = false,
         updatable = false
         )
-     *
-     */
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_SUBJECT_COL,
-        unique = false,
-        nullable = false,
-        updatable = false
-        )
-    private Long subject;
-    public Long subject()
+    protected BlueTask<?> task;
+    public BlueTask<?> task()
         {
-        return this.subject;
+        return this.task;
         }
 
     @Basic(

@@ -25,8 +25,6 @@ import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -41,8 +39,6 @@ import org.joda.time.DateTime;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
-import uk.ac.roe.wfau.firethorn.entity.log.LogEntry;
-import uk.ac.roe.wfau.firethorn.entity.log.LogEntry.Level;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -547,70 +543,5 @@ implements Entity
         return new SimpleEntityProtector(
             this
             );
-        }
-
-    
-    @Override
-    public History history()
-        {
-        return new History()
-            {
-            @Override
-            public LogEntry create(Level level, String message)
-                {
-                return factories().logger().entities().create(
-                    AbstractEntity.this,
-                    level,
-                    message
-                    );
-                }
-
-            @Override
-            public LogEntry create(Object source, Level level, String message)
-                {
-                return factories().logger().entities().create(
-                    source,
-                    AbstractEntity.this,
-                    level,
-                    message
-                    );
-                }
-
-            @Override
-            public Iterable<LogEntry> select()
-                {
-                return factories().logger().entities().select(
-                    AbstractEntity.this
-                    );
-                }
-
-            @Override
-            public Iterable<LogEntry> select(final Integer limit)
-                {
-                return factories().logger().entities().select(
-                    AbstractEntity.this,
-                    limit
-                    );
-                }
-
-            @Override
-            public Iterable<LogEntry> select(final Level level)
-                {
-                return factories().logger().entities().select(
-                    AbstractEntity.this,
-                    level
-                    );
-                }
-
-            @Override
-            public Iterable<LogEntry> select(final Integer limit, final Level level)
-                {
-                return factories().logger().entities().select(
-                    AbstractEntity.this,
-                    limit,
-                    level
-                    );
-                }
-            };
         }
     }

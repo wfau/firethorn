@@ -18,7 +18,7 @@
 
 package uk.ac.roe.wfau.firethorn.webapp.log;
 
-import uk.ac.roe.wfau.firethorn.entity.log.LogEntry;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.LogEntry;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -74,14 +74,14 @@ implements EntityBean<LogEntry>
     /**
      * Get a URL for the {@link LogEntry} subject.
      * @return A URL for the {@link LogEntry} subject.
-     * @see LogEntry#subject()
+     * @see LogEntry#task()
      *
      */
     public String getSubject()
         {
-        if (entity().subject() != null)
+        if (entity().task() != null)
             {
-            return entity().subject().link();
+            return entity().task().link();
             }
         else {
             return null ;

@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.webapp.log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.entity.log.LogEntry;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.LogEntry;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;

@@ -409,10 +409,4 @@ public class AdqlTableProxy
 	    {
 		return base.bluequery();
 	    }
-
-    @Override
-    public History history()
-        {
-        return base.history();
-        }
     }
