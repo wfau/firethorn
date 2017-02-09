@@ -16,43 +16,43 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.webapp.log;
+package uk.ac.roe.wfau.firethorn.webapp.blue;
 
-import uk.ac.roe.wfau.firethorn.adql.query.blue.LogEntry;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- * An {@link EntityBean} wrapper for a {@link LogEntry}.
+ * An {@link EntityBean} wrapper for a {@link BlueTaskLogEntry}.
  *
  */
-public class LogEntryBean
-extends AbstractEntityBeanImpl<LogEntry>
-implements EntityBean<LogEntry>
+public class BlueTaskLogEntryBean
+extends AbstractEntityBeanImpl<BlueTaskLogEntry>
+implements EntityBean<BlueTaskLogEntry>
     {
     /**
-     * An {@link EntityBean.Iter} wrapper for a {@link LogEntry} {@link Iterable}.
+     * An {@link EntityBean.Iter} wrapper for a {@link BlueTaskLogEntry} {@link Iterable}.
      *
      */
     public static class Iter
-    extends AbstractEntityBeanIter<LogEntry, LogEntryBean>
+    extends AbstractEntityBeanIter<BlueTaskLogEntry, BlueTaskLogEntryBean>
         {
         /**
          * Public constructor.
-         * @param iterable The {@link LogEntry} {@link Iterable} to wrap.
+         * @param iterable The {@link BlueTaskLogEntry} {@link Iterable} to wrap.
          *
          */
-        public Iter(final Iterable<LogEntry> iterable)
+        public Iter(final Iterable<BlueTaskLogEntry> iterable)
             {
             super(
                 iterable
                 );
             }
         @Override
-        public LogEntryBean bean(final LogEntry entity)
+        public BlueTaskLogEntryBean bean(final BlueTaskLogEntry entity)
             {
-            return new LogEntryBean(
+            return new BlueTaskLogEntryBean(
                 entity
                 );
             }
@@ -60,21 +60,21 @@ implements EntityBean<LogEntry>
 
     /**
      * Public constructor.
-     * @param entity The {@link LogEntry} to wrap.
+     * @param entity The {@link BlueTaskLogEntry} to wrap.
      *
      */
-    public LogEntryBean(final LogEntry entity)
+    public BlueTaskLogEntryBean(final BlueTaskLogEntry entity)
         {
         super(
-            LogEntryIdentFactory.TYPE_URI,
+            BlueTaskLogEntryController.TYPE_URI,
             entity
             );
         }
 
     /**
-     * Get a URL for the {@link LogEntry} subject.
-     * @return A URL for the {@link LogEntry} subject.
-     * @see LogEntry#task()
+     * Get a URL for the {@link BlueTaskLogEntry} subject.
+     * @return A URL for the {@link BlueTaskLogEntry} subject.
+     * @see BlueTaskLogEntry#task()
      *
      */
     public String getSubject()
@@ -89,9 +89,9 @@ implements EntityBean<LogEntry>
         }
 
     /**
-     * Get the {@link LogEntry} message.
-     * @return The {@link LogEntry} message.
-     * @see LogEntry#message()
+     * Get the {@link BlueTaskLogEntry} message.
+     * @return The {@link BlueTaskLogEntry} message.
+     * @see BlueTaskLogEntry#message()
      *
      */
     public String getMessage()
@@ -106,9 +106,9 @@ implements EntityBean<LogEntry>
         }
 
     /**
-     * Get the {@link LogEntry} level.
-     * @return The {@link LogEntry} level.
-     * @see LogEntry#level()
+     * Get the {@link BlueTaskLogEntry} level.
+     * @return The {@link BlueTaskLogEntry} level.
+     * @see BlueTaskLogEntry#level()
      *
      */
     public String getLevel()

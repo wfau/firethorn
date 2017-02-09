@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.LogEntry;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
@@ -796,14 +796,14 @@ public class TestFactories
         {
         @Component
         public static class IdentFactory
-        extends AbstractIdentFactory<LogEntry>
-        implements LogEntry.IdentFactory
+        extends AbstractIdentFactory<BlueTaskLogEntry>
+        implements BlueTaskLogEntry.IdentFactory
             {
             }
         @Component
         public static class LinkFactory
-        extends MockLinkFactory<LogEntry>
-        implements LogEntry.LinkFactory
+        extends MockLinkFactory<BlueTaskLogEntry>
+        implements BlueTaskLogEntry.LinkFactory
             {
             public LinkFactory()
                 {

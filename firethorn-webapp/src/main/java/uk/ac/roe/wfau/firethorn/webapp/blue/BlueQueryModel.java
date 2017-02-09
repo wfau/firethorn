@@ -46,14 +46,14 @@ public abstract class BlueQueryModel
     /**
      * The token to match an identifier field.
      * 
-     */
     public static final String IDENT_FIELD = Entity.LinkFactory.IDENT_FIELD ;
+     */
 
     /**
      * The token to match an identifier field.
      * 
-     */
     public static final String IDENT_TOKEN = Entity.LinkFactory.IDENT_TOKEN ;
+     */
     
     /**
      * The URI path for a {@link BlueQuery} service, [{@value}].
@@ -65,14 +65,14 @@ public abstract class BlueQueryModel
      * The URI path for a {@link BlueQuery} entity, [{@value}].
      *
      */
-    public static final String ENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
+    public static final String ENTITY_PATH = SERVICE_PATH + "/" + Entity.LinkFactory.IDENT_TOKEN ;
 
     /**
      * The URI path for a {@link BlueQuery} callback, [{@value}].
      * @todo move this to the ogsadai activity common package.
      *
      */
-    public static final String CALLBACK_PATH = "/callback/" + IDENT_TOKEN ;
+    public static final String CALLBACK_PATH = "/callback/" + Entity.LinkFactory.IDENT_TOKEN ;
     
     /**
      * Request param name for the {@link BlueQuery} name, [{@value}].

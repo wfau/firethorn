@@ -22,20 +22,17 @@ import java.util.Iterator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
-import uk.ac.roe.wfau.firethorn.util.EmptyIterator;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
-import uk.ac.roe.wfau.firethorn.webapp.log.LogEntryBean;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableBean.FormatsBean;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
 
 /**
@@ -593,19 +590,19 @@ public class BlueQueryBean
      * Get the {@BlueQuery} {@link Entity.History}.
      *
      */
-    public Iterable<LogEntryBean> getHistory()
+    public Iterable<BlueTaskLogEntryBean> getHistory()
         {
-        final Entity.History history = entity().history(); 
+        final BlueTask.History history = entity().history(); 
         if (history != null)
             {
-            return new LogEntryBean.Iter(
+            return new BlueTaskLogEntryBean.Iter(
                 history.select(
                     HISTORY_LIMIT
                     )
                 );
             }
         else {
-            return new EmptyIterable<LogEntryBean>();
+            return new EmptyIterable<BlueTaskLogEntryBean>();
             }
         }
     }

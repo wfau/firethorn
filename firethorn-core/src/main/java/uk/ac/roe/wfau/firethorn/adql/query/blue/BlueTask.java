@@ -404,13 +404,13 @@ extends NamedEntity
          * Create a new log entry.
          * 
          */
-        public LogEntry create(final LogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final BlueTaskLogEntry.Level level, final String message);
 
         /**
          * Create a new log entry.
          * 
          */
-        public LogEntry create(final Object source, final LogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final Object source, final BlueTaskLogEntry.Level level, final String message);
 
         /**
          * Select all the log entries for this entity.
@@ -418,13 +418,13 @@ extends NamedEntity
  
          */
         @Deprecated
-        public Iterable<LogEntry> select();
+        public Iterable<BlueTaskLogEntry> select();
 
         /**
          * Select the most recent log entries for this entity.
          * 
          */
-        public Iterable<LogEntry> select(final Integer limit);
+        public Iterable<BlueTaskLogEntry> select(final Integer limit);
 
         /**
          * Select all the log entries with a specific level for this entity.
@@ -432,13 +432,13 @@ extends NamedEntity
          * 
          */
         @Deprecated
-        public Iterable<LogEntry> select(final LogEntry.Level level);
+        public Iterable<BlueTaskLogEntry> select(final BlueTaskLogEntry.Level level);
 
         /**
          * Select the most recent log entries with a specific level for this entity.
          * 
          */
-        public Iterable<LogEntry> select(final Integer limit, final LogEntry.Level level);
+        public Iterable<BlueTaskLogEntry> select(final Integer limit, final BlueTaskLogEntry.Level level);
 
         }
 

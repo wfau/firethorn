@@ -49,7 +49,7 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.Handle.Listener;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.LogEntry.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry.Level;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -1445,7 +1445,7 @@ implements BlueTask<TaskType>
         return new History()
             {
             @Override
-            public LogEntry create(Level level, String message)
+            public BlueTaskLogEntry create(Level level, String message)
                 {
                 return factories().logger().entities().create(
                     BlueTaskEntity.this,
@@ -1455,7 +1455,7 @@ implements BlueTask<TaskType>
                 }
 
             @Override
-            public LogEntry create(Object source, Level level, String message)
+            public BlueTaskLogEntry create(Object source, Level level, String message)
                 {
                 return factories().logger().entities().create(
                     source,
@@ -1466,7 +1466,7 @@ implements BlueTask<TaskType>
                 }
 
             @Override
-            public Iterable<LogEntry> select()
+            public Iterable<BlueTaskLogEntry> select()
                 {
                 return factories().logger().entities().select(
                     BlueTaskEntity.this
@@ -1474,7 +1474,7 @@ implements BlueTask<TaskType>
                 }
 
             @Override
-            public Iterable<LogEntry> select(final Integer limit)
+            public Iterable<BlueTaskLogEntry> select(final Integer limit)
                 {
                 return factories().logger().entities().select(
                     BlueTaskEntity.this,
@@ -1483,7 +1483,7 @@ implements BlueTask<TaskType>
                 }
 
             @Override
-            public Iterable<LogEntry> select(final Level level)
+            public Iterable<BlueTaskLogEntry> select(final Level level)
                 {
                 return factories().logger().entities().select(
                     BlueTaskEntity.this,
@@ -1492,7 +1492,7 @@ implements BlueTask<TaskType>
                 }
 
             @Override
-            public Iterable<LogEntry> select(final Integer limit, final Level level)
+            public Iterable<BlueTaskLogEntry> select(final Integer limit, final Level level)
                 {
                 return factories().logger().entities().select(
                     BlueTaskEntity.this,

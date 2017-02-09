@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
  * Public interface for a LogEntry.
  * 
  */
-public interface LogEntry
+public interface BlueTaskLogEntry
     extends Entity
     {
     /**
@@ -32,13 +32,13 @@ public interface LogEntry
      * 
      */
     public static interface EntityServices
-    extends Entity.EntityServices<LogEntry>
+    extends Entity.EntityServices<BlueTaskLogEntry>
         {
         /**
-         * Our {@link LogEntry.EntityFactory} instance.
+         * Our {@link BlueTaskLogEntry.EntityFactory} instance.
          *
          */
-        public LogEntry.EntityFactory entities();
+        public BlueTaskLogEntry.EntityFactory entities();
 
         }
 
@@ -47,7 +47,7 @@ public interface LogEntry
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<LogEntry>
+    extends Entity.LinkFactory<BlueTaskLogEntry>
         {
         }
 
@@ -56,7 +56,7 @@ public interface LogEntry
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<LogEntry>
+    extends Entity.IdentFactory<BlueTaskLogEntry>
         {
         }
 
@@ -65,44 +65,44 @@ public interface LogEntry
      *
      */
     public static interface EntityFactory
-    extends Entity.EntityFactory<LogEntry>
+    extends Entity.EntityFactory<BlueTaskLogEntry>
         {
         /**
-         * Create a new {@link LogEntry}.
+         * Create a new {@link BlueTaskLogEntry}.
          * 
          */
-        public LogEntry create(final BlueTask<?> task, final LogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final BlueTask<?> task, final BlueTaskLogEntry.Level level, final String message);
 
         /**
-         * Create a new {@link LogEntry}.
+         * Create a new {@link BlueTaskLogEntry}.
          * 
          */
-        public LogEntry create(final Object source, final BlueTask<?> task, final LogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final BlueTaskLogEntry.Level level, final String message);
 
         
         /**
          * Select all the log entries for an {@link Entity}.
          * 
          */
-        public Iterable<LogEntry> select(final BlueTask<?> task);
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task);
 
         /**
          * Select the most recent log entries for an {@link Entity}.
          * 
          */
-        public Iterable<LogEntry> select(final BlueTask<?> task, final Integer limit);
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit);
 
         /**
          * Select all the log entries with a specific level for an {@link Entity}.
          * 
          */
-        public Iterable<LogEntry> select(final BlueTask<?> task, final LogEntry.Level level);
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final BlueTaskLogEntry.Level level);
 
         /**
          * Select all the log entries with a specific level for an {@link Entity}.
          * 
          */
-        public Iterable<LogEntry> select(final BlueTask<?> task, final Integer limit, final LogEntry.Level level);
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit, final BlueTaskLogEntry.Level level);
 
         }
     

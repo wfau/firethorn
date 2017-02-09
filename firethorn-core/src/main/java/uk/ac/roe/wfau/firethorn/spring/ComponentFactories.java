@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.spring;
 
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.LogEntry;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
@@ -123,9 +123,9 @@ public interface ComponentFactories
     public Context.Factory contexts();
 
     /**
-     * Our {@link LogEntry.EntityServices} instance.
+     * Our {@link BlueTaskLogEntry.EntityServices} instance.
      *
      */
-    public LogEntry.EntityServices logger();
+    public BlueTaskLogEntry.EntityServices logger();
 
     }

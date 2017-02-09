@@ -59,10 +59,10 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
     strategy = InheritanceType.TABLE_PER_CLASS
     )
 @Table(
-    name = LogEntryEntity.DB_TABLE_NAME,
+    name = BlueTaskLogEntity.DB_TABLE_NAME,
     indexes={
         @Index(
-            columnList = LogEntryEntity.DB_SUBJECT_COL
+            columnList = BlueTaskLogEntity.DB_SUBJECT_COL
             )
         }
     )
@@ -78,9 +78,9 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
             )
         }
     )
-public class LogEntryEntity
+public class BlueTaskLogEntity
     extends AbstractEntity
-    implements LogEntry
+    implements BlueTaskLogEntry
     {
 
     /**
@@ -119,13 +119,13 @@ public class LogEntryEntity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractEntityFactory<LogEntry>
-    implements LogEntry.EntityFactory
+    extends AbstractEntityFactory<BlueTaskLogEntry>
+    implements BlueTaskLogEntry.EntityFactory
         {
         @Override
         public Class<?> etype()
             {
-            return LogEntryEntity.class ;
+            return BlueTaskLogEntity.class ;
             }
 
         /**
@@ -146,7 +146,7 @@ public class LogEntryEntity
 
         @Override
         @CreateAtomicMethod
-        public LogEntry create(final BlueTask<?> task, final Level level, final String message)
+        public BlueTaskLogEntry create(final BlueTask<?> task, final Level level, final String message)
             {
             String source = Thread.currentThread().getStackTrace()[1].getClassName();
             return create(
@@ -159,7 +159,7 @@ public class LogEntryEntity
 
         @Override
         @CreateAtomicMethod
-        public LogEntry create(final Object source, final BlueTask<?> task, final Level level, final String message)
+        public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final Level level, final String message)
             {
             return create(
                 identify(
@@ -172,10 +172,10 @@ public class LogEntryEntity
             }
 
         @CreateAtomicMethod
-        public LogEntry create(final String source, final BlueTask<?> task, final Level level, final String message)
+        public BlueTaskLogEntry create(final String source, final BlueTask<?> task, final Level level, final String message)
             {
             return this.insert(
-                new LogEntryEntity(
+                new BlueTaskLogEntity(
                     source,
                     task,
                     level,
@@ -186,7 +186,7 @@ public class LogEntryEntity
 
         @Override
         @SelectMethod
-        public Iterable<LogEntry> select(final BlueTask<?> task)
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task)
             {
             return super.list(
                 super.query(
@@ -199,7 +199,7 @@ public class LogEntryEntity
             }
 
         @Override
-        public Iterable<LogEntry> select(final BlueTask<?> task, final Integer limit)
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit)
             {
             return super.list(
                 super.query(
@@ -213,7 +213,7 @@ public class LogEntryEntity
 
         @Override
         @SelectMethod
-        public Iterable<LogEntry> select(final BlueTask<?> task, final Level level)
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Level level)
             {
             return super.list(
                 super.query(
@@ -229,7 +229,7 @@ public class LogEntryEntity
             }
 
         @Override
-        public Iterable<LogEntry> select(final BlueTask<?> task, final Integer limit, final Level level)
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit, final Level level)
             {
             return super.list(
                 super.query(
@@ -246,27 +246,27 @@ public class LogEntryEntity
         }
 
     /**
-     * {@link LogEntry.EntityServices} implementation.
+     * {@link BlueTaskLogEntry.EntityServices} implementation.
      * 
      */
     @Slf4j
     @Component
     public static class EntityServices
-    implements LogEntry.EntityServices
+    implements BlueTaskLogEntry.EntityServices
         {
         /**
          * Our singleton instance.
          * 
          */
-        private static LogEntryEntity.EntityServices instance ; 
+        private static BlueTaskLogEntity.EntityServices instance ; 
 
         /**
          * Our singleton instance.
          * 
          */
-        public static LogEntryEntity.EntityServices instance()
+        public static BlueTaskLogEntity.EntityServices instance()
             {
-            return LogEntryEntity.EntityServices.instance ;
+            return BlueTaskLogEntity.EntityServices.instance ;
             }
 
         /**
@@ -285,9 +285,9 @@ public class LogEntryEntity
         protected void init()
             {
             log.debug("init()");
-            if (LogEntryEntity.EntityServices.instance == null)
+            if (BlueTaskLogEntity.EntityServices.instance == null)
                 {
-                LogEntryEntity.EntityServices.instance = this ;
+                BlueTaskLogEntity.EntityServices.instance = this ;
                 }
             else {
                 log.error("Setting instance more than once");
@@ -298,40 +298,40 @@ public class LogEntryEntity
             }
         
         @Autowired
-        private LogEntry.IdentFactory idents;
+        private BlueTaskLogEntry.IdentFactory idents;
         @Override
-        public LogEntry.IdentFactory idents()
+        public BlueTaskLogEntry.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        private LogEntry.LinkFactory links;
+        private BlueTaskLogEntry.LinkFactory links;
         @Override
-        public LogEntry.LinkFactory links()
+        public BlueTaskLogEntry.LinkFactory links()
             {
             return this.links;
             }
 
         @Autowired
-        private LogEntry.EntityFactory entities;
+        private BlueTaskLogEntry.EntityFactory entities;
         @Override
-        public LogEntry.EntityFactory entities()
+        public BlueTaskLogEntry.EntityFactory entities()
             {
             return this.entities;
             }
         }
 
     @Override
-    protected LogEntry.EntityFactory factory()
+    protected BlueTaskLogEntry.EntityFactory factory()
         {
-        return LogEntryEntity.EntityServices.instance().entities() ; 
+        return BlueTaskLogEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
-    protected LogEntry.EntityServices services()
+    protected BlueTaskLogEntry.EntityServices services()
         {
-        return LogEntryEntity.EntityServices.instance() ; 
+        return BlueTaskLogEntity.EntityServices.instance() ; 
         }
 
     @Override
@@ -346,7 +346,7 @@ public class LogEntryEntity
      * Protected constructor.
      * 
      */
-    protected LogEntryEntity()
+    protected BlueTaskLogEntity()
         {
         }
 
@@ -354,7 +354,7 @@ public class LogEntryEntity
      * Protected constructor.
      * 
      */
-    protected LogEntryEntity(final String source, final BlueTask<?> subject, final Level level, final String message)
+    protected BlueTaskLogEntity(final String source, final BlueTask<?> subject, final Level level, final String message)
         {
         super();
         this.level = level;

@@ -35,6 +35,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateTransitionException;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -95,9 +96,9 @@ public class BlueQueryController
      * 
      */
     @ResponseBody
-    @RequestMapping(value=BlueQueryModel.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
+    @RequestMapping(value=Entity.LinkFactory.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
     public BlueQueryBean select(
-        @PathVariable(value=BlueQueryModel.IDENT_FIELD)
+        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
 
         @RequestParam(value=STATUS_PREV_PARAM, required=false)
@@ -141,9 +142,9 @@ public class BlueQueryController
      * 
      */
     @ResponseBody
-    @RequestMapping(value=BlueQueryModel.IDENT_TOKEN, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=Entity.LinkFactory.IDENT_TOKEN, method=RequestMethod.POST, produces=JSON_MIME)
     public BlueQueryBean update(
-        @PathVariable(value=BlueQueryModel.IDENT_FIELD)
+        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
 
         @RequestParam(value=QUERY_INPUT_PARAM, required=false)
@@ -219,7 +220,7 @@ public class BlueQueryController
     @ResponseBody
     @RequestMapping(value=BlueQueryModel.CALLBACK_PATH, method=RequestMethod.POST, consumes=FORM_MIME, produces=JSON_MIME)
     public BlueQueryBean formpost(
-        @PathVariable(value=BlueQueryModel.IDENT_FIELD)
+        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
 
         @RequestParam(value=CALLBACK_TASK_STATE, required=false)
@@ -346,7 +347,7 @@ public class BlueQueryController
     @ResponseBody
     @RequestMapping(value=BlueQueryModel.CALLBACK_PATH, method=RequestMethod.POST, consumes=JSON_MIME, produces=JSON_MIME)
     public BlueQueryBean jsonCallback(
-        @PathVariable(value=BlueQueryModel.IDENT_FIELD)
+        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
         @RequestBody
         final RequestBean bean 
