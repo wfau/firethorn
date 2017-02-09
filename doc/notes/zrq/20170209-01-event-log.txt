@@ -1,0 +1,253 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Generic form
+
+        Entity
+            History
+                LogEntry
+
+
+        Problem with reference to the subject.
+        We don't have a generic base class that covers all entities.
+
+            @ManyToOne(
+                fetch = FetchType.LAZY
+                targetEntity = AbstractEntity.class
+                )
+
+
+
+    Specific form, log entries on tasks.
+
+        BlueTask
+            History
+                BlueTaskLogEntry
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Load our secret function.
+#[user@desktop]
+
+    vi ${HOME:?}/secret.sh
+
+        ....
+
+    source ${HOME:?}/secret.sh
+    secret 'ping'
+
+# -----------------------------------------------------
+# Configure our branch version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        branch=$(hg branch)
+
+        source bin/util.sh
+        version=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@virtual] 
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    branch=${branch:?}
+    version=${version:?}
+
+    spacetag=$(pwgen 8 1)
+    buildtag=${branch:?}
+
+    netspace=rosana
+    buildvol=\${netspace:?}-build
+    cachevol=\${netspace:?}-cache
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Set the Docker build tag.
+#[root@builder]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        dockversions "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Remove existing containers.
+#[user@virtual]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove existing images.
+#[user@virtual]
+
+    docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
+# Remove existing networks.
+#[user@virtual]
+
+    # TBD - how to only delete 'our' networks.
+
+# -----------------------------------------------------
+# Remove existing volumes.
+#[user@virtual]
+
+    # TBD - how to only delete 'our' volumes.
+
+# -----------------------------------------------------
+# Build our common containers.
+#[root@builder]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+            cat > '.env' << EOF
+        netspace=${netspace:?}
+        buildtag=${buildtag:?}
+        EOF
+
+        docker-compose \
+            --file docker/docker-common.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Build our build container.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/docker-builder.yml \
+            build
+
+    popd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#---------------------------------------------------------------------
+# Build our Java components.
+#[user@desktop] 
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our docker builder.
+#[user@desktop]
+
+
+
+# -----------------------------------------------------
+# Run our docker builder.
+#[user@desktop]
+
+
+
+
+    source "${HOME:?}/chain.properties"
+    docker-compose \
+        --project ${spacetag:?} \
+        up -d ${firename}
+
+    docker-compose \
+        --project ${spacetag:?} \
+        ps
+
+    source "${HOME:?}/chain.properties"
+    docker-compose \
+        --project ${spacetag:?} \
+        down
+

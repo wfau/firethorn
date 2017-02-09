@@ -43,6 +43,10 @@ hs_err_*.log
 */.svn
 
 #
+# Docker compose config
+.env
+
+#
 # Generated Docker files
 docker/tester/Dockerfile
 docker/builder/Dockerfile
