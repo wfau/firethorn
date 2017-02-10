@@ -29,7 +29,7 @@ ssh Delild
 # -----------------------------------------
 # Install git
 
-dnf install git
+yum install git
 
 
 # -----------------------------------------
@@ -45,25 +45,11 @@ cwd=$(pwd)
 secretfile=${HOME:?}/secrets
 
 cat > "${secretfile:?}" << 'EOF'
-firethorn.meta.data=
-firethorn.meta.user=
-firethorn.meta.pass=
-firethorn.meta.host=
-
-firethorn.user.data=
-firethorn.user.user=
-firethorn.user.pass=
-firethorn.user.host=
 
 firethorn.data.data=
 firethorn.data.user=
 firethorn.data.pass=
 firethorn.data.host=
-
-pyrothorn.storedqueries.data=
-pyrothorn.storedqueries.host=
-pyrothorn.storedqueries.user=
-pyrothorn.storedqueries.pass=
 
 ssh.tunnel.user=
 ssh.tunnel.host=
@@ -77,6 +63,7 @@ mysql_test_dbserver_password=
 mysql_test_dbserver_port=
 mysql_test_database=
 mysql_test_driver=
+
 EOF
 
 
