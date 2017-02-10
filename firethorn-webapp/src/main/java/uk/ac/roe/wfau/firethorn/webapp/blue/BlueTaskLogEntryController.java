@@ -52,7 +52,7 @@ extends AbstractController
      * The URI path for a {@link BlueTaskLogEntry} service, [{@value}].
      *
      */
-    public static final String SERVICE_PATH = "/blue/log-entry" ;
+    public static final String SERVICE_PATH = "/blue/log/entry" ;
 
     /**
      * The URI path for a {@link BlueTaskLogEntry} entity, [{@value}].

@@ -46,13 +46,31 @@
 
 
 
+# -----------------------------------------------------
+# Remove old version of compose.
+#[root@desktop]
 
+    dnf remove docker-compose
 
+    Removing docker-compose also removes these:
 
+        PyYAML
+        libyaml
+        python-docker-py
+        python-dockerpty
+        python-docopt
+        python-enum34
+        python-jsonschema
+        python-texttable
+        python-websocket-client
+        python2-cached_property
 
+# -----------------------------------------------------
+# Install new version of compose.
+#[root@desktop]
 
-
-
+    curl -L https://github.com/docker/compose/releases/download/1.11.1/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
+    chmod +x /usr/bin/docker-compose
 
 # -----------------------------------------------------
 # Load our secret function.
@@ -127,6 +145,12 @@
 
 EOF
 
+
+
+
+
+
+
 # -----------------------------------------------------
 # Set the Docker build tag.
 #[root@builder]
@@ -165,42 +189,240 @@ EOF
     # TBD - how to only delete 'our' volumes.
 
 # -----------------------------------------------------
-# Build our common containers.
+# Build our container images.
 #[root@builder]
 
     source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-            cat > '.env' << EOF
-        netspace=${netspace:?}
-        buildtag=${buildtag:?}
-        EOF
-
+        export buildtag
         docker-compose \
-            --file docker/docker-common.yml \
+            --file docker/compose/docker-images.yml \
             build
 
     popd
 
 # -----------------------------------------------------
-# Build our build container.
-#[root@builder]
+# Create our FireThorn config.
+#[user@virtual] 
 
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metaname:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${username:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Create our tester config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/tester.properties" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+    chmod a+r "${HOME:?}/tester.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties" 
+
+# -----------------------------------------------------
+# Create our composer env file.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+
+    cat > '.env' << EOF
+netspace=${netspace:?}
+
+buildtag=${buildtag:?}
+
+metaname=${metaname:?}
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+dataname=${dataname:?}
+datahost=${datahost:?}
+
+username=${username:?}
+userhost=${userhost:?}
+
+ogsaname=${ogsaname:?}
+firename=${firename:?}
+testname=${testname:?}
+
+tunneluser=${tunneluser:?}
+tunnelhost=${tunnelhost:?}
+
+EOF
+
+#---------------------------------------------------------------------
+# Build our Java components.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         export buildtag
-        docker-compose \
-            --file docker/docker-builder.yml \
-            build
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
 
     popd
 
+# -----------------------------------------------------
+# Run our docker chain.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${spacetag:?} \
+        up -d gillian
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${spacetag:?} \
+        run tester 
 
 
 
 
+
+
+
+
+# -----------------------------------------------------
+# Load our configuration.
+#[root@tester]
+
+        source /etc/tester.properties
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | bin/pp | tee /tmp/system-info.json
+
+# -----------------------------------------------------
+# Load the local TWOMASS resource.
+#[root@tester]
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'TWOMASS JDBC conection' \
+            "jdbc:jtds:sqlserver://${dataname:?}/TWOMASS" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        wfaujdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
+        wfauadql=${adqlspace:?}
+
+        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'TWOMASS' 'dbo' "meta/TWOMASS_TablesSchema.xml"
+
+# -----------------------------------------------------
+# Create a workspace and add the local TWOMASS schema.
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'TWOMASS' 'wfau'
+
+# -----------------------------------------------------
+# Test queries ...
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 2000 designation, ra, dec FROM wfau.twomass_psc WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/wfau-query.json
+
+        #
+        # Get URL for the results as VOTable
+        wfaudata=$(cat /tmp/wfau-query.json | votable)
+
+        #
+        # Get the results as VOTable files
+        curl --silent "${wfaudata:?}" | xmlstarlet fo | tee /tmp/wfau-data.xml
+
+        #
+        # Remove XML namespaces
+        sed -i 's#<VOTABLE[^>]*>#<VOTABLE>#' /tmp/wfau-data.xml
+
+        #
+        # Select a specific row.
+        xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/wfau-data.xml | xmlstarlet fo
 
 
 
@@ -214,40 +436,48 @@ EOF
 
 
 #---------------------------------------------------------------------
-# Build our Java components.
+# Rebuild our Firethorn container.
 #[user@desktop] 
 
+    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         mvn -P all clean install
 
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
     popd
 
 # -----------------------------------------------------
-# Build our docker builder.
+# Run our docker chain.
 #[user@desktop]
 
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
 
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${spacetag:?} \
+        up -d gillian
 
 # -----------------------------------------------------
-# Run our docker builder.
+# Follow the Firethorn logs.
 #[user@desktop]
 
+    docker exec nubuu4ei_gillian_1 tail -f logs/firethorn.log
 
+# -----------------------------------------------------
+# Remove our docker chain.
+#[user@desktop]
 
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
 
-    source "${HOME:?}/chain.properties"
     docker-compose \
+        --file "${composit:?}" \
         --project ${spacetag:?} \
-        up -d ${firename}
+        down --volumes
 
-    docker-compose \
-        --project ${spacetag:?} \
-        ps
-
-    source "${HOME:?}/chain.properties"
-    docker-compose \
-        --project ${spacetag:?} \
-        down
 

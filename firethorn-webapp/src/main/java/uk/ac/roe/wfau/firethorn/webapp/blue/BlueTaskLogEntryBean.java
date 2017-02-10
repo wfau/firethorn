@@ -72,12 +72,12 @@ implements EntityBean<BlueTaskLogEntry>
         }
 
     /**
-     * Get a URL for the {@link BlueTaskLogEntry} subject.
-     * @return A URL for the {@link BlueTaskLogEntry} subject.
+     * Get a URL for the {@link BlueTask}.
+     * @return A URL for the {@link BlueTask}.
      * @see BlueTaskLogEntry#task()
      *
      */
-    public String getSubject()
+    public String getTask()
         {
         if (entity().task() != null)
             {

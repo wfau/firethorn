@@ -62,19 +62,19 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
     name = BlueTaskLogEntity.DB_TABLE_NAME,
     indexes={
         @Index(
-            columnList = BlueTaskLogEntity.DB_SUBJECT_COL
+            columnList = BlueTaskLogEntity.DB_TASK_COL
             )
         }
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "LogEntryEntity-select-subject",
-            query = "FROM LogEntryEntity WHERE subject = :subject ORDER BY ident desc"
+            name  = "BlueTaskLogEntity-select-task",
+            query = "FROM BlueTaskLogEntity WHERE task = :task ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "LogEntryEntity-select-subject.level",
-            query = "FROM LogEntryEntity WHERE subject = :subject AND level = :level ORDER BY ident desc"
+            name  = "BlueTaskLogEntity-select-task.level",
+            query = "FROM BlueTaskLogEntity WHERE task = :task AND level = :level ORDER BY ident desc"
             )
         }
     )
@@ -87,13 +87,13 @@ public class BlueTaskLogEntity
      * Hibernate table mapping, {@value}.
      *
      */
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "LogEntryEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "BlueTaskLogEntity";
 
     /**
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_SUBJECT_COL = "subject";
+    protected static final String DB_TASK_COL = "task";
 
     /**
      * Hibernate column mapping, {@value}.
@@ -190,9 +190,9 @@ public class BlueTaskLogEntity
             {
             return super.list(
                 super.query(
-                    "LogEntryEntity-select-subject"
+                    "BlueTaskLogEntity-select-task"
                     ).setParameter(
-                        "subject",
+                        "task",
                         task.ident()
                         )
                 );
@@ -203,9 +203,9 @@ public class BlueTaskLogEntity
             {
             return super.list(
                 super.query(
-                    "LogEntryEntity-select-subject"
+                    "BlueTaskLogEntity-select-task"
                     ).setParameter(
-                        "subject",
+                        "task",
                         task
                         )
                 );
@@ -217,9 +217,9 @@ public class BlueTaskLogEntity
             {
             return super.list(
                 super.query(
-                    "LogEntryEntity-select-subject.level"
+                    "BlueTaskLogEntity-select-task.level"
                     ).setParameter(
-                        "subject",
+                        "task",
                         task
                         ).setParameter(
                             "level",
@@ -233,9 +233,9 @@ public class BlueTaskLogEntity
             {
             return super.list(
                 super.query(
-                    "LogEntryEntity-select-subject.level"
+                    "LogEntryEntity-select-task.level"
                     ).setParameter(
-                        "subject",
+                        "task",
                         task.ident()
                         ).setParameter(
                             "level",
@@ -354,17 +354,24 @@ public class BlueTaskLogEntity
      * Protected constructor.
      * 
      */
-    protected BlueTaskLogEntity(final String source, final BlueTask<?> subject, final Level level, final String message)
+    protected BlueTaskLogEntity(final String source, final BlueTask<?> task, final Level level, final String message)
         {
-        super();
-        this.level = level;
+        super(true);
+        this.task = task;
         this.source = source;
         this.message = message;
+        if (level != null)
+            {
+            this.level = level;
+            }
+        else {
+            this.level = Level.ERROR;
+            }
 
         log.debug("LogEntryEntity()");
-        log.debug("  source  [{}]", source);
+        log.debug("  task    [{}]", task);
         log.debug("  level   [{}]", level);
-        log.debug("  subject [{}]", subject);
+        log.debug("  source  [{}]", source);
         log.debug("  message [{}]", message);
 
         }
@@ -374,7 +381,7 @@ public class BlueTaskLogEntity
         targetEntity = BlueTaskEntity.class
         )
     @JoinColumn(
-        name = DB_SUBJECT_COL,
+        name = DB_TASK_COL,
         unique = false,
         nullable = false,
         updatable = false
@@ -391,7 +398,7 @@ public class BlueTaskLogEntity
     @Column(
         name = DB_SOURCE_COL,
         unique = false,
-        nullable = false,
+        nullable = true,
         updatable = false
         )
     private String source;

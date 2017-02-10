@@ -1,0 +1,123 @@
+version: '2'
+
+networks:
+
+    # External network
+    rosana:
+
+    # Internal network
+    miriam:
+
+services:
+
+    bethany:
+        image:
+           "firethorn/postgres:${buildtag}"
+        read_only:
+            true
+        tmpfs:
+            - '/run'
+            - '/tmp'
+        environment:
+            POSTGRES_USER: "${metauser}"
+            POSTGRES_PASSWORD: "${metapass}"
+        networks:
+            - miriam
+
+    patricia:
+        image:
+           "firethorn/sql-tunnel:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        environment:
+            targethost: "${userhost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+
+    elayne:
+        image:
+           "firethorn/sql-tunnel:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        environment:
+            targethost: "${datahost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+
+    jarmila:
+        image:
+           "firethorn/ogsadai:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+        networks:
+            - miriam
+        depends_on:
+            - elayne
+            - patricia
+
+    gillian:
+        image:
+           "firethorn/firethorn:${buildtag}"
+        read_only:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/firethorn.properties:/etc/firethorn.properties
+        networks:
+            - miriam
+            - rosana
+        depends_on:
+            - bethany
+            - elayne
+            - patricia
+            - jarmila
+
+    tester:
+        image:
+           "firethorn/tester:${buildtag}"
+        read_only:
+            true
+        stdin_open:
+            true
+        tty:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/tester.properties:/etc/tester.properties
+        networks:
+            - miriam
+        depends_on:
+            - gillian
+        command:
+            [bash]
+
+

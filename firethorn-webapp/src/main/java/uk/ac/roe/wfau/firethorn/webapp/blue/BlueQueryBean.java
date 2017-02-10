@@ -587,7 +587,7 @@ public class BlueQueryBean
     protected static final Integer HISTORY_LIMIT = 10 ; 
 
     /**
-     * Get the {@BlueQuery} {@link Entity.History}.
+     * Get the {@BlueQuery} {@link BlueTask.History}.
      *
      */
     public Iterable<BlueTaskLogEntryBean> getHistory()
