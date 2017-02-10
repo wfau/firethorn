@@ -884,8 +884,12 @@ EOF
         wfau.twomass_psc.ra                              AS wfau_ra,
         gaia.gaia_source.ra                              AS gaia_ra,
 
+        wfau.twomass_psc.ra - gaia.gaia_source.ra        AS delta_ra,
+
         wfau.twomass_psc.dec                             AS wfau_dec,
-        gaia.gaia_source.dec                             AS gaia_dec
+        gaia.gaia_source.dec                             AS gaia_dec,
+
+        wfau.twomass_psc.dec - gaia.gaia_source.dec      AS delta_dec
 
     FROM
         gaia.gaia_source,
