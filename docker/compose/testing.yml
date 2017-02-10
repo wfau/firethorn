@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 networks:
 
@@ -75,8 +75,15 @@ services:
         networks:
             - miriam
         depends_on:
-            - elayne
-            - patricia
+            elayne:
+                condition: service_started            
+            patricia:
+                condition: service_started            
+        healthcheck:
+            test: ["CMD", "curl", "--silent", "http://localhost:8080/ogsadai/"]
+            interval: 30s
+            timeout: 5s
+            retries: 5
 
     gillian:
         image:
@@ -93,10 +100,19 @@ services:
             - miriam
             - rosana
         depends_on:
-            - bethany
-            - elayne
-            - patricia
-            - jarmila
+            bethany:
+                condition: service_started            
+            elayne:
+                condition: service_started            
+            patricia:
+                condition: service_started            
+            jarmila:
+                condition: service_healthy            
+        healthcheck:
+            test: ["CMD", "curl", "--silent", "http://localhost:8080/firethorn/system/info"]
+            interval: 30s
+            timeout: 5s
+            retries: 5
 
     tester:
         image:
@@ -116,7 +132,8 @@ services:
         networks:
             - miriam
         depends_on:
-            - gillian
+            gillian:
+                condition: service_healthy            
         command:
             [bash]
 

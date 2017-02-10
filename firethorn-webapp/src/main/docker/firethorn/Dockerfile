@@ -22,4 +22,10 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 # ADD our webapp.
 ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
 
+#
+# Update the service health check.
+HEALTHCHECK \
+    --interval=30s \
+    --timeout=5s \
+    CMD curl --head --silent http://localhost:8080/firethorn/ || exit 1
 

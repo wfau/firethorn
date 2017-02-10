@@ -435,6 +435,26 @@ EOF
 
 
 
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Remove our docker chain.
+#[user@desktop]
+
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${spacetag:?} \
+        down --volumes
+
 #---------------------------------------------------------------------
 # Rebuild our Firethorn container.
 #[user@desktop] 
@@ -457,27 +477,71 @@ EOF
 #[user@desktop]
 
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
-
     docker-compose \
         --file "${composit:?}" \
         --project ${spacetag:?} \
         up -d gillian
 
 # -----------------------------------------------------
-# Follow the Firethorn logs.
-#[user@desktop]
-
-    docker exec nubuu4ei_gillian_1 tail -f logs/firethorn.log
-
-# -----------------------------------------------------
-# Remove our docker chain.
+# List our containers.
 #[user@desktop]
 
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
-
     docker-compose \
         --file "${composit:?}" \
         --project ${spacetag:?} \
-        down --volumes
+        ps
+        
+# -----------------------------------------------------
+# Follow the container logs.
+#[user@desktop]
+
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${spacetag:?} \
+        logs \
+            --timestamps \
+            --follow
+
+# -----------------------------------------------------
+# Follow the container events.
+#[user@desktop]
+
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${spacetag:?} \
+        events \
+            --json
+
+            gillian \
+            tail -f logs/firethorn.log
+
+# -----------------------------------------------------
+# Follow the Firethorn logs.
+#[user@desktop]
+
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${spacetag:?} \
+        exec \
+            gillian \
+            tail -f logs/firethorn.log
+
+
+# -----------------------------------------------------
+# Follow the OGSA-DAI logs.
+#[user@desktop]
+
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${spacetag:?} \
+        exec \
+            jarmila \
+            tail -f logs/ogsadai.log
+
 
 
