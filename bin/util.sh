@@ -49,7 +49,7 @@ setversion()
 
         pomversions "${version:?}" "${target:?}"
 
-        dockversions "${version:?}" "${target:?}"
+        dockerfiles "${version:?}" "${target:?}"
 
     else
         if [ "${target:?}" == 'pom.xml' ]
@@ -57,7 +57,7 @@ setversion()
             pomversion "${version:?}" "${target:?}"
         elif [ "${target:?}" == 'Dockertemp' ]
         then
-            dockversion "${version:?}" "${target:?}"
+            dockerfile "${version:?}" "${target:?}"
         fi
     fi
 
@@ -102,7 +102,7 @@ pomversion()
 
 #
 # Find and set all the Dockerfile versions.
-dockversions()
+dockerfiles()
     {
     local version=${1:?}
     local target=${2:-'.'}
@@ -112,13 +112,13 @@ dockversions()
 
     for docktemp in $(find "${target:?}" -name 'Dockertemp')
     do
-        dockversion "${version:?}" "${docktemp:?}"
+        dockerfile "${version:?}" "${docktemp:?}"
     done
     }
 
 #
 # Set a Dockerfile version
-dockversion()
+dockerfile()
     {
     local version=${1:?}
     local docktemp=${2:-'Dockerfile'}

@@ -27,5 +27,5 @@ ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
 HEALTHCHECK \
     --interval=30s \
     --timeout=5s \
-    CMD curl --head --silent http://localhost:8080/firethorn/ || exit 1
+    CMD curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1
 

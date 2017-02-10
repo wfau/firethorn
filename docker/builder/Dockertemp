@@ -29,14 +29,28 @@ RUN mkdir /var/local/cache
 VOLUME /var/local/cache
 
 #
-# Install system tools.
+# Install admin tools.
 RUN dnf -y install iputils
 RUN dnf -y install bind-utils
 
 #
 # Install Docker components.
-RUN dnf -y install docker-io
-RUN dnf -y install docker-compose
+#RUN dnf -y install docker-io
+#RUN dnf -y install docker-compose
+
+#
+# Install Docker engine from the Docker YUM repository.
+RUN dnf -y install dnf-plugins-core
+RUN dnf config-manager \
+    --add-repo \
+    https://docs.docker.com/engine/installation/linux/repo_files/fedora/docker.repo
+RUN dnf -y install docker-engine
+
+#
+# Install Docker compose from GitHub.
+RUN dnf -y install git
+RUN curl -L https://github.com/docker/compose/releases/download/1.11.1/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose
+RUN chmod +x /usr/bin/docker-compose
 
 #
 # Install Mercurial

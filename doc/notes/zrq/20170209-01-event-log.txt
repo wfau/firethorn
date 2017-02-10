@@ -66,7 +66,7 @@
         python2-cached_property
 
 # -----------------------------------------------------
-# Install new version of compose.
+# Install latest version of compose.
 #[root@desktop]
 
     curl -L https://github.com/docker/compose/releases/download/1.11.1/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
@@ -84,7 +84,7 @@
     secret 'ping'
 
 # -----------------------------------------------------
-# Configure our branch version.
+# Get the branch name and version number.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -106,12 +106,11 @@
     branch=${branch:?}
     version=${version:?}
 
-    spacetag=$(pwgen 8 1)
     buildtag=${branch:?}
+    instance=$(pwgen 8 1)
 
-    netspace=rosana
-    buildvol=\${netspace:?}-build
-    cachevol=\${netspace:?}-cache
+    #buildvol=\${netspace:?}-build
+    #cachevol=\${netspace:?}-cache
 
     metaname=bethany
     username=patricia
@@ -145,14 +144,8 @@
 
 EOF
 
-
-
-
-
-
-
 # -----------------------------------------------------
-# Set the Docker build tag.
+# Generate our dockerfiles.
 #[root@builder]
 
     source "${HOME:?}/chain.properties"
@@ -160,18 +153,18 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
-        dockversions "${buildtag:?}"
+        dockerfiles "${buildtag:?}"
 
     popd
 
 # -----------------------------------------------------
-# Remove existing containers.
+# Remove all containers.
 #[user@virtual]
 
     docker rm -vf $(docker ps -aq)
 
 # -----------------------------------------------------
-# Remove existing images.
+# Remove all images.
 #[user@virtual]
 
     docker rmi -f $(docker images -q)
@@ -183,10 +176,10 @@ EOF
     # TBD - how to only delete 'our' networks.
 
 # -----------------------------------------------------
-# Remove existing volumes.
+# Remove all volumes.
 #[user@virtual]
 
-    # TBD - how to only delete 'our' volumes.
+    docker volume rm $(docker volume ls -q)
 
 # -----------------------------------------------------
 # Build our container images.
@@ -198,7 +191,7 @@ EOF
 
         export buildtag
         docker-compose \
-            --file docker/compose/docker-images.yml \
+            --file docker/compose/images.yml \
             build
 
     popd
@@ -257,24 +250,14 @@ EOF
     source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
 
-    cat > '.env' << EOF
-netspace=${netspace:?}
-
+    cat > "${HOME:?}/.env" << EOF
 buildtag=${buildtag:?}
 
-metaname=${metaname:?}
 metauser=${metauser:?}
 metapass=${metapass:?}
 
-dataname=${dataname:?}
 datahost=${datahost:?}
-
-username=${username:?}
 userhost=${userhost:?}
-
-ogsaname=${ogsaname:?}
-firename=${firename:?}
-testname=${testname:?}
 
 tunneluser=${tunneluser:?}
 tunnelhost=${tunnelhost:?}
@@ -324,7 +307,7 @@ EOF
 
     docker-compose \
         --file "${composit:?}" \
-        --project ${spacetag:?} \
+        --project ${instance:?} \
         up -d gillian
 
 # -----------------------------------------------------
@@ -333,7 +316,7 @@ EOF
 
     docker-compose \
         --file "${composit:?}" \
-        --project ${spacetag:?} \
+        --project ${instance:?} \
         run tester 
 
 
@@ -448,11 +431,13 @@ EOF
 # Remove our docker chain.
 #[user@desktop]
 
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
 
     docker-compose \
         --file "${composit:?}" \
-        --project ${spacetag:?} \
+        --project ${instance:?} \
         down --volumes
 
 #---------------------------------------------------------------------
@@ -476,30 +461,39 @@ EOF
 # Run our docker chain.
 #[user@desktop]
 
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
     docker-compose \
         --file "${composit:?}" \
-        --project ${spacetag:?} \
+        --project ${instance:?} \
         up -d gillian
 
 # -----------------------------------------------------
 # List our containers.
 #[user@desktop]
 
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
     docker-compose \
         --file "${composit:?}" \
-        --project ${spacetag:?} \
+        --project ${instance:?} \
         ps
         
 # -----------------------------------------------------
 # Follow the container logs.
 #[user@desktop]
 
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
     docker-compose \
         --file "${composit:?}" \
-        --project ${spacetag:?} \
+        --project ${instance:?} \
         logs \
             --timestamps \
             --follow
@@ -508,24 +502,27 @@ EOF
 # Follow the container events.
 #[user@desktop]
 
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
     docker-compose \
         --file "${composit:?}" \
-        --project ${spacetag:?} \
+        --project ${instance:?} \
         events \
             --json
-
-            gillian \
-            tail -f logs/firethorn.log
 
 # -----------------------------------------------------
 # Follow the Firethorn logs.
 #[user@desktop]
 
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
     docker-compose \
         --file "${composit:?}" \
-        --project ${spacetag:?} \
+        --project ${instance:?} \
         exec \
             gillian \
             tail -f logs/firethorn.log
@@ -535,10 +532,13 @@ EOF
 # Follow the OGSA-DAI logs.
 #[user@desktop]
 
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
     docker-compose \
         --file "${composit:?}" \
-        --project ${spacetag:?} \
+        --project ${instance:?} \
         exec \
             jarmila \
             tail -f logs/ogsadai.log
