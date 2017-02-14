@@ -1,0 +1,43 @@
+version: '2.1'
+
+volumes:
+
+    #
+    # The source code cache.
+    sourcecode:
+
+    #
+    # The Maven build cache.
+    buildcache:
+
+services:
+
+    builder:
+        image:
+            "firethorn/builder:${buildtag}"
+        build:
+            context: '../builder'
+        tty:
+            true
+        stdin_open:
+            true
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        volumes:
+            - sourcecode:/var/local/build
+            - buildcache:/var/local/cache
+            - /etc/localtime:/etc/localtime:ro
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+            - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+            branch: "${branch}"
+            buildtag: "${buildtag}"
+        command:
+            [bash]
+
+

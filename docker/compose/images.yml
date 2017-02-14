@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
 
@@ -63,14 +63,4 @@ services:
             context: '../tester'
         depends_on:
             - fedora
-
-    builder:
-        image:
-            "firethorn/builder:${buildtag}"
-        labels:
-            uk.ac.roe.firethorn.buildtag: "${buildtag}"
-        build:
-            context: '../builder'
-        depends_on:
-            - java
 

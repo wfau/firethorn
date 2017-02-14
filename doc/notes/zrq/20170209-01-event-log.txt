@@ -299,7 +299,6 @@ EOF
 
     source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
-
     composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
 
     docker-compose \
@@ -310,6 +309,10 @@ EOF
 # -----------------------------------------------------
 # Run our tester.
 #[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
 
     docker-compose \
         --file "${composit:?}" \
@@ -644,20 +647,8 @@ EOF
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# -----------------------------------------------------
+# Additional tools
 # -----------------------------------------------------
 # Remove our docker chain.
 #[user@desktop]
