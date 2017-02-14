@@ -12,6 +12,10 @@ volumes:
 
 services:
 
+#       tmpfs:
+#           - /run
+#           - /tmp
+
     builder:
         image:
             "firethorn/builder:${buildtag}"
@@ -23,9 +27,6 @@ services:
             true
         read_only:
             false
-        tmpfs:
-            - /run
-            - /tmp
         labels:
             uk.ac.roe.firethorn.buildtag: "${buildtag}"
         volumes:
