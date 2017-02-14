@@ -58,6 +58,12 @@ extends TuplesParam
         public String getState();
 
         /**
+         * The callback message.
+         * 
+         */
+        public String getMessage();
+        
+        /**
     	 * The row count.
     	 * 
     	 */

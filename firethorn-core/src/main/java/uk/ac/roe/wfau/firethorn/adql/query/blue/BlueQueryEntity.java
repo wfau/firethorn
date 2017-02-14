@@ -1838,11 +1838,11 @@ implements BlueQuery
     throws InvalidStateRequestException
         {
         log.debug("callback(Callback)");
-        log.debug("  ident [{}]", this.ident());
-        log.debug("  state [{}]", this.state());
-        log.debug("  next  [{}]", message.state());
-        log.debug("  state [{}]", message.results().state());
-        log.debug("  count [{}]", message.results().count());
+        log.debug("  ident  [{}]", this.ident());
+        log.debug("  prev   [{}]", this.state());
+        log.debug("  next   [{}]", message.state());
+        log.debug("  result [{}]", message.results().state());
+        log.debug("  count  [{}]", message.results().count());
         services().runner().thread(
             new Updator(this)
                 {
@@ -1853,12 +1853,13 @@ implements BlueQuery
                         //
                         // Get the current instance for this Thread.
                         BlueQueryEntity entity = (BlueQueryEntity) rebase();
-
+                        //
+                        // Add a log entry.
                         entity.history().create(
-                            BlueTaskLogEntry.Level.INFO, 
-                            "Callback event [" + message.state() + "]"
+                            message.state(),
+                            BlueTaskLogEntry.Level.INFO,
+                            message.message()
                             );
-                        
                         //
                         // Update the result state.
                         entity.transition(

@@ -223,10 +223,16 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
     public static interface CallbackEvent
         {
         /**
-         * The next {@link TaskState}.
+         * The callback {@link TaskState}.
          *
          */
         public TaskState state();
+
+        /**
+         * The callback message.
+         * 
+         */
+        public String message();
         
         /**
          * The result status.

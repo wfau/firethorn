@@ -18,6 +18,7 @@
 
 package uk.ac.roe.wfau.firethorn.adql.query.blue;
 
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
@@ -75,10 +76,21 @@ public interface BlueTaskLogEntry
 
         /**
          * Create a new {@link BlueTaskLogEntry}.
-         * 
+         *  
+         */
+        public BlueTaskLogEntry create(final BlueTask<?> task, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
+
+        /**
+         * Create a new {@link BlueTaskLogEntry}.
+         *  
          */
         public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final BlueTaskLogEntry.Level level, final String message);
 
+        /**
+         * Create a new {@link BlueTaskLogEntry}.
+         *  
+         */
+        public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
         
         /**
          * Select all the log entries for an {@link Entity}.
@@ -111,7 +123,13 @@ public interface BlueTaskLogEntry
      * 
      */
     public BlueTask<?> task();
-    
+
+    /**
+     * The {@link TaskState} when the event occurred.
+     * 
+     */
+    public TaskState state();
+
     /**
      * Public enum for event level.
      * 
@@ -126,11 +144,11 @@ public interface BlueTaskLogEntry
         }
     
     /**
-     * The event level.
+     * The log event level.
      * 
      */
     public Level level();
-    
+
     /**
      * The log message.
      * 

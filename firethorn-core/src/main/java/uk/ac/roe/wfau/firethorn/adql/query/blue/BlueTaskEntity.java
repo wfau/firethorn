@@ -91,7 +91,7 @@ implements BlueTask<TaskType>
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_TASK_STATUS_COL = "jobstatus";
+    protected static final String DB_STATE_COL = "state";
 
     /**
      * Hibernate column mapping.
@@ -437,7 +437,7 @@ implements BlueTask<TaskType>
         EnumType.STRING
         )
     @Column(
-        name = DB_TASK_STATUS_COL,
+        name = DB_STATE_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -1460,6 +1460,30 @@ implements BlueTask<TaskType>
                 return factories().logger().entities().create(
                     source,
                     BlueTaskEntity.this,
+                    level,
+                    message
+                    );
+                }
+
+
+            @Override
+            public BlueTaskLogEntry create(final BlueTask.TaskState state, final Level level, final String message)
+                {
+                return factories().logger().entities().create(
+                    BlueTaskEntity.this,
+                    state,
+                    level,
+                    message
+                    );
+                }
+
+            @Override
+            public BlueTaskLogEntry create(final Object source, final BlueTask.TaskState state, final Level level, final String message)
+                {
+                return factories().logger().entities().create(
+                    source,
+                    BlueTaskEntity.this,
+                    state,
                     level,
                     message
                     );

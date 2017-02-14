@@ -156,7 +156,13 @@ public abstract class BlueQueryModel
      * Request param name for the {@link BlueQuery.CallbackEvent} {@link BlueTask.TaskState}, [{@value}].
      *
      */
-    public static final String CALLBACK_TASK_STATE = "adql.query.wait.status" ;
+    public static final String CALLBACK_TASK_STATE = "adql.query.callback.state" ;
+
+    /**
+     * Request param name for the {@link BlueQuery.CallbackEvent} message, [{@value}].
+     *
+     */
+    public static final String CALLBACK_MESSAGE = "adql.query.callback.message" ;
 
     /**
      * Request param name for the {@link BlueQuery.CallbackEvent} row count, [{@value}].

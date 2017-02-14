@@ -410,7 +410,19 @@ extends NamedEntity
          * Create a new log entry.
          * 
          */
+        public BlueTaskLogEntry create(final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
+
+        /**
+         * Create a new log entry.
+         * 
+         */
         public BlueTaskLogEntry create(final Object source, final BlueTaskLogEntry.Level level, final String message);
+
+        /**
+         * Create a new log entry.
+         * 
+         */
+        public BlueTaskLogEntry create(final Object source, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
 
         /**
          * Select all the log entries for this entity.

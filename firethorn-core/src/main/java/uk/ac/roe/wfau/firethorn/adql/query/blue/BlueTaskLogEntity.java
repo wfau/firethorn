@@ -40,6 +40,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
@@ -99,6 +100,12 @@ public class BlueTaskLogEntity
      * Hibernate column mapping, {@value}.
      *
      */
+    protected static final String DB_STATE_COL = "state";
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_SOURCE_COL = "source";
 
     /**
@@ -148,10 +155,23 @@ public class BlueTaskLogEntity
         @CreateAtomicMethod
         public BlueTaskLogEntry create(final BlueTask<?> task, final Level level, final String message)
             {
-            String source = Thread.currentThread().getStackTrace()[1].getClassName();
             return create(
-                source,
+                Thread.currentThread().getStackTrace()[1].getClassName(),
                 task,
+                task.state(),
+                level,
+                message
+                );
+            }
+
+        @Override
+        @CreateAtomicMethod
+        public BlueTaskLogEntry create(final BlueTask<?> task, final BlueTask.TaskState state, final Level level, final String message)
+            {
+            return create(
+                Thread.currentThread().getStackTrace()[1].getClassName(),
+                task,
+                state,
                 level,
                 message
                 );
@@ -166,18 +186,34 @@ public class BlueTaskLogEntity
                     source
                     ),
                 task,
+                task.state(),
                 level,
                 message
                 );
             }
 
+        @Override
         @CreateAtomicMethod
-        public BlueTaskLogEntry create(final String source, final BlueTask<?> task, final Level level, final String message)
+        public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final BlueTask.TaskState state, final Level level, final String message)
+            {
+            return create(
+                identify(
+                    source
+                    ),
+                task,
+                state,
+                level,
+                message
+                );
+            }
+
+        protected BlueTaskLogEntry create(final String source, final BlueTask<?> task, final BlueTask.TaskState state, final Level level, final String message)
             {
             return this.insert(
                 new BlueTaskLogEntity(
                     source,
                     task,
+                    state,
                     level,
                     message
                     )
@@ -354,12 +390,21 @@ public class BlueTaskLogEntity
      * Protected constructor.
      * 
      */
-    protected BlueTaskLogEntity(final String source, final BlueTask<?> task, final Level level, final String message)
+    protected BlueTaskLogEntity(final String source, final BlueTask<?> task, final TaskState state, final Level level, final String message)
         {
         super(true);
         this.task = task;
         this.source = source;
         this.message = message;
+
+        if (state != null)
+            {
+            this.state = state ;
+            }
+        else {
+            this.state = task.state();
+            }
+
         if (level != null)
             {
             this.level = level;
@@ -387,11 +432,31 @@ public class BlueTaskLogEntity
         updatable = false
         )
     protected BlueTask<?> task;
+    @Override
     public BlueTask<?> task()
         {
         return this.task;
         }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    @Column(
+        name = DB_STATE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private TaskState state;
+    @Override
+    public TaskState state()
+        {
+        return this.state;
+        }
+    
     @Basic(
         fetch = FetchType.EAGER
         )

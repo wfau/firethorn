@@ -209,7 +209,7 @@ public class BlueQueryController
      * {@link RequestMethod#POST} request to POST a {@link BlueQuery.CallbackEvent} message.
      * <br/>Request path : [{@value BlueQuery.LinkFactory#CALLBACK_PATH}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value}].
-     * @param next The next {@link BlueTask} {@link TaskState} status, [{@value}].
+     * @param state The next {@link BlueTask} {@link TaskState} status, [{@value}].
      * @param resultcount The {@link BlueQuery.CallbackEvent} result count, [{@value}].
      * @param resultstate The {@link BlueQuery.CallbackEvent} result status, [{@value}].
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
@@ -222,9 +222,10 @@ public class BlueQueryController
     public BlueQueryBean formpost(
         @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
-
         @RequestParam(value=CALLBACK_TASK_STATE, required=false)
-        final TaskState next,
+        final TaskState state,
+        @RequestParam(value=CALLBACK_MESSAGE, required=false)
+        final String message,
         @RequestParam(value=CALLBACK_RESULT_COUNT, required=false)
         final Long resultcount,
         @RequestParam(value=CALLBACK_RESULT_STATE, required=false)
@@ -237,7 +238,7 @@ public class BlueQueryController
         {
         log.debug("callback(String, TaskState, Long, ResultState)");
         log.debug("  ident [{}]", ident);
-        log.debug("  next  [{}]", next);
+        log.debug("  state [{}]", state);
         log.debug("  count [{}]", resultcount);
         log.debug("  state [{}]", resultstate);
         return bean(
@@ -250,7 +251,12 @@ public class BlueQueryController
                     @Override
                     public TaskState state()
                         {
-                        return next;
+                        return state;
+                        }
+                    @Override
+                    public String message()
+                        {
+                        return message;
                         }
                     @Override
                     public Results results()
@@ -310,6 +316,17 @@ public class BlueQueryController
             this.status = value;
             }
 
+        private String message;
+        @Override
+        public String getMessage()
+            {
+            return this.message;
+            }
+        public void setMessage(final String value)
+            {
+            this.message = value;
+            }
+        
         private Long resultcount;
 		@Override
 		public Long getResultCount()
@@ -373,6 +390,11 @@ public class BlueQueryController
                         return TaskState.parse(
                     		bean.getState()
                     		);
+                        }
+                    @Override
+                    public String message()
+                        {
+                        return bean.getMessage();
                         }
                     @Override
                     public Results results()
