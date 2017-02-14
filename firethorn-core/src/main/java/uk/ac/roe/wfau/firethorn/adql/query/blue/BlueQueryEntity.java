@@ -1936,7 +1936,9 @@ implements BlueQuery
         final AdqlSchema adqlspace = identity.spaces().adql().current();
         log.debug(" ADQL space [{}][{}]", adqlspace.ident(), adqlspace.name());
 
-        this.jdbctable = jdbcspace.tables().create();
+        this.jdbctable = jdbcspace.tables().create(
+            this
+            );
         this.adqltable = adqlspace.tables().create(
             CopyDepth.PARTIAL,
             this.jdbctable

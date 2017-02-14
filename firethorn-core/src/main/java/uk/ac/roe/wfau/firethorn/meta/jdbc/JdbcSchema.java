@@ -239,7 +239,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         public JdbcTable create(final JdbcTable.Metadata meta);
 
         /**
-         *  Create a new {@link JdbcTable table}.
+         *  Create a new {@link JdbcTable} for a {@link BlueQuery} results.
          *
          */
         public JdbcTable create(final BlueQuery query);
