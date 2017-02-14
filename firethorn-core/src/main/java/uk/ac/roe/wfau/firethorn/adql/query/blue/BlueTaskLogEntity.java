@@ -498,7 +498,7 @@ public class BlueTaskLogEntity
     @Column(
         name = DB_MESSAGE_COL,
         unique = false,
-        nullable = false,
+        nullable = true,
         updatable = false
         )
     private String message;

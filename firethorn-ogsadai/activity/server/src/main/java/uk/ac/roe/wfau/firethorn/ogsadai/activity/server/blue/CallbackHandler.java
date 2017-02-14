@@ -203,6 +203,12 @@ public class CallbackHandler
                                 {
                                 return resultState;
                                 }
+                            @Override
+                            public String getMessage()
+                                {
+                                // TODO Auto-generated method stub
+                                return null;
+                                }
 							},
 						ResponseBean.class
 						);
