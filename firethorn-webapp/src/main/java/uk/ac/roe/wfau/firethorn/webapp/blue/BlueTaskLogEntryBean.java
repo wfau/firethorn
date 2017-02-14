@@ -89,6 +89,23 @@ implements EntityBean<BlueTaskLogEntry>
         }
 
     /**
+     * Get the {@link BlueTask.TaskStatus} as a String.
+     * @return The {@link BlueTask.TaskStatus} as a String.
+     * @see BlueTaskLogEntry#state()
+     *
+     */
+    public String getState()
+        {
+        if (entity().state() != null)
+            {
+            return entity().state().name();
+            }
+        else {
+            return null ;
+            }
+        }
+
+    /**
      * Get the {@link BlueTaskLogEntry} message.
      * @return The {@link BlueTaskLogEntry} message.
      * @see BlueTaskLogEntry#message()
