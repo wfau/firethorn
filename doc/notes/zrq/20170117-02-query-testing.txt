@@ -23,32 +23,32 @@
 
     SELECT
         gaiadr1.tmass_best_neighbour.original_ext_source_id AS gaia_ident,
-        wfau.twomass_psc.designation                        AS wfau_ident,
+        TWOMASS.twomass_psc.designation                     AS wfau_ident,
 
         gaiadr1.tmass_best_neighbour.source_id              AS best_source_id,
         gaiadr1.gaia_source.source_id                       AS gaia_source_id,
 
-        wfau.twomass_psc.ra                                 AS wfau_ra,
+        TWOMASS.twomass_psc.ra                              AS wfau_ra,
         gaiadr1.gaia_source.ra                              AS gaia_ra,
 
-        wfau.twomass_psc.dec                                AS wfau_dec,
+        TWOMASS.twomass_psc.dec                             AS wfau_dec,
         gaiadr1.gaia_source.dec                             AS gaia_dec
 
     FROM
         gaiadr1.gaia_source,
         gaiadr1.tmass_best_neighbour,
-        wfau.twomass_psc
+        TWOMASS.twomass_psc
 
     WHERE
         gaiadr1.tmass_best_neighbour.source_id = gaiadr1.gaia_source.source_id
     AND
-        gaiadr1.tmass_best_neighbour.original_ext_source_id = wfau.twomass_psc.designation
+        gaiadr1.tmass_best_neighbour.original_ext_source_id = TWOMASS.twomass_psc.designation
     AND
         gaiadr1.gaia_source.ra  BETWEEN 0 AND 1.25
     AND
         gaiadr1.gaia_source.dec BETWEEN 0 AND 1.25
     AND
-        wfau.twomass_psc.ra  BETWEEN 0 AND 1.25
+        TWOMASS.twomass_psc.ra  BETWEEN 0 AND 1.25
     AND
-        wfau.twomass_psc.dec BETWEEN 0 AND 1.25
+        TWOMASS.twomass_psc.dec BETWEEN 0 AND 1.25
 

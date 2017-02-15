@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>2.1.3</version>
+    <version project='firethorn'>2.1.4</version>
 
     <prerequisites>
         <maven>3.3.1</maven>
@@ -50,7 +50,7 @@
         <![CDATA[
         WFAU FireThorn project.
         <br/>
-        Named after the <a href='http://ukmoths.org.uk/show.php?bf=332a'>Firethorn Leaf Miner</a>
+        Named after the <a href='http://ukmoths.org.uk/species/phyllonorycter-leucographella/'>Firethorn Leaf Miner</a>
         moth <i>(Phyllonorycter leucographella)</i>.
         ]]>
     </description>

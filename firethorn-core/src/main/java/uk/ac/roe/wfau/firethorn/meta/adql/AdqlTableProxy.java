@@ -38,7 +38,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
 /**
- *
+ * Proxy used by a THIN copy schema to represent a table in the base schema.   
  *
  */
 @Slf4j
@@ -47,7 +47,6 @@ public class AdqlTableProxy
     {
     protected AdqlTable.EntityServices services()
         {
-        log.debug("services()");
         return AdqlTableEntity.EntityServices.instance() ; 
         }
 
@@ -61,11 +60,11 @@ public class AdqlTableProxy
     
     /**
      * TODO Move to proxy base class
-     */
     public AdqlTable self()
         {
         return this;
         }
+     */
 
     /**
      * TODO Move to proxy base class.
@@ -401,13 +400,13 @@ public class AdqlTableProxy
     public EntityProtector protector()
         {
         // TODO Auto-generated method stub
-        // A combination of protection from base and parent ? 
+        // No write operations, read controlled by base and parent. 
         return null;
         }
 
 	@Override
-	public BlueQuery bluequery() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public BlueQuery bluequery()
+	    {
+		return base.bluequery();
+	    }
     }

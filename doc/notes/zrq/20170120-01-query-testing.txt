@@ -1,0 +1,155 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Login as our Docker user.
+#[user@trop]
+
+    ssh Stevedore@Araybwyn
+
+
+# -----------------------------------------------------
+# List the running containers.
+#[user@virtual]
+
+    docker ps
+    
+        CONTAINER ID    IMAGE                                     COMMAND                  CREATED              STATUS              PORTS               NAMES
+        f31d9c73f95c    firethorn/firethorn:2.1.3-zrq-event-log   "/bin/sh -c '/var/loc"   About a minute ago   Up 4 seconds        8080/tcp            stevedore_gillian_1
+        18b8c7a70134    firethorn/tester:2.1.3-zrq-event-log      "bash"                   19 hours ago         Up 19 hours                             stevedore_aaliyah_run_1
+        c1664f6788ba    firethorn/ogsadai:2.1.3-zrq-event-log     "/bin/sh -c '/var/loc"   19 hours ago         Up 19 hours         8080/tcp            stevedore_jarmila_1
+        2df0d011d8c6    firethorn/sql-proxy:2.1.3-zrq-event-log   "/bin/sh -c /bin/sql-"   19 hours ago         Up 19 hours         1433/tcp            stevedore_patricia_1
+        531263ea8477    firethorn/postgres:2.1.3-zrq-event-log    "/docker-entrypoint.s"   19 hours ago         Up 19 hours         5432/tcp            stevedore_bethany_1
+        f7ddf69d5bfd    firethorn/sql-proxy:2.1.3-zrq-event-log   "/bin/sh -c /bin/sql-"   19 hours ago         Up 19 hours         1433/tcp            stevedore_elayne_1
+
+# -----------------------------------------------------
+# Stop the firethorn container
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker-compose stop "${firename:?}"
+
+# -----------------------------------------------------
+# Remove the firethorn container
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker-compose rm --all "${firename:?}"
+
+# -----------------------------------------------------
+# Remove the firethorn image
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker rmi firethorn/firethorn:${buildtag:?}
+
+# -----------------------------------------------------
+# Run our build container.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --env "branch=${branch:?}" \
+        --env "buildtag=${buildtag:?}" \
+        --volume "${buildvol:?}:/var/local/build" \
+        --volume "${cachevol:?}:/var/local/cache" \
+        --volume '/etc/localtime:/etc/localtime:ro' \
+        --volume '/var/run/docker.sock:/var/run/docker.sock' \
+        "firethorn/builder:latest" \
+        bash
+
+# -----------------------------------------------------
+# Update our path.
+# TODO Add this to the image
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Configure our source path.
+# TODO Add this to the image
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/frog
+EOF
+    fi
+
+# -----------------------------------------------------
+# Update our source code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg pull
+        hg update
+        
+    popd
+
+# -----------------------------------------------------
+# Build our Java code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+        
+    popd
+
+# -----------------------------------------------------
+# Build our webapp container.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Exit our builder container.
+#[root@builder]
+
+    exit
+
+# -----------------------------------------------------
+# Start our firethorn service.
+#[root@builder]
+
+    source "${HOME:?}/chain.properties"
+    docker-compose create ${firename}
+    docker-compose start  ${firename}
+
+

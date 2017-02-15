@@ -35,6 +35,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateTransitionException;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -95,9 +96,9 @@ public class BlueQueryController
      * 
      */
     @ResponseBody
-    @RequestMapping(value=BlueQueryModel.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
+    @RequestMapping(value=Entity.LinkFactory.IDENT_TOKEN, method=RequestMethod.GET, produces=JSON_MIME)
     public BlueQueryBean select(
-        @PathVariable(value=BlueQueryModel.IDENT_FIELD)
+        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
 
         @RequestParam(value=STATUS_PREV_PARAM, required=false)
@@ -141,9 +142,9 @@ public class BlueQueryController
      * 
      */
     @ResponseBody
-    @RequestMapping(value=BlueQueryModel.IDENT_TOKEN, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=Entity.LinkFactory.IDENT_TOKEN, method=RequestMethod.POST, produces=JSON_MIME)
     public BlueQueryBean update(
-        @PathVariable(value=BlueQueryModel.IDENT_FIELD)
+        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
 
         @RequestParam(value=QUERY_INPUT_PARAM, required=false)
@@ -208,7 +209,7 @@ public class BlueQueryController
      * {@link RequestMethod#POST} request to POST a {@link BlueQuery.CallbackEvent} message.
      * <br/>Request path : [{@value BlueQuery.LinkFactory#CALLBACK_PATH}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value}].
-     * @param next The next {@link BlueTask} {@link TaskState} status, [{@value}].
+     * @param state The next {@link BlueTask} {@link TaskState} status, [{@value}].
      * @param resultcount The {@link BlueQuery.CallbackEvent} result count, [{@value}].
      * @param resultstate The {@link BlueQuery.CallbackEvent} result status, [{@value}].
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
@@ -219,11 +220,12 @@ public class BlueQueryController
     @ResponseBody
     @RequestMapping(value=BlueQueryModel.CALLBACK_PATH, method=RequestMethod.POST, consumes=FORM_MIME, produces=JSON_MIME)
     public BlueQueryBean formpost(
-        @PathVariable(value=BlueQueryModel.IDENT_FIELD)
+        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
-
         @RequestParam(value=CALLBACK_TASK_STATE, required=false)
-        final TaskState next,
+        final TaskState state,
+        @RequestParam(value=CALLBACK_MESSAGE, required=false)
+        final String message,
         @RequestParam(value=CALLBACK_RESULT_COUNT, required=false)
         final Long resultcount,
         @RequestParam(value=CALLBACK_RESULT_STATE, required=false)
@@ -236,7 +238,7 @@ public class BlueQueryController
         {
         log.debug("callback(String, TaskState, Long, ResultState)");
         log.debug("  ident [{}]", ident);
-        log.debug("  next  [{}]", next);
+        log.debug("  state [{}]", state);
         log.debug("  count [{}]", resultcount);
         log.debug("  state [{}]", resultstate);
         return bean(
@@ -249,7 +251,12 @@ public class BlueQueryController
                     @Override
                     public TaskState state()
                         {
-                        return next;
+                        return state;
+                        }
+                    @Override
+                    public String message()
+                        {
+                        return message;
                         }
                     @Override
                     public Results results()
@@ -309,6 +316,17 @@ public class BlueQueryController
             this.status = value;
             }
 
+        private String message;
+        @Override
+        public String getMessage()
+            {
+            return this.message;
+            }
+        public void setMessage(final String value)
+            {
+            this.message = value;
+            }
+        
         private Long resultcount;
 		@Override
 		public Long getResultCount()
@@ -346,7 +364,7 @@ public class BlueQueryController
     @ResponseBody
     @RequestMapping(value=BlueQueryModel.CALLBACK_PATH, method=RequestMethod.POST, consumes=JSON_MIME, produces=JSON_MIME)
     public BlueQueryBean jsonCallback(
-        @PathVariable(value=BlueQueryModel.IDENT_FIELD)
+        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
         @RequestBody
         final RequestBean bean 
@@ -372,6 +390,11 @@ public class BlueQueryController
                         return TaskState.parse(
                     		bean.getState()
                     		);
+                        }
+                    @Override
+                    public String message()
+                        {
+                        return bean.getMessage();
                         }
                     @Override
                     public Results results()

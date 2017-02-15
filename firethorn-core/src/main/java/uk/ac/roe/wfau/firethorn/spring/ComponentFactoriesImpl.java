@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
@@ -212,5 +213,13 @@ public class ComponentFactoriesImpl
     public BlueQuery.EntityServices blues()
         {
         return this.blues;
+        }
+
+    @Autowired
+    protected BlueTaskLogEntry.EntityServices logger;
+    @Override
+    public BlueTaskLogEntry.EntityServices logger()
+        {
+        return this.logger;
         }
     }

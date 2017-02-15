@@ -48,6 +48,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.Handle.Listener;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry.Level;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
@@ -89,7 +91,7 @@ implements BlueTask<TaskType>
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_TASK_STATUS_COL = "jobstatus";
+    protected static final String DB_STATE_COL = "state";
 
     /**
      * Hibernate column mapping.
@@ -435,7 +437,7 @@ implements BlueTask<TaskType>
         EnumType.STRING
         )
     @Column(
-        name = DB_TASK_STATUS_COL,
+        name = DB_STATE_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -1433,6 +1435,94 @@ implements BlueTask<TaskType>
             public Map<String, String> map()
                 {
                 return BlueTaskEntity.this.params;
+                }
+            };
+        }
+
+    @Override
+    public History history()
+        {
+        return new History()
+            {
+            @Override
+            public BlueTaskLogEntry create(Level level, String message)
+                {
+                return factories().logger().entities().create(
+                    BlueTaskEntity.this,
+                    level,
+                    message
+                    );
+                }
+
+            @Override
+            public BlueTaskLogEntry create(Object source, Level level, String message)
+                {
+                return factories().logger().entities().create(
+                    source,
+                    BlueTaskEntity.this,
+                    level,
+                    message
+                    );
+                }
+
+
+            @Override
+            public BlueTaskLogEntry create(final BlueTask.TaskState state, final Level level, final String message)
+                {
+                return factories().logger().entities().create(
+                    BlueTaskEntity.this,
+                    state,
+                    level,
+                    message
+                    );
+                }
+
+            @Override
+            public BlueTaskLogEntry create(final Object source, final BlueTask.TaskState state, final Level level, final String message)
+                {
+                return factories().logger().entities().create(
+                    source,
+                    BlueTaskEntity.this,
+                    state,
+                    level,
+                    message
+                    );
+                }
+
+            @Override
+            public Iterable<BlueTaskLogEntry> select()
+                {
+                return factories().logger().entities().select(
+                    BlueTaskEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<BlueTaskLogEntry> select(final Integer limit)
+                {
+                return factories().logger().entities().select(
+                    BlueTaskEntity.this,
+                    limit
+                    );
+                }
+
+            @Override
+            public Iterable<BlueTaskLogEntry> select(final Level level)
+                {
+                return factories().logger().entities().select(
+                    BlueTaskEntity.this,
+                    level
+                    );
+                }
+
+            @Override
+            public Iterable<BlueTaskLogEntry> select(final Integer limit, final Level level)
+                {
+                return factories().logger().entities().select(
+                    BlueTaskEntity.this,
+                    limit,
+                    level
+                    );
                 }
             };
         }

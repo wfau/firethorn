@@ -1,0 +1,66 @@
+version: '2.1'
+
+services:
+
+    fedora:
+        image:
+            "firethorn/fedora:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: '../fedora/25'
+
+    java:
+        image:
+            "firethorn/java:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: '../java/8'
+        depends_on:
+            - fedora
+
+    tomcat:
+        image:
+            "firethorn/tomcat:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: '../tomcat/8'
+        depends_on:
+            - java
+
+    sql-proxy:
+        image:
+            "firethorn/sql-proxy:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: '../sql-proxy'
+        depends_on:
+            - fedora
+
+    sql-tunnel:
+        image:
+            "firethorn/sql-tunnel:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: '../sql-tunnel'
+        depends_on:
+            - fedora
+
+    postgres:
+        image:
+           "firethorn/postgres:${buildtag}"
+        build:
+            context: '../postgres/9'
+
+    tester:
+        image:
+           "firethorn/tester:${buildtag}"
+        build:
+            context: '../tester'
+        depends_on:
+            - fedora
+

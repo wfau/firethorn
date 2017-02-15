@@ -460,6 +460,12 @@ implements SecureActivity
                             {
                             return null;
                             }
+
+                        @Override
+                        public String getMessage()
+                            {
+                            return null;
+                            }
 						},
 					ResponseBean.class,
 					fields

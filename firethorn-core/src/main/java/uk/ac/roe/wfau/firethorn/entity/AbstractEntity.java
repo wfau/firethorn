@@ -56,6 +56,8 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
  */
 @Slf4j
 @MappedSuperclass
+//@javax.persistence.Entity
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Access(
     AccessType.FIELD
     )
@@ -75,20 +77,48 @@ implements Entity
      * Hibernate table name prefix.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT020020";
+    protected static final String DB_TABLE_PREFIX = "FT020104";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
     protected static final String DB_PKEY_COL   = "ident" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_UID_LO_COL = "uidlo" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_UID_HI_COL = "uidhi" ;
 
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_OWNER_COL  = "owner" ;
 
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_CREATED_COL  = "created"  ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_MODIFIED_COL = "modified" ;
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ACCESSED_COL = "accessed" ;
 
     /**

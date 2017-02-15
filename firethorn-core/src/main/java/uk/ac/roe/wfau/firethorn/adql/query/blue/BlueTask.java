@@ -389,9 +389,75 @@ extends NamedEntity
         }
 
     /**
-     *  Access to the task parameters.
+     *  Access to the {@link BlueTask} parameters.
      *  
      */
     public Param param();
-    
+
+    /**
+     * Public interface for the {@link Entity} message log.
+     * 
+     */
+    public interface History
+        {
+        /**
+         * Create a new log entry.
+         * 
+         */
+        public BlueTaskLogEntry create(final BlueTaskLogEntry.Level level, final String message);
+
+        /**
+         * Create a new log entry.
+         * 
+         */
+        public BlueTaskLogEntry create(final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
+
+        /**
+         * Create a new log entry.
+         * 
+         */
+        public BlueTaskLogEntry create(final Object source, final BlueTaskLogEntry.Level level, final String message);
+
+        /**
+         * Create a new log entry.
+         * 
+         */
+        public BlueTaskLogEntry create(final Object source, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
+
+        /**
+         * Select all the log entries for this entity.
+         * @Deprecated Use select(Integer count).
+ 
+         */
+        @Deprecated
+        public Iterable<BlueTaskLogEntry> select();
+
+        /**
+         * Select the most recent log entries for this entity.
+         * 
+         */
+        public Iterable<BlueTaskLogEntry> select(final Integer limit);
+
+        /**
+         * Select all the log entries with a specific level for this entity.
+         * @Deprecated Use select(Integer count, Level level).
+         * 
+         */
+        @Deprecated
+        public Iterable<BlueTaskLogEntry> select(final BlueTaskLogEntry.Level level);
+
+        /**
+         * Select the most recent log entries with a specific level for this entity.
+         * 
+         */
+        public Iterable<BlueTaskLogEntry> select(final Integer limit, final BlueTaskLogEntry.Level level);
+
+        }
+
+    /**
+     * Access to the {@link BlueTask} message log.
+     * 
+     */
+    public History history();
+
     }

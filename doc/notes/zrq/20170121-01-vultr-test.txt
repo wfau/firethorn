@@ -1,0 +1,178 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    # SSD Cloud
+    # https://www.vultr.com/
+
+    # Deploy servers with Bitcoin 
+    # http://sporestack.com/
+
+
+#---------------------------------------------------------------------
+# Register an account.
+#[user@desktop] 
+
+    firefox 'https://www.vultr.com/' &
+
+#---------------------------------------------------------------------
+# Create a new SSH key.
+#[user@desktop] 
+
+    pushd "${HOME}/.ssh"
+    
+        ssh-keygen -t rsa -b 4096 -C 'zrq@vultr.com' -f 'zrq.vultr.com.rsa'
+
+        cat zrq.vultr.com.rsa.pub
+        ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCwEHelwDQ0kWk+Z44Ygkz+SYkBrldN/Ketj4sTLeSI0IavCkakiS/gykrIIm8gyG9m1pt7a1BBSg9UDhdsP8f0QaZ/eLBflHS1x4X1F+BtAcm6VhXrawfYlL07F0rTw+iou/bk/4akTk5PzjbY+J84A4b1gz356gjjesCqutK1wvmzStxgzFqdJ7WmM0WNufHutBlJcwhCLiwG7mRk40UAkd8mDGFk8J5HslXx2VzJs9IDhreXWTqh2AH2IT6FKpc5ngYNaKXTt3pAi6NgiTETY6Fi4EvfchLfxFOl/NxmhwHqEevRnMiihT2TjPPlhTqr1MmGP4ob5YOTgn2RHW3wSYIiQelFs7GZ+roERCWiTtekzkHQPfyf9BDpvspI12lN/BqhOkx039bELb2YRKSW4VD/VraKuIB4E6E4qymvjGvWry3Ed6VsYHZsoyk8eKhTJc6QGLHskxyddxABZYDloLnGb6XY87VxHRcOmkrlM8++3IKxTXZ9ggV3AI22AOJ4jo+0KYNqVOu9X1FseZkhoIuHbtsr1daE641ufpCXPsPG5KAV0gy/Oa00CGReLoq77+YGceCHSKV2QNOrLmD2saayI7YA7a7bmCbza875ZzcHqOOW9mhi/mUt0g2BWkrRYb1WPPAH7ugbb5f5lTi3GC+VCDWJQBlG9VjThXjQxw== zrq@vultr.com
+
+    popd
+
+#---------------------------------------------------------------------
+# Login to the new server.
+#[user@desktop] 
+
+    ssh ssh root@2001:19f0:7402:15a:5400:00ff:fe4f:c4b8
+
+#---------------------------------------------------------------------
+# Check the Docker config.
+#[root@virtual] 
+
+    *** *** *** *** *** *** *** *** *** *** *** ***
+    *** Storage Driver: devicemapper
+    *** WARNING: Usage of loopback devices is strongly discouraged for production use.
+    ** Use `--storage-opt dm.thinpooldev` to specify a custom block storage device.
+    *** *** *** *** *** *** *** *** *** *** *** ***
+
+    docker info
+
+        Containers: 0
+         Running: 0
+         Paused: 0
+         Stopped: 0
+        Images: 0
+        Server Version: 1.12.4
+        Storage Driver: devicemapper
+         Pool Name: docker-253:1-128004-pool
+         Pool Blocksize: 65.54 kB
+         Base Device Size: 10.74 GB
+         Backing Filesystem: xfs
+         Data file: /dev/loop0
+         Metadata file: /dev/loop1
+         Data Space Used: 11.8 MB
+         Data Space Total: 107.4 GB
+         Data Space Available: 14.43 GB
+         Metadata Space Used: 581.6 kB
+         Metadata Space Total: 2.147 GB
+         Metadata Space Available: 2.147 GB
+         Thin Pool Minimum Free Space: 10.74 GB
+         Udev Sync Supported: true
+         Deferred Removal Enabled: false
+         Deferred Deletion Enabled: false
+         Deferred Deleted Device Count: 0
+         Data loop file: /var/lib/docker/devicemapper/devicemapper/data
+         WARNING: Usage of loopback devices is strongly discouraged for production use. Use `--storage-opt dm.thinpooldev` to specify a custom block storage device.
+         Metadata loop file: /var/lib/docker/devicemapper/devicemapper/metadata
+         Library Version: 1.02.135-RHEL7 (2016-09-28)
+        Logging Driver: json-file
+        Cgroup Driver: cgroupfs
+        Plugins:
+         Volume: local
+         Network: host bridge overlay null
+        Swarm: inactive
+        Runtimes: runc
+        Default Runtime: runc
+        Security Options: seccomp
+        Kernel Version: 3.10.0-514.2.2.el7.x86_64
+        Operating System: CentOS Linux 7 (Core)
+        OSType: linux
+        Architecture: x86_64
+        CPUs: 1
+        Total Memory: 740.6 MiB
+        Name: test-one
+        ID: VZ2X:4BTI:GMOD:ILOR:PCLT:OUCZ:3P4B:CKMQ:OMUF:GFDM:QMDD:PADM
+        Docker Root Dir: /var/lib/docker
+        Debug Mode (client): false
+        Debug Mode (server): false
+        Registry: https://index.docker.io/v1/
+        Insecure Registries:
+         127.0.0.0/8
+
+#---------------------------------------------------------------------
+# Run our test container.
+#[root@virtual] 
+
+    docker run -p 80:80 -d yrvafhom/docker-demo
+
+        Unable to find image 'yrvafhom/docker-demo:latest' locally
+        latest: Pulling from yrvafhom/docker-demo
+        5c90d4a2d1a8: Pull complete 
+        211aa11a4599: Pull complete 
+        2706d6f1677e: Pull complete 
+        Digest: sha256:ebdb5a876d9847affbc7f42c924886d3381a935be9158f50399e5e2d7a6db622
+        Status: Downloaded newer image for yrvafhom/docker-demo:latest
+        b2d322cb3d24df16cca3728369dead731f7db75c8901ff3a795e4fe3c8a34d32
+
+    docker ps
+
+        CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                NAMES
+        b2d322cb3d24        yrvafhom/docker-demo   "/bin/sh -c '/usr/sbi"   6 seconds ago       Up 6 seconds        0.0.0.0:80->80/tcp   kickass_bardeen
+
+    docker logs -f b2d322cb3d24
+
+        AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.2. Set the 'ServerName' directive globally to suppress this message
+        ....
+        
+#---------------------------------------------------------------------
+# Check the server is working.
+#[user@desktop] 
+
+    # IPv4 works
+    curl --head 'http://45.32.180.13:80/'
+
+    #
+    # IPv6 fails
+    curl --head 'http://[2001:19f0:7402:15a:5400:00ff:fe4f:c4b8]:80/'
+
+
+
+    # IPv6 address in HTTP URL.
+    # https://www.ietf.org/rfc/rfc2732.txt
+
+    # Docker and IPv6 
+    # https://docs.docker.com/engine/userguide/networking/default_network/ipv6/
+    # https://www.gesellix.net/post/docker-and-ipv6-on-ubuntu-13-10-saucy-salamander/
+    # https://github.com/docker/docker/pull/2974
+
+
+    2001:19f0:7402:15a:5400:ff:fe4f:c4b8
+
+
+
+    firefox 'http://45.32.180.13:80/' &
+    firefox 'http://[2001:19f0:7402:15a:5400:00ff:fe4f:c4b8]:80/' &
+
+
+
+
+
+
+
