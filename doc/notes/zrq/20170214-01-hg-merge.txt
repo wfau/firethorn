@@ -20,11 +20,23 @@
 #
 #
 
+    #
+    # NOT WORKING - work in progress
+    #
+
 # -----------------------------------------------------
-# Set our build instance.
+# Set our compose instance.
 #[user@virtual]
 
     instance=$(pwgen 8 1)
+
+# -----------------------------------------------------
+# Set the branch and build tag.
+#[root@builder]
+
+    branch=2.1.3-zrq-event-log
+    buildtag=${branch:?}
+    newversion=2.1.4
 
 # -----------------------------------------------------
 # Build our builder.
@@ -51,6 +63,10 @@
 
     source "${HOME:?}/firethorn.settings"
     composit=${FIRETHORN_CODE:?}/docker/compose
+
+cat > .env << EOF
+
+EOF
 
     export branch
     export buildtag
@@ -80,14 +96,6 @@
 FIRETHORN_CODE=/var/local/build/firethorn
 EOF
     fi
-
-# -----------------------------------------------------
-# Set the current branch and build tag.
-#[root@builder]
-
-    branch=2.1.3-zrq-event-log
-    buildtag=${branch:?}
-    newversion=2.1.4
 
 # -----------------------------------------------------
 # Checkout a copy of our source code.
@@ -356,6 +364,9 @@ EOF
 
 
         vi .hg/hgrc
+
+            [paths]
+            default = ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
 
             [ui]
             username = Dave Morris <dmr@roe.ac.uk>
