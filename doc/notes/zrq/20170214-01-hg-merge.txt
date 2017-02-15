@@ -24,7 +24,6 @@
 # Run our builder.
 #[user@virtual]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
     composit=${FIRETHORN_CODE:?}/docker/compose/builder.yml
 
