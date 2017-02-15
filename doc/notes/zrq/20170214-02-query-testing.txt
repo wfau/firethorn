@@ -20,6 +20,11 @@
 #
 #
 
+# -----------------------------------------------------
+# Set our build instance.
+#[user@virtual]
+
+    #instance=$(pwgen 8 1)
 
 # -----------------------------------------------------
 # Load our secret function.
@@ -61,15 +66,15 @@
 
     cat > "${HOME:?}/chain.properties" << EOF
 
-    branch=${branch:?}
+   #branch=${branch:?}
 
-    spacetag=$(pwgen 8 1)
+   #spacetag=$(pwgen 8 1)
    #buildtag=\${spacetag:?}
    #buildtag=${branch:?}
 
-    netspace=rosana
-    buildvol=\${netspace:?}-build
-    cachevol=\${netspace:?}-cache
+   #netspace=rosana
+   #buildvol=\${netspace:?}-build
+   #cachevol=\${netspace:?}-cache
 
     metaname=bethany
     username=patricia
@@ -172,28 +177,17 @@ tunnelhost=${tunnelhost:?}
 EOF
 
 # -----------------------------------------------------
-# Run our docker chain.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
-
-    export buildtag
-    docker-compose \
-        --file "${composit:?}" \
-        --project ${instance:?} \
-        up -d gillian
-
-# -----------------------------------------------------
 # Run our tester.
 #[user@desktop]
 
+    instance=$(pwgen 8 1)
+
     source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    composit=${FIRETHORN_CODE:?}/docker/compose
 
     export buildtag
     docker-compose \
-        --file "${composit:?}" \
+        --file "${composit:?}/testing.yml" \
         --project ${instance:?} \
         run tester 
 
@@ -395,7 +389,7 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 2000 designation, ra, dec FROM wfau.twomass_psc WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
+            --data "adql.query.input=SELECT designation, ra, dec FROM wfau.twomass_psc WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
@@ -405,7 +399,7 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 2000 mainid AS designation, raj2000 AS ra, dej2000 AS dec FROM gavo.data WHERE (raj2000 BETWEEN 0 AND 0.5) AND (dej2000 BETWEEN 0 AND 0.5)" \" \
+            --data "adql.query.input=SELECT mainid AS designation, raj2000 AS ra, dej2000 AS dec FROM gavo.data WHERE (raj2000 BETWEEN 0 AND 0.5) AND (dej2000 BETWEEN 0 AND 0.5)" \" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
@@ -415,7 +409,7 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 2000 designation, ra, dec  FROM gaia.tmass_original_valid WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
+            --data "adql.query.input=SELECT designation, ra, dec  FROM gaia.tmass_original_valid WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
@@ -531,12 +525,11 @@ EOF
 # Remove our docker chain.
 #[user@desktop]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    composit=${FIRETHORN_CODE:?}/docker/compose
 
     docker-compose \
-        --file "${composit:?}" \
+        --file "${composit:?}/testing.yml" \
         --project ${instance:?} \
         down --volumes
 
@@ -544,7 +537,6 @@ EOF
 # Rebuild our Firethorn container.
 #[user@desktop] 
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
@@ -561,12 +553,11 @@ EOF
 # Run our docker chain.
 #[user@desktop]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    composit=${FIRETHORN_CODE:?}/docker/compose
 
     docker-compose \
-        --file "${composit:?}" \
+        --file "${composit:?}/testing.yml" \
         --project ${instance:?} \
         up -d gillian
 
@@ -574,12 +565,11 @@ EOF
 # List our containers.
 #[user@desktop]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    composit=${FIRETHORN_CODE:?}/docker/compose
 
     docker-compose \
-        --file "${composit:?}" \
+        --file "${composit:?}/testing.yml" \
         --project ${instance:?} \
         ps
         
@@ -587,12 +577,11 @@ EOF
 # Follow the container logs.
 #[user@desktop]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    composit=${FIRETHORN_CODE:?}/docker/compose
 
     docker-compose \
-        --file "${composit:?}" \
+        --file "${composit:?}/testing.yml" \
         --project ${instance:?} \
         logs \
             --timestamps \
@@ -602,12 +591,11 @@ EOF
 # Follow the container events.
 #[user@desktop]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    composit=${FIRETHORN_CODE:?}/docker/compose
 
     docker-compose \
-        --file "${composit:?}" \
+        --file "${composit:?}/testing.yml" \
         --project ${instance:?} \
         events \
             --json
@@ -616,12 +604,11 @@ EOF
 # Follow the Firethorn logs.
 #[user@desktop]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    composit=${FIRETHORN_CODE:?}/docker/compose
 
     docker-compose \
-        --file "${composit:?}" \
+        --file "${composit:?}/testing.yml" \
         --project ${instance:?} \
         exec \
             gillian \
@@ -632,12 +619,11 @@ EOF
 # Follow the OGSA-DAI logs.
 #[user@desktop]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+    composit=${FIRETHORN_CODE:?}/docker/compose
 
     docker-compose \
-        --file "${composit:?}" \
+        --file "${composit:?}/testing.yml" \
         --project ${instance:?} \
         exec \
             jarmila \
@@ -682,9 +668,10 @@ EOF
 # Run our tester container.
 #[user@desktop] 
 
-    source "${HOME:?}/chain.properties"
-    docker-compose run ${testname} bash
-
+    #
+    #
+    #
+    
 # -----------------------------------------------------
 # Load our configuration.
 #[root@tester]

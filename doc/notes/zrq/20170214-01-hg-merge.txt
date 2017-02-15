@@ -21,16 +21,41 @@
 #
 
 # -----------------------------------------------------
+# Set our build instance.
+#[user@virtual]
+
+    instance=$(pwgen 8 1)
+
+# -----------------------------------------------------
+# Build our builder.
+#[user@virtual]
+
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose
+
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/images.yml" \
+        --project ${instance:?} \
+        build fedora
+
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/builder.yml" \
+        --project ${instance:?} \
+        build builder 
+
+# -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
 
     source "${HOME:?}/firethorn.settings"
-    composit=${FIRETHORN_CODE:?}/docker/compose/builder.yml
+    composit=${FIRETHORN_CODE:?}/docker/compose
 
     export branch
     export buildtag
     docker-compose \
-        --file "${composit:?}" \
+        --file "${composit:?}/builder.yml" \
         --project ${instance:?} \
         run builder 
 
@@ -109,7 +134,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
-        setversion "${buildtag:?}"
+        pomversions "${buildtag:?}"
 
     popd
 
