@@ -1,0 +1,117 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Builder - Docker, Maven, Java
+    # Tester  - Docker ..
+    #
+
+    buildtag=xxxx
+
+        builder
+
+            branch
+
+                mercurial
+                    clone source code
+                    branch <buildtag>
+
+            build
+
+                mercurial
+                    clone source code
+                compose
+                    build images
+                maven
+                    build java
+                    build images
+
+        tester
+
+            compose <buildtag>
+                run tests
+
+
+    buildtag=xxxx
+
+        builder
+
+            merge
+
+                mercurial
+                    merge  source code
+                version  <buildtag>
+
+            build
+
+                ....
+
+        tester
+
+            compose <buildtag>
+                run tests
+
+        builder
+
+            commit
+
+                mercurial
+                    commit source code
+                    push   source code
+
+                docker
+                    push images            
+
+                rsync
+                    push jars
+
+                    
+    testing
+    
+        inject errors using http params
+        
+            harvest triggers
+                match ogsadai.trigger.*
+
+            context
+                triggers
+        
+        error traps in ogsadai code read triggers from context
+
+            context
+                triggers
+
+
+        if (context.triggers().contains(ERROR_KEY)
+            {
+            cause error
+            }
+
+        test
+            inject a trigger
+            verify expected entry in query.history()
+
+
+
+
+

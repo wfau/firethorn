@@ -343,9 +343,11 @@ EOF
 # Test our containers.
 #[root@builder]
 
+
     #
-    # ....
     #
+    #
+
 
 # -------------------------------------------------------------------------------------------
 # Commit our changes into the main branch.
@@ -429,10 +431,6 @@ EOF
         Email:    zzzz
         Login Succeeded
 
-
-    # TODO
-    # This is a confusing manual step
-    version=2.1.3
 
     docker push "firethorn/fedora:${buildtag:?}"
     docker push "firethorn/java:${buildtag:?}"
