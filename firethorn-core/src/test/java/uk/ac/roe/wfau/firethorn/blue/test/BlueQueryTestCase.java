@@ -44,7 +44,8 @@ public class BlueQueryTestCase
             null,
             null,
             null,
-			null,
+            null,
+            null,
 			null
 			);
     	assertEquals(
@@ -65,6 +66,7 @@ public class BlueQueryTestCase
             null,
             null,
             null,
+            null,
             null
 			);
     	assertEquals(
@@ -81,6 +83,7 @@ public class BlueQueryTestCase
 			testspace(),
 			INVALID_QUERY,
             Mode.AUTO,
+            null,
             null,
             null,
             null,

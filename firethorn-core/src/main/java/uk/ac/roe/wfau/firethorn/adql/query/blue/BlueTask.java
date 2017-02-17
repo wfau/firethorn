@@ -460,4 +460,51 @@ extends NamedEntity
      */
     public History history();
 
+    /**
+     * Public interface for a test trigger.
+     * 
+     */
+    public interface Trigger
+        {
+
+        /**
+         * The trigger key.
+         * 
+         */
+        public String key();
+        
+        /**
+         * The trigger value.
+         * 
+         */
+        public String value();
+        
+        }
+
+    /**
+     * Access to the {@link BlueTask} test triggers.
+     * 
+     */
+    public interface Triggers
+        {
+        /**
+         * Create a new trigger.
+         * 
+         */
+        public Trigger create(final String key, final String value);
+
+        /**
+         * Select the test triggers for this {@link BlueTask}. 
+         * 
+         */
+        public Iterable<Trigger> select();
+
+        }
+
+    /**
+     * Access to the {@link BlueTask} test triggers.
+     * 
+     */
+    public Triggers triggers();
+
     }

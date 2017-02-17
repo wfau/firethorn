@@ -174,7 +174,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
                     last
                     ),
                 next,
-                wait
+                wait,
+                null
                 )
             );
         }

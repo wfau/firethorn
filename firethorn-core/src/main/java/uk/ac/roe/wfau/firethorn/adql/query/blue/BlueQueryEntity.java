@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,6 +89,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflow;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflowClient;
 import uk.ac.roe.wfau.firethorn.spring.Context;
+import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
 
 /**
  *
@@ -263,13 +265,14 @@ implements BlueQuery
                 null,
                 null,
                 null,
+                null,
                 null
                 );
             }
         
         @Override
         @CreateMethod
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait, final Map<String, String> triggers)
         throws InvalidRequestException, InternalServerErrorException
             {
             log.debug("create(AdqlResource, String, Mode, Syntax, Limits, Delays, TaskState, Long)");
@@ -331,6 +334,8 @@ implements BlueQuery
 	        		);
 	            }
 
+            result.triggers().create("a", "b");
+            
             log.debug("Returning BlueQuery");
             return result;
             }
@@ -2089,4 +2094,5 @@ implements BlueQuery
     			);
         	}
         }
+
     }

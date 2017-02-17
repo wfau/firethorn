@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -433,7 +435,7 @@ implements AdqlResource
                 }
 
             @Override
-            public BlueQuery create(String input, AdqlQueryBase.Mode mode, AdqlQueryBase.Syntax.Level syntax, AdqlQueryBase.Limits limits, AdqlQueryBase.Delays delays, BlueTask.TaskState next, Long wait)
+            public BlueQuery create(String input, AdqlQueryBase.Mode mode, AdqlQueryBase.Syntax.Level syntax, AdqlQueryBase.Limits limits, AdqlQueryBase.Delays delays, BlueTask.TaskState next, Long wait, final Map<String, String> triggers)
                 throws InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
@@ -444,7 +446,8 @@ implements AdqlResource
                     limits,
                     delays,
                     next,
-                    wait
+                    wait,
+                    triggers
                     );
                 }
             };

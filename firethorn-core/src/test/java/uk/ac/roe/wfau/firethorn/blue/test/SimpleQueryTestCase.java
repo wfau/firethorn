@@ -50,6 +50,7 @@ public class SimpleQueryTestCase
             null,
             null,
             null,
+            null,
             null
 			);
     	assertEquals(
@@ -72,6 +73,7 @@ public class SimpleQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            null,
             null,
             null,
             null,
@@ -106,6 +108,7 @@ public class SimpleQueryTestCase
             null,
             null,
             null,
+            null,
             null
 			);
     	assertEquals(
@@ -128,6 +131,7 @@ public class SimpleQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            null,
             null,
             null,
             null,
@@ -156,6 +160,7 @@ public class SimpleQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            null,
             null,
             null,
             null,
@@ -190,6 +195,7 @@ public class SimpleQueryTestCase
             null,
             null,
             null,
+            null,
             null
 			);
     	assertEquals(
@@ -212,6 +218,7 @@ public class SimpleQueryTestCase
     	final BlueQuery query = factories().blues().entities().create(
 			testspace(),
 			SIMPLE_QUERY,
+            null,
             null,
             null,
             null,

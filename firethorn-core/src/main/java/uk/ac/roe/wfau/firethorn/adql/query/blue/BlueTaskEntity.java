@@ -18,7 +18,9 @@
 package uk.ac.roe.wfau.firethorn.adql.query.blue;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -28,6 +30,7 @@ import javax.persistence.Basic;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -36,10 +39,12 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.Session;
-import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.Parent;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -57,6 +62,8 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
+import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
  * {@link BlueTask} implementation. 
@@ -1525,5 +1532,109 @@ implements BlueTask<TaskType>
                     );
                 }
             };
+        }
+    
+    @Override
+    public BlueTask.Triggers triggers()
+        {
+        return new Triggers()
+            {
+            @Override
+            public Iterable<BlueTask.Trigger> select()
+                {
+                return new GenericIterable<BlueTask.Trigger, TriggerEntity>(
+                    triggers
+                    );
+                }
+
+            @Override
+            public BlueTask.Trigger create(String key, String value)
+                {
+                final TriggerEntity trigger = new TriggerEntity(
+                    BlueTaskEntity.this,
+                    key,
+                    value
+                    );
+                triggers.add(
+                    trigger
+                    );
+                return trigger;
+                }
+            };
+        }
+
+    @ElementCollection
+    @CollectionTable(
+        name=TriggerEntity.DB_TABLE_NAME,
+        joinColumns=@JoinColumn(
+            name="task"
+            )
+        )
+    protected Set<TriggerEntity> triggers = new HashSet<TriggerEntity>();
+    
+    @Embeddable
+    public static class TriggerEntity
+    implements BlueTask.Trigger
+        {
+        /**
+         * Hibernate table mapping.
+         *
+         */
+        protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "BlueTaskTriggerEntity";
+
+        /**
+         * Hibernate column mapping.
+         *
+         */
+        protected static final String DB_IDENT_COL = "ident";
+
+        /**
+         * Hibernate column mapping.
+         *
+         */
+        protected static final String DB_VALUE_COL = "value";
+        
+        /**
+         * Protected constructor.
+         *
+         */
+        protected TriggerEntity()
+            {
+            }
+        /**
+         * Protected constructor.
+         *
+         */
+        protected TriggerEntity(final BlueTaskEntity<?> task, final String key, final String value)
+            {
+            this.key = key ;
+            this.task = task;
+            this.value = value;
+            }
+        
+        @Parent
+        protected BlueTaskEntity<?> task;
+        protected BlueTaskEntity<?> getTask()
+            {
+            return this.task;
+            }
+        protected void setTask(final BlueTaskEntity<?> task)
+            {
+            this.task = task;
+            }
+        
+        private String key;
+        @Override
+        public String key()
+            {
+            return key;
+            }
+
+        private String value;
+        @Override
+        public String value()
+            {
+            return value;
+            }
         }
     }

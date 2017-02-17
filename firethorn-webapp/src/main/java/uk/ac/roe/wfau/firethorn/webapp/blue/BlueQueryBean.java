@@ -605,4 +605,48 @@ public class BlueQueryBean
             return new EmptyIterable<BlueTaskLogEntryBean>();
             }
         }
+    
+    public static class TriggerBean
+        {
+        protected TriggerBean(final BlueTask.Trigger trigger)
+            {
+            this.trigger = trigger ;
+            }
+        private BlueTask.Trigger trigger;
+        public String getKey()
+            {
+            return trigger.key();
+            }
+        public String getValue()
+            {
+            return trigger.value();
+            }
+        }
+
+    public Iterable<TriggerBean> getTriggers()
+        {
+        return new Iterable<TriggerBean>()
+            {
+            @Override
+            public Iterator<TriggerBean> iterator()
+                {
+                return new Iterator<TriggerBean>()
+                    {
+                    final Iterator<BlueTask.Trigger> iter = entity().triggers().select().iterator(); 
+                    @Override
+                    public boolean hasNext()
+                        {
+                        return iter.hasNext();
+                        }
+                    @Override
+                    public TriggerBean next()
+                        {
+                        return new TriggerBean(
+                            iter.next()
+                            );
+                        }
+                    };
+                }
+            };
+        }
     }

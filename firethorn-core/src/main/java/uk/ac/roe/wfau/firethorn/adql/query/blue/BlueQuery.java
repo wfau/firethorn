@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.adql.query.blue;
 
 import java.net.URI;
+import java.util.Map;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
@@ -117,34 +118,21 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
     public static interface EntityFactory
     extends BlueTask.EntityFactory<BlueQuery>
         {
-
-        /*
-         *
-        public BlueQuery create(final AdqlResource source, final String input, final BlueTask.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
-
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final BlueTask.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
-
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
-         *
-         */
-
         /**
          * Create a new {@link BlueQuery} for an {@link AdqlResource}.
          * 
-         * @param source The {@link AdqlResource} to query.
-         * @param input  The ADQL query.
-         * @param mode   The {@link AdqlQueryBase.Mode}.
-         * @param syntax The {@link AdqlQueryBase.Syntax.Level}.
-         * @param limits The {@link AdqlQueryBase.Limits}.
-         * @param delays The {@link AdqlQueryBase.Delays}.
-         * @param next   The next {@link BlueTask.TaskState} to wait for. 
-         * @param wait   How long to wait for the next {@link BlueTask.TaskState}.
+         * @param source   The {@link AdqlResource} to query.
+         * @param input    The ADQL query.
+         * @param mode     The {@link AdqlQueryBase.Mode}.
+         * @param syntax   The {@link AdqlQueryBase.Syntax.Level}.
+         * @param limits   The {@link AdqlQueryBase.Limits}.
+         * @param delays   The {@link AdqlQueryBase.Delays}.
+         * @param next     The next {@link BlueTask.TaskState} to wait for. 
+         * @param wait     How long to wait for the next {@link BlueTask.TaskState}.
+         * @param triggers Map of {@link BlueTask.Trigger}.
          *  
          */
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait, final Map<String, String> triggers)
         throws InvalidRequestException, InternalServerErrorException;
 
         /**
@@ -494,10 +482,8 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
         {
         }
 
-    /**
-     * Our {@link BlueQuery.Handle}.
-     *
-    public Handle handle();
-     */
 
+    
+    
+    
     }

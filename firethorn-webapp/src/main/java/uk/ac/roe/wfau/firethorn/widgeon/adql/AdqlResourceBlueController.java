@@ -166,7 +166,7 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         InvalidRequestException,
         InternalServerErrorException
         {
-        log.debug("create(String, String)");
+        log.debug("create(....)");
         log.debug("  ident [{}]", ident);
         log.debug("  input [{}]", input);
         log.debug("  next  [{}]", next);
@@ -191,7 +191,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
                         last
                         ),
                     next,
-                    wait
+                    wait,
+                    null
                     )
             );
         }

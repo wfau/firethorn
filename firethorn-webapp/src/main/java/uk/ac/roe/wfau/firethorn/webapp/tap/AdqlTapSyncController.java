@@ -166,7 +166,8 @@ public class AdqlTapSyncController extends AbstractController {
 			                        ),
                                 null, // No delays
 								TaskState.COMPLETED, // Wait for COMPLETED
-								factories().blues().limits().absolute().time() // TODO This is not the right value.
+								factories().blues().limits().absolute().time(), // TODO This is not the right value.
+								null
 								);
 						;
 					} else {
@@ -177,7 +178,8 @@ public class AdqlTapSyncController extends AbstractController {
 						        null, // No limits
 						        null, // No delays
                                 TaskState.COMPLETED, // Wait for COMPLETED
-								factories().blues().limits().absolute().time() // TODO This is not the right value.
+								factories().blues().limits().absolute().time(), // TODO This is not the right value.
+								null
 								);
 					}
 

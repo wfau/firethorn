@@ -214,7 +214,8 @@ class UWSJobFactory extends AbstractComponent {
 			        null, // No limits
 			        null, // No delays
 			        null, // Nothing to wait for
-			        null  // No wait time 
+			        null,  // No wait time
+			        null
 			        );
 			
 			} catch (final Exception ouch) {
@@ -244,7 +245,8 @@ class UWSJobFactory extends AbstractComponent {
                     null, // No limits
                     null, // No delays
                     null, // Nothing to wait for
-                    null  // No wait time 
+                    null,  // No wait time
+                    null
 			        );
 			
 			} catch (final Exception ouch) {

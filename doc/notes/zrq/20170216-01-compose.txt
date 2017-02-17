@@ -32,9 +32,10 @@
 
             branch
 
-                mercurial
-                    clone source code
-                    branch <buildtag>
+                clone source code
+                branch <version>-<branchname>
+                pomversions
+                dockerfiles
 
             build
 
