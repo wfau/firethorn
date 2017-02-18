@@ -1,0 +1,396 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    devname=zrq-triggers
+    ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt
+
+# -----------------------------------------------------
+# Set our instance name.
+#[user@virtual]
+
+
+# -----------------------------------------------------
+# Set our build tag.
+#[user@virtual]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        buildtag=$(hg branch)
+
+    popd
+
+# -----------------------------------------------------
+# Load our secret function.
+#[user@virtual]
+
+    vi ${HOME:?}/secret.sh
+
+        ....
+
+    source ${HOME:?}/secret.sh
+    secret 'ping'
+
+# -----------------------------------------------------
+# Remove all containers.
+#[user@virtual]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove all images.
+#[user@virtual]
+
+    docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
+# Remove existing networks.
+#[user@virtual]
+
+    # TBD - how to only delete 'our' networks.
+
+# -----------------------------------------------------
+# Remove all volumes.
+#[user@virtual]
+
+    docker volume rm $(docker volume ls -q)
+
+# -----------------------------------------------------
+# Build our container images.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Build our Java components.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@virtual] 
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    instance=$(pwgen 8 1)
+    buildtag=${buildtag}
+    
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metaname:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${username:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Create our tester config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/tester.properties" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+    chmod a+r "${HOME:?}/tester.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties" 
+
+# -----------------------------------------------------
+# Create our composer env file.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+
+    cat > "${HOME:?}/.env" << EOF
+buildtag=${buildtag:?}
+
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+datahost=${datahost:?}
+userhost=${userhost:?}
+
+tunneluser=${tunneluser:?}
+tunnelhost=${tunnelhost:?}
+
+EOF
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose
+
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/testing.yml" \
+        --project ${instance:?} \
+        run tester 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Additional tools
+# -----------------------------------------------------
+# Remove our docker chain.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${instance:?} \
+        down --volumes
+
+#---------------------------------------------------------------------
+# Rebuild our Firethorn container.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Update our docker chain.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${instance:?} \
+        up -d gillian
+
+# -----------------------------------------------------
+# List our containers.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${instance:?} \
+        ps
+        
+# -----------------------------------------------------
+# Follow the container logs.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${instance:?} \
+        logs \
+            --timestamps \
+            --follow
+
+# -----------------------------------------------------
+# Follow the container events.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${instance:?} \
+        events \
+            --json
+
+# -----------------------------------------------------
+# Follow the Firethorn logs.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${instance:?} \
+        exec \
+            gillian \
+            tail -f logs/firethorn.log
+
+
+# -----------------------------------------------------
+# Follow the OGSA-DAI logs.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose/testing.yml
+
+    docker-compose \
+        --file "${composit:?}" \
+        --project ${instance:?} \
+        exec \
+            jarmila \
+            tail -f logs/ogsadai.log
+
+
+
