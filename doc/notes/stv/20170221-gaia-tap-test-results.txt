@@ -1,0 +1,539 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+2017-02-17 19:04:34,329 - root - INFO - Query : SELECT TOP 10 source_id, parallax FROM tgas_source
+2017-02-17 19:04:34,333 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:04:34,333 - root - INFO - Starting sql query :::2017-02-17 19:04:34
+2017-02-17 19:04:34,353 - root - INFO - Completed sql query :::2017-02-17 19:04:34
+2017-02-17 19:04:34,353 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-17 19:04:34,353 - root - INFO - 
+2017-02-17 19:04:34,353 - root - INFO - Started TAP job :::2017-02-17 19:04:34
+2017-02-17 19:04:34,571 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358290961O
+2017-02-17 19:04:35,148 - astropy - WARNING - W50: None:10:0: W50: Invalid unit string 'Angle[mas]'
+2017-02-17 19:04:35,150 - root - INFO - Finished TAP job :::2017-02-17 19:04:35
+2017-02-17 19:04:35,150 - root - INFO - TAP  Query: 10 row(s) returned. 
+2017-02-17 19:04:35,150 - root - INFO - 
+2017-02-17 19:04:35,150 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:04:35,150 - root - INFO - Query Successful !!
+2017-02-17 19:04:35,150 - root - INFO - 
+2017-02-17 19:04:35,156 - root - INFO - Total queries: 1
+2017-02-17 19:04:35,156 - root - INFO - Total unique queries: 1
+2017-02-17 19:04:35,156 - root - INFO - Total failed: 0
+2017-02-17 19:04:35,156 - root - INFO - 
+2017-02-17 19:04:35,156 - root - INFO - 
+2017-02-17 19:04:35,156 - root - INFO - Query : SELECT TOP 10 * FROM tgas_source WHERE dec < 0 ORDER BY parallax DESC
+2017-02-17 19:04:35,159 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:04:35,159 - root - INFO - Starting sql query :::2017-02-17 19:04:35
+2017-02-17 19:04:35,178 - root - INFO - Completed sql query :::2017-02-17 19:04:35
+2017-02-17 19:04:35,178 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-17 19:04:35,178 - root - INFO - 
+2017-02-17 19:04:35,178 - root - INFO - Started TAP job :::2017-02-17 19:04:35
+2017-02-17 19:04:35,519 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358291786O
+2017-02-17 19:04:39,230 - astropy - WARNING - W06: None:13:0: W06: Invalid UCD 'meta.id;meta.version': Primary word 'meta.version' is not valid as a secondary word
+2017-02-17 19:04:39,233 - astropy - WARNING - W50: None:22:0: W50: Invalid unit string 'Time[Julian Years]'
+2017-02-17 19:04:39,248 - astropy - WARNING - W50: None:25:0: W50: Invalid unit string 'Angle[deg]'
+2017-02-17 19:04:39,260 - astropy - WARNING - W50: None:28:0: W50: Invalid unit string 'Angle[mas]'
+2017-02-17 19:04:39,272 - astropy - WARNING - W50: None:31:0: W50: Invalid unit string 'Angle[deg]'
+2017-02-17 19:04:39,284 - astropy - WARNING - W50: None:34:0: W50: Invalid unit string 'Angle[mas]'
+2017-02-17 19:04:39,295 - astropy - WARNING - W50: None:37:0: W50: Invalid unit string 'Angle[mas]'
+2017-02-17 19:04:39,305 - astropy - WARNING - W50: None:40:0: W50: Invalid unit string 'Angle[mas]'
+2017-02-17 19:04:39,306 - astropy - WARNING - W50: None:43:0: W50: Invalid unit string 'Angular Velocity[mas/year]'
+2017-02-17 19:04:39,308 - astropy - WARNING - W50: None:46:0: W50: Invalid unit string 'Angular Velocity[mas/year]'
+2017-02-17 19:04:39,309 - astropy - WARNING - W50: None:49:0: W50: Invalid unit string 'Angular Velocity[mas/year]' (suppressing further warnings of this type...)
+2017-02-17 19:04:39,433 - root - INFO - Finished TAP job :::2017-02-17 19:04:39
+2017-02-17 19:04:39,433 - root - INFO - TAP  Query: 10 row(s) returned. 
+2017-02-17 19:04:39,433 - root - INFO - 
+2017-02-17 19:04:39,433 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:04:39,433 - root - INFO - Query Successful !!
+2017-02-17 19:04:39,433 - root - INFO - 
+2017-02-17 19:04:39,438 - root - INFO - Total queries: 2
+2017-02-17 19:04:39,438 - root - INFO - Total unique queries: 2
+2017-02-17 19:04:39,438 - root - INFO - Total failed: 0
+2017-02-17 19:04:39,438 - root - INFO - 
+2017-02-17 19:04:39,438 - root - INFO - 
+2017-02-17 19:04:39,438 - root - INFO - Query : SELECT COUNT(*) FROM tgas_source AS t, igsl_source_catalog_ids AS i WHERE t.source_id = i.source_id
+2017-02-17 19:04:39,440 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:04:39,440 - root - INFO - Starting sql query :::2017-02-17 19:04:39
+2017-02-17 19:04:39,472 - root - INFO - Completed sql query :::2017-02-17 19:04:39
+2017-02-17 19:04:39,472 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-17 19:04:39,472 - root - INFO - 
+2017-02-17 19:04:39,472 - root - INFO - Started TAP job :::2017-02-17 19:04:39
+2017-02-17 19:04:39,690 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358296080O
+2017-02-17 19:04:54,660 - root - INFO - Finished TAP job :::2017-02-17 19:04:54
+2017-02-17 19:04:54,660 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-17 19:04:54,660 - root - INFO - 
+2017-02-17 19:04:54,660 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:04:54,660 - root - INFO - Query Successful !!
+2017-02-17 19:04:54,661 - root - INFO - 
+2017-02-17 19:04:54,668 - root - INFO - Total queries: 3
+2017-02-17 19:04:54,668 - root - INFO - Total unique queries: 3
+2017-02-17 19:04:54,668 - root - INFO - Total failed: 0
+2017-02-17 19:04:54,668 - root - INFO - 
+2017-02-17 19:04:54,668 - root - INFO - 
+2017-02-17 19:04:54,669 - root - INFO - Query : SELECT TOP 1 'Hello world!' AS greeting, ra, dec FROM tgas_source
+2017-02-17 19:04:54,673 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:04:54,673 - root - INFO - Starting sql query :::2017-02-17 19:04:54
+2017-02-17 19:04:54,693 - root - INFO - Completed sql query :::2017-02-17 19:04:54
+2017-02-17 19:04:54,693 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-17 19:04:54,693 - root - INFO - 
+2017-02-17 19:04:54,693 - root - INFO - Started TAP job :::2017-02-17 19:04:54
+2017-02-17 19:04:54,910 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358311302O
+2017-02-17 19:04:55,353 - astropy - WARNING - W50: None:10:0: W50: Invalid unit string 'Angle[deg]'
+2017-02-17 19:04:55,367 - astropy - WARNING - W50: None:13:0: W50: Invalid unit string 'Angle[deg]'
+2017-02-17 19:04:55,371 - root - INFO - Finished TAP job :::2017-02-17 19:04:55
+2017-02-17 19:04:55,371 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-17 19:04:55,371 - root - INFO - 
+2017-02-17 19:04:55,371 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:04:55,371 - root - INFO - Query Successful !!
+2017-02-17 19:04:55,371 - root - INFO - 
+2017-02-17 19:04:55,377 - root - INFO - Total queries: 4
+2017-02-17 19:04:55,377 - root - INFO - Total unique queries: 4
+2017-02-17 19:04:55,377 - root - INFO - Total failed: 0
+2017-02-17 19:04:55,377 - root - INFO - 
+2017-02-17 19:04:55,377 - root - INFO - 
+2017-02-17 19:04:55,378 - root - INFO - Query : SELECT COUNT(*) FROM gaia_source WHERE parallax IS NULL
+2017-02-17 19:04:55,381 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:04:55,381 - root - INFO - Starting sql query :::2017-02-17 19:04:55
+2017-02-17 19:10:56,816 - root - INFO - Completed sql query :::2017-02-17 19:10:56
+2017-02-17 19:10:56,817 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-17 19:10:56,817 - root - INFO - 
+2017-02-17 19:10:56,817 - root - INFO - Started TAP job :::2017-02-17 19:10:56
+2017-02-17 19:10:57,116 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358673448O
+2017-02-17 19:14:00,354 - root - INFO - Finished TAP job :::2017-02-17 19:14:00
+2017-02-17 19:14:00,354 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-17 19:14:00,355 - root - INFO - 
+2017-02-17 19:14:00,355 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:14:00,355 - root - INFO - Query Successful !!
+2017-02-17 19:14:00,355 - root - INFO - 
+2017-02-17 19:14:00,363 - root - INFO - Total queries: 5
+2017-02-17 19:14:00,363 - root - INFO - Total unique queries: 5
+2017-02-17 19:14:00,363 - root - INFO - Total failed: 0
+2017-02-17 19:14:00,364 - root - INFO - 
+2017-02-17 19:14:00,364 - root - INFO - 
+2017-02-17 19:14:00,364 - root - INFO - Query : SELECT COUNT(*) FROM tgas_source AS t INNER JOIN igsl_source_catalog_ids AS i ON t.source_id = i.source_id
+2017-02-17 19:14:00,368 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:14:00,368 - root - INFO - Starting sql query :::2017-02-17 19:14:00
+2017-02-17 19:14:00,389 - root - INFO - Completed sql query :::2017-02-17 19:14:00
+2017-02-17 19:14:00,389 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-17 19:14:00,389 - root - INFO - 
+2017-02-17 19:14:00,390 - root - INFO - Started TAP job :::2017-02-17 19:14:00
+2017-02-17 19:14:00,612 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358856998O
+2017-02-17 19:14:14,293 - root - INFO - Finished TAP job :::2017-02-17 19:14:14
+2017-02-17 19:14:14,293 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-17 19:14:14,293 - root - INFO - 
+2017-02-17 19:14:14,293 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:14:14,293 - root - INFO - Query Successful !!
+2017-02-17 19:14:14,294 - root - INFO - 
+2017-02-17 19:14:14,301 - root - INFO - Total queries: 6
+2017-02-17 19:14:14,301 - root - INFO - Total unique queries: 6
+2017-02-17 19:14:14,301 - root - INFO - Total failed: 0
+2017-02-17 19:14:14,302 - root - INFO - 
+2017-02-17 19:14:14,302 - root - INFO - 
+2017-02-17 19:14:14,302 - root - INFO - Query : SELECT p.*, c.* FROM cepheid AS c, phot_variable_time_series_gfov AS p WHERE p.source_id = c.source_id ORDER BY p.source_id, p.observation_time
+2017-02-17 19:14:14,306 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:14:14,306 - root - INFO - Starting sql query :::2017-02-17 19:14:14
+2017-02-17 19:14:14,323 - root - ERROR - ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+ProgrammingError: ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+2017-02-17 19:14:14,325 - root - ERROR - ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+2017-02-17 19:14:14,325 - root - INFO - Completed sql query :::2017-02-17 19:14:14
+2017-02-17 19:14:14,325 - root - INFO - SQL Query: -1 row(s) returned. 
+2017-02-17 19:14:14,325 - root - INFO - 
+2017-02-17 19:14:14,325 - root - INFO - Started TAP job :::2017-02-17 19:14:14
+2017-02-17 19:14:14,546 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358870934O
+2017-02-17 19:14:16,530 - astropy - WARNING - W06: None:7:0: W06: Invalid UCD 'meta.id;meta.version': Primary word 'meta.version' is not valid as a secondary word
+2017-02-17 19:14:16,534 - astropy - WARNING - W50: None:13:0: W50: Invalid unit string 'Time[Barycentric JD in TCB - 2455197.5 (day)]'
+2017-02-17 19:14:16,550 - astropy - WARNING - W50: None:16:0: W50: Invalid unit string 'Flux[e-/s]'
+2017-02-17 19:14:16,565 - astropy - WARNING - W50: None:19:0: W50: Invalid unit string 'Flux[e-/s]'
+2017-02-17 19:14:16,575 - astropy - WARNING - W50: None:22:0: W50: Invalid unit string 'Magnitude[mag]'
+2017-02-17 19:14:16,577 - astropy - WARNING - W50: None:25:0: W50: Invalid unit string 'Dimensionless[see description]'
+2017-02-17 19:14:16,578 - astropy - WARNING - W50: None:28:0: W50: Invalid unit string 'Dimensionless[see description]'
+2017-02-17 19:14:16,580 - astropy - WARNING - W50: None:31:0: W50: Invalid unit string 'Dimensionless[see description]'
+2017-02-17 19:14:16,581 - astropy - WARNING - W50: None:34:0: W50: Invalid unit string 'Dimensionless[see description]'
+2017-02-17 19:14:16,583 - astropy - WARNING - W50: None:39:0: W50: Invalid unit string 'Time[day]'
+2017-02-17 19:14:16,585 - astropy - WARNING - W50: None:42:0: W50: Invalid unit string 'Time[day]' (suppressing further warnings of this type...)
+2017-02-17 19:14:16,616 - astropy - WARNING - W32: None:37:0: W32: Duplicate ID 'solution_id' renamed to 'solution_id_2' to ensure uniqueness
+2017-02-17 19:14:16,618 - astropy - WARNING - W32: None:38:0: W32: Duplicate ID 'source_id' renamed to 'source_id_2' to ensure uniqueness
+2017-02-17 19:14:16,619 - astropy - WARNING - W33: None:37:0: W33: Column name 'solution_id' renamed to 'solution_id 2' to ensure uniqueness
+2017-02-17 19:14:16,621 - astropy - WARNING - W33: None:38:0: W33: Column name 'source_id' renamed to 'source_id 2' to ensure uniqueness
+2017-02-17 19:14:17,861 - root - INFO - Finished TAP job :::2017-02-17 19:14:17
+2017-02-17 19:14:17,861 - root - INFO - TAP  Query: 10000 row(s) returned. 
+2017-02-17 19:14:17,861 - root - INFO - 
+2017-02-17 19:14:17,861 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:14:17,862 - root - INFO - Query Failed..
+2017-02-17 19:14:17,862 - root - INFO - 
+2017-02-17 19:14:17,869 - root - INFO - Total queries: 7
+2017-02-17 19:14:17,869 - root - INFO - Total unique queries: 7
+2017-02-17 19:14:17,869 - root - INFO - Total failed: 1
+2017-02-17 19:14:17,869 - root - INFO - 
+2017-02-17 19:14:17,869 - root - INFO - 
+2017-02-17 19:14:17,869 - root - INFO - Query : SELECT observation_time, g_magnitude FROM phot_variable_time_series_gfov AS p, (SELECT TOP 1 source_id FROM phot_variable_time_series_gfov_statistical_parameters ORDER BY range DESC ) AS t WHERE p.source_id = t.source_id ORDER BY observation_time
+2017-02-17 19:14:17,872 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:14:17,872 - root - INFO - Starting sql query :::2017-02-17 19:14:17
+2017-02-17 19:14:17,889 - root - ERROR - ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+ProgrammingError: ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+2017-02-17 19:14:17,890 - root - ERROR - ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+2017-02-17 19:14:17,890 - root - INFO - Completed sql query :::2017-02-17 19:14:17
+2017-02-17 19:14:17,890 - root - INFO - SQL Query: -1 row(s) returned. 
+2017-02-17 19:14:17,890 - root - INFO - 
+2017-02-17 19:14:17,891 - root - INFO - Started TAP job :::2017-02-17 19:14:17
+2017-02-17 19:14:18,112 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358874499O
+2017-02-17 19:14:18,559 - astropy - WARNING - W50: None:7:0: W50: Invalid unit string 'Time[Barycentric JD in TCB - 2455197.5 (day)]'
+2017-02-17 19:14:18,573 - astropy - WARNING - W50: None:10:0: W50: Invalid unit string 'Magnitude[mag]'
+2017-02-17 19:14:18,578 - root - INFO - Finished TAP job :::2017-02-17 19:14:18
+2017-02-17 19:14:18,578 - root - INFO - TAP  Query: 43 row(s) returned. 
+2017-02-17 19:14:18,578 - root - INFO - 
+2017-02-17 19:14:18,578 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:14:18,579 - root - INFO - Query Failed..
+2017-02-17 19:14:18,579 - root - INFO - 
+2017-02-17 19:14:18,587 - root - INFO - Total queries: 8
+2017-02-17 19:14:18,587 - root - INFO - Total unique queries: 8
+2017-02-17 19:14:18,588 - root - INFO - Total failed: 2
+2017-02-17 19:14:18,588 - root - INFO - 
+2017-02-17 19:14:18,588 - root - INFO - 
+2017-02-17 19:14:18,588 - root - INFO - Query : SELECT g.ra, g.dec FROM gaia_source AS g, igsl_source AS i WHERE aux_lqrf = 'true' AND g.source_id = i.source_id
+2017-02-17 19:14:18,592 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:14:18,592 - root - INFO - Starting sql query :::2017-02-17 19:14:18
+2017-02-17 19:14:18,615 - root - INFO - Completed sql query :::2017-02-17 19:14:18
+2017-02-17 19:14:18,616 - root - INFO - SQL Query: 0 row(s) returned. 
+2017-02-17 19:14:18,616 - root - INFO - 
+2017-02-17 19:14:18,616 - root - INFO - Started TAP job :::2017-02-17 19:14:18
+2017-02-17 19:14:18,831 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358875223O
+2017-02-17 19:14:38,460 - astropy - WARNING - W50: None:7:0: W50: Invalid unit string 'Angle[deg]'
+2017-02-17 19:14:38,682 - root - INFO - Finished TAP job :::2017-02-17 19:14:38
+2017-02-17 19:14:38,682 - root - INFO - TAP  Query: 10000 row(s) returned. 
+2017-02-17 19:14:38,683 - root - INFO - 
+2017-02-17 19:14:38,683 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:14:38,683 - root - INFO - Query Failed..
+2017-02-17 19:14:38,683 - root - INFO - 
+2017-02-17 19:14:38,689 - root - INFO - Total queries: 9
+2017-02-17 19:14:38,689 - root - INFO - Total unique queries: 9
+2017-02-17 19:14:38,689 - root - INFO - Total failed: 3
+2017-02-17 19:14:38,689 - root - INFO - 
+2017-02-17 19:14:38,689 - root - INFO - 
+2017-02-17 19:14:38,689 - root - INFO - Query : SELECT ra, dec, phot_g_mean_mag FROM gaia_source WHERE ((ra BETWEEN 268.74298 AND 271.25702 AND dec BETWEEN 66.061389 AND 67.061389) OR (ra BETWEEN 88.74298 AND 91.25702 AND dec BETWEEN -67.061389 AND 66.061389)) AND source_id NOT IN (SELECT source_id FROM cepheid)
+2017-02-17 19:14:38,691 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:14:38,691 - root - INFO - Starting sql query :::2017-02-17 19:14:38
+2017-02-17 19:15:57,651 - root - INFO - Completed sql query :::2017-02-17 19:15:57
+2017-02-17 19:15:57,652 - root - INFO - SQL Query: 10000 row(s) returned. 
+2017-02-17 19:15:57,652 - root - INFO - 
+2017-02-17 19:15:57,652 - root - INFO - Started TAP job :::2017-02-17 19:15:57
+2017-02-17 19:15:57,873 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358974261O
+2017-02-17 19:16:01,945 - astropy - WARNING - W50: None:13:0: W50: Invalid unit string 'Magnitude[mag]'
+2017-02-17 19:16:02,216 - root - INFO - Finished TAP job :::2017-02-17 19:16:02
+2017-02-17 19:16:02,216 - root - INFO - TAP  Query: 10000 row(s) returned. 
+2017-02-17 19:16:02,216 - root - INFO - 
+2017-02-17 19:16:02,216 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:16:02,216 - root - INFO - Query Successful !!
+2017-02-17 19:16:02,217 - root - INFO - 
+2017-02-17 19:16:02,222 - root - INFO - Total queries: 10
+2017-02-17 19:16:02,222 - root - INFO - Total unique queries: 10
+2017-02-17 19:16:02,222 - root - INFO - Total failed: 3
+2017-02-17 19:16:02,222 - root - INFO - 
+2017-02-17 19:16:02,223 - root - INFO - 
+2017-02-17 19:16:02,223 - root - INFO - Query : SELECT ROUND(SQRT(pmra*pmra + pmdec*pmdec), 0) AS muTot, COUNT(*) FROM tgas_source GROUP BY muTot ORDER BY muTot DESC
+2017-02-17 19:16:02,225 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:16:02,225 - root - INFO - Starting sql query :::2017-02-17 19:16:02
+2017-02-17 19:16:02,238 - root - ERROR - ('42S22', "[42S22] [FreeTDS][SQL Server]Invalid column name 'muTot'. (207) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+ProgrammingError: ('42S22', "[42S22] [FreeTDS][SQL Server]Invalid column name 'muTot'. (207) (SQLExecDirectW)")
+2017-02-17 19:16:02,239 - root - ERROR - ('42S22', "[42S22] [FreeTDS][SQL Server]Invalid column name 'muTot'. (207) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: ('42S22', "[42S22] [FreeTDS][SQL Server]Invalid column name 'muTot'. (207) (SQLExecDirectW)")
+2017-02-17 19:16:02,240 - root - INFO - Completed sql query :::2017-02-17 19:16:02
+2017-02-17 19:16:02,240 - root - INFO - SQL Query: -1 row(s) returned. 
+2017-02-17 19:16:02,240 - root - INFO - 
+2017-02-17 19:16:02,240 - root - INFO - Started TAP job :::2017-02-17 19:16:02
+2017-02-17 19:16:02,460 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358978848O
+2017-02-17 19:16:08,496 - root - INFO - Finished TAP job :::2017-02-17 19:16:08
+2017-02-17 19:16:08,496 - root - INFO - TAP  Query: 886 row(s) returned. 
+2017-02-17 19:16:08,496 - root - INFO - 
+2017-02-17 19:16:08,496 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:16:08,496 - root - INFO - Query Failed..
+2017-02-17 19:16:08,497 - root - INFO - 
+2017-02-17 19:16:08,503 - root - INFO - Total queries: 11
+2017-02-17 19:16:08,503 - root - INFO - Total unique queries: 11
+2017-02-17 19:16:08,503 - root - INFO - Total failed: 4
+2017-02-17 19:16:08,503 - root - INFO - 
+2017-02-17 19:16:08,504 - root - INFO - 
+2017-02-17 19:16:08,504 - root - INFO - Query : SELECT *, SQRT(pmra*pmra + pmdec*pmdec) AS muTot FROM tgas_source WHERE SQRT(pmra*pmra + pmdec*pmdec) > 3000
+2017-02-17 19:16:08,507 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:16:08,507 - root - INFO - Starting sql query :::2017-02-17 19:16:08
+2017-02-17 19:16:10,710 - root - INFO - Completed sql query :::2017-02-17 19:16:10
+2017-02-17 19:16:10,710 - root - INFO - SQL Query: 2 row(s) returned. 
+2017-02-17 19:16:10,710 - root - INFO - 
+2017-02-17 19:16:10,710 - root - INFO - Started TAP job :::2017-02-17 19:16:10
+2017-02-17 19:16:10,925 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358987318O
+2017-02-17 19:16:13,750 - root - INFO - Finished TAP job :::2017-02-17 19:16:13
+2017-02-17 19:16:13,750 - root - INFO - TAP  Query: 2 row(s) returned. 
+2017-02-17 19:16:13,750 - root - INFO - 
+2017-02-17 19:16:13,750 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:16:13,750 - root - INFO - Query Successful !!
+2017-02-17 19:16:13,750 - root - INFO - 
+2017-02-17 19:16:13,755 - root - INFO - Total queries: 12
+2017-02-17 19:16:13,755 - root - INFO - Total unique queries: 12
+2017-02-17 19:16:13,755 - root - INFO - Total failed: 4
+2017-02-17 19:16:13,755 - root - INFO - 
+2017-02-17 19:16:13,755 - root - INFO - 
+2017-02-17 19:16:13,755 - root - INFO - Query : SELECT COUNT(*) FROM tgas_source WHERE pmra*pmra + pmdec*pmdec > 5*SQRT(pmra*pmra*pmra_error*pmra_error + pmdec*pmdec*pmdec_error*pmdec_error)
+2017-02-17 19:16:13,758 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:16:13,758 - root - INFO - Starting sql query :::2017-02-17 19:16:13
+2017-02-17 19:16:14,169 - root - INFO - Completed sql query :::2017-02-17 19:16:14
+2017-02-17 19:16:14,169 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-17 19:16:14,169 - root - INFO - 
+2017-02-17 19:16:14,170 - root - INFO - Started TAP job :::2017-02-17 19:16:14
+2017-02-17 19:16:14,398 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358990786O
+2017-02-17 19:16:19,271 - root - INFO - Finished TAP job :::2017-02-17 19:16:19
+2017-02-17 19:16:19,272 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-17 19:16:19,272 - root - INFO - 
+2017-02-17 19:16:19,272 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:16:19,272 - root - INFO - Query Successful !!
+2017-02-17 19:16:19,273 - root - INFO - 
+2017-02-17 19:16:19,280 - root - INFO - Total queries: 13
+2017-02-17 19:16:19,280 - root - INFO - Total unique queries: 13
+2017-02-17 19:16:19,280 - root - INFO - Total failed: 4
+2017-02-17 19:16:19,281 - root - INFO - 
+2017-02-17 19:16:19,281 - root - INFO - 
+2017-02-17 19:16:19,281 - root - INFO - Query : SELECT TOP 10 * FROM tgas_source WHERE pmra*pmra + pmdec*pmdec < SQRT(pmra*pmra*pmra_error*pmra_error + pmdec*pmdec*pmdec_error*pmdec_error) AND parallax < parallax_error AND (astrometric_excess_noise < 2 OR astrometric_excess_noise_sig <= 2)
+2017-02-17 19:16:19,285 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:16:19,286 - root - INFO - Starting sql query :::2017-02-17 19:16:19
+2017-02-17 19:16:19,885 - root - INFO - Completed sql query :::2017-02-17 19:16:19
+2017-02-17 19:16:19,885 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-17 19:16:19,885 - root - INFO - 
+2017-02-17 19:16:19,885 - root - INFO - Started TAP job :::2017-02-17 19:16:19
+2017-02-17 19:16:20,106 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358996494O
+2017-02-17 19:16:20,784 - root - INFO - Finished TAP job :::2017-02-17 19:16:20
+2017-02-17 19:16:20,785 - root - INFO - TAP  Query: 10 row(s) returned. 
+2017-02-17 19:16:20,785 - root - INFO - 
+2017-02-17 19:16:20,785 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:16:20,785 - root - INFO - Query Successful !!
+2017-02-17 19:16:20,785 - root - INFO - 
+2017-02-17 19:16:20,789 - root - INFO - Total queries: 14
+2017-02-17 19:16:20,790 - root - INFO - Total unique queries: 14
+2017-02-17 19:16:20,790 - root - INFO - Total failed: 4
+2017-02-17 19:16:20,790 - root - INFO - 
+2017-02-17 19:16:20,790 - root - INFO - 
+2017-02-17 19:16:20,790 - root - INFO - Query : SELECT * FROM gaia_source WHERE MOD(random_index, 1000000) = 0
+2017-02-17 19:16:20,792 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:16:20,792 - root - INFO - Starting sql query :::2017-02-17 19:16:20
+2017-02-17 19:16:20,805 - root - ERROR - ('42000', "[42000] [FreeTDS][SQL Server]'MOD' is not a recognized built-in function name. (195) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+ProgrammingError: ('42000', "[42000] [FreeTDS][SQL Server]'MOD' is not a recognized built-in function name. (195) (SQLExecDirectW)")
+2017-02-17 19:16:20,806 - root - ERROR - ('42000', "[42000] [FreeTDS][SQL Server]'MOD' is not a recognized built-in function name. (195) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: ('42000', "[42000] [FreeTDS][SQL Server]'MOD' is not a recognized built-in function name. (195) (SQLExecDirectW)")
+2017-02-17 19:16:20,806 - root - INFO - Completed sql query :::2017-02-17 19:16:20
+2017-02-17 19:16:20,806 - root - INFO - SQL Query: -1 row(s) returned. 
+2017-02-17 19:16:20,806 - root - INFO - 
+2017-02-17 19:16:20,807 - root - INFO - Started TAP job :::2017-02-17 19:16:20
+2017-02-17 19:16:21,606 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487358997866O
+2017-02-17 19:32:57,863 - astropy - WARNING - W50: None:16:0: W50: Invalid unit string 'Time[Julian Years]'
+2017-02-17 19:32:57,879 - astropy - WARNING - W50: None:19:0: W50: Invalid unit string 'Angle[deg]'
+2017-02-17 19:32:57,894 - astropy - WARNING - W50: None:22:0: W50: Invalid unit string 'Angle[mas]'
+2017-02-17 19:32:57,925 - astropy - WARNING - W50: None:31:0: W50: Invalid unit string 'Angle[mas]'
+2017-02-17 19:32:57,937 - astropy - WARNING - W50: None:37:0: W50: Invalid unit string 'Angular Velocity[mas/year]'
+2017-02-17 19:32:57,938 - astropy - WARNING - W50: None:40:0: W50: Invalid unit string 'Angular Velocity[mas/year]'
+2017-02-17 19:32:57,940 - astropy - WARNING - W50: None:43:0: W50: Invalid unit string 'Angular Velocity[mas/year]' (suppressing further warnings of this type...)
+2017-02-17 19:32:58,390 - root - INFO - Finished TAP job :::2017-02-17 19:32:58
+2017-02-17 19:32:58,390 - root - INFO - TAP  Query: 1143 row(s) returned. 
+2017-02-17 19:32:58,390 - root - INFO - 
+2017-02-17 19:32:58,390 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:32:58,390 - root - INFO - Query Failed..
+2017-02-17 19:32:58,390 - root - INFO - 
+2017-02-17 19:32:58,395 - root - INFO - Total queries: 15
+2017-02-17 19:32:58,395 - root - INFO - Total unique queries: 15
+2017-02-17 19:32:58,395 - root - INFO - Total failed: 5
+2017-02-17 19:32:58,396 - root - INFO - 
+2017-02-17 19:32:58,396 - root - INFO - 
+2017-02-17 19:32:58,396 - root - INFO - Query : SELECT TOP 5 -ra from gaia_source
+2017-02-17 19:32:58,398 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:32:58,398 - root - INFO - Starting sql query :::2017-02-17 19:32:58
+2017-02-17 19:32:58,888 - root - INFO - Completed sql query :::2017-02-17 19:32:58
+2017-02-17 19:32:58,889 - root - INFO - SQL Query: 5 row(s) returned. 
+2017-02-17 19:32:58,889 - root - INFO - 
+2017-02-17 19:32:58,889 - root - INFO - Started TAP job :::2017-02-17 19:32:58
+2017-02-17 19:32:59,117 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487359995499O
+2017-02-17 19:32:59,552 - root - INFO - Finished TAP job :::2017-02-17 19:32:59
+2017-02-17 19:32:59,552 - root - INFO - TAP  Query: 5 row(s) returned. 
+2017-02-17 19:32:59,553 - root - INFO - 
+2017-02-17 19:32:59,553 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:32:59,553 - root - INFO - Query Successful !!
+2017-02-17 19:32:59,553 - root - INFO - 
+2017-02-17 19:32:59,560 - root - INFO - Total queries: 16
+2017-02-17 19:32:59,560 - root - INFO - Total unique queries: 16
+2017-02-17 19:32:59,560 - root - INFO - Total failed: 5
+2017-02-17 19:32:59,560 - root - INFO - 
+2017-02-17 19:32:59,560 - root - INFO - 
+2017-02-17 19:32:59,561 - root - INFO - Query : SELECT TOP 10 ra FROM gaia_source WHERE ra IN (SELECT TOP 20 ra FROM gaia_source WHERE ra>0 ORDER BY ra)
+2017-02-17 19:32:59,564 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:32:59,565 - root - INFO - Starting sql query :::2017-02-17 19:32:59
+2017-02-17 19:32:59,658 - root - INFO - Completed sql query :::2017-02-17 19:32:59
+2017-02-17 19:32:59,659 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-17 19:32:59,659 - root - INFO - 
+2017-02-17 19:32:59,659 - root - INFO - Started TAP job :::2017-02-17 19:32:59
+2017-02-17 19:32:59,885 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487359996268O
+2017-02-17 19:33:00,343 - root - INFO - Finished TAP job :::2017-02-17 19:33:00
+2017-02-17 19:33:00,343 - root - INFO - TAP  Query: 10 row(s) returned. 
+2017-02-17 19:33:00,343 - root - INFO - 
+2017-02-17 19:33:00,344 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:33:00,344 - root - INFO - Query Successful !!
+2017-02-17 19:33:00,344 - root - INFO - 
+2017-02-17 19:33:00,350 - root - INFO - Total queries: 17
+2017-02-17 19:33:00,350 - root - INFO - Total unique queries: 17
+2017-02-17 19:33:00,350 - root - INFO - Total failed: 5
+2017-02-17 19:33:00,351 - root - INFO - 
+2017-02-17 19:33:00,351 - root - INFO - 
+2017-02-17 19:33:00,351 - root - INFO - Query : SELECT pi() from gaia_source
+2017-02-17 19:33:00,355 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:33:00,355 - root - INFO - Starting sql query :::2017-02-17 19:33:00
+2017-02-17 19:40:39,799 - root - INFO - Completed sql query :::2017-02-17 19:40:39
+2017-02-17 19:40:39,799 - root - INFO - SQL Query: 10000 row(s) returned. 
+2017-02-17 19:40:39,799 - root - INFO - 
+2017-02-17 19:40:39,799 - root - INFO - Started TAP job :::2017-02-17 19:40:39
+2017-02-17 19:40:40,026 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487360456408O
+2017-02-17 19:40:40,631 - root - INFO - Finished TAP job :::2017-02-17 19:40:40
+2017-02-17 19:40:40,631 - root - INFO - TAP  Query: 10000 row(s) returned. 
+2017-02-17 19:40:40,631 - root - INFO - 
+2017-02-17 19:40:40,631 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:40:40,631 - root - INFO - Query Successful !!
+2017-02-17 19:40:40,631 - root - INFO - 
+2017-02-17 19:40:40,637 - root - INFO - Total queries: 18
+2017-02-17 19:40:40,637 - root - INFO - Total unique queries: 18
+2017-02-17 19:40:40,637 - root - INFO - Total failed: 5
+2017-02-17 19:40:40,637 - root - INFO - 
+2017-02-17 19:40:40,637 - root - INFO - 
+2017-02-17 19:40:40,637 - root - INFO - Query : SELECT rand() from gaia_source
+2017-02-17 19:40:40,639 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:40:40,639 - root - INFO - Starting sql query :::2017-02-17 19:40:40
+2017-02-17 19:45:34,121 - root - INFO - Completed sql query :::2017-02-17 19:45:34
+2017-02-17 19:45:34,121 - root - INFO - SQL Query: 10000 row(s) returned. 
+2017-02-17 19:45:34,121 - root - INFO - 
+2017-02-17 19:45:34,121 - root - INFO - Started TAP job :::2017-02-17 19:45:34
+2017-02-17 19:45:34,401 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487360750783O
+2017-02-17 19:45:35,184 - root - INFO - Finished TAP job :::2017-02-17 19:45:35
+2017-02-17 19:45:35,184 - root - INFO - TAP  Query: 10000 row(s) returned. 
+2017-02-17 19:45:35,184 - root - INFO - 
+2017-02-17 19:45:35,184 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:45:35,184 - root - INFO - Query Successful !!
+2017-02-17 19:45:35,184 - root - INFO - 
+2017-02-17 19:45:35,190 - root - INFO - Total queries: 19
+2017-02-17 19:45:35,190 - root - INFO - Total unique queries: 19
+2017-02-17 19:45:35,190 - root - INFO - Total failed: 5
+2017-02-17 19:45:35,190 - root - INFO - 
+2017-02-17 19:45:35,190 - root - INFO - 
+2017-02-17 19:45:35,190 - root - INFO - Query : SELECT TOP 10 ra, ra + dec, ra - dec,ra * dec, ra / dec FROM gaia_source where ra > 0 and dec > 0
+2017-02-17 19:45:35,192 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:45:35,192 - root - INFO - Starting sql query :::2017-02-17 19:45:35
+2017-02-17 19:45:37,736 - root - INFO - Completed sql query :::2017-02-17 19:45:37
+2017-02-17 19:45:37,736 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-17 19:45:37,736 - root - INFO - 
+2017-02-17 19:45:37,737 - root - INFO - Started TAP job :::2017-02-17 19:45:37
+2017-02-17 19:45:37,963 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487360754347O
+2017-02-17 19:45:38,475 - root - INFO - Finished TAP job :::2017-02-17 19:45:38
+2017-02-17 19:45:38,476 - root - INFO - TAP  Query: 10 row(s) returned. 
+2017-02-17 19:45:38,476 - root - INFO - 
+2017-02-17 19:45:38,476 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:45:38,476 - root - INFO - Query Successful !!
+2017-02-17 19:45:38,476 - root - INFO - 
+2017-02-17 19:45:38,483 - root - INFO - Total queries: 20
+2017-02-17 19:45:38,483 - root - INFO - Total unique queries: 20
+2017-02-17 19:45:38,483 - root - INFO - Total failed: 5
+2017-02-17 19:45:38,484 - root - INFO - 
+2017-02-17 19:45:38,484 - root - INFO - 
+2017-02-17 19:45:38,484 - root - INFO - Query : SELECT TOP 1 dec FROM gaia_source WHERE dec = ANY (SELECT dec FROM gaia_source WHERE (dec BETWEEN -22.5 AND -12.5))
+2017-02-17 19:45:38,488 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:45:38,489 - root - INFO - Starting sql query :::2017-02-17 19:45:38
+2017-02-17 19:45:38,564 - root - INFO - Completed sql query :::2017-02-17 19:45:38
+2017-02-17 19:45:38,564 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-17 19:45:38,564 - root - INFO - 
+2017-02-17 19:45:38,564 - root - INFO - Started TAP job :::2017-02-17 19:45:38
+2017-02-17 19:45:38,787 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487360755174O
+2017-02-17 19:45:39,115 - root - INFO - Finished TAP job :::2017-02-17 19:45:39
+2017-02-17 19:45:39,115 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-17 19:45:39,115 - root - INFO - 
+2017-02-17 19:45:39,115 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:45:39,116 - root - INFO - Query Failed..
+2017-02-17 19:45:39,116 - root - INFO - 
+2017-02-17 19:45:39,123 - root - INFO - Total queries: 21
+2017-02-17 19:45:39,123 - root - INFO - Total unique queries: 21
+2017-02-17 19:45:39,123 - root - INFO - Total failed: 6
+2017-02-17 19:45:39,123 - root - INFO - 
+2017-02-17 19:45:39,123 - root - INFO - 
+2017-02-17 19:45:39,124 - root - INFO - Query : SELECT TOP 5 ((ra + 6) / 2) AS one, (ra + (6 / 2)) AS two FROM gaia_source
+2017-02-17 19:45:39,128 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-17 19:45:39,128 - root - INFO - Starting sql query :::2017-02-17 19:45:39
+2017-02-17 19:45:39,148 - root - INFO - Completed sql query :::2017-02-17 19:45:39
+2017-02-17 19:45:39,148 - root - INFO - SQL Query: 5 row(s) returned. 
+2017-02-17 19:45:39,148 - root - INFO - 
+2017-02-17 19:45:39,148 - root - INFO - Started TAP job :::2017-02-17 19:45:39
+2017-02-17 19:45:39,370 - root - INFO - Jobid:http://gea.esac.esa.int/tap-server/tap/async/1487360755757O
+2017-02-17 19:45:39,807 - root - INFO - Finished TAP job :::2017-02-17 19:45:39
+2017-02-17 19:45:39,808 - root - INFO - TAP  Query: 5 row(s) returned. 
+2017-02-17 19:45:39,808 - root - INFO - 
+2017-02-17 19:45:39,808 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-17 19:45:39,808 - root - INFO - Query Successful !!
+2017-02-17 19:45:39,809 - root - INFO - 
+2017-02-17 19:45:39,815 - root - INFO - Total queries: 22
+2017-02-17 19:45:39,815 - root - INFO - Total unique queries: 22
+2017-02-17 19:45:39,815 - root - INFO - Total failed: 6
+2017-02-17 19:45:39,816 - root - INFO - 
+2017-02-17 19:45:39,816 - root - INFO - 
+2017-02-17 19:45:39,816 - root - INFO - Success percentage: 72.73%
+

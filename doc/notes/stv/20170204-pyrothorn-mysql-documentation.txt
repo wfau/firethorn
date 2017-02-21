@@ -46,28 +46,30 @@ secretfile=${HOME:?}/secrets
 
 cat > "${secretfile:?}" << 'EOF'
 
-firethorn.data.data=
-firethorn.data.user=
-firethorn.data.pass=
-firethorn.data.host=
+firethorn.data.data=sqlserver_database ## The database name of the SQL Server DB you are using
+firethorn.data.user=sqlserver_username ## The SQL Server username you are using
+firethorn.data.pass=sqlserver_password ## The SQL Server password you are using
+firethorn.data.host=sqlserver_host ## The SQL Server host
 
-ssh.tunnel.user=
-ssh.tunnel.host=
 
-absoluterows=1000
-defaultrows=1000
+ssh.tunnel.user=user ## Username if you are setting up an ssh tunnel for the SQL Server connection
+ssh.tunnel.host=host ## Host for which to setup the ssh tunnel for the SQL Server connection
 
-mysql_test_dbserver=
-mysql_test_dbserver_username=
-mysql_test_dbserver_password=
-mysql_test_dbserver_port=
-mysql_test_database=
-mysql_test_driver=
+defaultrows=max_rows_returned ## Max rows returned
+
+mysql_test_dbserver=mysql_server_host
+mysql_test_dbserver_username=mysql_server_username ## The MySQL Server username
+mysql_test_dbserver_password=mysql_server_password ## The MySQL Server password
+mysql_test_dbserver_port=mysql_server_port ## The MySQL Server port
+mysql_test_database=mysql_server_database ## The MySQL Database
+mysql_test_driver=mysql_server_driver (MySQL) 
+
+
 
 EOF
 
 
-    
+  
 # -----------------------------------------------------
 # Create our secret function.
 
