@@ -40,7 +40,7 @@
         ....
         ....
 
-        mvn -P all clean install eclipse:eclipse
+        mvn -P all clean install
 
         hg commit -m "...."
 

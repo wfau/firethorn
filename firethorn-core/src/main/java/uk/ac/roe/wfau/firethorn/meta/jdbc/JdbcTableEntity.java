@@ -633,7 +633,6 @@ implements JdbcTable
     /**
      * Protected constructor.
      *
-     */
     @Deprecated
     public JdbcTableEntity(final JdbcSchema schema, final String name, final JdbcType type)
         {
@@ -644,6 +643,7 @@ implements JdbcTable
             type
             );
         }
+     */
 
     /**
      * Protected constructor.
@@ -669,6 +669,8 @@ implements JdbcTable
             schema,
             name
             );
+        log.debug("ZRQ JdbcTableEntity [{}][{}][{}]", schema.name(), name, type);
+        
         this.bluequery = query;
         this.schema = schema;
 

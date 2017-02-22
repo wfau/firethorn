@@ -75,6 +75,7 @@ implements JdbcResource.JdbcDriver
 		statement.append(" (");
         for(JdbcColumn column : table.columns().select())
         	{
+            log.debug("Create JdbcColumn [{}]", column.name());
         	if (comma)
         		{
                 statement.append(" , ");
@@ -189,21 +190,26 @@ implements JdbcResource.JdbcDriver
 
     	switch(meta.jdbctype())
 	        {
+	        case BOOLEAN:
+	            builder.append(
+	                "BIT"
+	                );
+	            break ;
 	        case DATE :
 	        case TIME :
 	        case TIMESTAMP :
 	            builder.append(
-	                "datetime"
+	                "DATETIME"
 	                );
 	            break ;
 	        case REAL:
 	        	builder.append(
-	                "real"
+	                "REAL"
 	                );
 	            break ;
 	        case DOUBLE:
 	        	builder.append(
-	                "float"
+	                "FLOAT"
 	                );
 	            break ;
 	        case CHAR:
@@ -224,7 +230,7 @@ implements JdbcResource.JdbcDriver
 	        	break;
 	        default :
 	        	builder.append(
-	        			meta.jdbctype().name()
+        			meta.jdbctype().name()
 	        	);
 	            break ;
 	        }

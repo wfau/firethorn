@@ -45,10 +45,6 @@
     curl -L https://github.com/docker/compose/releases/download/1.11.1/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
     chmod +x /usr/bin/docker-compose
 
-
-
-
-
 # -----------------------------------------------------
 # Load our secret function.
 #[user@virtual]
@@ -64,11 +60,182 @@
 # Configure our build version and instance name.
 #[user@virtual] 
 
-    branch=default
-    version=2.1.4
-    buildtag=${version:?}
+    branch=2.1.4-zrq-bug-fixes
+    version=${branch:?}
+    buildtag=${branch:?}
 
     instance=$(pwgen 8 1)
+
+
+
+# -----------------------------------------------------
+# Get our builder compose file.
+#[user@virtual]
+
+    composit=${HOME:?}/compose
+
+    mkdir ${composit:?}
+    pushd ${composit:?}
+     
+        wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+    popd
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    composit=${HOME:?}/compose
+
+    export branch
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/builder.yml" \
+        --project ${instance:?} \
+        run builder 
+
+# -----------------------------------------------------
+# Update our path.
+# TODO Add this to the image
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Configure our source path.
+# TODO Add this to the image
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/firethorn
+EOF
+    fi
+
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    if [  -e "${FIRETHORN_CODE:?}" ]
+    then
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update
+        
+        popd
+    else
+        pushd "$(dirname ${FIRETHORN_CODE:?})"
+
+            hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "$(basename ${FIRETHORN_CODE:?})"
+
+        popd
+    fi
+
+# -----------------------------------------------------
+# Update the source code branch.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        if [ -n "${branch}" ]
+        then
+            hg update "${branch:?}"
+        else
+            hg update 'default'
+        fi
+
+    popd
+
+# -----------------------------------------------------
+# Update our POM version.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        pomversions "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Generate our dockerfiles.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        dockerfiles "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Build our base images.
+#[root@builder]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Display our container images.
+#[root@builder]
+
+    alias dockviz="docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz"
+
+    dockviz images --tree
+
+# -----------------------------------------------------
+# Exit our builder.
+#[root@builder]
+
+    exit
+
 
 # -----------------------------------------------------
 # Create our chain config.
@@ -180,11 +347,12 @@ EOF
 # Get acopy of our compose file.
 #[user@virtual] 
 
-    composit=${HOME:?}/compose
-    mkdir ${composit:?}
+    #composit=${HOME:?}/compose
+    #mkdir ${composit:?}
+
     pushd ${composit:?}
 
-        wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/5327b0eaf0a1/docker/compose/testing.yml
+        wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/testing.yml
 
     popd
 
@@ -225,11 +393,11 @@ EOF
             | bin/pp | tee /tmp/system-info.json
 
 # -----------------------------------------------------
-# Load the local TWOMASS resource.
+# Load the local ATLASDR1 resource.
 #[root@tester]
 
         source "bin/02-02-create-jdbc-space.sh" \
-            'TWOMASS JDBC conection' \
+            'ATLAS JDBC conection' \
             "jdbc:jtds:sqlserver://${dataname:?}/TWOMASS" \
             "${datauser:?}" \
             "${datapass:?}" \
@@ -237,17 +405,25 @@ EOF
             '*'
         wfaujdbc=${jdbcspace:?}
 
-        source "bin/03-01-create-adql-space.sh" 'TWOMASS ADQL workspace'
+        source "bin/03-01-create-adql-space.sh" 'WFAU ADQL workspace'
         wfauadql=${adqlspace:?}
 
-        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'TWOMASS' 'dbo' "meta/TWOMASS_TablesSchema.xml"
+        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TablesSchema.xml"
+        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
+        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR2' 'dbo' "meta/ATLASDR2_TablesSchema.xml"
 
 # -----------------------------------------------------
-# Create a workspace and add the local TWOMASS schema.
+# Create a workspace and add the local schema.
 #[root@tester]
 
         source "bin/04-01-create-query-space.sh"  'Test workspace'
-        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'TWOMASS' 'wfau'
+        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'TWOMASS'  'TWOMASS'
+        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR1' 'ATLASDR1'
+        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR2' 'ATLASDR2'
+
+
+
+
 
 # -----------------------------------------------------
 # Test queries ...
@@ -718,7 +894,7 @@ http://redmine.roe.ac.uk/issues/442
 # Follow the Firethorn logs.
 #[user@desktop]
 
-    instance=vaivee1i
+    instance=co0lad0i
     composit=${HOME:?}/compose
 
     docker-compose \
@@ -733,7 +909,7 @@ http://redmine.roe.ac.uk/issues/442
 # Follow the OGSA-DAI logs.
 #[user@desktop]
 
-    instance=vaivee1i
+    instance=co0lad0i
     composit=${HOME:?}/compose
 
     docker-compose \
