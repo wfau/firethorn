@@ -56,7 +56,7 @@
         #
         # Set the project version.
         source 'bin/util.sh'
-        setversion "${devbranch:?}"
+        pomversions "${devbranch:?}"
 
         #
         # Commit and push the new branch.

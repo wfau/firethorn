@@ -796,10 +796,10 @@ implements BlueQuery
     @Column(
          name = DB_RESULT_COUNT_COL,
          unique = false,
-         nullable = true,
+         nullable = false,
          updatable = true
          )
-    private Long resultcount ;
+    private Long resultcount = new Long(0L);
 
     /**
      * The status of the results.
@@ -814,7 +814,7 @@ implements BlueQuery
     @Column(
         name = DB_RESULT_STATUS_COL,
         unique = false,
-        nullable = true,
+        nullable = false,
         updatable = true
         )
     private ResultState resultstate = ResultState.NONE;
