@@ -352,7 +352,7 @@ EOF
 
     pushd ${composit:?}
 
-        wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/testing.yml
+        wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tester.yml
 
     popd
 
@@ -362,7 +362,7 @@ EOF
 
     export buildtag
     docker-compose \
-        --file "${composit:?}/testing.yml" \
+        --file "${composit:?}/tester.yml" \
         --project ${instance:?} \
         run tester 
 
@@ -398,7 +398,7 @@ EOF
 
         source "bin/02-02-create-jdbc-space.sh" \
             'ATLAS JDBC conection' \
-            "jdbc:jtds:sqlserver://${dataname:?}/TWOMASS" \
+            "jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1" \
             "${datauser:?}" \
             "${datapass:?}" \
             "${datadriver:?}" \
@@ -890,6 +890,13 @@ http://redmine.roe.ac.uk/issues/442
 
 
 
+
+
+
+
+
+
+
 # -----------------------------------------------------
 # Follow the Firethorn logs.
 #[user@desktop]
@@ -898,7 +905,7 @@ http://redmine.roe.ac.uk/issues/442
     composit=${HOME:?}/compose
 
     docker-compose \
-        --file "${composit:?}/testing.yml" \
+        --file "${composit:?}/tester.yml" \
         --project ${instance:?} \
         exec \
             gillian \
@@ -913,7 +920,7 @@ http://redmine.roe.ac.uk/issues/442
     composit=${HOME:?}/compose
 
     docker-compose \
-        --file "${composit:?}/testing.yml" \
+        --file "${composit:?}/tester.yml" \
         --project ${instance:?} \
         exec \
             jarmila \
