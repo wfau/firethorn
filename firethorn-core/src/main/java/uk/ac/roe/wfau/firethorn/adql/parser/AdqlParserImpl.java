@@ -762,7 +762,8 @@ implements AdqlParser
             // Specific case of SelectAll.
             if (item instanceof SelectAllColumns)
                 {
-            	if (additem){
+            	if (additem)
+            		{
 	                process(
 	                    subject,
 	                    query,
@@ -773,7 +774,8 @@ implements AdqlParser
             //
             // Everything else ....
             else {
-            	if (additem){
+            	if (additem)
+            		{
 	                additem(
 	                    subject,
 	                    wrap(

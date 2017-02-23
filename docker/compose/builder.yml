@@ -18,9 +18,7 @@ services:
 
     builder:
         image:
-            "firethorn/builder:${buildtag}"
-        build:
-            context: '../builder'
+            "firethorn/builder:2.1.4"
         tty:
             true
         stdin_open:

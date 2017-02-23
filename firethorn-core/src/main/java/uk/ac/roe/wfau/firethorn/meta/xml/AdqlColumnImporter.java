@@ -39,7 +39,7 @@ public class AdqlColumnImporter
      */
     public AdqlColumnImporter(final AdqlTable table)
         {
-        this.table   = table ;
+        this.table = table ;
         //
         // Cache our base columns.
         log.debug("Caching base columns for [{}]", table.fullname());
@@ -61,7 +61,7 @@ public class AdqlColumnImporter
                 column.name(),
                 column
                 );
-            }
+        	}
         }
 
     /**

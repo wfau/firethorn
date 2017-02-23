@@ -38,6 +38,7 @@
 
         #
         # Get the current version
+        source bin/util.sh
         devbranch=$(getversion)
         echo "devbranch [${devbranch:?}]"
 
@@ -64,7 +65,7 @@
 
         #
         # Update the main version.
-        setversion "${newversion:?}"
+        pomversions "${newversion:?}"
 
     popd
 

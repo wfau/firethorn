@@ -8398,7 +8398,7 @@
          <ErrorColumn></ErrorColumn>
       </Column>
    </Table>
-   <Table ID="atlasSourceXGDR1gaia_source">
+   <!--Table ID="atlasSourceXGDR1gaia_source">
       <Name>atlasSourceXGDR1gaia_source</Name>
       <Description><![CDATA[ Cross-neighbours between atlas and gaia_source]]></Description>
       <Column ID="atlasSourceXGDR1gaia_source.masterObjID" indexed="true">
@@ -8425,8 +8425,8 @@
          <UCD version="1+">pos.angDistance</UCD>
          <ErrorColumn></ErrorColumn>
       </Column>
-   </Table>
-   <Table ID="atlasSourceXGDR1tgas_source">
+   </Table-->
+   <!--Table ID="atlasSourceXGDR1tgas_source">
       <Name>atlasSourceXGDR1tgas_source</Name>
       <Description><![CDATA[ Cross-neighbours between atlas and tgas_source]]></Description>
       <Column ID="atlasSourceXGDR1tgas_source.masterObjID" indexed="true">
@@ -8453,7 +8453,7 @@
          <UCD version="1+">pos.angDistance</UCD>
          <ErrorColumn></ErrorColumn>
       </Column>
-   </Table>
+   </Table-->
    <Table ID="atlasSourceXGR6PhotoObjAll">
       <Name>atlasSourceXGR6PhotoObjAll</Name>
       <Description><![CDATA[ Cross-neighbours between atlas and PhotoObjAll]]></Description>

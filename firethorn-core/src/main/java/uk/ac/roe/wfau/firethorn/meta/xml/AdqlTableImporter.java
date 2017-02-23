@@ -118,6 +118,7 @@ public class AdqlTableImporter
     /**
      * Import a table.
      *
+    public AdqlTable inport(final String name)
      */
     public AdqlTable inport(final String name)
     throws NameNotFoundException
@@ -130,7 +131,7 @@ public class AdqlTableImporter
             );
         if (match != null)
             {
-            log.warn("Duplicate table  found in import [{}][{}]", match.base().fullname(), match.fullname());
+            log.warn("Duplicate table found in import [{}][{}]", match.base().fullname(), match.fullname());
             }
         else {
             //
