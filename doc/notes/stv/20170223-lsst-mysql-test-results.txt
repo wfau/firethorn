@@ -1,0 +1,656 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+host:129.215.175.51
+db:LSSTtest
+
+
+2017-02-22 14:20:53,151 - root - INFO - Setting up Testing Environment..
+2017-02-22 14:20:53,152 - root - INFO - Query : SELECT MAX(sourceID) FROM lasSource
+2017-02-22 14:20:53,174 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:20:53,174 - root - INFO - Starting MySQL query :::2017-02-22 14:20:53
+2017-02-22 14:20:53,298 - root - INFO - Completed MySQL query :::2017-02-22 14:20:53
+2017-02-22 14:20:53,298 - root - INFO - MySQL Query: 1 row(s) returned. 
+2017-02-22 14:20:53,299 - root - INFO - 
+2017-02-22 14:20:53,299 - root - INFO - Starting SQL Server query :::2017-02-22 14:20:53
+2017-02-22 14:20:54,482 - root - INFO - Completed SQL Server query :::2017-02-22 14:20:54
+2017-02-22 14:20:54,483 - root - INFO - SQL Server Query: 1 row(s) returned. 
+2017-02-22 14:20:54,483 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:20:54,483 - root - INFO - Query Successful !!
+2017-02-22 14:20:54,483 - root - INFO - 
+2017-02-22 14:20:54,483 - root - INFO - 
+2017-02-22 14:20:54,483 - root - INFO - 
+2017-02-22 14:20:54,490 - root - INFO - Total queries: 1
+2017-02-22 14:20:54,490 - root - INFO - Total unique queries: 1
+2017-02-22 14:20:54,490 - root - INFO - Total failed: 0
+2017-02-22 14:20:54,490 - root - INFO - Query : SELECT AVG(ra) FROM lasSource
+2017-02-22 14:20:54,494 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:20:54,494 - root - INFO - Starting MySQL query :::2017-02-22 14:20:54
+2017-02-22 14:36:30,351 - root - INFO - Completed MySQL query :::2017-02-22 14:36:30
+2017-02-22 14:36:30,351 - root - INFO - MySQL Query: 1 row(s) returned. 
+2017-02-22 14:36:30,351 - root - INFO - 
+2017-02-22 14:36:30,352 - root - INFO - Starting SQL Server query :::2017-02-22 14:36:30
+2017-02-22 14:36:38,124 - root - INFO - Completed SQL Server query :::2017-02-22 14:36:38
+2017-02-22 14:36:38,124 - root - INFO - SQL Server Query: 1 row(s) returned. 
+2017-02-22 14:36:38,124 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:36:38,124 - root - INFO - Query Successful !!
+2017-02-22 14:36:38,124 - root - INFO - 
+2017-02-22 14:36:38,124 - root - INFO - 
+2017-02-22 14:36:38,125 - root - INFO - 
+2017-02-22 14:36:38,133 - root - INFO - Total queries: 2
+2017-02-22 14:36:38,134 - root - INFO - Total unique queries: 2
+2017-02-22 14:36:38,134 - root - INFO - Total failed: 0
+2017-02-22 14:36:38,134 - root - INFO - Query : SELECT *,2*DEGREES(ASIN(sqrt(power(-0.43487295822751704-cx,2)+power(-0.046022867658389026-cy,2)+power(-0.8993149647675983-cz,2))/2))*60 as distance FROM gpsSource WHERE `dec` > -64.25150133333334 and `dec` < -63.88483466666666 and ra >= 185.61914916986677 and ra <= 186.46317083013318 and ((cx * -0.43487295822751704 + cy * -0.046022867658389026 + cz * -0.8993149647675983 ) >= 0.9999948807393964)
+2017-02-22 14:36:38,138 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:36:38,138 - root - INFO - Starting MySQL query :::2017-02-22 14:36:38
+2017-02-22 14:36:38,193 - root - INFO - Completed MySQL query :::2017-02-22 14:36:38
+2017-02-22 14:36:38,193 - root - INFO - MySQL Query: 0 row(s) returned. 
+2017-02-22 14:36:38,193 - root - INFO - 
+2017-02-22 14:36:38,194 - root - INFO - Starting SQL Server query :::2017-02-22 14:36:38
+2017-02-22 14:36:38,249 - root - INFO - Completed SQL Server query :::2017-02-22 14:36:38
+2017-02-22 14:36:38,249 - root - INFO - SQL Server Query: 0 row(s) returned. 
+2017-02-22 14:36:38,250 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:36:38,250 - root - INFO - Query Successful !!
+2017-02-22 14:36:38,250 - root - INFO - 
+2017-02-22 14:36:38,250 - root - INFO - 
+2017-02-22 14:36:38,250 - root - INFO - 
+2017-02-22 14:36:38,257 - root - INFO - Total queries: 3
+2017-02-22 14:36:38,257 - root - INFO - Total unique queries: 3
+2017-02-22 14:36:38,257 - root - INFO - Total failed: 0
+2017-02-22 14:36:38,257 - root - INFO - Query : SELECT  *,2*DEGREES(ASIN(sqrt(power(0.042923031410454976-cx,2)+power(-0.939145431907252-cy,2)+power(-0.34082762667113453-cz,2))/2))*60 as distance  FROM gpsSource WHERE `dec` > -19.928972239154575 and `dec` < -19.925638905821245 and ra >= 272.61507243790356 and ra <= 272.61861810005877 and ((cx * 0.042923031410454976 + cy * -0.939145431907252 + cz * -0.34082762667113453 ) >= 0.9999999995769202)
+2017-02-22 14:36:38,261 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:36:38,262 - root - INFO - Starting MySQL query :::2017-02-22 14:36:38
+2017-02-22 14:41:45,020 - root - INFO - Completed MySQL query :::2017-02-22 14:41:45
+2017-02-22 14:41:45,020 - root - INFO - MySQL Query: 9 row(s) returned. 
+2017-02-22 14:41:45,020 - root - INFO - 
+2017-02-22 14:41:45,020 - root - INFO - Starting SQL Server query :::2017-02-22 14:41:45
+2017-02-22 14:41:45,120 - root - INFO - Completed SQL Server query :::2017-02-22 14:41:45
+2017-02-22 14:41:45,120 - root - INFO - SQL Server Query: 9 row(s) returned. 
+2017-02-22 14:41:45,120 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:41:45,120 - root - INFO - Query Successful !!
+2017-02-22 14:41:45,120 - root - INFO - 
+2017-02-22 14:41:45,120 - root - INFO - 
+2017-02-22 14:41:45,120 - root - INFO - 
+2017-02-22 14:41:45,128 - root - INFO - Total queries: 4
+2017-02-22 14:41:45,129 - root - INFO - Total unique queries: 4
+2017-02-22 14:41:45,129 - root - INFO - Total failed: 0
+2017-02-22 14:41:45,129 - root - INFO - Query : SELECT sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.5373936208687339-cx,2)+power(0.762868259163199-cy,2)+power(0.3594998128106632-cz,2))/2))*60 as distance FROM gcsSource WHERE `dec` > 21.011147666666666 and `dec` < 21.127814333333333 and ra >= 54.775129838093285 and ra <= 54.90020416190672 and ((cx * 0.5373936208687339 + cy * 0.762868259163199 + cz * 0.3594998128106632 ) >= 0.9999994817273514)
+2017-02-22 14:41:45,133 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:41:45,133 - root - INFO - Starting MySQL query :::2017-02-22 14:41:45
+2017-02-22 14:43:23,649 - root - INFO - Completed MySQL query :::2017-02-22 14:43:23
+2017-02-22 14:43:23,649 - root - INFO - MySQL Query: 299 row(s) returned. 
+2017-02-22 14:43:23,649 - root - INFO - 
+2017-02-22 14:43:23,649 - root - INFO - Starting SQL Server query :::2017-02-22 14:43:23
+2017-02-22 14:43:27,130 - root - INFO - Completed SQL Server query :::2017-02-22 14:43:27
+2017-02-22 14:43:27,130 - root - INFO - SQL Server Query: 299 row(s) returned. 
+2017-02-22 14:43:27,130 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:43:27,131 - root - INFO - Query Successful !!
+2017-02-22 14:43:27,131 - root - INFO - 
+2017-02-22 14:43:27,131 - root - INFO - 
+2017-02-22 14:43:27,131 - root - INFO - 
+2017-02-22 14:43:27,139 - root - INFO - Total queries: 5
+2017-02-22 14:43:27,139 - root - INFO - Total unique queries: 5
+2017-02-22 14:43:27,139 - root - INFO - Total failed: 0
+2017-02-22 14:43:27,139 - root - INFO - Query : SELECT sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.4739848950709129-cx,2)+power(0.5048794829106281-cy,2)+power(0.7214118289718519-cz,2))/2))*60 as distance FROM gcsSource WHERE `dec` > 46.11283366666667 and `dec` < 46.229500333333334 and ra >= 46.72342545868733 and ra <= 46.89207454131267 and ((cx * 0.4739848950709129 + cy * 0.5048794829106281 + cz * 0.7214118289718519 ) >= 0.9999994817273514)
+2017-02-22 14:43:27,143 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:43:27,143 - root - INFO - Starting MySQL query :::2017-02-22 14:43:27
+2017-02-22 14:43:44,571 - root - INFO - Completed MySQL query :::2017-02-22 14:43:44
+2017-02-22 14:43:44,571 - root - INFO - MySQL Query: 924 row(s) returned. 
+2017-02-22 14:43:44,571 - root - INFO - 
+2017-02-22 14:43:44,571 - root - INFO - Starting SQL Server query :::2017-02-22 14:43:44
+2017-02-22 14:43:46,768 - root - INFO - Completed SQL Server query :::2017-02-22 14:43:46
+2017-02-22 14:43:46,768 - root - INFO - SQL Server Query: 924 row(s) returned. 
+2017-02-22 14:43:46,768 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:43:46,768 - root - INFO - Query Successful !!
+2017-02-22 14:43:46,769 - root - INFO - 
+2017-02-22 14:43:46,769 - root - INFO - 
+2017-02-22 14:43:46,769 - root - INFO - 
+2017-02-22 14:43:46,776 - root - INFO - Total queries: 6
+2017-02-22 14:43:46,776 - root - INFO - Total unique queries: 6
+2017-02-22 14:43:46,776 - root - INFO - Total failed: 0
+2017-02-22 14:43:46,776 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err, H2AperMag3, H2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.04292215519273228-cx,2)+power(-0.9391451011779997-cy,2)+power(-0.34082864833663234-cz,2))/2))*60 as distance  FROM gpsSource WHERE `dec` > -19.929034504366665 and `dec` < -19.925701171033335 and ra >= 272.61502001222385 and ra <= 272.61856567577604 and ((cx * 0.04292215519273228 + cy * -0.9391451011779997 + cz * -0.34082864833663234 ) >= 0.9999999995769202)
+2017-02-22 14:43:46,780 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:43:46,780 - root - INFO - Starting MySQL query :::2017-02-22 14:43:46
+2017-02-22 14:43:50,678 - root - INFO - Completed MySQL query :::2017-02-22 14:43:50
+2017-02-22 14:43:50,679 - root - INFO - MySQL Query: 8 row(s) returned. 
+2017-02-22 14:43:50,679 - root - INFO - 
+2017-02-22 14:43:50,679 - root - INFO - Starting SQL Server query :::2017-02-22 14:43:50
+2017-02-22 14:43:50,776 - root - INFO - Completed SQL Server query :::2017-02-22 14:43:50
+2017-02-22 14:43:50,776 - root - INFO - SQL Server Query: 8 row(s) returned. 
+2017-02-22 14:43:50,776 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:43:50,776 - root - INFO - Query Successful !!
+2017-02-22 14:43:50,777 - root - INFO - 
+2017-02-22 14:43:50,777 - root - INFO - 
+2017-02-22 14:43:50,777 - root - INFO - 
+2017-02-22 14:43:50,784 - root - INFO - Total queries: 7
+2017-02-22 14:43:50,785 - root - INFO - Total unique queries: 7
+2017-02-22 14:43:50,785 - root - INFO - Total failed: 0
+2017-02-22 14:43:50,785 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err, H2AperMag3, H2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.04292291249444535-cx,2)+power(-0.939145401440814-cy,2)+power(-0.34082772559691554-cz,2))/2))*60 as distance  FROM gpsSource WHERE `dec` > -19.928978268166667 and `dec` < -19.925644934833336 and ra >= 272.6150652828548 and ra <= 272.6186109451453 and ((cx * 0.04292291249444535 + cy * -0.939145401440814 + cz * -0.34082772559691554 ) >= 0.9999999995769202)
+2017-02-22 14:43:50,789 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:43:50,789 - root - INFO - Starting MySQL query :::2017-02-22 14:43:50
+2017-02-22 14:43:51,001 - root - INFO - Completed MySQL query :::2017-02-22 14:43:51
+2017-02-22 14:43:51,001 - root - INFO - MySQL Query: 9 row(s) returned. 
+2017-02-22 14:43:51,002 - root - INFO - 
+2017-02-22 14:43:51,002 - root - INFO - Starting SQL Server query :::2017-02-22 14:43:51
+2017-02-22 14:43:51,107 - root - INFO - Completed SQL Server query :::2017-02-22 14:43:51
+2017-02-22 14:43:51,107 - root - INFO - SQL Server Query: 9 row(s) returned. 
+2017-02-22 14:43:51,107 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:43:51,107 - root - INFO - Query Successful !!
+2017-02-22 14:43:51,107 - root - INFO - 
+2017-02-22 14:43:51,107 - root - INFO - 
+2017-02-22 14:43:51,107 - root - INFO - 
+2017-02-22 14:43:51,114 - root - INFO - Total queries: 8
+2017-02-22 14:43:51,114 - root - INFO - Total unique queries: 8
+2017-02-22 14:43:51,114 - root - INFO - Total failed: 0
+2017-02-22 14:43:51,114 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err, H2AperMag3, H2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.04015312359772658-cx,2)+power(-0.9368567247774052-cy,2)+power(-0.3474006388950643-cz,2))/2))*60 as distance  FROM gpsSource WHERE `dec` > -20.33557542020813 and `dec` < -20.321242086874797 and ra >= 272.44651812694013 and ra <= 272.4618041895084 and ((cx * 0.04015312359772658 + cy * -0.9368567247774052 + cz * -0.3474006388950643 ) >= 0.9999999921772554)
+2017-02-22 14:43:51,118 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:43:51,118 - root - INFO - Starting MySQL query :::2017-02-22 14:43:51
+2017-02-22 14:55:38,806 - root - INFO - Completed MySQL query :::2017-02-22 14:55:38
+2017-02-22 14:55:38,806 - root - INFO - MySQL Query: 218 row(s) returned. 
+2017-02-22 14:55:38,806 - root - INFO - 
+2017-02-22 14:55:38,806 - root - INFO - Starting SQL Server query :::2017-02-22 14:55:38
+2017-02-22 14:55:41,368 - root - INFO - Completed SQL Server query :::2017-02-22 14:55:41
+2017-02-22 14:55:41,368 - root - INFO - SQL Server Query: 218 row(s) returned. 
+2017-02-22 14:55:41,368 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:55:41,368 - root - INFO - Query Successful !!
+2017-02-22 14:55:41,368 - root - INFO - 
+2017-02-22 14:55:41,368 - root - INFO - 
+2017-02-22 14:55:41,369 - root - INFO - 
+2017-02-22 14:55:41,377 - root - INFO - Total queries: 9
+2017-02-22 14:55:41,377 - root - INFO - Total unique queries: 9
+2017-02-22 14:55:41,377 - root - INFO - Total failed: 0
+2017-02-22 14:55:41,377 - root - INFO - Query : SELECT sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.537393653389574-cx,2)+power(0.7628683053288321-cy,2)+power(0.35949966623256024-cz,2))/2))*60 as distance FROM gcsSource WHERE `dec` > 21.011138666666668 and `dec` < 21.127805333333335 and ra >= 54.77512984188927 and ra <= 54.90020415811074 and ((cx * 0.537393653389574 + cy * 0.7628683053288321 + cz * 0.35949966623256024 ) >= 0.9999994817273514)
+2017-02-22 14:55:41,381 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:55:41,381 - root - INFO - Starting MySQL query :::2017-02-22 14:55:41
+2017-02-22 14:55:41,745 - root - INFO - Completed MySQL query :::2017-02-22 14:55:41
+2017-02-22 14:55:41,745 - root - INFO - MySQL Query: 299 row(s) returned. 
+2017-02-22 14:55:41,745 - root - INFO - 
+2017-02-22 14:55:41,745 - root - INFO - Starting SQL Server query :::2017-02-22 14:55:41
+2017-02-22 14:55:42,000 - root - INFO - Completed SQL Server query :::2017-02-22 14:55:42
+2017-02-22 14:55:42,000 - root - INFO - SQL Server Query: 299 row(s) returned. 
+2017-02-22 14:55:42,001 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:55:42,001 - root - INFO - Query Successful !!
+2017-02-22 14:55:42,001 - root - INFO - 
+2017-02-22 14:55:42,001 - root - INFO - 
+2017-02-22 14:55:42,001 - root - INFO - 
+2017-02-22 14:55:42,007 - root - INFO - Total queries: 10
+2017-02-22 14:55:42,008 - root - INFO - Total unique queries: 10
+2017-02-22 14:55:42,008 - root - INFO - Total failed: 0
+2017-02-22 14:55:42,008 - root - INFO - Query : SELECT *,2*DEGREES(ASIN(sqrt(power(0.7606329831372249-cx,2)+power(0.1176703620822802-cy,2)+power(-0.6384286576048973-cz,2))/2))*60 as distance FROM gpsSource WHERE `dec` > -39.85808133333334 and `dec` < -39.49141466666667 and ra >= 8.555150648986665 and ra <= 9.032807551013335 and ((cx * 0.7606329831372249 + cy * 0.1176703620822802 + cz * -0.6384286576048973 ) >= 0.9999948807393964)
+2017-02-22 14:55:42,012 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:55:42,012 - root - INFO - Starting MySQL query :::2017-02-22 14:55:42
+2017-02-22 14:55:42,046 - root - INFO - Completed MySQL query :::2017-02-22 14:55:42
+2017-02-22 14:55:42,046 - root - INFO - MySQL Query: 0 row(s) returned. 
+2017-02-22 14:55:42,046 - root - INFO - 
+2017-02-22 14:55:42,046 - root - INFO - Starting SQL Server query :::2017-02-22 14:55:42
+2017-02-22 14:55:42,080 - root - INFO - Completed SQL Server query :::2017-02-22 14:55:42
+2017-02-22 14:55:42,080 - root - INFO - SQL Server Query: 0 row(s) returned. 
+2017-02-22 14:55:42,080 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 14:55:42,080 - root - INFO - Query Successful !!
+2017-02-22 14:55:42,081 - root - INFO - 
+2017-02-22 14:55:42,081 - root - INFO - 
+2017-02-22 14:55:42,081 - root - INFO - 
+2017-02-22 14:55:42,087 - root - INFO - Total queries: 11
+2017-02-22 14:55:42,087 - root - INFO - Total unique queries: 11
+2017-02-22 14:55:42,087 - root - INFO - Total failed: 0
+2017-02-22 14:55:42,088 - root - INFO - Query : select 0.02*floor(b/0.02)+0.01 as b,0.02*floor(l/0.02)+0.01 as l,floor( (K_1apermag3 - 1.48685*((Hapermag3-K_1apermag3)) + 0.0647944)/0.25)*0.25 as mag, count(*) as count FROM gpsSource where l>=     -40.0000 and l<     -39.9500 and K_1apermag3 !=0 and Hapermag3 !=0 and mergedClass != 0 and (PriOrSec=0 OR PriOrSec=framesetID) and floor( (K_1apermag3 - 1.48685*((Hapermag3-K_1apermag3)) + 0.0647944)/0.25)*0.25 between 11.5 and 13.5 group by 0.02*floor(b/0.02), 0.02*floor(l/0.02), floor( (K_1apermag3 - 1.48685*((Hapermag3-K_1apermag3)) + 0.0647944)/0.25)*0.25
+2017-02-22 14:55:42,092 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 14:55:42,092 - root - INFO - Starting MySQL query :::2017-02-22 14:55:42
+2017-02-22 16:34:55,884 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+  File "testing/test_firethorn_logged_mysql.py", line 63, in raise_timeout
+    raise Timeout.Timeout()
+Timeout
+2017-02-22 16:34:55,887 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+Timeout
+2017-02-22 16:34:55,887 - root - ERROR - 
+Traceback (most recent call last):
+  File "testing/test_firethorn_logged_mysql.py", line 168, in test_logged_queries
+    mysql_row_length, mysql_error_message = mysqlEng.execute_sql_query_get_rows(query, config.mysql_test_database, config.sql_rowlimit, config.sql_timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 283, in execute_sql_query_get_rows
+    raise e
+Timeout
+2017-02-22 16:34:55,888 - root - INFO - Timeout reached while running sql query..
+2017-02-22 16:34:55,888 - root - INFO - 
+2017-02-22 16:34:55,888 - root - INFO - Starting SQL Server query :::2017-02-22 16:34:55
+2017-02-22 16:34:57,398 - root - INFO - Completed SQL Server query :::2017-02-22 16:34:57
+2017-02-22 16:34:57,398 - root - INFO - SQL Server Query: 0 row(s) returned. 
+2017-02-22 16:34:57,398 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 16:34:57,398 - root - INFO - Query Failed..
+2017-02-22 16:34:57,398 - root - INFO - 
+2017-02-22 16:34:57,399 - root - INFO - 
+2017-02-22 16:34:57,399 - root - INFO - 
+2017-02-22 16:34:57,409 - root - INFO - Total queries: 12
+2017-02-22 16:34:57,409 - root - INFO - Total unique queries: 12
+2017-02-22 16:34:57,410 - root - INFO - Total failed: 0
+2017-02-22 16:34:57,410 - root - INFO - Query : SELECT l, b, ra, `dec`, jAperMag3, hAperMag3, k_1AperMag3, mergedClass,sourceID, k_1ppErrBits, priOrSec, frameSetID FROM gpsSource WHERE ra between 311.306 and 311.968 and `dec` between 44.677 and 44.93 AND k_1ppErrBits<524288 AND k_1AperMag3 > 0
+2017-02-22 16:34:57,414 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 16:34:57,414 - root - INFO - Starting MySQL query :::2017-02-22 16:34:57
+2017-02-22 16:39:22,119 - root - INFO - Completed MySQL query :::2017-02-22 16:39:22
+2017-02-22 16:39:22,119 - root - INFO - MySQL Query: 10000 row(s) returned. 
+2017-02-22 16:39:22,119 - root - INFO - 
+2017-02-22 16:39:22,119 - root - INFO - Starting SQL Server query :::2017-02-22 16:39:22
+2017-02-22 16:39:26,112 - root - INFO - Completed SQL Server query :::2017-02-22 16:39:26
+2017-02-22 16:39:26,112 - root - INFO - SQL Server Query: 10000 row(s) returned. 
+2017-02-22 16:39:26,112 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 16:39:26,112 - root - INFO - Query Successful !!
+2017-02-22 16:39:26,112 - root - INFO - 
+2017-02-22 16:39:26,113 - root - INFO - 
+2017-02-22 16:39:26,113 - root - INFO - 
+2017-02-22 16:39:26,120 - root - INFO - Total queries: 13
+2017-02-22 16:39:26,121 - root - INFO - Total unique queries: 13
+2017-02-22 16:39:26,121 - root - INFO - Total failed: 0
+2017-02-22 16:39:26,121 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err, H2AperMag3, H2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.042922912488633565-cx,2)+power(-0.939145401440961-cy,2)+power(-0.3408277255972426-cz,2))/2))*60 as distance  FROM gpsSource WHERE `dec` > -19.928978268186597 and `dec` < -19.925644934853267 and ra >= 272.6150652825005 and ra <= 272.618610944791 and ((cx * 0.042922912488633565 + cy * -0.939145401440961 + cz * -0.3408277255972426 ) >= 0.9999999995769202)
+2017-02-22 16:39:26,125 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 16:39:26,125 - root - INFO - Starting MySQL query :::2017-02-22 16:39:26
+2017-02-22 16:44:15,665 - root - INFO - Completed MySQL query :::2017-02-22 16:44:15
+2017-02-22 16:44:15,665 - root - INFO - MySQL Query: 9 row(s) returned. 
+2017-02-22 16:44:15,665 - root - INFO - 
+2017-02-22 16:44:15,665 - root - INFO - Starting SQL Server query :::2017-02-22 16:44:15
+2017-02-22 16:44:15,762 - root - INFO - Completed SQL Server query :::2017-02-22 16:44:15
+2017-02-22 16:44:15,763 - root - INFO - SQL Server Query: 9 row(s) returned. 
+2017-02-22 16:44:15,763 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 16:44:15,763 - root - INFO - Query Successful !!
+2017-02-22 16:44:15,763 - root - INFO - 
+2017-02-22 16:44:15,763 - root - INFO - 
+2017-02-22 16:44:15,763 - root - INFO - 
+2017-02-22 16:44:15,771 - root - INFO - Total queries: 14
+2017-02-22 16:44:15,772 - root - INFO - Total unique queries: 14
+2017-02-22 16:44:15,772 - root - INFO - Total failed: 0
+2017-02-22 16:44:15,772 - root - INFO - Query : SELECT sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(0.9912132999168521-cx,2)+power(0.058088906842647066-cy,2)+power(0.11883548699681716-cz,2))/2))*60 as distance FROM lasSource WHERE `dec` > 6.774900000000001 and `dec` < 6.874900000000001 and ra >= 3.3035545903678165 and ra <= 3.4042788096321837 and ((cx * 0.9912132999168521 + cy * 0.058088906842647066 + cz * 0.11883548699681716 ) >= 0.9999996192282494)
+2017-02-22 16:44:15,776 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 16:44:15,776 - root - INFO - Starting MySQL query :::2017-02-22 16:44:15
+2017-02-22 16:49:36,014 - root - INFO - Completed MySQL query :::2017-02-22 16:49:36
+2017-02-22 16:49:36,014 - root - INFO - MySQL Query: 62 row(s) returned. 
+2017-02-22 16:49:36,015 - root - INFO - 
+2017-02-22 16:49:36,015 - root - INFO - Starting SQL Server query :::2017-02-22 16:49:36
+2017-02-22 16:49:36,275 - root - INFO - Completed SQL Server query :::2017-02-22 16:49:36
+2017-02-22 16:49:36,275 - root - INFO - SQL Server Query: 62 row(s) returned. 
+2017-02-22 16:49:36,275 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 16:49:36,275 - root - INFO - Query Successful !!
+2017-02-22 16:49:36,275 - root - INFO - 
+2017-02-22 16:49:36,275 - root - INFO - 
+2017-02-22 16:49:36,275 - root - INFO - 
+2017-02-22 16:49:36,283 - root - INFO - Total queries: 15
+2017-02-22 16:49:36,283 - root - INFO - Total unique queries: 15
+2017-02-22 16:49:36,283 - root - INFO - Total failed: 0
+2017-02-22 16:49:36,283 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(0.9796044216733406-cx,2)+power(8.83778707811599E-4-cy,2)+power(0.200933809930622-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 11.524904333333334 and `dec` < 11.658237666666666 and ((ra >= 359.9836201005468 and ra <=360) or (ra >= 0 and ra <= 0.11976198945323814)) and ((cx * 0.9796044216733406 + cy * 8.83778707811599E-4 + cz * 0.200933809930622 ) >= 0.9999993230724769)  and J_1AperMag3 > 0.0 and HApermag3 > 0.0
+2017-02-22 16:49:36,287 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 16:49:36,287 - root - INFO - Starting MySQL query :::2017-02-22 16:49:36
+2017-02-22 16:51:46,229 - root - INFO - Completed MySQL query :::2017-02-22 16:51:46
+2017-02-22 16:51:46,230 - root - INFO - MySQL Query: 71 row(s) returned. 
+2017-02-22 16:51:46,230 - root - INFO - 
+2017-02-22 16:51:46,230 - root - INFO - Starting SQL Server query :::2017-02-22 16:51:46
+2017-02-22 16:51:48,776 - root - INFO - Completed SQL Server query :::2017-02-22 16:51:48
+2017-02-22 16:51:48,776 - root - INFO - SQL Server Query: 71 row(s) returned. 
+2017-02-22 16:51:48,776 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 16:51:48,777 - root - INFO - Query Successful !!
+2017-02-22 16:51:48,777 - root - INFO - 
+2017-02-22 16:51:48,777 - root - INFO - 
+2017-02-22 16:51:48,777 - root - INFO - 
+2017-02-22 16:51:48,785 - root - INFO - Total queries: 16
+2017-02-22 16:51:48,785 - root - INFO - Total unique queries: 16
+2017-02-22 16:51:48,785 - root - INFO - Total failed: 0
+2017-02-22 16:51:48,785 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err, H2AperMag3, H2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.04292215518527661-cx,2)+power(-0.9391451011784818-cy,2)+power(-0.34082864833624277-cz,2))/2))*60 as distance  FROM gpsSource WHERE `dec` > -19.929034504342923 and `dec` < -19.925701171009592 and ra >= 272.6150200117686 and ra <= 272.6185656753208 and ((cx * 0.04292215518527661 + cy * -0.9391451011784818 + cz * -0.34082864833624277 ) >= 0.9999999995769202)
+2017-02-22 16:51:48,790 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 16:51:48,790 - root - INFO - Starting MySQL query :::2017-02-22 16:51:48
+2017-02-22 16:51:52,221 - root - INFO - Completed MySQL query :::2017-02-22 16:51:52
+2017-02-22 16:51:52,221 - root - INFO - MySQL Query: 8 row(s) returned. 
+2017-02-22 16:51:52,222 - root - INFO - 
+2017-02-22 16:51:52,222 - root - INFO - Starting SQL Server query :::2017-02-22 16:51:52
+2017-02-22 16:51:52,318 - root - INFO - Completed SQL Server query :::2017-02-22 16:51:52
+2017-02-22 16:51:52,318 - root - INFO - SQL Server Query: 8 row(s) returned. 
+2017-02-22 16:51:52,318 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 16:51:52,318 - root - INFO - Query Successful !!
+2017-02-22 16:51:52,318 - root - INFO - 
+2017-02-22 16:51:52,318 - root - INFO - 
+2017-02-22 16:51:52,318 - root - INFO - 
+2017-02-22 16:51:52,326 - root - INFO - Total queries: 17
+2017-02-22 16:51:52,326 - root - INFO - Total unique queries: 17
+2017-02-22 16:51:52,326 - root - INFO - Total failed: 0
+2017-02-22 16:51:52,326 - root - INFO - Query : SELECT count(*) from lasSource
+2017-02-22 16:51:52,330 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 16:51:52,330 - root - INFO - Starting MySQL query :::2017-02-22 16:51:52
+2017-02-22 16:52:13,812 - root - INFO - Completed MySQL query :::2017-02-22 16:52:13
+2017-02-22 16:52:13,812 - root - INFO - MySQL Query: 1 row(s) returned. 
+2017-02-22 16:52:13,813 - root - INFO - 
+2017-02-22 16:52:13,813 - root - INFO - Starting SQL Server query :::2017-02-22 16:52:13
+2017-02-22 16:52:24,322 - root - INFO - Completed SQL Server query :::2017-02-22 16:52:24
+2017-02-22 16:52:24,322 - root - INFO - SQL Server Query: 1 row(s) returned. 
+2017-02-22 16:52:24,323 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 16:52:24,323 - root - INFO - Query Successful !!
+2017-02-22 16:52:24,323 - root - INFO - 
+2017-02-22 16:52:24,323 - root - INFO - 
+2017-02-22 16:52:24,323 - root - INFO - 
+2017-02-22 16:52:24,332 - root - INFO - Total queries: 18
+2017-02-22 16:52:24,332 - root - INFO - Total unique queries: 18
+2017-02-22 16:52:24,332 - root - INFO - Total failed: 0
+2017-02-22 16:52:24,332 - root - INFO - Query : SELECT sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(0.9912132999168521-cx,2)+power(0.058088906842647066-cy,2)+power(0.11883548699681716-cz,2))/2))*60 as distance FROM lasSource WHERE `dec` > 6.766566666666668 and `dec` < 6.883233333333334 and ra >= 3.295159874525504 and ra <= 3.412673525474496 and ((cx * 0.9912132999168521 + cy * 0.058088906842647066 + cz * 0.11883548699681716 ) >= 0.9999994817273514)
+2017-02-22 16:52:24,337 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 16:52:24,337 - root - INFO - Starting MySQL query :::2017-02-22 16:52:24
+2017-02-22 16:52:44,137 - root - INFO - Completed MySQL query :::2017-02-22 16:52:44
+2017-02-22 16:52:44,137 - root - INFO - MySQL Query: 104 row(s) returned. 
+2017-02-22 16:52:44,137 - root - INFO - 
+2017-02-22 16:52:44,138 - root - INFO - Starting SQL Server query :::2017-02-22 16:52:44
+2017-02-22 16:52:45,710 - root - INFO - Completed SQL Server query :::2017-02-22 16:52:45
+2017-02-22 16:52:45,710 - root - INFO - SQL Server Query: 104 row(s) returned. 
+2017-02-22 16:52:45,711 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 16:52:45,711 - root - INFO - Query Successful !!
+2017-02-22 16:52:45,711 - root - INFO - 
+2017-02-22 16:52:45,711 - root - INFO - 
+2017-02-22 16:52:45,711 - root - INFO - 
+2017-02-22 16:52:45,719 - root - INFO - Total queries: 19
+2017-02-22 16:52:45,719 - root - INFO - Total unique queries: 19
+2017-02-22 16:52:45,719 - root - INFO - Total failed: 0
+2017-02-22 16:52:45,719 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(-0.8104883500332749-cx,2)+power(-0.5853304640706892-cy,2)+power(0.022290856671094258-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 1.2272778 and `dec` < 1.3272778 and ra >= 215.7866065811499 and ra <= 215.88663341885012 and ((cx * -0.8104883500332749 + cy * -0.5853304640706892 + cz * 0.022290856671094258 ) >= 0.9999996192282494)
+2017-02-22 16:52:45,724 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 16:52:45,724 - root - INFO - Starting MySQL query :::2017-02-22 16:52:45
+2017-02-22 16:58:58,632 - root - INFO - Completed MySQL query :::2017-02-22 16:58:58
+2017-02-22 16:58:58,633 - root - INFO - MySQL Query: 270 row(s) returned. 
+2017-02-22 16:58:58,633 - root - INFO - 
+2017-02-22 16:58:58,633 - root - INFO - Starting SQL Server query :::2017-02-22 16:58:58
+2017-02-22 16:59:00,764 - root - INFO - Completed SQL Server query :::2017-02-22 16:59:00
+2017-02-22 16:59:00,764 - root - INFO - SQL Server Query: 270 row(s) returned. 
+2017-02-22 16:59:00,764 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 16:59:00,764 - root - INFO - Query Successful !!
+2017-02-22 16:59:00,764 - root - INFO - 
+2017-02-22 16:59:00,764 - root - INFO - 
+2017-02-22 16:59:00,764 - root - INFO - 
+2017-02-22 16:59:00,772 - root - INFO - Total queries: 20
+2017-02-22 16:59:00,772 - root - INFO - Total unique queries: 20
+2017-02-22 16:59:00,772 - root - INFO - Total failed: 0
+2017-02-22 16:59:00,773 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(0.9196048084450921-cx,2)+power(0.37583543206813-cy,2)+power(0.11434476064441156-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 6.499166633333333 and `dec` < 6.632499966666668 and ra >= 22.162342154894958 and ra <= 22.296573845105048 and ((cx * 0.9196048084450921 + cy * 0.37583543206813 + cz * 0.11434476064441156 ) >= 0.9999993230724769)
+2017-02-22 16:59:00,776 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 16:59:00,776 - root - INFO - Starting MySQL query :::2017-02-22 16:59:00
+2017-02-22 17:04:28,804 - root - INFO - Completed MySQL query :::2017-02-22 17:04:28
+2017-02-22 17:04:28,804 - root - INFO - MySQL Query: 275 row(s) returned. 
+2017-02-22 17:04:28,804 - root - INFO - 
+2017-02-22 17:04:28,804 - root - INFO - Starting SQL Server query :::2017-02-22 17:04:28
+2017-02-22 17:04:30,561 - root - INFO - Completed SQL Server query :::2017-02-22 17:04:30
+2017-02-22 17:04:30,561 - root - INFO - SQL Server Query: 275 row(s) returned. 
+2017-02-22 17:04:30,561 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 17:04:30,561 - root - INFO - Query Successful !!
+2017-02-22 17:04:30,561 - root - INFO - 
+2017-02-22 17:04:30,561 - root - INFO - 
+2017-02-22 17:04:30,561 - root - INFO - 
+2017-02-22 17:04:30,569 - root - INFO - Total queries: 21
+2017-02-22 17:04:30,569 - root - INFO - Total unique queries: 21
+2017-02-22 17:04:30,569 - root - INFO - Total failed: 0
+2017-02-22 17:04:30,569 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(0.8991907693502726-cx,2)+power(0.40479042941064414-cy,2)+power(0.1661344894138819-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 9.529812266666667 and `dec` < 9.596478933333335 and ra >= 24.202129589461023 and ra <= 24.269742410538974 and ((cx * 0.8991907693502726 + cy * 0.40479042941064414 + cz * 0.1661344894138819 ) >= 0.999999830768105)  and J_1AperMag3 > 0.0
+2017-02-22 17:04:30,573 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 17:04:30,573 - root - INFO - Starting MySQL query :::2017-02-22 17:04:30
+2017-02-22 17:07:43,885 - root - INFO - Completed MySQL query :::2017-02-22 17:07:43
+2017-02-22 17:07:43,885 - root - INFO - MySQL Query: 0 row(s) returned. 
+2017-02-22 17:07:43,886 - root - INFO - 
+2017-02-22 17:07:43,886 - root - INFO - Starting SQL Server query :::2017-02-22 17:07:43
+2017-02-22 17:07:46,255 - root - INFO - Completed SQL Server query :::2017-02-22 17:07:46
+2017-02-22 17:07:46,256 - root - INFO - SQL Server Query: 0 row(s) returned. 
+2017-02-22 17:07:46,256 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 17:07:46,256 - root - INFO - Query Successful !!
+2017-02-22 17:07:46,256 - root - INFO - 
+2017-02-22 17:07:46,257 - root - INFO - 
+2017-02-22 17:07:46,257 - root - INFO - 
+2017-02-22 17:07:46,265 - root - INFO - Total queries: 22
+2017-02-22 17:07:46,265 - root - INFO - Total unique queries: 22
+2017-02-22 17:07:46,265 - root - INFO - Total failed: 0
+2017-02-22 17:07:46,265 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(-0.9362163160765321-cx,2)+power(-0.3232452565319383-cy,2)+power(0.13788224556369882-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 7.858652733333334 and `dec` < 7.991986066666666 and ra >= 198.98081948511734 and ra <= 199.11546051488264 and ((cx * -0.9362163160765321 + cy * -0.3232452565319383 + cz * 0.13788224556369882 ) >= 0.9999993230724769)  and J_1AperMag3 > 0.0 and HApermag3 > 0.0
+2017-02-22 17:07:46,269 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 17:07:46,269 - root - INFO - Starting MySQL query :::2017-02-22 17:07:46
+2017-02-22 17:13:55,691 - root - INFO - Completed MySQL query :::2017-02-22 17:13:55
+2017-02-22 17:13:55,691 - root - INFO - MySQL Query: 143 row(s) returned. 
+2017-02-22 17:13:55,691 - root - INFO - 
+2017-02-22 17:13:55,691 - root - INFO - Starting SQL Server query :::2017-02-22 17:13:55
+2017-02-22 17:13:57,464 - root - INFO - Completed SQL Server query :::2017-02-22 17:13:57
+2017-02-22 17:13:57,464 - root - INFO - SQL Server Query: 143 row(s) returned. 
+2017-02-22 17:13:57,464 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 17:13:57,464 - root - INFO - Query Successful !!
+2017-02-22 17:13:57,464 - root - INFO - 
+2017-02-22 17:13:57,464 - root - INFO - 
+2017-02-22 17:13:57,464 - root - INFO - 
+2017-02-22 17:13:57,472 - root - INFO - Total queries: 23
+2017-02-22 17:13:57,472 - root - INFO - Total unique queries: 23
+2017-02-22 17:13:57,472 - root - INFO - Total failed: 0
+2017-02-22 17:13:57,473 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(-0.4889068341683917-cx,2)+power(0.7587730465456335-cy,2)+power(0.4303876988707957-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 25.425500333333332 and `dec` < 25.558833666666665 and ra >= 122.72135187204528 and ra <= 122.86914812795472 and ((cx * -0.4889068341683917 + cy * 0.7587730465456335 + cz * 0.4303876988707957 ) >= 0.9999993230724769)
+2017-02-22 17:13:57,476 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 17:13:57,477 - root - INFO - Starting MySQL query :::2017-02-22 17:13:57
+2017-02-22 17:14:08,132 - root - INFO - Completed MySQL query :::2017-02-22 17:14:08
+2017-02-22 17:14:08,132 - root - INFO - MySQL Query: 525 row(s) returned. 
+2017-02-22 17:14:08,132 - root - INFO - 
+2017-02-22 17:14:08,132 - root - INFO - Starting SQL Server query :::2017-02-22 17:14:08
+2017-02-22 17:14:10,503 - root - INFO - Completed SQL Server query :::2017-02-22 17:14:10
+2017-02-22 17:14:10,503 - root - INFO - SQL Server Query: 525 row(s) returned. 
+2017-02-22 17:14:10,504 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 17:14:10,504 - root - INFO - Query Successful !!
+2017-02-22 17:14:10,504 - root - INFO - 
+2017-02-22 17:14:10,504 - root - INFO - 
+2017-02-22 17:14:10,504 - root - INFO - 
+2017-02-22 17:14:10,511 - root - INFO - Total queries: 24
+2017-02-22 17:14:10,511 - root - INFO - Total unique queries: 24
+2017-02-22 17:14:10,511 - root - INFO - Total failed: 0
+2017-02-22 17:14:10,511 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err, H2AperMag3, H2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.04292215518527661-cx,2)+power(-0.9391451011784818-cy,2)+power(-0.3408286483362428-cz,2))/2))*60 as distance  FROM gpsSource WHERE `dec` > -19.929034504342926 and `dec` < -19.925701171009596 and ra >= 272.6150200117686 and ra <= 272.6185656753208 and ((cx * 0.04292215518527661 + cy * -0.9391451011784818 + cz * -0.3408286483362428 ) >= 0.9999999995769202)
+2017-02-22 17:14:10,515 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 17:14:10,515 - root - INFO - Starting MySQL query :::2017-02-22 17:14:10
+2017-02-22 17:14:10,705 - root - INFO - Completed MySQL query :::2017-02-22 17:14:10
+2017-02-22 17:14:10,706 - root - INFO - MySQL Query: 8 row(s) returned. 
+2017-02-22 17:14:10,706 - root - INFO - 
+2017-02-22 17:14:10,706 - root - INFO - Starting SQL Server query :::2017-02-22 17:14:10
+2017-02-22 17:14:10,799 - root - INFO - Completed SQL Server query :::2017-02-22 17:14:10
+2017-02-22 17:14:10,800 - root - INFO - SQL Server Query: 8 row(s) returned. 
+2017-02-22 17:14:10,800 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 17:14:10,800 - root - INFO - Query Successful !!
+2017-02-22 17:14:10,800 - root - INFO - 
+2017-02-22 17:14:10,800 - root - INFO - 
+2017-02-22 17:14:10,800 - root - INFO - 
+2017-02-22 17:14:10,809 - root - INFO - Total queries: 25
+2017-02-22 17:14:10,809 - root - INFO - Total unique queries: 25
+2017-02-22 17:14:10,809 - root - INFO - Total failed: 0
+2017-02-22 17:14:10,809 - root - INFO - Query : select ra as radeg,`dec` as decdeg, japermag3 as j, hapermag3 as h, k_1apermag3 as k from gpsSource where framesetid=438086670524
+2017-02-22 17:14:10,814 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 17:14:10,814 - root - INFO - Starting MySQL query :::2017-02-22 17:14:10
+2017-02-22 18:51:17,015 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+  File "testing/test_firethorn_logged_mysql.py", line 63, in raise_timeout
+    raise Timeout.Timeout()
+Timeout
+2017-02-22 18:51:17,017 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+Timeout
+2017-02-22 18:51:17,017 - root - ERROR - 
+Traceback (most recent call last):
+  File "testing/test_firethorn_logged_mysql.py", line 168, in test_logged_queries
+    mysql_row_length, mysql_error_message = mysqlEng.execute_sql_query_get_rows(query, config.mysql_test_database, config.sql_rowlimit, config.sql_timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 283, in execute_sql_query_get_rows
+    raise e
+Timeout
+2017-02-22 18:51:17,017 - root - INFO - Timeout reached while running sql query..
+2017-02-22 18:51:17,018 - root - INFO - 
+2017-02-22 18:51:17,018 - root - INFO - Starting SQL Server query :::2017-02-22 18:51:17
+2017-02-22 18:51:17,076 - root - INFO - Completed SQL Server query :::2017-02-22 18:51:17
+2017-02-22 18:51:17,076 - root - INFO - SQL Server Query: 3027 row(s) returned. 
+2017-02-22 18:51:17,077 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 18:51:17,077 - root - INFO - Query Failed..
+2017-02-22 18:51:17,077 - root - INFO - 
+2017-02-22 18:51:17,077 - root - INFO - 
+2017-02-22 18:51:17,077 - root - INFO - 
+2017-02-22 18:51:17,084 - root - INFO - Total queries: 26
+2017-02-22 18:51:17,084 - root - INFO - Total unique queries: 26
+2017-02-22 18:51:17,084 - root - INFO - Total failed: 0
+2017-02-22 18:51:17,085 - root - INFO - Query : SELECT l, b, ra, `dec`, pstar, pGalaxy, pNoise, mergedClass, jAperMag3, hAperMag3, k_1AperMag3, k_1ppErrBits, jppErrbits, hppErrbits, k_1ErrBits, jAperMag3Err, hAperMag3Err, k_1AperMag3Err, sourceID FROM gpsSource WHERE ra between 94.5 and 97.5 and `dec` between 4 and 4.5 and (mergedClass = 1 or mergedClass = -3 or mergedClass = -1 or mergedClass = -2) AND jppErrBits < 17 AND hppErrBits < 17 AND k_1ppErrBits < 17 AND jErrBits = 0 AND hErrBits = 0 AND k_1ErrBits = 0 AND abs(jAperMag3Err) < 0.3 AND abs(hAperMag3Err) < 0.3 AND abs(k_1AperMag3Err) < 0.3
+2017-02-22 18:51:17,088 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 18:51:17,089 - root - INFO - Starting MySQL query :::2017-02-22 18:51:17
+2017-02-22 18:53:12,518 - root - INFO - Completed MySQL query :::2017-02-22 18:53:12
+2017-02-22 18:53:12,518 - root - INFO - MySQL Query: 10000 row(s) returned. 
+2017-02-22 18:53:12,518 - root - INFO - 
+2017-02-22 18:53:12,518 - root - INFO - Starting SQL Server query :::2017-02-22 18:53:12
+2017-02-22 18:53:13,595 - root - INFO - Completed SQL Server query :::2017-02-22 18:53:13
+2017-02-22 18:53:13,595 - root - INFO - SQL Server Query: 10000 row(s) returned. 
+2017-02-22 18:53:13,595 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 18:53:13,596 - root - INFO - Query Successful !!
+2017-02-22 18:53:13,596 - root - INFO - 
+2017-02-22 18:53:13,596 - root - INFO - 
+2017-02-22 18:53:13,596 - root - INFO - 
+2017-02-22 18:53:13,605 - root - INFO - Total queries: 27
+2017-02-22 18:53:13,605 - root - INFO - Total unique queries: 27
+2017-02-22 18:53:13,605 - root - INFO - Total failed: 0
+2017-02-22 18:53:13,605 - root - INFO - Query : select count(*) from lasSource where mergedClass=-1 or mergedClass=-2 or mergedClass=-3 or mergedClass=-9  and yPsfMag<=19 and j_1PsfMag<=19 and hPsfMag<=19 and kPsfMag<=19  and yPsfMag>0 and j_1PsfMag>0 and hPsfMag>0 and kPsfMag>0
+2017-02-22 18:53:13,610 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 18:53:13,610 - root - INFO - Starting MySQL query :::2017-02-22 18:53:13
+2017-02-22 19:09:49,377 - root - INFO - Completed MySQL query :::2017-02-22 19:09:49
+2017-02-22 19:09:49,377 - root - INFO - MySQL Query: 1 row(s) returned. 
+2017-02-22 19:09:49,377 - root - INFO - 
+2017-02-22 19:09:49,377 - root - INFO - Starting SQL Server query :::2017-02-22 19:09:49
+2017-02-22 19:14:05,315 - root - INFO - Completed SQL Server query :::2017-02-22 19:14:05
+2017-02-22 19:14:05,316 - root - INFO - SQL Server Query: 1 row(s) returned. 
+2017-02-22 19:14:05,316 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 19:14:05,316 - root - INFO - Query Successful !!
+2017-02-22 19:14:05,316 - root - INFO - 
+2017-02-22 19:14:05,316 - root - INFO - 
+2017-02-22 19:14:05,316 - root - INFO - 
+2017-02-22 19:14:05,326 - root - INFO - Total queries: 28
+2017-02-22 19:14:05,326 - root - INFO - Total unique queries: 28
+2017-02-22 19:14:05,326 - root - INFO - Total failed: 0
+2017-02-22 19:14:05,326 - root - INFO - Query : SELECT l, b, ra, `dec`,jAperMag3, hAperMag3, k_1AperMag3, mergedClass, sourceID, k_1ppErrBits, PriOrSec, framesetID FROM gpsSource WHERE ra between 272.830 and 275.000 and `dec` between 31.830 and 34.000 AND k_1AperMag3 > 0
+2017-02-22 19:14:05,331 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-22 19:14:05,331 - root - INFO - Starting MySQL query :::2017-02-22 19:14:05
+2017-02-22 23:07:24,278 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+  File "testing/test_firethorn_logged_mysql.py", line 63, in raise_timeout
+    raise Timeout.Timeout()
+Timeout
+2017-02-22 23:07:24,281 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+Timeout
+2017-02-22 23:07:24,281 - root - ERROR - 
+Traceback (most recent call last):
+  File "testing/test_firethorn_logged_mysql.py", line 168, in test_logged_queries
+    mysql_row_length, mysql_error_message = mysqlEng.execute_sql_query_get_rows(query, config.mysql_test_database, config.sql_rowlimit, config.sql_timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 283, in execute_sql_query_get_rows
+    raise e
+Timeout
+2017-02-22 23:07:24,282 - root - INFO - Timeout reached while running sql query..
+2017-02-22 23:07:24,282 - root - INFO - 
+2017-02-22 23:07:24,282 - root - INFO - Starting SQL Server query :::2017-02-22 23:07:24
+2017-02-22 23:09:37,707 - root - INFO - Completed SQL Server query :::2017-02-22 23:09:37
+2017-02-22 23:09:37,707 - root - INFO - SQL Server Query: 0 row(s) returned. 
+2017-02-22 23:09:37,707 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-22 23:09:37,708 - root - INFO - Query Failed..
+2017-02-22 23:09:37,708 - root - INFO - 
+2017-02-22 23:09:37,708 - root - INFO - 
+2017-02-22 23:09:37,708 - root - INFO - 
+2017-02-22 23:09:37,720 - root - INFO - Total queries: 29
+2017-02-22 23:09:37,720 - root - INFO - Total unique queries: 29
+2017-02-22 23:09:37,720 - root - INFO - Total failed: 0
+2017-02-22 23:09:37,720 - root - INFO - Success percentage: 100.0%
+
+
+
+
+mysql> SELECT AVG(sql_duration) FROM queries WHERE test_passed>0;
++--------------------+
+| AVG(sql_duration)  |
++--------------------+
+| 11.709021531618559 |
++--------------------+
+1 row in set (0.01 sec)
+
+
+mysql> SELECT AVG(mysql_duration) FROM queries WHERE test_passed>0;
++---------------------+
+| AVG(mysql_duration) |
++---------------------+
+|  211.76116019028885 |
++---------------------+
+1 row in set (0.00 sec)
+
+
+mysql> SELECT COUNT(*) FROM queries WHERE test_passed<=0;
++----------+
+| COUNT(*) |
++----------+
+|        3 |  (TESTS SKIPPED!!)
++----------+
+1 row in set (0.00 sec)
+
+
+
+mysql> SELECT SUBSTRING(query,1,132),mysql_duration,sql_duration FROM queries;
++--------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| SUBSTRING(query,1,132)                                                                                                               | mysql_duration       | sql_duration         |
++--------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| SELECT MAX(sourceID) FROM lasSource                                                                                                  | 0.1246027946472168   | 1.1839590072631836   |
+| SELECT AVG(ra) FROM lasSource                                                                                                        | 935.8574960231781    | 7.772540092468262    |
+| SELECT *,2*DEGREES(ASIN(sqrt(power(-0.43487295822751704-cx,2)+power(-0.046022867658389026-cy,2)+power(-0.8993149647675983-cz,2))/2)) | 0.055001020431518555 | 0.056043148040771484 |
+| SELECT  *,2*DEGREES(ASIN(sqrt(power(0.042923031410454976-cx,2)+power(-0.939145431907252-cy,2)+power(-0.34082762667113453-cz,2))/2))* | 306.7588460445404    | 0.09949398040771484  |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 98.51581597328186    | 3.481278896331787    |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 17.427857875823975   | 2.197066068649292    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 3.898287057876587    | 0.09759712219238281  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 0.21261096000671387  | 0.10529208183288574  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 707.6877408027649    | 2.5618999004364014   |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 0.3637349605560303   | 0.25528693199157715  |
+| SELECT *,2*DEGREES(ASIN(sqrt(power(0.7606329831372249-cx,2)+power(0.1176703620822802-cy,2)+power(-0.6384286576048973-cz,2))/2))*60 a | 0.03382706642150879  | 0.034485816955566406 |
+| select 0.02*floor(b/0.02)+0.01 as b,0.02*floor(l/0.02)+0.01 as l,floor( (K_1apermag3 - 1.48685*((Hapermag3-K_1apermag3)) + 0.0647944 | -1                   | 1.5105161666870117   |
+| SELECT l, b, ra, dec, jAperMag3, hAperMag3, k_1AperMag3, mergedClass,sourceID, k_1ppErrBits, priOrSec, frameSetID FROM gpsSource WHE | 264.70465779304504   | 3.993227958679199    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 289.53976583480835   | 0.09779095649719238  |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2A | 320.2385928630829    | 0.2603018283843994   |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 129.94278287887573   | 2.546535015106201    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 3.431857109069824    | 0.0963449478149414   |
+| SELECT count(*) from lasSource                                                                                                       | 21.482226133346558   | 10.509921073913574   |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2A | 19.800734996795654   | 1.5730650424957275   |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 372.90880489349365   | 2.131330966949463    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 328.0278470516205    | 1.756532907485962    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 193.31283712387085   | 2.370568037033081    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 369.4217360019684    | 1.7727160453796387   |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 10.655494928359985   | 2.3712730407714844   |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 0.1904919147491455   | 0.09401106834411621  |
+| select ra as radeg,dec as decdeg, japermag3 as j, hapermag3 as h, k_1apermag3 as k from gpsSource where framesetid=438086670524      | -1                   | 0.05886101722717285  |
+| SELECT l, b, ra, dec, pstar, pGalaxy, pNoise, mergedClass, jAperMag3, hAperMag3, k_1AperMag3, k_1ppErrBits, jppErrbits, hppErrbits,  | 115.42921495437622   | 1.077584981918335    |
+| select count(*) from lasSource where mergedClass=-1 or mergedClass=-2 or mergedClass=-3 or mergedClass=-9  and yPsfMag<=19 and j_1Ps | 995.7672998905182    | 255.93841290473938   |
+| SELECT l, b, ra, dec,jAperMag3, hAperMag3, k_1AperMag3, mergedClass, sourceID, k_1ppErrBits, PriOrSec, framesetID FROM gpsSource WHE | -1                   | 133.42550206184387   |
++--------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+29 rows in set (0.00 sec)
+

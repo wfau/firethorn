@@ -113,5 +113,42 @@ EOF
 
 
 
+# To observe results, you can either tail the logfile
+    tail -f -n 1000 /var/logs/pyrothorn/logfile.txt
+
+
+
+# Or connect to the MySQL results database container
+    docker exec -it mikaela bash
+    mysql
+    ..
+    mysql> USE pyrothorn_testing;
+    mysql> SELECT * from queries;
+
+
+    mysql> DESCRIBE queries;
++---------------------+------------------+------+-----+---------+----------------+
+| Field               | Type             | Null | Key | Default | Extra          |
++---------------------+------------------+------+-----+---------+----------------+
+| queryid             | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| queryrunID          | text             | NO   |     | NULL    |                |
+| query_hash          | text             | NO   |     | NULL    |                |
+| query_count         | int(10) unsigned | NO   |     | NULL    |                |
+| query_timestamp     | varchar(120)     | NO   |     | NULL    |                |
+| query               | text             | NO   |     | NULL    |                |
+| direct_sql_rows     | int(11)          | NO   |     | NULL    |                |
+| mysql_sql_rows      | int(11)          | NO   |     | NULL    |                |
+| mysql_duration      | varchar(60)      | NO   |     | NULL    |                |
+| sql_duration        | varchar(60)      | NO   |     | NULL    |                |
+| test_passed         | tinyint(1)       | NO   |     | NULL    |                |
+| firethorn_version   | varchar(60)      | NO   |     | NULL    |                |
+| mysql_error_message | text             | NO   |     | NULL    |                |
+| sql_error_message   | text             | NO   |     | NULL    |                |
+| java_version        | varchar(120)     | NO   |     | NULL    |                |
+| sys_timestamp       | varchar(60)      | NO   |     | NULL    |                |
+| firethorn_changeset | varchar(60)      | NO   |     | NULL    |                |
+| sys_platform        | varchar(60)      | NO   |     | NULL    |                |
++---------------------+------------------+------+-----+---------+----------------+
+
 
 
