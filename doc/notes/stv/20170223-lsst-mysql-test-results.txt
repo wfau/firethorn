@@ -588,3 +588,69 @@ Timeout
 2017-02-22 23:09:37,720 - root - INFO - Success percentage: 100.0%
 
 
+
+
+mysql> SELECT AVG(sql_duration) FROM queries WHERE test_passed>0;
++--------------------+
+| AVG(sql_duration)  |
++--------------------+
+| 11.709021531618559 |
++--------------------+
+1 row in set (0.01 sec)
+
+
+mysql> SELECT AVG(mysql_duration) FROM queries WHERE test_passed>0;
++---------------------+
+| AVG(mysql_duration) |
++---------------------+
+|  211.76116019028885 |
++---------------------+
+1 row in set (0.00 sec)
+
+
+mysql> SELECT COUNT(*) FROM queries WHERE test_passed<=0;
++----------+
+| COUNT(*) |
++----------+
+|        3 |  (TESTS SKIPPED!!)
++----------+
+1 row in set (0.00 sec)
+
+
+
+mysql> SELECT SUBSTRING(query,1,132),mysql_duration,sql_duration FROM queries;
++--------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| SUBSTRING(query,1,132)                                                                                                               | mysql_duration       | sql_duration         |
++--------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| SELECT MAX(sourceID) FROM lasSource                                                                                                  | 0.1246027946472168   | 1.1839590072631836   |
+| SELECT AVG(ra) FROM lasSource                                                                                                        | 935.8574960231781    | 7.772540092468262    |
+| SELECT *,2*DEGREES(ASIN(sqrt(power(-0.43487295822751704-cx,2)+power(-0.046022867658389026-cy,2)+power(-0.8993149647675983-cz,2))/2)) | 0.055001020431518555 | 0.056043148040771484 |
+| SELECT  *,2*DEGREES(ASIN(sqrt(power(0.042923031410454976-cx,2)+power(-0.939145431907252-cy,2)+power(-0.34082762667113453-cz,2))/2))* | 306.7588460445404    | 0.09949398040771484  |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 98.51581597328186    | 3.481278896331787    |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 17.427857875823975   | 2.197066068649292    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 3.898287057876587    | 0.09759712219238281  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 0.21261096000671387  | 0.10529208183288574  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 707.6877408027649    | 2.5618999004364014   |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 0.3637349605560303   | 0.25528693199157715  |
+| SELECT *,2*DEGREES(ASIN(sqrt(power(0.7606329831372249-cx,2)+power(0.1176703620822802-cy,2)+power(-0.6384286576048973-cz,2))/2))*60 a | 0.03382706642150879  | 0.034485816955566406 |
+| select 0.02*floor(b/0.02)+0.01 as b,0.02*floor(l/0.02)+0.01 as l,floor( (K_1apermag3 - 1.48685*((Hapermag3-K_1apermag3)) + 0.0647944 | -1                   | 1.5105161666870117   |
+| SELECT l, b, ra, dec, jAperMag3, hAperMag3, k_1AperMag3, mergedClass,sourceID, k_1ppErrBits, priOrSec, frameSetID FROM gpsSource WHE | 264.70465779304504   | 3.993227958679199    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 289.53976583480835   | 0.09779095649719238  |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2A | 320.2385928630829    | 0.2603018283843994   |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 129.94278287887573   | 2.546535015106201    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 3.431857109069824    | 0.0963449478149414   |
+| SELECT count(*) from lasSource                                                                                                       | 21.482226133346558   | 10.509921073913574   |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2A | 19.800734996795654   | 1.5730650424957275   |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 372.90880489349365   | 2.131330966949463    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 328.0278470516205    | 1.756532907485962    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 193.31283712387085   | 2.370568037033081    |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 369.4217360019684    | 1.7727160453796387   |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 10.655494928359985   | 2.3712730407714844   |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 0.1904919147491455   | 0.09401106834411621  |
+| select ra as radeg,dec as decdeg, japermag3 as j, hapermag3 as h, k_1apermag3 as k from gpsSource where framesetid=438086670524      | -1                   | 0.05886101722717285  |
+| SELECT l, b, ra, dec, pstar, pGalaxy, pNoise, mergedClass, jAperMag3, hAperMag3, k_1AperMag3, k_1ppErrBits, jppErrbits, hppErrbits,  | 115.42921495437622   | 1.077584981918335    |
+| select count(*) from lasSource where mergedClass=-1 or mergedClass=-2 or mergedClass=-3 or mergedClass=-9  and yPsfMag<=19 and j_1Ps | 995.7672998905182    | 255.93841290473938   |
+| SELECT l, b, ra, dec,jAperMag3, hAperMag3, k_1AperMag3, mergedClass, sourceID, k_1ppErrBits, PriOrSec, framesetID FROM gpsSource WHE | -1                   | 133.42550206184387   |
++--------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+29 rows in set (0.00 sec)
+
