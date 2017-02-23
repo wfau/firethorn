@@ -20,6 +20,10 @@
 # </meta:header>
 #
 #
+
+host: lsstuk1 (129.215.175.50)
+db: LSSTtest
+
 2017-02-22 10:17:25,930 - root - INFO - Query : SELECT MAX(sourceID) FROM lasSource
 2017-02-22 10:17:25,949 - root - INFO - ---------------------- Starting Query Test ----------------------
 2017-02-22 10:17:25,949 - root - INFO - Starting MySQL query :::2017-02-22 10:17:25
