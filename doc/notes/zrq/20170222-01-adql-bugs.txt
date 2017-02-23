@@ -26,10 +26,10 @@
 
     createvm
 
-        INFO : Node name [Araybwyn]
+        INFO : Node name [Lothigometh]
         INFO : Base name [fedora-24-docker-32G-20170113.qcow]
         INFO : Base path [/var/lib/libvirt/images/base/fedora-24-docker-32G-20170113.qcow]
-        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc name [Lothigometh.qcow]
         INFO : Disc size [32GiB]
 
 # -----------------------------------------------------
@@ -409,7 +409,7 @@ EOF
         wfauadql=${adqlspace:?}
 
         source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TablesSchema.xml"
-        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
+        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_OldSchema.xml"
        #source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
        #source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR2' 'dbo' "meta/ATLASDR2_TablesSchema.xml"
 
@@ -420,7 +420,6 @@ EOF
         source "bin/04-01-create-query-space.sh"  'Test workspace'
         source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'TWOMASS'  'TWOMASS'
         source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR1' 'ATLASDR1'
-        #source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR2' 'ATLASDR2'
 
 # -----------------------------------------------------
 # Test queries ...
@@ -729,72 +728,12 @@ FROM
     gaia.gaia_source
 EOF
 
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data-urlencode "adql.query.input@/tmp/test-query.adql" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
-            "${endpointurl:?}/${queryspace:?}/queries/create" \
-            | bin/pp | tee /tmp/test-query.json
-
-        testdata=$(cat /tmp/test-query.json | votable)
-        curl --silent "${testdata:?}" | xmlstarlet fo | tee /tmp/test-data.xml
-
-
-
-
-        # ADQL result table
-        curl --silent http://gillian:8080/firethorn/adql/table/16367 | bin/pp
-
-            "name" : "XX_PIKR6ROWFFYEYAAAAFNGRT3GSU",
-
-        # ADQL result column
-        curl --silent http://gillian:8080/firethorn/adql/column/16369 | bin/pp
-
-            "name" : "duplicated_source",
-
-        # JDBC result column
-        curl --silent http://gillian:8080/firethorn/jdbc/column/16368 | bin/pp
-
-            "name" : "XX_RDSVB5OIFVRSCAAAAFNGRT3G24"
-
-        # JDBC result columns
-        curl --silent http://gillian:8080/firethorn/jdbc/column/16368 | bin/pp
-
-
-        # ADQL results schema
-        curl --silent http://gillian:8080/firethorn/adql/schema/11521 | bin/pp
-
-        # ADQL results resource
-        curl --silent http://gillian:8080/firethorn/adql/resource/11520 | bin/pp
-
-
-
     cat > /tmp/test-query.adql << EOF
 SELECT
-    duplicated_source
+    DISTINCT duplicated_source
 FROM
-    XX_PIKR6ROWFFYEYAAAAFNGRT3GSU
+    gaia.gaia_source
 EOF
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data-urlencode "adql.query.input@/tmp/test-query.adql" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
-            "http://gillian:8080/firethorn/adql/resource/11520/queries/create" \
-            | bin/pp | tee /tmp/test-query.json
-
-        testdata=$(cat /tmp/test-query.json | votable)
-        curl --silent "${testdata:?}" | xmlstarlet fo | tee /tmp/test-data.xml
-
-
-
-
 
     cat > /tmp/test-query.adql << EOF
 SELECT
@@ -812,10 +751,7 @@ WHERE
     distanceMins < 2/60.0
 AND
     sdssType = 3
-
 EOF
-
-
 
 
     cat > /tmp/test-query.adql << EOF
@@ -835,22 +771,18 @@ WHERE
 EOF
 
 
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/test-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | bin/pp | tee /tmp/test-query.json
 
-
-
-SELECT
-    ra,
-    dec,
-    cx,
-    cy,
-    cz,
-    htmID
-
-
-
-
-
-
+        testdata=$(cat /tmp/test-query.json | votable)
+        curl --silent "${testdata:?}" | xmlstarlet fo | tee /tmp/test-data.xml
 
 
 
@@ -861,43 +793,7 @@ SELECT
 
 
 
-
-
-
-
-test002 - rejected
-http://redmine.roe.ac.uk/issues/442
-
-    SELECT
-        DistanceMins
-    FROM
-        atlasSourceXDR7PhotoObj AS crossMatch
-    WHERE
-        (
-        SELECT
-            sourceID
-        FROM
-            atlasSource
-        WHERE
-            ra BETWEEN 182 AND 184
-        AND
-            dec BETWEEN -1 AND -3
-        AND
-            crossMatch.masterOjbID = sourceID
-        ) > 0
-
-
-
-
-
-
-
-
-
-
-
-
-
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Follow the Firethorn logs.
 #[user@desktop]
