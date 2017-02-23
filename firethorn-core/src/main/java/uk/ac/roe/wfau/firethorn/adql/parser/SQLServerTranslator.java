@@ -245,6 +245,7 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 	 */
 	@Override
 	public String translate(final ADQLColumn column) throws TranslationException {
+		log.debug("translate(ADQLColumn)");
 		// Use its DB name if known:
 		if (column.getDBLink() != null) {
 			DBColumn dbCol = column.getDBLink();

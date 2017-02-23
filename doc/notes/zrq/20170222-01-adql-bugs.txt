@@ -410,6 +410,7 @@ EOF
 
         source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TablesSchema.xml"
         source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
+       #source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
        #source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR2' 'dbo' "meta/ATLASDR2_TablesSchema.xml"
 
 # -----------------------------------------------------
@@ -421,10 +422,6 @@ EOF
         source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR1' 'ATLASDR1'
         #source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR2' 'ATLASDR2'
 
-
-
-
-
 # -----------------------------------------------------
 # Test queries ...
 #[root@tester]
@@ -433,7 +430,7 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 2000 designation, ra, dec FROM wfau.twomass_psc WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
+            --data "adql.query.input=SELECT TOP 2000 designation, ra, dec FROM TWOMASS.twomass_psc WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
@@ -454,7 +451,6 @@ EOF
         #
         # Select a specific row.
         xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/wfau-data.xml | xmlstarlet fo
-
 
 # -----------------------------------------------------
 # Create the GAVO TWOMASS resource.
@@ -562,7 +558,7 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT designation, ra, dec FROM wfau.twomass_psc WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
+            --data "adql.query.input=SELECT designation, ra, dec FROM TWOMASS.twomass_psc WHERE (ra BETWEEN 0 AND 0.5) AND (dec BETWEEN 0 AND 0.5)" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
@@ -620,38 +616,38 @@ EOF
 
     SELECT
         gaia.tmass_best_neighbour.original_ext_source_id AS gaia_ident,
-        wfau.twomass_psc.designation                     AS wfau_ident,
+        TWOMASS.twomass_psc.designation                  AS wfau_ident,
 
         gaia.tmass_best_neighbour.source_id              AS best_source_id,
         gaia.gaia_source.source_id                       AS gaia_source_id,
 
-        wfau.twomass_psc.ra                              AS wfau_ra,
+        TWOMASS.twomass_psc.ra                           AS wfau_ra,
         gaia.gaia_source.ra                              AS gaia_ra,
 
-        wfau.twomass_psc.ra - gaia.gaia_source.ra        AS delta_ra,
+        TWOMASS.twomass_psc.ra - gaia.gaia_source.ra     AS delta_ra,
 
-        wfau.twomass_psc.dec                             AS wfau_dec,
+        TWOMASS.twomass_psc.dec                          AS wfau_dec,
         gaia.gaia_source.dec                             AS gaia_dec,
 
-        wfau.twomass_psc.dec - gaia.gaia_source.dec      AS delta_dec
+        TWOMASS.twomass_psc.dec - gaia.gaia_source.dec   AS delta_dec
 
     FROM
         gaia.gaia_source,
         gaia.tmass_best_neighbour,
-        wfau.twomass_psc
+        TWOMASS.twomass_psc
 
     WHERE
         gaia.tmass_best_neighbour.source_id = gaia.gaia_source.source_id
     AND
-        gaia.tmass_best_neighbour.original_ext_source_id = wfau.twomass_psc.designation
+        gaia.tmass_best_neighbour.original_ext_source_id = TWOMASS.twomass_psc.designation
     AND
         gaia.gaia_source.ra  BETWEEN 0 AND 1.25
     AND
         gaia.gaia_source.dec BETWEEN 0 AND 1.25
     AND
-        wfau.twomass_psc.ra  BETWEEN 0 AND 1.25
+        TWOMASS.twomass_psc.ra  BETWEEN 0 AND 1.25
     AND
-        wfau.twomass_psc.dec BETWEEN 0 AND 1.25
+        TWOMASS.twomass_psc.dec BETWEEN 0 AND 1.25
 
 EOF
 
@@ -685,57 +681,22 @@ EOF
         # Select a specific row.
         xmlstarlet sel -t -c "//TR[TD='00012764+0028492']" /tmp/join-data.xml | xmlstarlet fo
 
-
-# -----------------------------------------------------
-# Load the local ATLAS resource.
-#[root@tester]
-
-        source "bin/02-02-create-jdbc-space.sh" \
-            'ATLAS JDBC conection' \
-            "jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1" \
-            "${datauser:?}" \
-            "${datapass:?}" \
-            "${datadriver:?}" \
-            '*'
-        atlasjdbc=${jdbcspace:?}
-
-        source "bin/03-01-create-adql-space.sh" 'ATLAS ADQL workspace'
-        atlasadql=${adqlspace:?}
-
-        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
-        source "bin/03-04-import-jdbc-metadoc.sh" "${atlasjdbc:?}" "${atlasadql:?}" 'ATLASDR2' 'dbo' "meta/ATLASDR2_TablesSchema.xml"
-
-# -----------------------------------------------------
-# Create a workspace and add ADQL schemas.
-#[root@tester]
-
-        source "bin/04-01-create-query-space.sh"  'Test workspace'
-        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'TWOMASS'  'TWOMASS'
-        source "bin/04-03-import-query-schema.sh" "${atlasadql:?}" 'ATLASDR1' 'ATLASDR1'
-
-        gavoname=gavo
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
-            --data   "adql.resource.schema.import.name=${gavoname:?}" \
-            --data   "adql.resource.schema.import.base=${gavoschema:?}" \
-            "${endpointurl:?}/${queryspace:?}/schemas/import" \
-            | bin/pp | tee /tmp/query-schema.json
-
-        gaianame=gaia
-        curl \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
-            --data   "adql.resource.schema.import.name=${gaianame:?}" \
-            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
-            "${endpointurl:?}/${queryspace:?}/schemas/import" \
-            | bin/pp | tee /tmp/query-schema.json
-
 # -----------------------------------------------------
 # Run our test queries.
 #[root@tester]
+
+    cat > /tmp/test-query.adql << EOF
+SELECT
+    umgPntErr,
+    gmrPntErr,
+    rmiPntErr
+FROM
+    atlasSource
+WHERE
+    ra  BETWEEN 0 AND 1.25
+AND
+    dec BETWEEN 0 AND 1.25
+EOF
 
     cat > /tmp/test-query.adql << EOF
 SELECT
@@ -763,15 +724,9 @@ EOF
 
     cat > /tmp/test-query.adql << EOF
 SELECT
-    umgPntErr,
-    gmrPntErr,
-    rmiPntErr
+    TOP 10 duplicated_source
 FROM
-    atlasSource
-WHERE
-    ra  BETWEEN 0 AND 1.25
-AND
-    dec BETWEEN 0 AND 1.25
+    gaia.gaia_source
 EOF
 
         curl \
@@ -790,6 +745,52 @@ EOF
 
 
 
+        # ADQL result table
+        curl --silent http://gillian:8080/firethorn/adql/table/16367 | bin/pp
+
+            "name" : "XX_PIKR6ROWFFYEYAAAAFNGRT3GSU",
+
+        # ADQL result column
+        curl --silent http://gillian:8080/firethorn/adql/column/16369 | bin/pp
+
+            "name" : "duplicated_source",
+
+        # JDBC result column
+        curl --silent http://gillian:8080/firethorn/jdbc/column/16368 | bin/pp
+
+            "name" : "XX_RDSVB5OIFVRSCAAAAFNGRT3G24"
+
+        # JDBC result columns
+        curl --silent http://gillian:8080/firethorn/jdbc/column/16368 | bin/pp
+
+
+        # ADQL results schema
+        curl --silent http://gillian:8080/firethorn/adql/schema/11521 | bin/pp
+
+        # ADQL results resource
+        curl --silent http://gillian:8080/firethorn/adql/resource/11520 | bin/pp
+
+
+
+    cat > /tmp/test-query.adql << EOF
+SELECT
+    duplicated_source
+FROM
+    XX_PIKR6ROWFFYEYAAAAFNGRT3GSU
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/test-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "http://gillian:8080/firethorn/adql/resource/11520/queries/create" \
+            | bin/pp | tee /tmp/test-query.json
+
+        testdata=$(cat /tmp/test-query.json | votable)
+        curl --silent "${testdata:?}" | xmlstarlet fo | tee /tmp/test-data.xml
 
 
 
