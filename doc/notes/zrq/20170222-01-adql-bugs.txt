@@ -410,7 +410,7 @@ EOF
 
         source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'TWOMASS'  'dbo' "meta/TWOMASS_TablesSchema.xml"
         source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
-        source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR2' 'dbo' "meta/ATLASDR2_TablesSchema.xml"
+       #source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR2' 'dbo' "meta/ATLASDR2_TablesSchema.xml"
 
 # -----------------------------------------------------
 # Create a workspace and add the local schema.
@@ -419,7 +419,7 @@ EOF
         source "bin/04-01-create-query-space.sh"  'Test workspace'
         source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'TWOMASS'  'TWOMASS'
         source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR1' 'ATLASDR1'
-        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR2' 'ATLASDR2'
+        #source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR2' 'ATLASDR2'
 
 
 

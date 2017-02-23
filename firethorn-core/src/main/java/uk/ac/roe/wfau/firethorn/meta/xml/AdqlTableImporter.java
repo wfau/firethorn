@@ -118,6 +118,7 @@ public class AdqlTableImporter
     /**
      * Import a table.
      *
+    public AdqlTable inport(final String name)
      */
     public AdqlTable inport(final String name)
     throws NameNotFoundException
@@ -130,7 +131,7 @@ public class AdqlTableImporter
             );
         if (match != null)
             {
-            log.warn("Duplicate table  found in import [{}][{}]", match.base().fullname(), match.fullname());
+            log.warn("Duplicate table found in import [{}][{}]", match.base().fullname(), match.fullname());
             }
         else {
             //
@@ -163,9 +164,13 @@ public class AdqlTableImporter
                 if (base == null)
                     {
                     log.warn("Unable to locate base table [{}][{}]", schema.base().fullname(), name);
+/*
+ * Skip rather than fail. 
                     throw new NameNotFoundException(
                         "Unable to locate base table [" + schema.base().fullname() + "][" + name + "]"
                         );
+ * 
+ */
                     }
                 //
                 // If we found the corresponding base table.

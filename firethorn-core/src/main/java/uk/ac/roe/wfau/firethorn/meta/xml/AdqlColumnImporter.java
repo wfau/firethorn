@@ -39,7 +39,11 @@ public class AdqlColumnImporter
      */
     public AdqlColumnImporter(final AdqlTable table)
         {
-        this.table   = table ;
+        this.table = table ;
+    	if (this.table == null)
+			{
+			return ;
+			}
         //
         // Cache our base columns.
         log.debug("Caching base columns for [{}]", table.fullname());
@@ -61,7 +65,7 @@ public class AdqlColumnImporter
                 column.name(),
                 column
                 );
-            }
+        	}
         }
 
     /**
@@ -100,6 +104,10 @@ public class AdqlColumnImporter
     public AdqlColumn inport(final String name)
     throws NameNotFoundException
         {
+    	if (this.table == null)
+    		{
+    		return null ;
+    		}
         log.debug("Importing column [{}][{}]", table.base().fullname(), name);
         //
         // Check for duplicate.
