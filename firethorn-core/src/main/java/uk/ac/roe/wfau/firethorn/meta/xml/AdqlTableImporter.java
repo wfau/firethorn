@@ -164,13 +164,9 @@ public class AdqlTableImporter
                 if (base == null)
                     {
                     log.warn("Unable to locate base table [{}][{}]", schema.base().fullname(), name);
-/*
- * Skip rather than fail. 
                     throw new NameNotFoundException(
                         "Unable to locate base table [" + schema.base().fullname() + "][" + name + "]"
                         );
- * 
- */
                     }
                 //
                 // If we found the corresponding base table.
