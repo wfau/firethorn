@@ -25,9 +25,10 @@
 #[user@virtual] 
 
     branch=default
-    buildtag=${version:?}
+    buildtag=2.1.5
 
     instance=$(pwgen 8 1)
+    instance=
 
 # -----------------------------------------------------
 # Get our builder compose file.
@@ -142,13 +143,26 @@ EOF
 # Build our base images.
 #[root@builder]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         export buildtag
         docker-compose \
             --file docker/compose/images.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Build our builder.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/builder.yml \
             build
 
     popd
@@ -190,4 +204,81 @@ EOF
     alias dockviz="docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz"
 
     dockviz images --tree
+
+# -----------------------------------------------------
+# Load our secret function.
+#[user@virtual]
+
+    vi ${HOME:?}/secret.sh
+
+        ....
+
+    source ${HOME:?}/secret.sh
+    secret 'ping'
+
+# -------------------------------------------------------------------------------------------
+# Tag our images as latest.
+#[root@builder]
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    docker tag "firethorn/fedora:${buildtag:?}"     "firethorn/fedora:latest"
+    docker tag "firethorn/java:${buildtag:?}"       "firethorn/java:latest"
+    docker tag "firethorn/tomcat:${buildtag:?}"     "firethorn/tomcat:latest"
+    docker tag "firethorn/ogsadai:${buildtag:?}"    "firethorn/ogsadai:latest"
+    docker tag "firethorn/firethorn:${buildtag:?}"  "firethorn/firethorn:latest"
+
+    docker tag "firethorn/postgres:${buildtag:?}"   "firethorn/postgres:latest"
+    docker tag "firethorn/builder:${buildtag:?}"    "firethorn/builder:latest"
+    docker tag "firethorn/tester:${buildtag:?}"     "firethorn/tester:latest"
+    docker tag "firethorn/sql-tunnel:${buildtag:?}" "firethorn/sql-tunnel:latest"
+    docker tag "firethorn/sql-proxy:${buildtag:?}"  "firethorn/sql-proxy:latest"
+
+# -------------------------------------------------------------------------------------------
+# Push our containers to the Docker registry.
+#[root@builder]
+
+    #
+    # Issues with ruunning push from inside a container ?
+    #
+
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
+
+    docker login
+
+        Username: xxxx
+        Password: yyyy
+        Email:    zzzz
+        Login Succeeded
+
+
+    docker push "firethorn/fedora:${buildtag:?}"
+    docker push "firethorn/java:${buildtag:?}"
+    docker push "firethorn/tomcat:${buildtag:?}"
+    docker push "firethorn/ogsadai:${buildtag:?}"
+    docker push "firethorn/firethorn:${buildtag:?}"
+
+    docker push "firethorn/builder:${buildtag:?}"
+    docker push "firethorn/tester:${buildtag:?}"
+    docker push "firethorn/postgres:${buildtag:?}"
+    docker push "firethorn/sql-tunnel:${buildtag:?}"
+    docker push "firethorn/sql-proxy:${buildtag:?}"
+
+    docker push "firethorn/fedora:latest"
+    docker push "firethorn/java:latest"
+    docker push "firethorn/tomcat:latest"
+    docker push "firethorn/ogsadai:latest"
+    docker push "firethorn/firethorn:latest"
+
+    docker push "firethorn/builder:latest"
+    docker push "firethorn/tester:latest"
+    docker push "firethorn/postgres:latest"
+    docker push "firethorn/sql-tunnel:latest"
+    docker push "firethorn/sql-proxy:latest"
+
+
 

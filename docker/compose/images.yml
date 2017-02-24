@@ -64,3 +64,11 @@ services:
         depends_on:
             - fedora
 
+    builder:
+        image:
+           "firethorn/builder:${buildtag}"
+        build:
+            context: '../builder'
+        depends_on:
+            - fedora
+
