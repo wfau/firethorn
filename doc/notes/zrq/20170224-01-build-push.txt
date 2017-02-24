@@ -1,0 +1,193 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Configure our build version and instance name.
+#[user@virtual] 
+
+    branch=default
+    buildtag=${version:?}
+
+    instance=$(pwgen 8 1)
+
+# -----------------------------------------------------
+# Get our builder compose file.
+#[user@virtual]
+
+    composit=${HOME:?}/compose
+
+    mkdir ${composit:?}
+    pushd ${composit:?}
+     
+        wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+    popd
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    composit=${HOME:?}/compose
+
+    export branch
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/builder.yml" \
+        --project ${instance:?} \
+        run builder 
+
+# -----------------------------------------------------
+# Update our path.
+# TODO Add this to the image
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Configure our source path.
+# TODO Add this to the image
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/firethorn
+EOF
+    fi
+
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    if [  -e "${FIRETHORN_CODE:?}" ]
+    then
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update
+        
+        popd
+    else
+        pushd "$(dirname ${FIRETHORN_CODE:?})"
+
+            hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "$(basename ${FIRETHORN_CODE:?})"
+
+        popd
+    fi
+
+# -----------------------------------------------------
+# Update the source code branch.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        if [ -n "${branch}" ]
+        then
+            hg update "${branch:?}"
+        else
+            hg update 'default'
+        fi
+
+    popd
+
+# -----------------------------------------------------
+# Update our POM version.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        pomversions "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Generate our dockerfiles.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        dockerfiles "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Build our base images.
+#[root@builder]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Display our container images.
+#[root@builder]
+
+    alias dockviz="docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz"
+
+    dockviz images --tree
+
