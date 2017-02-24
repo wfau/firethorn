@@ -153,20 +153,6 @@ EOF
 
     popd
 
-# -----------------------------------------------------
-# Build our builder.
-#[root@builder]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        export buildtag
-        docker-compose \
-            --file docker/compose/builder.yml \
-            build
-
-    popd
-
 #---------------------------------------------------------------------
 # Compile our Java code.
 #[root@builder]
@@ -220,10 +206,6 @@ EOF
 # Tag our images as latest.
 #[root@builder]
 
-    #
-    # ONLY DO THIS IF THE TESTS PASS
-    #
-
     docker tag "firethorn/fedora:${buildtag:?}"     "firethorn/fedora:latest"
     docker tag "firethorn/java:${buildtag:?}"       "firethorn/java:latest"
     docker tag "firethorn/tomcat:${buildtag:?}"     "firethorn/tomcat:latest"
@@ -240,20 +222,9 @@ EOF
 # Push our containers to the Docker registry.
 #[root@builder]
 
-    #
-    # Issues with ruunning push from inside a container ?
-    #
-
-    #
-    # ONLY DO THIS IF THE TESTS PASS
-    #
-
-    docker login
-
-        Username: xxxx
-        Password: yyyy
-        Email:    zzzz
-        Login Succeeded
+    docker login \
+        --username $(secret docker.io.user) \
+        --password $(secret docker.io.pass)
 
 
     docker push "firethorn/fedora:${buildtag:?}"
@@ -280,5 +251,24 @@ EOF
     docker push "firethorn/sql-tunnel:latest"
     docker push "firethorn/sql-proxy:latest"
 
+# -------------------------------------------------------------------------------------------
+# Push our artifacts to our Maven repo.
+#[root@builder]
 
+    mvnport=22
+    mvnuser=Zarquan
+    mvnhost=data.metagrid.co.uk
+    mvnpath=/var/local/websites/data/wfau/maven/firethorn
+    mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
+
+    mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export mvnrepo
+        export mvnlocal
+        ./bin/rsync-repo.sh
+
+    popd
 
