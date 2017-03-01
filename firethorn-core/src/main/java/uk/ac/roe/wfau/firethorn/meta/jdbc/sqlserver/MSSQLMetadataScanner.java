@@ -179,10 +179,10 @@ public class MSSQLMetadataScanner
                     	// http://msdn.microsoft.com/en-GB/library/ms182642.aspx
                         final PreparedStatement statement = connection().prepareStatement(
                             (
-                    		" SELECT DISTINCT" +
-                            "   SCHEMA_NAME" +
+                    		"SELECT DISTINCT" +
+                            "  [SCHEMA_NAME]" +
                             " FROM" +
-                            "   {catalog}.INFORMATION_SCHEMA.SCHEMATA"
+                            "  [{catalog}].[INFORMATION_SCHEMA].[SCHEMATA]"
                             ).replace(
                                 "{catalog}",
                                 catalog().name()
@@ -229,12 +229,12 @@ public class MSSQLMetadataScanner
                     	// http://msdn.microsoft.com/en-GB/library/ms182642.aspx
                         final PreparedStatement statement = connection().prepareStatement(
                     		(
-                    		" SELECT DISTINCT" +
-                    		"   SCHEMA_NAME" +
+                    		"SELECT DISTINCT" +
+                    		"  [SCHEMA_NAME]" +
                     		" FROM" +
-                    		"   {catalog}.INFORMATION_SCHEMA.SCHEMATA" +
+                    		"  [{catalog}].[INFORMATION_SCHEMA].[SCHEMATA]" +
                     		" WHERE " +
-                        	"   SCHEMA_NAME = ?"
+                        	"  [SCHEMA_NAME] = ?"
                     		).replace(
                                 "{catalog}",
                                 catalog().name()
@@ -307,12 +307,12 @@ public class MSSQLMetadataScanner
                                 // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                                 final PreparedStatement statement = connection().prepareStatement(
                                     (
-                            		" SELECT DISTINCT" +
-                                    "   TABLE_NAME" +
+                            		"SELECT DISTINCT" +
+                                    "  [TABLE_NAME]" +
                                     " FROM " +
-                                    "   {catalog}.INFORMATION_SCHEMA.TABLES" +
+                                    "  [{catalog}].[INFORMATION_SCHEMA].[TABLES]" +
                                     " WHERE" +
-                                    "   TABLE_SCHEMA = ?"
+                                    "  [TABLE_SCHEMA] = ?"
                                     ).replace(
                                         "{catalog}",
                                         catalog().name()
@@ -344,13 +344,13 @@ public class MSSQLMetadataScanner
                                 final PreparedStatement statement = connection().prepareStatement(
                                     (
                             		"SELECT DISTINCT" +
-                                    "   TABLE_NAME " +
+                                    "  [TABLE_NAME] " +
                                     " FROM" +
-                                    "   {catalog}.INFORMATION_SCHEMA.TABLES" +
+                                    "  [{catalog}].[INFORMATION_SCHEMA].[TABLES]" +
                                     " WHERE" +
-                                    "   TABLE_SCHEMA = ?" +
+                                    "  [TABLE_SCHEMA] = ?" +
                                     " AND" +
-                                    "   TABLE_NAME = ?"
+                                    "  [TABLE_NAME] = ?"
                                     ).replace(
                                         "{catalog}",
                                         catalog().name()
@@ -416,17 +416,17 @@ public class MSSQLMetadataScanner
                                         // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
                                         final PreparedStatement statement = connection().prepareStatement(
                                             (
-                                    		" SELECT DISTINCT" +
-                                            "   COLUMN_NAME," +
-                                            "   DATA_TYPE," +
-                                            "   NUMERIC_PRECISION," +
-                                            "   CHARACTER_MAXIMUM_LENGTH" +
+                                    		"SELECT DISTINCT" +
+                                            "  [COLUMN_NAME]," +
+                                            "  [DATA_TYPE]," +
+                                            "  [NUMERIC_PRECISION]," +
+                                            "  [CHARACTER_MAXIMUM_LENGTH]" +
                                             " FROM" +
-                                            "   {catalog}.INFORMATION_SCHEMA.COLUMNS" +
+                                            "  [{catalog}].[INFORMATION_SCHEMA].[COLUMNS]" +
                                             " WHERE" +
-                                            "   TABLE_SCHEMA = ?" +
+                                            "  [TABLE_SCHEMA] = ?" +
                                             " AND" +
-                                            "   TABLE_NAME = ?"
+                                            "  [TABLE_NAME] = ?"
                                             ).replace(
                                                 "{catalog}",
                                                 catalog().name()
@@ -464,19 +464,19 @@ public class MSSQLMetadataScanner
                                         // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
                                         final PreparedStatement statement = connection().prepareStatement(
                                     		(
-                                            " SELECT DISTINCT" +
-                                            "   COLUMN_NAME," +
-                                            "   DATA_TYPE," +
-                                            "   NUMERIC_PRECISION," +
-                                            "   CHARACTER_MAXIMUM_LENGTH" +
+                                            "SELECT DISTINCT" +
+                                            "  [COLUMN_NAME]," +
+                                            "  [DATA_TYPE]," +
+                                            "  [NUMERIC_PRECISION]," +
+                                            "  [CHARACTER_MAXIMUM_LENGTH]" +
                                             " FROM" +
-                                            "   {catalog}.INFORMATION_SCHEMA.COLUMNS" +
+                                            "  [{catalog}].[INFORMATION_SCHEMA].[COLUMNS]" +
                                             " WHERE " +
-                                            "   TABLE_SCHEMA = ?" +
+                                            "  [TABLE_SCHEMA] = ?" +
                                             " AND" +
-                                            "   TABLE_NAME = ?" +
+                                            "  [TABLE_NAME] = ?" +
                                             " AND" +
-                                            "   COLUMN_NAME = ?"
+                                            "  [COLUMN_NAME] = ?"
                                             ).replace(
                                                 "{catalog}",
                                                 catalog().name()
