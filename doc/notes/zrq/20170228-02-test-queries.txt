@@ -225,7 +225,7 @@
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT mainid AS designation, raj2000, dej2000 FROM gavo.data WHERE (raj2000 BETWEEN 0 AND 0.5) AND (dej2000 BETWEEN 0 AND 0.5)" \" \
+            --data "adql.query.input=SELECT mainid, raj2000, dej2000 FROM gavo.data WHERE (raj2000 BETWEEN 0 AND 0.5) AND (dej2000 BETWEEN 0 AND 0.5)" \" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${endpointurl:?}/${queryspace:?}/queries/create" \
