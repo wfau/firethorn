@@ -145,6 +145,12 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public AdqlColumn create(final BaseColumn<?> base, final String name);
 
         /**
+         * Create a {@link AdqlColumn}.
+         *
+         */
+        public AdqlColumn create(final BaseColumn<?> base, final AdqlColumn.Metadata meta);
+
+        /**
          * Import a {@link AdqlColumn} from our base table.
          * @todo Add name change
          *
@@ -152,12 +158,6 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public AdqlColumn inport(final String name)
         throws NameNotFoundException;
 
-        /**
-         * Create a new {@link IvoaColumn.Builder}.
-         *
-        public IvoaColumn.Builder builder();  
-         */
-        
         }
 
     @Override

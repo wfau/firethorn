@@ -20,10 +20,11 @@
 #
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     "${endpointurl:?}/system/info" \
-    | bin/pp | tee /tmp/system-info.json
+    | jq '.' | tee /tmp/system-info.json
 
 
 

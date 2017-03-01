@@ -30,6 +30,7 @@ catalogname=${3:?}
 ogsadainame=${4:?}
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:jdbc.copy.depth=${jdbccopydepth:-FULL}" \
@@ -37,7 +38,7 @@ curl \
     --data   "jdbc.resource.name=${resourcename:?}" \
     --data   "jdbc.resource.catalog=${catalogname:?}" \
     "${endpointurl:?}/jdbc/resource/create" \
-    | bin/pp | tee /tmp/jdbc-space.json
+    | jq '.' | tee /tmp/jdbc-space.json
 
 jdbcspace=$(
     cat /tmp/jdbc-space.json | self | node

@@ -1,0 +1,443 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    export devname=zrq-bug-fixes
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt &
+
+# -----------------------------------------------------
+# Remove all containers.
+#[user@desktop]
+
+    docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove all images.
+#[user@desktop]
+
+    docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
+# Remove existing networks.
+#[user@desktop]
+
+    # TBD - how to only delete 'our' networks.
+
+# -----------------------------------------------------
+# Remove all volumes.
+#[user@desktop]
+
+    docker volume rm $(docker volume ls -q)
+
+# -----------------------------------------------------
+# Set our buildtag.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        buildtag=$(hg branch)
+
+    popd
+
+# -----------------------------------------------------
+# Generate our dockerfiles.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        dockerfiles ${buildtag}
+
+    popd
+
+# -----------------------------------------------------
+# Build our container images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Build our Java components.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@virtual] 
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    instance=$(pwgen 8 1)
+    buildtag=${buildtag}
+    
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metaname:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${username:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Create our tester config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/tester.properties" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+    chmod a+r "${HOME:?}/tester.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties" 
+
+# -----------------------------------------------------
+# Create our composer env file.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+
+    cat > "${HOME:?}/.env" << EOF
+buildtag=${buildtag:?}
+
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+datahost=${datahost:?}
+userhost=${userhost:?}
+
+tunneluser=${tunneluser:?}
+tunnelhost=${tunnelhost:?}
+
+EOF
+
+# -----------------------------------------------------
+# Build our tester image.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build tester
+
+    popd
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose
+
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        --project ${instance:?} \
+        run tester 
+
+
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our test queries.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20170228-02-test-queries.txt &
+
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Follow the Firethorn logs.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose
+
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        --project ${instance:?} \
+        exec \
+            gillian \
+            tail -f logs/firethorn.log
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Follow the OGSA-DAI logs.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose
+
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        --project ${instance:?} \
+        exec \
+            jarmila \
+            tail -f logs/ogsadai.log
+
+
+
+#---------------------------------------------------------------------
+# Build our Java components.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+
+
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create a query to access query results.
+
+    jq -r '.results.table' /tmp/wfau-query.json
+    tablelink=$(jq -r '.results.table' /tmp/wfau-query.json)
+
+        http://gillian:8080/firethorn/adql/table/3901
+        http://gillian:8080/firethorn/adql/table/12480
+
+    curl -s ${tablelink} | jq '.'
+    curl -s ${tablelink} | jq -r '.fullname'
+    tablename=$(curl -s ${tablelink} | jq -r '.fullname')
+
+        temp.XX_ENHSNBM2PF2RYAAAAFNIVB2B3Y
+        temp.XX_HLC3CUZS7VGFAAAAAFNIWN7ACI
+
+    curl -s ${tablelink} | jq -r '.schema'
+    adqlschema=$(curl -s ${tablelink} | jq -r '.schema')
+
+        http://gillian:8080/firethorn/adql/schema/3895
+        http://gillian:8080/firethorn/adql/schema/7868
+
+    curl -s ${tablelink}  | jq -r '.resource'
+    adqlresource=$(curl -s ${tablelink}  | jq -r '.resource')
+
+        http://gillian:8080/firethorn/adql/resource/3894
+        http://gillian:8080/firethorn/adql/resource/7867
+
+    curl -s ${tablelink} | jq -r '.columns' 
+    adqlcols=$(curl -s ${tablelink} | jq -r '.columns')
+
+        http://gillian:8080/firethorn/adql/table/3901/columns/select
+        http://gillian:8080/firethorn/adql/table/12480/columns/select
+
+    curl -s ${adqlcols} | jq '.'
+    curl -s ${adqlcols} | jq -r '.[].name'
+
+        designation
+        ra
+        dec
+
+    curl \
+        --silent \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "adql.query.input=SELECT designation, ra, dec FROM ${tablename} WHERE (ra BETWEEN 0.2 AND 0.3) AND (dec BETWEEN 0.2 AND 0.3)" \
+        --data "adql.query.status.next=COMPLETED" \
+        --data "adql.query.wait.time=600000" \
+        "${adqlresource:?}/queries/create" \
+        | jq '.' | tee /tmp/result-query.json
+
+    curl \
+        --silent \
+        "$(jq -r '.results.formats.votable' /tmp/result-query.json)" \
+        | xmlstarlet fo
+
+    curl \
+        --silent \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "adql.query.input=SELECT TOP 5 * FROM ${tablename}" \
+        --data "adql.query.status.next=COMPLETED" \
+        --data "adql.query.wait.time=600000" \
+        "${adqlresource:?}/queries/create" \
+        | jq '.' | tee /tmp/result-query.json
+
+    curl \
+        --silent \
+        "$(jq -r '.results.formats.votable' /tmp/result-query.json)" \
+        | xmlstarlet fo
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+
+    queryjson=/tmp/gavo-query.json
+
+    tablelink=$(jq -r '.results.table' "${queryjson:?}")
+    tablename=$(curl -s ${tablelink:?} | jq -r '.fullname')
+    tableresource=$(curl -s ${tablelink:?}  | jq -r '.resource')
+
+    curl -s "${tableresource:?}" | jq '.'
+    curl -s "${tableresource:?}" | jq '.queries'
+
+    curl \
+        --silent \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data "adql.query.input=SELECT TOP 5 * FROM ${tablename:?}" \
+        --data "adql.query.status.next=COMPLETED" \
+        --data "adql.query.wait.time=600000" \
+        "${tableresource:?}/queries/create" \
+        | jq '.' | tee /tmp/result-query.json
+
+    curl \
+        --silent \
+        "$(jq -r '.results.formats.votable' /tmp/result-query.json)" \
+        | xmlstarlet fo
+

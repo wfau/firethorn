@@ -24,12 +24,13 @@ resourcename=${1:?}
 resourceuri=${2:?}
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "ivoa.resource.name=${resourcename:?}" \
     --data   "ivoa.resource.endpoint=${resourceuri:?}" \
     "${endpointurl:?}/ivoa/resource/create" \
-    | bin/pp | tee /tmp/ivoa-space.json
+    | jq '.' | tee /tmp/ivoa-space.json
 
 ivoaspace=$(
     cat /tmp/ivoa-space.json | self | node

@@ -26,7 +26,7 @@ services:
 
     patricia:
         image:
-           "firethorn/sql-proxy:${buildtag}"
+           "firethorn/sql-tunnel:${buildtag}"
         read_only:
             false
         tmpfs:
@@ -46,7 +46,7 @@ services:
 
     elayne:
         image:
-           "firethorn/sql-proxy:${buildtag}"
+           "firethorn/sql-tunnel:${buildtag}"
         read_only:
             false
         tmpfs:

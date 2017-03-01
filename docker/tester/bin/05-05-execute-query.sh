@@ -25,12 +25,13 @@ createadql=${2:?}
 #
 # Create the query.
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.query.mode=${createmode:?}" \
     --data-urlencode "adql.query.input=${createadql:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
-     | bin/pp | tee /tmp/query-job.json
+     | jq '.' | tee /tmp/query-job.json
 
 queryident=$(
     cat /tmp/query-job.json | self | node
@@ -39,6 +40,7 @@ queryident=$(
 #
 # Update the limits
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.query.delay.first=${delayfirst:-0}" \

@@ -44,4 +44,10 @@ extends NamedEntityBeanImpl<ResourceType>
         // TODO This should be in a model class. 
         return entity().link().concat("/schemas/select");
         }
+
+    public String getQueries()
+        {
+        // TODO This should be in a model class. 
+        return entity().link().concat("/queries/select");
+        }
     }

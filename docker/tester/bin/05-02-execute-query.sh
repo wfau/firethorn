@@ -24,24 +24,26 @@ adqltext=${1:?}
 #
 # Create the query.
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.query.input=${adqltext:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
-     | bin/pp | tee /tmp/query-job.json
+     | jq '.' | tee /tmp/query-job.json
 
 queryident=$(
     cat /tmp/query-job.json | self | node
     )
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}"    \
     --header "firethorn.auth.community:${community:?}"  \
     --data-urlencode "adql.query.delay.first=10000" \
     --data-urlencode "adql.query.delay.every=10" \
     --data-urlencode "adql.query.delay.last=10000"  \
     "${endpointurl:?}/${queryident:?}" \
-     | bin/pp
+     | jq '.'
 
 #
 # Run the query.

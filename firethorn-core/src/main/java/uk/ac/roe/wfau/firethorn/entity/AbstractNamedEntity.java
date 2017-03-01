@@ -114,6 +114,12 @@ implements Entity, NamedEntity
 		}
 
     /**
+     * Static name factory.
+     * 
+     */
+    static final UniqueNamefactory names = new UniqueNamefactory();
+
+    /**
      * Initialise our entity name.
      * 
      */
@@ -124,8 +130,7 @@ implements Entity, NamedEntity
             this.name = name;
             }
         else {
-        	final UniqueNamefactory factory = new UniqueNamefactory();
-            this.name = factory.name(
+            this.name = names.name(
         		this
         		);
         	}

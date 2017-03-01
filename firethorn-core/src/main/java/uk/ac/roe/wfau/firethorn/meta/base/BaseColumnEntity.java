@@ -382,13 +382,6 @@ extends TreeComponentEntity<ColumnType>
                     );
                 }
             @Override
-            public void ucd(final String type, final String value)
-                {
-                adqlucd(
-                    value
-                    );
-                }
-            @Override
             public String name()
                 {
                 return BaseColumnEntity.this.name();

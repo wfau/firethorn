@@ -48,6 +48,11 @@ extends NamedEntityBeanImpl<TableType>
         return entity().schema().link();
         }
 
+    public String getResource()
+        {
+        return entity().resource().link();
+        }
+
     public String getBase()
         {
         return entity().base().link();

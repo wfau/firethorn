@@ -24,25 +24,27 @@ jdbcschemaname=${2:?}
 adqlschemaname=${3:?}
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "jdbc.resource.schema.select.catalog=${jdbccatalogname:?}" \
     --data   "jdbc.resource.schema.select.schema=${jdbcschemaname:?}" \
     "${endpointurl:?}/${jdbcspace:?}/schemas/select" \
-    | ./pp | tee /tmp/jdbc-schema.json
+    | jq '.' | tee /tmp/jdbc-schema.json
 
 jdbcschemaident=$(
     cat /tmp/jdbc-schema.json | self
     )
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --data   "adql.resource.schema.import.name=${adqlschemaname:?}" \
     --data   "adql.resource.schema.import.base=${jdbcschemaident:?}" \
     "${endpointurl:?}/${adqlspace:?}/schemas/import" \
-    | ./pp | tee /tmp/adql-schema.json
+    | jq '.' | tee /tmp/adql-schema.json
 
 adqlschema=$(
     cat /tmp/adql-schema.json | self | node

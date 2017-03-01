@@ -58,6 +58,7 @@ import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /*
@@ -240,44 +241,82 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 	}
 
 	/**
-	 * Copy of the PostgreSQLTranslator method ...
+	 * Overrides the PostgreSQLTranslator method to use firethorn metadata
+	 * for columns in our database. 
 	 *
 	 */
 	@Override
 	public String translate(final ADQLColumn column) throws TranslationException {
 		log.debug("translate(ADQLColumn)");
+		String result = null ;		
 		// Use its DB name if known:
-		if (column.getDBLink() != null) {
-			DBColumn dbCol = column.getDBLink();
-			StringBuffer colName = new StringBuffer();
-			// Use the table alias if any:
+		if (column.getDBLink() != null)
+		    {
+            log.debug("  using getDBLink()");
+            // If this is a column in our metadata.
+            if (column.getDBLink() instanceof AdqlDBColumn)
+                {
+                log.debug("  using firethorn AdqlColumn root().fullname()");
+                result = ((AdqlDBColumn)column.getDBLink()).column().root().fullname();
+                }
+            // If this is a column in the AdqlParser tree.
+            else {
+                log.debug("  using original getDBLink() code");
+                DBColumn dbCol = column.getDBLink();
+                StringBuffer colName = new StringBuffer();
 
-			if (column.getAdqlTable() != null && column.getAdqlTable().hasAlias())
-				appendIdentifier(colName, column.getAdqlTable().getAlias(),
-						column.getAdqlTable().isCaseSensitive(IdentifierField.ALIAS)).append('.');
+    			// Use the table alias if any:
+    			if ((column.getAdqlTable() != null) && (column.getAdqlTable().hasAlias()))
+    				{
+    				appendIdentifier(
+    			        colName,
+    			        column.getAdqlTable().getAlias(),
+    					column.getAdqlTable().isCaseSensitive(
+    				        IdentifierField.ALIAS
+    				        )
+    			        ).append('.');
+    				}
+    			// Use the DBTable if any:
+    			else if ((dbCol.getTable() != null) && (dbCol.getTable().getDBName() != null))
+    			    {
+    				if (column.getAdqlTable() != null)
+    				    {
+    					colName.append(
+    				        getQualifiedTableName(
+    			                dbCol.getTable()
+    			                )
+    				        ).append('.');
+    				    }
+    				else {
+    					colName.append(
+    				        dbCol.getTable().getADQLName()
+    				        );
+    					colName.append('.');
+    				    }
+    			    }
+    			// Otherwise, use the prefix of the column given in the ADQL query:
+    			else if (column.getTableName() != null)
+    			    {
+    				colName = column.getFullColumnPrefix().append('.');
+    				}
 
-			// Use the DBTable if any:
-			else if (dbCol.getTable() != null && dbCol.getTable().getDBName() != null) {
+    			appendIdentifier(
+    		        colName,
+    		        dbCol.getADQLName(),
+    		        IdentifierField.COLUMN
+    		        );
 
-				if (column.getAdqlTable() != null) {
-					colName.append(getQualifiedTableName(dbCol.getTable())).append('.');
-				} else {
-					colName.append(dbCol.getTable().getADQLName());
-					colName.append('.');
-				}
+    			result = colName.toString();
+    		    }
+		    }
+		// Otherwise, use the full name given in the ADQL query:
+		else{
+		    log.debug("  using getFullColumnName()");
+		    result = column.getFullColumnName();
 			}
-			// Otherwise, use the prefix of the column given in the ADQL query:
-			else if (column.getTableName() != null)
-				colName = column.getFullColumnPrefix().append('.');
-
-			appendIdentifier(colName, dbCol.getADQLName(), IdentifierField.COLUMN);
-
-			return colName.toString();
-		}
-		// Otherwise, use the whole name given in the ADQL query:
-		else
-			return column.getFullColumnName();
-	}
+        log.debug("  result [{}]", result);
+        return result ;
+	    }
 
 	public String translate(AdqlColumn column) throws TranslationException {
 		log.debug("translate(AdqlColumn)");

@@ -23,24 +23,26 @@ baseschemaname=${1:?}
 queryschemaname=${2:?}
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.resource.schema.select.name=${baseschemaname:?}" \
     "${endpointurl:?}/${adqlspace:?}/schemas/select" \
-    | bin/pp | tee /tmp/base-schema.json
+    | jq '.' | tee /tmp/base-schema.json
 
 baseschema=$(
     cat /tmp/base-schema.json | self
     )
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
     --data   "adql.resource.schema.import.name=${queryschemaname:?}" \
     --data   "adql.resource.schema.import.base=${baseschema:?}" \
     "${endpointurl:?}/${queryspace:?}/schemas/import" \
-    | bin/pp | tee /tmp/query-schema.json
+    | jq '.' | tee /tmp/query-schema.json
 
 
 queryschema=$(

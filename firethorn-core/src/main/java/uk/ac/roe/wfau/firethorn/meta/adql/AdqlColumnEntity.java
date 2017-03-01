@@ -254,6 +254,19 @@ public class AdqlColumnEntity
             }
 
         @Override
+        @CreateMethod
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final AdqlColumn.Metadata meta)
+            {
+            return this.insert(
+                new AdqlColumnEntity(
+                    parent,
+                    base,
+                    meta
+                    )
+                );
+            }
+        
+        @Override
         @SelectMethod
         public Iterable<AdqlColumn> select(final AdqlTable parent)
             {
@@ -446,10 +459,19 @@ public class AdqlColumnEntity
         this(
             table,
             base,
-            null
+            (String) null
             );
         }
 
+    protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base, final AdqlColumn.Metadata meta)
+        {
+        this(
+            table,
+            base,
+            meta.adql().name()
+            );
+        }
+    
     protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base, final String name)
         {
         super(
@@ -525,7 +547,6 @@ public class AdqlColumnEntity
     protected void scanimpl()
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
-        // TODO Auto-generated method stub
         }
 
     protected AdqlColumn.AdqlType adqltype()

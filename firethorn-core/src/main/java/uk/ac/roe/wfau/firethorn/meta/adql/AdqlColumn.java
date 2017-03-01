@@ -88,6 +88,11 @@ extends BaseColumn<AdqlColumn>
          */
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name);
         
+        /**
+         * Create a new {@link AdqlColumn}.
+         *
+         */
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final AdqlColumn.Metadata meta);
         }
 
     /**
@@ -427,13 +432,6 @@ extends BaseColumn<AdqlColumn>
              *
              */
             public void ucd(final String value);
-
-            /**
-             * Set the column UCD.
-             *
-             */
-            @Deprecated
-            public void ucd(final String type, final String value);
 
             }
         /**

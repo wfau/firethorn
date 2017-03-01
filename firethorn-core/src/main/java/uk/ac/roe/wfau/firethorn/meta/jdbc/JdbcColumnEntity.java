@@ -41,6 +41,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import com.mysql.cj.jdbc.exceptions.OperationNotSupportedException;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -657,7 +659,6 @@ public class JdbcColumnEntity
     public void scanimpl()
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
-        // TODO Auto-generated method stub
         }
     
     protected JdbcColumn.Modifier.Jdbc jdbcmeta()
@@ -679,82 +680,6 @@ public class JdbcColumnEntity
                 {
                 return JdbcColumnEntity.this.jdbctype();
                 }
-/*
- * 
-            @Override
-            public CreateSql create()
-                {
-                return new CreateSql()
-                    {
-                    @Override
-                    public String name()
-                        {
-                        // TODO Validate name with product specific rules ?
-                        return JdbcColumnEntity.this.name();
-                        }
-
-                    @Override
-                    public String type()
-                        {
-                        final StringBuilder builder = new StringBuilder();
-                        final JdbcColumn.JdbcType type = jdbctype();
-                        final JdbcProductType prod = JdbcColumnEntity.this.resource().connection().type();
-
-                        //
-                        // TODO Make JdbcProductType an interface.
-                        // Use Spring to load available product types ?
-                        // ProductType methods for creating tables and columns.
-
-                        switch(prod)
-                            {
-                            case MSSQL :
-                                switch(type)
-                                    {
-                                    case DATE :
-                                    case TIME :
-                                    case TIMESTAMP :
-                                        builder.append(
-                                            "DATETIME"
-                                            );
-                                        break ;
-
-                                    default :
-                                        builder.append(
-                                            jdbctype().name()
-                                            );
-                                        break ;
-                                    }
-
-                                break ;
-
-                            default :
-                                builder.append(
-                                    jdbctype().name()
-                                    );
-                                break ;
-                            }
-
-                        // TODO This should check for char() rather than array()
-                        if (jdbctype().isarray())
-                            {
-                            if (jdbcsize() == AdqlColumn.VAR_ARRAY_SIZE)
-                                {
-                                builder.append("(*)");
-                                }
-                            else {
-                                builder.append("(");
-                                builder.append(
-                                    jdbcsize()
-                                    );
-                                builder.append(")");
-                                }
-                            }
-                        return builder.toString();
-                        }
-                    };
-                }
- *
- */
             };
         }
 
@@ -768,13 +693,11 @@ public class JdbcColumnEntity
                 {
                 return JdbcColumnEntity.this.name();
                 }
-
             @Override
             public AdqlColumn.Modifier.Adql adql()
                 {
                 return adqlmeta();
                 }
-
             @Override
             public JdbcColumn.Modifier.Jdbc jdbc()
                 {
@@ -786,6 +709,7 @@ public class JdbcColumnEntity
     @Override
     public void update(final JdbcColumn.Metadata.Jdbc meta)
     	{
-    	// TODO What do we do if these values change ?    	
+    	// TODO ...
+    	throw new UnsupportedOperationException();
     	}
     }

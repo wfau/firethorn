@@ -42,8 +42,12 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public class SQLServerDriver
 implements JdbcResource.JdbcDriver 
     {
-	
-	final int MAX_CHAR_SIZE = 1024;
+
+    /**
+     * Maximum size for a string, {@value}.
+     * 
+     */
+	static final int MAX_CHAR_SIZE = 1024;
 
 	@Override
 	public void create(JdbcSchema schema)
@@ -185,6 +189,8 @@ implements JdbcResource.JdbcDriver
 		throw new NotImplementedException();		
 		}
 
+/*
+ * 
     protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
     	{
 
@@ -195,6 +201,7 @@ implements JdbcResource.JdbcDriver
 	                "BIT"
 	                );
 	            break ;
+	            
 	        case DATE :
 	        case TIME :
 	        case TIMESTAMP :
@@ -202,16 +209,19 @@ implements JdbcResource.JdbcDriver
 	                "DATETIME"
 	                );
 	            break ;
+	            
 	        case REAL:
 	        	builder.append(
 	                "REAL"
 	                );
 	            break ;
+	            
 	        case DOUBLE:
 	        	builder.append(
 	                "FLOAT"
 	                );
 	            break ;
+	            
 	        case CHAR:
 	        case NCHAR:	 
 	        case VARCHAR:	 
@@ -228,6 +238,7 @@ implements JdbcResource.JdbcDriver
 	        	}
 	       
 	        	break;
+	        	
 	        default :
 	        	builder.append(
         			meta.jdbctype().name()
@@ -259,9 +270,94 @@ implements JdbcResource.JdbcDriver
 	    	        }
     	    	}
     	    }
-	
     	}
-    
+ * 
+ */
+
+    protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
+        {
+        final StringBuilder tempbuilder = new StringBuilder(); 
+        log.debug("sqltype()");
+        log.debug("  name [{}]", meta.name());
+        log.debug("  type [{}]", meta.jdbctype().name());
+        log.debug("  size [{}]", meta.arraysize());
+        if (meta.jdbctype().isarray())
+            {
+            switch(meta.jdbctype())
+                {
+                case CHAR:
+                case NCHAR:  
+                case VARCHAR:    
+                case NVARCHAR: 
+                    if ((meta.arraysize() != null) && (meta.arraysize() > 0) && (meta.arraysize() < MAX_CHAR_SIZE))
+                        {
+                        tempbuilder.append(meta.jdbctype().name());
+                        tempbuilder.append("(");
+                        tempbuilder.append(meta.arraysize());
+                        tempbuilder.append(")");
+                        }
+                    else {
+                        tempbuilder.append("VARCHAR");
+                        tempbuilder.append("(MAX)");
+                        }
+                    break;
+
+                default :
+                    if ((meta.arraysize() == null) || (meta.arraysize() == AdqlColumn.VAR_ARRAY_SIZE))
+                        {
+                        tempbuilder.append("(*)");
+                        }
+                    else {
+                        tempbuilder.append("(");
+                        tempbuilder.append(
+                            meta.arraysize()
+                            );
+                        tempbuilder.append(")");
+                        }
+                    break;
+
+                }
+            }
+        else {
+            switch(meta.jdbctype())
+                {
+                case BOOLEAN:
+                    tempbuilder.append(
+                        "BIT"
+                        );
+                    break ;
+
+                case DATE :
+                case TIME :
+                case TIMESTAMP :
+                    tempbuilder.append(
+                        "DATETIME"
+                        );
+                    break ;
+
+                case REAL:
+                    tempbuilder.append(
+                        "REAL"
+                        );
+                    break ;
+
+                case DOUBLE:
+                    tempbuilder.append(
+                        "FLOAT"
+                        );
+                    break ;
+
+                default :
+                    tempbuilder.append(
+                        meta.jdbctype().name()
+                        );
+                    break ;
+                }
+            }
+        log.debug("  temp [{}]", tempbuilder.toString());
+        builder.append(tempbuilder);
+        }
+	
     protected void fullname(final StringBuilder builder, final JdbcSchema schema)
     	{
 		sqlname(
