@@ -272,7 +272,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
-        pomversions "${newversion:?}"
+        pomversions "${buildtag:?}"
 
     popd
 
@@ -284,7 +284,7 @@ EOF
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
-        dockerfiles "${newversion:?}"
+        dockerfiles "${buildtag:?}"
 
     popd
 
@@ -292,7 +292,6 @@ EOF
 # Build our base images.
 #[root@builder]
 
-    source "${HOME:?}/chain.properties"
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 

@@ -27,35 +27,38 @@ queryschemaid=${4:?}
 querytablename=${5:?}
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.resource.schema.select.name=${baseschemaname:?}" \
     "${endpointurl:?}/${adqlspace:?}/schemas/select" \
-    | bin/pp | tee /tmp/base-schema.json
+    | jq '.' | tee /tmp/base-schema.json
 
 baseschema=$(
     cat /tmp/base-schema.json | self | node
     )
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.schema.table.select.name=${basetablename:?}" \
     "${endpointurl:?}/${baseschema:?}/tables/select" \
-    | bin/pp | tee /tmp/base-table.json
+    | jq '.' | tee /tmp/base-table.json
 
 basetable=$(
     cat /tmp/base-table.json | self
     )
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --data   "adql.schema.table.import.base=${basetable:?}" \
     --data   "adql.schema.table.import.name=${querytablename:?}" \
     "${endpointurl:?}/${queryschemaid:?}/tables/import" \
-    | bin/pp | tee /tmp/query-table.json
+    | jq '.' | tee /tmp/query-table.json
 
 querytable=$(
     cat /tmp/query-table.json | self | node

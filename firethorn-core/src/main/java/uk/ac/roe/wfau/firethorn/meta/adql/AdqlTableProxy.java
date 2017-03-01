@@ -369,7 +369,14 @@ public class AdqlTableProxy
             @Override
             public AdqlColumn create(final BaseColumn<?> base, final String name)
                 {
-                log.error("AdqlColumnProxy can't rename base column [{}][{}]", base.fullname(), name);
+                log.error("AdqlTableProxy can't rename base column [{}][{}]", base.fullname(), name);
+                throw new IllegalArgumentException();
+                }
+
+            @Override
+            public AdqlColumn create(final BaseColumn<?> base, final AdqlColumn.Metadata meta)
+                {
+                log.error("AdqlTableProxy can't rename base column [{}][{}]", base.fullname(), meta.adql().name());
                 throw new IllegalArgumentException();
                 }
 

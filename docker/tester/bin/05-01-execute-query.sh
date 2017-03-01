@@ -24,11 +24,12 @@ adqltext=${1:?}
 #
 # Create the query.
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.query.input=${adqltext:?}" \
     "${endpointurl:?}/${queryschema:?}/queries/create" \
-     | bin/pp | tee /tmp/query-job.json
+     | jq '.' | tee /tmp/query-job.json
 
 queryident=$(
     cat /tmp/query-job.json | self | node

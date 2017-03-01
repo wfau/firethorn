@@ -23,11 +23,12 @@ ivoaspace=${1:?}
 tablesetfile=${4:?}
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --form   "urn:schema.tableset.file=@${tablesetfile:?}" \
     "${endpointurl:?}/${ivoaspace:?}/tableset/import" \
-    | bin/pp | tee /tmp/ivoa-schema.json
+    | jq '.' | tee /tmp/ivoa-schema.json
 
 ivoaschema=$(
     cat /tmp/adql-schema.json | self | node

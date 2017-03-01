@@ -22,12 +22,13 @@
 resourcename=${1:?}
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --data   "adql.resource.create.name=${resourcename:?}" \
     "${endpointurl:?}/adql/resource/create" \
-    | bin/pp | tee /tmp/query-space.json
+    | jq '.' | tee /tmp/query-space.json
 
 queryspace=$(
     cat /tmp/query-space.json | self | node

@@ -26,27 +26,29 @@ jdbcschemaname=${4:?}
 metadocfile=${5:?}
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "jdbc.resource.schema.select.catalog=${jdbccatalogname:?}" \
     --data   "jdbc.resource.schema.select.schema=${jdbcschemaname:?}" \
     "${endpointurl:?}/${jdbcspace:?}/schemas/select" \
-    | bin/pp | tee /tmp/jdbc-schema.json
+    | jq '.' | tee /tmp/jdbc-schema.json
 
 jdbcschemaident=$(
     cat /tmp/jdbc-schema.json | self
     )
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --form   "urn:schema.metadoc.base=${jdbcschemaident:?}" \
     --form   "urn:schema.metadoc.file=@${metadocfile:?}" \
     "${endpointurl:?}/${adqlspace:?}/metadoc/import" \
-    | bin/pp | tee /tmp/adql-schema.json
+    | jq '.' | tee /tmp/adql-schema.json
 
 adqlschema=$(
-    cat /tmp/adql-schema.json | self | node
+    cat /tmp/adql-schema.json | jq '.[]' | self | node
     )
 
 

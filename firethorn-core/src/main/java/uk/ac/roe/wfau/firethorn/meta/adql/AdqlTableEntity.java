@@ -46,6 +46,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.Metadata;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -692,6 +693,17 @@ public class AdqlTableEntity
                     AdqlTableEntity.this,
                     base,
                     name
+                    );
+                }
+
+            @Override
+            public AdqlColumn create(final BaseColumn<?> base, final AdqlColumn.Metadata meta)
+                {
+                realize();
+                return factories().adql().columns().entities().create(
+                    AdqlTableEntity.this,
+                    base,
+                    meta
                     );
                 }
 

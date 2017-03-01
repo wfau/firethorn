@@ -28,10 +28,10 @@ COPY bin/  /tester/bin
 COPY meta/ /tester/meta 
 COPY vosi/ /tester/vosi 
 
-ADD https://github.com/micha/resty/raw/master/pp    /tester/bin/
+#ADD https://github.com/micha/resty/raw/master/pp    /tester/bin/
 ADD https://github.com/micha/resty/raw/master/resty /tester/bin/
 
-RUN chmod a+x /tester/bin/pp
+#RUN chmod a+x /tester/bin/pp
 RUN chmod a+x /tester/bin/resty
 
 WORKDIR /tester

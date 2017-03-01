@@ -108,8 +108,8 @@ import uk.ac.roe.wfau.firethorn.spring.Context;
            query = "FROM BlueQueryEntity ORDER BY ident asc"
            ),
        @NamedQuery(
-           name  = "BlueQuery-select-resource",
-           query = "FROM BlueQueryEntity WHERE resource = :resource ORDER BY ident asc"
+           name  = "BlueQuery-select-source",
+           query = "FROM BlueQueryEntity WHERE source = :source ORDER BY ident asc"
            ),
        }
    )
@@ -472,14 +472,14 @@ implements BlueQuery
 
         @Override
         @SelectMethod
-        public Iterable<BlueQuery> select(final AdqlResource resource)
+        public Iterable<BlueQuery> select(final AdqlResource source)
             {
             return super.list(
                 super.query(
-                    "BlueQuery-select-resource"
+                    "BlueQuery-select-source"
                     ).setEntity(
-                        "resource",
-                        resource
+                        "source",
+                        source
                         )
                 );
             }
@@ -1945,101 +1945,89 @@ implements BlueQuery
             );
 
     	// TODO Add the row number index column.
-
         for(final SelectField field : this.fields)
         	{
+        	log.debug("Adding SelectField [{}]", field.name());
         	// TODO Adql details depend on the field type - calculated, local Jdbc, remote Ivoa etc ..
+        	// TODO Split this into a separate function. 
+        	final JdbcColumn.Metadata meta = new JdbcColumn.Metadata()
+        	    {
+                @Override
+                public String name()
+                    {
+                    return null;
+                    }
+                @Override
+                public Adql adql()
+                    {
+                    return new Adql()
+                        {
+                        @Override
+                        public String name()
+                            {
+                            return field.name();
+                            }
+                        @Override
+                        public String text()
+                            {
+                            return null;
+                            }
+                        @Override
+                        public Integer arraysize()
+                            {
+                            return field.arraysize();
+                            }
+                        @Override
+                        public AdqlType type()
+                            {
+                            return field.type();
+                            }
+                        @Override
+                        public String units()
+                            {
+                            return null;
+                            }
+                        @Override
+                        public String utype()
+                            {
+                            return null;
+                            }
+                        @Override
+                        public String ucd()
+                            {
+                            return null;
+                            }
+                        };
+                    }
+                @Override
+                public Jdbc jdbc()
+                    {
+                    return new Jdbc()
+                        {
+                        @Override
+                        public String name()
+                            {
+                            return null;
+                            }
+                        @Override
+                        public JdbcType jdbctype()
+                            {
+                            return field.type().jdbctype();
+                            }
+                        @Override
+                        public Integer arraysize()
+                            {
+                            return field.arraysize();
+                            }
+                        };
+                    }
+        	    }; 
+        	
         	final JdbcColumn jdbccol = jdbctable.columns().create(
-    			new JdbcColumn.Metadata()
-    				{
-					@Override
-					public Adql adql()
-						{
-						return new Adql()
-							{
-							@Override
-							public String name()
-								{
-								return field.name();
-								}
-
-							@Override
-							public String text()
-								{
-								// TODO Auto-generated method stub
-								return null;
-								}
-
-							@Override
-							public Integer arraysize()
-								{
-								return field.arraysize();
-								}
-
-							@Override
-							public AdqlType type()
-								{
-								return field.type();
-								}
-
-							@Override
-							public String units()
-								{
-								// TODO Auto-generated method stub
-								return null;
-								}
-
-							@Override
-							public String utype()
-								{
-								// TODO Auto-generated method stub
-								return null;
-								}
-
-							@Override
-							public String ucd()
-								{
-								// TODO Auto-generated method stub
-								return null;
-								}
-							};
-						}
-
-					@Override
-					public String name()
-						{
-						return null;
-						}
-
-					@Override
-					public Jdbc jdbc()
-						{
-						return new Jdbc()
-							{
-							@Override
-							public String name()
-								{
-								return null;
-								}
-
-							@Override
-							public JdbcType jdbctype()
-								{
-								return field.type().jdbctype();
-								}
-
-							@Override
-							public Integer arraysize()
-								{
-								return field.arraysize();
-								}
-							};
-						}
-    				}
+    	        meta
     			);
 
         	// TODO Create with ADQL metadata.
-        	// TODO Column create() and update() should only add fields that are different to the base.
         	final AdqlColumn adqlcol = adqltable.columns().create(
     			jdbccol,
         		field.name()    		

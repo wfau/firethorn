@@ -63,7 +63,7 @@ define()
 # Function to get the self URL from a JSON response.
 self()
     {
-    bin/pp | sed -n 's|^ *"self" : "\(.*\)"[^"]*|\1|p'
+    jq -r '.self'
     }
 
 #
@@ -84,24 +84,21 @@ ident()
 # Function to get the name from a JSON response.
 name()
     {
-    bin/pp | sed -n 's|^ *"name" : "\([^"]*\)".*|\1|p'
+    jq -r '.name'
     }
 
 #
 # Function to get the job status from a JSON response.
 status()
     {
-    bin/pp | sed -n '
-        /^ *"syntax" : {/, /^ *}/ d
-        s|^ *"status" : "\([^"]*\)".*|\1|p
-        '
+    jq -r '.status'
     }
 
 #
 # Function to get the votable URL from a query.
 votable()
     {
-    bin/pp | sed -n 's|^ *"votable" : "\([^"]*\)".*|\1|p'
+    jq -r '.results.formats.votable'
     }
 
 #

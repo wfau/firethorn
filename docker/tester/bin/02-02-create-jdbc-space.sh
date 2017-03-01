@@ -28,6 +28,7 @@ drivername=${5:?}
 catalogname=${6:?}
 
 curl \
+    --silent \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:jdbc.copy.depth=${jdbccopydepth:-FULL}" \
@@ -38,7 +39,7 @@ curl \
     --data   "jdbc.connection.driver=${drivername:?}" \
     --data   "jdbc.resource.catalog=${catalogname:?}" \
     "${endpointurl:?}/jdbc/resource/create" \
-    | bin/pp | tee /tmp/jdbc-space.json
+    | jq '.' | tee /tmp/jdbc-space.json
 
 jdbcspace=$(
     cat /tmp/jdbc-space.json | self | node
