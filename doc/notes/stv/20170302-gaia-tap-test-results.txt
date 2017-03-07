@@ -1,0 +1,491 @@
+2017-02-28 14:52:52,304 - root - INFO - Query : SELECT TOP 10 source_id, parallax FROM tgas_source
+2017-02-28 14:52:52,311 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 14:52:52,311 - root - INFO - Starting sql query :::2017-02-28 14:52:52
+2017-02-28 14:52:52,534 - root - INFO - Completed sql query :::2017-02-28 14:52:52
+2017-02-28 14:52:52,534 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-28 14:52:52,535 - root - INFO - 
+2017-02-28 14:52:52,536 - root - INFO - Started TAP job :::2017-02-28 14:52:52
+2017-02-28 14:52:53,203 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/400184
+2017-02-28 14:52:55,234 - astropy - WARNING - W45: None:1:317: W45: content-role attribute 'metadata' invalid
+2017-02-28 14:52:55,240 - astropy - WARNING - W45: None:1:615: W45: content-role attribute 'metadata' invalid
+2017-02-28 14:52:55,243 - astropy - WARNING - W45: None:1:817: W45: content-role attribute 'metadata' invalid
+2017-02-28 14:52:55,247 - root - INFO - Finished TAP job :::2017-02-28 14:52:55
+2017-02-28 14:52:55,247 - root - INFO - TAP  Query: 10 row(s) returned. 
+2017-02-28 14:52:55,247 - root - INFO - 
+2017-02-28 14:52:55,247 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 14:52:55,247 - root - INFO - Query Successful !!
+2017-02-28 14:52:55,247 - root - INFO - 
+2017-02-28 14:52:55,257 - root - INFO - Total queries: 1
+2017-02-28 14:52:55,257 - root - INFO - Total unique queries: 1
+2017-02-28 14:52:55,257 - root - INFO - Total failed: 0
+2017-02-28 14:52:55,258 - root - INFO - 
+2017-02-28 14:52:55,258 - root - INFO - 
+2017-02-28 14:52:55,258 - root - INFO - Query : SELECT TOP 10 * FROM tgas_source WHERE dec < 0 ORDER BY parallax DESC
+2017-02-28 14:52:55,263 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 14:52:55,263 - root - INFO - Starting sql query :::2017-02-28 14:52:55
+2017-02-28 14:52:55,453 - root - INFO - Completed sql query :::2017-02-28 14:52:55
+2017-02-28 14:52:55,454 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-28 14:52:55,454 - root - INFO - 
+2017-02-28 14:52:55,454 - root - INFO - Started TAP job :::2017-02-28 14:52:55
+2017-02-28 14:52:55,955 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/400211
+2017-02-28 14:52:56,713 - root - INFO - Finished TAP job :::2017-02-28 14:52:56
+2017-02-28 14:52:56,713 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-28 14:52:56,713 - root - INFO - 
+2017-02-28 14:52:56,713 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 14:52:56,713 - root - INFO - Query Failed..
+2017-02-28 14:52:56,713 - root - INFO - 
+2017-02-28 14:52:56,720 - root - INFO - Total queries: 2
+2017-02-28 14:52:56,721 - root - INFO - Total unique queries: 2
+2017-02-28 14:52:56,721 - root - INFO - Total failed: 1
+2017-02-28 14:52:56,721 - root - INFO - 
+2017-02-28 14:52:56,721 - root - INFO - 
+2017-02-28 14:52:56,721 - root - INFO - Query : SELECT COUNT(*) FROM tgas_source AS t, igsl_source_catalog_ids AS i WHERE t.source_id = i.source_id
+2017-02-28 14:52:56,726 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 14:52:56,726 - root - INFO - Starting sql query :::2017-02-28 14:52:56
+2017-02-28 14:52:56,760 - root - INFO - Completed sql query :::2017-02-28 14:52:56
+2017-02-28 14:52:56,761 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-28 14:52:56,761 - root - INFO - 
+2017-02-28 14:52:56,761 - root - INFO - Started TAP job :::2017-02-28 14:52:56
+2017-02-28 14:52:57,026 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/400355
+2017-02-28 14:52:57,553 - root - INFO - Finished TAP job :::2017-02-28 14:52:57
+2017-02-28 14:52:57,553 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-28 14:52:57,553 - root - INFO - 
+2017-02-28 14:52:57,553 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 14:52:57,553 - root - INFO - Query Successful !!
+2017-02-28 14:52:57,553 - root - INFO - 
+2017-02-28 14:52:57,561 - root - INFO - Total queries: 3
+2017-02-28 14:52:57,561 - root - INFO - Total unique queries: 3
+2017-02-28 14:52:57,561 - root - INFO - Total failed: 1
+2017-02-28 14:52:57,562 - root - INFO - 
+2017-02-28 14:52:57,562 - root - INFO - 
+2017-02-28 14:52:57,562 - root - INFO - Query : SELECT TOP 1 'Hello world!' AS greeting, ra, dec FROM tgas_source
+2017-02-28 14:52:57,567 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 14:52:57,567 - root - INFO - Starting sql query :::2017-02-28 14:52:57
+2017-02-28 14:52:57,659 - root - INFO - Completed sql query :::2017-02-28 14:52:57
+2017-02-28 14:52:57,659 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-28 14:52:57,659 - root - INFO - 
+2017-02-28 14:52:57,659 - root - INFO - Started TAP job :::2017-02-28 14:52:57
+2017-02-28 14:52:57,813 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/400379
+2017-02-28 14:52:58,321 - astropy - WARNING - W45: None:1:629: W45: content-role attribute 'metadata' invalid
+2017-02-28 14:52:58,323 - astropy - WARNING - W45: None:1:825: W45: content-role attribute 'metadata' invalid
+2017-02-28 14:52:58,324 - astropy - WARNING - W45: None:1:1022: W45: content-role attribute 'metadata' invalid
+2017-02-28 14:52:58,327 - root - INFO - Finished TAP job :::2017-02-28 14:52:58
+2017-02-28 14:52:58,327 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-28 14:52:58,327 - root - INFO - 
+2017-02-28 14:52:58,327 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 14:52:58,327 - root - INFO - Query Successful !!
+2017-02-28 14:52:58,327 - root - INFO - 
+2017-02-28 14:52:58,335 - root - INFO - Total queries: 4
+2017-02-28 14:52:58,335 - root - INFO - Total unique queries: 4
+2017-02-28 14:52:58,335 - root - INFO - Total failed: 1
+2017-02-28 14:52:58,335 - root - INFO - 
+2017-02-28 14:52:58,335 - root - INFO - 
+2017-02-28 14:52:58,336 - root - INFO - Query : SELECT COUNT(*) FROM gaia_source WHERE parallax IS NULL
+2017-02-28 14:52:58,340 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 14:52:58,341 - root - INFO - Starting sql query :::2017-02-28 14:52:58
+2017-02-28 14:58:37,585 - root - INFO - Completed sql query :::2017-02-28 14:58:37
+2017-02-28 14:58:37,585 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-28 14:58:37,585 - root - INFO - 
+2017-02-28 14:58:37,585 - root - INFO - Started TAP job :::2017-02-28 14:58:37
+2017-02-28 14:58:37,744 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/400451
+2017-02-28 15:02:59,658 - root - INFO - Finished TAP job :::2017-02-28 15:02:59
+2017-02-28 15:02:59,658 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-28 15:02:59,659 - root - INFO - 
+2017-02-28 15:02:59,659 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:02:59,659 - root - INFO - Query Successful !!
+2017-02-28 15:02:59,659 - root - INFO - 
+2017-02-28 15:02:59,667 - root - INFO - Total queries: 5
+2017-02-28 15:02:59,667 - root - INFO - Total unique queries: 5
+2017-02-28 15:02:59,667 - root - INFO - Total failed: 1
+2017-02-28 15:02:59,667 - root - INFO - 
+2017-02-28 15:02:59,668 - root - INFO - 
+2017-02-28 15:02:59,668 - root - INFO - Query : SELECT COUNT(*) FROM tgas_source AS t INNER JOIN igsl_source_catalog_ids AS i ON t.source_id = i.source_id
+2017-02-28 15:02:59,674 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:02:59,674 - root - INFO - Starting sql query :::2017-02-28 15:02:59
+2017-02-28 15:02:59,713 - root - INFO - Completed sql query :::2017-02-28 15:02:59
+2017-02-28 15:02:59,714 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-28 15:02:59,714 - root - INFO - 
+2017-02-28 15:02:59,714 - root - INFO - Started TAP job :::2017-02-28 15:02:59
+2017-02-28 15:02:59,891 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401015
+2017-02-28 15:03:00,427 - root - INFO - Finished TAP job :::2017-02-28 15:03:00
+2017-02-28 15:03:00,427 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-28 15:03:00,427 - root - INFO - 
+2017-02-28 15:03:00,427 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:03:00,428 - root - INFO - Query Successful !!
+2017-02-28 15:03:00,428 - root - INFO - 
+2017-02-28 15:03:00,436 - root - INFO - Total queries: 6
+2017-02-28 15:03:00,436 - root - INFO - Total unique queries: 6
+2017-02-28 15:03:00,436 - root - INFO - Total failed: 1
+2017-02-28 15:03:00,436 - root - INFO - 
+2017-02-28 15:03:00,436 - root - INFO - 
+2017-02-28 15:03:00,436 - root - INFO - Query : SELECT p.*, c.* FROM cepheid AS c, phot_variable_time_series_gfov AS p WHERE p.source_id = c.source_id ORDER BY p.source_id, p.observation_time
+2017-02-28 15:03:00,441 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:03:00,441 - root - INFO - Starting sql query :::2017-02-28 15:03:00
+2017-02-28 15:03:00,456 - root - ERROR - ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+ProgrammingError: ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+2017-02-28 15:03:00,458 - root - ERROR - ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+2017-02-28 15:03:00,458 - root - INFO - Completed sql query :::2017-02-28 15:03:00
+2017-02-28 15:03:00,458 - root - INFO - SQL Query: -1 row(s) returned. 
+2017-02-28 15:03:00,458 - root - INFO - 
+2017-02-28 15:03:00,459 - root - INFO - Started TAP job :::2017-02-28 15:03:00
+2017-02-28 15:03:00,555 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401039
+2017-02-28 15:03:00,644 - root - INFO - Finished TAP job :::2017-02-28 15:03:00
+2017-02-28 15:03:00,644 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-28 15:03:00,644 - root - INFO - 
+2017-02-28 15:03:00,645 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:03:00,645 - root - INFO - Query Successful !!
+2017-02-28 15:03:00,645 - root - INFO - 
+2017-02-28 15:03:00,652 - root - INFO - Total queries: 7
+2017-02-28 15:03:00,652 - root - INFO - Total unique queries: 7
+2017-02-28 15:03:00,652 - root - INFO - Total failed: 1
+2017-02-28 15:03:00,653 - root - INFO - 
+2017-02-28 15:03:00,653 - root - INFO - 
+2017-02-28 15:03:00,653 - root - INFO - Query : SELECT observation_time, g_magnitude FROM phot_variable_time_series_gfov AS p, (SELECT TOP 1 source_id FROM phot_variable_time_series_gfov_statistical_parameters ORDER BY range DESC ) AS t WHERE p.source_id = t.source_id ORDER BY observation_time
+2017-02-28 15:03:00,658 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:03:00,658 - root - INFO - Starting sql query :::2017-02-28 15:03:00
+2017-02-28 15:03:00,674 - root - ERROR - ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+ProgrammingError: ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+2017-02-28 15:03:00,676 - root - ERROR - ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: ('42S02', "[42S02] [FreeTDS][SQL Server]Invalid object name 'phot_variable_time_series_gfov'. (208) (SQLExecDirectW)")
+2017-02-28 15:03:00,676 - root - INFO - Completed sql query :::2017-02-28 15:03:00
+2017-02-28 15:03:00,676 - root - INFO - SQL Query: -1 row(s) returned. 
+2017-02-28 15:03:00,676 - root - INFO - 
+2017-02-28 15:03:00,676 - root - INFO - Started TAP job :::2017-02-28 15:03:00
+2017-02-28 15:03:00,797 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401050
+2017-02-28 15:03:00,901 - root - INFO - Finished TAP job :::2017-02-28 15:03:00
+2017-02-28 15:03:00,901 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-28 15:03:00,901 - root - INFO - 
+2017-02-28 15:03:00,901 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:03:00,901 - root - INFO - Query Successful !!
+2017-02-28 15:03:00,901 - root - INFO - 
+2017-02-28 15:03:00,909 - root - INFO - Total queries: 8
+2017-02-28 15:03:00,909 - root - INFO - Total unique queries: 8
+2017-02-28 15:03:00,909 - root - INFO - Total failed: 1
+2017-02-28 15:03:00,909 - root - INFO - 
+2017-02-28 15:03:00,909 - root - INFO - 
+2017-02-28 15:03:00,910 - root - INFO - Query : SELECT g.ra, g.dec FROM gaia_source AS g, igsl_source AS i WHERE aux_lqrf = 'true' AND g.source_id = i.source_id
+2017-02-28 15:03:00,915 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:03:00,915 - root - INFO - Starting sql query :::2017-02-28 15:03:00
+2017-02-28 15:03:00,978 - root - INFO - Completed sql query :::2017-02-28 15:03:00
+2017-02-28 15:03:00,979 - root - INFO - SQL Query: 0 row(s) returned. 
+2017-02-28 15:03:00,979 - root - INFO - 
+2017-02-28 15:03:00,979 - root - INFO - Started TAP job :::2017-02-28 15:03:00
+2017-02-28 15:03:01,182 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401061
+2017-02-28 15:03:01,711 - astropy - WARNING - W45: None:1:610: W45: content-role attribute 'metadata' invalid
+2017-02-28 15:03:01,714 - astropy - WARNING - W45: None:1:807: W45: content-role attribute 'metadata' invalid
+2017-02-28 15:03:01,719 - root - INFO - Finished TAP job :::2017-02-28 15:03:01
+2017-02-28 15:03:01,719 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-28 15:03:01,719 - root - INFO - 
+2017-02-28 15:03:01,720 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:03:01,720 - root - INFO - Query Failed..
+2017-02-28 15:03:01,720 - root - INFO - 
+2017-02-28 15:03:01,727 - root - INFO - Total queries: 9
+2017-02-28 15:03:01,728 - root - INFO - Total unique queries: 9
+2017-02-28 15:03:01,728 - root - INFO - Total failed: 2
+2017-02-28 15:03:01,728 - root - INFO - 
+2017-02-28 15:03:01,728 - root - INFO - 
+2017-02-28 15:03:01,728 - root - INFO - Query : SELECT ra, dec, phot_g_mean_mag FROM gaia_source WHERE ((ra BETWEEN 268.74298 AND 271.25702 AND dec BETWEEN 66.061389 AND 67.061389) OR (ra BETWEEN 88.74298 AND 91.25702 AND dec BETWEEN -67.061389 AND 66.061389)) AND source_id NOT IN (SELECT source_id FROM cepheid)
+2017-02-28 15:03:01,734 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:03:01,734 - root - INFO - Starting sql query :::2017-02-28 15:03:01
+2017-02-28 15:04:20,862 - root - INFO - Completed sql query :::2017-02-28 15:04:20
+2017-02-28 15:04:20,862 - root - INFO - SQL Query: 10000 row(s) returned. 
+2017-02-28 15:04:20,863 - root - INFO - 
+2017-02-28 15:04:20,863 - root - INFO - Started TAP job :::2017-02-28 15:04:20
+2017-02-28 15:04:21,055 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401099
+2017-02-28 15:04:33,092 - astropy - WARNING - W45: None:1:1016: W45: content-role attribute 'metadata' invalid
+2017-02-28 15:04:33,295 - root - INFO - Finished TAP job :::2017-02-28 15:04:33
+2017-02-28 15:04:33,295 - root - INFO - TAP  Query: 10000 row(s) returned. 
+2017-02-28 15:04:33,295 - root - INFO - 
+2017-02-28 15:04:33,295 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:04:33,295 - root - INFO - Query Successful !!
+2017-02-28 15:04:33,295 - root - INFO - 
+2017-02-28 15:04:33,302 - root - INFO - Total queries: 10
+2017-02-28 15:04:33,302 - root - INFO - Total unique queries: 10
+2017-02-28 15:04:33,303 - root - INFO - Total failed: 2
+2017-02-28 15:04:33,303 - root - INFO - 
+2017-02-28 15:04:33,303 - root - INFO - 
+2017-02-28 15:04:33,303 - root - INFO - Query : SELECT ROUND(SQRT(pmra*pmra + pmdec*pmdec), 0) AS muTot, COUNT(*) FROM tgas_source GROUP BY muTot ORDER BY muTot DESC
+2017-02-28 15:04:33,308 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:04:33,308 - root - INFO - Starting sql query :::2017-02-28 15:04:33
+2017-02-28 15:04:33,358 - root - ERROR - ('42S22', "[42S22] [FreeTDS][SQL Server]Invalid column name 'muTot'. (207) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+ProgrammingError: ('42S22', "[42S22] [FreeTDS][SQL Server]Invalid column name 'muTot'. (207) (SQLExecDirectW)")
+2017-02-28 15:04:33,359 - root - ERROR - ('42S22', "[42S22] [FreeTDS][SQL Server]Invalid column name 'muTot'. (207) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: ('42S22', "[42S22] [FreeTDS][SQL Server]Invalid column name 'muTot'. (207) (SQLExecDirectW)")
+2017-02-28 15:04:33,360 - root - INFO - Completed sql query :::2017-02-28 15:04:33
+2017-02-28 15:04:33,360 - root - INFO - SQL Query: -1 row(s) returned. 
+2017-02-28 15:04:33,360 - root - INFO - 
+2017-02-28 15:04:33,360 - root - INFO - Started TAP job :::2017-02-28 15:04:33
+2017-02-28 15:04:33,485 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401161
+2017-02-28 15:04:33,605 - root - INFO - Finished TAP job :::2017-02-28 15:04:33
+2017-02-28 15:04:33,606 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-28 15:04:33,606 - root - INFO - 
+2017-02-28 15:04:33,606 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:04:33,606 - root - INFO - Query Successful !!
+2017-02-28 15:04:33,606 - root - INFO - 
+2017-02-28 15:04:33,613 - root - INFO - Total queries: 11
+2017-02-28 15:04:33,613 - root - INFO - Total unique queries: 11
+2017-02-28 15:04:33,614 - root - INFO - Total failed: 2
+2017-02-28 15:04:33,614 - root - INFO - 
+2017-02-28 15:04:33,614 - root - INFO - 
+2017-02-28 15:04:33,614 - root - INFO - Query : SELECT *, SQRT(pmra*pmra + pmdec*pmdec) AS muTot FROM tgas_source WHERE SQRT(pmra*pmra + pmdec*pmdec) > 3000
+2017-02-28 15:04:33,619 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:04:33,619 - root - INFO - Starting sql query :::2017-02-28 15:04:33
+2017-02-28 15:04:35,436 - root - INFO - Completed sql query :::2017-02-28 15:04:35
+2017-02-28 15:04:35,436 - root - INFO - SQL Query: 2 row(s) returned. 
+2017-02-28 15:04:35,436 - root - INFO - 
+2017-02-28 15:04:35,437 - root - INFO - Started TAP job :::2017-02-28 15:04:35
+2017-02-28 15:04:35,982 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401172
+2017-02-28 15:04:37,722 - root - INFO - Finished TAP job :::2017-02-28 15:04:37
+2017-02-28 15:04:37,722 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-28 15:04:37,722 - root - INFO - 
+2017-02-28 15:04:37,722 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:04:37,722 - root - INFO - Query Failed..
+2017-02-28 15:04:37,722 - root - INFO - 
+2017-02-28 15:04:37,730 - root - INFO - Total queries: 12
+2017-02-28 15:04:37,730 - root - INFO - Total unique queries: 12
+2017-02-28 15:04:37,731 - root - INFO - Total failed: 3
+2017-02-28 15:04:37,731 - root - INFO - 
+2017-02-28 15:04:37,731 - root - INFO - 
+2017-02-28 15:04:37,731 - root - INFO - Query : SELECT COUNT(*) FROM tgas_source WHERE pmra*pmra + pmdec*pmdec > 5*SQRT(pmra*pmra*pmra_error*pmra_error + pmdec*pmdec*pmdec_error*pmdec_error)
+2017-02-28 15:04:37,736 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:04:37,737 - root - INFO - Starting sql query :::2017-02-28 15:04:37
+2017-02-28 15:04:38,195 - root - INFO - Completed sql query :::2017-02-28 15:04:38
+2017-02-28 15:04:38,195 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-28 15:04:38,195 - root - INFO - 
+2017-02-28 15:04:38,195 - root - INFO - Started TAP job :::2017-02-28 15:04:38
+2017-02-28 15:04:38,345 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401320
+2017-02-28 15:04:39,865 - root - INFO - Finished TAP job :::2017-02-28 15:04:39
+2017-02-28 15:04:39,865 - root - INFO - TAP  Query: 1 row(s) returned. 
+2017-02-28 15:04:39,865 - root - INFO - 
+2017-02-28 15:04:39,865 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:04:39,865 - root - INFO - Query Successful !!
+2017-02-28 15:04:39,866 - root - INFO - 
+2017-02-28 15:04:39,873 - root - INFO - Total queries: 13
+2017-02-28 15:04:39,873 - root - INFO - Total unique queries: 13
+2017-02-28 15:04:39,873 - root - INFO - Total failed: 3
+2017-02-28 15:04:39,873 - root - INFO - 
+2017-02-28 15:04:39,873 - root - INFO - 
+2017-02-28 15:04:39,874 - root - INFO - Query : SELECT TOP 10 * FROM tgas_source WHERE pmra*pmra + pmdec*pmdec < SQRT(pmra*pmra*pmra_error*pmra_error + pmdec*pmdec*pmdec_error*pmdec_error) AND parallax < parallax_error AND (astrometric_excess_noise < 2 OR astrometric_excess_noise_sig <= 2)
+2017-02-28 15:04:39,879 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:04:39,879 - root - INFO - Starting sql query :::2017-02-28 15:04:39
+2017-02-28 15:04:39,907 - root - INFO - Completed sql query :::2017-02-28 15:04:39
+2017-02-28 15:04:39,907 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-28 15:04:39,907 - root - INFO - 
+2017-02-28 15:04:39,907 - root - INFO - Started TAP job :::2017-02-28 15:04:39
+2017-02-28 15:04:40,234 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401346
+2017-02-28 15:04:40,886 - root - INFO - Finished TAP job :::2017-02-28 15:04:40
+2017-02-28 15:04:40,887 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-28 15:04:40,887 - root - INFO - 
+2017-02-28 15:04:40,887 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:04:40,887 - root - INFO - Query Failed..
+2017-02-28 15:04:40,887 - root - INFO - 
+2017-02-28 15:04:40,894 - root - INFO - Total queries: 14
+2017-02-28 15:04:40,894 - root - INFO - Total unique queries: 14
+2017-02-28 15:04:40,894 - root - INFO - Total failed: 4
+2017-02-28 15:04:40,895 - root - INFO - 
+2017-02-28 15:04:40,895 - root - INFO - 
+2017-02-28 15:04:40,895 - root - INFO - Query : SELECT * FROM gaia_source WHERE MOD(random_index, 1000000) = 0
+2017-02-28 15:04:40,900 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:04:40,900 - root - INFO - Starting sql query :::2017-02-28 15:04:40
+2017-02-28 15:04:40,915 - root - ERROR - ('42000', "[42000] [FreeTDS][SQL Server]'MOD' is not a recognized built-in function name. (195) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+ProgrammingError: ('42000', "[42000] [FreeTDS][SQL Server]'MOD' is not a recognized built-in function name. (195) (SQLExecDirectW)")
+2017-02-28 15:04:40,917 - root - ERROR - ('42000', "[42000] [FreeTDS][SQL Server]'MOD' is not a recognized built-in function name. (195) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: ('42000', "[42000] [FreeTDS][SQL Server]'MOD' is not a recognized built-in function name. (195) (SQLExecDirectW)")
+2017-02-28 15:04:40,917 - root - INFO - Completed sql query :::2017-02-28 15:04:40
+2017-02-28 15:04:40,917 - root - INFO - SQL Query: -1 row(s) returned. 
+2017-02-28 15:04:40,917 - root - INFO - 
+2017-02-28 15:04:40,917 - root - INFO - Started TAP job :::2017-02-28 15:04:40
+2017-02-28 15:04:41,163 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401490
+2017-02-28 15:04:41,829 - root - INFO - Finished TAP job :::2017-02-28 15:04:41
+2017-02-28 15:04:41,829 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-28 15:04:41,830 - root - INFO - 
+2017-02-28 15:04:41,830 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:04:41,830 - root - INFO - Query Successful !!
+2017-02-28 15:04:41,830 - root - INFO - 
+2017-02-28 15:04:41,837 - root - INFO - Total queries: 15
+2017-02-28 15:04:41,837 - root - INFO - Total unique queries: 15
+2017-02-28 15:04:41,837 - root - INFO - Total failed: 4
+2017-02-28 15:04:41,837 - root - INFO - 
+2017-02-28 15:04:41,838 - root - INFO - 
+2017-02-28 15:04:41,838 - root - INFO - Query : SELECT TOP 5 -ra from gaia_source
+2017-02-28 15:04:41,843 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:04:41,843 - root - INFO - Starting sql query :::2017-02-28 15:04:41
+2017-02-28 15:04:42,345 - root - INFO - Completed sql query :::2017-02-28 15:04:42
+2017-02-28 15:04:42,345 - root - INFO - SQL Query: 5 row(s) returned. 
+2017-02-28 15:04:42,346 - root - INFO - 
+2017-02-28 15:04:42,346 - root - INFO - Started TAP job :::2017-02-28 15:04:42
+2017-02-28 15:04:42,441 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401627
+2017-02-28 15:04:42,901 - root - INFO - Finished TAP job :::2017-02-28 15:04:42
+2017-02-28 15:04:42,902 - root - INFO - TAP  Query: 5 row(s) returned. 
+2017-02-28 15:04:42,902 - root - INFO - 
+2017-02-28 15:04:42,902 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:04:42,902 - root - INFO - Query Successful !!
+2017-02-28 15:04:42,902 - root - INFO - 
+2017-02-28 15:04:42,909 - root - INFO - Total queries: 16
+2017-02-28 15:04:42,910 - root - INFO - Total unique queries: 16
+2017-02-28 15:04:42,910 - root - INFO - Total failed: 4
+2017-02-28 15:04:42,910 - root - INFO - 
+2017-02-28 15:04:42,910 - root - INFO - 
+2017-02-28 15:04:42,910 - root - INFO - Query : SELECT TOP 10 ra FROM gaia_source WHERE ra IN (SELECT TOP 20 ra FROM gaia_source WHERE ra>0 ORDER BY ra)
+2017-02-28 15:04:42,915 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:04:42,915 - root - INFO - Starting sql query :::2017-02-28 15:04:42
+2017-02-28 15:04:42,993 - root - INFO - Completed sql query :::2017-02-28 15:04:42
+2017-02-28 15:04:42,993 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-28 15:04:42,993 - root - INFO - 
+2017-02-28 15:04:42,993 - root - INFO - Started TAP job :::2017-02-28 15:04:42
+2017-02-28 15:04:43,136 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401651
+2017-02-28 15:04:43,555 - root - INFO - Finished TAP job :::2017-02-28 15:04:43
+2017-02-28 15:04:43,555 - root - INFO - TAP  Query: 10 row(s) returned. 
+2017-02-28 15:04:43,555 - root - INFO - 
+2017-02-28 15:04:43,555 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:04:43,555 - root - INFO - Query Successful !!
+2017-02-28 15:04:43,555 - root - INFO - 
+2017-02-28 15:04:43,563 - root - INFO - Total queries: 17
+2017-02-28 15:04:43,563 - root - INFO - Total unique queries: 17
+2017-02-28 15:04:43,563 - root - INFO - Total failed: 4
+2017-02-28 15:04:43,563 - root - INFO - 
+2017-02-28 15:04:43,563 - root - INFO - 
+2017-02-28 15:04:43,564 - root - INFO - Query : SELECT pi() from gaia_source
+2017-02-28 15:04:43,569 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:04:43,569 - root - INFO - Starting sql query :::2017-02-28 15:04:43
+2017-02-28 15:11:19,153 - root - INFO - Completed sql query :::2017-02-28 15:11:19
+2017-02-28 15:11:19,154 - root - INFO - SQL Query: 10000 row(s) returned. 
+2017-02-28 15:11:19,154 - root - INFO - 
+2017-02-28 15:11:19,154 - root - INFO - Started TAP job :::2017-02-28 15:11:19
+2017-02-28 15:11:19,303 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401731
+2017-02-28 15:11:20,970 - root - INFO - Finished TAP job :::2017-02-28 15:11:20
+2017-02-28 15:11:20,970 - root - INFO - TAP  Query: 10000 row(s) returned. 
+2017-02-28 15:11:20,970 - root - INFO - 
+2017-02-28 15:11:20,970 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:11:20,970 - root - INFO - Query Successful !!
+2017-02-28 15:11:20,970 - root - INFO - 
+2017-02-28 15:11:20,976 - root - INFO - Total queries: 18
+2017-02-28 15:11:20,976 - root - INFO - Total unique queries: 18
+2017-02-28 15:11:20,976 - root - INFO - Total failed: 4
+2017-02-28 15:11:20,976 - root - INFO - 
+2017-02-28 15:11:20,977 - root - INFO - 
+2017-02-28 15:11:20,977 - root - INFO - Query : SELECT rand() from gaia_source
+2017-02-28 15:11:20,981 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:11:20,981 - root - INFO - Starting sql query :::2017-02-28 15:11:20
+2017-02-28 15:15:34,576 - root - INFO - Completed sql query :::2017-02-28 15:15:34
+2017-02-28 15:15:34,576 - root - INFO - SQL Query: 10000 row(s) returned. 
+2017-02-28 15:15:34,576 - root - INFO - 
+2017-02-28 15:15:34,576 - root - INFO - Started TAP job :::2017-02-28 15:15:34
+2017-02-28 15:15:34,716 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401801
+2017-02-28 15:15:36,302 - astropy - WARNING - W45: None:1:612: W45: content-role attribute 'metadata' invalid
+2017-02-28 15:15:36,396 - root - INFO - Finished TAP job :::2017-02-28 15:15:36
+2017-02-28 15:15:36,397 - root - INFO - TAP  Query: 10000 row(s) returned. 
+2017-02-28 15:15:36,397 - root - INFO - 
+2017-02-28 15:15:36,397 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:15:36,397 - root - INFO - Query Successful !!
+2017-02-28 15:15:36,397 - root - INFO - 
+2017-02-28 15:15:36,404 - root - INFO - Total queries: 19
+2017-02-28 15:15:36,404 - root - INFO - Total unique queries: 19
+2017-02-28 15:15:36,404 - root - INFO - Total failed: 4
+2017-02-28 15:15:36,404 - root - INFO - 
+2017-02-28 15:15:36,405 - root - INFO - 
+2017-02-28 15:15:36,405 - root - INFO - Query : SELECT TOP 10 ra, ra + dec, ra - dec,ra * dec, ra / dec FROM gaia_source where ra > 0 and dec > 0
+2017-02-28 15:15:36,411 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:15:36,411 - root - INFO - Starting sql query :::2017-02-28 15:15:36
+2017-02-28 15:15:37,864 - root - INFO - Completed sql query :::2017-02-28 15:15:37
+2017-02-28 15:15:37,865 - root - INFO - SQL Query: 10 row(s) returned. 
+2017-02-28 15:15:37,865 - root - INFO - 
+2017-02-28 15:15:37,865 - root - INFO - Started TAP job :::2017-02-28 15:15:37
+2017-02-28 15:15:38,021 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401839
+2017-02-28 15:15:38,929 - astropy - WARNING - W45: None:1:1004: W45: content-role attribute 'metadata' invalid
+2017-02-28 15:15:38,931 - astropy - WARNING - W45: None:1:1202: W45: content-role attribute 'metadata' invalid
+2017-02-28 15:15:38,933 - astropy - WARNING - W45: None:1:1399: W45: content-role attribute 'metadata' invalid
+2017-02-28 15:15:38,938 - root - INFO - Finished TAP job :::2017-02-28 15:15:38
+2017-02-28 15:15:38,939 - root - INFO - TAP  Query: 10 row(s) returned. 
+2017-02-28 15:15:38,939 - root - INFO - 
+2017-02-28 15:15:38,939 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:15:38,939 - root - INFO - Query Successful !!
+2017-02-28 15:15:38,939 - root - INFO - 
+2017-02-28 15:15:38,946 - root - INFO - Total queries: 20
+2017-02-28 15:15:38,947 - root - INFO - Total unique queries: 20
+2017-02-28 15:15:38,947 - root - INFO - Total failed: 4
+2017-02-28 15:15:38,947 - root - INFO - 
+2017-02-28 15:15:38,947 - root - INFO - 
+2017-02-28 15:15:38,947 - root - INFO - Query : SELECT TOP 1 dec FROM gaia_source WHERE dec = ANY (SELECT dec FROM gaia_source WHERE (dec BETWEEN -22.5 AND -12.5))
+2017-02-28 15:15:38,952 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:15:38,952 - root - INFO - Starting sql query :::2017-02-28 15:15:38
+2017-02-28 15:15:39,037 - root - INFO - Completed sql query :::2017-02-28 15:15:39
+2017-02-28 15:15:39,037 - root - INFO - SQL Query: 1 row(s) returned. 
+2017-02-28 15:15:39,038 - root - INFO - 
+2017-02-28 15:15:39,038 - root - INFO - Started TAP job :::2017-02-28 15:15:39
+2017-02-28 15:15:39,124 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401871
+2017-02-28 15:15:39,218 - root - INFO - Finished TAP job :::2017-02-28 15:15:39
+2017-02-28 15:15:39,218 - root - INFO - TAP  Query: -1 row(s) returned. 
+2017-02-28 15:15:39,218 - root - INFO - 
+2017-02-28 15:15:39,219 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:15:39,219 - root - INFO - Query Failed..
+2017-02-28 15:15:39,219 - root - INFO - 
+2017-02-28 15:15:39,226 - root - INFO - Total queries: 21
+2017-02-28 15:15:39,226 - root - INFO - Total unique queries: 21
+2017-02-28 15:15:39,227 - root - INFO - Total failed: 5
+2017-02-28 15:15:39,227 - root - INFO - 
+2017-02-28 15:15:39,227 - root - INFO - 
+2017-02-28 15:15:39,227 - root - INFO - Query : SELECT TOP 5 ((ra + 6) / 2) AS one, (ra + (6 / 2)) AS two FROM gaia_source
+2017-02-28 15:15:39,232 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-02-28 15:15:39,233 - root - INFO - Starting sql query :::2017-02-28 15:15:39
+2017-02-28 15:15:39,255 - root - INFO - Completed sql query :::2017-02-28 15:15:39
+2017-02-28 15:15:39,255 - root - INFO - SQL Query: 5 row(s) returned. 
+2017-02-28 15:15:39,256 - root - INFO - 
+2017-02-28 15:15:39,256 - root - INFO - Started TAP job :::2017-02-28 15:15:39
+2017-02-28 15:15:39,399 - root - INFO - Jobid:http://192.168.201.12/firethorn/tap/399057/async/401882
+2017-02-28 15:15:39,886 - astropy - WARNING - W45: None:1:611: W45: content-role attribute 'metadata' invalid
+2017-02-28 15:15:39,888 - astropy - WARNING - W45: None:1:808: W45: content-role attribute 'metadata' invalid
+2017-02-28 15:15:39,892 - root - INFO - Finished TAP job :::2017-02-28 15:15:39
+2017-02-28 15:15:39,892 - root - INFO - TAP  Query: 5 row(s) returned. 
+2017-02-28 15:15:39,892 - root - INFO - 
+2017-02-28 15:15:39,893 - root - INFO - ---------------------- End Query Test ----------------------
+2017-02-28 15:15:39,893 - root - INFO - Query Successful !!
+2017-02-28 15:15:39,893 - root - INFO - 
+2017-02-28 15:15:39,901 - root - INFO - Total queries: 22
+2017-02-28 15:15:39,901 - root - INFO - Total unique queries: 22
+2017-02-28 15:15:39,901 - root - INFO - Total failed: 5
+2017-02-28 15:15:39,901 - root - INFO - 
+2017-02-28 15:15:39,901 - root - INFO - 
+2017-02-28 15:15:39,901 - root - INFO - Success percentage: 77.27%
+
