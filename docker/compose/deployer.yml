@@ -86,7 +86,7 @@ services:
             timeout:  5s
             retries:  5
 
-    tester:
+    deployer:
         image:
            "firethorn/tester:${buildtag}"
         read_only:

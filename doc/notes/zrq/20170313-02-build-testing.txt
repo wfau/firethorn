@@ -66,6 +66,12 @@
     instance=$(pwgen 20 1)
 
 # -----------------------------------------------------
+# Set our branch name.
+#[user@virtual]
+
+    branch=2.1.6-zrq-bug-fixes
+
+# -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
 
@@ -239,7 +245,7 @@ EOF
 # Create our composer env file.
 #[user@virtual] 
 
-    cat > "${HOME:?}/.env" << EOF
+    cat > ".env" << EOF
     
     metatype=pgsql
     metadata=postgres
@@ -267,7 +273,7 @@ EOF
 EOF
 
 # -----------------------------------------------------
-# Run our tester.
+# Run our deployer.
 #[root@builder]
 
     source "${HOME:?}/firethorn.settings"
@@ -275,9 +281,9 @@ EOF
 
     export buildtag
     docker-compose \
-        --file "${composit:?}/tester-tunnel.yml" \
+        --file "${composit:?}/deployer.yml" \
         --project ${instance:?} \
-        run tester 
+        run deployer 
 
 # -----------------------------------------------------
 # Configure our identity.
