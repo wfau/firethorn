@@ -422,7 +422,7 @@ EOF
 
 cat > /tmp/tgas-query.adql << EOF
 SELECT
-    COUNT(*)
+    *
 FROM
     GAIADR1.tgas_source AS tgas
 WHERE
@@ -445,5 +445,5 @@ EOF
             curl -s $(
                 jq -r '.results.table' /tmp/tgas-query.json
                 ) | jq -r '.formats.votable'
-            ) | xmlstarlet fo | tee /tmp/tgas-data.xml
+            ) | tee /tmp/tgas-data.xml
 
