@@ -29,6 +29,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 
 /**
@@ -251,7 +252,13 @@ implements AdqlParserTable
                 return null ;
                 }
             else {
-                return this.table.root().schema().name();
+                if (this.table.root() instanceof JdbcTable)
+                    {
+                    return ((JdbcTable)this.table.root()).schema().schema();
+                    }
+                else {
+                    return this.table.root().schema().name();
+                    }
                 }
             }
         }
@@ -274,8 +281,13 @@ implements AdqlParserTable
                 return null ;
                 }
             else {
-                //return this.table.root().catalog().name();
-                return null ;
+                if (this.table.root() instanceof JdbcTable)
+                    {
+                    return ((JdbcTable)this.table.root()).schema().catalog();
+                    }
+                else {
+                    return null ;
+                    }
                 }
             }
         }

@@ -302,7 +302,7 @@ public abstract class JDBCTranslator implements ADQLTranslator {
 	 * 
 	 * @return			The string buffer + identifier.
 	 */
-	public final StringBuffer appendIdentifier(final StringBuffer str, final String id, final IdentifierField field){
+	public StringBuffer appendIdentifier(final StringBuffer str, final String id, final IdentifierField field){
 		return appendIdentifier(str, id, isCaseSensitive(field));
 	}
 
@@ -315,7 +315,7 @@ public abstract class JDBCTranslator implements ADQLTranslator {
 	 * 
 	 * @return					The string buffer + identifier.
 	 */
-	public static final StringBuffer appendIdentifier(final StringBuffer str, final String id, final boolean caseSensitive){
+	public StringBuffer appendIdentifier(final StringBuffer str, final String id, final boolean caseSensitive){
 		if (caseSensitive)
 			return str.append('"').append(id).append('"');
 		else
