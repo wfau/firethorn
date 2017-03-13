@@ -60,12 +60,19 @@
     popd
 
 # -----------------------------------------------------
+# Set our instance name.
+#[user@virtual]
+
+    instance=$(pwgen 20 1)
+
+# -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
 
     composit=${HOME:?}/compose
 
     export branch
+    export instance
     docker-compose \
         --file "${composit:?}/builder.yml" \
         --project ${instance:?} \
@@ -258,12 +265,6 @@ EOF
     tunnelhost=$(secret 'ssh.tunnel.host')
 
 EOF
-
-# -----------------------------------------------------
-# Set our instance name.
-#[root@builder]
-
-    instance=$(pwgen 20 1)
 
 # -----------------------------------------------------
 # Run our tester.

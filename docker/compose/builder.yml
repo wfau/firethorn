@@ -36,6 +36,7 @@ services:
         environment:
             branch:   "${branch}"
             buildtag: "${buildtag}"
+            instance: "${instance}"
             SSH_AUTH_SOCK: /tmp/ssh_auth_sock
         command:
             [bash]
