@@ -1,0 +1,119 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    export devname=zrq-bug-fixes
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt &
+
+# -----------------------------------------------------
+# Notes on MSSQL Docker image.
+#[user@desktop]
+
+    #
+    # Create system directories - mount these as volumes ?
+    mkdir -p /var/opt/mssql/data
+    mkdir -p /var/opt/mssql/etc
+    mkdir -p /var/opt/mssql/log
+
+    #
+    # Password file.
+    /var/opt/mssql/etc/sa_password
+
+    #
+    # Echo password into a pipe.  
+    SQLSERVR_SA_PASSWORD_FILE=<(echo -n "$SA_PASSWORD")
+
+    #
+    # Run the setup ..
+    /opt/mssql/bin/sqlservr --setup $sqlservr_setup_options 2>&1 > /var/opt/mssql/log/setup-$(date +%Y%m%d-%H%M%S).log
+
+        Registry startup parameters: 
+            -d C:\var\opt\mssql\data\master.mdf
+            -l C:\var\opt\mssql\data\mastlog.ldf
+            -e C:\var\opt\mssql\log\errorlog
+
+        ....
+        Starting up database 'master'.
+        ....
+        Starting up database 'msdb'.
+        Starting up database 'mssqlsystemresource'.
+        ....
+        Starting up database 'model'.
+
+    #
+    # We could install our own ..
+    # https://packages.microsoft.com/yumrepos/
+
+
+    #
+    # Run the container
+
+    mkdir sqletc    
+    cat > sqletc/password << EOF
+forn23r6hasd::21    
+EOF
+
+    ln sqletc/password sqletc/sa_password
+
+    docker run \
+        -d \
+        --name sqlserv \
+        --env 'ACCEPT_EULA=y' \
+        --volume "$(pwd)/sqletc:/var/opt/mssql/etc" \
+        microsoft/mssql-server-linux 
+
+    docker logs -f sqlserv
+
+    docker exec -it sqlserv bash
+
+    #
+    # Install instructions.
+    # http://www.tecmint.com/install-ms-sql-server-centos-ubuntu-linux/
+
+    #
+    # Install the client tools ...
+
+    apt-get update
+    apt-get install -y curl
+    apt-get install -y apt-transport-https
+    curl --silent https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+    
+    cat > /etc/apt/sources.list.d/sql-server.list << EOF
+deb [arch=amd64] https://packages.microsoft.com/ubuntu/16.04/mssql-server xenial main
+deb [arch=amd64] https://packages.microsoft.com/ubuntu/16.04/prod xenial main
+EOF
+
+    apt-get update
+    apt-get install -y mssql-tools
+
+    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+    source ~/.bashrc
+
+    #
+    # Connect to the server.
+    sqlcmd -S localhost -U SA -P "$(cat /var/opt/mssql/etc/password)"
+
+

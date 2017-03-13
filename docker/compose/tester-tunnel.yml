@@ -1,0 +1,168 @@
+version: '2.1'
+
+networks:
+
+    rosana:
+
+    miriam:
+
+services:
+
+    bethany:
+        image:
+           "firethorn/postgres:${buildtag}"
+        read_only:
+            true
+        tmpfs:
+            - '/run'
+            - '/tmp'
+        environment:
+            POSTGRES_USER:     "${metauser}"
+            POSTGRES_PASSWORD: "${metapass}"
+        networks:
+            - miriam
+
+    patricia:
+        image:
+           "firethorn/sql-tunnel:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        environment:
+            target:     "${userhost}"
+            targethost: "${userhost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+
+    elayne:
+        image:
+           "firethorn/sql-tunnel:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        environment:
+            target:     "${datahost}"
+            targethost: "${datahost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+
+    jarmila:
+        image:
+           "firethorn/ogsadai:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+        networks:
+            - miriam
+        depends_on:
+            elayne:
+                condition: service_started            
+            patricia:
+                condition: service_started            
+        healthcheck:
+            test: [
+                "CMD-SHELL",
+                "curl --silent --head --fail http://localhost:8080/ogsadai/services || exit 1"
+                ]
+            interval: 30s
+            timeout: 5s
+            retries: 5
+
+    gillian:
+        image:
+           "firethorn/firethorn:${buildtag}"
+        read_only:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/firethorn.properties:/etc/firethorn.properties
+        networks:
+            - miriam
+            - rosana
+        environment:
+            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
+
+            firethorn.meta.type:   "${metatype}"
+            firethorn.meta.url:    "jdbc:postgresql://bethany/${metadata}"
+            firethorn.meta.user:   "${metauser}"
+            firethorn.meta.pass:   "${metapass}"
+            firethorn.meta.driver: "${metadriver}"
+
+            firethorn.user.type:   "${usertype}"
+            firethorn.user.url:    "jdbc:jtds:sqlserver://patricia/${userdata}"
+            firethorn.user.user:   "${useruser}"
+            firethorn.user.pass:   "${userpass}"
+            firethorn.user.driver: "${userdriver}"
+
+        depends_on:
+            bethany:
+                condition: service_started            
+            elayne:
+                condition: service_started            
+            patricia:
+                condition: service_started            
+            jarmila:
+                condition: service_healthy            
+        healthcheck:
+            test: [
+                "CMD-SHELL",
+                "curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1"
+                ]
+            interval: 30s
+            timeout: 5s
+            retries: 5
+
+    tester:
+        image:
+           "firethorn/tester:${buildtag}"
+        read_only:
+            true
+        stdin_open:
+            true
+        tty:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/tester.properties:/etc/tester.properties
+        networks:
+            - miriam
+        environment:
+            dataname:    "elayne"
+            datadata:    "${datadata}"
+            datauser:    "${datauser}"
+            datapass:    "${datapass}"
+            datadriver:  "${datadriver}"
+            endpointurl: "http://gillian:8080/firethorn"
+        depends_on:
+            gillian:
+                condition: service_healthy            
+        command:
+            [bash]
+
+

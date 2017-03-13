@@ -19,17 +19,6 @@
 #
 #
 
-
-#
-# Download the 'resty' wrapper for curl.
-#curl -# -L https://github.com/micha/resty/raw/master/resty > resty
-source bin/resty
-
-#
-# Download the 'pp' pretty print script.
-#curl -# -L https://github.com/micha/resty/raw/master/pp > pp
-#chmod a+x pp
-
 #
 # The service endpoint URL.
 endpointurl=${endpointurl:-$(
