@@ -1,0 +1,442 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop02]
+
+    createvm
+
+        INFO : Node name [Lothigometh]
+        INFO : Base name [fedora-24-docker-32G-20170113.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-24-docker-32G-20170113.qcow]
+        INFO : Disc name [Lothigometh.qcow]
+        INFO : Disc size [32GiB]
+
+# -----------------------------------------------------
+# Remove old version of compose.
+#[root@virtual]
+
+    dnf -y remove docker-compose
+
+# -----------------------------------------------------
+# Install latest version of compose.
+#[root@virtual]
+
+    curl -L https://github.com/docker/compose/releases/download/1.11.1/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
+    chmod +x /usr/bin/docker-compose
+
+# -----------------------------------------------------
+# Get our builder compose file.
+#[user@virtual]
+
+    composit=${HOME:?}/compose
+
+    mkdir ${composit:?}
+    pushd ${composit:?}
+     
+        wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+    popd
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    composit=${HOME:?}/compose
+
+    export branch
+    docker-compose \
+        --file "${composit:?}/builder.yml" \
+        --project ${instance:?} \
+        run builder 
+
+# -----------------------------------------------------
+# Update our path.
+# TODO Add this to the image
+#[root@builder]
+
+    # ** this should be in the container **
+    source /etc/bashrc
+
+# -----------------------------------------------------
+# Configure our source path.
+# TODO Add this to the image
+#[root@builder]
+
+    #
+    # Set the project path.
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/firethorn
+EOF
+    fi
+
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    if [  -e "${FIRETHORN_CODE:?}" ]
+    then
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg pull
+            hg update
+        
+        popd
+    else
+        pushd "$(dirname ${FIRETHORN_CODE:?})"
+
+            hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "$(basename ${FIRETHORN_CODE:?})"
+
+        popd
+    fi
+
+# -----------------------------------------------------
+# Update the source code branch.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        if [ -n "${branch}" ]
+        then
+            hg update "${branch:?}"
+        else
+            hg update 'default'
+        fi
+
+    popd
+
+# -----------------------------------------------------
+# Set our buld tag.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+
+        if [ "${branch}" -ne 'default' ]
+        then
+            buildtag=$(hg branch)
+        else
+            buildtag=$(getversion)
+        fi
+
+    popd
+
+# -----------------------------------------------------
+# Update our POM version.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        pomversions "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Generate our dockerfiles.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        dockerfiles "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Build our base images.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Load our secret function.
+#[root@builder]
+
+    vi ${HOME:?}/secret.sh
+
+        ....
+
+    source ${HOME:?}/secret.sh
+    secret 'ping'
+
+
+# -----------------------------------------------------
+# Create our composer env file.
+#[user@virtual] 
+
+    cat > "${HOME:?}/.env" << EOF
+    
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Set our instance name.
+#[root@builder]
+
+    instance=$(pwgen 20 1)
+
+# -----------------------------------------------------
+# Run our tester.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose
+
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/tester-tunnel.yml" \
+        --project ${instance:?} \
+        run tester 
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | jq '.' | tee /tmp/system-info.json
+
+# -----------------------------------------------------
+# Load the local ATLASDR1 resource.
+#[root@tester]
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'ATLAS JDBC conection' \
+            "jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        wfaujdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'WFAU ADQL workspace'
+        wfauadql=${adqlspace:?}
+
+       source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
+
+# -----------------------------------------------------
+# Create a workspace and add the local schema.
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR1' 'ATLASDR1'
+
+# --------------------------------------
+# Create the GAIA TAP resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAIA TAP service' \
+            'http://gea.esac.esa.int/tap-server/tap'
+        gaiaivoa=${ivoaspace:?}
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gaia/gaia-tableset.xml'
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${gaiaivoa:?}/vosi/import" \
+            | jq '.'
+
+        #
+        # Find the Gaia DR1 schema
+        findname=gaiadr1
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${findname:?}" \
+            "${endpointurl:?}/${gaiaivoa:?}/schemas/select" \
+            | jq '.' | tee /tmp/gaia-schema.json
+
+        gaiaschema=$(
+            cat /tmp/gaia-schema.json | self
+            )
+
+# -----------------------------------------------------
+# Add the Gaia DR1 schema to our workspace.
+#[root@tester]
+
+        gaianame=GAIADR1
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${gaianame:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | jq '.' | tee /tmp/query-schema.json
+
+# -----------------------------------------------------
+# Test queries ...
+#[root@tester]
+
+        # 8..36
+        # 8..30
+
+cat > /tmp/atlas-query.adql << EOF
+SELECT
+    COUNT(*),
+    ROUND(gAperMag3, 0) AS gAper,
+    ROUND(iAperMag3, 0) AS iAper
+FROM
+    ATLASDR1.atlasSource
+WHERE
+    gAperMag3 <> 0
+GROUP BY
+    ROUND(gAperMag3, 0),
+    ROUND(iAperMag3, 0)
+ORDER BY
+    gAper,
+    iAper
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/atlas-query.json
+
+        atlasdata=$(cat /tmp/atlas-query.json | votable)
+        curl --silent "${atlasdata:?}" | xmlstarlet fo | tee /tmp/atlas-data.xml
+
+
+cat > /tmp/tgas-query.adql << EOF
+SELECT
+    COUNT(*)
+FROM
+    GAIADR1.tgas_source AS tgas
+WHERE
+    tgas.parallax > (10.0 * tgas.parallax_error)
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/tgas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/tgas-query.json
+
+        #
+        # Get the results as a VOTable file
+        curl -s $(
+            curl -s $(
+                jq -r '.results.table' /tmp/tgas-query.json
+                ) | jq -r '.formats.votable'
+            ) | xmlstarlet fo | tee /tmp/tgas-data.xml
+
