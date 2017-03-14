@@ -1,12 +1,15 @@
 version: '2.1'
 
+env_file:
+    -   ./deployer.env
+    
 networks:
 
+    # External network
     rosana:
-        # External network
 
+    # Internal network
     miriam:
-        # Internal network
 
 services:
 
@@ -14,7 +17,7 @@ services:
         hostname:
             metadata
         image:
-           "firethorn/postgres:${buildtag}"
+           "firethorn/postgres:${buildtag:-latest}"
         read_only:
             true
         tmpfs:
@@ -30,7 +33,7 @@ services:
         hostname:
             ogsa-dai
         image:
-           "firethorn/ogsadai:${buildtag}"
+           "firethorn/ogsadai:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -52,7 +55,7 @@ services:
     gillian:
         hostname: firethorn
         image:
-           "firethorn/firethorn:${buildtag}"
+           "firethorn/firethorn:${buildtag:-latest}"
         read_only:
             true
         tmpfs:
@@ -96,7 +99,7 @@ services:
         hostname:
             deployer
         image:
-           "firethorn/tester:${buildtag}"
+           "firethorn/tester:${buildtag:-latest}"
         read_only:
             true
         stdin_open:

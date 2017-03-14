@@ -288,6 +288,10 @@ EOF
         identity=${identity:-$(date '+%H:%M:%S')}
         community=${community:-$(date '+%A %-d %B %Y')}
 
+# -----------------------------------------------------
+# Load our script tools.
+#[root@tester]
+
         source "bin/01-01-init.sh"
 
 # -----------------------------------------------------
