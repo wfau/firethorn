@@ -95,7 +95,8 @@ EOF
 # Run our deployer.
 #[root@builder]
 
-    export buildtag=
+    export buildtag=2.1.6-zrq-bug-fixes
+    
     docker-compose \
         --file "deployer.yml" \
         run deployer 

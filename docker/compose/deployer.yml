@@ -1,8 +1,5 @@
 version: '2.1'
 
-env_file:
-    -   ./deployer.env
-    
 networks:
 
     # External network
