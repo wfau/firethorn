@@ -3,12 +3,16 @@ version: '2.1'
 networks:
 
     rosana:
+        # External network
 
     miriam:
+        # Internal network
 
 services:
 
     bethany:
+        hostname:
+            metadata
         image:
            "firethorn/postgres:${buildtag}"
         read_only:
@@ -23,6 +27,8 @@ services:
             - miriam
 
     jarmila:
+        hostname:
+            ogsa-dai
         image:
            "firethorn/ogsadai:${buildtag}"
         read_only:
@@ -44,6 +50,7 @@ services:
             retries:  5
 
     gillian:
+        hostname: firethorn
         image:
            "firethorn/firethorn:${buildtag}"
         read_only:
@@ -71,7 +78,6 @@ services:
             firethorn.user.user:   "${useruser}"
             firethorn.user.pass:   "${userpass}"
             firethorn.user.driver: "${userdriver}"
-
         depends_on:
             bethany:
                 condition: service_started            
@@ -87,6 +93,8 @@ services:
             retries:  5
 
     deployer:
+        hostname:
+            deployer
         image:
            "firethorn/tester:${buildtag}"
         read_only:

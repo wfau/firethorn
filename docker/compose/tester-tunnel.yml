@@ -3,8 +3,10 @@ version: '2.1'
 networks:
 
     rosana:
+        # External network
 
     miriam:
+        # Internal network
 
 services:
 

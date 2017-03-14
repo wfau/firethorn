@@ -152,7 +152,7 @@ EOF
 
         source 'bin/util.sh'
 
-        if [ "${branch}" -ne 'default' ]
+        if [ "${branch}" != 'default' ]
         then
             buildtag=$(hg branch)
         else
@@ -240,7 +240,6 @@ EOF
     source ${HOME:?}/secret.sh
     secret 'ping'
 
-
 # -----------------------------------------------------
 # Create our composer env file.
 #[user@virtual] 
@@ -266,9 +265,6 @@ EOF
     datauser=$(secret 'firethorn.data.user')
     datapass=$(secret 'firethorn.data.pass')
     datadriver=net.sourceforge.jtds.jdbc.Driver
-
-    tunneluser=$(secret 'ssh.tunnel.user')
-    tunnelhost=$(secret 'ssh.tunnel.host')
 
 EOF
 
@@ -417,7 +413,7 @@ EOF
             | jq '.' | tee /tmp/atlas-query.json
 
         atlasdata=$(cat /tmp/atlas-query.json | votable)
-        curl --silent "${atlasdata:?}" | xmlstarlet fo | tee /tmp/atlas-data.xml
+        curl --silent "${atlasdata:?}" | xmllint --format - | tee /tmp/atlas-data.xml
 
 
 cat > /tmp/tgas-query.adql << EOF
@@ -439,11 +435,28 @@ EOF
             "${endpointurl:?}/${queryspace:?}/queries/create" \
             | jq '.' | tee /tmp/tgas-query.json
 
+
         #
-        # Get the results as a VOTable file
+        # Get the TOP 100 results
         curl -s $(
-            curl -s $(
-                jq -r '.results.table' /tmp/tgas-query.json
-                ) | jq -r '.formats.votable'
-            ) | tee /tmp/tgas-data.xml
+            jq -r '.results.table' /tmp/tgas-query.json
+            ) | jq '.' | tee result-table.json
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 100 * FROM $(jq -r '.fullname' result-table.json)" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "$(jq -r '.resource' result-table.json)/queries/create" \
+            | jq '.' | tee /tmp/result-query.json
+
+        curl -s $(
+            jq -r '.results.formats.votable' /tmp/result-query.json
+            ) | xmllint --format - | tee /tmp/result-data.xml
+
+
+
+
 
