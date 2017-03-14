@@ -1,0 +1,102 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop02]
+
+    createvm
+
+        INFO : Node name [Lothigometh]
+        INFO : Base name [fedora-24-docker-32G-20170113.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-24-docker-32G-20170113.qcow]
+        INFO : Disc name [Lothigometh.qcow]
+        INFO : Disc size [32GiB]
+
+# -----------------------------------------------------
+# Remove old version of compose.
+#[root@virtual]
+
+    dnf -y remove docker-compose
+
+# -----------------------------------------------------
+# Install latest version of compose.
+#[root@virtual]
+
+    curl -L https://github.com/docker/compose/releases/download/1.11.1/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
+    chmod +x /usr/bin/docker-compose
+
+# -----------------------------------------------------
+# Get our compose file.
+#[root@virtual]
+
+    wget -O deployer.yml \
+        https://tinyurl.com/firethorn-deployer
+
+# -----------------------------------------------------
+# Load our secret function.
+#[root@builder]
+
+    vi ${HOME:?}/secret.sh
+
+        ....
+
+    source ${HOME:?}/secret.sh
+    secret 'ping'
+
+# -----------------------------------------------------
+# Create our deployer env file.
+#[user@virtual] 
+
+    cat > "deployer.env" << EOF
+    
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+EOF
+
+# -----------------------------------------------------
+# Run our deployer.
+#[root@builder]
+
+    export buildtag=
+    docker-compose \
+        --file "deployer.yml" \
+        run deployer 
+
