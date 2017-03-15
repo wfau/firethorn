@@ -99,8 +99,8 @@ EOF
 #[root@builder]
 
     export buildtag=2.1.5
+
     export buildtag=2.1.6-zrq-bug-fixes
-    
     docker-compose \
         --file deployer.yml \
         run deployer 
@@ -109,7 +109,7 @@ EOF
 # Load our script tools.
 #[root@tester]
 
-        source "bin/01-01-init.sh"
+        #source "bin/01-01-init.sh"
 
 # -----------------------------------------------------
 # Configure our identity.

@@ -74,13 +74,13 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * TODO Move to a AdqlTableModel.
      *
      */
-    public static final String TABLE_NAME_PARAM = "adql.schema.table.select.name" ;
+    public static final String TABLE_NAME_PARAM = "adql.table.name" ;
 
     /**
      * MVC property for the {@Identifier} of the {@link BaseTable} to copy, [{@value}].
      * 
      */
-    public static final String BASE_TABLE_PARAM = "adql.schema.table.import.base" ;
+    public static final String BASE_TABLE_PARAM = "adql.table.base" ;
 
     @Override
     public AdqlTableBean bean(final AdqlTable entity)

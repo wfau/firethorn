@@ -142,6 +142,8 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<JdbcResourceBean> create(
+        @RequestParam(value=CATALOG_NAME_PARAM, required=false)
+        final String catalog,
         @RequestParam(value=RESOURCE_NAME_PARAM, required=true)
         final String name,
         @RequestParam(value=CONNECTION_URL_PARAM, required=false)
@@ -151,9 +153,7 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
         @RequestParam(value=CONNECTION_PASS_PARAM, required=false)
         final String pass,
         @RequestParam(value=CONNECTION_DRIVER_PARAM, required=false)
-        final String driver,
-        @RequestParam(value=CATALOG_NAME_PARAM, required=false)
-        final String catalog
+        final String driver
         ){
         return created(
             factories().jdbc().resources().entities().create(

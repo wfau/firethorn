@@ -65,13 +65,13 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
      * MVC property for the {@link JdbcSchema} name.
      *
      */
-    public static final String SCHEMA_NAME_PARAM = "jdbc.resource.schema.select.schema" ;
+    public static final String SCHEMA_NAME_PARAM = "jdbc.schema.schema" ;
 
     /**
      * MVC property for the catalog name.
      *
      */
-    public static final String CATALOG_NAME_PARAM = "jdbc.resource.schema.select.catalog" ;
+    public static final String CATALOG_NAME_PARAM = "jdbc.schema.catalog" ;
 
     @Override
     public JdbcSchemaBean bean(final JdbcSchema entity)

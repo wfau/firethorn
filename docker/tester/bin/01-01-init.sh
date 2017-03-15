@@ -19,6 +19,12 @@
 #
 #
 
+echo "---- ---- ---- ---- ---- ---- ---- ----"
+echo "WARNING : deprecated functions"
+echo "These shell script functions are deprecated"
+echo "and will be removed in the next version"
+echo "---- ---- ---- ---- ---- ---- ---- ----"
+
 #
 # The service endpoint URL.
 endpointurl=${endpointurl:-$(

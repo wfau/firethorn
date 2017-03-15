@@ -1,0 +1,194 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a JdbcResource to represent the local JDBC database.
+#[root@tester]
+
+** REMOVE urn:jdbc.copy.depth
+
+\begin{singlespacing}
+\begin{alltt}
+    jdbcname="\verb#ATLAS JDBC resource#"
+    jdbcurl="\verb#jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1#"
+
+    echo "\verb#Creating JDBC resource#"
+    echo "\verb#  name [${jdbcname}]#"
+    echo "\verb#  url  [${jdbcurl}]#"
+
+    curl \textbackslash
+        ...
+        --data   "\verb#jdbc.resource.name=${jdbcname}#" \textbackslash
+        --data   "\verb#jdbc.resource.catalog=ATLASDR1#" \textbackslash
+        --data   "\verb#jdbc.connection.url=${jdbcurl}#" \textbackslash
+        --data   "\verb#jdbc.connection.user=${datauser}#" \textbackslash
+        --data   "\verb#jdbc.connection.pass=${datapass}#" \textbackslash
+        --data   "\verb#jdbc.connection.driver=${datadriver}#" \textbackslash
+        "\verb#${endpointurl}/jdbc/resource/create#" \textbackslash
+        | jq '.' | tee /tmp/atlas-jdbc.json
+
+    atlasjdbc=\verb#$(#
+        jq -r '.self' /tmp/atlas-jdbc.json
+        )
+
+    echo "\verb#  link [${atlasjdbc}]#"
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Create an empty AdqlResource to represent the local JDBC database.
+#[root@tester]
+
+** REMOVE adql.copy.depth
+** CHANGE adql.resource.create.name adql.resource.name
+
+\begin{singlespacing}
+\begin{alltt}
+    adqlname="\verb#ATLAS ADQL resource#"
+
+    echo "\verb#Creating ADQL resource#"
+    echo "\verb#  name [${adqlname}]#"
+
+    curl \textbackslash
+        ...
+        --data   "\verb#adql.resource.name=${adqlname}#" \textbackslash
+        "\verb#${endpointurl}/adql/resource/create#" \textbackslash
+        | jq '.' | tee /tmp/atlas-adql.json
+
+    atlasadql=\verb#$(#
+        jq -r '.self' /tmp/atlas-adql.json
+        )
+
+    echo "\verb#  link [${atlasadql}]#"
+\end{alltt}
+\end{singlespacing}
+
+
+
+# -----------------------------------------------------
+# Locate the JdbcSchema based on catalog and schema name.
+#[root@tester]
+
+** CHANGE jdbc.resource.schema.select.catalog jdbc.schema.catalog
+** CHANGE jdbc.resource.schema.select.schema  jdbc.schema.schema
+
+\begin{singlespacing}
+\begin{alltt}
+
+    jdbccatalog="\verb#ATLASDR1#"
+    jdbcschema="\verb#dbo#"
+
+    echo "\verb#Finding JDBC schema#"
+    echo "\verb#  catalog [${jdbccatalog}]#"
+    echo "\verb#  schema  [${jdbcschema}]#"
+        
+    curl \textbackslash
+        ...
+        --data "\verb#jdbc.schema.catalog=${jdbccatalog}#" \textbackslash
+        --data "\verb#jdbc.schema.schema=${jdbcschema}#" \textbackslash
+        "\verb#${atlasjdbc}/schemas/select#" \textbackslash
+        | jq '.' | tee /tmp/jdbc-schema.json
+
+    jdbcschema=\verb#$(#
+        jq -r '.self' /tmp/jdbc-schema.json
+        )
+
+    echo "\verb#  link [${jdbcschema}]#"
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Import the mapping between JDBC and ADQL tables.
+#[root@tester]
+
+** REPLACE urn:schema.metadoc.base schema.metadoc.base
+** REPLACE urn:schema.metadoc.file schema.metadoc.file
+
+\begin{singlespacing}
+\begin{alltt}
+
+    metadoc="\verb#meta/ATLASDR1_TablesSchema.xml#"
+
+    echo "\verb#Importing JDBC:ADQL mapping#"
+    echo "\verb#  file [${metadoc}]#"
+
+    curl \textbackslash
+        ...
+        --form "\verb#schema.metadoc.base=${jdbcschema}#" \textbackslash
+        --form "\verb#schema.metadoc.file=@${metadoc}#"   \textbackslash
+        "\verb#${atlasadql}/metadoc/import#" \textbackslash
+        | jq '.' | tee /tmp/adql-schemas.json
+
+    adqlschema=$(
+        jq -r '.[].self' /tmp/adql-schemas.json
+        )
+
+    echo "\verb#  link [${adqlschema}]#"
+\end{alltt}
+\end{singlespacing}
+
+
+\begin{singlespacing}
+\begin{alltt}
+    echo "\verb#Listing ADQL tables#"
+    echo "\verb#  schema [${adqlschema}]#"
+
+    curl \textbackslash
+        ...
+        "\verb#${adqlschema}/tables/select#" \textbackslash
+        | jq '.' | tee /tmp/adql-tables.json
+\end{alltt}
+\end{singlespacing}
+
+
+** CHANGE adql.schema.table.select.name adql.table.name
+** CHANGE adql.schema.table.import.base adql.table.base
+
+\begin{singlespacing}
+\begin{alltt}
+
+    tablename="\verb#atlasSource#"
+
+    echo "\verb#Finding ADQL table#"
+    echo "\verb#  schema [${adqlschema}]#"
+    echo "\verb#  table  [${tablename}]#"
+
+    curl \textbackslash
+        ...
+        --data "\verb#adql.table.name=${tablename}#" \textbackslash
+        "\verb#${adqlschema}/tables/select#" \textbackslash
+        | jq '.' | tee /tmp/adql-table.json
+
+    adqltable=\verb#$(#
+        jq -r '.self' /tmp/adql-table.json
+        )
+
+    echo "\verb#  link [${adqltable}]#"
+\end{alltt}
+\end{singlespacing}
+
+
+
+
+
+
+
