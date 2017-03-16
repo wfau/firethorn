@@ -20,11 +20,33 @@
 #
 #
 
+** REMOVE urn:jdbc.copy.depth
+
+** REMOVE adql.copy.depth
+** CHANGE adql.resource.create.name adql.resource.name
+
+** CHANGE jdbc.resource.schema.select.catalog jdbc.schema.catalog
+** CHANGE jdbc.resource.schema.select.schema  jdbc.schema.schema
+
+** REPLACE urn:schema.metadoc.base schema.metadoc.base
+** REPLACE urn:schema.metadoc.file schema.metadoc.file
+
+** CHANGE adql.schema.table.select.name adql.table.name
+** CHANGE adql.schema.table.import.base adql.table.base
+
+** CHANGE adql.resource.schema.select.name  adql.schema.name
+** CHANGE adql.resource.schema.import.name  adql.schema.name
+
+** CHANGE adql.resource.schema.import.base  adql.schema.base
+
+** CHANGE urn:adql.copy.depth adql.copy.depth
+
+** CHANGE ivoa.resource.schema.name ivoa.schema.name
+
 # -----------------------------------------------------
 # Create a JdbcResource to represent the local JDBC database.
 #[root@tester]
 
-** REMOVE urn:jdbc.copy.depth
 
 \begin{singlespacing}
 \begin{alltt}
@@ -36,7 +58,7 @@
     echo "\verb#  url  [${jdbcurl}]#"
 
     curl \textbackslash
-        ...
+        \ldots
         --data   "\verb#jdbc.resource.name=${jdbcname}#" \textbackslash
         --data   "\verb#jdbc.resource.catalog=ATLASDR1#" \textbackslash
         --data   "\verb#jdbc.connection.url=${jdbcurl}#" \textbackslash
@@ -58,8 +80,6 @@
 # Create an empty AdqlResource to represent the local JDBC database.
 #[root@tester]
 
-** REMOVE adql.copy.depth
-** CHANGE adql.resource.create.name adql.resource.name
 
 \begin{singlespacing}
 \begin{alltt}
@@ -69,7 +89,7 @@
     echo "\verb#  name [${adqlname}]#"
 
     curl \textbackslash
-        ...
+        \ldots
         --data   "\verb#adql.resource.name=${adqlname}#" \textbackslash
         "\verb#${endpointurl}/adql/resource/create#" \textbackslash
         | jq '.' | tee /tmp/atlas-adql.json
@@ -88,8 +108,6 @@
 # Locate the JdbcSchema based on catalog and schema name.
 #[root@tester]
 
-** CHANGE jdbc.resource.schema.select.catalog jdbc.schema.catalog
-** CHANGE jdbc.resource.schema.select.schema  jdbc.schema.schema
 
 \begin{singlespacing}
 \begin{alltt}
@@ -102,7 +120,7 @@
     echo "\verb#  schema  [${jdbcschema}]#"
         
     curl \textbackslash
-        ...
+        \ldots
         --data "\verb#jdbc.schema.catalog=${jdbccatalog}#" \textbackslash
         --data "\verb#jdbc.schema.schema=${jdbcschema}#" \textbackslash
         "\verb#${atlasjdbc}/schemas/select#" \textbackslash
@@ -120,8 +138,6 @@
 # Import the mapping between JDBC and ADQL tables.
 #[root@tester]
 
-** REPLACE urn:schema.metadoc.base schema.metadoc.base
-** REPLACE urn:schema.metadoc.file schema.metadoc.file
 
 \begin{singlespacing}
 \begin{alltt}
@@ -132,7 +148,7 @@
     echo "\verb#  file [${metadoc}]#"
 
     curl \textbackslash
-        ...
+        \ldots
         --form "\verb#schema.metadoc.base=${jdbcschema}#" \textbackslash
         --form "\verb#schema.metadoc.file=@${metadoc}#"   \textbackslash
         "\verb#${atlasadql}/metadoc/import#" \textbackslash
@@ -153,15 +169,11 @@
     echo "\verb#  schema [${adqlschema}]#"
 
     curl \textbackslash
-        ...
+        \ldots
         "\verb#${adqlschema}/tables/select#" \textbackslash
         | jq '.' | tee /tmp/adql-tables.json
 \end{alltt}
 \end{singlespacing}
-
-
-** CHANGE adql.schema.table.select.name adql.table.name
-** CHANGE adql.schema.table.import.base adql.table.base
 
 \begin{singlespacing}
 \begin{alltt}
@@ -173,7 +185,7 @@
     echo "\verb#  table  [${tablename}]#"
 
     curl \textbackslash
-        ...
+        \ldots
         --data "\verb#adql.table.name=${tablename}#" \textbackslash
         "\verb#${adqlschema}/tables/select#" \textbackslash
         | jq '.' | tee /tmp/adql-table.json
@@ -186,10 +198,6 @@
 \end{alltt}
 \end{singlespacing}
 
-# --------------------------------------
-# Create an IvoaResource to represent the GAIA TAP resource.
-#[root@tester]
-
 \begin{singlespacing}
 \begin{alltt}
 
@@ -201,7 +209,7 @@
     echo "\verb#  url  [${tapurl}]#"
 
     curl \textbackslash
-        ...
+        \ldots
         --data "\verb#ivoa.resource.name=${tapname}#" \textbackslash
         --data "\verb#ivoa.resource.endpoint=${tapurl}#" \textbackslash
         "\verb#${endpointurl}/ivoa/resource/create#" \textbackslash
@@ -224,8 +232,7 @@
         | tee /tmp/gaia-vosi.xml
 
 
-
-# --------------------------------------
+# -----------------------------------------------------
 # Import the VOSI metadata.
 #[root@tester]
 
@@ -237,10 +244,258 @@
     echo "\verb#  file [${vosifile}]#"
 
     curl \textbackslash
-        ...
+        \ldots
         --form "\verb#vosi.tableset=@${vosifile}#" \
         "\verb#${gaiaivoa}/vosi/import#" \
         \verb#| jq '.'#
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Create a new ADQL resource to act as a workspace.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    adqlname="\verb#ADQL workspace#"
+
+    echo "\verb#Creating ADQL workspace#"
+    echo "\verb#  name [${adqlname}]#"
+
+    curl \textbackslash
+        \ldots
+        --data   "\verb#adql.resource.name=${adqlname}#" \textbackslash
+        "\verb#${endpointurl}/adql/resource/create#" \textbackslash
+        | jq '.' | tee /tmp/atlas-adql.json
+
+    atlasadql=\verb#$(#
+        jq -r '.self' /tmp/atlas-adql.json
+        )
+
+    echo "\verb#  link [${atlasadql}]#"
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Find the Atlas DR1 schema by name.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    atlasname=\verb#ATLASDR1#
+
+    echo "\verb#Finding ADQL schema#"
+    echo "\verb#  name [${atlasname}]#"
+
+    curl \textbackslash
+        \ldots
+        --data "\verb#adql.schema.name=${atlasname:?}#" \textbackslash
+        "\verb#${atlasadql:?}/schemas/select#" \textbackslash
+        \verb#| jq '.' | tee /tmp/atlas-schema.json#
+
+    atlasschema=$(
+        jq '.self' /tmp/atlas-schema.json
+        )
+
+    echo "\verb#  link [${atlasschema}]#"
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Add the Atlas DR1 schema.
+#[root@tester]
+\begin{singlespacing}
+\begin{alltt}
+    atlasname=\verb#ATLASDR1#
+
+    echo "\verb#Adding ADQL schema#"
+    echo "\verb#  name [${atlasname}]#"
+
+    curl \textbackslash
+        \ldots
+        --data "\verb#adql.copy.depth=THIN#" \textbackslash
+        --data "\verb#adql.schema.name=${atlasname:?}#" \textbackslash
+        --data "\verb#adql.schema.base=${atlasschema:?}#" \textbackslash
+        "\verb#${queryspace:?}/schemas/import#" \textbackslash
+        \verb#| jq '.'#
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# List the workspace schema.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    curl \textbackslash
+        \ldots
+        "\verb#${queryspace:?}/schemas/select#" \textbackslash
+        \verb#| jq '.'#
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Query the JDBC database.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        COUNT(*),
+        ROUND(gAperMag3, 0) AS gAper,
+        ROUND(iAperMag3, 0) AS iAper
+    FROM
+        ATLASDR1.atlasSource
+    WHERE
+        gAperMag3 <> 0
+    GROUP BY
+        ROUND(gAperMag3, 0),
+        ROUND(iAperMag3, 0)
+    ORDER BY
+        gAper,
+        iAper
+    EOF
+\end{alltt}
+\end{singlespacing}
+
+\begin{singlespacing}
+\begin{alltt}
+    curl \textbackslash
+        \ldots
+        --data-urlencode "\verb#adql.query.input@/tmp/atlas-query.adql#" \textbackslash
+        --data "\verb#adql.query.status.next=COMPLETED#" \textbackslash
+        --data "\verb#adql.query.wait.time=600000#" \textbackslash
+        "\verb#${queryspace}/queries/create#" \textbackslash
+        \verb#| jq '.' | tee /tmp/atlas-query.json#
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    curl \textbackslash
+        \ldots
+        \verb#$(#
+        \verb#jq -r '.results.formats.votable' "/tmp/atlas-query.json"#
+        \verb#)# \
+        \verb#| xmllint --format -# \
+        \verb#| tee /tmp/atlas-data.xml#
+\end{alltt}
+\end{singlespacing}
+
+
+
+# -----------------------------------------------------
+# Create a new ADQL resource to act as a workspace.
+#[root@tester]
+
+    ....
+
+# --------------------------------------
+# Find the Gaia DR1 schema by name.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    gaianame=\verb#gaiadr1#
+
+    echo "\verb#Finding IVOA schema#"
+    echo "\verb#  name [${gaianame}]#"
+
+    curl \textbackslash
+        \ldots
+        --data "\verb#ivoa.schema.name=${gaianame:?}#" \textbackslash
+        "\verb#${gaiaivoa:?}/schemas/select#" \textbackslash
+        \verb#| jq '.' | tee /tmp/gaia-schema.json#
+
+    gaiaschema=$(
+        jq '.self' /tmp/gaia-schema.json
+        )
+
+    echo "\verb#  link [${gaiaschema}]#"
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Add the Gaia DR1 schema.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    gaianame=\verb#GAIADR1#
+
+    curl \textbackslash
+        \ldots
+        --data "\verb#adql.copy.depth=THIN#" \
+        --data "\verb#adql.schema.name=${gaianame}#" \
+        --data "\verb#adql.schema.base=${gaiaschema}#" \
+        "\verb#${queryspace}/schemas/import#" \
+        \verb#| jq '.'#
+\end{alltt}
+\end{singlespacing}
+
+
+# -----------------------------------------------------
+# List the workspace schema.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    curl \textbackslash
+        \ldots
+        "\verb#${queryspace:?}/schemas/select#" \textbackslash
+        \verb#| jq '.'#
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Query the remote TAP service.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    cat > /tmp/gaia-query.adql << EOF
+    SELECT
+        source_id
+    FROM
+        GAIADR1.tgas_source AS tgas
+    WHERE
+        tgas.parallax > (10.0 * tgas.parallax_error)
+    EOF
+\end{alltt}
+\end{singlespacing}
+
+\begin{singlespacing}
+\begin{alltt}
+    echo "\verb#Executing ADQL query#"
+
+    curl \textbackslash
+        \ldots
+        --data-urlencode "\verb#adql.query.input@/tmp/gaia-query.adql#" \textbackslash
+        --data "\verb#adql.query.status.next=COMPLETED#" \textbackslash
+        --data "\verb#adql.query.wait.time=600000#" \textbackslash
+        "\verb#${queryspace}/queries/create#" \textbackslash
+        \verb#| jq '.' | tee /tmp/gaia-query.json#
+\end{alltt}
+\end{singlespacing}
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    curl \textbackslash
+        \ldots
+        \verb#$(#
+        \verb#jq -r '.results.formats.votable' "/tmp/atlas-gaia.json"#
+        \verb#)# \
+        \verb#| xmllint --format -# \
+        \verb#| tee /tmp/gaia-data.xml#
 \end{alltt}
 \end{singlespacing}
 
@@ -248,6 +503,12 @@
 
 
 
+
+
+
+
+
+
 # -----------------------------------------------------
 # Create a new ADQL resource to act as a workspace.
 #[root@tester]
@@ -256,7 +517,6 @@
             --silent \
             --header "firethorn.auth.identity:${identity:?}"   \
             --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=FULL" \
             "${endpointurl:?}/adql/resource/create" \
             | jq '.' | tee /tmp/query-space.json
 
@@ -276,7 +536,7 @@
             --silent \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
-            --data   "adql.resource.schema.select.name=${atlasfind:?}" \
+            --data   "adql.schema.name=${atlasfind:?}" \
             "${atlasadql:?}/schemas/select" \
             | jq '.' | tee /tmp/atlas-schema.json
 
@@ -296,229 +556,9 @@
             --silent \
             --header "firethorn.auth.identity:${identity:?}"   \
             --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=THIN" \
-            --data   "adql.resource.schema.import.name=${atlasname:?}" \
-            --data   "adql.resource.schema.import.base=${atlasschema:?}" \
-            "${queryspace:?}/schemas/import" \
-            | jq '.'
-
-
-# -----------------------------------------------------
-# List the workspace schema.
-#[root@tester]
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            "${queryspace:?}/schemas/select" \
-            | jq '.'
-
-# -----------------------------------------------------
-# Query the JDBC database.
-#[root@tester]
-
-
-cat > /tmp/atlas-query.adql << EOF
-SELECT
-    COUNT(*),
-    ROUND(gAperMag3, 0) AS gAper,
-    ROUND(iAperMag3, 0) AS iAper
-FROM
-    ATLASDR1.atlasSource
-WHERE
-    gAperMag3 <> 0
-GROUP BY
-    ROUND(gAperMag3, 0),
-    ROUND(iAperMag3, 0)
-ORDER BY
-    gAper,
-    iAper
-EOF
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
-            "${queryspace:?}/queries/create" \
-            | jq '.' | tee /tmp/atlas-query.json
-
-# -----------------------------------------------------
-# Get the results as a VOTable.
-#[root@tester]
-
-        curl --silent $(
-            jq -r '.results.formats.votable' "/tmp/atlas-query.json"
-            ) \
-            | xmllint --format - \
-            | tee /tmp/atlas-data.xml
-
-
-
-
-# -----------------------------------------------------
-# Create a new ADQL resource to act as a workspace.
-#[root@tester]
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=FULL" \
-            "${endpointurl:?}/adql/resource/create" \
-            | jq '.' | tee /tmp/query-space.json
-
-        queryspace=$(
-            jq -r '.self' /tmp/query-space.json
-            )
-
-        echo "Query space [${queryspace:?}]"
-
-# --------------------------------------
-# Find the Gaia DR1 schema by name.
-#[root@tester]
-
-        gaiafind=gaiadr1
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "ivoa.resource.schema.name=${gaiafind:?}" \
-            "${gaiaivoa:?}/schemas/select" \
-            | jq '.' | tee /tmp/gaia-schema.json
-
-        gaiaschema=$(
-            jq -r '.self' /tmp/gaia-schema.json
-            )
-
-        echo "Gaia schema [${gaiaschema:?}]"
-
-# -----------------------------------------------------
-# Add the Gaia DR1 schema.
-#[root@tester]
-
-        gaianame=GAIADR1
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=THIN" \
-            --data   "adql.resource.schema.import.name=${gaianame:?}" \
-            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
-            "${queryspace:?}/schemas/import" \
-            | jq '.'
-
-# -----------------------------------------------------
-# List the workspace schema.
-#[root@tester]
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            "${queryspace:?}/schemas/select" \
-            | jq '.'
-
-# -----------------------------------------------------
-# Query the remote TAP service.
-#[root@tester]
-
-cat > /tmp/gaia-query.adql << EOF
-SELECT
-    source_id
-FROM
-    GAIADR1.tgas_source AS tgas
-WHERE
-    tgas.parallax > (10.0 * tgas.parallax_error)
-   
-EOF
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            --data-urlencode "adql.query.input@/tmp/gaia-query.adql" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
-            "${queryspace:?}/queries/create" \
-            | jq '.' | tee /tmp/gaia-query.json
-
-# -----------------------------------------------------
-# Get the results as a VOTable.
-#[root@tester]
-
-        curl --silent $(
-            jq -r '.results.formats.votable' "/tmp/gaia-query.json"
-            ) \
-            | xmllint --format - \
-            | tee /tmp/gaia-data.xml
-
-
-
-
-
-
-
-
-
-
-
-# -----------------------------------------------------
-# Create a new ADQL resource to act as a workspace.
-#[root@tester]
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=FULL" \
-            "${endpointurl:?}/adql/resource/create" \
-            | jq '.' | tee /tmp/query-space.json
-
-        queryspace=$(
-            jq -r '.self' /tmp/query-space.json
-            )
-
-        echo "Query space [${queryspace:?}]"
-
-# -----------------------------------------------------
-# Find the AtlasDR1 schema by name.
-#[root@tester]
-
-        atlasfind=ATLASDR1
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "adql.resource.schema.select.name=${atlasfind:?}" \
-            "${atlasadql:?}/schemas/select" \
-            | jq '.' | tee /tmp/atlas-schema.json
-
-        atlasschema=$(
-            jq '.self' /tmp/atlas-schema.json
-            )
-
-        echo "Atlas schema [${atlasschema:?}]"
-
-# -----------------------------------------------------
-# Add the Atlas DR1 schema.
-#[root@tester]
-
-        atlasname=ATLASDR1
-
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=THIN" \
-            --data   "adql.resource.schema.import.name=${atlasname:?}" \
-            --data   "adql.resource.schema.import.base=${atlasschema:?}" \
+            --data   "adql.copy.depth=THIN" \
+            --data   "adql.schema.name=${atlasname:?}" \
+            --data   "adql.schema.base=${atlasschema:?}" \
             "${queryspace:?}/schemas/import" \
             | jq '.'
 
@@ -552,9 +592,9 @@ EOF
             --silent \
             --header "firethorn.auth.identity:${identity:?}"   \
             --header "firethorn.auth.community:${community:?}" \
-            --data   "urn:adql.copy.depth=THIN" \
-            --data   "adql.resource.schema.import.name=${gaianame:?}" \
-            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            --data   "adql.copy.depth=THIN" \
+            --data   "adql.schema.name=${gaianame:?}" \
+            --data   "adql.schema.base=${gaiaschema:?}" \
             "${queryspace:?}/schemas/import" \
             | jq '.'
 
@@ -575,7 +615,7 @@ EOF
 
 cat > /tmp/join-query.adql << EOF
 
-.... TBD
+... TBD
 
 EOF
 
