@@ -186,8 +186,418 @@
 \end{alltt}
 \end{singlespacing}
 
+# --------------------------------------
+# Create an IvoaResource to represent the GAIA TAP resource.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+
+    tapname="GAIA TAP service"
+    tapurl="http://gea.esac.esa.int/tap-server/tap"
+
+    echo "\verb#Creating IVOA resource#"
+    echo "\verb#  name [${tapname}]#"
+    echo "\verb#  url  [${tapurl}]#"
+
+    curl \textbackslash
+        ...
+        --data "\verb#ivoa.resource.name=${tapname}#" \textbackslash
+        --data "\verb#ivoa.resource.endpoint=${tapurl}#" \textbackslash
+        "\verb#${endpointurl}/ivoa/resource/create#" \textbackslash
+        \verb#| jq '.' | tee /tmp/gaia-ivoa.json#
+
+    gaiaivoa=\verb#$(#
+        \verb#jq -r '.self' /tmp/gaia-ivoa.json#
+        )
+
+    echo "\verb#  link [${adqltable}]#"
+\end{alltt}
+\end{singlespacing}
 
 
+
+    curl \
+        --silent \
+        ${tapurl:?}/tables \
+        | xmllint --format - \
+        | tee /tmp/gaia-vosi.xml
+
+
+
+# --------------------------------------
+# Import the VOSI metadata.
+#[root@tester]
+
+\begin{singlespacing}
+\begin{alltt}
+    vosifile=\verb#'vosi/gaia/gaia-tableset.xml''
+
+    echo "\verb#Installing VOSI tables#"
+    echo "\verb#  file [${vosifile}]#"
+
+    curl \textbackslash
+        ...
+        --form "\verb#vosi.tableset=@${vosifile}#" \
+        "\verb#${gaiaivoa}/vosi/import#" \
+        \verb#| jq '.'#
+\end{alltt}
+\end{singlespacing}
+
+
+
+
+
+# -----------------------------------------------------
+# Create a new ADQL resource to act as a workspace.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=FULL" \
+            "${endpointurl:?}/adql/resource/create" \
+            | jq '.' | tee /tmp/query-space.json
+
+        queryspace=$(
+            jq -r '.self' /tmp/query-space.json
+            )
+
+        echo "Query space [${queryspace:?}]"
+
+# -----------------------------------------------------
+# Find the AtlasDR1 schema by name.
+#[root@tester]
+
+        atlasfind=ATLASDR1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.resource.schema.select.name=${atlasfind:?}" \
+            "${atlasadql:?}/schemas/select" \
+            | jq '.' | tee /tmp/atlas-schema.json
+
+        atlasschema=$(
+            jq '.self' /tmp/atlas-schema.json
+            )
+
+        echo "Atlas schema [${atlasschema:?}]"
+
+# -----------------------------------------------------
+# Add the Atlas DR1 schema.
+#[root@tester]
+
+        atlasname=ATLASDR1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=THIN" \
+            --data   "adql.resource.schema.import.name=${atlasname:?}" \
+            --data   "adql.resource.schema.import.base=${atlasschema:?}" \
+            "${queryspace:?}/schemas/import" \
+            | jq '.'
+
+
+# -----------------------------------------------------
+# List the workspace schema.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            "${queryspace:?}/schemas/select" \
+            | jq '.'
+
+# -----------------------------------------------------
+# Query the JDBC database.
+#[root@tester]
+
+
+cat > /tmp/atlas-query.adql << EOF
+SELECT
+    COUNT(*),
+    ROUND(gAperMag3, 0) AS gAper,
+    ROUND(iAperMag3, 0) AS iAper
+FROM
+    ATLASDR1.atlasSource
+WHERE
+    gAperMag3 <> 0
+GROUP BY
+    ROUND(gAperMag3, 0),
+    ROUND(iAperMag3, 0)
+ORDER BY
+    gAper,
+    iAper
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/atlas-query.json
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/atlas-query.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/atlas-data.xml
+
+
+
+
+# -----------------------------------------------------
+# Create a new ADQL resource to act as a workspace.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=FULL" \
+            "${endpointurl:?}/adql/resource/create" \
+            | jq '.' | tee /tmp/query-space.json
+
+        queryspace=$(
+            jq -r '.self' /tmp/query-space.json
+            )
+
+        echo "Query space [${queryspace:?}]"
+
+# --------------------------------------
+# Find the Gaia DR1 schema by name.
+#[root@tester]
+
+        gaiafind=gaiadr1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${gaiafind:?}" \
+            "${gaiaivoa:?}/schemas/select" \
+            | jq '.' | tee /tmp/gaia-schema.json
+
+        gaiaschema=$(
+            jq -r '.self' /tmp/gaia-schema.json
+            )
+
+        echo "Gaia schema [${gaiaschema:?}]"
+
+# -----------------------------------------------------
+# Add the Gaia DR1 schema.
+#[root@tester]
+
+        gaianame=GAIADR1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=THIN" \
+            --data   "adql.resource.schema.import.name=${gaianame:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${queryspace:?}/schemas/import" \
+            | jq '.'
+
+# -----------------------------------------------------
+# List the workspace schema.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            "${queryspace:?}/schemas/select" \
+            | jq '.'
+
+# -----------------------------------------------------
+# Query the remote TAP service.
+#[root@tester]
+
+cat > /tmp/gaia-query.adql << EOF
+SELECT
+    source_id
+FROM
+    GAIADR1.tgas_source AS tgas
+WHERE
+    tgas.parallax > (10.0 * tgas.parallax_error)
+   
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/gaia-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/gaia-query.json
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/gaia-query.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/gaia-data.xml
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Create a new ADQL resource to act as a workspace.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=FULL" \
+            "${endpointurl:?}/adql/resource/create" \
+            | jq '.' | tee /tmp/query-space.json
+
+        queryspace=$(
+            jq -r '.self' /tmp/query-space.json
+            )
+
+        echo "Query space [${queryspace:?}]"
+
+# -----------------------------------------------------
+# Find the AtlasDR1 schema by name.
+#[root@tester]
+
+        atlasfind=ATLASDR1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.resource.schema.select.name=${atlasfind:?}" \
+            "${atlasadql:?}/schemas/select" \
+            | jq '.' | tee /tmp/atlas-schema.json
+
+        atlasschema=$(
+            jq '.self' /tmp/atlas-schema.json
+            )
+
+        echo "Atlas schema [${atlasschema:?}]"
+
+# -----------------------------------------------------
+# Add the Atlas DR1 schema.
+#[root@tester]
+
+        atlasname=ATLASDR1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=THIN" \
+            --data   "adql.resource.schema.import.name=${atlasname:?}" \
+            --data   "adql.resource.schema.import.base=${atlasschema:?}" \
+            "${queryspace:?}/schemas/import" \
+            | jq '.'
+
+# --------------------------------------
+# Find the Gaia DR1 schema by name.
+#[root@tester]
+
+        gaiafind=gaiadr1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${gaiafind:?}" \
+            "${gaiaivoa:?}/schemas/select" \
+            | jq '.' | tee /tmp/gaia-schema.json
+
+        gaiaschema=$(
+            jq -r '.self' /tmp/gaia-schema.json
+            )
+
+        echo "Gaia schema [${gaiaschema:?}]"
+
+# -----------------------------------------------------
+# Add the Gaia DR1 schema.
+#[root@tester]
+
+        gaianame=GAIADR1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=THIN" \
+            --data   "adql.resource.schema.import.name=${gaianame:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${queryspace:?}/schemas/import" \
+            | jq '.'
+
+# -----------------------------------------------------
+# List the workspace schema.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            "${queryspace:?}/schemas/select" \
+            | jq '.'
+
+# -----------------------------------------------------
+# Query the combined dataset.
+#[root@tester]
+
+cat > /tmp/join-query.adql << EOF
+
+.... TBD
+
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/join-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/join-query.json
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/join-query.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/join-data.xml
 
 
 
