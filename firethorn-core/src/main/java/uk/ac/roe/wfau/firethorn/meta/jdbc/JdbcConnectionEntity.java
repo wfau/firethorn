@@ -47,6 +47,8 @@ import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource.JdbcDriver;
@@ -901,6 +903,21 @@ public class JdbcConnectionEntity
 
             default : throw new RuntimeException(
                 "Unable to load driver for type [" + this.type + "]"
+                );
+            }
+        }
+
+    @Override
+    public BaseTranslator jdbctranslator()
+        {
+        log.debug("jdbctranslator() for [{}]", this.type().name());
+        switch (this.type())
+            {
+            case MSSQL :
+                return new SQLServerTranslator();
+
+            default : throw new RuntimeException(
+                "Unable to load translator for type [" + this.type + "]"
                 );
             }
         }

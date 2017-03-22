@@ -26,7 +26,7 @@ services:
 
     patricia:
         image:
-           "firethorn/sql-tunnel:${buildtag}"
+           "firethorn/sql-proxy:${buildtag}"
         read_only:
             false
         tmpfs:
@@ -46,7 +46,7 @@ services:
 
     elayne:
         image:
-           "firethorn/sql-tunnel:${buildtag}"
+           "firethorn/sql-proxy:${buildtag}"
         read_only:
             false
         tmpfs:
@@ -104,6 +104,8 @@ services:
         networks:
             - miriam
             - rosana
+        environment:
+            firethorn.ogsadai.endpoint: 'http://jarmila:8080/ogsadai/services'
         depends_on:
             bethany:
                 condition: service_started            

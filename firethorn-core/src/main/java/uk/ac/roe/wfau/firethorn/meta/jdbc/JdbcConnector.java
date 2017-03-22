@@ -23,6 +23,7 @@ import java.sql.DatabaseMetaData;
 import org.hibernate.exception.spi.SQLExceptionConverter;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 
+import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 
 /**
@@ -122,30 +123,6 @@ public interface JdbcConnector
     throws MetadataException;
 
     /**
-     * Connection status values.
-     *
-    public enum Status
-        {
-        CREATED(),
-        ENABLED(),
-        DISABLED(),
-        FAILED();
-        }
-
-     **
-     * Get the connection status.
-     *
-     *
-    public Status status();
-
-     **
-     * Set the connection status.
-     *
-     *
-    public void status(final Status status);
-    */
-
-    /**
      * Our Spring SQLException translator.
      *
      */
@@ -170,15 +147,23 @@ public interface JdbcConnector
     public void type(final JdbcProductType type);
 
     /**
-     * Get the corresponding {@link JdbcMetadataScanner} for this type.
+     * Get the {@link JdbcMetadataScanner} for this database.
      * 
      */
     public JdbcMetadataScanner scanner();
 
     /**
-     * Get the corresponding {@link JdbcResource.JdbcDriver} for this type.
+     * Get the {@link JdbcResource.JdbcDriver} for this database.
      * 
      */
     public JdbcResource.JdbcDriver jdbcdriver();
+
+    /**
+     * Get the {@link JdbcResource.JdbcDriver} for this database.
+     * 
+     */
+    public BaseTranslator jdbctranslator();
+    
+    
     
     }

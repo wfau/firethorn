@@ -1,0 +1,516 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Set our buildtag.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        buildtag=$(hg branch)
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@virtual] 
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    instance=$(pwgen 20 1)
+    
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metaname:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${username:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Create our tester config.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/tester.properties" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+    chmod a+r "${HOME:?}/tester.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties" 
+
+# -----------------------------------------------------
+# Create our composer env file.
+#[user@virtual] 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+
+    cat > "${HOME:?}/.env" << EOF
+buildtag=${buildtag:?}
+
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+datahost=${datahost:?}
+userhost=${userhost:?}
+
+tunneluser=${tunneluser:?}
+tunnelhost=${tunnelhost:?}
+
+EOF
+
+# -----------------------------------------------------
+# Generate our dockerfiles.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source bin/util.sh
+        dockerfiles ${buildtag}
+
+    popd
+
+# -----------------------------------------------------
+# Build our container images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Build our tester image.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build tester
+
+    popd
+
+#---------------------------------------------------------------------
+# Build our Java components.
+#[user@desktop] 
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose
+
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        --project ${instance:?} \
+        run tester 
+
+# -----------------------------------------------------
+# Load our configuration.
+#[root@tester]
+
+        source /etc/tester.properties
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+        source "bin/01-01-init-rest.sh"
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | jq '.' | tee /tmp/system-info.json
+
+# -----------------------------------------------------
+# Load the local ATLASDR1 resource.
+#[root@tester]
+
+        source "bin/02-02-create-jdbc-space.sh" \
+            'ATLAS JDBC conection' \
+            "jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1" \
+            "${datauser:?}" \
+            "${datapass:?}" \
+            "${datadriver:?}" \
+            '*'
+        wfaujdbc=${jdbcspace:?}
+
+        source "bin/03-01-create-adql-space.sh" 'WFAU ADQL workspace'
+        wfauadql=${adqlspace:?}
+
+       source "bin/03-04-import-jdbc-metadoc.sh" "${wfaujdbc:?}" "${wfauadql:?}" 'ATLASDR1' 'dbo' "meta/ATLASDR1_TablesSchema.xml"
+
+# -----------------------------------------------------
+# Create a workspace and add the local schema.
+#[root@tester]
+
+        source "bin/04-01-create-query-space.sh"  'Test workspace'
+        source "bin/04-03-import-query-schema.sh" "${wfauadql:?}" 'ATLASDR1' 'ATLASDR1'
+
+# --------------------------------------
+# Create the GAIA TAP resource.
+#[root@tester]
+
+        #
+        # Create the IvoaResource
+        source "bin/02-03-create-ivoa-space.sh" \
+            'GAIA TAP service' \
+            'http://gea.esac.esa.int/tap-server/tap'
+        gaiaivoa=${ivoaspace:?}
+
+        #
+        # Import the static VOSI file
+        vosifile='vosi/gaia/gaia-tableset.xml'
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${endpointurl:?}/${gaiaivoa:?}/vosi/import" \
+            | jq '.'
+
+        #
+        # Find the Gaia DR1 schema
+        findname=gaiadr1
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.schema.name=${findname:?}" \
+            "${endpointurl:?}/${gaiaivoa:?}/schemas/select" \
+            | jq '.' | tee /tmp/gaia-schema.json
+
+        gaiaschema=$(
+            cat /tmp/gaia-schema.json | self
+            )
+
+# -----------------------------------------------------
+# Add the Gaia DR1 schema to our workspace.
+#[root@tester]
+
+        gaianame=GAIADR1
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
+            --data   "adql.resource.schema.import.name=${gaianame:?}" \
+            --data   "adql.resource.schema.import.base=${gaiaschema:?}" \
+            "${endpointurl:?}/${queryspace:?}/schemas/import" \
+            | jq '.' | tee /tmp/query-schema.json
+
+# -----------------------------------------------------
+# Test queries ...
+#[root@tester]
+
+        # 8..36
+        # 8..30
+
+cat > /tmp/atlas-query.adql << EOF
+SELECT
+    COUNT(*),
+    ROUND(gAperMag3, 0) AS gAper,
+    ROUND(iAperMag3, 0) AS iAper
+FROM
+    ATLASDR1.atlasSource
+WHERE
+    gAperMag3 <> 0
+GROUP BY
+    ROUND(gAperMag3, 0),
+    ROUND(iAperMag3, 0)
+ORDER BY
+    gAper,
+    iAper
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/atlas-query.json
+
+        atlasdata=$(cat /tmp/atlas-query.json | votable)
+        curl --silent "${atlasdata:?}" | xmlstarlet fo | tee /tmp/atlas-data.xml
+
+
+cat > /tmp/tgas-query.adql << EOF
+SELECT
+    COUNT(*)
+FROM
+    GAIADR1.tgas_source AS tgas
+WHERE
+    tgas.parallax > (10.0 * tgas.parallax_error)
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/tgas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/tgas-query.json
+
+        #
+        # Get the results as a VOTable file
+        curl -s $(
+            curl -s $(
+                jq -r '.results.table' /tmp/tgas-query.json
+                ) | jq -r '.formats.votable'
+            ) | xmlstarlet fo | tee /tmp/tgas-data.xml
+
+# -----------------------------------------------------
+# Create our join query ...
+#[root@tester]
+
+    cat > /tmp/join-query.adql << EOF
+
+        SELECT
+            atlas.gAperMag3 - atlas.iAperMag3                   AS gmi,
+            atlas.gAperMag3 - (10 + 5.0 * log10(tgas.parallax)) AS Mg
+        FROM
+            GAIADR1.tgas_source  AS tgas,
+            ATLASDR1.atlasSource AS atlas,
+            ATLASDR1.atlasSourceXGDR1tgas_source AS neighbour
+        WHERE
+            atlas.gAperMag3 > -0.9e9
+        AND
+            atlas.iAperMag3 > -0.9e9
+        AND
+            neighbour.masterObjID = atlas.sourceID
+        AND
+            neighbour.slaveObjId = tgas.source_id
+        AND
+            tgas.parallax > (10.0 * tgas.parallax_error)
+
+EOF
+
+    cat > /tmp/join-query.adql << EOF
+
+        SELECT
+            atlas.gAperMag3 - atlas.iAperMag3 AS gmi
+        FROM
+            GAIADR1.tgas_source  AS tgas,
+            ATLASDR1.atlasSource AS atlas,
+            ATLASDR1.atlasSourceXGDR1tgas_source AS neighbour
+        WHERE
+            atlas.gAperMag3 > 1.0
+        AND
+            atlas.iAperMag3 > 1.0
+        AND
+            neighbour.masterObjID = atlas.sourceID
+        AND
+            neighbour.slaveObjId = tgas.source_id
+        AND
+            tgas.parallax > (10.0 * tgas.parallax_error)
+
+EOF
+
+
+# -----------------------------------------------------
+# Execute our join query.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/join-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${endpointurl:?}/${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/join-query.json
+
+        #
+        # Get the results as a VOTable file
+        curl -s $(
+            curl -s $(
+                jq -r '.results.table' /tmp/join-query.json
+                ) | jq -r '.formats.votable'
+            ) | xmlstarlet fo | tee /tmp/join-data.xml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Follow the Firethorn logs.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose
+
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        --project ${instance:?} \
+        exec \
+            gillian \
+            tail -f logs/firethorn.log
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Follow the OGSA-DAI logs.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+    composit=${FIRETHORN_CODE:?}/docker/compose
+
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        --project ${instance:?} \
+        exec \
+            jarmila \
+            tail -f logs/ogsadai.log
+
+
+
+
+

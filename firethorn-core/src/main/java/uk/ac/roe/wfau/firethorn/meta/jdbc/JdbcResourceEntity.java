@@ -39,6 +39,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -835,4 +836,11 @@ public class JdbcResourceEntity
         log.debug("jdbcdriver() for [{}]", this.name());
 		return this.connection.jdbcdriver();
 		}
+
+    @Override
+    public BaseTranslator translator()
+        {
+        log.debug("translator() for [{}]", this.name());
+        return this.connection.jdbctranslator();
+        }
     }

@@ -29,12 +29,6 @@ public interface AdqlParserQuery
     {
 
     /**
-     * Get the cleaned input text.
-     *
-    public String input();
-     */
-
-    /**
      * Get the cleaned text.
      *
      */
@@ -121,4 +115,10 @@ public interface AdqlParserQuery
      */
     public void syntax(final AdqlQueryBase.Syntax.State status, final String message);
 
+    /**
+     * The BaseTranslator for the primary resource.
+     *
+     */
+    public BaseTranslator translator();
+    
     }

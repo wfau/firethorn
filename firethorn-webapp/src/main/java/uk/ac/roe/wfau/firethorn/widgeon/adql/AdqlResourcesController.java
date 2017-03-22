@@ -64,7 +64,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * MVC property for the {@link AdqlResource} name, [{@value}].
      *
      */
-    public static final String RESOURCE_NAME_PARAM = "adql.resource.create.name" ;
+    public static final String RESOURCE_NAME_PARAM = "adql.resource.name" ;
 
     @Override
     public AdqlResourceBean bean(final AdqlResource entity)

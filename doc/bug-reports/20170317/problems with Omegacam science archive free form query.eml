@@ -1,0 +1,107 @@
+Return-Path: <dmr@roe.ac.uk>
+Delivered-To: dave@metagrid.co.uk
+Received: from smtp-out4.electric.net (smtp-out4.electric.net [192.162.216.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp-one.metagrid.co.uk (Postfix) with ESMTPS id 2BC6253183
+	for <dave.morris@metagrid.co.uk>; Fri, 17 Mar 2017 17:27:28 +0000 (GMT)
+Received: from 1covew-0007Kh-Uv by out4b.electric.net with emc1-ok (Exim 4.87)
+	(envelope-from <dmr@roe.ac.uk>)
+	id 1covew-0007LT-W1
+	for dave.morris@metagrid.co.uk; Fri, 17 Mar 2017 10:27:26 -0700
+Resent-Date: Fri, 17 Mar 2017 10:27:26 -0700
+Resent-Message-Id: <E1covew-0007LT-W1@out4b.electric.net>
+Received: by emcmailer; Fri, 17 Mar 2017 10:27:26 -0700
+Received: from [195.194.122.14] (helo=mercury.roe.ac.uk)
+	by out4b.electric.net with esmtps (TLSv1.2:ECDHE-RSA-AES256-SHA384:256)
+	(Exim 4.87)
+	(envelope-from <dmr@roe.ac.uk>)
+	id 1covew-0007Kh-Uv
+	for dave.morris@metagrid.co.uk; Fri, 17 Mar 2017 10:27:26 -0700
+Received: from MERCURY.roe.ac.uk ([2002:c3c2:7a0e::c3c2:7a0e]) by
+ MERCURY.roe.ac.uk ([2002:c3c2:7a0e::c3c2:7a0e]) with Microsoft SMTP Server id
+ 14.03.0319.002; Fri, 17 Mar 2017 17:27:22 +0000
+From: "Gentile Fusillo, Nicola" <N.Gentile-Fusillo@warwick.ac.uk>
+To: osa-support <osa-support@roe.ac.uk>
+Subject: problems with Omegacam science archive free form query
+Thread-Topic: problems with Omegacam science archive free form query
+Thread-Index: AQHSn0Nyv3N+0q9fWEqHn4IrEsP/Jg==
+Date: Fri, 17 Mar 2017 17:27:20 +0000
+Message-ID: <00d0bb17acda43b48136533b75db548b@MERCURY.roe.ac.uk>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-MS-Exchange-Inbox-Rules-Loop: dmr@roe.ac.uk
+X-MS-TNEF-Correlator:
+received-spf: pass (in4b.electric.net: domain of warwick.ac.uk designates
+ 40.107.0.50 as permitted sender) client-ip=40.107.0.50;
+ envelope-from=N.Gentile-Fusillo@warwick.ac.uk;
+ helo=EUR02-AM5-obe.outbound.protection.outlook.com;
+authentication-results: roe.ac.uk; dkim=none (message not signed)
+ header.d=none;roe.ac.uk; dmarc=none action=none header.from=warwick.ac.uk;
+x-originating-ip: [137.205.62.190]
+x-ms-office365-filtering-correlation-id: bfff0982-6216-4a2c-fdc2-08d46d5ade3c
+x-microsoft-antispam: UriScan:;BCL:0;PCL:0;RULEID:(22001)(2017030254051);SRVR:HE1PR01MB1003;
+x-microsoft-exchange-diagnostics: 1;HE1PR01MB1003;7:p5Lmh7LVC0kXRRkwbUCG8SozpoHOGV2ppUvuVzpHaziABJhzOq/EUWw6pvG3gBHtXcmPFTqBPy4QXmfxyh+/mbNIbkMJzTAz4jThq5lBq8sWd2DxmBmjWPBy/qhlmHKHoIl1nLojIRPp8BZ0culK2tMWWnM6kB1C5ZNdVsVy0YbGBQpCHE2DU9gTE+C6G9GObHQMnbqzBcbAN0J3wlNIGMFSsog245zphgCfrWsNtspGnGJyEsB5BjAUZUO6tNis2drEUlVEeJr2xqsMjwtJnnvgafxzffhRaoIEjEi5psRw2tyuKj8sP4TsLPk1Q81pUCfiP58gwMF9FZj7dFwuzQ==
+x-microsoft-antispam-prvs: <HE1PR01MB100393AAD291055117A1AF8CE7390@HE1PR01MB1003.eurprd01.prod.exchangelabs.com>
+x-exchange-antispam-report-test: UriScan:;
+x-exchange-antispam-report-cfa-test: BCL:0;PCL:0;RULEID:(6040375)(601004)(2401047)(5005006)(8121501046)(3002001)(10201501046)(6041248)(20161123564025)(20161123560025)(20161123562025)(20161123555025)(20161123558025)(6072148);SRVR:HE1PR01MB1003;BCL:0;PCL:0;RULEID:;SRVR:HE1PR01MB1003;
+x-forefront-prvs: 0249EFCB0B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(6009001)(39450400003)(51744003)(99286003)(2906002)(55016002)(25786008)(102836003)(5640700003)(6116002)(77096006)(2900100001)(54356999)(50986999)(3660700001)(6436002)(6506006)(74482002)(86362001)(3280700002)(7696004)(53936002)(8676002)(110136004)(54896002)(345774005)(9686003)(19627405001)(2351001)(5660300001)(38730400002)(8936002)(33656002)(81166006)(3846002)(74316002)(122556002)(66066001)(7736002)(2501003)(6916009)(42882006)(189998001);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1PR01MB1003;H:HE1PR01MB1003.eurprd01.prod.exchangelabs.com;FPR:;SPF:None;MLV:sfv;LANG:en;
+spamdiagnosticoutput: 1:99
+spamdiagnosticmetadata: NSPM
+x-ms-exchange-crosstenant-originalarrivaltime: 17 Mar 2017 17:27:20.8168
+ (UTC)
+x-ms-exchange-crosstenant-fromentityheader: Hosted
+x-ms-exchange-crosstenant-id: 09bacfbd-47ef-4465-9265-3546f2eaf6bc
+x-ms-exchange-transport-crosstenantheadersstamped: HE1PR01MB1003
+x-fm-os: Windows 7 or 8
+x-fm-geoip: US
+x-proto: esmtps
+x-revdns: mail-eopbgr00050.outbound.protection.outlook.com
+x-helo: EUR02-AM5-obe.outbound.protection.outlook.com
+x-tls: TLSv1.2:ECDHE-RSA-AES256-SHA384:256
+x-authenticated_id:
+x-origin-ip: 40.107.0.50
+x-env-from: N.Gentile-Fusillo@warwick.ac.uk
+x-dkim: none
+x-policysmart: 3590392
+x-spam-status: NO, 0.0 / 4.0
+x-virus-status: Scanned by VirusSMART (s)
+Resent-From: <dmr@roe.ac.uk>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <C14D0909E98A144AA753788DA1B811A5@roe.ac.uk>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Outbound-IP: 195.194.122.14
+X-Env-From: dmr@roe.ac.uk
+X-Proto: esmtps
+X-Revdns: mercury.roe.ac.uk
+X-HELO: mercury.roe.ac.uk
+X-TLS: TLSv1.2:ECDHE-RSA-AES256-SHA384:256
+X-Authenticated_ID: 
+X-PolicySMART: 3590380
+X-Virus-Status: Scanned by VirusSMART (c)
+X-Virus-Status: Scanned by VirusSMART (s)
+
+Hi,
+
+Today I tried to use the ADSQL form after a few weeks.
+
+I cannot submit any kind of query and all I get is the error
+
+"Please select from the list of endpoints".
+
+Also after clicking on the Database(s) button I get a new window but no dat=
+abase is shown and I cannot select one.
+
+Is this a problem on my side?
+
+Am I doing something wrong? It use to work before.
+
+
+Thank you for your time.
+
+
+Nicola Gentile Fusillo

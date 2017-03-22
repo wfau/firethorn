@@ -480,10 +480,14 @@ implements AdqlParser
 
             //
             // Translate the query into SQL.
+// Get the translator from the primary resource.
+// DQP   => OgsaDQPTranslator
+// MSSQL => SQLServerTranslator
+            
             final ADQLTranslator translator ;
             if (this.mode == AdqlQueryBase.Mode.DIRECT)
                 {
-                translator = new SQLServerTranslator();
+                translator = subject.translator();
                 }
             else {
                 translator = new OgsaDQPTranslator();
