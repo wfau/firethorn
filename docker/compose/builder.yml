@@ -12,21 +12,15 @@ volumes:
 
 services:
 
-#       tmpfs:
-#           - /run
-#           - /tmp
-
     builder:
         image:
-            "firethorn/builder:2.1.4"
+            "firethorn/builder:2.1.7"
         tty:
             true
         stdin_open:
             true
         read_only:
             false
-        labels:
-            uk.ac.roe.firethorn.buildtag: "${buildtag}"
         volumes:
             - sourcecode:/var/local/build
             - buildcache:/var/local/cache
