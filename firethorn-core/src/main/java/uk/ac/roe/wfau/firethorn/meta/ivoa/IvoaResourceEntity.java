@@ -31,6 +31,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.TAPServiceTranslator;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -454,6 +456,12 @@ public class IvoaResourceEntity
                     );
                 }
             };
+        }
+
+    @Override
+    public BaseTranslator translator()
+        {
+        return new TAPServiceTranslator();
         }
     }
 

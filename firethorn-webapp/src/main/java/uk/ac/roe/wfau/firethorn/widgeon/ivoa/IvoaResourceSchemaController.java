@@ -65,7 +65,7 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
      * MVC property for the schema name.
      *
      */
-    public static final String SCHEMA_NAME_PARAM = "ivoa.resource.schema.name" ;
+    public static final String SCHEMA_NAME_PARAM = "ivoa.schema.name" ;
 
     @Override
     public IvoaSchemaBean bean(final IvoaSchema entity)

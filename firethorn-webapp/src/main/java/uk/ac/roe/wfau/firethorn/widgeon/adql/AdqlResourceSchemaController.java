@@ -74,15 +74,15 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      *
      */
     public static final String SCHEMA_CREATE_NAME_PARAM = "adql.schema.name" ;
-    public static final String SCHEMA_SELECT_NAME_PARAM = "adql.resource.schema.select.name" ;
-    public static final String SCHEMA_IMPORT_NAME_PARAM = "adql.resource.schema.import.name" ;
+    public static final String SCHEMA_SELECT_NAME_PARAM = "adql.schema.name" ;
+    public static final String SCHEMA_IMPORT_NAME_PARAM = "adql.schema.name" ;
 
     /**
      * MVC property for the {@Identifier} of the {@link BaseSchema} to copy, [{@value}].
      * TODO Move these to a ResourceModel
      * 
      */
-    public static final String SCHEMA_BASE_PARAM = "adql.resource.schema.import.base" ;
+    public static final String SCHEMA_BASE_PARAM = "adql.schema.base" ;
 
     @Override
     public AdqlSchemaBean bean(final AdqlSchema entity)

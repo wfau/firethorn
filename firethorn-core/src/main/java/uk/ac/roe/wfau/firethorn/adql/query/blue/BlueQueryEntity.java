@@ -55,6 +55,7 @@ import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
+import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
@@ -1149,6 +1150,12 @@ implements BlueQuery
                 {
 				BlueQueryEntity.this.syntax  = syntax;
 				BlueQueryEntity.this.message = message ;
+                }
+
+            @Override
+            public BaseTranslator translator()
+                {
+                return BlueQueryEntity.this.resources().primary().translator();
                 }
             };
         }

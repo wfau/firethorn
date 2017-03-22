@@ -17,25 +17,19 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.db.DBType;
 import adql.db.DBType.DBDatatype;
-import adql.db.exception.UnresolvedJoinException;
+import adql.db.STCS.Region;
+import adql.parser.ParseException;
 import adql.query.ADQLList;
 import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
 import adql.query.ClauseSelect;
 import adql.query.IdentifierField;
-import adql.query.SelectAllColumns;
-import adql.query.SelectItem;
 import adql.query.constraint.ConstraintsGroup;
-import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
-import adql.query.operand.StringConstant;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
@@ -48,18 +42,13 @@ import adql.query.operand.function.geometry.ContainsFunction;
 import adql.query.operand.function.geometry.DistanceFunction;
 import adql.query.operand.function.geometry.ExtractCoord;
 import adql.query.operand.function.geometry.ExtractCoordSys;
-import adql.query.operand.function.geometry.GeometryFunction;
-import adql.query.operand.function.geometry.GeometryFunction.GeometryValue;
 import adql.query.operand.function.geometry.IntersectsFunction;
 import adql.query.operand.function.geometry.PointFunction;
 import adql.query.operand.function.geometry.PolygonFunction;
 import adql.query.operand.function.geometry.RegionFunction;
-import adql.translator.ADQLTranslator;
-import adql.translator.PostgreSQLTranslator;
+import adql.translator.JDBCTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /*
  * This file is part of ADQLLibrary.
@@ -82,12 +71,12 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
  * SQLServer SQL translator.
- * 
- * @todo Remove dependency on PostgreSQLTranslator
  *
  */
 @Slf4j
-public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTranslator {
+public class SQLServerTranslator extends JDBCTranslator
+implements BaseTranslator
+    {
 
 	private final String schemaName = "dbo";
 
@@ -95,139 +84,163 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 	 *
 	 *
 	 */
-	public SQLServerTranslator() {
-		super(false);
-
-	}
-
-	/**
-	 *
-	 *
-	 */
-	public SQLServerTranslator(final boolean column) {
-		super(column);
-
-	}
+	public SQLServerTranslator()
+	    {
+		super();
+	    }
 
 	/**
-	 *
-	 *
-	 */
-	public SQLServerTranslator(final boolean catalog, final boolean schema, final boolean table, final boolean column) {
-		super(catalog, schema, table, column);
-
-	}
-
-	/**
-	 * Replaces the PostgreSQLTranslator method to not put LIMIT at the end.
+	 * Replaces the {@link JDBCTranslator} method to not put LIMIT at the end.
 	 *
 	 */
 	@Override
-	public String translate(final ADQLQuery query) throws TranslationException {
+	public String translate(final ADQLQuery query) throws TranslationException
+	    {
 		log.debug("translate(ADQLQuery)");
 		final StringBuilder builder = new StringBuilder();
-		builder.append(translate(query.getSelect()));
+		builder.append(
+	        translate(
+                query.getSelect()
+                )
+	        );
 
-		builder.append("\nFROM ").append(translate(query.getFrom()));
+		builder.append("\nFROM ").append(
+	        translate(
+                query.getFrom()
+                )
+	        );
 
-		if (!query.getWhere().isEmpty()) {
-			builder.append('\n').append(translate(query.getWhere()));
-		}
+		if (!query.getWhere().isEmpty())
+		    {
+			builder.append('\n').append(
+		        translate(
+	                query.getWhere()
+	                )
+		        );
+		    }
 
-		if (!query.getGroupBy().isEmpty()) {
-			builder.append('\n').append(translate(query.getGroupBy()));
-		}
+		if (!query.getGroupBy().isEmpty())
+		    {
+			builder.append('\n').append(
+		        translate(
+	                query.getGroupBy()
+	                )
+		        );
+		    }
 
-		if (!query.getHaving().isEmpty()) {
-			builder.append('\n').append(translate(query.getHaving()));
-		}
+		if (!query.getHaving().isEmpty())
+		    {
+			builder.append('\n').append(
+		        translate(
+	                query.getHaving()
+	                )
+		        );
+		    }
 
-		if (!query.getOrderBy().isEmpty()) {
-			builder.append('\n').append(translate(query.getOrderBy()));
-		}
+		if (!query.getOrderBy().isEmpty())
+		    {
+			builder.append('\n').append(
+		        translate(
+	                query.getOrderBy()
+	                )
+		        );
+		    }
 		return builder.toString();
-	}
+	    }
 
 	/**
-	 * Replaces the PostgreSQLTranslator method to put TOP at the beginning.
+	 * Replaces the {@link JDBCTranslator} method to put TOP at the beginning.
 	 *
 	 */
 	@Override
-	public String translate(final ClauseSelect clause) throws TranslationException {
+	public String translate(final ClauseSelect clause) throws TranslationException
+	    {
 		log.debug("translate(ClauseSelect)");
 
 		final StringBuilder builder = new StringBuilder();
-		for (int i = 0; (i < clause.size()); i++) {
-			if (i == 0) {
+		for (int i = 0; (i < clause.size()); i++)
+		    {
+			if (i == 0)
+			    {
 				builder.append(clause.getName());
-				if (clause.hasLimit()) {
+				if (clause.hasLimit())
+				    {
 					builder.append(" TOP ").append(clause.getLimit());
-				}
-				if (clause.distinctColumns()) {
+				    }
+				if (clause.distinctColumns())
+				    {
 					builder.append(" DISTINCT ");
-				}
-			} else {
+				    }
+			    }
+			else {
 				builder.append(" ").append(clause.getSeparator(i));
-			}
+			    }
 			builder.append(" ").append(translate(clause.get(i)));
-		}
+		    }
 		return builder.toString();
-	}
+	    }
 
 	@Override
-	public String translate(final UserDefinedFunction function) throws TranslationException {
-		log.debug("translate(UserDefinedFunction)");
+	public String translate(final UserDefinedFunction function)
+        throws TranslationException
+	    {
 		return getDefaultADQLFunction(function);
-	}
+	    }
 
 	/**
-	 * Gets the default SQL output for the given ADQL function.
-	 *
-	 * @param function
-	 *            The ADQL function to format into SQL.
-	 * @return The corresponding SQL.
-	 * @throws TranslationException
-	 *             If there is an error during the translation.
+	 * Replaces the {@link JDBCTranslator} method to add schema name to user defined functions.
 	 *
 	 */
 	@Override
-	protected String getDefaultADQLFunction(final ADQLFunction function) throws TranslationException {
+	protected String getDefaultADQLFunction(final ADQLFunction function)
+	throws TranslationException
+	    {
 		final StringBuilder builder = new StringBuilder();
 		//
 		// If the function is user defined.
-		// ZRQ-UDF
-		if (function instanceof UserDefinedFunction) {
+		if (function instanceof UserDefinedFunction)
+		    {
 			//
 			// TODO Check the function schema.
 			if (true) {
 				builder.append(this.schemaName);
 				builder.append(".");
-			}
-		}
+			    }
+		    }
 
 		builder.append(function.getName());
 		builder.append("(");
 
-		for (int param = 0; param < function.getNbParameters(); param++) {
-			if (param > 0) {
+		for (int param = 0; param < function.getNbParameters(); param++)
+		    {
+			if (param > 0)
+			    {
 				builder.append(", ");
-			}
+			    }
 			builder.append(translate(function.getParameter(param)));
-		}
+		    }
 		builder.append(")");
 		return builder.toString();
-	}
+	    }
 
+    /**
+     * Override the {@link JDBCTranslator} method to add support for CAST. 
+     * 
+     */
 	@Override
-	public String translate(final ADQLFunction function) throws TranslationException {
-		if (function instanceof CastFunction) {
+	public String translate(final ADQLFunction function) throws TranslationException
+	    {
+		if (function instanceof CastFunction)
+		    {
 			return translate((CastFunction) function);
-		} else {
+		    }
+		else {
 			return super.translate(function);
-		}
-	}
+		    }
+	    }
 
-	public String translate(final CastFunction function) throws TranslationException {
+	public String translate(final CastFunction function) throws TranslationException
+	    {
 		final StringBuilder builder = new StringBuilder();
 
 		builder.append("CAST");
@@ -238,11 +251,10 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 		builder.append(")");
 
 		return builder.toString();
-	}
+	    }
 
 	/**
-	 * Overrides the PostgreSQLTranslator method to use firethorn metadata
-	 * for columns in our database. 
+     * Overrides the {@link JDBCTranslator} method to add a check for (column.getAdqlTable() != null)
 	 *
 	 */
 	@Override
@@ -252,62 +264,57 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 		// Use its DB name if known:
 		if (column.getDBLink() != null)
 		    {
-            log.debug("  using getDBLink()");
-            // If this is a column in our metadata.
-            if (column.getDBLink() instanceof AdqlDBColumn)
-                {
-                log.debug("  using firethorn AdqlColumn root().fullname()");
-                result = ((AdqlDBColumn)column.getDBLink()).column().root().fullname();
-                }
-            // If this is a column in the AdqlParser tree.
-            else {
-                log.debug("  using original getDBLink() code");
-                DBColumn dbCol = column.getDBLink();
-                StringBuffer colName = new StringBuffer();
+            DBColumn dbCol = column.getDBLink();
+            StringBuffer colName = new StringBuffer();
 
-    			// Use the table alias if any:
-    			if ((column.getAdqlTable() != null) && (column.getAdqlTable().hasAlias()))
-    				{
-    				appendIdentifier(
-    			        colName,
-    			        column.getAdqlTable().getAlias(),
-    					column.getAdqlTable().isCaseSensitive(
-    				        IdentifierField.ALIAS
-    				        )
-    			        ).append('.');
-    				}
-    			// Use the DBTable if any:
-    			else if ((dbCol.getTable() != null) && (dbCol.getTable().getDBName() != null))
-    			    {
-    				if (column.getAdqlTable() != null)
-    				    {
-    					colName.append(
-    				        getQualifiedTableName(
-    			                dbCol.getTable()
-    			                )
-    				        ).append('.');
-    				    }
-    				else {
-    					colName.append(
-    				        dbCol.getTable().getADQLName()
-    				        );
-    					colName.append('.');
-    				    }
-    			    }
-    			// Otherwise, use the prefix of the column given in the ADQL query:
-    			else if (column.getTableName() != null)
-    			    {
-    				colName = column.getFullColumnPrefix().append('.');
-    				}
+			// Use the table alias if any:
+			if ((column.getAdqlTable() != null) && (column.getAdqlTable().hasAlias()))
+				{
+				appendIdentifier(
+			        colName,
+			        column.getAdqlTable().getAlias(),
+					column.getAdqlTable().isCaseSensitive(
+				        IdentifierField.ALIAS
+				        )
+			        ).append('.');
+				}
+			// Use the DBTable if any:
+			else if ((dbCol.getTable() != null) && (dbCol.getTable().getDBName() != null))
+			    {
+                log.debug("column.getAdqlTable() [{}]", column.getAdqlTable());
+				if (column.getAdqlTable() != null)
+				    {
+                    log.debug("dbCol.getTable() [{}]", dbCol.getTable());
+                    log.debug("getQualifiedTableName() [{}]", getQualifiedTableName(dbCol.getTable()));
+					colName.append(
+				        getQualifiedTableName(
+			                dbCol.getTable()
+			                )
+				        ).append('.');
+				    }
+				else {
+                    log.debug("dbCol.getTable().getADQLName() [{}]", dbCol.getTable().getADQLName());
+					colName.append(
+				        dbCol.getTable().getADQLName()
+				        );
+					colName.append('.');
+				    }
+			    }
+			// Otherwise, use the prefix of the column given in the ADQL query:
+			else if (column.getTableName() != null)
+			    {
+				colName = column.getFullColumnPrefix().append('.');
+				}
 
-    			appendIdentifier(
-    		        colName,
-    		        dbCol.getADQLName(),
-    		        IdentifierField.COLUMN
-    		        );
+            log.debug("  dbCol.getADQLName [{}]", dbCol.getADQLName());
+            log.debug("  dbCol.getDBName   [{}]", dbCol.getDBName());
+			appendIdentifier(
+		        colName,
+		        dbCol.getDBName(),
+		        IdentifierField.COLUMN
+		        );
 
-    			result = colName.toString();
-    		    }
+			result = colName.toString();
 		    }
 		// Otherwise, use the full name given in the ADQL query:
 		else{
@@ -318,69 +325,62 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
         return result ;
 	    }
 
-	public String translate(AdqlColumn column) throws TranslationException {
-		log.debug("translate(AdqlColumn)");
-		log.debug("  adql [{}][{}]", column.name(), column.getClass().getName());
-		log.debug("  fullname [{}]", column.namebuilder().toString());
-		log.debug("  basename [{}]", column.base().namebuilder().toString());
-		log.debug("  rootname [{}]", column.root().namebuilder().toString());
-
-		return column.root().namebuilder().toString();
-
-	}
-
 	/**
-	 * Replacement for the PostgreSQLTranslator method.
-	 *
+     * Overrides the {@link JDBCTranslator} method ....
 	 *
 	 */
 	@Override
-	public String translate(final MathFunction funct) throws TranslationException {
-		switch (funct.getType()) {
-		case LOG:
-			return "log(" + translate(funct.getParameter(0)) + ")";
+	public String translate(final MathFunction funct)
+	throws TranslationException
+	    {
+		switch (funct.getType())
+		    {
+		    case LOG:
+			    return "log(" + translate(funct.getParameter(0)) + ")";
 
-		case LOG10:
-			return "log10(" + translate(funct.getParameter(0)) + ")";
+		    case LOG10:
+			    return "log10(" + translate(funct.getParameter(0)) + ")";
 
-		case RAND:
-			if (funct.getNbParameters() > 0) {
-				return "rand(" + translate(funct.getParameter(0)) + ")";
-			} else {
-				return "rand()";
-			}
+		    case RAND:
+			    if (funct.getNbParameters() > 0)
+			        {
+				    return "rand(" + translate(funct.getParameter(0)) + ")";
+			        }
+		        else {
+				    return "rand()";
+			        }
 
-			// Extra param to choose the rounding method.
-			// http://technet.microsoft.com/en-us/library/ms175003.aspx
-		case ROUND:
-			if (funct.getNbParameters() == 1) {
-				return "round(" + translate(funct.getParameter(0)) + ", 0)";
+			    // Extra param to choose the rounding method.
+			    // http://technet.microsoft.com/en-us/library/ms175003.aspx
+		    case ROUND:
+			    if (funct.getNbParameters() == 1)
+			        {
+				    return "round(" + translate(funct.getParameter(0)) + ", 0)";
+			        }
+		        else {
+				    return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 0)";
+			        }
 
-			} else if (funct.getNbParameters() > 1) {
-				return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 0)";
+			    // Extra param to choose the rounding method.
+			    // http://technet.microsoft.com/en-us/library/ms175003.aspx
+		    case TRUNCATE:
+			    if (funct.getNbParameters() == 1)
+			        {
+				    return "round(" + translate(funct.getParameter(0)) + ", 1)";
+			        }
+		        else {
+				    return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 1)";
+			        }
 
-			}
-
-			// Extra param to choose the rounding method.
-			// http://technet.microsoft.com/en-us/library/ms175003.aspx
-		case TRUNCATE:
-			if (funct.getNbParameters() == 1) {
-				return "round(" + translate(funct.getParameter(0)) + ", 1)";
-			} else if (funct.getNbParameters() > 1) {
-				return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 1)";
-			}
-
-		default:
-			return getDefaultADQLFunction(funct);
-		}
-	}
+		    default:
+			    return getDefaultADQLFunction(funct);
+		    }
+	    }
 
 	/**
-	 * Override the PostgreSQLTranslator method to add '()' brackets for a
-	 * ConstraintsGroup.
-	 * 
+	 * Override the PostgreSQLTranslator method to add '()' brackets for a ConstraintsGroup.
+	 * TODO - this appears to do nothing ? 
 	 * @see RedmineBug450TestCase
-	 * @see
 	 * 
 	 */
 	@Override
@@ -403,48 +403,78 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 		return result;
 	}
 
+    /**
+     * Override the {@link JDBCTranslator} method to add [] the catalog name.
+     *
+     */
+    @Override
+    public String getQualifiedSchemaName(final DBTable table)
+        {
+        if (table == null || table.getDBSchemaName() == null)
+            {
+            return "";
+            }
+        log.debug("getQualifiedSchemaName [{}][{}]", table.getDBCatalogName(), table.getDBSchemaName());
+        StringBuffer buf = new StringBuffer();
+
+        if (table.getDBCatalogName() != null)
+            {
+            appendIdentifier(
+                buf,
+                table.getDBCatalogName(),
+                IdentifierField.CATALOG
+                ).append('.');
+            }
+
+        appendIdentifier(
+            buf,
+            table.getDBSchemaName(),
+            IdentifierField.SCHEMA
+            );
+
+        log.debug("  result [{}]", buf.toString());
+        return buf.toString();
+        }
 	
 	/**
-	 * <p>
-	 * Get the qualified DB name of the given table.
-	 * </p>
-	 * 
-	 * <p>
-	 * <i>Note: This function will, by default, add double quotes if the table
-	 * name must be case sensitive in the SQL query. This information is
-	 * provided by {@link #isCaseSensitive(IdentifierField)}. </i>
-	 * </p>
-	 * 
-	 * @param table
-	 *            The table whose the qualified DB name is asked.
-	 * 
-	 * @return The qualified (with DB catalog and schema prefix if any, and with
-	 *         double quotes if needed) DB table name, or an empty string if the
-	 *         given table is NULL or if there is no DB name.
+     * Override the {@link JDBCTranslator} method to add [] the catalog name.
+	 *
 	 */
-	public String getQualifiedTableName(final DBTable table) {
+    @Override
+	public String getQualifiedTableName(final DBTable table)
+        {
 		if (table == null)
+		    {
 			return "";
-
-		StringBuffer buf = new StringBuffer(getQualifiedSchemaName(table));
+		    }
+        log.debug("getQualifiedTableName [{}][{}][{}]", table.getDBCatalogName(), table.getDBSchemaName(), table.getDBName());
+		StringBuffer buf = new StringBuffer();
+		buf.append(
+	        getQualifiedSchemaName(table)
+	        );
 		if (buf.length() > 0)
+		    {
 			buf.append('.');
-
-		appendIdentifier(buf, table.getDBName(), IdentifierField.TABLE);
-
+		    }
+		appendIdentifier(
+	        buf,
+	        table.getDBName(),
+	        IdentifierField.TABLE
+	        );
+        log.debug("  result [{}]", buf.toString());
 		return buf.toString();
-	}
+        }
 
-	/* *************************** */
-	/* ****** LIST & CLAUSE ****** */
-	/* *************************** */
+	/**
+     * Overrides the JDBCTranslator method to disable case sensitivity.
+     *
 	@Override
-	public String translate(SelectItem item) throws TranslationException {
+	public String translate(SelectItem item) throws TranslationException{
 		if (item instanceof SelectAllColumns)
-			return translate((SelectAllColumns) item);
+			return translate((SelectAllColumns)item);
 
 		StringBuffer translation = new StringBuffer(translate(item.getOperand()));
-		if (item.hasAlias()) {
+		if (item.hasAlias()){
 			translation.append(" AS ");
 			appendIdentifier(translation, item.getAlias(), false);
 		} else {
@@ -454,44 +484,47 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 
 		return translation.toString();
 	}
+     *
+	 */
 
+	/**
+     * Overrides the JDBCTranslator method to disable case sensitivity.
+     *
 	@Override
-	public String translate(SelectAllColumns item) throws TranslationException {
-		HashMap<String, String> mapAlias = new HashMap<String, String>();
+	public String translate(SelectAllColumns item) throws TranslationException{
+		HashMap<String,String> mapAlias = new HashMap<String,String>();
 
 		// Fetch the full list of columns to display:
 		Iterable<DBColumn> dbCols = null;
-		if (item.getAdqlTable() != null && item.getAdqlTable().getDBLink() != null) {
+		if (item.getAdqlTable() != null && item.getAdqlTable().getDBLink() != null){
 			ADQLTable table = item.getAdqlTable();
 			dbCols = table.getDBLink();
-			if (table.hasAlias()) {
+			if (table.hasAlias()){
 				String key = getQualifiedTableName(table.getDBLink());
 				mapAlias.put(key, table.isCaseSensitive(IdentifierField.ALIAS) ? (table.getAlias()) : table.getAlias());
 			}
-		} else if (item.getQuery() != null) {
-			try {
+		}else if (item.getQuery() != null){
+			try{
 				dbCols = item.getQuery().getFrom().getDBColumns();
-			} catch (UnresolvedJoinException pe) {
-				throw new TranslationException(
-						"Due to a join problem, the ADQL to SQL translation can not be completed!", pe);
+			}catch(UnresolvedJoinException pe){
+				throw new TranslationException("Due to a join problem, the ADQL to SQL translation can not be completed!", pe);
 			}
 			ArrayList<ADQLTable> tables = item.getQuery().getFrom().getTables();
-			for (ADQLTable table : tables) {
-				if (table.hasAlias()) {
+			for(ADQLTable table : tables){
+				if (table.hasAlias()){
 					String key = getQualifiedTableName(table.getDBLink());
-					mapAlias.put(key,
-							table.isCaseSensitive(IdentifierField.ALIAS) ? (table.getAlias()) : table.getAlias());
+					mapAlias.put(key, table.isCaseSensitive(IdentifierField.ALIAS) ? (table.getAlias()) : table.getAlias());
 				}
 			}
 		}
 
 		// Write the DB name of all these columns:
-		if (dbCols != null) {
+		if (dbCols != null){
 			StringBuffer cols = new StringBuffer();
-			for (DBColumn col : dbCols) {
+			for(DBColumn col : dbCols){
 				if (cols.length() > 0)
 					cols.append(',');
-				if (col.getTable() != null) {
+				if (col.getTable() != null){
 					String fullDbName = getQualifiedTableName(col.getTable());
 					if (mapAlias.containsKey(fullDbName))
 						appendIdentifier(cols, mapAlias.get(fullDbName), false).append('.');
@@ -506,20 +539,28 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 			return item.toADQL();
 		}
 	}
+     *
+	 */
 
+    /**
+     * Overrides the JDBCTranslator method to disable escaping quotes.
+     * 
 	@Override
 	public String translate(StringConstant strConst) throws TranslationException {
 		return "'" + strConst.getValue() + "'";
 	}
+     *
+	 */
 
-	/* *********************************** */
-	/* ****** GEOMETRICAL FUNCTIONS ****** */
-	/* *********************************** */
-
+	/**
+     * TODO This is no different to the method in JDBCTranslator.
+	 *
 	@Override
 	public String translate(GeometryValue<? extends GeometryFunction> geomValue) throws TranslationException {
 		return translate(geomValue.getValue());
 	}
+     *
+	 */
 
 	@Override
 	public String translate(ExtractCoord extractCoord) throws TranslationException {
@@ -580,7 +621,23 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 	public String translate(RegionFunction region) throws TranslationException {
 		return getDefaultADQLFunction(region);
 	}
+
+	@Override
+	public Region translateGeometryFromDB(final Object jdbcColValue) throws ParseException{
+		throw new ParseException("Unsupported geometrical value! The value \"" + jdbcColValue + "\" can not be parsed as a region.");
+	}
+
+	@Override
+	public Object translateGeometryToDB(final Region region) throws ParseException{
+		throw new ParseException("Geometries can not be uploaded in the database in this implementation!");
+	}
+
 	
+    /**
+     * Overrides the JDBCTranslator method.
+     * TODO - need to review the mappings.
+     *
+     */
 	@Override
 	public DBType convertTypeFromDB(final int dbmsType, final String rawDbmsTypeName, String dbmsTypeName, final String[] params){
 		// If no type is provided return VARCHAR:
@@ -639,13 +696,21 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 			return null;
 	}
 
+    /**
+     * Overrides the JDBCTranslator method.
+     * TODO - need to review the mappings.
+     *
+     */
 	@Override
-	public String convertTypeToDB(final DBType type){
+	public String convertTypeToDB(final DBType type)
+	    {
 		if (type == null)
+		    {
 			return "varchar";
-
-		switch(type.type){
-
+            }
+            
+		switch(type.type)
+		    {
 			case SMALLINT:
 			case REAL:
 			case BIGINT:
@@ -675,7 +740,32 @@ public class SQLServerTranslator extends PostgreSQLTranslator implements ADQLTra
 			case REGION:
 			default:
 				return "varchar";
-		}
-	}
+		    }
+	    }
 
-}
+    /**
+     * Overrides the JDBCTranslator method to always delimit identifiers.
+     *
+     */
+	@Override
+	public boolean isCaseSensitive(final IdentifierField field)
+	    {
+		return field == null ? false : field.isCaseSensitive((byte)0xFF);
+	    }
+
+	/**
+     * Overrides the JDBCTranslator method to use [] for case sensitive fields.
+     * TODO remove static final from the upstream code. 
+	 * 
+	 */
+	public StringBuffer appendIdentifier(final StringBuffer str, final String id, final boolean caseSensitive)
+	    {
+		if (caseSensitive)
+		    {
+			return str.append('[').append(id).append(']');
+			}
+		else {
+			return str.append(id);
+			}
+	    }
+    }

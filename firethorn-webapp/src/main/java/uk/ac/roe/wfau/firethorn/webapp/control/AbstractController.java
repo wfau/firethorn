@@ -54,7 +54,7 @@ public abstract class AbstractController
      * TODO Move this to AbstractModel
      *
      */
-    public static final String COPY_DEPTH_PARAM = "urn:adql.copy.depth" ;
+    public static final String COPY_DEPTH_PARAM = "adql.copy.depth" ;
 
     /**
      * URL path for the select method.

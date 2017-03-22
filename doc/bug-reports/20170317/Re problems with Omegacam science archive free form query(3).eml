@@ -1,0 +1,211 @@
+Return-Path: <dmr@roe.ac.uk>
+Delivered-To: dave@metagrid.co.uk
+Received: from smtp-out6.electric.net (smtp-out6.electric.net [192.162.217.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp-one.metagrid.co.uk (Postfix) with ESMTPS id 4719F53A5F
+	for <dave.morris@metagrid.co.uk>; Fri, 17 Mar 2017 22:08:55 +0000 (GMT)
+Received: from 1cp03K-0003vc-Tj by out6c.electric.net with emc1-ok (Exim 4.87)
+	(envelope-from <dmr@roe.ac.uk>)
+	id 1cp03K-0003wM-Ui
+	for dave.morris@metagrid.co.uk; Fri, 17 Mar 2017 15:08:54 -0700
+Resent-Date: Fri, 17 Mar 2017 15:08:54 -0700
+Resent-Message-Id: <E1cp03K-0003wM-Ui@out6c.electric.net>
+Received: by emcmailer; Fri, 17 Mar 2017 15:08:54 -0700
+Received: from [195.194.122.14] (helo=mercury.roe.ac.uk)
+	by out6c.electric.net with esmtps (TLSv1.2:ECDHE-RSA-AES256-SHA384:256)
+	(Exim 4.87)
+	(envelope-from <dmr@roe.ac.uk>)
+	id 1cp03K-0003vc-Tj
+	for dave.morris@metagrid.co.uk; Fri, 17 Mar 2017 15:08:54 -0700
+Received: from MERCURY.roe.ac.uk ([2002:c3c2:7a0e::c3c2:7a0e]) by
+ MERCURY.roe.ac.uk ([2002:c3c2:7a0e::c3c2:7a0e]) with Microsoft SMTP Server id
+ 14.03.0319.002; Fri, 17 Mar 2017 22:08:49 +0000
+From: "Gentile Fusillo, Nicola" <N.Gentile-Fusillo@warwick.ac.uk>
+To: Dave Morris <dmr@roe.ac.uk>
+CC: Stelios Voutsinas <stv@roe.ac.uk>, osa-support <osa-support@roe.ac.uk>
+Subject: Re: problems with Omegacam science archive free form query
+Thread-Topic: problems with Omegacam science archive free form query
+Thread-Index: AQHSn0Nyv3N+0q9fWEqHn4IrEsP/JqGZTaDMgABHzpyAAAAhcw==
+Date: Fri, 17 Mar 2017 22:08:48 +0000
+Message-ID: <b059bc91e4b8468e8f57692c075877b4@MERCURY.roe.ac.uk>
+References: <HE1PR01MB1003DCE69E2B4346A52584C1E7390@HE1PR01MB1003.eurprd01.prod.exchangelabs.com>,<89BEBED005A78F4B9C1DC92EB769DE0E01067F9CD5@MERCURY.roe.ac.uk>
+ <c649e7a084394312928f43521b8d753e@MERCURY.roe.ac.uk>,<af779ef91f0e576b4758632570a82704@roe.ac.uk>
+In-Reply-To: <af779ef91f0e576b4758632570a82704@roe.ac.uk>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-Exchange-Inbox-Rules-Loop: dmr@roe.ac.uk
+X-MS-TNEF-Correlator:
+received-spf: pass (in4a.electric.net: domain of warwick.ac.uk designates
+ 104.47.0.56 as permitted sender) client-ip=104.47.0.56;
+ envelope-from=N.Gentile-Fusillo@warwick.ac.uk;
+ helo=EUR01-HE1-obe.outbound.protection.outlook.com;
+authentication-results: roe.ac.uk; dkim=none (message not signed)
+ header.d=none;roe.ac.uk; dmarc=none action=none header.from=warwick.ac.uk;
+x-originating-ip: [2a02:c7d:7646:fb00:b1b8:d984:7491:538a]
+x-ms-office365-filtering-correlation-id: d04a33e3-7393-4730-bd58-08d46d82304c
+x-microsoft-antispam: UriScan:;BCL:0;PCL:0;RULEID:(22001)(2017030254054);SRVR:HE1PR01MB1001;
+x-microsoft-exchange-diagnostics: 1;HE1PR01MB1001;7:+6eM8zyj++Cz03vTaeQgFsaJFJF1l+uDsgvlOQoEKO9ryZiCS/agWP679/jjWcHBSZubvpmvAk07gcPPe68yju+9aJqUCqCerkf8rV6vXA0PJhsj8M32UzDx2y1kZdIimtQKjTpGX5PSMBV4AGWJ5Li9N4K93LETnmUlvoEIOYB29TkP49UHG7jr3txRfysFSjGTj5L2/jY7PaBIfM4a5/RHbiE2uiupWNOShk6DEVvB+6PN/fYJQ58dF2VGVPXlFnlIqoVRq3gMPm2UIgJUBHU7EE4FFNg7haQtjdSZ86ZpYvTxU06SCV9hgGXUkuXDPa74sdvx/pzLDNm64purUA==
+x-microsoft-antispam-prvs: <HE1PR01MB1001A1A3B877D836A501F89EE7390@HE1PR01MB1001.eurprd01.prod.exchangelabs.com>
+x-exchange-antispam-report-test: UriScan:(158342451672863)(36963963062972);
+x-exchange-antispam-report-cfa-test: BCL:0;PCL:0;RULEID:(6040375)(601004)(2401047)(5005006)(8121501046)(10201501046)(3002001)(6041248)(20161123558025)(20161123564025)(20161123560025)(20161123555025)(20161123562025)(6072148);SRVR:HE1PR01MB1001;BCL:0;PCL:0;RULEID:;SRVR:HE1PR01MB1001;
+x-forefront-prvs: 0249EFCB0B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(6009001)(39450400003)(377424004)(55674003)(377454003)(24454002)(6506006)(6436002)(33656002)(77096006)(93886004)(122556002)(189998001)(99286003)(7696004)(54906002)(74482002)(54896002)(8936002)(9686003)(53546008)(25786008)(229853002)(81166006)(8676002)(86362001)(6116002)(345774005)(102836003)(3280700002)(54356999)(2950100002)(76176999)(55016002)(4326008)(50986999)(42882006)(7736002)(2900100001)(5660300001)(6916009)(2906002)(38730400002)(3660700001)(6246003)(110136004)(561924002)(74316002)(450100002);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1PR01MB1001;H:HE1PR01MB1003.eurprd01.prod.exchangelabs.com;FPR:;SPF:None;MLV:sfv;LANG:en;
+spamdiagnosticoutput: 1:99
+spamdiagnosticmetadata: NSPM
+x-ms-exchange-crosstenant-originalarrivaltime: 17 Mar 2017 22:08:48.7875
+ (UTC)
+x-ms-exchange-crosstenant-fromentityheader: Hosted
+x-ms-exchange-crosstenant-id: 09bacfbd-47ef-4465-9265-3546f2eaf6bc
+x-ms-exchange-transport-crosstenantheadersstamped: HE1PR01MB1001
+x-fm-os: Windows 7 or 8
+x-fm-geoip: --
+x-proto: esmtps
+x-revdns: mail-he1eur01on0056.outbound.protection.outlook.com
+x-helo: EUR01-HE1-obe.outbound.protection.outlook.com
+x-tls: TLSv1.2:ECDHE-RSA-AES256-SHA384:256
+x-authenticated_id:
+x-origin-ip: 104.47.0.56
+x-env-from: N.Gentile-Fusillo@warwick.ac.uk
+x-dkim: none
+x-policysmart: 3590392
+x-spam-status: NO, ALLOW RULE=n.gentile-fusillo@warwick.ac.uk:UAU
+x-virus-status: Scanned by VirusSMART (s)
+Resent-From: <dmr@roe.ac.uk>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <63DFBA6B53A1F345946B9DE13E8749FD@roe.ac.uk>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Outbound-IP: 195.194.122.14
+X-Env-From: dmr@roe.ac.uk
+X-Proto: esmtps
+X-Revdns: mercury.roe.ac.uk
+X-HELO: mercury.roe.ac.uk
+X-TLS: TLSv1.2:ECDHE-RSA-AES256-SHA384:256
+X-Authenticated_ID: 
+X-PolicySMART: 3590380
+X-Virus-Status: Scanned by VirusSMART (c)
+X-Virus-Status: Scanned by VirusSMART (s)
+
+Hi Dave,
+
+thanks for quickly looking into this.
+
+I think I just "solved" it.
+
+I don't know what was going on, but I had to delete the query line by line =
+and exactly retype some lines instead copy and pasting them.
+
+
+Could it be that a new line or some characters like tab for example cause c=
+onfusion in the window where you write the code?
+
+
+Cheers
+
+Nicola
+
+
+________________________________
+From: Dave Morris <dmr@roe.ac.uk>
+Sent: 17 March 2017 21:54:18
+To: Gentile Fusillo, Nicola
+Cc: Stelios Voutsinas; osa-support
+Subject: Re: problems with Omegacam science archive free form query
+
+Hi Nicola,
+
+We are looking in to the issue to see if we can figure out what may be
+causing the bad results you are getting.
+
+Could you email me a copy of the full ADQL query that is getting bad
+results.
+
+Thanks,
+Dave
+
+--------
+Dave Morris
+Software Developer
+Wide Field Astronomy Unit
+Institute for Astronomy
+University of Edinburgh
+--------
+
+On 2017-03-17 21:05, Gentile Fusillo, Nicola wrote:
+> Thank you stelios.
+>
+> The system is indeed running now, but
+>
+> my old queries give inconsistent result.
+>
+> It doesn't seem to read any of my constraints and every query returns
+> 2,500,000 objects.
+>
+> The simplest one to notice is
+>
+> WHERE uAperMag3 !=3D -999999488
+> AND gAperMag3 !=3D -999999488
+> AND rAperMag3 !=3D -999999488
+> AND iAperMag3 !=3D -999999488
+> AND zAperMag3 !=3D -999999488
+>
+>
+> which is simply ignored as I am getting many -999999488 results.
+>
+>
+> is this another issue at your end?
+>
+>
+> Cheers
+>
+> Nicola
+>
+>
+> ________________________________
+> From: Stelios Voutsinas <stv@roe.ac.uk>
+> Sent: 17 March 2017 17:46:41
+> To: Gentile Fusillo, Nicola; osa-support
+> Subject: RE: problems with Omegacam science archive free form query
+>
+> Hello,
+>
+> Apologies for that, there seems to be an issue on our end with the
+> ADQL form which we are looking into.
+> In the meantime you can try using the "Native SQL" option. On the same
+> page as the ADQL form you should notice the "Native SQL" tab, which
+> will give form where you can query the SQL Server database directly.
+>
+> We'll let you know when the ADQL form is back online.
+>
+> Cheers,
+>
+> Stelios Voutsinas
+> WFAU, University of Edinburgh
+> ________________________________________
+> From: Gentile Fusillo, Nicola [N.Gentile-Fusillo@warwick.ac.uk]
+> Sent: Friday, March 17, 2017 5:27 PM
+> To: osa-support
+> Subject: problems with Omegacam science archive free form query
+>
+> Hi,
+>
+> Today I tried to use the ADSQL form after a few weeks.
+>
+> I cannot submit any kind of query and all I get is the error
+>
+> "Please select from the list of endpoints".
+>
+> Also after clicking on the Database(s) button I get a new window but
+> no database is shown and I cannot select one.
+>
+> Is this a problem on my side?
+>
+> Am I doing something wrong? It use to work before.
+>
+>
+> Thank you for your time.
+>
+>
+> Nicola Gentile Fusillo

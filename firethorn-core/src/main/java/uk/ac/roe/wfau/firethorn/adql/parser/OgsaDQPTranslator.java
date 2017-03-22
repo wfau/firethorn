@@ -40,21 +40,20 @@ import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.UserDefinedFunction;
-import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * OGSA-DAI DQP ADQL Translator.
- * This needs to generate DQP compatible ADQL that can be passed to OGSA-DAI DQP.
+ * Generates DQP compatible ADQL that can be passed to OGSA-DAI DQP.
  * @todo Remove dependency on PostgreSQLTranslator
  *
  */
 @Slf4j
 public class OgsaDQPTranslator
     extends PostgreSQLTranslator
-    implements ADQLTranslator
+    implements BaseTranslator
     {
 
     /**
@@ -123,7 +122,6 @@ public class OgsaDQPTranslator
         throws TranslationException
         {
         log.debug("translate(ADQLQuery)");
-
         final StringBuilder builder = new StringBuilder();
         builder.append(
             translate(
