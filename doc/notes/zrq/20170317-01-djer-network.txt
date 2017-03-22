@@ -1,0 +1,114 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Issues with netwrk connections to VMs on djer.
+#[user@djer]
+
+    ssh -v coccinea
+
+        ssh: Could not resolve hostname coccinea: Name or service not known
+
+# -----------------------------------------------------
+# No entries for the VMs in the local hosts file.
+#[user@djer]
+
+    grep 'coccinea' /etc/hosts
+        -
+
+
+    grep 'shep' /etc/hosts
+        129.215.175.117 shepseskaf.roe.ac.uk   shepseskaf
+        192.168.137.33  shepseskaf-p
+        192.168.137.43	shepsesre
+        192.168.137.33    shepseskaf-i
+
+# -----------------------------------------------------
+# SSH using IP address works fine.
+#[user@djer]
+
+    ssh firethorn@192.168.122.3
+
+        Linux coccinea 3.2.0-4-amd64 #1 SMP Debian 3.2.41-2+deb7u2 x86_64
+
+# -----------------------------------------------------
+# Found old notes containing reference to IP addresses in /etc/hosts.
+#[user@desktop]
+
+    notes/zrq/20130607-deploy-vms.txt
+
+        ....
+        cat /etc/hosts
+
+            127.0.0.1	localhost
+            129.215.175.114	djer.roe.ac.uk	       djer
+
+            # Firethorn VMs
+            192.168.122.2	pyracantha
+            192.168.122.3	coccinea
+
+
+    notes/stv/20141211-djer-shep-vm-networking.txt
+
+        ....
+
+        Issue: 
+        ------
+        Networking update on Friday Dec 5th left osa.roe.ac.uk and shepseskaf.roe.ac.uk services unavailable
+        Unable to ssh into VM's:
+        "nc: getaddrinfo: Name or service not known
+        ssh_exchange_identification: Connection closed by remote host"
+
+
+        Fix:
+        -----
+        Add the VM IPs to the  /etc/hosts file on djer:
+
+        # Firethorn VMs
+        192.168.122.2   pyracantha
+        192.168.122.3   coccinea
+        192.168.122.4   malus
+        192.168.122.5   pyrus
+
+        Add the VM IPs to the  /etc/hosts file on shepseskaf:
+        # VM's
+        192.168.122.2   pyratest1
+        192.168.122.3   pyratest2
+        192.168.122.4   pyratest3
+
+# -----------------------------------------------------
+# Temp fix applied.
+#[user@djer]
+
+    Temp fix found and applied by Stelios.
+    
+    Changed config on the GUI to use IP address rather than DNS names
+    for connection to the firethorn service.
+    
+    Email sent to osa-support requesting VM names re-instated into /etc/hosts
+
+
+
+
+    
+
+
