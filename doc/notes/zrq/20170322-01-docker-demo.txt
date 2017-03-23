@@ -112,35 +112,11 @@
 
     source 05.01-javamaven.sh
 
-#---------------------------------------------------------------------
-# Compile our Java code.
-#[root@builder]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        mvn -P all clean install
-
-    popd
-
 # -----------------------------------------------------
 # Build our Java containers.
 #[root@builder]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        export buildtag
-        pushd firethorn-ogsadai/webapp
-            mvn docker:package
-        popd
-
-        export buildtag
-        pushd firethorn-webapp
-            mvn docker:package
-        popd
-
-    popd
+    source 05.02-javadocker.sh
 
 # -----------------------------------------------------
 # Display our container images.
