@@ -25,6 +25,7 @@
 #[root@builder]
 
     newversion=2.1.7
+    newversion=2.1.8
 
 # -----------------------------------------------------
 # Merge the changes into main.

@@ -45,19 +45,20 @@
 # Remove the compose RPM
 #[user@virtual]
 
+    dnf remove docker-compose
 
 # -----------------------------------------------------
 # Install compose from GitHub
 #[user@virtual]
 
-
+    curl -s -L https://github.com/docker/compose/releases/download/1.11.1/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
+    chmod +x /usr/bin/docker-compose
 
 # -----------------------------------------------------
 # Set the target branch
 #[user@virtual]
 
-    branch=
-    buildtag=
+    branch=default
 
 # -----------------------------------------------------
 # Download our compose file
@@ -76,149 +77,46 @@
         run builder 
 
 # -----------------------------------------------------
-# Update our path.
-# TODO Add this to the image
+# Initialise our paths.
 #[root@builder]
 
-    # ** this should be in the container **
-    source /etc/bashrc
-
-# -----------------------------------------------------
-# Configure our source path.
-# TODO Add this to the image
-#[root@builder]
-
-    #
-    # Set the project path.
-    if [ ! -e "${HOME:?}/firethorn.settings" ]
-    then
-        cat > "${HOME:?}/firethorn.settings" << EOF
-FIRETHORN_CODE=/var/local/build/firethorn
-EOF
-    fi
-
+    source 01.01-init.sh
+    
 # -----------------------------------------------------
 # Checkout a copy of our source code.
 #[root@builder]
 
-    source "${HOME:?}/firethorn.settings"
-    if [  -e "${FIRETHORN_CODE:?}" ]
-    then
-        pushd "${FIRETHORN_CODE:?}"
-
-            hg pull
-            hg update
-        
-        popd
-    else
-        pushd "$(dirname ${FIRETHORN_CODE:?})"
-
-            hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "$(basename ${FIRETHORN_CODE:?})"
-
-        popd
-    fi
+    source 02.01-checkout.sh
 
 # -----------------------------------------------------
-# Update the source code branch.
+# Set the build tag.
 #[root@builder]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        if [ -n "${branch}" ]
-        then
-            hg update "${branch:?}"
-        else
-            hg update 'default'
-        fi
-
-    popd
-
-# -----------------------------------------------------
-# Set the buildtag.
-#[root@builder]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source bin/util.sh
-
-        if [ -n "${branch}" ]
-        then
-            buildtag=${branch:?}
-        else
-            buildtag=$(getversion)
-        fi
-
-    popd
+    source 03.01-buildtag.sh
 
 # -----------------------------------------------------
 # Update our POM version.
 #[root@builder]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        pomversions "${buildtag:?}"
-
-    popd
-
-# -----------------------------------------------------
-# Generate our dockerfiles.
-#[root@builder]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        dockerfiles "${buildtag:?}"
-
-    popd
+    source 03.02-versions.sh
 
 # -----------------------------------------------------
 # Build our base images.
 #[root@builder]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        export buildtag
-        docker-compose \
-            --file docker/compose/images.yml \
-            build
-
-    popd
+    source 04.01-buildbase.sh
 
 #---------------------------------------------------------------------
 # Compile our Java code.
 #[root@builder]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        mvn -P all clean install
-
-    popd
+    source 05.01-javamaven.sh
 
 # -----------------------------------------------------
 # Build our Java containers.
 #[root@builder]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        export buildtag
-        pushd firethorn-ogsadai/webapp
-            mvn docker:package
-        popd
-
-        export buildtag
-        pushd firethorn-webapp
-            mvn docker:package
-        popd
-
-    popd
+    source 05.02-javadocker.sh
 
 # -----------------------------------------------------
 # Display our container images.
