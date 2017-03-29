@@ -1,0 +1,87 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Build settings
+#[user@desktop] 
+
+    : ${basepool:='base'}
+    : ${livepool:='live'}
+    : ${connection:='qemu:///system'}
+
+    basecpu=4
+    basemem=4096
+    basesize=32G
+    basearch=x86_64
+
+    basever=25
+    basedate=$(date +%Y%m%d)
+    basedist=fedora-${basever:?}
+    basename=${basedist}-base-${basesize}-${basedate:?}
+    basefile=${basename}.qcow
+
+    docksize=${basesize:?}
+    dockdate=${basedate:?}
+    dockname=${basedist}-docker-${docksize}-${dockdate:?}
+    dockfile=${dockname}.qcow
+    dockgzip=${dockfile}.gz
+
+#---------------------------------------------------------------------
+# Create our base install
+#[user@desktop] 
+
+    #
+    # Delete any existing volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${basefile:?}"
+
+    #
+    # Create a new (empty) volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format qcow2
+
+    #
+    # Create a new installation.
+    virt-install \
+        --noreboot \
+        --connect "${connection:?}" \
+        --name    "${basename:?}" \
+        --memory  "${basemem:?}" \
+        --vcpus   "${basecpu:?}" \
+        --disk "vol=${basepool:?}/${basefile:?}" \
+        --location "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
+        --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-base-20170113.txt"
+
+   #
+   # Delete the machine, leaving the image.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${basename:?}"
+
