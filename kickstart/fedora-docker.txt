@@ -27,7 +27,7 @@ install
 url  --mirrorlist "http://mirrors.fedoraproject.org/mirrorlist?repo=fedora-$releasever&arch=$basearch"
 repo --name fedora
 repo --name updates
-repo --name docker --install --baseurl "https://yum.dockerproject.org/repo/main/fedora/$releasever/"
+repo --name docker --baseurl "https://download.docker.com/linux/fedora/$releasever/$basearch/stable"
 
 zerombr
 bootloader --location=mbr --boot-drive=vda
@@ -126,15 +126,18 @@ sed -i '
     ' /etc/ssh/sshd_config 
 
 #
-# Add the GPG key for the Docker repo.
-cat >> /etc/yum.repos.d/docker.repo << EOF
-gpgcheck=1
-gpgkey=https://yum.dockerproject.org/gpg
-EOF
+# Add the Docker CE repo.
+dnf -y config-manager \
+    --add-repo \
+    https://download.docker.com/linux/fedora/docker-ce.repo
 
 #
-# Install docker-engine
-dnf install -y docker-engine
+# Update the cache.
+dnf -y makecache fast
+
+#
+# Install docker CE.
+dnf -y install docker-ce
 
 #
 # Install the dockersock SELinux policy.
