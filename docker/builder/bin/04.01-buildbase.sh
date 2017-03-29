@@ -22,6 +22,9 @@
 # -----------------------------------------------------
 # Build our base images.
 
+    echo ""
+    echo "Building Docker images"
+
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 

@@ -22,6 +22,9 @@
 # -----------------------------------------------------
 # Set the buildtag.
 
+    echo ""
+    echo "Setting build tag"
+
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
@@ -35,4 +38,6 @@
         fi
 
     popd
+
+    echo "  buildtag [${buildtag:?}]"
 

@@ -22,6 +22,9 @@
 #---------------------------------------------------------------------
 # Compile our Java code.
 
+    echo ""
+    echo "Building Java code"
+
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 

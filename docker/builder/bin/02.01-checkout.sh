@@ -22,6 +22,9 @@
 # -----------------------------------------------------
 # Checkout a copy of our source code.
 
+    echo ""
+    echo "Cloning source code"
+
     source "${HOME:?}/firethorn.settings"
     if [  -e "${FIRETHORN_CODE:?}" ]
     then
@@ -41,6 +44,10 @@
 
 # -----------------------------------------------------
 # Update the source code branch.
+
+    echo ""
+    echo "Updating source code"
+    echo "  branch [${branch:?}]"
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
