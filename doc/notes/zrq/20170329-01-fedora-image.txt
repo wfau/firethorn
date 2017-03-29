@@ -131,3 +131,96 @@
        --connect "${connection:?}" \
        undefine "${dockname:?}"
 
+#---------------------------------------------------------------------
+#
+#
+
+    Compact the image ...
+
+
+
+#---------------------------------------------------------------------
+# Push the base image to our webserver.
+#[user@desktop] 
+
+    basepath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${basefile:?}")
+    basegzip=/tmp/${basefile:?}.gz
+
+    sudo chmod a+r ${basepath:?}
+    
+    gzip -c "${basepath:?}" > "${basegzip:?}"
+
+    rsync \
+        --stats \
+        --progress \
+        --human-readable \
+        ${basegzip:?} \
+        root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base
+
+#---------------------------------------------------------------------
+# Push the docker image to our webserver.
+#[user@desktop] 
+
+    dockpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${dockfile:?}")
+    dockgzip=/tmp/${dockfile:?}.gz
+
+    sudo chmod a+r ${dockpath:?}
+    
+    gzip -c "${dockpath:?}" > "${dockgzip:?}"
+
+    rsync \
+        --stats \
+        --progress \
+        --human-readable \
+        ${dockgzip:?} \
+        root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base
+
+
+#---------------------------------------------------------------------
+# Install the new image.
+#[user@shep] 
+#[user@trop01] 
+#[user@trop02] 
+
+    : ${basepool:='base'}
+    : ${livepool:='live'}
+    : ${connection:='qemu:///system'}
+
+    basecpu=4
+    basemem=4096
+    basesize=32G
+    basearch=x86_64
+
+    basever=25
+    basedist=fedora-${basever:?}
+    basedate=20170329
+    basename=${basedist}-base-${basedate}-${basedate:?}
+    basefile=${basename}.qcow
+
+    docksize=${basesize:?}
+    dockdate=${basedate:?}
+    dockname=${basedist}-docker-${docksize:?}-${dockdate:?}
+    dockfile=${dockname}.qcow
+    dockgzip=${dockfile}.gz
+
+    wget "http://data.metagrid.co.uk/ischnura/base/${dockgzip:?}"
+
+    gunzip "${dockgzip:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${dockfile:?}" \
+            "${docksize:?}" \
+            --format 'qcow2'
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${dockfile:?}" \
+            "${dockfile:?}"
+
+    rm "${dockfile:?}"
+

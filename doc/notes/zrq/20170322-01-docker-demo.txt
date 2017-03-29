@@ -73,7 +73,6 @@
     export branch
     docker-compose \
         --file "builder.yml" \
-        --project ${instance:?} \
         run builder 
 
 # -----------------------------------------------------

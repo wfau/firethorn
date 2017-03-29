@@ -40,11 +40,13 @@ RUN dnf -y install bind-utils
 
 #
 # Install Docker engine from the Docker YUM repository.
+# https://docs.docker.com/engine/installation/linux/repo_files/fedora/docker.repo
 RUN dnf -y install dnf-plugins-core
 RUN dnf config-manager \
     --add-repo \
-    https://docs.docker.com/engine/installation/linux/repo_files/fedora/docker.repo
-RUN dnf -y install docker-engine
+    https://download.docker.com/linux/fedora/docker-ce.repo
+RUN dnf -y makecache fast
+RUN dnf -y install docker-ce
 
 #
 # Install Docker compose from GitHub.
@@ -67,5 +69,7 @@ RUN dnf -y install java-1.8.0-openjdk-headless
 RUN dnf -y install maven
 COPY settings.xml /root/.m2/settings.xml
 
-
+#
+# Install our build scripts
+COPY bin 
 

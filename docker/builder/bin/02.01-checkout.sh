@@ -45,7 +45,7 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        if [ -n "${branch}" ]
+        if [ -n "${branch}" -a "${branch}" != 'default' ]
         then
             hg update "${branch:?}"
         else

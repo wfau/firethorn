@@ -27,7 +27,7 @@
 
         source bin/util.sh
 
-        if [ -n "${branch}" ]
+        if [[ -n "${branch}" && "${branch}" != 'default' ]]
         then
             buildtag=${branch:?}
         else
