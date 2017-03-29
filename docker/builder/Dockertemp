@@ -70,5 +70,6 @@ COPY settings.xml /root/.m2/settings.xml
 
 #
 # Install our build scripts
-COPY bin 
+COPY bin/ /builder/bin 
+RUN chmod a+x /builder/bin/*
 
