@@ -223,13 +223,9 @@
     # ONLY DO THIS IF THE TESTS PASS
     #
 
-    docker login
-
-        Username: xxxx
-        Password: yyyy
-        Email:    zzzz
-        Login Succeeded
-
+    docker login \
+        --username $(secret docker.io.user) \
+        --password $(secret docker.io.pass)
 
     docker push "firethorn/fedora:${buildtag:?}"
     docker push "firethorn/java:${buildtag:?}"
