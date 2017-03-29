@@ -101,8 +101,8 @@ ntp
 haveged
 
 # Docker tools
-docker-engine
-docker-compose
+#docker-engine
+#docker-compose
 
 # Required for selinux-dockersock 
 checkpolicy
@@ -113,9 +113,6 @@ policycoreutils-python-utils
 %end
 
 %pre
-%end
-
-%post
 
 #
 # Disable password login.
@@ -125,11 +122,19 @@ sed -i '
     ' /etc/ssh/sshd_config 
 
 #
-# Add GPG key to the Docker repo.
+# Add the GPG key for the Docker repo.
 cat >> /etc/yum.repos.d/docker.repo << EOF
 gpgcheck=1
 gpgkey=https://yum.dockerproject.org/gpg
 EOF
+
+%end
+
+%post
+
+#
+# Install docker-engine
+dnf install -y docker-engine
 
 #
 # Install the dockersock SELinux policy.
@@ -140,6 +145,11 @@ pushd $(mktemp -d)
   semodule_package -m dockersock.mod -o dockersock.pp
   semodule -i dockersock.pp
 popd
+
+#
+# Install docker-compose from GitHub
+curl -s -L https://github.com/docker/compose/releases/download/1.11.1/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
+chmod +x /usr/bin/docker-compose
 
 #
 # Configure NTP server.
