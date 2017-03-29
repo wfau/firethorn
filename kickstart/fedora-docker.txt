@@ -113,6 +113,9 @@ policycoreutils-python-utils
 %end
 
 %pre
+%end
+
+%post
 
 #
 # Disable password login.
@@ -127,10 +130,6 @@ cat >> /etc/yum.repos.d/docker.repo << EOF
 gpgcheck=1
 gpgkey=https://yum.dockerproject.org/gpg
 EOF
-
-%end
-
-%post
 
 #
 # Install docker-engine
