@@ -77,11 +77,57 @@
         --vcpus   "${basecpu:?}" \
         --disk "vol=${basepool:?}/${basefile:?}" \
         --location "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
-        --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-base-20170113.txt"
+        --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-image.txt"
 
    #
    # Delete the machine, leaving the image.
    virsh \
        --connect "${connection:?}" \
        undefine "${basename:?}"
+
+#---------------------------------------------------------------------
+# Create our docker install
+#[user@desktop] 
+
+   #
+   # Delete any existing machine.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${dockname:?}"
+
+    #
+    # Delete any existing volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${dockfile:?}"
+
+    #
+    # Create a new (empty) volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${dockfile:?}" \
+            "${docksize:?}" \
+            --format qcow2
+
+    #
+    # Create a new installation.
+    virt-install \
+        --noreboot \
+        --connect "${connection:?}" \
+        --name    "${dockname:?}" \
+        --memory  "${basemem:?}" \
+        --vcpus   "${basecpu:?}" \
+        --disk "vol=${basepool:?}/${dockfile:?}" \
+        --location   "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
+        --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-docker.txt"
+
+   #
+   # Delete the virtual machine.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${dockname:?}"
 
