@@ -66,7 +66,8 @@ RUN dnf -y install java-1.8.0-openjdk-headless
 #
 # Install Maven
 RUN dnf -y install maven
-COPY settings.xml /root/.m2/settings.xml
+#COPY settings.xml /root/.m2/settings.xml
+RUN maven-cache.sh
 
 #
 # Install our build scripts

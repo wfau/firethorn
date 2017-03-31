@@ -20,22 +20,14 @@
 #
 
 # -----------------------------------------------------
-# Update the source code branch.
+# Update the Maven cache path.
 
-cat > "${HOME:?}/build.settings" << EOF
-branch=${branch:=default}
-EOF
-
-    echo ""
-    echo "Updating source code"
-    echo "  branch [${branch:?}]"
-
-    source "${HOME:?}/firethorn.settings"
-    source "${HOME:?}/build.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        hg update "${branch:?}"
-
-    popd
-
+    sed '
+        /^[[:space:]]*<!-- localRepository/,/^[[:space:]]*-->/{
+            /^[[:space:]]*-->/{
+                a\
+  <localRepository>/var/local/cache/maven</localRepository>
+                }
+            }
+        ' /etc/maven/settings.xml
 
