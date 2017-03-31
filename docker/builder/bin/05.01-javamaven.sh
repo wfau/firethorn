@@ -26,6 +26,7 @@
     echo "Building Java code"
 
     source "${HOME:?}/firethorn.settings"
+    source "${HOME:?}/build.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         mvn -P all clean install

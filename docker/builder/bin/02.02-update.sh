@@ -22,13 +22,16 @@
 # -----------------------------------------------------
 # Update the source code branch.
 
-    : ${branch:=default}
+cat > "${HOME:?}/build.settings" << EOF
+branch=${branch:=default}
+EOF
 
     echo ""
     echo "Updating source code"
     echo "  branch [${branch:?}]"
 
     source "${HOME:?}/firethorn.settings"
+    source "${HOME:?}/build.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         hg update "${branch:?}"

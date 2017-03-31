@@ -26,6 +26,7 @@
     echo "Building Docker images"
 
     source "${HOME:?}/firethorn.settings"
+    source "${HOME:?}/build.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         export buildtag

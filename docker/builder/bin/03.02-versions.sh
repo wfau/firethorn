@@ -23,6 +23,7 @@
 # Update our POM version.
 
     source "${HOME:?}/firethorn.settings"
+    source "${HOME:?}/build.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
@@ -34,6 +35,7 @@
 # Generate our dockerfiles.
 
     source "${HOME:?}/firethorn.settings"
+    source "${HOME:?}/build.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
