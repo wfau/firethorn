@@ -169,24 +169,27 @@ useradd \
     ${username:?}
 
 #
-# Add the authorized keys from root. 
-cp \
+# Copy authorized keys from root. 
+mkdir \
+    ${userhome:?}/.ssh
+cp -n \
     /root/.ssh/authorized_keys \
-    ${userhome:?}/.ssh
-chown \
-    --recursive \
-    $(id ${username:?} -u) \
-    ${userhome:?}/.ssh
-chgrp \
-    --recursive \
-    $(id ${username:?} -g) \
-    ${userhome:?}/.ssh
+    ${userhome:?}/.ssh/authorized_keys
+
 chmod \
     g=,o=,u=rwx \
     ${userhome:?}/.ssh
 chmod \
     g=r,o=r,u=rw \
     ${userhome:?}/.ssh/authorized_keys
+
+chown -R \
+    $(id ${username:?} -u) \
+    ${userhome:?}/.ssh
+chgrp -R \
+    $(id ${username:?} -g) \
+    ${userhome:?}/.ssh
+
 restorecon -r \
     ${userhome:?}/.ssh
 

@@ -323,6 +323,7 @@
     sudo chmod a+r "${basepath:?}"
     
     gzip -c "${basepath:?}" > "${basegzip:?}"
+    chmod a+r "${basegzip:?}"
 
     rsync \
         --stats \
@@ -343,6 +344,7 @@
     sudo chmod a+r ${dockpath:?}
     
     gzip -c "${dockpath:?}" > "${dockgzip:?}"
+    chmod a+r "${dockgzip:?}"
 
     rsync \
         --stats \
@@ -370,9 +372,10 @@
 
     basever=25
     basedist=fedora-${basever:?}
-    basedate=20170329
-    basename=${basedist}-base-${basedate}-${basedate:?}
+    basedate=20170331
+    basename=${basedist}-base-${basesize}-${basedate:?}
     basefile=${basename}.qcow
+    basegzip=${basefile}.gz
 
     docksize=${basesize:?}
     dockdate=${basedate:?}
@@ -380,7 +383,34 @@
     dockfile=${dockname}.qcow
     dockgzip=${dockfile}.gz
 
-    wget "http://data.metagrid.co.uk/ischnura/base/${dockgzip:?}"
+    wget \
+        -O "${basegzip:?}" \
+        "http://data.metagrid.co.uk/ischnura/base/${basegzip:?}"
+
+    gunzip "${basegzip:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format 'qcow2'
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${basefile:?}" \
+            "${basefile:?}"
+
+    rm "${basefile:?}"
+
+
+
+    wget \
+        -O "${dockgzip:?}" \
+        "http://data.metagrid.co.uk/ischnura/base/${dockgzip:?}"
 
     gunzip "${dockgzip:?}"
 

@@ -20,26 +20,23 @@
 #
 
 # -----------------------------------------------------
-# Checkout a copy of our source code.
+# Update the source code branch.
 
     echo ""
-    echo "Cloning source code"
+    echo "Updating source code"
+    echo "  branch [${branch:?}]"
 
     source "${HOME:?}/firethorn.settings"
-    if [  -e "${FIRETHORN_CODE:?}" ]
-    then
-        pushd "${FIRETHORN_CODE:?}"
+    pushd "${FIRETHORN_CODE:?}"
 
-            hg pull
-            hg update
-        
-        popd
-    else
-        pushd "$(dirname ${FIRETHORN_CODE:?})"
+        if [ -n "${branch}" -a "${branch}" != 'default' ]
+        then
+            hg update "${branch:?}"
+        else
+            hg update 'default'
+        fi
 
-            hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "$(basename ${FIRETHORN_CODE:?})"
+    popd
 
-        popd
-    fi
 
 

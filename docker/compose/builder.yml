@@ -14,7 +14,7 @@ services:
 
     builder:
         image:
-            "firethorn/builder:2.1.7"
+            "firethorn/builder:2.1.8"
         tty:
             true
         stdin_open:
@@ -29,7 +29,6 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         environment:
             branch:   "${branch}"
-            instance: "${instance}"
             SSH_AUTH_SOCK: /tmp/ssh_auth_sock
         command:
             [bash]
