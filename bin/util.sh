@@ -87,7 +87,7 @@ pomversion()
     local version=${1:?}
     local pomfile=${2:-'pom.xml'}
 
-    echo "Maven POM [${version:?}][${pomfile:?}]"
+    echo "Maven POM  [${version:?}][${pomfile:?}]"
 
     if [ -d "${pomfile:?}" ]
     then
@@ -125,7 +125,7 @@ dockerfile()
 
     dockfile="$(dirname ${docktemp:?})/Dockerfile"
 
-    echo "Dockerfile [${version:?}][${dockfile:?}]"
+    echo "Dockerfile  [${version:?}][${dockfile:?}]"
 
     sed '
         s/{BUILD_VERSION}/'${version:?}'/g
