@@ -22,6 +22,8 @@
 # -----------------------------------------------------
 # Update the source code branch.
 
+    : ${branch:=default}
+
     echo ""
     echo "Updating source code"
     echo "  branch [${branch:?}]"
@@ -29,14 +31,8 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        if [ -n "${branch}" -a "${branch}" != 'default' ]
-        then
-            hg update "${branch:?}"
-        else
-            hg update 'default'
-        fi
+        hg update "${branch:?}"
 
     popd
-
 
 

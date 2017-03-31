@@ -20,43 +20,12 @@
 #
 
 # -----------------------------------------------------
-# Initialise our path.
+# Display our container images.
 
-    PATH=${PATH}:/builder/bin
-
-# -----------------------------------------------------
-# Initialise our paths.
-
-    01.01-init.sh
-    
-# -----------------------------------------------------
-# Checkout a copy of our source code.
-
-    02.01-checkout.sh
-
-# -----------------------------------------------------
-# Set the build tag.
-
-    03.01-buildtag.sh
-
-# -----------------------------------------------------
-# Update our POM version.
-
-    03.02-versions.sh
-
-# -----------------------------------------------------
-# Build our base images.
-
-    04.01-buildbase.sh
-
-#---------------------------------------------------------------------
-# Compile our Java code.
-
-    05.01-javamaven.sh
-
-# -----------------------------------------------------
-# Build our Java containers.
-
-    05.02-javadocker.sh
-
+    docker \
+        run -it \
+            --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            nate/dockviz \
+            images --tree
 
