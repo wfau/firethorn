@@ -169,17 +169,17 @@ useradd \
     ${username:?}
 
 #
-# Add the authorized keys. 
+# Add the authorized keys from root. 
 cp \
     /root/.ssh/authorized_keys \
     ${userhome:?}/.ssh
 chown \
     --recursive \
-    $(id Stevedore -u) \
+    $(id ${username:?} -u) \
     ${userhome:?}/.ssh
 chgrp \
     --recursive \
-    $(id Stevedore -g) \
+    $(id ${username:?} -g) \
     ${userhome:?}/.ssh
 chmod \
     g=,o=,u=rwx \
