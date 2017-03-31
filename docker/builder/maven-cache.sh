@@ -22,7 +22,7 @@
 # -----------------------------------------------------
 # Update the Maven cache path.
 
-    sed '
+    sed -i '
         /^[[:space:]]*<!-- localRepository/,/^[[:space:]]*-->/{
             /^[[:space:]]*-->/{
                 a\

@@ -60,21 +60,6 @@
 # Build our containers.
 #[root@builder]
 
-    source /builder/bin/00.00-buildall.sh
+    /builder/bin/00.00-buildall.sh
     
-
-
-<localRepository>
-
-sed -n '
-    /^[[:space:]]*<!-- localRepository/,/^[[:space:]]*-->/{
-        p
-        }    
-    ' /etc/maven/settings.xml
-
-sed -n '
-    /^[[:space:]]*<!-- localRepository/,/^[[:space:]]*-->/{
-        p
-        }
-    ' /etc/maven/settings.xml
 
