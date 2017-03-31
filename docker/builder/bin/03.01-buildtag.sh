@@ -27,11 +27,11 @@
 
         source bin/util.sh
 
-        if [[ -n "${branch}" && "${branch}" != 'default' ]]
+        if [[ -z "${branch}" || "${branch}" == 'default' ]]
         then
-            buildtag=${branch:?}
-        else
             buildtag=$(getversion)
+        else
+            buildtag=${branch:?}
         fi
 
     popd
