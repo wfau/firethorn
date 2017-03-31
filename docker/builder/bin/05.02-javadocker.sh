@@ -22,7 +22,6 @@
 # -----------------------------------------------------
 # Build our Java containers.
 
-    echo ""
     echo "Building Docker containers"
 
     source "${HOME:?}/firethorn.settings"

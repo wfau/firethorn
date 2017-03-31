@@ -22,8 +22,7 @@
 # -----------------------------------------------------
 # Configure our source path.
 
-    echo ""
-    echo "Initialising firethorn settings"
+    echo "Initialising settings"
 
     if [ ! -e "${HOME:?}/firethorn.settings" ]
     then

@@ -22,7 +22,6 @@
 # -----------------------------------------------------
 # Checkout a copy of our source code.
 
-    echo ""
     echo "Cloning source code"
 
     source "${HOME:?}/firethorn.settings"
