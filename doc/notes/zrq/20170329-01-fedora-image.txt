@@ -80,10 +80,101 @@
         --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-image.txt"
 
    #
-   # Delete the machine, leaving the image.
+   # Delete the virtual machine, leaving the image.
    virsh \
        --connect "${connection:?}" \
        undefine "${basename:?}"
+
+#---------------------------------------------------------------------
+# Check the file info.
+#[user@desktop] 
+
+    basepath=$(
+        virsh \
+            --connect "${connection:?}" \
+            vol-path \
+                --pool "${basepool:?}" \
+                "${basefile:?}"
+                )
+
+    sudo qemu-img \
+        info \
+            "${basepath:?}"
+
+        image: /var/lib/libvirt/images/base/fedora-25-base-32G-20170331.qcow
+        file format: qcow2
+        virtual size: 32G (34359738368 bytes)
+        disk size: 1.3G
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+#---------------------------------------------------------------------
+# Create a compressed copy of the image.
+#[user@desktop] 
+
+    basecopy=$(mktemp)
+    sudo qemu-img \
+        convert \
+            -c \
+            -O qcow2 \
+            "${basepath:?}" \
+            "${basecopy:?}"
+
+    sudo qemu-img \
+        info \
+            "${basecopy:?}"
+
+        image: /tmp/tmp.NbXDg6yaG4
+        file format: qcow2
+        virtual size: 32G (34359738368 bytes)
+        disk size: 506M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+#---------------------------------------------------------------------
+# Delete the original volume.
+#[user@desktop] 
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${basefile:?}"
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@desktop] 
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format qcow2
+
+#---------------------------------------------------------------------
+# Upload the compressed version.
+#[user@desktop] 
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${basefile:?}" \
+            "${basecopy:?}"
+
+#---------------------------------------------------------------------
+# Delete the compressed version.
+#[user@desktop] 
+
+    rm "${basecopy:?}"
 
 #---------------------------------------------------------------------
 # Create our docker install
@@ -126,27 +217,110 @@
         --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-docker.txt"
 
    #
-   # Delete the virtual machine.
+   # Delete the virtual machine, leaving the image.
    virsh \
        --connect "${connection:?}" \
        undefine "${dockname:?}"
 
 #---------------------------------------------------------------------
-#
-#
+# Check the file info.
+#[user@desktop] 
 
-    Compact the image ...
+    dockpath=$(
+        virsh \
+            --connect "${connection:?}" \
+            vol-path \
+                --pool "${basepool:?}" \
+                "${dockfile:?}"
+                )
 
+    sudo qemu-img \
+        info \
+            "${dockpath:?}"
 
+        image: /var/lib/libvirt/images/base/fedora-25-docker-32G-20170331.qcow
+        file format: qcow2
+        virtual size: 32G (34359738368 bytes)
+        disk size: 1.6G
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+#---------------------------------------------------------------------
+# Create a compressed copy of the image.
+#[user@desktop] 
+
+    dockcopy=$(mktemp)
+    sudo qemu-img \
+        convert \
+            -c \
+            -O qcow2 \
+            "${dockpath:?}" \
+            "${dockcopy:?}"
+
+    sudo qemu-img \
+        info \
+            "${dockcopy:?}"
+
+        image: /tmp/tmp.nsr3Ns62Vn
+        file format: qcow2
+        virtual size: 32G (34359738368 bytes)
+        disk size: 723M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+#---------------------------------------------------------------------
+# Delete the original volume.
+#[user@desktop] 
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${dockfile:?}"
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@desktop] 
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${dockfile:?}" \
+            "${docksize:?}" \
+            --format qcow2
+
+#---------------------------------------------------------------------
+# Upload the compressed version.
+#[user@desktop] 
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${dockfile:?}" \
+            "${dockcopy:?}"
+
+#---------------------------------------------------------------------
+# Delete the compressed version.
+#[user@desktop] 
+
+    rm "${dockcopy:?}"
 
 #---------------------------------------------------------------------
 # Push the base image to our webserver.
 #[user@desktop] 
 
     basepath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${basefile:?}")
-    basegzip=/tmp/${basefile:?}.gz
+    basegzip=$(mktmp)
 
-    sudo chmod a+r ${basepath:?}
+    sudo chmod a+r "${basepath:?}"
     
     gzip -c "${basepath:?}" > "${basegzip:?}"
 
@@ -154,15 +328,17 @@
         --stats \
         --progress \
         --human-readable \
-        ${basegzip:?} \
-        root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base
+        "${basegzip:?}" \
+        "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${basefile:?}.gz"
+
+    rm "${basegzip:?}"
 
 #---------------------------------------------------------------------
 # Push the docker image to our webserver.
 #[user@desktop] 
 
     dockpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${dockfile:?}")
-    dockgzip=/tmp/${dockfile:?}.gz
+    dockgzip=$(mktemp)
 
     sudo chmod a+r ${dockpath:?}
     
@@ -172,9 +348,10 @@
         --stats \
         --progress \
         --human-readable \
-        ${dockgzip:?} \
-        root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base
+        "${dockgzip:?}" \
+        "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${dockfile:?}.gz"
 
+    rm "${dockgzip:?}"
 
 #---------------------------------------------------------------------
 # Install the new image.
