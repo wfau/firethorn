@@ -140,6 +140,11 @@ dnf -y makecache fast
 dnf -y install docker-ce
 
 #
+# Install docker-compose from GitHub
+curl -s -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
+chmod +x /usr/bin/docker-compose
+
+#
 # Install the dockersock SELinux policy.
 # https://github.com/dpw/selinux-dockersock
 pushd $(mktemp -d)
@@ -150,9 +155,40 @@ pushd $(mktemp -d)
 popd
 
 #
-# Install docker-compose from GitHub
-curl -s -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
-chmod +x /usr/bin/docker-compose
+# Add the Stevedore user account. 
+useruid=1010
+username=Stevedore
+userhome=/home/${username:?}
+useradd \
+    --user-group \
+    --create-home \
+    --shell /bin/bash \
+    --uid ${useruid:?} \
+    --home-dir ${userhome:?} \
+    --groups users,docker,wheel \
+    ${username:?}
+
+#
+# Add the authorized keys. 
+cp \
+    /root/.ssh/authorized_keys \
+    ${userhome:?}/.ssh
+chown \
+    --recursive \
+    $(id Stevedore -u) \
+    ${userhome:?}/.ssh
+chgrp \
+    --recursive \
+    $(id Stevedore -g) \
+    ${userhome:?}/.ssh
+chmod \
+    g=,o=,u=rwx \
+    ${userhome:?}/.ssh
+chmod \
+    g=r,o=r,u=rw \
+    ${userhome:?}/.ssh/authorized_keys
+restorecon -r \
+    ${userhome:?}/.ssh
 
 #
 # Configure NTP server.
