@@ -18,7 +18,7 @@
 FROM firethorn/java:{BUILD_VERSION}
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV TOMCAT_VERSION 8.5.9
+ENV TOMCAT_VERSION 8.5.12
 
 ENV TOMCAT_USER tomcat
 ENV TOMCAT_ROOT /var/local/tomcat
