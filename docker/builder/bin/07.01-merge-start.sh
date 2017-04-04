@@ -20,43 +20,33 @@
 #
 
 # -----------------------------------------------------
-# Initialise our path.
+# Merge the changes into main.
 
-    PATH=${PATH}:/builder/bin
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
 
-# -----------------------------------------------------
-# Initialise our paths.
+        source 'bin/util.sh'
 
-    01.01-init.sh
-    
-# -----------------------------------------------------
-# Checkout a copy of our source code.
+        #
+        # Get the current branch
+        devbranch=$(hg branch)
 
-    02.01-checkout.sh
+        #
+        # Swap to the main branch and get the version.
+        hg update 'default'
+        oldversion=$(getversion)
 
-# -----------------------------------------------------
-# Set the build tag.
+        #
+        # Merge the dev branch.
+        message="Confirm merge [${devbranch:?}] into [default]"
+        confirm "${message:?}"
+        if [ $? -ne 0 ]
+        then
+            echo "EXIT : Cancelled"
+            exit 0
+        fi
 
-    03.01-buildtag.sh
+        hg merge "${devbranch:?}"
 
-# -----------------------------------------------------
-# Update our POM version.
-
-    03.02-versions.sh
-
-# -----------------------------------------------------
-# Build our base images.
-
-    04.01-buildbase.sh
-
-#---------------------------------------------------------------------
-# Compile our Java code.
-
-    05.01-javamaven.sh
-
-# -----------------------------------------------------
-# Build our Java containers.
-
-    05.02-javadocker.sh
-
+    popd
 

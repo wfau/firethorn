@@ -25,15 +25,14 @@
     echo "Building Docker containers"
 
     source "${HOME:?}/firethorn.settings"
-    source "${HOME:?}/build.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        export buildtag
+        export buildtag=$(getbuildtag)
+
         pushd firethorn-ogsadai/webapp
             mvn docker:package
         popd
 
-        export buildtag
         pushd firethorn-webapp
             mvn docker:package
         popd

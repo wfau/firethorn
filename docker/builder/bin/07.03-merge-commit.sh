@@ -20,21 +20,46 @@
 #
 
 # -----------------------------------------------------
-# Update the source code branch.
+# Commit the changes into main.
 
-cat > "${HOME:?}/build.settings" << EOF
-branch=${branch:=default}
-EOF
-
-    echo "Updating branch"
-    echo "  branch [${branch:?}]"
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
 
     source "${HOME:?}/firethorn.settings"
-    source "${HOME:?}/build.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        hg update "${branch:?}"
+        source 'bin/util.sh'
+
+        #
+        # Commit the merge.
+        message="Commit [$(getversion)]"
+        confirm "${message:?}"
+        if [ $? -ne 0 ]
+        then
+            echo "EXIT : Cancelled"
+            exit 0
+        fi
+
+        hg commit -m "${message:?}"
+
+        #
+        # Close the dev branch.
+        message="Close [branch-${devbranch:?}]"
+        confirm "${message:?}"
+        if [ $? -ne 0 ]
+        then
+            echo "EXIT : Cancelled"
+            exit 0
+        fi
+
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "${message:?}"
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
 
     popd
-
 

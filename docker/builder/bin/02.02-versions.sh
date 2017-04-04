@@ -19,17 +19,17 @@
 #
 #
 
-#---------------------------------------------------------------------
-# Compile our Java code.
-
-    echo "Building Java code"
+# -----------------------------------------------------
+# Update our Maven and Docker files.
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean install
+        source 'bin/util.sh'
+
+        pomversions "$(getbuildtag)"
+
+        dockerfiles "$(getbuildtag)"
 
     popd
-
-
 

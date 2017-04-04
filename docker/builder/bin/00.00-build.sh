@@ -20,26 +20,38 @@
 #
 
 # -----------------------------------------------------
-# Set the buildtag.
+# Initialise our path.
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+    PATH=${PATH}:/builder/bin
 
-        source bin/util.sh
+# -----------------------------------------------------
+# Initialise our paths.
 
-        if [[ -z "${branch}" || "${branch}" == 'default' ]]
-        then
-            buildtag=$(getversion)
-        else
-            buildtag=${branch:?}
-        fi
+    01.01-init.sh
+    
+# -----------------------------------------------------
+# Checkout a copy of our source code.
 
-    popd
+    02.01-checkout.sh
 
-    echo "Setting build tag"
-    echo "  buildtag [${buildtag:?}]"
+# -----------------------------------------------------
+# Update our POM version.
 
-cat > "${HOME:?}/build.settings" << EOF
-buildtag=${buildtag:?}
-EOF
+    02.02-versions.sh
+
+# -----------------------------------------------------
+# Build our base images.
+
+    04.01-buildbase.sh
+
+# -----------------------------------------------------
+# Compile our Java code.
+
+    05.01-javamaven.sh
+
+# -----------------------------------------------------
+# Build our Java containers.
+
+    05.02-javadocker.sh
+
 

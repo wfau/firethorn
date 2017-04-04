@@ -19,17 +19,25 @@
 #
 #
 
-#---------------------------------------------------------------------
-# Compile our Java code.
-
-    echo "Building Java code"
+# -----------------------------------------------------
+# Mark the current images as latest.
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean install
+        buildtag=$(getbuildtag)
 
     popd
 
+    docker tag "firethorn/fedora:${buildtag:?}"     "firethorn/fedora:latest"
+    docker tag "firethorn/java:${buildtag:?}"       "firethorn/java:latest"
+    docker tag "firethorn/tomcat:${buildtag:?}"     "firethorn/tomcat:latest"
+    docker tag "firethorn/ogsadai:${buildtag:?}"    "firethorn/ogsadai:latest"
+    docker tag "firethorn/firethorn:${buildtag:?}"  "firethorn/firethorn:latest"
 
+    docker tag "firethorn/postgres:${buildtag:?}"   "firethorn/postgres:latest"
+    docker tag "firethorn/builder:${buildtag:?}"    "firethorn/builder:latest"
+    docker tag "firethorn/tester:${buildtag:?}"     "firethorn/tester:latest"
+    docker tag "firethorn/sql-tunnel:${buildtag:?}" "firethorn/sql-tunnel:latest"
+    docker tag "firethorn/sql-proxy:${buildtag:?}"  "firethorn/sql-proxy:latest"
 

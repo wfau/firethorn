@@ -19,27 +19,17 @@
 #
 #
 
-# -----------------------------------------------------
-# Update our POM version.
+
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Maven repository.
 
     source "${HOME:?}/firethorn.settings"
-    source "${HOME:?}/build.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        source 'bin/util.sh'
-        pomversions "${buildtag:?}"
+        #
+        # Need credentials ...
+        #
 
     popd
 
-# -----------------------------------------------------
-# Generate our dockerfiles.
-
-    source "${HOME:?}/firethorn.settings"
-    source "${HOME:?}/build.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        dockerfiles "${buildtag:?}"
-
-    popd
 

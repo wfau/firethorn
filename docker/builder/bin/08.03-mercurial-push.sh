@@ -19,17 +19,17 @@
 #
 #
 
-#---------------------------------------------------------------------
-# Compile our Java code.
 
-    echo "Building Java code"
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Mercurial repository.
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn -P all clean install
+        #
+        # Need credentials ...
+        #
 
     popd
-
 
 

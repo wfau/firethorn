@@ -20,19 +20,42 @@
 #
 
 # -----------------------------------------------------
-# Build our base images.
+# Calculate the next (minor) version.
+newversion()
+    {
+    local pomfile=${1:-'pom.xml'}
 
-    echo "Building Docker images"
+    local versionhead=$(getversion "${pomfile:?}" | cut -d '-' -f '-1')
+    local versiontail=$(getversion "${pomfile:?}" | cut -d '-' -f '2-')
+
+    local versionmax=$(echo ${versionhead} | cut -d '.' -f 1)
+    local versionmid=$(echo ${versionhead} | cut -d '.' -f 2)
+    local versionmin=$(echo ${versionhead} | cut -d '.' -f 3)
+
+    echo "${versionmax}.${versionmid}.$((${versionmin} + 1))"
+
+    }
+
+# -----------------------------------------------------
+# Prompt the user, update our Maven and Docker files.
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        export buildtag=$(getbuildtag)
+        source 'bin/util.sh'
 
-        docker-compose \
-            --file docker/compose/images.yml \
-            build
+        newversion=$(newversion)
+
+        confirm "New version [${newversion:?}]"
+        if [ $? -ne 0 ]
+        then
+            echo "EXIT : Cancelled"
+            exit 0
+        fi
+
+        pomversions "${newversion:?}"
+
+        dockerfiles "${newversion:?}"
 
     popd
-
 
