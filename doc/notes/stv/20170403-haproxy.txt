@@ -1,0 +1,117 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+mkdir haproxy
+
+
+
+## Create Dockerfile
+
+cat > "haproxy/Dockerfile" << EOF
+
+FROM firethorn/ubuntu:14.04
+MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
+
+#
+# Install Python
+RUN apt-get -y update
+RUN apt-get install haproxy
+
+
+EXPOSE 80
+
+ADD haproxy.cfg /etc/haproxy/haproxy.cfg
+ADD haproxy /etc/default/haproxy
+
+CMD ["haproxy", "-f", "/etc/haproxy/haproxy.cfg"])
+
+
+EOF
+
+
+
+# Create HAProxy.cfg
+
+cat > "haproxy/haproxy.cfg" << EOF
+
+global
+   log 127.0.0.1 local0 notice
+   maxconn 2000
+   user haproxy
+   group haproxy
+
+defaults
+  log     global
+  mode    http
+  option  httplog
+  option  dontlognull
+  retries 3
+  option redispatch
+  timeout connect  5000
+  timeout client  10000
+  timeout server  10000
+
+frontend www-http
+    mode http
+    bind *:80
+    default_backend genius
+    stats enable
+    stats uri /haproxy?stats
+    stats auth admin:password
+    stats show-node
+
+backend genius
+  balance leastconn
+  option httpclose
+  option forwardfor
+  mode http
+  server lamp1 192.168.201.11:80 check
+
+EOF
+
+
+
+# Create HAProxy.cfg
+
+cat > "haproxy/haproxy" << EOF
+
+ENABLED=1
+
+EOF
+
+
+
+# Build HAProxy image
+
+docker build                 --tag firethorn/haproxy:2.1.8                haproxy
+
+
+# Run HAProxy image
+
+docker run -p 80:80 --name fireproxy  --memory 512M -d firethorn/haproxy:2.1.8
+
+
+
+
