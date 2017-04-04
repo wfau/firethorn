@@ -1,0 +1,189 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+I have a couple of questions about the 2.1 draft of the ADQL specification.
+
+The questions center around section xxx, covering coordinate systems.
+
+The current text for this section is as follows :
+
+    ----
+    As can also be seen in the following sections, all these functions
+    have arguments being a geometrical, a string and/or a numerical value
+    expression. When these values represent spherical coordinates the units
+    MUST be in degrees (square degrees for area). If the cartesian coordinate
+    system is used, the vector coordinates MUST be normalized.
+
+    Regarding the legal ranges, for spherical coordinates, these SHOULD be
+    [0, 360] and [-90, 90]. In a cartesian coordinate system, there are no
+    inherent limits apart from the already mentioned constraint that vectors
+    should be normalized.
+    It remains up to the service making use of ADQL to define the errors that
+    should be raised when using values outside these ranges.
+
+    For historical reasons, the geometry constructors (BOX, CIRCLE, POINT,
+    POLYGON) require a string-valued first argument. It was intended to carry
+    information on a reference system or other coordinate system metadata.
+    As of this version of the specification (2.1), this parameter has been
+    marked as deprecated. Services are permitted to ignore this parameter and
+    clients are advised to pass an empty string here. Future versions of this
+    specification may remove this parameter from the listed functions.
+    ----
+ 
+From what I understand, most of the current implementations plan on ignoring
+the string value coordinate system parameter.
+
+The assumption is that the system should be able to work out the correct
+coordinate system based on its local knowledge of the data.
+
+I was intending to suggest that we remove a lot of this text, particularly the
+bits about cartesian coordinates and the historical reasons for the
+string-valued first argument.
+
+However, a use case recently came to light where it is not possible for the
+system to determine the correct coordinate system to use. Requring us to keep
+the string-valued first argument for the geometry constructors.
+
+-------- --------
+
+Case 1)
+
+The ObsCore Sky region (s_region) is expressed in ICRS, but the user wants to find
+anything with galactic latitude between -10 and 10 :
+
+    SELECT
+        TOP 10 *
+    FROM
+        ivoa.ObsCore
+    WHERE
+        CONTAINS(s_region, CIRCLE(‘GALACTIC’, 0, -90, 80)) = 0
+    AND
+        CONTAINS(s_region, CIRCLE(‘GALACTIC’, 0, +90, 80)) = 0
+
+Case 2)
+
+The ObsCore Sky region (s_region) is expressed in ICRS, but the user wants to find solar
+system objects on a given (position, time) on the ecliptic:
+ 
+    SELECT
+        TOP 10 *
+    FROM
+        ivoa.ObsCore
+    WHERE
+        INTERSECTS(s_region, BOX(‘ECLIPTIC’, 152, 0, 25, 5))
+    AND
+        t_min BETWEEN 51234 AND 51264
+
+
+Case 3)
+
+A table contains 3 sets of coordinates in 3 different coordinate systems,
+and proper indexes have been built on each pair of coordinates:
+
+    SELECT
+        TOP 10 *
+    FROM
+        ivoa.ObsCore
+    WHERE
+        INTERSECTS(POINT('ECLIPTIC', ecl_lon, ecl_lat), BOX(‘ECLIPTIC’, 152, 0, 25, 5))
+    AND
+        t_min BETWEEN 51234 AND 51264
+
+
+In each case, the user is using literals to explicitly create geometric objects
+that have different coordinate systems to the data being queried.
+
+-------- --------
+
+Questions are
+
+1) Do we want to be able to support these use cases ?
+
+2) If so, does that mean we have to un-deprecate the coordinate system argument ?
+
+3) If we do re-instate the coordinate system argument, do we need to say something
+about how a system should respond if it is unable to perform a requested
+coordinate system transformation ?
+
+
+
+
+-------- --------
+
+At the October interop in Trieste it was decided that we would not
+put the ADQL specification forward for PR
+until we were able to validate the BNF description of the grammar
+included as an appendix in the document.
+
+To date we have not been able to make much progress
+developing a suitable method for validating
+the BNF description of the grammar.
+
+My concern is that requiring a strict machine validation
+of the grammar may end up delaying the specification indefinately.
+
+I would like to suggest we treat the text document and the 
+BNF description of the grammar as separate entities.
+
+
+
+
+We can progress the text document forward, completing
+a new draft and putting it forward for PR review.
+
+In the mean time, we can work on the technical
+validation of the language grammar as a separate project.
+
+We may still require the two parts to be re-combined
+before the whole specification is accepted.
+
+However, treating them as separate entities for now
+enables us to move forward.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
