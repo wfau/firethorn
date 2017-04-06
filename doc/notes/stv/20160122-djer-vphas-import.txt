@@ -71,12 +71,16 @@ EOF
 atlaspublic=${adqlschema:?}
 EOF
 
-
+         source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASDR3' 'dbo' "${FIRETHORN_META:?}/ATLASDR3_TablesSchema.xml"
+            cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
+atlaspublic=${adqlschema:?}
+EOF
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20131127' 'dbo' "${FIRETHORN_META:?}/ATLASv20131127_TablesSchema.xml"
             cat >> "${HOME:?}/firethorn.spaces.${datetime:?}" << EOF
 atlasprotected=${adqlschema:?}
 EOF
 
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VPHASv20170222'        'dbo' "${FIRETHORN_META:?}/VPHASv20170222_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VPHASv20160112'        'dbo' "${FIRETHORN_META:?}/VPHASv20160112_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR5'        'dbo' "${FIRETHORN_META:?}/BESTDR5_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR7'        'dbo' "${FIRETHORN_META:?}/BESTDR7_TablesSchema.xml"
