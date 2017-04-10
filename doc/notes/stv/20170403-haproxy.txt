@@ -81,6 +81,11 @@ frontend www-http
     stats uri /haproxy?stats
     stats auth admin:password
     stats show-node
+    acl host_tap hdr(host) -i osa.metagrid.xyz
+    acl host_genius hdr(host) -i genius.metagrid.xyz
+    # clusters
+    use_backend genius if host_genius
+    use_backend tap if host_tap
 
 backend genius
   balance leastconn
@@ -88,6 +93,14 @@ backend genius
   option forwardfor
   mode http
   server lamp1 192.168.201.11:80 check
+
+backend tap
+  balance leastconn
+  option httpclose
+  option forwardfor
+  mode http
+  server lamp1 192.168.201.12:80 check
+
 
 EOF
 
