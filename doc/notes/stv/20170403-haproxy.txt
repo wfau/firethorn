@@ -76,7 +76,6 @@ defaults
 frontend www-http
     mode http
     bind *:80
-    default_backend genius
     stats enable
     stats uri /haproxy?stats
     stats auth admin:password
