@@ -38,12 +38,18 @@ MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 # Install Python
 RUN apt-get -y update
 RUN apt-get install haproxy
+RUN apt-get install software-properties-common
+RUN add-apt-repository ppa:vbernat/haproxy-1.6
 
+RUN apt-get update
+RUN apt-get install haproxy
 
 EXPOSE 80
 
 ADD haproxy.cfg /etc/haproxy/haproxy.cfg
 ADD haproxy /etc/default/haproxy
+
+RUN export TERM=xterm	
 
 CMD ["haproxy", "-f", "/etc/haproxy/haproxy.cfg"])
 
@@ -55,9 +61,9 @@ EOF
 # Create HAProxy.cfg
 
 cat > "haproxy/haproxy.cfg" << EOF
-
 global
-   log 127.0.0.1 local0 notice
+   log /dev/log    local0
+   log /dev/log    local1 notice
    maxconn 2000
    user haproxy
    group haproxy
@@ -69,29 +75,32 @@ defaults
   option  dontlognull
   retries 3
   option redispatch
-  timeout connect  5000
-  timeout client  10000
-  timeout server  10000
+  timeout connect 5000
+  timeout client  50000
+  timeout server  50000
+  errorfile 400 /etc/haproxy/errors/400.http
+  errorfile 403 /etc/haproxy/errors/403.http
+  errorfile 408 /etc/haproxy/errors/408.http
+  errorfile 500 /etc/haproxy/errors/500.http
+  errorfile 502 /etc/haproxy/errors/502.http
+  errorfile 503 /etc/haproxy/errors/503.http
+  errorfile 504 /etc/haproxy/errors/504.http
 
 frontend www-http
     mode http
     bind *:80
-    stats enable
-    stats uri /haproxy?stats
-    stats auth admin:password
-    stats show-node
     acl host_tap hdr(host) -i osa.metagrid.xyz
     acl host_genius hdr(host) -i genius.metagrid.xyz
     # clusters
-    use_backend genius if host_genius
-    use_backend tap if host_tap
+    #use_backend genius if host_genius
+    #use_backend tap if host_tap
 
 backend genius
   balance leastconn
   option httpclose
   option forwardfor
   mode http
-  server lamp1 192.168.201.11:80 check
+  server lamp2 192.168.201.11:80 check
 
 backend tap
   balance leastconn
@@ -99,6 +108,8 @@ backend tap
   option forwardfor
   mode http
   server lamp1 192.168.201.12:80 check
+
+
 
 
 EOF
@@ -119,10 +130,11 @@ EOF
 
 docker build                 --tag firethorn/haproxy:2.1.8                haproxy
 
+proxylogs=/var/logs/fireproxy
 
 # Run HAProxy image
 
-docker run -p 80:80 --name fireproxy  --memory 512M -d firethorn/haproxy:2.1.8
+docker run -p 80:80 --name fireproxy      --volume "${proxylogs}:/var/log/syslog" --memory 512M -d firethorn/haproxy:2.1.8
 
 
 
