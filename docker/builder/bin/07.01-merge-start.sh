@@ -28,16 +28,23 @@
         source 'bin/util.sh'
 
         #
-        # Get the current branch
-        devbranch=$(hg branch)
+        # Get the current branch name.
+cat > "${HOME:?}/merge.settings" << EOF
+devbranch=$(hg branch)
+EOF
 
         #
         # Swap to the main branch and get the version.
         hg update 'default'
-        oldversion=$(getversion)
+
+cat > "${HOME:?}/merge.settings" << EOF
+oldversion=$(getversion)
+EOF
 
         #
         # Merge the dev branch.
+        source "${HOME:?}/merge.settings"
+
         message="Confirm merge [${devbranch:?}] into [default]"
         confirm "${message:?}"
         if [ $? -ne 0 ]

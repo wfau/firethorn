@@ -60,6 +60,45 @@
 # Build our containers.
 #[root@builder]
 
-#    /builder/bin/00.00-buildall.sh
+    /builder/bin/00.00-build.sh
+
+# -----------------------------------------------------
+# Merge our code into main.
+#[root@builder]
+
+    /builder/bin/07.01-merge-start.sh
+
+# -----------------------------------------------------
+# Update our version number.
+#[root@builder]
+
+    /builder/bin/07.02-version-step.sh
+
+
+# -----------------------------------------------------
+# Update our Mercurial config.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
     
+        vi .hg/hgrc
+
+            [paths]
+            default = ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+
+            [ui]
+            username = Dave Morris <dmr@roe.ac.uk>
+
+    popd
+
+# -----------------------------------------------------
+# Commit our merged code.
+#[root@builder]
+
+    /builder/bin/07.03-merge-commit.sh
+
+    
+
+
 

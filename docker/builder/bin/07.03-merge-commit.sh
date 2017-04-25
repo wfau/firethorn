@@ -30,14 +30,11 @@
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
+        source "${HOME:?}/merge.settings"
 
         #
-        # Get the new branch name.
-        newbranch=$(getversion)
-        
-        #
         # Commit the merge.
-        message="Commit merge [${newbranch:?}]"
+        message="Commit new version [${newversion:?}]"
         confirm "${message:?}"
         if [ $? -ne 0 ]
         then
@@ -49,7 +46,7 @@
 
         #
         # Close the old branch.
-        message="Close branch [${devbranch:?}]"
+        message="Close old version [${oldversion:?}]"
         confirm "${message:?}"
         if [ $? -ne 0 ]
         then
@@ -57,7 +54,7 @@
             exit 0
         fi
 
-        hg update "${devbranch:?}"
+        hg update "${oldversion:?}"
         hg commit --close-branch -m "${message:?}"
 
         #
