@@ -20,6 +20,11 @@
 #
 #
 
+    #
+    # Much of this gets replaced by Docker multi-stage build
+    # https://codefresh.io/blog/node_docker_multistage/
+    #
+
 # -----------------------------------------------------
 # Create a new VM.
 #[user@trop]
@@ -209,6 +214,9 @@
         ./bin/rsync-repo.sh
 
     popd
+
+
+
 
 
 
