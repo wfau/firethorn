@@ -74,7 +74,6 @@
 
     /builder/bin/07.02-version-step.sh
 
-
 # -----------------------------------------------------
 # Update our Mercurial config.
 #[root@builder]

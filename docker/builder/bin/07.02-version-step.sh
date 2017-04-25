@@ -54,7 +54,7 @@ newversion()
             exit 0
         fi
 
-cat > "${HOME:?}/merge.settings" << EOF
+cat >> "${HOME:?}/merge.settings" << EOF
 newversion=${newversion:?}
 EOF
 

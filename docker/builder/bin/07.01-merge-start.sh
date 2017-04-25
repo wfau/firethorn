@@ -37,7 +37,7 @@ EOF
         # Swap to the main branch and get the version.
         hg update 'default'
 
-cat > "${HOME:?}/merge.settings" << EOF
+cat >> "${HOME:?}/merge.settings" << EOF
 oldversion=$(getversion)
 EOF
 
