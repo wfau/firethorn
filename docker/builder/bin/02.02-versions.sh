@@ -26,10 +26,11 @@
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
+        export buildtag=$(getbuildtag)
 
-        pomversions "$(getbuildtag)"
+        pomversions "${buildtag:?}"
 
-        dockerfiles "$(getbuildtag)"
+        dockerfiles "${buildtag:?}"
 
     popd
 

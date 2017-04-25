@@ -27,8 +27,8 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        source bin/util.sh
-        export buildtag=$(getbuildtag:?)
+        source 'bin/util.sh'
+        export buildtag=$(getbuildtag)
 
         docker-compose \
             --file docker/compose/images.yml \

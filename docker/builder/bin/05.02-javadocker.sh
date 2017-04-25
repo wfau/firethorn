@@ -27,8 +27,8 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        source bin/util.sh
-        export buildtag=$(getbuildtag:?)
+        source 'bin/util.sh'
+        export buildtag=$(getbuildtag)
 
         pushd firethorn-ogsadai/webapp
             mvn docker:package
