@@ -20,12 +20,12 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Create our build directory.
-RUN mkdir /var/local/build
+RUN mkdir -p /var/local/build
 VOLUME /var/local/build
 
 #
 # Create our cache directory.
-RUN mkdir /var/local/cache
+RUN mkdir -p /var/local/cache
 VOLUME /var/local/cache
 
 #
@@ -72,7 +72,8 @@ RUN /tmp/maven-cache.sh
 
 #
 # Install our build scripts
-COPY bin/ /builder/bin 
+RUN mkdir -p  /builder
+COPY bin/     /builder/bin 
 RUN chmod a+x /builder/bin/*
 
 
