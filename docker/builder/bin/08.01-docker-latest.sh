@@ -22,22 +22,17 @@
 # -----------------------------------------------------
 # Mark the current images as latest.
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+    source "${HOME:?}/merge.settings"
 
-        buildtag=$(getbuildtag)
+    docker tag "firethorn/fedora:${newversion:?}"     "firethorn/fedora:latest"
+    docker tag "firethorn/java:${newversion:?}"       "firethorn/java:latest"
+    docker tag "firethorn/tomcat:${newversion:?}"     "firethorn/tomcat:latest"
+    docker tag "firethorn/ogsadai:${newversion:?}"    "firethorn/ogsadai:latest"
+    docker tag "firethorn/firethorn:${newversion:?}"  "firethorn/firethorn:latest"
 
-    popd
-
-    docker tag "firethorn/fedora:${buildtag:?}"     "firethorn/fedora:latest"
-    docker tag "firethorn/java:${buildtag:?}"       "firethorn/java:latest"
-    docker tag "firethorn/tomcat:${buildtag:?}"     "firethorn/tomcat:latest"
-    docker tag "firethorn/ogsadai:${buildtag:?}"    "firethorn/ogsadai:latest"
-    docker tag "firethorn/firethorn:${buildtag:?}"  "firethorn/firethorn:latest"
-
-    docker tag "firethorn/postgres:${buildtag:?}"   "firethorn/postgres:latest"
-    docker tag "firethorn/builder:${buildtag:?}"    "firethorn/builder:latest"
-    docker tag "firethorn/tester:${buildtag:?}"     "firethorn/tester:latest"
-    docker tag "firethorn/sql-tunnel:${buildtag:?}" "firethorn/sql-tunnel:latest"
-    docker tag "firethorn/sql-proxy:${buildtag:?}"  "firethorn/sql-proxy:latest"
+    docker tag "firethorn/postgres:${newversion:?}"   "firethorn/postgres:latest"
+    docker tag "firethorn/builder:${newversion:?}"    "firethorn/builder:latest"
+    docker tag "firethorn/tester:${newversion:?}"     "firethorn/tester:latest"
+    docker tag "firethorn/sql-tunnel:${newversion:?}" "firethorn/sql-tunnel:latest"
+    docker tag "firethorn/sql-proxy:${newversion:?}"  "firethorn/sql-proxy:latest"
 

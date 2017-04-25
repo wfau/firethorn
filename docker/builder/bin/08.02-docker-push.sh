@@ -23,12 +23,7 @@
 # -------------------------------------------------------------------------------------------
 # Push our containers to the Docker registry.
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        buildtag=$(getbuildtag)
-
-    popd
+    source "${HOME:?}/merge.settings"
 
     #
     # Issues with running push from inside a container ?
@@ -39,17 +34,17 @@
         --username $(secret docker.io.user) \
         --password $(secret docker.io.pass)
 
-    docker push "firethorn/fedora:${buildtag:?}"
-    docker push "firethorn/java:${buildtag:?}"
-    docker push "firethorn/tomcat:${buildtag:?}"
-    docker push "firethorn/ogsadai:${buildtag:?}"
-    docker push "firethorn/firethorn:${buildtag:?}"
+    docker push "firethorn/fedora:${newversion:?}"
+    docker push "firethorn/java:${newversion:?}"
+    docker push "firethorn/tomcat:${newversion:?}"
+    docker push "firethorn/ogsadai:${newversion:?}"
+    docker push "firethorn/firethorn:${newversion:?}"
 
-    docker push "firethorn/builder:${buildtag:?}"
-    docker push "firethorn/tester:${buildtag:?}"
-    docker push "firethorn/postgres:${buildtag:?}"
-    docker push "firethorn/sql-tunnel:${buildtag:?}"
-    docker push "firethorn/sql-proxy:${buildtag:?}"
+    docker push "firethorn/builder:${newversion:?}"
+    docker push "firethorn/tester:${newversion:?}"
+    docker push "firethorn/postgres:${newversion:?}"
+    docker push "firethorn/sql-tunnel:${newversion:?}"
+    docker push "firethorn/sql-proxy:${newversion:?}"
 
     docker push "firethorn/fedora:latest"
     docker push "firethorn/java:latest"

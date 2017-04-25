@@ -62,6 +62,18 @@
 
     /builder/bin/00.00-build.sh
 
+
+
+
+
+
+
+
+
+
+
+
+
 # -----------------------------------------------------
 # Merge our code into main.
 #[root@builder]
@@ -73,6 +85,27 @@
 #[root@builder]
 
     /builder/bin/07.02-version-step.sh
+
+# -----------------------------------------------------
+# Build our base images.
+
+    /builder/bin/04.01-buildbase.sh
+
+# -----------------------------------------------------
+# Compile our Java code.
+
+    /builder/bin/05.01-javamaven.sh
+
+# -----------------------------------------------------
+# Build our Java containers.
+
+    /builder/bin/05.02-javadocker.sh
+
+# -----------------------------------------------------
+# Test our containers ...
+
+
+
 
 # -----------------------------------------------------
 # Update our Mercurial config.
@@ -97,7 +130,22 @@
 
     /builder/bin/07.03-merge-commit.sh
 
-    
+# -----------------------------------------------------
+# Tag our new images
+#[root@builder]
+
+    /builder/bin/08.01-docker-latest.sh
+
+# -----------------------------------------------------
+# Push our new images
+#[root@builder]
+
+    /builder/bin/08.02-docker-push.sh
+
+
+
+
+
 
 
 
