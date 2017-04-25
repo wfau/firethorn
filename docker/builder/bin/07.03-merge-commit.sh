@@ -32,8 +32,12 @@
         source 'bin/util.sh'
 
         #
+        # Get the current branch name.
+        devbranch=$(getversion)
+        
+        #
         # Commit the merge.
-        message="Commit [$(getversion)]"
+        message="Commit merge [${devbranch:?}]"
         confirm "${message:?}"
         if [ $? -ne 0 ]
         then
@@ -45,7 +49,7 @@
 
         #
         # Close the dev branch.
-        message="Close [branch-${devbranch:?}]"
+        message="Close branch [${devbranch:?}]"
         confirm "${message:?}"
         if [ $? -ne 0 ]
         then
