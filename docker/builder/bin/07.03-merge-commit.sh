@@ -46,7 +46,7 @@
 
         #
         # Close the old branch.
-        message="Close old version [${oldversion:?}]"
+        message="Close dev branch [${devbranch:?}]"
         confirm "${message:?}"
         if [ $? -ne 0 ]
         then
@@ -54,7 +54,7 @@
             exit 0
         fi
 
-        hg update "${oldversion:?}"
+        hg update "${devbranch:?}"
         hg commit --close-branch -m "${message:?}"
 
         #
