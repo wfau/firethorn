@@ -14,7 +14,7 @@ services:
 
     builder:
         image:
-            "firethorn/builder:2.1.8"
+            "firethorn/builder:2.1.9"
         tty:
             true
         stdin_open:

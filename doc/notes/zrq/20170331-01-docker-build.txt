@@ -59,57 +59,82 @@
 # -----------------------------------------------------
 # Build our containers.
 #[root@builder]
-
-    /builder/bin/00.00-build.sh
-
-
-
-
-
-
-
-
+#
+#   /builder/bin/00.00-build.sh
+#
+#
 
 
 
 
 
 # -----------------------------------------------------
-# Merge our code into main.
+# Initialise our path.
 #[root@builder]
 
-    /builder/bin/07.01-merge-start.sh
+    PATH=${PATH}:/builder/bin
+
+# -----------------------------------------------------
+# Initialise our paths.
+#[root@builder]
+
+    01.01-init.sh
+    
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+#[root@builder]
+
+    02.01-checkout.sh
+
+# -----------------------------------------------------
+# Merge our branch into main.
+#[root@builder]
+
+    07.01-merge-start.sh
 
 # -----------------------------------------------------
 # Update our version number.
 #[root@builder]
 
-    /builder/bin/07.02-version-step.sh
+    07.02-version-step.sh
 
 # -----------------------------------------------------
 # Build our base images.
 
-    /builder/bin/04.01-buildbase.sh
+    04.01-buildbase.sh
 
 # -----------------------------------------------------
 # Compile our Java code.
 
-    /builder/bin/05.01-javamaven.sh
+    05.01-javamaven.sh
 
 # -----------------------------------------------------
 # Build our Java containers.
 
-    /builder/bin/05.02-javadocker.sh
+    05.02-javadocker.sh
 
 # -----------------------------------------------------
 # Test our containers ...
 
 
+# -----------------------------------------------------
+# Add our secret function.
+#[root@builder]
 
+    vi "${HOME:?}/secret.sh"
+
+        ....
+       
+    secret 'test'
 
 # -----------------------------------------------------
 # Update our Mercurial config.
 #[root@builder]
+
+    hgport=22
+    hguser=Zarquan
+    hghost=data.metagrid.co.uk
+    hgpath=/var/local/wfau/projects/firethorn/code
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -117,10 +142,11 @@
         vi .hg/hgrc
 
             [paths]
-            default = ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+            default   = http://wfau.metagrid.co.uk/code/firethorn
+        +   push-repo = ssh://${hguser:?}@${hghost:?}/${hgpath:?}
 
             [ui]
-            username = Dave Morris <dmr@roe.ac.uk>
+        +   username = Dave Morris <dmr@roe.ac.uk>
 
     popd
 
@@ -128,20 +154,61 @@
 # Commit our merged code.
 #[root@builder]
 
-    /builder/bin/07.03-merge-commit.sh
+    07.03-merge-commit.sh
+
+# -----------------------------------------------------
+# Push our merged code
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        
+        message="Push version [$(getversion)]"
+        confirm "${message:?}"
+        if [ $? -ne 0 ]
+        then
+            echo "EXIT : Cancelled"
+            exit 0
+        fi
+
+        hg push 'push-repo'
+
+    popd
 
 # -----------------------------------------------------
 # Tag our new images
 #[root@builder]
 
-    /builder/bin/08.01-docker-latest.sh
+    08.01-docker-latest.sh
 
 # -----------------------------------------------------
 # Push our new images
 #[root@builder]
 
-    /builder/bin/08.02-docker-push.sh
+    08.02-docker-push.sh
 
+# -----------------------------------------------------
+# Push our new libraries.
+#[root@builder]
+
+    mvnport=22
+    mvnuser=Zarquan
+    mvnhost=data.metagrid.co.uk
+    mvnpath=/var/local/websites/data/wfau/maven/firethorn
+    mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
+
+    mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export mvnrepo
+        export mvnlocal
+        ./bin/rsync-repo.sh
+
+    popd
 
 
 

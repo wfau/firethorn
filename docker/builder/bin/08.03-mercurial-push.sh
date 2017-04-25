@@ -26,9 +26,17 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        #
-        # Need credentials ...
-        #
+        source 'bin/util.sh'
+        
+        message="Push version [$(getversion)]"
+        confirm "${message:?}"
+        if [ $? -ne 0 ]
+        then
+            echo "EXIT : Cancelled"
+            exit 0
+        fi
+
+        hg push
 
     popd
 

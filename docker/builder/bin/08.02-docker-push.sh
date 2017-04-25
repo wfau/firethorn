@@ -23,6 +23,7 @@
 # -------------------------------------------------------------------------------------------
 # Push our containers to the Docker registry.
 
+    source "${HOME:?}/secret.sh"
     source "${HOME:?}/merge.settings"
 
     #
