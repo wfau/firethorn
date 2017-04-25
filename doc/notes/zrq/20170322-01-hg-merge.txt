@@ -26,6 +26,7 @@
 
     newversion=2.1.7
     newversion=2.1.8
+    newversion=2.1.9
 
 # -----------------------------------------------------
 # Merge the changes into main.
@@ -223,13 +224,9 @@
     # ONLY DO THIS IF THE TESTS PASS
     #
 
-    docker login
-
-        Username: xxxx
-        Password: yyyy
-        Email:    zzzz
-        Login Succeeded
-
+    docker login \
+        --username $(secret docker.io.user) \
+        --password $(secret docker.io.pass)
 
     docker push "firethorn/fedora:${buildtag:?}"
     docker push "firethorn/java:${buildtag:?}"

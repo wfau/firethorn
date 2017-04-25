@@ -20,20 +20,14 @@
 #
 
 # -----------------------------------------------------
-# Build our base images.
+# Update the Maven cache path.
 
-    echo "Building Docker images"
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        export buildtag=$(getbuildtag)
-
-        docker-compose \
-            --file docker/compose/images.yml \
-            build
-
-    popd
-
+    sed -i '
+        /^[[:space:]]*<!-- localRepository/,/^[[:space:]]*-->/{
+            /^[[:space:]]*-->/{
+                a\
+  <localRepository>/var/local/cache/maven</localRepository>
+                }
+            }
+        ' /etc/maven/settings.xml
 

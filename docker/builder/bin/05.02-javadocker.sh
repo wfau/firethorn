@@ -22,15 +22,18 @@
 # -----------------------------------------------------
 # Build our Java containers.
 
+    echo "Building Docker containers"
+
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        export buildtag
+        source 'bin/util.sh'
+        export buildtag=$(getbuildtag)
+
         pushd firethorn-ogsadai/webapp
             mvn docker:package
         popd
 
-        export buildtag
         pushd firethorn-webapp
             mvn docker:package
         popd

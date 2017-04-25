@@ -20,20 +20,12 @@
 #
 
 # -----------------------------------------------------
-# Build our base images.
+# Display our container images.
 
-    echo "Building Docker images"
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        export buildtag=$(getbuildtag)
-
-        docker-compose \
-            --file docker/compose/images.yml \
-            build
-
-    popd
-
+    docker \
+        run -it \
+            --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            nate/dockviz \
+            images --tree
 

@@ -73,56 +73,12 @@
     export branch
     docker-compose \
         --file "builder.yml" \
-        --project ${instance:?} \
         run builder 
 
 # -----------------------------------------------------
-# Initialise our paths.
+# Build our containers.
 #[root@builder]
 
-    source 01.01-init.sh
+    source /builder/bin/00.00-buildall.sh
     
-# -----------------------------------------------------
-# Checkout a copy of our source code.
-#[root@builder]
-
-    source 02.01-checkout.sh
-
-# -----------------------------------------------------
-# Set the build tag.
-#[root@builder]
-
-    source 03.01-buildtag.sh
-
-# -----------------------------------------------------
-# Update our POM version.
-#[root@builder]
-
-    source 03.02-versions.sh
-
-# -----------------------------------------------------
-# Build our base images.
-#[root@builder]
-
-    source 04.01-buildbase.sh
-
-#---------------------------------------------------------------------
-# Compile our Java code.
-#[root@builder]
-
-    source 05.01-javamaven.sh
-
-# -----------------------------------------------------
-# Build our Java containers.
-#[root@builder]
-
-    source 05.02-javadocker.sh
-
-# -----------------------------------------------------
-# Display our container images.
-#[root@builder]
-
-    alias dockviz="docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz"
-
-    dockviz images --tree
 

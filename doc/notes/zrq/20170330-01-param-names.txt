@@ -1,0 +1,46 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    ** REMOVE urn:jdbc.copy.depth
+
+    ** REMOVE adql.copy.depth
+    ** CHANGE adql.resource.create.name adql.resource.name
+
+    ** CHANGE jdbc.resource.schema.select.catalog jdbc.schema.catalog
+    ** CHANGE jdbc.resource.schema.select.schema  jdbc.schema.schema
+
+    ** REPLACE urn:schema.metadoc.base schema.metadoc.base
+    ** REPLACE urn:schema.metadoc.file schema.metadoc.file
+
+    ** CHANGE adql.schema.table.select.name adql.table.name
+    ** CHANGE adql.schema.table.import.base adql.table.base
+
+    ** CHANGE adql.resource.schema.select.name  adql.schema.name
+    ** CHANGE adql.resource.schema.import.name  adql.schema.name
+
+    ** CHANGE adql.resource.schema.import.base  adql.schema.base
+
+    ** CHANGE urn:adql.copy.depth adql.copy.depth
+
+    ** CHANGE ivoa.resource.schema.name ivoa.schema.name
+

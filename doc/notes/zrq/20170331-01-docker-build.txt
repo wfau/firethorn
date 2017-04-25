@@ -1,0 +1,151 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-25-docker-32G-20170331.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-32G-20170331.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [32GiB]
+
+    ssh Stevedore@Araybwyn
+
+# -----------------------------------------------------
+# Download our compose file
+#[user@virtual]
+     
+    wget -O builder.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.8-zrq-fedora-image
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    docker-compose \
+        --file "builder.yml" \
+        run builder 
+
+# -----------------------------------------------------
+# Build our containers.
+#[root@builder]
+
+    /builder/bin/00.00-build.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Merge our code into main.
+#[root@builder]
+
+    /builder/bin/07.01-merge-start.sh
+
+# -----------------------------------------------------
+# Update our version number.
+#[root@builder]
+
+    /builder/bin/07.02-version-step.sh
+
+# -----------------------------------------------------
+# Build our base images.
+
+    /builder/bin/04.01-buildbase.sh
+
+# -----------------------------------------------------
+# Compile our Java code.
+
+    /builder/bin/05.01-javamaven.sh
+
+# -----------------------------------------------------
+# Build our Java containers.
+
+    /builder/bin/05.02-javadocker.sh
+
+# -----------------------------------------------------
+# Test our containers ...
+
+
+
+
+# -----------------------------------------------------
+# Update our Mercurial config.
+#[root@builder]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+    
+        vi .hg/hgrc
+
+            [paths]
+            default = ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+
+            [ui]
+            username = Dave Morris <dmr@roe.ac.uk>
+
+    popd
+
+# -----------------------------------------------------
+# Commit our merged code.
+#[root@builder]
+
+    /builder/bin/07.03-merge-commit.sh
+
+# -----------------------------------------------------
+# Tag our new images
+#[root@builder]
+
+    /builder/bin/08.01-docker-latest.sh
+
+# -----------------------------------------------------
+# Push our new images
+#[root@builder]
+
+    /builder/bin/08.02-docker-push.sh
+
+
+
+
+
+
+
+

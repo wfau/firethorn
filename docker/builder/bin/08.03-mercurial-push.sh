@@ -19,20 +19,16 @@
 #
 #
 
-# -----------------------------------------------------
-# Build our base images.
 
-    echo "Building Docker images"
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Mercurial repository.
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        source 'bin/util.sh'
-        export buildtag=$(getbuildtag)
-
-        docker-compose \
-            --file docker/compose/images.yml \
-            build
+        #
+        # Need credentials ...
+        #
 
     popd
 

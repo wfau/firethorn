@@ -20,12 +20,12 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Create our build directory.
-RUN mkdir /var/local/build
+RUN mkdir -p /var/local/build
 VOLUME /var/local/build
 
 #
 # Create our cache directory.
-RUN mkdir /var/local/cache
+RUN mkdir -p /var/local/cache
 VOLUME /var/local/cache
 
 #
@@ -39,12 +39,13 @@ RUN dnf -y install bind-utils
 #RUN dnf -y install docker-compose
 
 #
-# Install Docker engine from the Docker YUM repository.
+# Install Docker CE from the Docker repository.
 RUN dnf -y install dnf-plugins-core
-RUN dnf config-manager \
+RUN dnf -y config-manager \
     --add-repo \
-    https://docs.docker.com/engine/installation/linux/repo_files/fedora/docker.repo
-RUN dnf -y install docker-engine
+    https://download.docker.com/linux/fedora/docker-ce.repo
+RUN dnf -y makecache fast
+RUN dnf -y install docker-ce
 
 #
 # Install Docker compose from GitHub.
@@ -65,7 +66,14 @@ RUN dnf -y install java-1.8.0-openjdk-headless
 #
 # Install Maven
 RUN dnf -y install maven
-COPY settings.xml /root/.m2/settings.xml
+COPY maven-cache.sh /tmp 
+RUN chmod a+x /tmp/maven-cache.sh
+RUN /tmp/maven-cache.sh
 
+#
+# Install our build scripts
+RUN mkdir -p  /builder
+COPY bin/     /builder/bin 
+RUN chmod a+x /builder/bin/*
 
 

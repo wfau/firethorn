@@ -19,20 +19,17 @@
 #
 #
 
-# -----------------------------------------------------
-# Set the buildtag.
+
+# -------------------------------------------------------------------------------------------
+# Push our changes to our Maven repository.
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        source bin/util.sh
-
-        if [ -n "${branch}" ]
-        then
-            buildtag=${branch:?}
-        else
-            buildtag=$(getversion)
-        fi
+        #
+        # Need credentials ...
+        #
 
     popd
+
 

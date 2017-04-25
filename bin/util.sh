@@ -16,7 +16,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+#
+# Confirm an action.
+confirm()
+    {
+    local message=${1:-Ok}  
+    local response  
+    read -p "${message} (Y/n)" response
+    case ${response:-'y'} in
+        y|Y)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+    }
+    
 #
 # Get the current version.
 getversion()
@@ -63,6 +79,17 @@ setversion()
 
     }
 
+#
+# Get the buildtag.
+getbuildtag()
+    {
+    if [[ "$(hg branch)" == 'default' ]]
+    then
+        getversion
+    else
+        hg branch
+    fi
+    }
 
 #
 # Set all the POM versions.
@@ -87,7 +114,7 @@ pomversion()
     local version=${1:?}
     local pomfile=${2:-'pom.xml'}
 
-    echo "Maven POM [${pomfile:?}]"
+    echo "Maven POM  [${version:?}][${pomfile:?}]"
 
     if [ -d "${pomfile:?}" ]
     then
@@ -125,7 +152,7 @@ dockerfile()
 
     dockfile="$(dirname ${docktemp:?})/Dockerfile"
 
-    echo "Dockerfile [${dockfile:?}]"
+    echo "Dockerfile  [${version:?}][${dockfile:?}]"
 
     sed '
         s/{BUILD_VERSION}/'${version:?}'/g

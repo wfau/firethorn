@@ -20,20 +20,40 @@
 #
 
 # -----------------------------------------------------
-# Build our base images.
-
-    echo "Building Docker images"
+# Merge the changes into main.
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
-        export buildtag=$(getbuildtag)
 
-        docker-compose \
-            --file docker/compose/images.yml \
-            build
+        #
+        # Get the current branch name.
+cat > "${HOME:?}/merge.settings" << EOF
+devbranch=$(hg branch)
+EOF
+
+        #
+        # Swap to the main branch and get the version.
+        hg update 'default'
+
+cat >> "${HOME:?}/merge.settings" << EOF
+oldversion=$(getversion)
+EOF
+
+        #
+        # Merge the dev branch.
+        source "${HOME:?}/merge.settings"
+
+        message="Confirm merge [${devbranch:?}] into [default]"
+        confirm "${message:?}"
+        if [ $? -ne 0 ]
+        then
+            echo "EXIT : Cancelled"
+            exit 0
+        fi
+
+        hg merge "${devbranch:?}"
 
     popd
-
 

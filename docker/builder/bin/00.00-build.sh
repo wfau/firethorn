@@ -20,17 +20,38 @@
 #
 
 # -----------------------------------------------------
-# Update our path.
+# Initialise our path.
 
-    source /etc/bashrc
+    PATH=${PATH}:/builder/bin
 
 # -----------------------------------------------------
-# Configure our source path.
+# Initialise our paths.
 
-    if [ ! -e "${HOME:?}/firethorn.settings" ]
-    then
-        cat > "${HOME:?}/firethorn.settings" << EOF
-FIRETHORN_CODE=/var/local/build/firethorn
-EOF
-    fi
+    01.01-init.sh
+    
+# -----------------------------------------------------
+# Checkout a copy of our source code.
+
+    02.01-checkout.sh
+
+# -----------------------------------------------------
+# Update our POM version.
+
+    02.02-versions.sh
+
+# -----------------------------------------------------
+# Build our base images.
+
+    04.01-buildbase.sh
+
+# -----------------------------------------------------
+# Compile our Java code.
+
+    05.01-javamaven.sh
+
+# -----------------------------------------------------
+# Build our Java containers.
+
+    05.02-javadocker.sh
+
 

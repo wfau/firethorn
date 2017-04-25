@@ -27,7 +27,7 @@ install
 url  --mirrorlist "http://mirrors.fedoraproject.org/mirrorlist?repo=fedora-$releasever&arch=$basearch"
 repo --name fedora
 repo --name updates
-repo --name docker --install --baseurl "https://yum.dockerproject.org/repo/main/fedora/$releasever/"
+repo --name docker --baseurl "https://download.docker.com/linux/fedora/$releasever/$basearch/stable"
 
 zerombr
 bootloader --location=mbr --boot-drive=vda
@@ -63,8 +63,9 @@ sshkey --username root "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAqLgL7ClCX68Yr0HzwK1p
 
 #
 # Stevedore user account.
-# user --name Stevedore --password NO-PASSWORD --iscrypted --shell bash --uid 1010 --gid 1010 --groups users,wheel,docker
-# ... keys
+# https://bugzilla.redhat.com/show_bug.cgi?id=1316816
+#user --name Stevedore --password NO-PASSWORD --iscrypted --shell bash --uid 1010 --gid 1010 --groups users,wheel,docker
+#sshkey --username Stevedore "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDCRRTQ9UK4kDGdBQPHRqe5p3jiADCxtiFschsXsoaIa5QNMnYKSCbA4t98vKrFAaB+oiBdjCE4uHh0Y3gpxKaqQ/Io39hXXNn89IZctbyvf94lWhFUWW48svLj3myqqTIbyc/kOckqBOC/hJW0xPGgoAOEjonnfJGJy5M+wqC/1y5S2/12Q+f1OYBAV9gIhJRRF7+hVrehhY8XmmSYkdotx1gWfA9uSjEqW4QFf00p/ZKJy7110Mxb6YIc3io5YPkB657wEn6ieZIYBsO9Vnq4k8XbJSDe+r1s+2h2yUJDYCqhrDakJjAx39aZITB0QmDN9nOMCj/DtrD8rMEAsdCz4Ws7wLxK0sie0/GGVRHxl/TzXnludo3YqbQumnHsm4LWo4YG9q8BbdX59+wK1n/7+LrzKIWy3M8b+3wQfJ8DyydsIA/gfzUvHh6oez/nTm36zFBWS1Lq61KWkjlCAO13WbCY5hw3i192FsnsXsAqcF3pLYrON/NaUm+kJRJAJAgSa7pAcHtRNS1RSXxnOgTFGP4nOPbwbPmFJg9qqY8J2BAIr4CXFLmiVxb0J4KD4ixqaSVVtL0c8rXzjy5fRfmLoHe90YXwMdFrmK3kXtsASFD5WlF+AsjAZMbf2zWDpJk3nF6TFgpiNFxNkpDAN7KIjblWKkQefnPto27UB/7Rbw== dmr@roe.ac.uk"
 
 %packages
 
@@ -101,8 +102,8 @@ ntp
 haveged
 
 # Docker tools
-docker-engine
-docker-compose
+#docker-engine
+#docker-compose
 
 # Required for selinux-dockersock 
 checkpolicy
@@ -125,11 +126,23 @@ sed -i '
     ' /etc/ssh/sshd_config 
 
 #
-# Add GPG key to the Docker repo.
-cat >> /etc/yum.repos.d/docker.repo << EOF
-gpgcheck=1
-gpgkey=https://yum.dockerproject.org/gpg
-EOF
+# Add the Docker CE repo.
+dnf -y config-manager \
+    --add-repo \
+    https://download.docker.com/linux/fedora/docker-ce.repo
+
+#
+# Update the cache.
+dnf -y makecache fast
+
+#
+# Install docker CE.
+dnf -y install docker-ce
+
+#
+# Install docker-compose from GitHub
+curl -s -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/bin/docker-compose
+chmod +x /usr/bin/docker-compose
 
 #
 # Install the dockersock SELinux policy.
@@ -140,6 +153,45 @@ pushd $(mktemp -d)
   semodule_package -m dockersock.mod -o dockersock.pp
   semodule -i dockersock.pp
 popd
+
+#
+# Add the Stevedore user account. 
+useruid=1010
+username=Stevedore
+userhome=/home/${username:?}
+useradd \
+    --user-group \
+    --create-home \
+    --shell /bin/bash \
+    --uid ${useruid:?} \
+    --home-dir ${userhome:?} \
+    --groups users,docker,wheel \
+    ${username:?}
+
+#
+# Copy authorized keys from root. 
+mkdir \
+    ${userhome:?}/.ssh
+cp -n \
+    /root/.ssh/authorized_keys \
+    ${userhome:?}/.ssh/authorized_keys
+
+chmod \
+    g=,o=,u=rwx \
+    ${userhome:?}/.ssh
+chmod \
+    g=r,o=r,u=rw \
+    ${userhome:?}/.ssh/authorized_keys
+
+chown -R \
+    $(id ${username:?} -u) \
+    ${userhome:?}/.ssh
+chgrp -R \
+    $(id ${username:?} -g) \
+    ${userhome:?}/.ssh
+
+restorecon -r \
+    ${userhome:?}/.ssh
 
 #
 # Configure NTP server.

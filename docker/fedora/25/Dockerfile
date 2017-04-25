@@ -19,6 +19,11 @@ FROM fedora:25
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
+# Mount the DNF cache as a volume.
+# TODO - check for side effects ? 
+# VOLUME /var/cache/dnf
+
+#
 # Install common admin tools.
 RUN dnf install -y sed
 RUN dnf install -y tar

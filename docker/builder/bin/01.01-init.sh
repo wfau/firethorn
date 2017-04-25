@@ -20,20 +20,14 @@
 #
 
 # -----------------------------------------------------
-# Build our base images.
+# Configure our source path.
 
-    echo "Building Docker images"
+    echo "Initialising settings"
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        export buildtag=$(getbuildtag)
-
-        docker-compose \
-            --file docker/compose/images.yml \
-            build
-
-    popd
-
+    if [ ! -e "${HOME:?}/firethorn.settings" ]
+    then
+        cat > "${HOME:?}/firethorn.settings" << EOF
+FIRETHORN_CODE=/var/local/build/firethorn
+EOF
+    fi
 

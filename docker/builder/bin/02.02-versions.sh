@@ -20,9 +20,7 @@
 #
 
 # -----------------------------------------------------
-# Build our base images.
-
-    echo "Building Docker images"
+# Update our Maven and Docker files.
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -30,10 +28,9 @@
         source 'bin/util.sh'
         export buildtag=$(getbuildtag)
 
-        docker-compose \
-            --file docker/compose/images.yml \
-            build
+        pomversions "${buildtag:?}"
+
+        dockerfiles "${buildtag:?}"
 
     popd
-
 

@@ -20,20 +20,47 @@
 #
 
 # -----------------------------------------------------
-# Build our base images.
+# Commit the changes into main.
 
-    echo "Building Docker images"
+    #
+    # ONLY DO THIS IF THE TESTS PASS
+    #
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
-        export buildtag=$(getbuildtag)
+        source "${HOME:?}/merge.settings"
 
-        docker-compose \
-            --file docker/compose/images.yml \
-            build
+        #
+        # Commit the merge.
+        message="Commit new version [${newversion:?}]"
+        confirm "${message:?}"
+        if [ $? -ne 0 ]
+        then
+            echo "EXIT : Cancelled"
+            exit 0
+        fi
+
+        hg commit -m "${message:?}"
+
+        #
+        # Close the old branch.
+        message="Close dev branch [${devbranch:?}]"
+        confirm "${message:?}"
+        if [ $? -ne 0 ]
+        then
+            echo "EXIT : Cancelled"
+            exit 0
+        fi
+
+        hg update "${devbranch:?}"
+        hg commit --close-branch -m "${message:?}"
+
+        #
+        # Update the main tag.
+        hg update 'default'
+        hg tag -f "version-$(getversion)"
 
     popd
-
 

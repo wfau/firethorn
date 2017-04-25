@@ -20,24 +20,19 @@
 #
 
 # -----------------------------------------------------
-# Update our POM version.
+# Mark the current images as latest.
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+    source "${HOME:?}/merge.settings"
 
-        source 'bin/util.sh'
-        pomversions "${buildtag:?}"
+    docker tag "firethorn/fedora:${newversion:?}"     "firethorn/fedora:latest"
+    docker tag "firethorn/java:${newversion:?}"       "firethorn/java:latest"
+    docker tag "firethorn/tomcat:${newversion:?}"     "firethorn/tomcat:latest"
+    docker tag "firethorn/ogsadai:${newversion:?}"    "firethorn/ogsadai:latest"
+    docker tag "firethorn/firethorn:${newversion:?}"  "firethorn/firethorn:latest"
 
-    popd
-
-# -----------------------------------------------------
-# Generate our dockerfiles.
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        source 'bin/util.sh'
-        dockerfiles "${buildtag:?}"
-
-    popd
+    docker tag "firethorn/postgres:${newversion:?}"   "firethorn/postgres:latest"
+    docker tag "firethorn/builder:${newversion:?}"    "firethorn/builder:latest"
+    docker tag "firethorn/tester:${newversion:?}"     "firethorn/tester:latest"
+    docker tag "firethorn/sql-tunnel:${newversion:?}" "firethorn/sql-tunnel:latest"
+    docker tag "firethorn/sql-proxy:${newversion:?}"  "firethorn/sql-proxy:latest"
 
