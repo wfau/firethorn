@@ -1,0 +1,2208 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+MYSQL BENCHMARK
+---------------
+
+
+mysql_test_dbserver=129.215.175.51
+mysql_test_database=LSSTtest
+
+## Logs
+2017-04-19 05:05:32,105 - root - INFO - Starting MySQL query :::2017-04-19 05:05:32
+2017-04-19 05:05:32,111 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:32,111 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:32,116 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:32,116 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:32,130 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:32,130 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:52,236 - root - INFO - Completed MySQL query :::2017-04-19 05:05:52
+2017-04-19 05:05:52,236 - root - INFO - MySQL Query: 104 row(s) returned. 
+2017-04-19 05:05:52,236 - root - INFO - 
+2017-04-19 05:05:52,236 - root - INFO - Starting SQL Server query :::2017-04-19 05:05:52
+2017-04-19 05:05:53,119 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:53,120 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:53,142 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:53,143 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:59,553 - root - INFO - Completed SQL Server query :::2017-04-19 05:05:59
+2017-04-19 05:05:59,553 - root - INFO - SQL Server Query: 104 row(s) returned. 
+2017-04-19 05:05:59,553 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 05:05:59,553 - root - INFO - Query Successful !!
+2017-04-19 05:05:59,553 - root - INFO - 
+2017-04-19 05:05:59,553 - root - INFO - 
+2017-04-19 05:05:59,553 - root - INFO - 
+2017-04-19 05:05:59,561 - root - INFO - Total queries: 19
+2017-04-19 05:05:59,562 - root - INFO - Total unique queries: 19
+2017-04-19 05:05:59,562 - root - INFO - Total failed: 0
+2017-04-19 05:05:59,562 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(-0.8104883500332749-cx,2)+power(-0.5853304640706892-cy,2)+power(0.022290856671094258-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 1.2272778 and `dec` < 1.3272778 and ra >= 215.7866065811499 and ra <= 215.88663341885012 and ((cx * -0.8104883500332749 + cy * -0.5853304640706892 + cz * 0.022290856671094258 ) >= 0.9999996192282494)
+2017-04-19 05:05:59,566 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 05:05:59,566 - root - INFO - Starting MySQL query :::2017-04-19 05:05:59
+2017-04-19 05:05:59,570 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:59,570 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:59,574 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:59,575 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:59,587 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:05:59,587 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:37,706 - root - INFO - Completed MySQL query :::2017-04-19 05:12:37
+2017-04-19 05:12:37,707 - root - INFO - MySQL Query: 270 row(s) returned. 
+2017-04-19 05:12:37,707 - root - INFO - 
+2017-04-19 05:12:37,707 - root - INFO - Starting SQL Server query :::2017-04-19 05:12:37
+2017-04-19 05:12:39,181 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:39,181 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:39,253 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:39,253 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:43,102 - root - INFO - Completed SQL Server query :::2017-04-19 05:12:43
+2017-04-19 05:12:43,102 - root - INFO - SQL Server Query: 270 row(s) returned. 
+2017-04-19 05:12:43,102 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 05:12:43,102 - root - INFO - Query Successful !!
+2017-04-19 05:12:43,102 - root - INFO - 
+2017-04-19 05:12:43,102 - root - INFO - 
+2017-04-19 05:12:43,103 - root - INFO - 
+2017-04-19 05:12:43,111 - root - INFO - Total queries: 20
+2017-04-19 05:12:43,111 - root - INFO - Total unique queries: 20
+2017-04-19 05:12:43,111 - root - INFO - Total failed: 0
+2017-04-19 05:12:43,111 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(0.9196048084450921-cx,2)+power(0.37583543206813-cy,2)+power(0.11434476064441156-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 6.499166633333333 and `dec` < 6.632499966666668 and ra >= 22.162342154894958 and ra <= 22.296573845105048 and ((cx * 0.9196048084450921 + cy * 0.37583543206813 + cz * 0.11434476064441156 ) >= 0.9999993230724769)
+2017-04-19 05:12:43,115 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 05:12:43,115 - root - INFO - Starting MySQL query :::2017-04-19 05:12:43
+2017-04-19 05:12:43,120 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:43,120 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:43,124 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:43,125 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:43,142 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:12:43,142 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:05,010 - root - INFO - Completed MySQL query :::2017-04-19 05:18:05
+2017-04-19 05:18:05,010 - root - INFO - MySQL Query: 275 row(s) returned. 
+2017-04-19 05:18:05,011 - root - INFO - 
+2017-04-19 05:18:05,011 - root - INFO - Starting SQL Server query :::2017-04-19 05:18:05
+2017-04-19 05:18:06,350 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:06,351 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:06,388 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:06,388 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:08,752 - root - INFO - Completed SQL Server query :::2017-04-19 05:18:08
+2017-04-19 05:18:08,753 - root - INFO - SQL Server Query: 275 row(s) returned. 
+2017-04-19 05:18:08,753 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 05:18:08,753 - root - INFO - Query Successful !!
+2017-04-19 05:18:08,753 - root - INFO - 
+2017-04-19 05:18:08,753 - root - INFO - 
+2017-04-19 05:18:08,753 - root - INFO - 
+2017-04-19 05:18:08,764 - root - INFO - Total queries: 21
+2017-04-19 05:18:08,764 - root - INFO - Total unique queries: 21
+2017-04-19 05:18:08,764 - root - INFO - Total failed: 0
+2017-04-19 05:18:08,764 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(0.8991907693502726-cx,2)+power(0.40479042941064414-cy,2)+power(0.1661344894138819-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 9.529812266666667 and `dec` < 9.596478933333335 and ra >= 24.202129589461023 and ra <= 24.269742410538974 and ((cx * 0.8991907693502726 + cy * 0.40479042941064414 + cz * 0.1661344894138819 ) >= 0.999999830768105)  and J_1AperMag3 > 0.0
+2017-04-19 05:18:08,768 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 05:18:08,768 - root - INFO - Starting MySQL query :::2017-04-19 05:18:08
+2017-04-19 05:18:08,772 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:08,773 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:08,777 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:08,777 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:08,793 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:18:08,793 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:21,311 - root - INFO - Completed MySQL query :::2017-04-19 05:21:21
+2017-04-19 05:21:21,312 - root - INFO - MySQL Query: 0 row(s) returned. 
+2017-04-19 05:21:21,312 - root - INFO - 
+2017-04-19 05:21:21,312 - root - INFO - Starting SQL Server query :::2017-04-19 05:21:21
+2017-04-19 05:21:22,501 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:22,502 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:22,525 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:22,525 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:25,333 - root - INFO - Completed SQL Server query :::2017-04-19 05:21:25
+2017-04-19 05:21:25,333 - root - INFO - SQL Server Query: 0 row(s) returned. 
+2017-04-19 05:21:25,333 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 05:21:25,333 - root - INFO - Query Successful !!
+2017-04-19 05:21:25,333 - root - INFO - 
+2017-04-19 05:21:25,333 - root - INFO - 
+2017-04-19 05:21:25,334 - root - INFO - 
+2017-04-19 05:21:25,342 - root - INFO - Total queries: 22
+2017-04-19 05:21:25,342 - root - INFO - Total unique queries: 22
+2017-04-19 05:21:25,342 - root - INFO - Total failed: 0
+2017-04-19 05:21:25,342 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(-0.9362163160765321-cx,2)+power(-0.3232452565319383-cy,2)+power(0.13788224556369882-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 7.858652733333334 and `dec` < 7.991986066666666 and ra >= 198.98081948511734 and ra <= 199.11546051488264 and ((cx * -0.9362163160765321 + cy * -0.3232452565319383 + cz * 0.13788224556369882 ) >= 0.9999993230724769)  and J_1AperMag3 > 0.0 and HApermag3 > 0.0
+2017-04-19 05:21:25,346 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 05:21:25,346 - root - INFO - Starting MySQL query :::2017-04-19 05:21:25
+2017-04-19 05:21:25,350 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:25,350 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:25,355 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:25,355 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:25,369 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:21:25,369 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:35,520 - root - INFO - Completed MySQL query :::2017-04-19 05:27:35
+2017-04-19 05:27:35,521 - root - INFO - MySQL Query: 143 row(s) returned. 
+2017-04-19 05:27:35,521 - root - INFO - 
+2017-04-19 05:27:35,521 - root - INFO - Starting SQL Server query :::2017-04-19 05:27:35
+2017-04-19 05:27:36,703 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:36,703 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:36,736 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:36,736 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:38,975 - root - INFO - Completed SQL Server query :::2017-04-19 05:27:38
+2017-04-19 05:27:38,975 - root - INFO - SQL Server Query: 143 row(s) returned. 
+2017-04-19 05:27:38,975 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 05:27:38,975 - root - INFO - Query Successful !!
+2017-04-19 05:27:38,975 - root - INFO - 
+2017-04-19 05:27:38,975 - root - INFO - 
+2017-04-19 05:27:38,975 - root - INFO - 
+2017-04-19 05:27:38,984 - root - INFO - Total queries: 23
+2017-04-19 05:27:38,984 - root - INFO - Total unique queries: 23
+2017-04-19 05:27:38,984 - root - INFO - Total failed: 0
+2017-04-19 05:27:38,984 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(-0.4889068341683917-cx,2)+power(0.7587730465456335-cy,2)+power(0.4303876988707957-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 25.425500333333332 and `dec` < 25.558833666666665 and ra >= 122.72135187204528 and ra <= 122.86914812795472 and ((cx * -0.4889068341683917 + cy * 0.7587730465456335 + cz * 0.4303876988707957 ) >= 0.9999993230724769)
+2017-04-19 05:27:38,989 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 05:27:38,989 - root - INFO - Starting MySQL query :::2017-04-19 05:27:38
+2017-04-19 05:27:38,993 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:38,994 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:38,998 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:38,999 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:39,007 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:39,008 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:50,112 - root - INFO - Completed MySQL query :::2017-04-19 05:27:50
+2017-04-19 05:27:50,112 - root - INFO - MySQL Query: 525 row(s) returned. 
+2017-04-19 05:27:50,112 - root - INFO - 
+2017-04-19 05:27:50,113 - root - INFO - Starting SQL Server query :::2017-04-19 05:27:50
+2017-04-19 05:27:51,322 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:51,323 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:51,341 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:51,341 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:54,060 - root - INFO - Completed SQL Server query :::2017-04-19 05:27:54
+2017-04-19 05:27:54,060 - root - INFO - SQL Server Query: 525 row(s) returned. 
+2017-04-19 05:27:54,060 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 05:27:54,060 - root - INFO - Query Successful !!
+2017-04-19 05:27:54,060 - root - INFO - 
+2017-04-19 05:27:54,060 - root - INFO - 
+2017-04-19 05:27:54,060 - root - INFO - 
+2017-04-19 05:27:54,068 - root - INFO - Total queries: 24
+2017-04-19 05:27:54,068 - root - INFO - Total unique queries: 24
+2017-04-19 05:27:54,068 - root - INFO - Total failed: 0
+2017-04-19 05:27:54,068 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err, H2AperMag3, H2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.04292215518527661-cx,2)+power(-0.9391451011784818-cy,2)+power(-0.3408286483362428-cz,2))/2))*60 as distance  FROM gpsSource WHERE `dec` > -19.929034504342926 and `dec` < -19.925701171009596 and ra >= 272.6150200117686 and ra <= 272.6185656753208 and ((cx * 0.04292215518527661 + cy * -0.9391451011784818 + cz * -0.3408286483362428 ) >= 0.9999999995769202)
+2017-04-19 05:27:54,072 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 05:27:54,072 - root - INFO - Starting MySQL query :::2017-04-19 05:27:54
+2017-04-19 05:27:54,076 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:54,077 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:54,081 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:54,081 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:54,095 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:54,095 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:54,330 - root - INFO - Completed MySQL query :::2017-04-19 05:27:54
+2017-04-19 05:27:54,330 - root - INFO - MySQL Query: 8 row(s) returned. 
+2017-04-19 05:27:54,330 - root - INFO - 
+2017-04-19 05:27:54,330 - root - INFO - Starting SQL Server query :::2017-04-19 05:27:54
+2017-04-19 05:27:55,104 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:55,104 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:55,122 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:55,123 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:55,580 - root - INFO - Completed SQL Server query :::2017-04-19 05:27:55
+2017-04-19 05:27:55,580 - root - INFO - SQL Server Query: 8 row(s) returned. 
+2017-04-19 05:27:55,580 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 05:27:55,580 - root - INFO - Query Successful !!
+2017-04-19 05:27:55,581 - root - INFO - 
+2017-04-19 05:27:55,581 - root - INFO - 
+2017-04-19 05:27:55,581 - root - INFO - 
+2017-04-19 05:27:55,591 - root - INFO - Total queries: 25
+2017-04-19 05:27:55,591 - root - INFO - Total unique queries: 25
+2017-04-19 05:27:55,591 - root - INFO - Total failed: 0
+2017-04-19 05:27:55,591 - root - INFO - Query : select ra as radeg,`dec` as decdeg, japermag3 as j, hapermag3 as h, k_1apermag3 as k from gpsSource where framesetid=438086670524
+2017-04-19 05:27:55,595 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 05:27:55,595 - root - INFO - Starting MySQL query :::2017-04-19 05:27:55
+2017-04-19 05:27:55,599 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:55,599 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:55,603 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:55,604 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:55,608 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 05:27:55,608 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:05,922 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+  File "testing/test_firethorn_logged_mysql.py", line 63, in raise_timeout
+    raise Timeout.Timeout()
+Timeout
+2017-04-19 07:04:05,923 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+Timeout
+2017-04-19 07:04:05,924 - root - ERROR - 
+Traceback (most recent call last):
+  File "testing/test_firethorn_logged_mysql.py", line 172, in test_logged_queries
+    mysql_row_length, mysql_error_message = mysqlEng.execute_sql_query_get_rows(query, config.mysql_test_database, config.sql_rowlimit, config.sql_timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 283, in execute_sql_query_get_rows
+    raise e
+Timeout
+2017-04-19 07:04:05,924 - root - INFO - Timeout reached while running sql query..
+2017-04-19 07:04:05,925 - root - INFO - 
+2017-04-19 07:04:05,925 - root - INFO - Starting SQL Server query :::2017-04-19 07:04:05
+2017-04-19 07:04:07,453 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:07,454 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:07,513 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:07,513 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:10,663 - root - INFO - Completed SQL Server query :::2017-04-19 07:04:10
+2017-04-19 07:04:10,663 - root - INFO - SQL Server Query: 3027 row(s) returned. 
+2017-04-19 07:04:10,663 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 07:04:10,663 - root - INFO - Query Failed..
+2017-04-19 07:04:10,663 - root - INFO - 
+2017-04-19 07:04:10,663 - root - INFO - 
+2017-04-19 07:04:10,664 - root - INFO - 
+2017-04-19 07:04:10,672 - root - INFO - Total queries: 26
+2017-04-19 07:04:10,672 - root - INFO - Total unique queries: 26
+2017-04-19 07:04:10,672 - root - INFO - Total failed: 0
+2017-04-19 07:04:10,672 - root - INFO - Query : SELECT l, b, ra, `dec`, pstar, pGalaxy, pNoise, mergedClass, jAperMag3, hAperMag3, k_1AperMag3, k_1ppErrBits, jppErrbits, hppErrbits, k_1ErrBits, jAperMag3Err, hAperMag3Err, k_1AperMag3Err, sourceID FROM gpsSource WHERE ra between 94.5 and 97.5 and `dec` between 4 and 4.5 and (mergedClass = 1 or mergedClass = -3 or mergedClass = -1 or mergedClass = -2) AND jppErrBits < 17 AND hppErrBits < 17 AND k_1ppErrBits < 17 AND jErrBits = 0 AND hErrBits = 0 AND k_1ErrBits = 0 AND abs(jAperMag3Err) < 0.3 AND abs(hAperMag3Err) < 0.3 AND abs(k_1AperMag3Err) < 0.3
+2017-04-19 07:04:10,676 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 07:04:10,676 - root - INFO - Starting MySQL query :::2017-04-19 07:04:10
+2017-04-19 07:04:10,680 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:10,680 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:10,685 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:10,685 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:10,703 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:04:10,703 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:05:58,958 - root - INFO - Completed MySQL query :::2017-04-19 07:05:58
+2017-04-19 07:05:58,959 - root - INFO - MySQL Query: 10000 row(s) returned. 
+2017-04-19 07:05:58,959 - root - INFO - 
+2017-04-19 07:05:58,959 - root - INFO - Starting SQL Server query :::2017-04-19 07:05:58
+2017-04-19 07:06:00,174 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:06:00,174 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:06:00,210 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:06:00,211 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:06:08,724 - root - INFO - Completed SQL Server query :::2017-04-19 07:06:08
+2017-04-19 07:06:08,724 - root - INFO - SQL Server Query: 10000 row(s) returned. 
+2017-04-19 07:06:08,724 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 07:06:08,725 - root - INFO - Query Successful !!
+2017-04-19 07:06:08,725 - root - INFO - 
+2017-04-19 07:06:08,725 - root - INFO - 
+2017-04-19 07:06:08,725 - root - INFO - 
+2017-04-19 07:06:08,733 - root - INFO - Total queries: 27
+2017-04-19 07:06:08,733 - root - INFO - Total unique queries: 27
+2017-04-19 07:06:08,733 - root - INFO - Total failed: 0
+2017-04-19 07:06:08,733 - root - INFO - Query : select count(*) from lasSource where mergedClass=-1 or mergedClass=-2 or mergedClass=-3 or mergedClass=-9  and yPsfMag<=19 and j_1PsfMag<=19 and hPsfMag<=19 and kPsfMag<=19  and yPsfMag>0 and j_1PsfMag>0 and hPsfMag>0 and kPsfMag>0
+2017-04-19 07:06:08,737 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 07:06:08,737 - root - INFO - Starting MySQL query :::2017-04-19 07:06:08
+2017-04-19 07:06:08,741 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:06:08,742 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:06:08,748 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:06:08,749 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:06:08,766 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:06:08,767 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:22:54,802 - root - INFO - Completed MySQL query :::2017-04-19 07:22:54
+2017-04-19 07:22:54,803 - root - INFO - MySQL Query: 1 row(s) returned. 
+2017-04-19 07:22:54,803 - root - INFO - 
+2017-04-19 07:22:54,803 - root - INFO - Starting SQL Server query :::2017-04-19 07:22:54
+2017-04-19 07:22:56,279 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:22:56,279 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:22:56,320 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:22:56,320 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:27:21,382 - root - INFO - Completed SQL Server query :::2017-04-19 07:27:21
+2017-04-19 07:27:21,383 - root - INFO - SQL Server Query: 1 row(s) returned. 
+2017-04-19 07:27:21,383 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 07:27:21,383 - root - INFO - Query Successful !!
+2017-04-19 07:27:21,383 - root - INFO - 
+2017-04-19 07:27:21,383 - root - INFO - 
+2017-04-19 07:27:21,383 - root - INFO - 
+2017-04-19 07:27:21,391 - root - INFO - Total queries: 28
+2017-04-19 07:27:21,391 - root - INFO - Total unique queries: 28
+2017-04-19 07:27:21,391 - root - INFO - Total failed: 0
+2017-04-19 07:27:21,392 - root - INFO - Query : SELECT l, b, ra, `dec`,jAperMag3, hAperMag3, k_1AperMag3, mergedClass, sourceID, k_1ppErrBits, PriOrSec, framesetID FROM gpsSource WHERE ra between 272.830 and 275.000 and `dec` between 31.830 and 34.000 AND k_1AperMag3 > 0
+2017-04-19 07:27:21,395 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-19 07:27:21,396 - root - INFO - Starting MySQL query :::2017-04-19 07:27:21
+2017-04-19 07:27:21,400 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:27:21,400 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:27:21,404 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:27:21,405 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:27:21,422 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 07:27:21,422 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 11:08:59,438 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 134, in execute_query_get_cols_rows
+    cursor.execute(query)
+  File "testing/test_firethorn_logged_mysql.py", line 63, in raise_timeout
+    raise Timeout.Timeout()
+Timeout
+2017-04-19 11:08:59,439 - root - ERROR - 
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+Timeout
+2017-04-19 11:08:59,441 - root - ERROR - 
+Traceback (most recent call last):
+  File "testing/test_firethorn_logged_mysql.py", line 172, in test_logged_queries
+    mysql_row_length, mysql_error_message = mysqlEng.execute_sql_query_get_rows(query, config.mysql_test_database, config.sql_rowlimit, config.sql_timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 283, in execute_sql_query_get_rows
+    raise e
+Timeout
+2017-04-19 11:08:59,441 - root - INFO - Timeout reached while running sql query..
+2017-04-19 11:08:59,441 - root - INFO - 
+2017-04-19 11:08:59,441 - root - INFO - Starting SQL Server query :::2017-04-19 11:08:59
+2017-04-19 11:09:01,219 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 11:09:01,219 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 11:09:01,288 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 136, in execute_query_get_cols_rows
+    columns = [column[0] for column in cursor.description]
+TypeError: 'NoneType' object is not iterable
+2017-04-19 11:09:01,288 - root - ERROR - 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 275, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 321, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 167, in execute_query_get_cols_rows
+    raise e
+TypeError: 'NoneType' object is not iterable
+2017-04-19 11:13:00,106 - root - INFO - Completed SQL Server query :::2017-04-19 11:13:00
+2017-04-19 11:13:00,106 - root - INFO - SQL Server Query: 0 row(s) returned. 
+2017-04-19 11:13:00,106 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-19 11:13:00,106 - root - INFO - Query Failed..
+2017-04-19 11:13:00,106 - root - INFO - 
+2017-04-19 11:13:00,106 - root - INFO - 
+2017-04-19 11:13:00,106 - root - INFO - 
+2017-04-19 11:13:00,114 - root - INFO - Total queries: 29
+2017-04-19 11:13:00,115 - root - INFO - Total unique queries: 29
+2017-04-19 11:13:00,115 - root - INFO - Total failed: 0
+2017-04-19 11:13:00,115 - root - INFO - Success percentage: 100.0%
+^C
+
+
+## Query Statistics
+
+mysql> SELECT AVG(sql_duration) FROM queries WHERE test_passed>0;
++--------------------+
+| AVG(sql_duration)  |
++--------------------+
+| 15.045253896713257 |
++--------------------+
+1 row in set (0.00 sec)
+
+
+
+
+mysql> SELECT AVG(mysql_duration) FROM queries WHERE test_passed>0;
++---------------------+
+| AVG(mysql_duration) |
++---------------------+
+|   183.1697955226898 |
++---------------------+
+1 row in set (0.01 sec)
+
+
+
+
+mysql> SELECT COUNT(*) FROM queries WHERE test_passed<=0;
++----------+
+| COUNT(*) |
++----------+
+|        4 |
++----------+
+1 row in set (0.01 sec)
+
+
+
+mysql> SELECT SUBSTRING(query,1,132) AS query,mysql_duration,sql_duration FROM queries;
++--------------------------------------------------------------------------------------------------------------------------------------+---------------------+--------------------+
+| query                                                                                                                                | mysql_duration      | sql_duration       |
++--------------------------------------------------------------------------------------------------------------------------------------+---------------------+--------------------+
+| SELECT MAX(sourceID) FROM lasSource                                                                                                  | -1                  | 10.499960899353027 |
+| SELECT AVG(ra) FROM lasSource                                                                                                        | 53.8253231048584    | 9.962308168411255  |
+| SELECT *,2*DEGREES(ASIN(sqrt(power(-0.43487295822751704-cx,2)+power(-0.046022867658389026-cy,2)+power(-0.8993149647675983-cz,2))/2)) | 0.09859919548034668 | 0.844419002532959  |
+| SELECT  *,2*DEGREES(ASIN(sqrt(power(0.042923031410454976-cx,2)+power(-0.939145431907252-cy,2)+power(-0.34082762667113453-cz,2))/2))* | 248.16901803016663  | 4.223775863647461  |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 108.3542709350586   | 8.767093181610107  |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 17.73288083076477   | 3.4091501235961914 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 3.374095916748047   | 2.148437976837158  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 0.24327588081359863 | 0.7177259922027588 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 691.7992000579834   | 4.636448860168457  |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 0.44985008239746094 | 1.2894740104675293 |
+| SELECT *,2*DEGREES(ASIN(sqrt(power(0.7606329831372249-cx,2)+power(0.1176703620822802-cy,2)+power(-0.6384286576048973-cz,2))/2))*60 a | 0.05167198181152344 | 0.9174389839172363 |
+| select 0.02*floor(b/0.02)+0.01 as b,0.02*floor(l/0.02)+0.01 as l,floor( (K_1apermag3 - 1.48685*((Hapermag3-K_1apermag3)) + 0.0647944 | -1                  | 5.860199213027954  |
+| SELECT l, b, ra, dec, jAperMag3, hAperMag3, k_1AperMag3, mergedClass,sourceID, k_1ppErrBits, priOrSec, frameSetID FROM gpsSource WHE | 267.39476799964905  | 4.774986982345581  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 287.621052980423    | 6.6571738719940186 |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2A | 317.99028301239014  | 6.86323094367981   |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 128.6944019794464   | 3.382591962814331  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 3.5050010681152344  | 0.7180571556091309 |
+| SELECT count(*) from lasSource                                                                                                       | 21.324925899505615  | 11.346137046813965 |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2A | 20.131682872772217  | 7.316663980484009  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 398.1409339904785   | 5.395380020141602  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 321.89533710479736  | 3.742255210876465  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 192.54349398612976  | 4.021337985992432  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 370.17482805252075  | 3.454118013381958  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 11.123577117919922  | 3.9474899768829346 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 0.2579460144042969  | 1.2502110004425049 |
+| select ra as radeg,dec as decdeg, japermag3 as j, hapermag3 as h, k_1apermag3 as k from gpsSource where framesetid=438086670524      | -1                  | 4.738591909408569  |
+| SELECT l, b, ra, dec, pstar, pGalaxy, pNoise, mergedClass, jAperMag3, hAperMag3, k_1AperMag3, k_1ppErrBits, jppErrbits, hppErrbits,  | 108.28285598754883  | 9.765686988830566  |
+| select count(*) from lasSource where mergedClass=-1 or mergedClass=-2 or mergedClass=-3 or mergedClass=-9  and yPsfMag<=19 and j_1Ps | 1006.0656139850616  | 266.579754114151   |
+| SELECT l, b, ra, dec,jAperMag3, hAperMag3, k_1AperMag3, mergedClass, sourceID, k_1ppErrBits, PriOrSec, framesetID FROM gpsSource WHE | -1                  | 240.66489505767822 |
++--------------------------------------------------------------------------------------------------------------------------------------+---------------------+--------------------+
+29 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+QServ benchmark
+---------------
+
+mysql_test_dbserver=129.215.175.50
+
+
+
+2017-04-20 01:04:32,281 - root - INFO - Completed MySQL query :::2017-04-20 01:04:32
+2017-04-20 01:04:32,282 - root - INFO - MySQL Query: 1 row(s) returned. 
+2017-04-20 01:04:32,282 - root - INFO - 
+2017-04-20 01:04:32,282 - root - INFO - Starting SQL Server query :::2017-04-20 01:04:32
+2017-04-20 01:04:32,799 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:32,800 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:32,822 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:32,822 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:42,315 - root - INFO - Completed SQL Server query :::2017-04-20 01:04:42
+2017-04-20 01:04:42,316 - root - INFO - SQL Server Query: 1 row(s) returned. 
+2017-04-20 01:04:42,316 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:04:42,316 - root - INFO - Query Successful !!
+2017-04-20 01:04:42,316 - root - INFO - 
+2017-04-20 01:04:42,316 - root - INFO - 
+2017-04-20 01:04:42,316 - root - INFO - 
+2017-04-20 01:04:42,324 - root - INFO - Total queries: 18
+2017-04-20 01:04:42,324 - root - INFO - Total unique queries: 18
+2017-04-20 01:04:42,324 - root - INFO - Total failed: 0
+2017-04-20 01:04:42,325 - root - INFO - Query : SELECT sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(0.9912132999168521-cx,2)+power(0.058088906842647066-cy,2)+power(0.11883548699681716-cz,2))/2))*60 as distance FROM lasSource WHERE `dec` > 6.766566666666668 and `dec` < 6.883233333333334 and ra >= 3.295159874525504 and ra <= 3.412673525474496 and ((cx * 0.9912132999168521 + cy * 0.058088906842647066 + cz * 0.11883548699681716 ) >= 0.9999994817273514)
+2017-04-20 01:04:42,329 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:04:42,329 - root - INFO - Starting MySQL query :::2017-04-20 01:04:42
+2017-04-20 01:04:42,333 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:42,333 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:42,337 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:42,338 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:42,342 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:42,342 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:44,379 - root - INFO - Completed MySQL query :::2017-04-20 01:04:44
+2017-04-20 01:04:44,379 - root - INFO - MySQL Query: 104 row(s) returned. 
+2017-04-20 01:04:44,379 - root - INFO - 
+2017-04-20 01:04:44,379 - root - INFO - Starting SQL Server query :::2017-04-20 01:04:44
+2017-04-20 01:04:44,951 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:44,952 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:44,971 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:44,971 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:45,748 - root - INFO - Completed SQL Server query :::2017-04-20 01:04:45
+2017-04-20 01:04:45,748 - root - INFO - SQL Server Query: 104 row(s) returned. 
+2017-04-20 01:04:45,748 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:04:45,748 - root - INFO - Query Successful !!
+2017-04-20 01:04:45,748 - root - INFO - 
+2017-04-20 01:04:45,749 - root - INFO - 
+2017-04-20 01:04:45,749 - root - INFO - 
+2017-04-20 01:04:45,756 - root - INFO - Total queries: 19
+2017-04-20 01:04:45,756 - root - INFO - Total unique queries: 19
+2017-04-20 01:04:45,756 - root - INFO - Total failed: 0
+2017-04-20 01:04:45,756 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(-0.8104883500332749-cx,2)+power(-0.5853304640706892-cy,2)+power(0.022290856671094258-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 1.2272778 and `dec` < 1.3272778 and ra >= 215.7866065811499 and ra <= 215.88663341885012 and ((cx * -0.8104883500332749 + cy * -0.5853304640706892 + cz * 0.022290856671094258 ) >= 0.9999996192282494)
+2017-04-20 01:04:45,760 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:04:45,760 - root - INFO - Starting MySQL query :::2017-04-20 01:04:45
+2017-04-20 01:04:45,764 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:45,764 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:45,769 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:45,769 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:45,773 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:45,774 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:54,297 - root - INFO - Completed MySQL query :::2017-04-20 01:04:54
+2017-04-20 01:04:54,297 - root - INFO - MySQL Query: 270 row(s) returned. 
+2017-04-20 01:04:54,297 - root - INFO - 
+2017-04-20 01:04:54,297 - root - INFO - Starting SQL Server query :::2017-04-20 01:04:54
+2017-04-20 01:04:54,893 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:54,893 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:54,922 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:54,922 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:55,418 - root - INFO - Completed SQL Server query :::2017-04-20 01:04:55
+2017-04-20 01:04:55,418 - root - INFO - SQL Server Query: 270 row(s) returned. 
+2017-04-20 01:04:55,418 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:04:55,418 - root - INFO - Query Successful !!
+2017-04-20 01:04:55,419 - root - INFO - 
+2017-04-20 01:04:55,419 - root - INFO - 
+2017-04-20 01:04:55,419 - root - INFO - 
+2017-04-20 01:04:55,426 - root - INFO - Total queries: 20
+2017-04-20 01:04:55,426 - root - INFO - Total unique queries: 20
+2017-04-20 01:04:55,426 - root - INFO - Total failed: 0
+2017-04-20 01:04:55,426 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(0.9196048084450921-cx,2)+power(0.37583543206813-cy,2)+power(0.11434476064441156-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 6.499166633333333 and `dec` < 6.632499966666668 and ra >= 22.162342154894958 and ra <= 22.296573845105048 and ((cx * 0.9196048084450921 + cy * 0.37583543206813 + cz * 0.11434476064441156 ) >= 0.9999993230724769)
+2017-04-20 01:04:55,430 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:04:55,431 - root - INFO - Starting MySQL query :::2017-04-20 01:04:55
+2017-04-20 01:04:55,435 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:55,435 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:55,440 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:55,440 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:55,444 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:55,445 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:58,645 - root - INFO - Completed MySQL query :::2017-04-20 01:04:58
+2017-04-20 01:04:58,645 - root - INFO - MySQL Query: 275 row(s) returned. 
+2017-04-20 01:04:58,645 - root - INFO - 
+2017-04-20 01:04:58,645 - root - INFO - Starting SQL Server query :::2017-04-20 01:04:58
+2017-04-20 01:04:59,213 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:59,213 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:59,236 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:59,236 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:59,746 - root - INFO - Completed SQL Server query :::2017-04-20 01:04:59
+2017-04-20 01:04:59,746 - root - INFO - SQL Server Query: 275 row(s) returned. 
+2017-04-20 01:04:59,746 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:04:59,747 - root - INFO - Query Successful !!
+2017-04-20 01:04:59,747 - root - INFO - 
+2017-04-20 01:04:59,747 - root - INFO - 
+2017-04-20 01:04:59,747 - root - INFO - 
+2017-04-20 01:04:59,754 - root - INFO - Total queries: 21
+2017-04-20 01:04:59,755 - root - INFO - Total unique queries: 21
+2017-04-20 01:04:59,755 - root - INFO - Total failed: 0
+2017-04-20 01:04:59,755 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(0.8991907693502726-cx,2)+power(0.40479042941064414-cy,2)+power(0.1661344894138819-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 9.529812266666667 and `dec` < 9.596478933333335 and ra >= 24.202129589461023 and ra <= 24.269742410538974 and ((cx * 0.8991907693502726 + cy * 0.40479042941064414 + cz * 0.1661344894138819 ) >= 0.999999830768105)  and J_1AperMag3 > 0.0
+2017-04-20 01:04:59,759 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:04:59,759 - root - INFO - Starting MySQL query :::2017-04-20 01:04:59
+2017-04-20 01:04:59,763 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:59,763 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:59,767 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:59,768 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:59,772 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:04:59,773 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:02,545 - root - INFO - Completed MySQL query :::2017-04-20 01:05:02
+2017-04-20 01:05:02,545 - root - INFO - MySQL Query: 0 row(s) returned. 
+2017-04-20 01:05:02,545 - root - INFO - 
+2017-04-20 01:05:02,545 - root - INFO - Starting SQL Server query :::2017-04-20 01:05:02
+2017-04-20 01:05:03,089 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:03,090 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:03,111 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:03,111 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:03,601 - root - INFO - Completed SQL Server query :::2017-04-20 01:05:03
+2017-04-20 01:05:03,602 - root - INFO - SQL Server Query: 0 row(s) returned. 
+2017-04-20 01:05:03,602 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:05:03,602 - root - INFO - Query Successful !!
+2017-04-20 01:05:03,602 - root - INFO - 
+2017-04-20 01:05:03,602 - root - INFO - 
+2017-04-20 01:05:03,602 - root - INFO - 
+2017-04-20 01:05:03,609 - root - INFO - Total queries: 22
+2017-04-20 01:05:03,610 - root - INFO - Total unique queries: 22
+2017-04-20 01:05:03,610 - root - INFO - Total failed: 0
+2017-04-20 01:05:03,610 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,2*DEGREES(ASIN(sqrt(power(-0.9362163160765321-cx,2)+power(-0.3232452565319383-cy,2)+power(0.13788224556369882-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 7.858652733333334 and `dec` < 7.991986066666666 and ra >= 198.98081948511734 and ra <= 199.11546051488264 and ((cx * -0.9362163160765321 + cy * -0.3232452565319383 + cz * 0.13788224556369882 ) >= 0.9999993230724769)  and J_1AperMag3 > 0.0 and HApermag3 > 0.0
+2017-04-20 01:05:03,614 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:05:03,614 - root - INFO - Starting MySQL query :::2017-04-20 01:05:03
+2017-04-20 01:05:03,618 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:03,618 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:03,623 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:03,623 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:03,627 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:03,627 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:11,118 - root - INFO - Completed MySQL query :::2017-04-20 01:05:11
+2017-04-20 01:05:11,119 - root - INFO - MySQL Query: 143 row(s) returned. 
+2017-04-20 01:05:11,119 - root - INFO - 
+2017-04-20 01:05:11,119 - root - INFO - Starting SQL Server query :::2017-04-20 01:05:11
+2017-04-20 01:05:11,818 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:11,819 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:11,840 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:11,840 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:12,797 - root - INFO - Completed SQL Server query :::2017-04-20 01:05:12
+2017-04-20 01:05:12,798 - root - INFO - SQL Server Query: 143 row(s) returned. 
+2017-04-20 01:05:12,798 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:05:12,798 - root - INFO - Query Successful !!
+2017-04-20 01:05:12,798 - root - INFO - 
+2017-04-20 01:05:12,798 - root - INFO - 
+2017-04-20 01:05:12,798 - root - INFO - 
+2017-04-20 01:05:12,805 - root - INFO - Total queries: 23
+2017-04-20 01:05:12,806 - root - INFO - Total unique queries: 23
+2017-04-20 01:05:12,806 - root - INFO - Total failed: 0
+2017-04-20 01:05:12,806 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2AperMag3Err, HAperMag3, HAperMag3Err, KAperMag3, KAperMag3Err,j_1ell,2*DEGREES(ASIN(sqrt(power(-0.4889068341683917-cx,2)+power(0.7587730465456335-cy,2)+power(0.4303876988707957-cz,2))/2))*60 as distance  FROM lasSource WHERE `dec` > 25.425500333333332 and `dec` < 25.558833666666665 and ra >= 122.72135187204528 and ra <= 122.86914812795472 and ((cx * -0.4889068341683917 + cy * 0.7587730465456335 + cz * 0.4303876988707957 ) >= 0.9999993230724769)
+2017-04-20 01:05:12,810 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:05:12,810 - root - INFO - Starting MySQL query :::2017-04-20 01:05:12
+2017-04-20 01:05:12,814 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:12,815 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:12,819 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:12,819 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:12,824 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:12,824 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:16,740 - root - INFO - Completed MySQL query :::2017-04-20 01:05:16
+2017-04-20 01:05:16,740 - root - INFO - MySQL Query: 525 row(s) returned. 
+2017-04-20 01:05:16,740 - root - INFO - 
+2017-04-20 01:05:16,741 - root - INFO - Starting SQL Server query :::2017-04-20 01:05:16
+2017-04-20 01:05:17,346 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,347 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,367 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,368 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,864 - root - INFO - Completed SQL Server query :::2017-04-20 01:05:17
+2017-04-20 01:05:17,864 - root - INFO - SQL Server Query: 525 row(s) returned. 
+2017-04-20 01:05:17,864 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:05:17,865 - root - INFO - Query Successful !!
+2017-04-20 01:05:17,865 - root - INFO - 
+2017-04-20 01:05:17,865 - root - INFO - 
+2017-04-20 01:05:17,865 - root - INFO - 
+2017-04-20 01:05:17,871 - root - INFO - Total queries: 24
+2017-04-20 01:05:17,872 - root - INFO - Total unique queries: 24
+2017-04-20 01:05:17,872 - root - INFO - Total failed: 0
+2017-04-20 01:05:17,872 - root - INFO - Query : SELECT  sourceID, framesetID, ra, `dec`, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1AperMag3Err, K_2AperMag3, K_2AperMag3Err, H2AperMag3, H2AperMag3Err,2*DEGREES(ASIN(sqrt(power(0.04292215518527661-cx,2)+power(-0.9391451011784818-cy,2)+power(-0.3408286483362428-cz,2))/2))*60 as distance  FROM gpsSource WHERE `dec` > -19.929034504342926 and `dec` < -19.925701171009596 and ra >= 272.6150200117686 and ra <= 272.6185656753208 and ((cx * 0.04292215518527661 + cy * -0.9391451011784818 + cz * -0.3408286483362428 ) >= 0.9999999995769202)
+2017-04-20 01:05:17,875 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:05:17,876 - root - INFO - Starting MySQL query :::2017-04-20 01:05:17
+2017-04-20 01:05:17,879 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,880 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,884 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,884 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,888 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,889 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:17,976 - root - INFO - Completed MySQL query :::2017-04-20 01:05:17
+2017-04-20 01:05:17,977 - root - INFO - MySQL Query: 8 row(s) returned. 
+2017-04-20 01:05:17,977 - root - INFO - 
+2017-04-20 01:05:17,977 - root - INFO - Starting SQL Server query :::2017-04-20 01:05:17
+2017-04-20 01:05:18,471 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:18,471 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:18,503 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:18,503 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:19,034 - root - INFO - Completed SQL Server query :::2017-04-20 01:05:19
+2017-04-20 01:05:19,034 - root - INFO - SQL Server Query: 8 row(s) returned. 
+2017-04-20 01:05:19,034 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:05:19,034 - root - INFO - Query Successful !!
+2017-04-20 01:05:19,035 - root - INFO - 
+2017-04-20 01:05:19,035 - root - INFO - 
+2017-04-20 01:05:19,035 - root - INFO - 
+2017-04-20 01:05:19,045 - root - INFO - Total queries: 25
+2017-04-20 01:05:19,045 - root - INFO - Total unique queries: 25
+2017-04-20 01:05:19,045 - root - INFO - Total failed: 0
+2017-04-20 01:05:19,045 - root - INFO - Query : select ra as radeg,`dec` as decdeg, japermag3 as j, hapermag3 as h, k_1apermag3 as k from gpsSource where framesetid=438086670524
+2017-04-20 01:05:19,049 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:05:19,049 - root - INFO - Starting MySQL query :::2017-04-20 01:05:19
+2017-04-20 01:05:19,053 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:19,054 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:19,058 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:19,058 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:19,063 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:19,063 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:19,952 - root - INFO - Completed MySQL query :::2017-04-20 01:05:19
+2017-04-20 01:05:19,953 - root - INFO - MySQL Query: 3027 row(s) returned. 
+2017-04-20 01:05:19,953 - root - INFO - 
+2017-04-20 01:05:19,953 - root - INFO - Starting SQL Server query :::2017-04-20 01:05:19
+2017-04-20 01:05:20,586 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:20,587 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:20,605 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:20,605 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:21,135 - root - INFO - Completed SQL Server query :::2017-04-20 01:05:21
+2017-04-20 01:05:21,136 - root - INFO - SQL Server Query: 3027 row(s) returned. 
+2017-04-20 01:05:21,136 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:05:21,136 - root - INFO - Query Successful !!
+2017-04-20 01:05:21,136 - root - INFO - 
+2017-04-20 01:05:21,136 - root - INFO - 
+2017-04-20 01:05:21,136 - root - INFO - 
+2017-04-20 01:05:21,142 - root - INFO - Total queries: 26
+2017-04-20 01:05:21,143 - root - INFO - Total unique queries: 26
+2017-04-20 01:05:21,143 - root - INFO - Total failed: 0
+2017-04-20 01:05:21,143 - root - INFO - Query : SELECT l, b, ra, `dec`, pstar, pGalaxy, pNoise, mergedClass, jAperMag3, hAperMag3, k_1AperMag3, k_1ppErrBits, jppErrbits, hppErrbits, k_1ErrBits, jAperMag3Err, hAperMag3Err, k_1AperMag3Err, sourceID FROM gpsSource WHERE ra between 94.5 and 97.5 and `dec` between 4 and 4.5 and (mergedClass = 1 or mergedClass = -3 or mergedClass = -1 or mergedClass = -2) AND jppErrBits < 17 AND hppErrBits < 17 AND k_1ppErrBits < 17 AND jErrBits = 0 AND hErrBits = 0 AND k_1ErrBits = 0 AND abs(jAperMag3Err) < 0.3 AND abs(hAperMag3Err) < 0.3 AND abs(k_1AperMag3Err) < 0.3
+2017-04-20 01:05:21,146 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:05:21,147 - root - INFO - Starting MySQL query :::2017-04-20 01:05:21
+2017-04-20 01:05:21,150 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:21,151 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:21,155 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:21,155 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:21,159 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:05:21,160 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:11,969 - root - INFO - Completed MySQL query :::2017-04-20 01:09:11
+2017-04-20 01:09:11,969 - root - INFO - MySQL Query: 10000 row(s) returned. 
+2017-04-20 01:09:11,969 - root - INFO - 
+2017-04-20 01:09:11,969 - root - INFO - Starting SQL Server query :::2017-04-20 01:09:11
+2017-04-20 01:09:13,113 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:13,113 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:13,140 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:13,140 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:20,027 - root - INFO - Completed SQL Server query :::2017-04-20 01:09:20
+2017-04-20 01:09:20,028 - root - INFO - SQL Server Query: 10000 row(s) returned. 
+2017-04-20 01:09:20,028 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:09:20,028 - root - INFO - Query Successful !!
+2017-04-20 01:09:20,028 - root - INFO - 
+2017-04-20 01:09:20,028 - root - INFO - 
+2017-04-20 01:09:20,028 - root - INFO - 
+2017-04-20 01:09:20,037 - root - INFO - Total queries: 27
+2017-04-20 01:09:20,038 - root - INFO - Total unique queries: 27
+2017-04-20 01:09:20,038 - root - INFO - Total failed: 0
+2017-04-20 01:09:20,038 - root - INFO - Query : select count(*) from lasSource where mergedClass=-1 or mergedClass=-2 or mergedClass=-3 or mergedClass=-9  and yPsfMag<=19 and j_1PsfMag<=19 and hPsfMag<=19 and kPsfMag<=19  and yPsfMag>0 and j_1PsfMag>0 and hPsfMag>0 and kPsfMag>0
+2017-04-20 01:09:20,042 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:09:20,042 - root - INFO - Starting MySQL query :::2017-04-20 01:09:20
+2017-04-20 01:09:20,047 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:20,047 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:20,052 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:20,052 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:20,056 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:09:20,056 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:20:09,554 - root - INFO - Completed MySQL query :::2017-04-20 01:20:09
+2017-04-20 01:20:09,554 - root - INFO - MySQL Query: 1 row(s) returned. 
+2017-04-20 01:20:09,555 - root - INFO - 
+2017-04-20 01:20:09,555 - root - INFO - Starting SQL Server query :::2017-04-20 01:20:09
+2017-04-20 01:20:10,586 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:20:10,587 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:20:10,620 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:20:10,620 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:24:35,640 - root - INFO - Completed SQL Server query :::2017-04-20 01:24:35
+2017-04-20 01:24:35,641 - root - INFO - SQL Server Query: 1 row(s) returned. 
+2017-04-20 01:24:35,641 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:24:35,641 - root - INFO - Query Successful !!
+2017-04-20 01:24:35,641 - root - INFO - 
+2017-04-20 01:24:35,641 - root - INFO - 
+2017-04-20 01:24:35,641 - root - INFO - 
+2017-04-20 01:24:35,650 - root - INFO - Total queries: 28
+2017-04-20 01:24:35,650 - root - INFO - Total unique queries: 28
+2017-04-20 01:24:35,651 - root - INFO - Total failed: 0
+2017-04-20 01:24:35,651 - root - INFO - Query : SELECT l, b, ra, `dec`,jAperMag3, hAperMag3, k_1AperMag3, mergedClass, sourceID, k_1ppErrBits, PriOrSec, framesetID FROM gpsSource WHERE ra between 272.830 and 275.000 and `dec` between 31.830 and 34.000 AND k_1AperMag3 > 0
+2017-04-20 01:24:35,655 - root - INFO - ---------------------- Starting Query Test ----------------------
+2017-04-20 01:24:35,655 - root - INFO - Starting MySQL query :::2017-04-20 01:24:35
+2017-04-20 01:24:35,672 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:24:35,672 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:24:35,679 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:24:35,679 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:24:35,684 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:24:35,685 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:30:48,947 - root - INFO - Completed MySQL query :::2017-04-20 01:30:48
+2017-04-20 01:30:48,947 - root - INFO - MySQL Query: 0 row(s) returned. 
+2017-04-20 01:30:48,947 - root - INFO - 
+2017-04-20 01:30:48,947 - root - INFO - Starting SQL Server query :::2017-04-20 01:30:48
+2017-04-20 01:30:50,110 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:30:50,110 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:30:50,144 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 144, in execute_query_get_cols_rows
+    rows = cursor.fetchmany(limit)
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:30:50,144 - root - ERROR - No results.  Previous SQL was not a query.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 278, in execute_sql_query_get_rows
+    query_results = self._execute_query_get_cols_rows(query,database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 324, in _execute_query_get_cols_rows
+    table_data = mydb.execute_query_get_cols_rows(qry, database, limit, timeout)
+  File "/usr/local/lib/python2.7/dist-packages/pyrothorn-0.0.1-py2.7.egg/pyrothorn/mssql/sqlEngine.py", line 170, in execute_query_get_cols_rows
+    raise e
+ProgrammingError: No results.  Previous SQL was not a query.
+2017-04-20 01:33:06,479 - root - INFO - Completed SQL Server query :::2017-04-20 01:33:06
+2017-04-20 01:33:06,480 - root - INFO - SQL Server Query: 0 row(s) returned. 
+2017-04-20 01:33:06,480 - root - INFO - ---------------------- End Query Test ----------------------
+2017-04-20 01:33:06,480 - root - INFO - Query Successful !!
+2017-04-20 01:33:06,480 - root - INFO - 
+2017-04-20 01:33:06,480 - root - INFO - 
+2017-04-20 01:33:06,480 - root - INFO - 
+2017-04-20 01:33:06,488 - root - INFO - Total queries: 29
+2017-04-20 01:33:06,488 - root - INFO - Total unique queries: 29
+2017-04-20 01:33:06,488 - root - INFO - Total failed: 0
+2017-04-20 01:33:06,488 - root - INFO - Success percentage: 100.0%
+
+
+
+
+## Query statistics
+
+mysql> SELECT AVG(sql_duration) FROM queries WHERE test_passed>0;
++-------------------+
+| AVG(sql_duration) |
++-------------------+
+| 17.04125840323312 |
++-------------------+
+1 row in set (0.00 sec)
+
+
+mysql> SELECT AVG(mysql_duration) FROM queries WHERE test_passed>0;
++---------------------+
+| AVG(mysql_duration) |
++---------------------+
+|    175.214338353702 |
++---------------------+
+1 row in set (0.00 sec)
+
+
+mysql>  SELECT AVG(mysql_duration) FROM queries WHERE test_passed>0 and query NOT LIKE '%SELECT MAX(Sourceid)%';
++---------------------+
+| AVG(mysql_duration) |
++---------------------+
+|    68.2975158073284 |
++---------------------+
+1 row in set (0.00 sec)
+
+
+mysql> SELECT COUNT(*) FROM queries WHERE test_passed<=0;
++----------+
+| COUNT(*) |
++----------+
+|        1 |
++----------+
+1 row in set (0.01 sec)
+
++---------------------+
+1 row in set (0.00 sec)
+
+
+
+mysql>  SELECT SUBSTRING(query,1,132) AS query,mysql_duration,sql_duration FROM queries;
++--------------------------------------------------------------------------------------------------------------------------------------+---------------------+--------------------+
+| query                                                                                                                                | mysql_duration      | sql_duration       |
++--------------------------------------------------------------------------------------------------------------------------------------+---------------------+--------------------+
+| SELECT MAX(sourceID) FROM lasSource                                                                                                  | 3061.968547105789   | 3.2382490634918213 |
+| SELECT AVG(ra) FROM lasSource                                                                                                        | 18.4772789478302    | 9.784158945083618  |
+| SELECT *,2*DEGREES(ASIN(sqrt(power(-0.43487295822751704-cx,2)+power(-0.046022867658389026-cy,2)+power(-0.8993149647675983-cz,2))/2)) | 0.28725504875183105 | 0.9532089233398438 |
+| SELECT  *,2*DEGREES(ASIN(sqrt(power(0.042923031410454976-cx,2)+power(-0.939145431907252-cy,2)+power(-0.34082762667113453-cz,2))/2))* | 67.72629904747009   | 5.033079147338867  |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 10.77748990058899   | 5.641433954238892  |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 5.91838002204895    | 0.9730589389801025 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 2.04728102684021    | 0.7703659534454346 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 0.08865904808044434 | 0.8662378787994385 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 189.42723488807678  | 2.7596259117126465 |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, ZAperMag3, ZAperMag3Err, YAperMag3, YAperMag3Err, JAperMag3, JAperMag3E | 0.412477970123291   | 1.1776161193847656 |
+| SELECT *,2*DEGREES(ASIN(sqrt(power(0.7606329831372249-cx,2)+power(0.1176703620822802-cy,2)+power(-0.6384286576048973-cz,2))/2))*60 a | 0.07996296882629395 | 0.5799028873443604 |
+| select 0.02*floor(b/0.02)+0.01 as b,0.02*floor(l/0.02)+0.01 as l,floor( (K_1apermag3 - 1.48685*((Hapermag3-K_1apermag3)) + 0.0647944 | -1                  | 2.845412015914917  |
+| SELECT l, b, ra, dec, jAperMag3, hAperMag3, k_1AperMag3, mergedClass,sourceID, k_1ppErrBits, priOrSec, frameSetID FROM gpsSource WHE | 167.54869389533997  | 4.797396898269653  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 67.1823239326477    | 4.6302947998046875 |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2A | 6.702652215957642   | 2.2018179893493652 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 8.850136041641235   | 1.1895418167114258 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 1.0496180057525635  | 1.1577529907226562 |
+| SELECT count(*) from lasSource                                                                                                       | 14.801345109939575  | 10.033859014511108 |
+| SELECT sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2A | 2.050373077392578   | 1.3688390254974365 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 8.537122964859009   | 1.1210300922393799 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 3.214704990386963   | 1.1011590957641602 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 2.7863800525665283  | 1.0563151836395264 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 7.50515604019165    | 1.6787090301513672 |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, YAperMag3, YAperMag3Err, J_1AperMag3, J_1AperMag3Err, J_2AperMag3, J_2 | 3.9305291175842285  | 1.123872995376587  |
+| SELECT  sourceID, framesetID, ra, dec, mergedClass, priOrSec, JAperMag3, JAperMag3Err, HAperMag3, HAperMag3Err, K_1AperMag3, K_1Aper | 0.10124516487121582 | 1.0574100017547607 |
+| select ra as radeg,dec as decdeg, japermag3 as j, hapermag3 as h, k_1apermag3 as k from gpsSource where framesetid=438086670524      | 0.9035201072692871  | 1.1831209659576416 |
+| SELECT l, b, ra, dec, pstar, pGalaxy, pNoise, mergedClass, jAperMag3, hAperMag3, k_1AperMag3, k_1ppErrBits, jppErrbits, hppErrbits,  | 230.82262110710144  | 8.058458805084229  |
+| select count(*) from lasSource where mergedClass=-1 or mergedClass=-2 or mergedClass=-3 or mergedClass=-9  and yPsfMag<=19 and j_1Ps | 649.5124042034149   | 266.08622694015503 |
+| SELECT l, b, ra, dec,jAperMag3, hAperMag3, k_1AperMag3, mergedClass, sourceID, k_1ppErrBits, PriOrSec, framesetID FROM gpsSource WHE | 373.29178190231323  | 137.53249192237854 |
++--------------------------------------------------------------------------------------------------------------------------------------+---------------------+--------------------+
+29 rows in set (0.00 sec)
+
+
+

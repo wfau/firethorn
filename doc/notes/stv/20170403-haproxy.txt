@@ -37,7 +37,6 @@ MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 #
 # Install Python
 RUN apt-get -y update
-RUN apt-get install haproxy
 RUN apt-get install software-properties-common
 RUN add-apt-repository ppa:vbernat/haproxy-1.6
 
@@ -61,6 +60,7 @@ EOF
 # Create HAProxy.cfg
 
 cat > "haproxy/haproxy.cfg" << EOF
+
 global
    log /dev/log    local0
    log /dev/log    local1 notice
@@ -73,11 +73,13 @@ defaults
   mode    http
   option  httplog
   option  dontlognull
-  retries 3
-  option redispatch
-  timeout connect 5000
-  timeout client  50000
-  timeout server  50000
+  option http-server-close
+  clitimeout  6000000
+  contimeout  400000
+  timeout connect 12000000 
+  timeout check 12000000 
+  timeout client 12000000 
+  timeout server 12000000 
   errorfile 400 /etc/haproxy/errors/400.http
   errorfile 403 /etc/haproxy/errors/403.http
   errorfile 408 /etc/haproxy/errors/408.http
@@ -92,8 +94,8 @@ frontend www-http
     acl host_tap hdr(host) -i osa.metagrid.xyz
     acl host_genius hdr(host) -i genius.metagrid.xyz
     # clusters
-    #use_backend genius if host_genius
-    #use_backend tap if host_tap
+    use_backend genius if host_genius
+    use_backend tap if host_tap
 
 backend genius
   balance leastconn
@@ -104,11 +106,10 @@ backend genius
 
 backend tap
   balance leastconn
-  option httpclose
-  option forwardfor
-  mode http
+  mode    http
+  option  httplog
+  option http-server-close
   server lamp1 192.168.201.12:80 check
-
 
 
 
