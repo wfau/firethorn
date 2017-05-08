@@ -35,17 +35,12 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 {
                 %>
             <column>
-           		<% if (column.name().equals("size")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("timeStamp")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("coord1")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("coord2")) { %>
+           		        <% if (column.name().equals("size")  || column.name().equals("timeStamp") || column.name().equals("coord1") || column.name().equals("coord2") || column.name().equals("min") || column.name().equals("max") || column.name().equals("value") || column.name().equals("date")) { %>
 					 <name><%= '"' + column.name() +'"'  %></name>				 
 				<% } else { %>
 					 <name><%= column.name() %></name>
 				<% } %>
+
                 <%
                 if (column.text() != null)
                     {
