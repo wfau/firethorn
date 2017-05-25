@@ -57,6 +57,7 @@
         # Set the project version.
         source 'bin/util.sh'
         pomversions "${devbranch:?}"
+        dockerfiles "${devbranch:?}"
 
         #
         # Commit and push the new branch.
