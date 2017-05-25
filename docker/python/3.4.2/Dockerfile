@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:14.04
+FROM firethorn/ubuntu:2.1.9-zrq-bug-fixes
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #

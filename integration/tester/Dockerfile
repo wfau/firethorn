@@ -15,8 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:{BUILD_VERSION}
+FROM firethorn/fedora:2.1.9-zrq-bug-fixes
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+RUN dnf -y install perl
+RUN dnf -y install perl-JSON
 
 RUN dnf install -y jq
 RUN dnf install -y xmlstarlet
@@ -24,5 +27,11 @@ RUN dnf install -y xmlstarlet
 COPY bin/  /tester/bin 
 COPY meta/ /tester/meta 
 COPY vosi/ /tester/vosi 
+
+ADD https://github.com/micha/resty/raw/master/pp    /tester/bin/
+ADD https://github.com/micha/resty/raw/master/resty /tester/bin/
+
+RUN chmod a+x /tester/bin/pp
+RUN chmod a+x /tester/bin/resty
 
 WORKDIR /tester

@@ -15,15 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:{BUILD_VERSION}
+FROM firethorn/tomcat:2.1.9-zrq-bug-fixes
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-EXPOSE 1433
+#
+# ADD our webapp.
+ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
 
-RUN dnf -y install openssh-clients
-
-COPY bin/sql-tunnel.sh /bin/sql-tunnel.sh
-RUN chmod a+x /bin/sql-tunnel.sh
-
-CMD /bin/sql-tunnel.sh
+#
+# Update the service health check.
+HEALTHCHECK \
+    --interval=30s \
+    --timeout=5s \
+    CMD curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1
 

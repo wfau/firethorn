@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,12 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:{BUILD_VERSION}
+FROM firethorn/fedora:2.1.9-zrq-bug-fixes
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV JAVA_VERSION 1.8.0
+EXPOSE 1433
 
-#
-# Install Java
-RUN dnf -y install java-${JAVA_VERSION}-openjdk-headless
+RUN dnf -y install openssh-clients
+
+COPY bin/sql-tunnel.sh /bin/sql-tunnel.sh
+RUN chmod a+x /bin/sql-tunnel.sh
+
+CMD /bin/sql-tunnel.sh
 

@@ -1,0 +1,141 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    export devname=zrq-bug-fixes
+
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt &
+
+# -----------------------------------------------------
+# Set the buildtag.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        buildtag=$(getversion)
+
+    popd
+
+# -----------------------------------------------------
+# Build our base images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+#---------------------------------------------------------------------
+# Build our Eclipse projects.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Changes and tests ...
+#[user@desktop]
+
+
+    #
+    #
+    #
+    
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+
+        devbranch=$(hg branch)
+
+        pomversions "${devbranch:?}"
+        dockerfiles "${devbranch:?}"
+
+    popd
+
+
+    
+    for dockfile in $(find docker -name 'Dockerfile')
+    do
+        echo "Dockerfile [${dockfile:?}]"
+        sed -n '
+            /FROM firethorn/ {n
+                s/\(firethorn\/[^:]*:\).*/\1'${version}'/p
+                }
+            ' "${dockfile:?}"
+    done
+
+    for docktemp in $(find docker -name 'Dockertemp')
+    do
+        echo "Dockertemp [${docktemp:?}]"
+        hg rm "${docktemp:?}"
+    done
+
+
+

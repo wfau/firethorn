@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,22 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:21.1
+FROM firethorn/fedora:2.1.9-zrq-bug-fixes
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-RUN \
-    cd /tmp ;\
-    /usr/bin/wget --no-cookies --no-check-certificate \
-        --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie"  \
-        http://download.oracle.com/otn-pub/java/jdk/1.5.0_22/jdk-1_5_0_22-linux-amd64.bin
+EXPOSE 1433
 
-# alternate  java method disabled: download local jdk
-#ADD jdk-1_5_0_22-linux-amd64.bin /tmp/
+RUN dnf -y install socat
+RUN dnf -y install bind-utils
 
-# install java
-RUN \
-    echo yes|sh /tmp/jdk-1_5_0_22-linux-amd64.bin ;\
-    rm /tmp/jdk-1_5_0_22-linux-amd64.bin
+COPY bin/sql-proxy.sh /bin/sql-proxy.sh
+RUN chmod a+x /bin/sql-proxy.sh
 
-ENV JAVA_HOME /jdk1.5.0_22
-ENV PATH /jdk1.5.0_22/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+CMD /bin/sql-proxy.sh
+
+
+
+

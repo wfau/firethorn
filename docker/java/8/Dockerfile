@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tomcat:2.1.9-zrq-bug-fixes
+FROM firethorn/fedora:2.1.9-zrq-bug-fixes
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-#
-# ADD our webapp.
-ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
+ENV JAVA_VERSION 1.8.0
 
+#
+# Install Java
+RUN dnf -y install java-${JAVA_VERSION}-openjdk-headless
 
