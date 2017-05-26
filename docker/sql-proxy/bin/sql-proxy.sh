@@ -32,6 +32,11 @@ echo "Target host [${targethost}]"
 echo "Tunnel host [${tunnelhost}]"
 echo "Tunnel user [${tunneluser}]"
 
+# ROE network
+LOCALNET='129.215.*'
+# ramses1
+TESTHOST='192.168.137.20'
+
 #
 # Get our external IP address.
 extern()
@@ -94,12 +99,12 @@ echo "External IP [${external}]"
 
 #
 # If our address is in ROE.
-if [[ ${external:?} == 129.215.* ]]
+if [[ ${external:?} == ${LOCALNET} ]]
 then
     echo "INTERNAL network"
     #
     # Check the route to ramses1.
-    via=$(route '192.168.137.20')
+    via=$(route ${TESTHOST})
     echo "VIA [${via}]"
     #
     # If the route is direct (has no via).
@@ -108,28 +113,18 @@ then
         echo "DIRECT route"
         #
         # Proxy the SQLServer connection.
-        proxy(
-            ${targethost}
-            )
+        proxy ${targethost}
     else
         echo "INDIRECT route"
         #
         # Tunnel the SQLServer connection.
-        tunnel(
-            ${targethost}
-            ${tunnelhost}
-            ${tunneluser}
-            )
+        tunnel ${targethost} ${tunnelhost} ${tunneluser}
     fi
 else
     echo "EXTERNAL network"
     #
     # Tunnel the SQLServer connection.
-    tunnel(
-        ${targethost}
-        ${tunnelhost}
-        ${tunneluser}
-        )
+    tunnel ${targethost} ${tunnelhost} ${tunneluser}
 fi
 
 

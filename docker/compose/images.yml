@@ -40,15 +40,13 @@ services:
         depends_on:
             - fedora
 
-    sql-tunnel:
+    sql-client:
         image:
-            "firethorn/sql-tunnel:${buildtag}"
+            "firethorn/sql-client:${buildtag}"
         labels:
             uk.ac.roe.firethorn.buildtag: "${buildtag}"
         build:
-            context: '../sql-tunnel'
-        depends_on:
-            - fedora
+            context: '../sql-client'
 
     postgres:
         image:

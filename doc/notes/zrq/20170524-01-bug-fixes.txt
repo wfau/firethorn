@@ -47,7 +47,7 @@
     popd
 
 # -----------------------------------------------------
-# Build our base images.
+# Build our Docker images.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -82,7 +82,6 @@
         mvn -P all clean install
 
     popd
-
 
 # -----------------------------------------------------
 # Build our Java containers.
@@ -128,7 +127,7 @@
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
-    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20160906-02-mssql-create.txt &
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20170526-01-mssql-create.txt &
 
 
 
