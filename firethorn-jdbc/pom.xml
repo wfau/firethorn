@@ -77,18 +77,19 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>2.3.4</version>
+            <version>2.4.0</version>
         </dependency>
 
         <!--+
             | Postgresql JDBC driver.
             | http://jdbc.postgresql.org/
+            | https://github.com/pgjdbc/pgjdbc
             | http://mvnrepository.com/artifact/postgresql/postgresql
             +-->
     	<dependency>
     		<groupId>org.postgresql</groupId>
     		<artifactId>postgresql</artifactId>
-            <version>9.4.1212</version>
+            <version>42.1.1</version>
     	</dependency>
 
         <!--+
@@ -99,7 +100,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.5</version>
+            <version>6.0.6</version>
         </dependency>
 
         <!--+
