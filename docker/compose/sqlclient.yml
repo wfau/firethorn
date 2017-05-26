@@ -1,0 +1,56 @@
+version: '2.1'
+
+networks:
+
+    # External network
+    rosana:
+
+    # Internal network
+    miriam:
+
+services:
+
+    sqlproxy:
+        image:
+           "firethorn/sql-proxy:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        environment:
+            targethost: "${targethost}"
+            tunnelhost: "${tunnelhost}"
+            tunneluser: "${tunneluser}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+
+    sqlclient:
+        image:
+           "firethorn/sql-client:${buildtag}"
+        read_only:
+            true
+        stdin_open:
+            true
+        tty:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/sqsh.properties:/sqsh.properties
+            - ${HOME}/data.properties:/data.properties
+        networks:
+            - miriam
+        depends_on:
+            sqlproxy:
+                condition: service_started            
+        command:
+            [bash]
+
+
