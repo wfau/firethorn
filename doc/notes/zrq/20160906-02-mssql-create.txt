@@ -27,9 +27,9 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
+        source 'bin/util.sh'
         version=$(getversion)
 
-        source 'bin/util.sh'
         docker build \
             --tag "firethorn/sqsh:${version:?}" \
             firethorn-sqlserver/src

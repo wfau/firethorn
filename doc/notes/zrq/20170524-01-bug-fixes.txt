@@ -124,8 +124,28 @@
     #
 
 # -----------------------------------------------------
-# Create a new dataase.
+# Create a new database.
 #[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20160906-02-mssql-create.txt &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # -----------------------------------------------------

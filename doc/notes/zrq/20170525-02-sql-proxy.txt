@@ -1,0 +1,66 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Run our base container.
+#[user@desktop]
+
+
+    docker run \
+        --rm -it \
+        "firethorn/fedora:${buildtag:?}" \
+        bash
+
+        #
+        # Get our external address.
+        address=$(curl -4 --silent 'http://icanhazip.com/')
+
+        #
+        # If our address is in ROE.
+        if [[ ${address:?} == 129.215.* ]]
+        then
+            network='INTERNAL'
+
+            #
+            # Check the route to ramses1.
+            target=192.168.137.20
+            via=$(
+                ip route get "${target:?}" |
+                sed -n '
+                    /^'${target}'/ {
+                        s/^'${target}' via \([0-9.]*\)\b.*$/\1/p
+                        }
+                    '
+                )
+            #
+            # If the route is has no via.
+            if [ -z ${via} ]
+            then
+                network='DIRECT'
+            fi
+        else
+            network='EXTERNAL'
+        fi
+
+        echo "${network}"
+
+
