@@ -20,8 +20,10 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 EXPOSE 1433
 
+RUN dnf -y install curl
 RUN dnf -y install socat
 RUN dnf -y install bind-utils
+RUN dnf -y install openssh-clients
 
 COPY bin/sql-proxy.sh /bin/sql-proxy.sh
 RUN chmod a+x /bin/sql-proxy.sh
