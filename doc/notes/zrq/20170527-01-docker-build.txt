@@ -32,9 +32,22 @@
         INFO : Disc name [Araybwyn.qcow]
         INFO : Disc size [32GiB]
 
-#
+# -----------------------------------------------------
 # TODO fix .ssh directory for Stevedore
-#
+#[user@trop]
+
+    ssh root@Araybwyn
+
+        cp -r /root/.ssh .
+        chown -R Stevedore .ssh/
+        chgrp -R Stevedore .ssh/
+        restorecon -R .ssh/
+
+        exit
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
 
     ssh Stevedore@Araybwyn
 
