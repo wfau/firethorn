@@ -50,7 +50,8 @@ RUN dnf -y install docker-ce
 #
 # Install Docker compose from GitHub.
 RUN dnf -y install git
-RUN curl -L -s https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose
+#UN curl -L -s https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose
+RUN curl -L -s https://github.com/docker/compose/releases/download/1.13.0/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose
 RUN chmod +x /usr/bin/docker-compose
 
 #

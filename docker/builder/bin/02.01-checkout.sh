@@ -27,7 +27,7 @@
     then
         pushd "${FIRETHORN_CODE:?}"
 
-            echo "Updating source code"
+            echo "Updating source code from []"
 
             hg pull
             hg update
@@ -36,9 +36,10 @@
     else
         pushd "$(dirname ${FIRETHORN_CODE:?})"
 
-            echo "Cloning source code"
+            hgrepo='http://wfau.metagrid.co.uk/code/firethorn'
+            echo "Cloning source code from [${hgrepo:?}]"
 
-            hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "$(basename ${FIRETHORN_CODE:?})"
+            hg clone "${hgrepo:?}" "$(basename ${FIRETHORN_CODE:?})"
 
         popd
     fi
