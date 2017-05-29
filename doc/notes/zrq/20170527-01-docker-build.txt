@@ -55,7 +55,7 @@
 # Download our compose file
 #[user@virtual]
      
-    wget -O builder.yml \
+    wget -O "${HOME:?}/builder.yml" \
         http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
 
 # -----------------------------------------------------
@@ -70,54 +70,75 @@
 
     export branch
     docker-compose \
-        --file "builder.yml" \
+        --file "${HOME:?}/builder.yml" \
         run builder 
 
-# -----------------------------------------------------
-# Initialise our path.
-#[root@builder]
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
 
-    PATH=${PATH}:/builder/bin
+        PATH=${PATH}:/builder/bin
 
-# -----------------------------------------------------
-# Initialise our paths.
-#[root@builder]
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
 
-    01.01-init.sh
-    
-# -----------------------------------------------------
-# Checkout a copy of our source code.
-#[root@builder]
+        01.01-init.sh
+        
+    # -----------------------------------------------------
+    # Checkout a copy of our source code.
+    #[root@builder]
 
-    02.01-checkout.sh
+        02.01-checkout.sh
 
-# -----------------------------------------------------
-# Build our base images.
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
 
-    04.01-buildbase.sh
+        04.01-buildbase.sh
 
-# -----------------------------------------------------
-# Compile our Java code.
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
 
-    05.01-javamaven.sh
+        05.01-javamaven.sh
 
-# -----------------------------------------------------
-# Build our Java containers.
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
 
-    05.02-javadocker.sh
+        05.02-javadocker.sh
+
+    # -----------------------------------------------------
+    # Exit from the builder.
+    #[root@builder]
+
 
 # -----------------------------------------------------
 # Add our secret function.
-#[root@builder]
+#[user@virtual]
 
     vi "${HOME:?}/secret.sh"
 
         ....
        
-    secret 'test'
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create a new database.
+#[user@virtual]
 
-
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20170526-01-mssql-create.txt &
 
 # -----------------------------------------------------
-# Test our containers ...
+# -----------------------------------------------------
+# Run our test queries.
+#[user@virtual]
+
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20170528-01-test-queries.txt &
+
+
+
+
 

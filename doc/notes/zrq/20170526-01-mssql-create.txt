@@ -20,9 +20,32 @@
 #
 #
 
+
+# -----------------------------------------------------
+# Locate our compose file.
+#[user@desktop]
+#[user@virtual]
+
+    if [ -e "${HOME:?}/firethorn.settings" ]
+    then
+
+        source "${HOME:?}/firethorn.settings"
+        composit="${FIRETHORN_CODE:?}/docker/compose"
+
+    else
+
+        composit="${HOME:?}/compose"
+        mkdir -p "${composit:?}"
+
+        wget -O "${composit:?}/sqlclient.yml" \
+            'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/sqlclient.yml'
+
+    fi
+
 # -----------------------------------------------------
 # Load our secret function.
 #[user@desktop]
+#[user@virtual]
 
     source "${HOME:?}/secret.sh"
 
@@ -31,6 +54,7 @@
 # -----------------------------------------------------
 # Create our sqsh config.
 #[user@desktop]
+#[user@virtual]
 
 
     cat > "${HOME:?}/sqsh.properties" << EOF
@@ -54,6 +78,7 @@ EOF
 # -----------------------------------------------------
 # Create our output file.
 #[user@desktop]
+#[user@virtual]
 
     touch  "${HOME:?}/data.properties"
     chmod a+rw \
@@ -62,59 +87,64 @@ EOF
         "${HOME:?}/data.properties" 
 
 # -----------------------------------------------------
+# Set the target branch
+#[user@desktop]
+#[user@virtual]
+
+    buildtag=2.1.9-zrq-bug-fixes
+
+# -----------------------------------------------------
 # Run our SQL client.
 #[user@desktop]
+#[user@virtual]
 
     source "${HOME:?}/sqsh.properties"
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+    export targethost=${sqlhost}
+    export tunnelhost
+    export tunneluser
 
-        export targethost=${sqlhost}
-        export tunnelhost
-        export tunneluser
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/sqlclient.yml" \
+        run sqlclient 
 
-        export buildtag
-        docker-compose \
-            --file docker/compose/sqlclient.yml \
-            run sqlclient 
+        #
+        # Load the SQLServer properties
+        source "/sqsh.properties"
 
-            #
-            # Load the SQLServer properties
-            source "/sqsh.properties"
+        #
+        # Test connection to SQLServer
+        sqsh \
+            -S 'sqlproxy' \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%'"
+        
+        #
+        # Function to fill in the template values.
+        sqlsed()
+            {
+            sed '
+                s|{databasename}|'"${databasename}"'|g
+                s|{databasepath}|'"${databasepath}"'|g
+                s|{databaseuser}|'"${databaseuser}"'|g
+                s|{databasepass}|'"${databasepass}"'|g
+                s|{databaselogin}|'"${databaselogin}"'|g
+                ' "${1:?}"
+            }
 
-            #
-            # Test connection to SQLServer
-            sqsh \
-                -S 'sqlproxy' \
-                -U "${sqluser:?}" \
-                -P "${sqlpass:?}" \
-                -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%'"
-            
-            #
-            # Function to fill in the template values.
-            sqlsed()
-                {
-                sed '
-                    s|{databasename}|'"${databasename}"'|g
-                    s|{databasepath}|'"${databasepath}"'|g
-                    s|{databaseuser}|'"${databaseuser}"'|g
-                    s|{databasepass}|'"${databasepass}"'|g
-                    s|{databaselogin}|'"${databaselogin}"'|g
-                    ' "${1:?}"
-                }
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${metaname:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
 
-            #
-            # Set the template values
-            databasehost="${sqlhost:?}"
-            databaseport="1433"
-            databasename="${metaname:?}"
-            databasepath="${sqlpath:?}"
-            databaseuser="${databasename:?}User"
-            databaselogin="${databasename:?}Login"
-            databasepass="${databasename:?}$(pwgen -s 8 1)"
-
-            cat > "/data.properties" << EOF
+        cat > "/data.properties" << EOF
 #
 # Metadata database
 firethorn.meta.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
@@ -125,29 +155,29 @@ firethorn.meta.user=${databaselogin:?}
 firethorn.meta.pass=${databasepass:?}
 EOF
 
-            #
-            # Delete our old metadata database.
-            # sqlsed 'delete-user.sql'     | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-            # sqlsed 'delete-login.sql'    | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-            # sqlsed 'delete-database.sql' | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        #
+        # Delete our old metadata database.
+        # sqlsed 'delete-user.sql'     | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-login.sql'    | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-database.sql' | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
-            #
-            # Create our new metadata database.
-            sqlsed 'create-database.sql' | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-            sqlsed 'create-login.sql'    | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-            sqlsed 'create-user.sql'     | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        #
+        # Create our new metadata database.
+        sqlsed 'create-database.sql' | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'    | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'     | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
-            #
-            # Set the template values
-            databasehost="${sqlhost:?}"
-            databaseport="1433"
-            databasename="${username:?}"
-            databasepath="${sqlpath:?}"
-            databaseuser="${databasename:?}User"
-            databaselogin="${databasename:?}Login"
-            databasepass="${databasename:?}$(pwgen -s 8 1)"
+        #
+        # Set the template values
+        databasehost="${sqlhost:?}"
+        databaseport="1433"
+        databasename="${username:?}"
+        databasepath="${sqlpath:?}"
+        databaseuser="${databasename:?}User"
+        databaselogin="${databasename:?}Login"
+        databasepass="${databasename:?}$(pwgen -s 8 1)"
 
-            cat >> "/data.properties" << EOF
+        cat >> "/data.properties" << EOF
 #
 # Userdata database
 firethorn.user.url=jdbc:jtds:sqlserver://${databasehost:?}:${databaseport:?}/${databasename:?}
@@ -158,28 +188,27 @@ firethorn.user.user=${databaselogin:?}
 firethorn.user.pass=${databasepass:?}
 EOF
 
-            #
-            # Delete our old userdata database.
-            # sqlsed 'delete-user.sql'     | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-            # sqlsed 'delete-login.sql'    | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-            # sqlsed 'delete-database.sql' | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        #
+        # Delete our old userdata database.
+        # sqlsed 'delete-user.sql'     | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-login.sql'    | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-database.sql' | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
-            #
-            # Create our new userdata database (including empty table).
-            sqlsed 'create-database.sql'   | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-            sqlsed 'create-login.sql'      | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-            sqlsed 'create-user.sql'       | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        #
+        # Create our new userdata database (including empty table).
+        sqlsed 'create-database.sql'   | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'      | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'       | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
-            #
-            # List the created databases
-            sqsh \
-                -S 'sqlproxy' \
-                -U "${sqluser:?}" \
-                -P "${sqlpass:?}" \
-                -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%${basename:?}'"
+        #
+        # List the created databases
+        sqsh \
+            -S 'sqlproxy' \
+            -U "${sqluser:?}" \
+            -P "${sqlpass:?}" \
+            -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%${basename:?}'"
 
-        exit
-    popd
+    exit
 
 # -----------------------------------------------------
 # Update our secret store.
