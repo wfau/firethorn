@@ -257,7 +257,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", depth, base, name);
         return created(
             resource.schemas().create(
-                ((depth != null) ? depth : TreeComponent.CopyDepth.FULL),
+                ((depth != null) ? depth : TreeComponent.CopyDepth.THIN),
                 name,
                 factories().base().schema().resolve(
                     base
