@@ -259,7 +259,6 @@ tunnelhost=${tunnelhost:?}
 
 EOF
 
-
 # -----------------------------------------------------
 # Run our tester.
 #[user@desktop]

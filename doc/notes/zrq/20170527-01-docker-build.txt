@@ -52,11 +52,14 @@
     ssh Stevedore@Araybwyn
 
 # -----------------------------------------------------
-# Download our compose file
+# Locate our compose file.
 #[user@virtual]
-     
-    wget -O "${HOME:?}/builder.yml" \
-        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+    composit="${HOME:?}/compose"
+    mkdir -p "${composit:?}"
+
+    wget -O "${composit:?}/builder.yml" \
+        'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml'
 
 # -----------------------------------------------------
 # Set the target branch
@@ -70,7 +73,7 @@
 
     export branch
     docker-compose \
-        --file "${HOME:?}/builder.yml" \
+        --file "${composit:?}/builder.yml" \
         run builder 
 
     # -----------------------------------------------------
