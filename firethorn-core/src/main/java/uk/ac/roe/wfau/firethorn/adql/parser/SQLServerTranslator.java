@@ -259,17 +259,24 @@ implements BaseTranslator
 	 */
 	@Override
 	public String translate(final ADQLColumn column) throws TranslationException {
-		log.debug("translate(ADQLColumn)");
+        log.debug("translate(ADQLColumn)");
+        log.debug("    column.getFullColumnName() [{}]", column.getFullColumnName());
 		String result = null ;		
 		// Use its DB name if known:
+        log.debug("Checking column.getDBLink()");
+        log.debug("    column.getDBLink() [{}]", column.getDBLink());
 		if (column.getDBLink() != null)
 		    {
             DBColumn dbCol = column.getDBLink();
             StringBuffer colName = new StringBuffer();
 
 			// Use the table alias if any:
+            log.debug("Checking column.getAdqlTable().hasAlias()");
+            log.debug("    column.getAdqlTable() [{}]", column.getAdqlTable());
 			if ((column.getAdqlTable() != null) && (column.getAdqlTable().hasAlias()))
 				{
+                log.debug("    column.getAdqlTable().hasAlias()() [{}]", column.getAdqlTable().hasAlias());
+                log.debug("    column.getAdqlTable().getAlias()() [{}]", column.getAdqlTable().getAlias());
 				appendIdentifier(
 			        colName,
 			        column.getAdqlTable().getAlias(),
@@ -279,46 +286,59 @@ implements BaseTranslator
 			        ).append('.');
 				}
 			// Use the DBTable if any:
-			else if ((dbCol.getTable() != null) && (dbCol.getTable().getDBName() != null))
-			    {
-                log.debug("column.getAdqlTable() [{}]", column.getAdqlTable());
-				if (column.getAdqlTable() != null)
-				    {
-                    log.debug("dbCol.getTable() [{}]", dbCol.getTable());
-                    log.debug("getQualifiedTableName() [{}]", getQualifiedTableName(dbCol.getTable()));
-					colName.append(
-				        getQualifiedTableName(
-			                dbCol.getTable()
-			                )
-				        ).append('.');
-				    }
-				else {
-                    log.debug("dbCol.getTable().getADQLName() [{}]", dbCol.getTable().getADQLName());
-					colName.append(
-				        dbCol.getTable().getADQLName()
-				        );
-					colName.append('.');
-				    }
-			    }
-			// Otherwise, use the prefix of the column given in the ADQL query:
-			else if (column.getTableName() != null)
-			    {
-				colName = column.getFullColumnPrefix().append('.');
-				}
+			else {
+                log.debug("Checking dbCol.getTable()");
+                log.debug("    dbCol.getTable() [{}]", dbCol.getTable());
+    			if ((dbCol.getTable() != null) && (dbCol.getTable().getDBName() != null))
+    			    {
+                    log.debug("    dbCol.getTable().getDBName() [{}]", dbCol.getTable().getDBName());
+                    log.debug("Checking column.getAdqlTable()");
+                    log.debug("    column.getAdqlTable() [{}]", column.getAdqlTable());
+    				if (column.getAdqlTable() != null)
+    				    {
+                        log.debug("Using dbCol.getTable()");
+                        log.debug("    dbCol.getTable() [{}]", dbCol.getTable());
+                        log.debug("Using getQualifiedTableName()");
+                        log.debug("    getQualifiedTableName() [{}]", getQualifiedTableName(dbCol.getTable()));
+    					colName.append(
+    				        getQualifiedTableName(
+    			                dbCol.getTable()
+    			                )
+    				        ).append('.');
+    				    }
+    				else {
+                    log.debug("Using dbCol.getTable().getADQLName()");
+                    log.debug("    dbCol.getTable().getADQLName() [{}]", dbCol.getTable().getADQLName());
+    					colName.append(
+    				        dbCol.getTable().getADQLName()
+    				        );
+    					colName.append('.');
+    				    }
+    			    }
+    			// Otherwise, use the prefix of the column given in the ADQL query:
+    			else {
+                    log.debug("Checking column.getTableName()");
+                    log.debug("    column.getTableName() [{}]", column.getTableName());
+    			    if (column.getTableName() != null)
+    			        {
+    			        colName = column.getFullColumnPrefix().append('.');
+    			        }
+    			    }
+    			}
 
-            log.debug("  dbCol.getADQLName [{}]", dbCol.getADQLName());
-            log.debug("  dbCol.getDBName   [{}]", dbCol.getDBName());
+            log.debug("Using dbCol.getDBName()");
+            log.debug("  dbCol.getDBName() [{}]", dbCol.getDBName());
 			appendIdentifier(
 		        colName,
 		        dbCol.getDBName(),
 		        IdentifierField.COLUMN
 		        );
-
 			result = colName.toString();
 		    }
 		// Otherwise, use the full name given in the ADQL query:
 		else{
-		    log.debug("  using getFullColumnName()");
+            log.debug("Using column.getFullColumnName()");
+            log.debug("    column.getFullColumnName() [{}]", column.getFullColumnName());
 		    result = column.getFullColumnName();
 			}
         log.debug("  result [{}]", result);
