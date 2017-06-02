@@ -1,0 +1,149 @@
+version: '2.1'
+
+networks:
+
+    # External network
+    rosana:
+
+    # Internal network
+    miriam:
+
+services:
+
+    bethany:
+        image:
+           "firethorn/postgres:${buildtag}"
+        read_only:
+            true
+        tmpfs:
+            - '/run'
+            - '/tmp'
+        environment:
+            POSTGRES_USER: "${metauser}"
+            POSTGRES_PASSWORD: "${metapass}"
+        networks:
+            - miriam
+
+    patricia:
+        image:
+           "firethorn/sql-proxy:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        environment:
+            targethost: "${userhost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+
+    elayne:
+        image:
+           "firethorn/sql-proxy:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        environment:
+            targethost: "${datahost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+
+    jarmila:
+        image:
+           "firethorn/ogsadai:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+        networks:
+            - miriam
+        depends_on:
+            elayne:
+                condition: service_started            
+            patricia:
+                condition: service_started            
+        healthcheck:
+            test: [
+                "CMD-SHELL",
+                "curl --silent --head --fail http://localhost:8080/ogsadai/services || exit 1"
+                ]
+            interval: 30s
+            timeout: 5s
+            retries: 5
+
+    gillian:
+        image:
+           "firethorn/firethorn:${testtag}"
+        read_only:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/firethorn.properties:/etc/firethorn.properties
+        networks:
+            - miriam
+            - rosana
+        environment:
+            firethorn.ogsadai.endpoint: 'http://jarmila:8080/ogsadai/services'
+        depends_on:
+            bethany:
+                condition: service_started            
+            elayne:
+                condition: service_started            
+            patricia:
+                condition: service_started            
+            jarmila:
+                condition: service_healthy            
+        healthcheck:
+            test: [
+                "CMD-SHELL",
+                "curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1"
+                ]
+            interval: 30s
+            timeout: 5s
+            retries: 5
+
+    tester:
+        image:
+           "firethorn/tester:${buildtag}"
+        read_only:
+            true
+        stdin_open:
+            true
+        tty:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/tester.properties:/etc/tester.properties
+            - ${HOME}/test.sh:/test.sh
+        networks:
+            - miriam
+        depends_on:
+            gillian:
+                condition: service_healthy            
+        command:
+            [bash]
+
+

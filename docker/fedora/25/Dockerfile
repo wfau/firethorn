@@ -32,6 +32,7 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 RUN dnf install -y sed
 RUN dnf install -y tar
 RUN dnf install -y zip
+RUN dnf install -y less
 RUN dnf install -y wget
 RUN dnf install -y nano
 RUN dnf install -y gzip

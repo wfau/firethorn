@@ -36,8 +36,8 @@
     ** CHANGE adql.schema.table.import.base adql.table.base
 
     ** CHANGE adql.resource.schema.select.name  adql.schema.name
-    ** CHANGE adql.resource.schema.import.name  adql.schema.name
 
+    ** CHANGE adql.resource.schema.import.name  adql.schema.name
     ** CHANGE adql.resource.schema.import.base  adql.schema.base
 
     ** CHANGE urn:adql.copy.depth adql.copy.depth

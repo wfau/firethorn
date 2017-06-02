@@ -32,7 +32,7 @@
     popd
 
 # -----------------------------------------------------
-# Build our Java containers.
+# Build our Java container.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
@@ -42,12 +42,6 @@
         pushd firethorn-ogsadai/webapp
             mvn docker:package
         popd
-
-        export buildtag
-        pushd firethorn-webapp
-            mvn docker:package
-        popd
-
     popd
 
 # -----------------------------------------------------
@@ -59,4 +53,6 @@
     docker-compose \
         --file "${composit:?}/tester.yml" \
         run tester 
+
+
 
