@@ -1,0 +1,118 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    JdbcResources
+        [
+            {
+            id   : "gurang-jafari"
+            name : "ATLAS database"
+            jdbc {
+                host : "",
+                name : "ATLASDR1",
+                user : "",
+                pass : ""
+                }
+            }
+        ]
+
+    IvoaResources
+        [
+            {
+            id   : "akdag-marri"
+            name : "GAVO TAP service"
+            ivoa {
+                endpoint : ""
+                }
+            }
+        ]
+
+    AdqlResources
+        [
+            {
+            id   : "ziya-ibrahim"
+            name : "OSA resouce"
+            schemas
+                [
+                    {
+                    name : "ATLASDR1",
+                    base : "jdbc:gurang-jafari:ATLASDR1.dbo",
+                    ....
+                    metadoc : ""
+                    },
+                    {
+                    name : "ATLASDR2",
+                    base : "jdbc:gurang-jafari:ATLASDR2.dbo",
+                    ....
+                    metadoc : ""
+                    }
+                ]
+            },
+
+            {
+            id   : "sadegh-ramay"
+            name : "GAVO resource"
+            schemas
+                [
+                    {
+                    name : "amanda",
+                    base : "ivoa:akdag-marri:amanda",
+                    ....
+                    },
+                    {
+                    name : "twomass",
+                    base : "ivoa:akdag-marri:twomass",
+                    ....
+                    }
+                ]
+            }
+
+            {
+            id   : "hasret-rathore"
+            name : "Combined resource"
+            schemas
+                [
+                    {
+                    name : "ATLASDR1",
+                    base : "jdbc:gurang-jafari:ATLASDR1.dbo",
+                    ....
+                    metadoc : ""
+                    },
+                    {
+                    name : "ATLASDR2",
+                    base : "jdbc:gurang-jafari:ATLASDR2.dbo",
+                    ....
+                    metadoc : ""
+                    }
+                    {
+                    name : "amanda",
+                    base : "ivoa:akdag-marri:amanda",
+                    ....
+                    },
+                    {
+                    name : "twomass",
+                    base : "ivoa:akdag-marri:twomass",
+                    ....
+                    }
+                ]
+            }
+        ] 
+

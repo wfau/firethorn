@@ -1,0 +1,119 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Download different versions.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/parser/
+
+            wget -O SQLServerTranslator-2.1.5.txt \
+                http://wfau.metagrid.co.uk/code/firethorn/raw-file/03309a6b30e5/firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/parser/SQLServerTranslator.java
+
+            wget -O SQLServerTranslator-2.1.6.txt \
+                http://wfau.metagrid.co.uk/code/firethorn/raw-file/dd78b8528e17/firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/parser/SQLServerTranslator.java
+
+            rm SQLServerTranslator.java
+
+#           mv SQLServerTranslator.java \
+#              SQLServerTranslator.original
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Swap to the before version.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/parser/
+
+            cp -f SQLServerTranslator-2.1.5.txt \
+                  SQLServerTranslator.java
+
+        popd
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Run containers.
+#[user@desktop]
+#[user@virtual]
+
+#    buildtag=2.1.9-zrq-bug-fixes
+#
+#    testtag=2.1.3
+#    testtag=2.1.4
+#    testtag=2.1.5
+#    testtag=2.1.6
+#
+#    testtag=${buildtag}
+#
+
+    export testtag
+    export buildtag
+
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        down 
+
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        run tester 
+
+# -----------------------------------------------------
+# Run our test script.
+#[root@tester]
+
+        /test.sh
+
+

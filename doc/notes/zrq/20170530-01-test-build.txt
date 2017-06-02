@@ -1,0 +1,474 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+#[user@virtual]
+
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        run tester 
+
+# -----------------------------------------------------
+# Load our configuration.
+#[root@tester]
+
+        source /etc/tester.properties
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | jq '.' | tee /tmp/system-info.json
+
+# -----------------------------------------------------
+# Create a JdbcResource to represent the local JDBC database.
+#[root@tester]
+
+        jdbcname="ATLAS JDBC resource"
+        jdbcurl="jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "jdbc.resource.name=${jdbcname:?}" \
+            --data   "jdbc.connection.url=${jdbcurl:?}" \
+            --data   "jdbc.connection.user=${datauser:?}" \
+            --data   "jdbc.connection.pass=${datapass:?}" \
+            --data   "jdbc.connection.driver=${datadriver:?}" \
+            --data   "jdbc.resource.catalog=ATLASDR1" \
+            "${endpointurl:?}/jdbc/resource/create" \
+            | jq '.' | tee /tmp/atlas-jdbc.json
+
+        atlasjdbc=$(
+            jq -r '.self' /tmp/atlas-jdbc.json
+            )
+
+        echo "Atlas JDBC [${atlasjdbc:?}]"
+
+        curl \
+            --silent \
+            ${atlasjdbc:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Create an empty AdqlResource to represent the local JDBC database.
+#[root@tester]
+
+        adqlname="ATLAS ADQL resource"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.resource.name=${adqlname:?}" \
+            "${endpointurl:?}/adql/resource/create" \
+            | jq '.' | tee /tmp/atlas-adql.json
+
+        atlasadql=$(
+            jq -r '.self' /tmp/atlas-adql.json
+            )
+
+        echo "Atlas ADQL [${atlasadql:?}]"
+
+        curl \
+            --silent \
+            ${atlasadql:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Locate the JdbcSchema based on catalog and schema name.
+#[root@tester]
+
+        catalog="ATLASDR1"
+        schema="dbo"
+        
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "jdbc.schema.catalog=${catalog:?}" \
+            --data   "jdbc.schema.schema=${schema:?}" \
+            "${atlasjdbc:?}/schemas/select" \
+            | jq '.' | tee /tmp/jdbc-schema.json
+
+        jdbcschema=$(
+            jq -r '.self' /tmp/jdbc-schema.json
+            )
+
+        echo "JDBC schema [${jdbcschema:?}]"
+
+        curl \
+            --silent \
+            ${jdbcschema:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Import the mapping between JDBC and ADQL tables.
+#[root@tester]
+
+        metadoc="meta/ATLASDR1_TablesSchema.xml"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "metadoc.base=${jdbcschema:?}" \
+            --form   "metadoc.file=@${metadoc:?}" \
+            "${atlasadql:?}/metadoc/import" \
+            | jq '.' | tee /tmp/adql-schema.json
+
+        adqlschema=$(
+            jq -r '.[].self' /tmp/adql-schema.json
+            )
+
+        echo "ADQL schema [${adqlschema:?}]"
+
+        curl \
+            --silent \
+            ${adqlschema:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create a new ADQL resource to act as a workspace.
+#[root@tester]
+
+        adqlname="Query workspace"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.resource.name=${adqlname:?}" \
+            "${endpointurl:?}/adql/resource/create" \
+            | jq '.' | tee /tmp/query-space.json
+
+        queryspace=$(
+            jq -r '.self' /tmp/query-space.json
+            )
+
+        echo "Query space [${queryspace:?}]"
+
+        curl \
+            --silent \
+            ${queryspace:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Find the AtlasDR1 schema by name.
+#[root@tester]
+
+        selector=ATLASDR1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.schema.name=${selector:?}" \
+            "${atlasadql:?}/schemas/select" \
+            | jq '.' | tee /tmp/atlas-schema.json
+
+        atlasschema=$(
+            jq -r '.self' /tmp/atlas-schema.json
+            )
+
+        echo "Atlas schema [${atlasschema:?}]"
+
+        curl \
+            --silent \
+            ${atlasschema:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Add the Atlas DR1 schema.
+#[root@tester]
+
+        name=ATLASDR1
+        base=${atlasschema}
+        
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.schema.name=${name:?}" \
+            --data   "adql.schema.base=${base:?}" \
+            "${queryspace:?}/schemas/import" \
+            | jq '.'
+
+# -----------------------------------------------------
+# List the workspace schema.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            "${queryspace:?}/schemas/select" \
+            | jq '.'
+
+# -----------------------------------------------------
+# Query the local JDBC database.
+#[root@tester]
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        TOP 10
+        ra,
+        dec
+    FROM
+        ATLASDR1.atlasSource
+EOF
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        TOP 10
+        ra,
+        dec
+    FROM
+        ATLASDR1.atlasSource AS Hua7taek
+EOF
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        TOP 10
+        Hua7taek.ra,
+        Hua7taek.dec
+    FROM
+        ATLASDR1.atlasSource AS Hua7taek
+EOF
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        T.zpetromag
+    FROM
+        atlasSourceXDR8PhotoObj AS CrossMatch,
+        (
+        SELECT
+            s.sourceID  AS id,
+            s.zPetroMag AS zpetromag
+        FROM
+            atlasSource AS s
+        WHERE
+            ra > 350
+        AND
+            ra < 360.00
+        AND
+            dec > -14.5
+        AND
+            dec < -8.0
+        AND
+            zPetroMag > 0
+        AND
+            mergedClass = 1
+        ) AS T
+    WHERE
+        distanceMins < 2/60.0
+    AND
+        sdssType = 3
+    AND
+        sdssPrimary = 1
+    AND
+        T.id = CrossMatch.masterObjID
+EOF
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        TOP 10
+        masterObjID
+    FROM
+        atlasSourceXDR8PhotoObj AS CrossMatch,
+        (
+        SELECT
+            TOP 10000 s.sourceID AS id
+        FROM
+            atlasSource AS s
+        ORDER BY
+            ra
+        ) AS T
+    WHERE
+        T.id = CrossMatch.masterObjID
+EOF
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        distanceMins
+    FROM
+        atlasSourceXDR7PhotoObj AS crossMatch,
+        (
+        SELECT
+            source.sourceID as id
+        FROM
+            atlasSource as source
+        WHERE
+            source.ra BETWEEN 182 AND 184
+        AND
+            source.dec BETWEEN -1 AND -3
+        AND
+            mergedClass =1
+        GROUP BY
+            source.sourceID
+        ) AS nested
+    WHERE
+        distanceMins < 2/60.0
+    AND
+        sdssType = 3
+    AND
+        sdssPrimary = 1
+    AND
+        nested.id = crossMatch.masterObjID
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/atlas-query.json
+
+
+
+
+
+
+
+
+SELECT
+    TOP 10
+    CrossMatch.[masterObjID] AS [masterObjID]
+FROM
+    [ATLASDR1].[dbo].[atlasSourceXDR8PhotoObj] AS CrossMatch,
+    (
+    SELECT
+        TOP 10000
+        s.[sourceID] AS id
+    FROM
+        [ATLASDR1].[dbo].[atlasSource] AS s
+    ORDER BY
+        s.[ra] ASC
+    ) AS T
+WHERE T.[sourceID] = CrossMatch.[masterObjID]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        COUNT(sourceID),
+        (ROUND( ra/10, 0) * 10) AS rablock,
+        (ROUND(dec/10, 0) * 10) AS decblock
+    FROM
+        ATLASDR1.atlasSource
+    WHERE
+        sourceID <> 0
+    GROUP BY
+        (ROUND( ra/10, 0) * 10),
+        (ROUND(dec/10, 0) * 10)
+    ORDER BY
+        rablock,
+        decblock
+EOF
+
+cat > /tmp/atlas-query.adql << EOF
+SELECT
+    COUNT(*),
+    ROUND(gAperMag3, 0) AS gAper,
+    ROUND(iAperMag3, 0) AS iAper
+FROM
+    ATLASDR1.atlasSource
+WHERE
+    gAperMag3 <> 0
+GROUP BY
+    ROUND(gAperMag3, 0),
+    ROUND(iAperMag3, 0)
+ORDER BY
+    gAper,
+    iAper
+EOF
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/atlas-query.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/atlas-data.xml
+
+
+

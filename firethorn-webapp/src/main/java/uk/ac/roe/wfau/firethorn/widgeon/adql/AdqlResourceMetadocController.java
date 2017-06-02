@@ -81,13 +81,13 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * MVC property for the import metadoc file.
      *
      */
-    public static final String METADOC_IMPORT_FILE = "urn:schema.metadoc.file" ;
+    public static final String METADOC_IMPORT_FILE = "metadoc.file" ;
 
     /**
      * MVC property for the import metadoc base.
      *
      */
-    public static final String METADOC_IMPORT_BASE = "urn:schema.metadoc.base" ;
+    public static final String METADOC_IMPORT_BASE = "metadoc.base" ;
 
     // TODO Move these to a bean factory ?
     @Override

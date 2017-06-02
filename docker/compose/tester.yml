@@ -35,7 +35,6 @@ services:
         stdin_open:
             true
         environment:
-            target: "${userhost}"
             targethost: "${userhost}"
             tunneluser: "${tunneluser}"
             tunnelhost: "${tunnelhost}"
@@ -55,7 +54,6 @@ services:
         stdin_open:
             true
         environment:
-            target: "${datahost}"
             targethost: "${datahost}"
             tunneluser: "${tunneluser}"
             tunnelhost: "${tunnelhost}"

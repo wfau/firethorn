@@ -20,27 +20,39 @@
 #
 #
 
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
 
-    ** REMOVE urn:jdbc.copy.depth
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
 
-    ** REMOVE adql.copy.depth
-    ** CHANGE adql.resource.create.name adql.resource.name
+        mvn -P all clean install
 
-    ** CHANGE jdbc.resource.schema.select.catalog jdbc.schema.catalog
-    ** CHANGE jdbc.resource.schema.select.schema  jdbc.schema.schema
+    popd
 
-    ** REPLACE urn:schema.metadoc.base schema.metadoc.base
-    ** REPLACE urn:schema.metadoc.file schema.metadoc.file
+# -----------------------------------------------------
+# Build our Java container.
+#[user@desktop]
 
-    ** CHANGE adql.schema.table.select.name adql.table.name
-    ** CHANGE adql.schema.table.import.base adql.table.base
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
 
-    ** CHANGE adql.resource.schema.select.name  adql.schema.name
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+    popd
 
-    ** CHANGE adql.resource.schema.import.name  adql.schema.name
-    ** CHANGE adql.resource.schema.import.base  adql.schema.base
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+#[user@virtual]
 
-    ** CHANGE urn:adql.copy.depth adql.copy.depth
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        run tester 
 
-    ** CHANGE ivoa.resource.schema.name ivoa.schema.name
+
 

@@ -22,10 +22,11 @@
 # -----------------------------------------------------
 # Configure our source path.
 
-    echo "Initialising settings"
+    echo "Checking FIRETHORN_CODE"
 
     if [ ! -e "${HOME:?}/firethorn.settings" ]
     then
+        echo "Setting FIRETHORN_CODE"
         cat > "${HOME:?}/firethorn.settings" << EOF
 FIRETHORN_CODE=/var/local/build/firethorn
 EOF

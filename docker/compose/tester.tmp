@@ -2,11 +2,11 @@ version: '2.1'
 
 networks:
 
+    # External network
     rosana:
-        # External network
 
+    # Internal network
     miriam:
-        # Internal network
 
 services:
 
@@ -19,14 +19,14 @@ services:
             - '/run'
             - '/tmp'
         environment:
-            POSTGRES_USER:     "${metauser}"
+            POSTGRES_USER: "${metauser}"
             POSTGRES_PASSWORD: "${metapass}"
         networks:
             - miriam
 
     patricia:
         image:
-           "firethorn/sql-tunnel:${buildtag}"
+           "firethorn/sql-proxy:${buildtag}"
         read_only:
             false
         tmpfs:
@@ -35,7 +35,6 @@ services:
         stdin_open:
             true
         environment:
-            target:     "${userhost}"
             targethost: "${userhost}"
             tunneluser: "${tunneluser}"
             tunnelhost: "${tunnelhost}"
@@ -46,7 +45,7 @@ services:
 
     elayne:
         image:
-           "firethorn/sql-tunnel:${buildtag}"
+           "firethorn/sql-proxy:${buildtag}"
         read_only:
             false
         tmpfs:
@@ -55,7 +54,6 @@ services:
         stdin_open:
             true
         environment:
-            target:     "${datahost}"
             targethost: "${datahost}"
             tunneluser: "${tunneluser}"
             tunnelhost: "${tunnelhost}"
@@ -92,7 +90,7 @@ services:
 
     gillian:
         image:
-           "firethorn/firethorn:${buildtag}"
+           "firethorn/firethorn:${testtag}"
         read_only:
             true
         tmpfs:
@@ -105,20 +103,7 @@ services:
             - miriam
             - rosana
         environment:
-            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
-
-            firethorn.meta.type:   "${metatype}"
-            firethorn.meta.url:    "jdbc:postgresql://bethany/${metadata}"
-            firethorn.meta.user:   "${metauser}"
-            firethorn.meta.pass:   "${metapass}"
-            firethorn.meta.driver: "${metadriver}"
-
-            firethorn.user.type:   "${usertype}"
-            firethorn.user.url:    "jdbc:jtds:sqlserver://patricia/${userdata}"
-            firethorn.user.user:   "${useruser}"
-            firethorn.user.pass:   "${userpass}"
-            firethorn.user.driver: "${userdriver}"
-
+            firethorn.ogsadai.endpoint: 'http://jarmila:8080/ogsadai/services'
         depends_on:
             bethany:
                 condition: service_started            
@@ -152,15 +137,9 @@ services:
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - ${HOME}/tester.properties:/etc/tester.properties
+            - ${HOME}/test.sh:/test.sh
         networks:
             - miriam
-        environment:
-            dataname:    "elayne"
-            datadata:    "${datadata}"
-            datauser:    "${datauser}"
-            datapass:    "${datapass}"
-            datadriver:  "${datadriver}"
-            endpointurl: "http://gillian:8080/firethorn"
         depends_on:
             gillian:
                 condition: service_healthy            

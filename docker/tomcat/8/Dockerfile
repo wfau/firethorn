@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/astrojava:8.1
+FROM firethorn/java:2.1.10
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV TOMCAT_VERSION 5.5.28
+ENV TOMCAT_VERSION 8.5.15
 
 ENV TOMCAT_USER tomcat
 ENV TOMCAT_ROOT /var/local/tomcat
@@ -26,10 +26,6 @@ ENV TOMCAT_ROOT /var/local/tomcat
 #
 # Expose Tomcat port
 EXPOSE :8080
-
-#
-# Install tar to extract the archive.
-RUN yum -y install tar
 
 #
 # Install the Tomcat Native Library
@@ -45,19 +41,19 @@ WORKDIR /tmp
 
 #
 # Download the tar file
-ENV TOMCAT_TARFILE apache-tomcat-5.5.28.tar.gz  
-ADD http://archive.apache.org/dist/tomcat/tomcat-5/v5.5.28/bin/${TOMCAT_TARFILE}     /tmp/
-#ADD http://archive.apache.org/dist/tomcat/tomcat-5/v5.5.28/bin/${TOMCAT_TARFILE}.md5 /tmp/
+ENV TOMCAT_TARFILE apache-tomcat-${TOMCAT_VERSION}.tar.gz
+ADD https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}     /tmp/
+ADD https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}.md5 /tmp/
 
 #
 # Check the checksum.
-#RUN md5sum -c "${TOMCAT_TARFILE}.md5"
+RUN md5sum -c "${TOMCAT_TARFILE}.md5"
 
 #
 # Unpack the tar file.
 RUN tar -zxf  ${TOMCAT_TARFILE}
 RUN rm ${TOMCAT_TARFILE}
-#RUN rm ${TOMCAT_TARFILE}.md5
+RUN rm ${TOMCAT_TARFILE}.md5
 
 #
 # Relocate the unpacked directory
@@ -65,32 +61,32 @@ RUN mv apache-tomcat-${TOMCAT_VERSION} ${TOMCAT_ROOT}
 
 #
 # Remove the default webapps.
-RUN rm -rf ${TOMCAT_ROOT}/webapps/docs
-RUN rm -rf ${TOMCAT_ROOT}/webapps/ROOT
-RUN rm -rf ${TOMCAT_ROOT}/webapps/examples
-RUN rm -rf ${TOMCAT_ROOT}/webapps/manager
-RUN rm -rf ${TOMCAT_ROOT}/webapps/host-manager
+RUN rm -rf ${TOMCAT_ROOT}/webapps/*
 
 #
 # Change ownership of our working directories.
 # ** This needs to be done externally if they are mounted as host volumes.
-RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/logs
-RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/work
-RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/temp
-RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/conf
+RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/logs
+RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/work
+RUN chown -R ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/temp
 
 #RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/logs
 #RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/work
 #RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/temp
-#RUN chmod u=rwxs,g=rwxs ${TOMCAT_ROOT}/conf
-#
-# Allow read access to the config files.
 
+#
+# Allow read access to everything.
+RUN find ${TOMCAT_ROOT} -type d -exec chmod a+rx '{}' \;
+RUN find ${TOMCAT_ROOT} -type f -exec chmod a+r  '{}' \;
+
+#
+# Allow execute access to the scripts.
+RUN find ${TOMCAT_ROOT}/bin -name '*.sh' -exec chmod a+rx '{}' \;
 
 #
 # Create our config directory.
-#RUN mkdir ${TOMCAT_ROOT}/conf/Catalina
-#RUN mkdir ${TOMCAT_ROOT}/conf/Catalina/localhost
+RUN mkdir ${TOMCAT_ROOT}/conf/Catalina
+RUN mkdir ${TOMCAT_ROOT}/conf/Catalina/localhost
 RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/conf/Catalina/localhost
 
 #
@@ -101,13 +97,18 @@ RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/conf/Catalina/localhost
 VOLUME /var/local/tomcat/logs
 VOLUME /var/local/tomcat/work
 VOLUME /var/local/tomcat/temp
-VOLUME /var/local/tomcat/conf
 
+#
+# Add the service health check.
+HEALTHCHECK \
+    --interval=30s \
+    --timeout=5s \
+    CMD curl --head --silent http://localhost:8080/ || exit 1
 
 #
 # Run Tomcat
 # BUG -- ENV variable not resolved
 USER    tomcat
 WORKDIR /var/local/tomcat
-#CMD /var/local/tomcat/bin/catalina.sh run
+CMD /var/local/tomcat/bin/catalina.sh run
 

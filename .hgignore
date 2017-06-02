@@ -48,15 +48,15 @@ hs_err_*.log
 
 #
 # Generated Docker files
-docker/tester/Dockerfile
-docker/builder/Dockerfile
-docker/java/8/Dockerfile
-docker/tomcat/8/Dockerfile
-docker/sql-proxy/Dockerfile
-docker/sql-tunnel/Dockerfile
-docker/ssh-client/Dockerfile
-integration/tester/Dockerfile
-firethorn-webapp/src/main/docker/firethorn/Dockerfile
-firethorn-ogsadai/webapp/src/main/docker/ogsadai/Dockerfile
+#docker/tester/Dockerfile
+#docker/builder/Dockerfile
+#docker/java/8/Dockerfile
+#docker/tomcat/8/Dockerfile
+#docker/sql-proxy/Dockerfile
+#docker/sql-tunnel/Dockerfile
+#docker/ssh-client/Dockerfile
+#integration/tester/Dockerfile
+#firethorn-webapp/src/main/docker/firethorn/Dockerfile
+#firethorn-ogsadai/webapp/src/main/docker/ogsadai/Dockerfile
 
 

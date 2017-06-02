@@ -20,37 +20,44 @@
 #
 #
 
+
 # -----------------------------------------------------
-# Build our sqlsh container.
+# Locate our compose file.
 #[user@desktop]
+#[user@virtual]
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+    if [ -e "${HOME:?}/firethorn.settings" ]
+    then
 
-        source 'bin/util.sh'
-        version=$(getversion)
+        source "${HOME:?}/firethorn.settings"
+        composit="${FIRETHORN_CODE:?}/docker/compose"
 
-        docker build \
-            --tag "firethorn/sqsh:${version:?}" \
-            firethorn-sqlserver/src
+    else
 
-    popd
+        composit="${HOME:?}/compose"
+        mkdir -p "${composit:?}"
+
+        wget -O "${composit:?}/sqlclient.yml" \
+            'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/sqlclient.yml'
+
+    fi
 
 # -----------------------------------------------------
 # Load our secret function.
 #[user@desktop]
+#[user@virtual]
 
     source "${HOME:?}/secret.sh"
+
+    secret 'ping'
 
 # -----------------------------------------------------
 # Create our sqsh config.
 #[user@desktop]
+#[user@virtual]
 
 
     cat > "${HOME:?}/sqsh.properties" << EOF
-
-    sqlname=nastja
-    sqllink=nerijus
 
     sqlhost=$(secret 'sqlserver.admin.host')
     sqlpath=$(secret 'sqlserver.admin.path')
@@ -69,24 +76,9 @@
 EOF
 
 # -----------------------------------------------------
-# Start our SQLServer tunnel.
+# Create our output file.
 #[user@desktop]
-
-    source "${HOME:?}/sqsh.properties"
-
-    docker run \
-        --detach \
-        --interactive \
-        --name "${sqlname:?}" \
-        --env  "tunneluser=${tunneluser:?}" \
-        --env  "tunnelhost=${tunnelhost:?}" \
-        --env  "targethost=${sqlhost:?}" \
-        --volume "${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock" \
-        "firethorn/sql-tunnel:${version:?}"
-
-# -----------------------------------------------------
-# Run our sqlsh container.
-#[user@desktop]
+#[user@virtual]
 
     touch  "${HOME:?}/data.properties"
     chmod a+rw \
@@ -94,16 +86,28 @@ EOF
     chcon -t svirt_sandbox_file_t \
         "${HOME:?}/data.properties" 
 
+# -----------------------------------------------------
+# Set the target branch
+#[user@desktop]
+#[user@virtual]
+
+    buildtag=2.1.9-zrq-bug-fixes
+
+# -----------------------------------------------------
+# Run our SQL client.
+#[user@desktop]
+#[user@virtual]
+
     source "${HOME:?}/sqsh.properties"
-    
-    docker run \
-        --rm -it \
-        --link "${sqlname:?}:${sqllink:?}" \
-        --volume "${HOME:?}/chain.properties":/chain.properties \
-        --volume "${HOME:?}/sqsh.properties":/sqsh.properties \
-        --volume "${HOME:?}/data.properties":/data.properties \
-        "firethorn/sqsh:${version:?}" \
-        bash
+
+    export targethost=${sqlhost}
+    export tunnelhost
+    export tunneluser
+
+    export buildtag
+    docker-compose \
+        --file "${composit:?}/sqlclient.yml" \
+        run sqlclient 
 
         #
         # Load the SQLServer properties
@@ -112,7 +116,7 @@ EOF
         #
         # Test connection to SQLServer
         sqsh \
-            -S "${sqllink:?}" \
+            -S 'sqlproxy' \
             -U "${sqluser:?}" \
             -P "${sqlpass:?}" \
             -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%'"
@@ -153,15 +157,15 @@ EOF
 
         #
         # Delete our old metadata database.
-        # sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        # sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        # sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-user.sql'     | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-login.sql'    | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-database.sql' | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
         #
         # Create our new metadata database.
-        sqlsed 'create-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        sqlsed 'create-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        sqlsed 'create-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-database.sql' | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'    | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'     | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
         #
         # Set the template values
@@ -186,25 +190,25 @@ EOF
 
         #
         # Delete our old userdata database.
-        # sqlsed 'delete-user.sql'     | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        # sqlsed 'delete-login.sql'    | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        # sqlsed 'delete-database.sql' | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-user.sql'     | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-login.sql'    | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        # sqlsed 'delete-database.sql' | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
         #
         # Create our new userdata database (including empty table).
-        sqlsed 'create-database.sql'   | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        sqlsed 'create-login.sql'      | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
-        sqlsed 'create-user.sql'       | sqsh -S "${sqllink:?}" -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-database.sql'   | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-login.sql'      | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
+        sqlsed 'create-user.sql'       | sqsh -S 'sqlproxy' -U "${sqluser:?}" -P "${sqlpass:?}" -D "${sqldata:?}"
 
         #
         # List the created databases
         sqsh \
-            -S "${sqllink:?}" \
+            -S 'sqlproxy' \
             -U "${sqluser:?}" \
             -P "${sqlpass:?}" \
             -C "SELECT name FROM master..sysdatabases WHERE name LIKE 'Firethorn%${basename:?}'"
 
-        exit
+    exit
 
 # -----------------------------------------------------
 # Update our secret store.

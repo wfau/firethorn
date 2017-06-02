@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.9</version>
+        <version project='firethorn'>2.1.10</version>
     </parent>
 
     <artifactId>firethorn-spring</artifactId>
@@ -49,13 +49,12 @@
 
     <properties>
 
-		<spring.version>4.3.5.RELEASE</spring.version>
-		<!--spring.version>5.0.0.M3</spring.version-->
-        <hibernate.version>5.2.6.Final</hibernate.version>
-	    <hibernate.validator>5.3.4.Final</hibernate.validator>
+		<spring.version>4.3.8.RELEASE</spring.version>
+        <hibernate.version>5.2.10.Final</hibernate.version>
+	    <hibernate.validator>5.4.1.Final</hibernate.validator>
 		<aspectj.version>1.8.10</aspectj.version>
 
-        <jackson.version>2.8.5</jackson.version>
+        <jackson.version>2.8.8</jackson.version>
 
     </properties>
 
@@ -63,21 +62,21 @@
 
         <!--+
             | SpringSource repository.
-            +-->
         <repository>
             <id>springsource-repo</id>
             <name>SpringSource Repository</name>
             <url>http://repo.springsource.org/release</url>
         </repository>
+            +-->
 
         <!--+
             | JBoss/Hibernate repository.
-            +-->
         <repository>
             <id>org.jboss.maven.public</id>
             <name>JBoss Public Repository Group</name>
             <url>http://repository.jboss.org/nexus/content/groups/public</url>
         </repository>
+            +-->
 
     </repositories>
 
@@ -153,7 +152,7 @@
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
-            <version>3.2.4</version>
+            <version>3.2.5</version>
         </dependency>
 
         <!--+

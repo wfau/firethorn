@@ -529,7 +529,7 @@ public class JdbcColumnEntity
             table,
             name
             );
-        log.debug("ZRQ JdbcColumnEntity [{}][{}][{}]", name, type, size);
+        log.debug("JdbcColumnEntity [{}][{}][{}]", name, type, size);
 
         this.table    = table;
         this.jdbctype = type ;

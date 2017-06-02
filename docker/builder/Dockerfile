@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:{BUILD_VERSION}
+FROM firethorn/fedora:2.1.10
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
@@ -50,7 +50,8 @@ RUN dnf -y install docker-ce
 #
 # Install Docker compose from GitHub.
 RUN dnf -y install git
-RUN curl -L -s https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose
+#UN curl -L -s https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose
+RUN curl -L -s https://github.com/docker/compose/releases/download/1.13.0/docker-compose-$(uname -s)-$(uname -m) > /usr/bin/docker-compose
 RUN chmod +x /usr/bin/docker-compose
 
 #

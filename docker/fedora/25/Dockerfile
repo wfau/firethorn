@@ -15,7 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM fedora:25
+# FROM fedora:25
+# RepoDigest for fedora:25 created 2017-04-21T07:53:41.559418308Z 
+# https://github.com/docker-library/repo-info/blob/d696fef59797cd6b4178cc0fad719a206312bd16/repos/fedora/remote/25.md
+FROM fedora@sha256:69281ddd7b2600e5f2b17f1e12d7fba25207f459204fb2d15884f8432c479136
+
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
@@ -28,6 +32,7 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 RUN dnf install -y sed
 RUN dnf install -y tar
 RUN dnf install -y zip
+RUN dnf install -y less
 RUN dnf install -y wget
 RUN dnf install -y nano
 RUN dnf install -y gzip

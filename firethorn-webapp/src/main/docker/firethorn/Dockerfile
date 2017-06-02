@@ -15,14 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:{BUILD_VERSION}
+FROM firethorn/tomcat:2.1.10
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-RUN dnf install -y jq
-RUN dnf install -y xmlstarlet
+#
+# ADD our webapp.
+ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
 
-COPY bin/  /tester/bin 
-COPY meta/ /tester/meta 
-COPY vosi/ /tester/vosi 
+#
+# Update the service health check.
+HEALTHCHECK \
+    --interval=30s \
+    --timeout=5s \
+    CMD curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1
 
-WORKDIR /tester

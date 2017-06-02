@@ -137,9 +137,9 @@ dockerfiles()
     echo ""
     echo "Dockerfiles [${version}][${target:?}]"
 
-    for docktemp in $(find "${target:?}" -name 'Dockertemp')
+    for dockfile in $(find "${target:?}" -name 'Dockerfile')
     do
-        dockerfile "${version:?}" "${docktemp:?}"
+        dockerfile "${version:?}" "${dockfile:?}"
     done
     }
 
@@ -148,15 +148,13 @@ dockerfiles()
 dockerfile()
     {
     local version=${1:?}
-    local docktemp=${2:-'Dockerfile'}
-
-    dockfile="$(dirname ${docktemp:?})/Dockerfile"
+    local dockfile=${2:-'Dockerfile'}
 
     echo "Dockerfile  [${version:?}][${dockfile:?}]"
-
-    sed '
-        s/{BUILD_VERSION}/'${version:?}'/g
-        ' "${docktemp:?}" > "${dockfile:?}"
-
+    sed -i '
+        /FROM firethorn/ {
+            s/\(firethorn\/[^:]*:\).*/\1'${version}/'
+            }
+        ' "${dockfile:?}"
     }
 

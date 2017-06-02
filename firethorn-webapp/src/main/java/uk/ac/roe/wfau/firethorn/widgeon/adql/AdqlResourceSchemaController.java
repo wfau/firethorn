@@ -70,7 +70,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
 
     /**
      * MVC property for the {@link AdqlSchema} name, [{@value}].
-     * TODO Move these to a ResourceModel
+     * TODO Move these to a ResourceModel.
      *
      */
     public static final String SCHEMA_CREATE_NAME_PARAM = "adql.schema.name" ;
@@ -78,11 +78,11 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     public static final String SCHEMA_IMPORT_NAME_PARAM = "adql.schema.name" ;
 
     /**
-     * MVC property for the {@Identifier} of the {@link BaseSchema} to copy, [{@value}].
-     * TODO Move these to a ResourceModel
+     * MVC property of the {@Identifier} for the {@link BaseSchema} to copy, [{@value}].
+     * TODO Move these to a ResourceModel.
      * 
      */
-    public static final String SCHEMA_BASE_PARAM = "adql.schema.base" ;
+    public static final String SCHEMA_IMPORT_BASE_PARAM = "adql.schema.base" ;
 
     @Override
     public AdqlSchemaBean bean(final AdqlSchema entity)
@@ -197,7 +197,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * <br/>Request path : [{@value #IMPORT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
-     * @param base     The {@Identifier} of the {@link BaseSchema} to copy, [{@value #SCHEMA_BASE_PARAM}].
+     * @param base     The {@Identifier} of the {@link BaseSchema} to copy, [{@value #SCHEMA_IMPORT_BASE_PARAM}].
      * @param depth    The {@link TreeComponent.CopyDepth} of the new {@link AdqlSchema}, [{@value #COPY_DEPTH_PARAM}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @throws EntityNotFoundException 
@@ -207,13 +207,13 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_BASE_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_IMPORT_BASE_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=COPY_DEPTH_PARAM, required=false)
         final TreeComponent.CopyDepth depth,
-        @RequestParam(value=SCHEMA_BASE_PARAM, required=true)
+        @RequestParam(value=SCHEMA_IMPORT_BASE_PARAM, required=true)
         final String base
         ) throws IdentifierFormatException, EntityNotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", depth, base);
@@ -232,7 +232,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * <br/>Request path : [{@value #IMPORT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
-     * @param base     The The {@Identifier} of the {@link BaseSchema} to copy, [{@value #SCHEMA_BASE_PARAM}].
+     * @param base     The The {@Identifier} of the {@link BaseSchema} to copy, [{@value #SCHEMA_IMPORT_BASE_PARAM}].
      * @param depth    The {@link TreeComponent.CopyDepth} of the new {@link AdqlSchema}, [{@value #COPY_DEPTH_PARAM}].
      * @param name     The name of the new {@link AdqlSchema}, [{@value #IMPORT_SCHEMA_NAME}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
@@ -243,13 +243,13 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_BASE_PARAM, SCHEMA_IMPORT_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_IMPORT_BASE_PARAM, SCHEMA_IMPORT_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=COPY_DEPTH_PARAM, required=false)
         final TreeComponent.CopyDepth depth,
-        @RequestParam(value=SCHEMA_BASE_PARAM, required=true)
+        @RequestParam(value=SCHEMA_IMPORT_BASE_PARAM, required=true)
         final String base,
         @RequestParam(value=SCHEMA_IMPORT_NAME_PARAM, required=true)
         final String name
@@ -257,7 +257,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", depth, base, name);
         return created(
             resource.schemas().create(
-                ((depth != null) ? depth : TreeComponent.CopyDepth.FULL),
+                ((depth != null) ? depth : TreeComponent.CopyDepth.THIN),
                 name,
                 factories().base().schema().resolve(
                     base
