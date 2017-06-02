@@ -20,6 +20,21 @@
 #
 #
 
+    #
+    # This relies on mounting local files .. which doesn't work from inside builder.
+    #
+
+# -----------------------------------------------------
+# Load our secret function.
+#[user@desktop]
+#[user@virtual]
+
+    vi "${HOME:?}/secret.sh"
+
+        ....
+
+    source "${HOME:?}/secret.sh"
+    secret 'ping'
 
 # -----------------------------------------------------
 # Locate our compose file.
@@ -43,19 +58,9 @@
     fi
 
 # -----------------------------------------------------
-# Load our secret function.
-#[user@desktop]
-#[user@virtual]
-
-    source "${HOME:?}/secret.sh"
-
-    secret 'ping'
-
-# -----------------------------------------------------
 # Create our sqsh config.
 #[user@desktop]
 #[user@virtual]
-
 
     cat > "${HOME:?}/sqsh.properties" << EOF
 
@@ -91,7 +96,8 @@ EOF
 #[user@desktop]
 #[user@virtual]
 
-    buildtag=2.1.9-zrq-bug-fixes
+    # buildtag=2.1.9-zrq-bug-fixes
+    buildtag=2.1.10
 
 # -----------------------------------------------------
 # Run our SQL client.
@@ -213,6 +219,7 @@ EOF
 # -----------------------------------------------------
 # Update our secret store.
 #[user@desktop]
+#[user@virtual]
 
     cat "${HOME:?}/data.properties"
 

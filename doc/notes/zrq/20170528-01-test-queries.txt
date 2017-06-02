@@ -63,11 +63,18 @@
     firename=gillian
     testname=aaliyah
 
-    metatype=pgsql
-    metadata=postgres
-    metauser=$(pwgen 20 1)
-    metapass=$(pwgen 20 1)
-    metadriver=org.postgresql.Driver
+#   metatype=pgsql
+#   metadata=postgres
+#   metauser=$(pwgen 20 1)
+#   metapass=$(pwgen 20 1)
+#   metadriver=org.postgresql.Driver
+
+    metatype=mssql
+    metahost=$(secret 'firethorn.meta.host')
+    metadata=$(secret 'firethorn.meta.data')
+    metauser=$(secret 'firethorn.meta.user')
+    metapass=$(secret 'firethorn.meta.pass')
+    metadriver=net.sourceforge.jtds.jdbc.Driver
 
     usertype=mssql
     userhost=$(secret 'firethorn.user.host')
@@ -99,7 +106,7 @@ EOF
 firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
 
 firethorn.meta.type=${metatype:?}
-firethorn.meta.url=jdbc:postgresql://${metaname:?}/${metadata:?}
+firethorn.meta.url=jdbc:jtds:sqlserver://${metaname:?}/${metadata:?}
 firethorn.meta.user=${metauser:?}
 firethorn.meta.pass=${metapass:?}
 firethorn.meta.driver=${metadriver:?}
@@ -147,11 +154,17 @@ EOF
 
     cat > "${HOME:?}/.env" << EOF
 
+metahost=${metahost:?}
 metauser=${metauser:?}
 metapass=${metapass:?}
 
 datahost=${datahost:?}
+datauser=${datauser:?}
+datapass=${datapass:?}
+
 userhost=${userhost:?}
+useruser=${useruser:?}
+userpass=${userpass:?}
 
 tunneluser=${tunneluser:?}
 tunnelhost=${tunnelhost:?}
@@ -618,9 +631,12 @@ EOF
 
 cat > /tmp/result-query.adql << EOF
     SELECT
+        TOP 10
         masterObjID
     FROM
         ${resultname}
+    ORDER BY
+        masterObjID
 EOF
 
         curl \
@@ -633,4 +649,13 @@ EOF
             "${resultspace:?}/queries/create" \
             | jq '.' | tee /tmp/result-pager.json
 
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/result-pager.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/result-data.xml
 

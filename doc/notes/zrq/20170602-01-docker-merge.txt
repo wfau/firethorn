@@ -1,0 +1,277 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Much of this gets replaced by Docker multi-stage build
+    # https://codefresh.io/blog/node_docker_multistage/
+    #
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-25-docker-32G-20170331.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-32G-20170331.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [32GiB]
+
+# -----------------------------------------------------
+# TODO fix .ssh directory for Stevedore
+#[user@trop]
+
+    ssh root@Araybwyn
+
+        rm -f /home/Stevedore/.ssh
+        cp -r /root/.ssh /home/Stevedore/.ssh
+        chown -R Stevedore /home/Stevedore/.ssh
+        chgrp -R Stevedore /home/Stevedore/.ssh
+        restorecon -R /home/Stevedore/.ssh
+
+        exit
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh Stevedore@Araybwyn
+
+# -----------------------------------------------------
+# Add our secret function.
+#[root@builder]
+
+    vi "${HOME:?}/secret.sh"
+
+        ....
+
+
+    source "${HOME:?}/secret.sh"
+    secret 'ping'
+
+# -----------------------------------------------------
+# Download our compose file
+#[user@virtual]
+     
+    wget -O builder.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.8-zrq-fedora-image
+    branch=2.1.9-zrq-bug-fixes
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    docker-compose \
+        --file "builder.yml" \
+        run builder 
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        01.01-init.sh
+        
+    # -----------------------------------------------------
+    # Checkout a copy of our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+    # -----------------------------------------------------
+    # Merge our branch into main.
+    #[root@builder]
+
+        07.01-merge-start.sh
+
+    # -----------------------------------------------------
+    # Update our version number.
+    #[root@builder]
+
+        07.02-version-step.sh
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
+
+        05.01-javamaven.sh
+
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
+
+        05.02-javadocker.sh
+
+    # -----------------------------------------------------
+    # Exit our builder.
+    #[root@builder]
+
+        exit
+
+# -----------------------------------------------------
+# Run our sql administrator.
+#[user@desktop]
+       
+    source "${HOME:?}/firethorn.settings"
+    less ${FIRETHORN_CODE:?}/doc/notes/zrq/20170526-01-mssql-create.txt
+
+# -----------------------------------------------------
+# Run our test queries.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    less ${FIRETHORN_CODE:?}/doc/notes/zrq/20170528-01-test-queries.txt
+
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    docker-compose \
+        --file "builder.yml" \
+        run builder 
+
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        01.01-init.sh
+        
+    # -----------------------------------------------------
+    # Update our Mercurial config.
+    #[root@builder]
+
+        hgport=22
+        hguser=Zarquan
+        hghost=data.metagrid.co.uk
+        hgpath=/var/local/wfau/projects/firethorn/code
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+        
+            vi .hg/hgrc
+
+                [paths]
+                default   = http://wfau.metagrid.co.uk/code/firethorn
+            +   push-repo = ssh://${hguser:?}@${hghost:?}/${hgpath:?}
+
+                [ui]
+            +   username = Dave Morris <dmr@roe.ac.uk>
+
+        popd
+
+    # -----------------------------------------------------
+    # Commit our merged code.
+    #[root@builder]
+
+        07.03-merge-commit.sh
+
+    # -----------------------------------------------------
+    # Push our merged code
+    #[root@builder]
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            source 'bin/util.sh'
+            
+            message="Push version [$(getversion)]"
+            confirm "${message:?}"
+            if [ $? -ne 0 ]
+            then
+                echo "EXIT : Cancelled"
+                exit 0
+            fi
+
+            hg push 'push-repo'
+
+        popd
+
+    # -----------------------------------------------------
+    # Tag our new images
+    #[root@builder]
+
+        08.01-docker-latest.sh
+
+    # -----------------------------------------------------
+    # Push our new images
+    #[root@builder]
+
+        08.02-docker-push.sh
+
+    # -----------------------------------------------------
+    # Push our new libraries.
+    #[root@builder]
+
+        mvnport=22
+        mvnuser=Zarquan
+        mvnhost=data.metagrid.co.uk
+        mvnpath=/var/local/websites/data/wfau/maven/firethorn
+        mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
+
+        mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            export mvnrepo
+            export mvnlocal
+            ./bin/rsync-repo.sh
+
+        popd
+
+
+
+
+
+
+
+
+
+
