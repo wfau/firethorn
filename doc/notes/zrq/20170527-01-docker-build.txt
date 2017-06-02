@@ -38,10 +38,11 @@
 
     ssh root@Araybwyn
 
-        cp -r /root/.ssh .
-        chown -R Stevedore .ssh/
-        chgrp -R Stevedore .ssh/
-        restorecon -R .ssh/
+        rm -f /home/Stevedore/.ssh
+        cp -r /root/.ssh /home/Stevedore/.ssh
+        chown -R Stevedore /home/Stevedore/.ssh
+        chgrp -R Stevedore /home/Stevedore/.ssh
+        restorecon -R /home/Stevedore/.ssh
 
         exit
 
@@ -116,6 +117,7 @@
     # Exit from the builder.
     #[root@builder]
 
+        exit
 
 # -----------------------------------------------------
 # Add our secret function.

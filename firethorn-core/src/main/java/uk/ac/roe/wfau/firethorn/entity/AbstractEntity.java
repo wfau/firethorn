@@ -77,7 +77,7 @@ implements Entity
      * Hibernate table name prefix.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT020109";
+    protected static final String DB_TABLE_PREFIX = "FT020110";
 
     /**
      * Hibernate column mapping, {@value}.

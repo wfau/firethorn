@@ -562,4 +562,75 @@ EOF
             | tee /tmp/gaia-data.xml
 
 
+# -----------------------------------------------------
+# Query local database (nested query aliased field).
+#[root@tester]
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        CrossMatch.masterObjID
+    FROM
+        atlasSourceXDR8PhotoObj AS CrossMatch,
+        (
+        SELECT
+            TOP 10000 s.sourceID AS id
+        FROM
+            atlasSource AS s
+        ORDER BY
+            ra
+        ) AS T
+    WHERE
+        T.id = CrossMatch.masterObjID
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/atlas-query.json
+
+# -----------------------------------------------------
+# Get the result table.
+#[root@tester]
+
+    resultlink=$(jq -r '.results.table' /tmp/atlas-query.json)
+
+    curl \
+        --silent \
+        ${resultlink:?} \
+        | jq '.' | tee /tmp/result-table.json
+
+    resultname=$( jq -r '.fullname' /tmp/result-table.json)
+    resultspace=$(jq -r '.resource' /tmp/result-table.json)
+
+    curl \
+        --silent \
+        ${resultspace:?} \
+        | jq '.' | tee /tmp/result-space.json
+
+# -----------------------------------------------------
+# Query the results table.
+#[root@tester]
+
+cat > /tmp/result-query.adql << EOF
+    SELECT
+        masterObjID
+    FROM
+        ${resultname}
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/result-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${resultspace:?}/queries/create" \
+            | jq '.' | tee /tmp/result-pager.json
+
 
