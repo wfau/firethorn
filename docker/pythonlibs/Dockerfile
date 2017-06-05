@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.10
+FROM firethorn/python:2.1.10-zrq-concurrent-bug
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
