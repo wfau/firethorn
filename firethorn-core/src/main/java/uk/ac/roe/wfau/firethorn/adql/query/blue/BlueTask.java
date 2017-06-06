@@ -84,9 +84,11 @@ extends NamedEntity
 
             /**
              * Execute the step.
+             * @throws HibernateConvertException
+             * @throws InvalidStateTransitionException
              *
              */
-            public TaskState execute();
+            public TaskState update();
             }
 
         /**
@@ -115,7 +117,6 @@ extends NamedEntity
              */
             public TaskType create()
             throws InvalidStateTransitionException, HibernateConvertException;
-
             }
 
         /**

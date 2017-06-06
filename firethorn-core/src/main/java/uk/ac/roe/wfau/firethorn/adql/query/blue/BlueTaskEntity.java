@@ -231,7 +231,7 @@ implements BlueTask<TaskType>
             log.debug("  ident [{}]", updator.ident());
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             return new AsyncResult<TaskState>(
-                updator.execute()
+                updator.update()
                 );
             }
 
@@ -1092,23 +1092,20 @@ implements BlueTask<TaskType>
             }
         //
         // Wait for the next state change.
+// BUG This keeps a write transaction open for the duration of the wait.
+// This should be outside the transaction.
+/*
+ * 
         this.waitfor(
     		prev,
     		next,
     		wait
     		);
+ * 
+ */
         //
         // Update this instance with the result of the wait.
         this.refresh();
-        //
-        // Update our Handle and notify any Listeners.
-/*
- * Should this be before or after the wait ?
- * Should this be part of ready(), running() and finish() ?
-        this.event(
-    		this.state
-            );
- */            
         }
 
     /**
@@ -1142,6 +1139,7 @@ implements BlueTask<TaskType>
     	{
         log.debug("waitfor(TaskState, Long)");
         log.debug("  ident [{}]", ident());
+        log.debug("  state [{}]", state());
         log.debug("  prev  [{}]", prev);
         log.debug("  next  [{}]", next);
         log.debug("  wait  [{}]", wait);
@@ -1206,7 +1204,8 @@ implements BlueTask<TaskType>
 		            log.debug("  state [{}]", this.state());
 		            log.debug("  state [{}]", handle.state());
 		            log.debug("  next  [{}]", next);
-		
+/*
+ * Already done in advance() anyway ..		
 		            //
 		            // Update our entity from the DB.
 		            log.debug("Before refresh()");
@@ -1216,7 +1215,7 @@ implements BlueTask<TaskType>
 		            log.debug("After refresh()");
 		            log.debug("  ident [{}]", this.ident());
 		            log.debug("  state [{}]", this.state());
-
+*/
     				}
 	            else {
 	                log.debug("Null handle - skipping wait");
@@ -1242,7 +1241,7 @@ implements BlueTask<TaskType>
             new Updator<BlueTask<?>>(this)
                 {
                 @Override
-                public TaskState execute()
+                public TaskState update()
                     {
                 	try {
 	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
@@ -1289,7 +1288,7 @@ implements BlueTask<TaskType>
             new Updator<BlueTask<?>>(this)
                 {
                 @Override
-                public TaskState execute()
+                public TaskState update()
                     {
                 	try {
 	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
@@ -1354,7 +1353,7 @@ implements BlueTask<TaskType>
             new Updator<BlueTask<?>>(this)
                 {
                 @Override
-                public TaskState execute()
+                public TaskState update()
                     {
                 	try {
 	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();

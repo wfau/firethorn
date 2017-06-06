@@ -24,6 +24,27 @@ services:
         networks:
             - miriam
 
+#
+#   bethany:
+#       image:
+#          "firethorn/sql-proxy:${buildtag}"
+#       read_only:
+#           false
+#       tmpfs:
+#           - /run
+#           - /tmp
+#       stdin_open:
+#           true
+#       environment:
+#           targethost: "${metahost}"
+#           tunneluser: "${tunneluser}"
+#           tunnelhost: "${tunnelhost}"
+#       volumes:
+#           - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+#       networks:
+#           - miriam
+#
+
     patricia:
         image:
            "firethorn/sql-proxy:${buildtag}"

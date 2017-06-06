@@ -59,6 +59,7 @@ import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
@@ -269,7 +270,6 @@ implements BlueQuery
             }
         
         @Override
-        @CreateMethod
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
@@ -287,11 +287,11 @@ implements BlueQuery
  *             
  */
 
-            final Identity outer = services().contexts().current().oper().identities().primary();
-            log.debug("Outer    [{}][{}]", outer.ident(), outer.name());
+            final Identity outerid = services().contexts().current().oper().identities().primary();
+            log.debug("Outer    [{}][{}]", outerid.ident(), outerid.name());
             
             log.debug("Creating BlueQuery");
-            final BlueQuery query = services().runner().thread(
+            final BlueQuery outerq = services().runner().thread(
                 new BlueQuery.TaskRunner.Creator()
                     {
                     @Override
@@ -299,14 +299,14 @@ implements BlueQuery
                     throws InvalidStateTransitionException, HibernateConvertException
                         {
                         log.debug("create(");
-                        log.debug("Creating query task");
+                        log.debug("Creating BlueQuery");
 
-                        final Identity inner = outer.rebase();
-                        log.debug("Inner    [{}][{}]", inner.ident(), inner.name());
+                        final Identity innerid = outerid.rebase();
+                        log.debug("Inner    [{}][{}]", innerid.ident(), innerid.name());
                         
                         return insert(
                     		new BlueQueryEntity(
-                				inner,
+                				innerid,
                 				source,
                 				input,
                 				mode,
@@ -319,20 +319,75 @@ implements BlueQuery
                     }
                 );
 
-            log.debug("Converting BlueQuery");
-            final BlueQuery result = query.rebase();
+            log.debug("Before BlueQuery update");
+            log.debug("  state [{}]", outerq.state());
+            final TaskState after = services().runner().thread(
+                new BlueQuery.TaskRunner.Updator()
+                    {
+                    final BlueQuery innerq = outerq.rebase();
+                    
+                    @Override
+                    public Identifier ident()
+                        {
+                        return innerq.ident();
+                        }
+
+                    @Override
+                    public TaskState update()
+                        {
+                        log.debug("update()");
+                        log.debug("Updating BlueQuery [{}]", innerq.ident());
+
+                        log.debug("  from [{}]", innerq.state());
+                        log.debug("  next [{}]", next);
+                        
+                        if ((next != null) && (next != innerq.state()))
+                            {
+                            log.debug("Advancing BlueQuery [{}]", innerq.ident());
+                            try {
+                                innerq.advance(
+                                    null,
+                                    next,
+                                    wait
+                                    );
+                                }
+                            catch (InvalidStateRequestException ouch)
+                                {
+                                log.debug("InvalidStateRequestException in update");
+                                }
+                            }
+                        log.debug("Completing update");
+                        log.debug("  state [{}]", innerq.state());
+                        return innerq.state();
+                        }
+                    }
+                );
+
+            log.debug("-- ohx7aeRu -- before --");
+            log.debug("After BlueQuery update");
+            log.debug("  state [{}]", outerq.state());
+            BlueQuery result = outerq.rebase();
+            log.debug("After BlueQuery rebase");
+            log.debug("  state [{}]", result.state());
             
             if (next != null)
 	            {
-	            log.debug("Advancing BlueQuery");
-	            result.advance(
-	        		null,
-	        		next,
-	        		wait
-	        		);
+                log.debug("Before BlueQuery wait");
+                log.debug("  state [{}]", result.state());
+                result.waitfor(
+                    after,
+                    next,
+                    wait
+                    );
+	            log.debug("After BlueQuery wait");
+	            log.debug("  state [{}]", result.state());
+	            result = outerq.rebase();
+	            log.debug("After BlueQuery rebase");
+	            log.debug("  state [{}]", result.state());
 	            }
-
+            log.debug("-- ohx7aeRu -- after --");
             log.debug("Returning BlueQuery");
+            log.debug("  state [{}]", result.state());
             return result;
             }
 
@@ -1397,7 +1452,7 @@ implements BlueQuery
                 new Updator(this)
                     {
                     @Override
-                    public TaskState execute()
+                    public TaskState update()
                         {
                         try {
 // Need to initialise current context.                        
@@ -1854,7 +1909,7 @@ implements BlueQuery
             new Updator(this)
                 {
                 @Override
-                public TaskState execute()
+                public TaskState update()
                     {
                     try {
                         //
