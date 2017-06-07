@@ -311,9 +311,9 @@ EOF
             | jq -r '.status,.self'
         }
 
-    dostatus
+    dostatus &
 
-    doquery
+    doquery &
 
     for i in {1..10}
     do

@@ -1101,11 +1101,11 @@ implements BlueTask<TaskType>
     		next,
     		wait
     		);
- * 
- */
         //
         // Update this instance with the result of the wait.
         this.refresh();
+ * 
+ */
         }
 
     /**

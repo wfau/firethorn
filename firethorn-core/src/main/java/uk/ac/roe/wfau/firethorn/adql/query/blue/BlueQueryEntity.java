@@ -364,10 +364,13 @@ implements BlueQuery
                 );
 
             log.debug("-- ohx7aeRu -- before --");
-            log.debug("After BlueQuery update");
+            log.debug("After BlueQuery Updator");
             log.debug("  state [{}]", outerq.state());
-            BlueQuery result = outerq.rebase();
+            final BlueQueryEntity result = (BlueQueryEntity) outerq.rebase();
             log.debug("After BlueQuery rebase");
+            log.debug("  state [{}]", result.state());
+            result.refresh();
+            log.debug("After BlueQuery refresh");
             log.debug("  state [{}]", result.state());
             
             if (next != null)
@@ -381,8 +384,9 @@ implements BlueQuery
                     );
 	            log.debug("After BlueQuery wait");
 	            log.debug("  state [{}]", result.state());
-	            result = outerq.rebase();
-	            log.debug("After BlueQuery rebase");
+                //result = result.rebase();
+                //result.refresh();
+	            log.debug("After BlueQuery refresh");
 	            log.debug("  state [{}]", result.state());
 	            }
             log.debug("-- ohx7aeRu -- after --");
