@@ -57,6 +57,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
 
 /**
  * {@link BlueTask} implementation. 
@@ -1443,6 +1444,69 @@ implements BlueTask<TaskType>
         {
         return new History()
             {
+            /*
+             * 
+                @Override
+                public BlueTaskLogEntry create(Level level, String message)
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
+
+                @Override
+                public BlueTaskLogEntry create(uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState state,
+                        Level level, String message)
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
+
+                @Override
+                public BlueTaskLogEntry create(Object source, Level level, String message)
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
+
+                @Override
+                public BlueTaskLogEntry create(Object source,
+                        uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState state, Level level, String message)
+                    {
+                    // TODO Auto-generated method stub
+                    return null;
+                    }
+
+                @Override
+                public Iterable<BlueTaskLogEntry> select()
+                    {
+                    // TODO Auto-generated method stub
+                    return new EmptyIterable<BlueTaskLogEntry>();
+                    }
+
+                @Override
+                public Iterable<BlueTaskLogEntry> select(Integer limit)
+                    {
+                    // TODO Auto-generated method stub
+                    return new EmptyIterable<BlueTaskLogEntry>();
+                    }
+
+                @Override
+                public Iterable<BlueTaskLogEntry> select(Level level)
+                    {
+                    // TODO Auto-generated method stub
+                    return new EmptyIterable<BlueTaskLogEntry>();
+                    }
+
+                @Override
+                public Iterable<BlueTaskLogEntry> select(Integer limit, Level level)
+                    {
+                    // TODO Auto-generated method stub
+                    return new EmptyIterable<BlueTaskLogEntry>();
+                    }
+             *
+             */
+            /*
+             */ 
             @Override
             public BlueTaskLogEntry create(Level level, String message)
                 {
@@ -1463,7 +1527,6 @@ implements BlueTask<TaskType>
                     message
                     );
                 }
-
 
             @Override
             public BlueTaskLogEntry create(final BlueTask.TaskState state, final Level level, final String message)
@@ -1523,6 +1586,9 @@ implements BlueTask<TaskType>
                     level
                     );
                 }
+            /*
+             *  
+             */
             };
         }
     }

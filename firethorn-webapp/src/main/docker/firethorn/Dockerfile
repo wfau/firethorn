@@ -19,8 +19,13 @@ FROM firethorn/tomcat:2.1.10-zrq-concurrent-bug
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# ADD our webapp.
-ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
+# Install our webapp.
+COPY ${project.build.finalName} /var/local/tomcat/webapps/firethorn
+
+#
+# Install our server config file.
+COPY conf/server.xml conf/server.xml
+
 
 #
 # Update the service health check.

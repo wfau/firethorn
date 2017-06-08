@@ -265,60 +265,122 @@ EOF
         run tester 
 
 # -----------------------------------------------------
-# Load our configuration.
-#[root@tester]
-
-        source /etc/tester.properties
-
-# -----------------------------------------------------
-# Configure our identity.
-#[root@tester]
-
-        identity=${identity:-$(date '+%H:%M:%S')}
-        community=${community:-$(date '+%A %-d %B %Y')}
-
-# -----------------------------------------------------
 # Setup our tests.
 #[root@tester]
 
         source bin/test/test-001.sh
 
 # -----------------------------------------------------
-# Process an ADQL query.
+# Run our tests.
 #[root@tester]
 
-    dostatus()
-        {
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            "${endpointurl:?}/system/info" \
-            | jq '.'
-        }
+    dostatus
 
-    doquery()
-        {
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 1000 ra, dec FROM atlasSource" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
-            --data "adql.query.delay.every=5" \
-            "${queryspace:?}/queries/create" \
-            | jq -r '.status,.self'
-        }
-
-    dostatus &
+    doquery
 
     doquery &
 
-    for i in {1..10}
-    do
-        doquery &
-    done
+#----------------
+
+    for i in {1..2};  do doquery; done
+    for i in {1..5};  do doquery; done
+    for i in {1..10}; do doquery; done
+    for i in {1..20}; do doquery; done
+    for i in {1..30}; do doquery; done
+    for i in {1..40}; do doquery; done
+    for i in {1..50}; do doquery; done
+
+#----------------
+
+    for i in {1..2};  do sleep 5; doquery &; done
+    for i in {1..5};  do sleep 5; doquery &; done
+    for i in {1..10}; do sleep 5; doquery &; done
+    for i in {1..20}; do sleep 5; doquery &; done
+    for i in {1..30}; do sleep 5; doquery &; done
+    for i in {1..40}; do sleep 5; doquery &; done
+    for i in {1..50}; do sleep 5; doquery &; done
+
+#----------------
+
+    for i in {1..2};  do doquery &; done
+    for i in {1..5};  do doquery &; done
+    for i in {1..10}; do doquery &; done
+    for i in {1..20}; do doquery &; done
+    for i in {1..30}; do doquery &; done
+    for i in {1..40}; do doquery &; done
+    for i in {1..50}; do doquery &; done
+
+#----------------
+
+    <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
+    <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
+
+    <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+    <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:100}" />
+    <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
+
+    for i in {1..50} -- works
+
+    Return status READY/RUNNING (wrong)
+
+#----------------
+
+ ** <task:executor  id="FireThornTaskExecutor"  pool-size="10"/>
+    <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
+
+    for i in {1..5}  -- works
+    for i in {1..10} -- works
+    for i in {1..20} -- hangs
+
+    system/info requests still work ok
+    
+    callback requests blocked
+    callback requests block query requests
+    system hangs :-(
+
+    Return status READY/RUNNING (wrong)
+
+#----------------
+
+    <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
+ ** <task:scheduler id="FireThornTaskScheduler" pool-size="10"/>
+
+    for i in {1..5}  -- works
+    for i in {1..10} -- works
+    for i in {1..20} -- works
+    for i in {1..50} -- works
+
+    * return status READY/RUNNING (wrong)
+
+#----------------
+
+    <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+ ** <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:10}" />
+    <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
+
+    for i in {1..2}  -- works
+    for i in {1..3}  -- hangs
+
+
+    * return status READY/RUNNING (wrong)
+
+    Seems that 3 concurrent queries requires > 10 connections !?
+    Hangs during execute(), before the request is sent to OGSADAI.
+
+    Implies one request uses 4 connections.
+
+#----------------
+
+    <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+ ** <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:20}" />
+    <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
+
+    for i in {1..2}  -- works
+    for i in {1..3}  -- works
+    for i in {1..4}  -- works
+    for i in {1..5}  -- hangs
+
+    * return status READY/RUNNING (wrong)
 
 
 

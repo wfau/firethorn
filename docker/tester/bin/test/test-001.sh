@@ -20,6 +20,19 @@
 #
 
 # -----------------------------------------------------
+# Load our configuration.
+#[root@tester]
+
+        source /etc/tester.properties
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+# -----------------------------------------------------
 # Check the system info.
 #[root@tester]
 
@@ -215,4 +228,37 @@
             --header "firethorn.auth.community:${community:?}" \
             "${queryspace:?}/schemas/select" \
             | jq '.'
+
+
+# -----------------------------------------------------
+# Create our status function.
+#[root@tester]
+
+    dostatus()
+        {
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | jq '.'
+        }
+
+# -----------------------------------------------------
+# Create our query function.
+#[root@tester]
+
+    doquery()
+        {
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 1000 ra, dec FROM atlasSource" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            --data "adql.query.delay.every=5" \
+            "${queryspace:?}/queries/create" \
+            | jq -r '.status,.self'
+        }
 

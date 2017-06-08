@@ -385,7 +385,7 @@ implements BlueQuery
 	            log.debug("After BlueQuery wait");
 	            log.debug("  state [{}]", result.state());
                 //result = result.rebase();
-                //result.refresh();
+                result.refresh();
 	            log.debug("After BlueQuery refresh");
 	            log.debug("  state [{}]", result.state());
 	            }
@@ -1807,11 +1807,11 @@ implements BlueQuery
 							{
 							return null;
 							}
-
+// TODO Get this from LinkFactory callback()  
 						@Override
 						public String port()
 							{
-							return null;
+							return "8081";
 							}
 
 						@Override

@@ -151,7 +151,13 @@ public abstract class BlueQueryModel
      *
      */
     public static final String QUERY_SYNTAX = "adql.query.syntax" ;
-    
+
+    /**
+     * Request param name for the {@link BlueQuery.CallbackEvent} port number, [{@value}].
+     *
+     */
+    public static final String CALLBACK_REQUEST_PORT = "adql.query.callback.port" ;
+
     /**
      * Request param name for the {@link BlueQuery.CallbackEvent} {@link BlueTask.TaskState}, [{@value}].
      *
@@ -228,10 +234,14 @@ public abstract class BlueQueryModel
                 );
             }
 
+        // TODO set the port number from config.
         @Override
         public String callback(final BlueQuery query)
             {
+            log.debug("callback(....)");
+            log.debug("  query [{}]", query.ident());
             return link(
+                new Integer(8081),
                 CALLBACK_PATH,
                 query
                 );
