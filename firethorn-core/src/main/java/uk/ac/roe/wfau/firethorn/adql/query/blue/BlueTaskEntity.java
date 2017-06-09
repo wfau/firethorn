@@ -908,13 +908,11 @@ implements BlueTask<TaskType>
                         break ;
     
                     case QUEUED:
+                    case RUNNING:
+                    case COMPLETED:
                         accept(next);
                         break ;
-    
-                    case RUNNING:
-    	                accept(next);
-    	                break ;
-    
+
                     case CANCELLED:
                     case FAILED:
                     case ERROR:
@@ -931,6 +929,7 @@ implements BlueTask<TaskType>
                 switch (next)
                     {
                     case RUNNING:
+                    case COMPLETED:
                         accept(next);
                         break ;
         

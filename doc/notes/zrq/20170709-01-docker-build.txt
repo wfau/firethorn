@@ -50,10 +50,10 @@
 # Login as Stevedore
 #[user@trop]
 
-    ssh Stevedore@Ibalehar
+        ssh Stevedore@Ibalehar
 
 # -----------------------------------------------------
-# Locate our compose file.
+# Download our compose file.
 #[user@virtual]
 
     composit="${HOME:?}/compose"
@@ -126,4 +126,252 @@
     vi "${HOME:?}/secret.sh"
 
         ....
+
+
+    source "${HOME:?}/secret.sh"
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@virtual]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metahost=\${metaname}
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+    metajdbc=jdbc:postgresql://\${metaname:?}/\${metadata:?}
+
+#   metatype=mssql
+#   metahost=$(secret 'firethorn.meta.host')
+#   metadata=$(secret 'firethorn.meta.data')
+#   metauser=$(secret 'firethorn.meta.user')
+#   metapass=$(secret 'firethorn.meta.pass')
+#   metadriver=net.sourceforge.jtds.jdbc.Driver
+#   metajdbc=jdbc:jtds:sqlserver://\${metaname:?}/\${metadata:?}
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+    userjdbc=jdbc:jtds:sqlserver://\${username:?}/\${userdata:?}
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+    datajdbc=jdbc:jtds:sqlserver://\${dataname:?}/\${datadata:?}
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=$eval${metajdbc:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=${userjdbc:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Create our tester config.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/tester.properties" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+    chmod a+r "${HOME:?}/tester.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties" 
+
+# -----------------------------------------------------
+# Create our composer env file.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+
+    cat > "${HOME:?}/.env" << EOF
+
+metahost=${metahost:?}
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+datahost=${datahost:?}
+userhost=${userhost:?}
+
+tunneluser=${tunneluser:?}
+tunnelhost=${tunnelhost:?}
+
+EOF
+
+# -----------------------------------------------------
+# Download our compose file.
+#[user@virtual]
+
+    wget -O "${composit:?}/tester.yml" \
+        'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tester.yml'
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@virtual]
+
+    export buildtag=${branch}
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        run tester 
+
+# -----------------------------------------------------
+# Setup our tests.
+#[root@tester]
+
+        source bin/test/test-001.sh
+
+# -----------------------------------------------------
+# First set of tests.
+# http://redmine.roe.ac.uk/issues/1086
+#[root@tester]
+
+    dostatus
+
+    doquery
+
+# -----------------------------------------------------
+# Concurrent tests.
+#[root@tester]
+
+    for i in {1..10}; do doquery & done
+    for i in {1..20}; do doquery & done
+    for i in {1..50}; do doquery & done
+    for i in {1..100}; do doquery & done
+    for i in {1..1000}; do doquery & done
+
+# -----------------------------------------------------
+# Remove the delays.
+#[root@tester]
+
+    doquery()
+        {
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 1000 ra, dec FROM atlasSource" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq -r '.status,.self'
+        }
+
+    for i in {1..10}; do doquery & done
+    for i in {1..20}; do doquery & done
+    for i in {1..50}; do doquery & done
+    for i in {1..100}; do doquery & done
+    for i in {1..1000}; do doquery & done
+
+    # BUG - some queries return READY
+
+# -----------------------------------------------------
+# Simplify the query.
+#[root@tester]
+
+    doquery()
+        {
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 10 ra, dec FROM atlasSource" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq -r '.status,.self'
+        }
+
+    # BUG - tomcat dies
+
+    doquery
+    for i in {1..10}; do doquery & done
+    for i in {1..100}; do doquery & done    some return READY
+    for i in {1..1000}; do doquery & done   hangs
+
+    repeating tests - system hangs
+
+    some queries seem to have been stalled in OGSADAI data requests
+
+    several queries wrong status
+    history contains a COMPLETED event
+    query statys is still READY
+    
+
+    after 8hrs
+    system is still unstable
+
+
+# -----------------------------------------------------
+
+    On callback we get an invalid transition exception, because the state was left as READY rather than RUNNING.
+
+        2017-06-09 12:13:18,429 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity] transition(TaskState) 
+        2017-06-09 12:13:18,429 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity]   ident [16631] 
+        2017-06-09 12:13:18,429 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity]   state [READY][COMPLETED] 
+        2017-06-09 12:13:18,429 ERROR [FireThornTaskExecutor-41] [BlueQueryEntity] InvalidStateTransitionException [16631] 
+        2017-06-09 12:13:18,429 DEBUG [FireThornTaskExecutor-41] [TransactionImpl] committing 
+    
+    Status is READY, because original create transition failed.
+
+
+
+
+# -----------------------------------------------------
+
+    16631    
+
+
+
+
+
+
 
