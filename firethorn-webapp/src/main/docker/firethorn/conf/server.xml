@@ -62,14 +62,14 @@
     <Executor
         name="main-interface"
         namePrefix="main-interface-"
-        maxThreads="10"
+        maxThreads="25"
         minSpareThreads="5"
         />
 
     <Executor
         name="callback-interface"
         namePrefix="callback-interface-"
-        maxThreads="10"
+        maxThreads="25"
         minSpareThreads="5"
         />
 

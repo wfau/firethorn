@@ -50,7 +50,7 @@
             | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
         <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
-        <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:200}" />
+        <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:100}" />
         <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
 
     </bean>

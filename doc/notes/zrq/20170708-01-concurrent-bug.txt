@@ -46,7 +46,7 @@
     popd
 
 # -----------------------------------------------------
-# Check our previous run has been cleared.
+# Clear exsiting containers.
 #[user@desktop]
 
     export buildtag
@@ -79,7 +79,7 @@
 
     doquery &
 
-#----------------
+# -----------------------------------------------------
 
     for i in {1..2};  do doquery done
     for i in {1..5};  do doquery done
@@ -89,7 +89,7 @@
     for i in {1..40}; do doquery done
     for i in {1..50}; do doquery done
 
-#----------------
+# -----------------------------------------------------
 
     for i in {1..2};  do sleep 5; doquery & done
     for i in {1..5};  do sleep 5; doquery & done
@@ -99,7 +99,7 @@
     for i in {1..40}; do sleep 5; doquery & done
     for i in {1..50}; do sleep 5; doquery & done
 
-#----------------
+# -----------------------------------------------------
 
     for i in {1..2};  do doquery & done
     for i in {1..5};  do doquery & done
@@ -109,7 +109,7 @@
     for i in {1..40}; do doquery & done
     for i in {1..50}; do doquery & done
 
-#----------------
+# -----------------------------------------------------
 
     <Executor name="main-interface"     maxThreads="10"
     <Executor name="callback-interface" maxThreads="10"
@@ -129,6 +129,43 @@
 
     * return status READY/RUNNING (wrong)
 
-#----------------
+# -----------------------------------------------------
+
+    # Fix code for return value.
+
+    # Works most of the time.
+    # Issues with first set of queries (READY)
+
+# -----------------------------------------------------
+
+    <Executor name="main-interface"     maxThreads="25"
+    <Executor name="callback-interface" maxThreads="25"
+
+    <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
+    <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
+
+    <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+    <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:100}" />
+
+# -----------------------------------------------------
+
+    for i in {1..50}; do doquery & done
+
+    for i in {1..50} -- works
+    for i in {1..100} -- works
+    for i in {1..250} -- works
+    for i in {1..500} -- ????
+
+
+# -----------------------------------------------------
+
+    for i in {1..10}
+    do
+        for i in {1..100}
+        do
+            doquery &
+        done
+    done
+
 
 

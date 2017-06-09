@@ -286,7 +286,7 @@ implements OgsaBaseResource
     	   				break ;
 	
     	   			default :
-    	   				log.error("Ping test failed [{}][{}]", this.ident(), this.ogsaid);
+    	   				log.error("Ping test failed [{}][{}][{}]", this.ident(), this.ogsaid, http);
     	   				ogstatus(
    							OgsaStatus.ERROR
 	   						);

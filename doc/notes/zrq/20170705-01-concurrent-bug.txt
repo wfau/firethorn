@@ -280,7 +280,7 @@ EOF
 
     doquery &
 
-#----------------
+# -----------------------------------------------------
 
     for i in {1..2};  do doquery; done
     for i in {1..5};  do doquery; done
@@ -290,7 +290,7 @@ EOF
     for i in {1..40}; do doquery; done
     for i in {1..50}; do doquery; done
 
-#----------------
+# -----------------------------------------------------
 
     for i in {1..2};  do sleep 5; doquery &; done
     for i in {1..5};  do sleep 5; doquery &; done
@@ -300,7 +300,7 @@ EOF
     for i in {1..40}; do sleep 5; doquery &; done
     for i in {1..50}; do sleep 5; doquery &; done
 
-#----------------
+# -----------------------------------------------------
 
     for i in {1..2};  do doquery &; done
     for i in {1..5};  do doquery &; done
@@ -310,7 +310,7 @@ EOF
     for i in {1..40}; do doquery &; done
     for i in {1..50}; do doquery &; done
 
-#----------------
+# -----------------------------------------------------
 
     <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
     <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
@@ -323,7 +323,7 @@ EOF
 
     Return status READY/RUNNING (wrong)
 
-#----------------
+# -----------------------------------------------------
 
  ** <task:executor  id="FireThornTaskExecutor"  pool-size="10"/>
     <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
@@ -340,7 +340,7 @@ EOF
 
     Return status READY/RUNNING (wrong)
 
-#----------------
+# -----------------------------------------------------
 
     <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
  ** <task:scheduler id="FireThornTaskScheduler" pool-size="10"/>
@@ -352,7 +352,7 @@ EOF
 
     * return status READY/RUNNING (wrong)
 
-#----------------
+# -----------------------------------------------------
 
     <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
  ** <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:10}" />
@@ -369,7 +369,7 @@ EOF
 
     Implies one request uses 4 connections.
 
-#----------------
+# -----------------------------------------------------
 
     <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
  ** <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:20}" />
@@ -381,6 +381,10 @@ EOF
     for i in {1..5}  -- hangs
 
     * return status READY/RUNNING (wrong)
+
+# -----------------------------------------------------
+
+
 
 
 
