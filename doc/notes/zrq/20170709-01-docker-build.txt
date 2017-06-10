@@ -311,7 +311,9 @@ EOF
     for i in {1..100}; do doquery & done
     for i in {1..1000}; do doquery & done
 
-    # BUG - some queries return READY
+    At 100 some get lost and timeout 10min later
+    status=RUNNING
+     
 
 # -----------------------------------------------------
 # Simplify the query.
