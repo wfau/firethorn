@@ -174,6 +174,7 @@ extends NamedEntity
         EDITING(false),
         READY(false),
         QUEUED(true),
+        SENDING(true),
         RUNNING(true),
         COMPLETED(false),
         CANCELLED(false),

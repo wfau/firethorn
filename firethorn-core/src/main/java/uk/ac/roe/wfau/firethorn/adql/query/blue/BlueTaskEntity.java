@@ -908,6 +908,7 @@ implements BlueTask<TaskType>
                         break ;
     
                     case QUEUED:
+                    case SENDING:
                     case RUNNING:
                     case COMPLETED:
                         accept(next);
@@ -928,6 +929,7 @@ implements BlueTask<TaskType>
                 {
                 switch (next)
                     {
+                    case SENDING:
                     case RUNNING:
                     case COMPLETED:
                         accept(next);
@@ -943,7 +945,27 @@ implements BlueTask<TaskType>
                         invalid(prev, next);
                     }
                 }
-    
+
+            else if (prev == TaskState.SENDING)
+                {
+                switch (next)
+                    {
+                    case RUNNING:
+                    case COMPLETED:
+                        accept(next);
+                        break ;
+        
+                    case CANCELLED:
+                    case FAILED:
+                    case ERROR:
+                        accept(next);
+                        break ;
+        
+                    default :
+                        invalid(prev, next);
+                    }
+                }
+
             else if (prev == TaskState.RUNNING)
                 {
                 switch (next)
@@ -1022,6 +1044,9 @@ implements BlueTask<TaskType>
                     ready();
                     break ;
 
+                case SENDING:
+                    break ;
+
                 case RUNNING:
                 case COMPLETED:
                     running();
@@ -1041,6 +1066,9 @@ implements BlueTask<TaskType>
             {
             switch (next)
                 {
+                case SENDING:
+                    break ;
+
                 case RUNNING:
                 case COMPLETED:
                     running();
@@ -1056,6 +1084,23 @@ implements BlueTask<TaskType>
             }
 
         else if (current == TaskState.QUEUED)
+            {
+            switch (next)
+                {
+                case SENDING:
+                case COMPLETED:
+                    break ;
+
+                case CANCELLED:
+                    finish(next);
+                    break ;
+    
+                default :
+                    reject(prev, next);
+                }
+            }
+
+        else if (current == TaskState.SENDING)
             {
             switch (next)
                 {

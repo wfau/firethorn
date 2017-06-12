@@ -1724,10 +1724,13 @@ implements BlueQuery
 
         //TODO Check all the resources are available through the same OgsaService.         
 
-        //TODO push the state here
-
+        transition(
+            TaskState.SENDING
+            );
+        
         //
         // Execute our workflow.
+        log.debug("Executing workflow ...");
         final BlueWorkflow workflow = new BlueWorkflowClient(
 			service.endpoint(),
 			service.exec().primary().ogsaid()

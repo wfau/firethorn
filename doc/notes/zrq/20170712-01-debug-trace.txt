@@ -1,0 +1,153 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+sed -i '
+    /\[EntityPrinter\]/ {
+        s/\[EntityPrinter\] *[.a-z]*\./[EntityPrinter] /
+        s/text=[^,]*, //
+        s/owner=[^,]*, //
+        s/uidhi=[^,]*, //
+        s/uidlo=[^,]*, //
+        s/level=[^,]*, //
+        s/method=[^,]*, //
+        s/source=[^,]*, //
+        s/message=[^,]*, //
+        s/created=[^,]*, //
+        s/modified=[^,]*, //
+        s/scandate=[^,]*, //
+        s/adqlucd=[^,]*, //
+        s/adqlsize=[^,]*, //
+        s/adqltype=[^,]*, //
+        s/adqlunit=[^,]*, //
+        s/adqlutype=[^,]*, //
+        s/scanperiod=[^,]*, //
+        s/base=[a-z.]*\.\([A-Za-z]*\)/base=\1/
+        s/task=[a-z.]*\.\([A-Za-z]*\)/task=\1/
+        s/table=[a-z.]*\.\([A-Za-z]*\)/table=\1/
+        s/community=[a-z.]*\.\([A-Za-z]*\)/community=\1/
+        s/adqlschema=[a-z.]*\.\([A-Za-z]*\)/adqlschema=\1/
+        s/jdbcschema=[a-z.]*\.\([A-Za-z]*\)/jdbcschema=\1/
+        /\[EntityPrinter\] OgsaServiceEntity{/ {
+            s/http=[^,]*, //
+            s/name=[^,]*, //
+            s/version=[^,]*, //
+            }
+        /\[EntityPrinter\] CommunityEntity{/ {
+            s/uri=[^,]*, //
+            s/space=[a-z.]*\.\([A-Za-z]*\)/space=\1/
+            }
+        /\[EntityPrinter\] AuthenticationEntity{/ {
+            s/identity=[a-z.]*\.\([A-Za-z]*\)/identity=\1/
+            s/operation=[a-z.]*\.\([A-Za-z]*\)/operation=\1/
+            }
+        /\[EntityPrinter\] BlueQueryEntity{/ {
+            s/identity=[a-z.]*\.\([A-Za-z]*\)/identity=\1/
+            s/queued=[^,]*, //
+            s/osql=.*//
+            }
+        /\[EntityPrinter\] OgsaExecResourceEntity{/ {
+            s/ogservice=[a-z.]*\.\([A-Za-z]*\)/ogservice=\1/
+            s/ogstatus=[^,]*//
+            s/status=[^,]*//
+            }
+        /\[EntityPrinter\] AdqlTableEntity{/ {
+            s/schema=[a-z.]*\.\([A-Za-z]*\)/schema=\1/
+            s/status=[^,]*//
+            s/adqlcount=[^,]*//
+            s/adqlstatus=[^,]*//
+            }
+        /\[EntityPrinter\] JdbcTableEntity{/ {
+            s/schema=[a-z.]*\.\([A-Za-z]*\)/schema=\1/
+            s/bluequery=[a-z.]*\.\([A-Za-z]*\)/bluequery=\1/
+            s/status=[^,]*//
+            s/jdbctype=[^,]*//
+            s/adqlcount=[^,]*//
+            s/adqlstatus=[^,]*//
+            s/jdbcstatus=[^,]*//
+            }
+        /\[EntityPrinter\] AdqlTableEntity{/ {
+            s/schema=[a-z.]*\.\([A-Za-z]*\)/schema=\1/
+            s/status=[^,]*//
+            s/adqlcount=[^,]*//
+            s/adqlstatus=[^,]*//
+            }
+        /\[EntityPrinter\] OperationEntity{/ {
+            s/port=[^,]*//
+            s/authentications=[^,]*//
+            s/primary=[a-z.]*\.\([A-Za-z]*\)/primary=\1/
+            }
+        /\[EntityPrinter\] AdqlColumnEntity{/ {
+            s/status=[^,]*//
+            }
+        /\[EntityPrinter\] JdbcSchemaEntity{/ {
+            s/status=[^,]*//
+            }
+        /\[EntityPrinter\] JdbcResourceEntity{/ {
+            s/connection=.*//
+            }
+        }
+    ' \
+    logs/20170609-22025-threads.log
+
+
+sed -i '
+    /\[EntityReferenceInitializerImpl\]/ {
+        s/resolve, EntityKey.*/ ..../
+        }
+    ' \
+    logs/20170609-22025-threads.log
+
+sed -i '
+    /\[Collections\]/ {
+        s/\], was:.*/\] ..../
+        }
+    ' \
+    logs/20170609-22025-threads.log
+
+sed -i '
+    /\[Loader\] Result set/d
+    /\[Loader\] Result row/d
+    ' \
+    logs/20170609-22025-threads.log
+
+sed -i '
+    /\[HibernateInterceptor\]/d
+    /\[TwoPhaseLoad\]/d
+    ' \
+    logs/20170609-22025-threads.log
+
+
+# -----------------------------------------------------
+# Extreact the log file.
+#[user@virtual]
+
+    docker cp \
+        "compose_gillian_1:/var/local/tomcat/logs/firethorn.log" \
+        "${HOME}/$(date +%Y%m%d%H%M%S)-firethorn.log"
+
+    docker cp \
+        "compose_gillian_1:/var/local/tomcat/logs/20170609-22025-threads.log" \
+        "${HOME}/20170609-22025-threads.log"
+
+
+
