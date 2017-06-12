@@ -294,19 +294,170 @@
             }' \
         logs/20170609-22025-threads.log
 
+# -----------------------------------------------------
+# Scan for Executor-96
+#
+
+    sed -n \
+        '/Executor-96/ {
+            p
+            }' \
+        logs/20170609-22025-threads.log | less
+
+
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [TransactionImpl] begin 
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [BlueTaskEntity$TaskRunner] execute(Updator) 
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [BlueTaskEntity$TaskRunner]   ident [22025] 
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [BlueTaskEntity$TaskRunner]   thread [164][FireThornTaskExecutor-96] 
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [BlueQueryEntity] Converting current instance [22025] 
+....
+2017-06-09 17:42:43,625 DEBUG [FireThornTaskExecutor-96] [BlueTaskLogEntity] LogEntryEntity() 
+2017-06-09 17:42:43,625 DEBUG [FireThornTaskExecutor-96] [BlueTaskLogEntity]   task    [entity[class[uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity] ident[22025]]] 
+2017-06-09 17:42:43,625 DEBUG [FireThornTaskExecutor-96] [BlueTaskLogEntity]   level   [INFO] 
+2017-06-09 17:42:43,625 DEBUG [FireThornTaskExecutor-96] [BlueTaskLogEntity]   source  [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntity$EntityFactory] 
+2017-06-09 17:42:43,625 DEBUG [FireThornTaskExecutor-96] [BlueTaskLogEntity]   message [Executing query] 
+....
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV][1] 
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV] 
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV] 
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV] 
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] State is READY, initialising Connection 
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] With user/pass 
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] connecting .... 
+2017-06-09 17:42:43,907 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] .... connected 
+... 804ms to create a table ?
+2017-06-09 17:42:44,711 DEBUG [FireThornTaskExecutor-96] [SQLServerDriver] SQL result [0] 
+2017-06-09 17:42:44,711 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV][1] 
+2017-06-09 17:42:44,711 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV] 
+2017-06-09 17:42:44,711 DEBUG [FireThornTaskExecutor-96] [BlueQueryEntity] JDBC table created 
+....
+2017-06-09 17:42:45,695 DEBUG [FireThornTaskExecutor-96] [AdqlQueryTimings] AdqlQueryTimings() 
+2017-06-09 17:42:45,702 DEBUG [FireThornTaskExecutor-96] [JdbcCoordinatorImpl] HHH000420: Closing un-released batch 
+
+
+2017-06-09 17:42:51,858 DEBUG [FireThornTaskExecutor-96] [TransactionImpl] begin 
+2017-06-09 17:42:51,862 DEBUG [FireThornTaskExecutor-96] [BlueTaskEntity$TaskRunner] execute(Updator) 
+2017-06-09 17:42:51,862 DEBUG [FireThornTaskExecutor-96] [BlueTaskEntity$TaskRunner]   ident [22244] 
+2017-06-09 17:42:51,862 DEBUG [FireThornTaskExecutor-96] [BlueTaskEntity$TaskRunner]   thread [164][FireThornTaskExecutor-96] 
+2017-06-09 17:42:51,862 DEBUG [FireThornTaskExecutor-96] [BlueQueryEntity] Converting current instance [22244] 
+2017-06-09 17:42:51,862 DEBUG [FireThornTaskExecutor-96] [BlueQueryEntity] services() 
+
+
+    sed -i \
+        '/Executor-74/ {
+            /2017-06-09 17:42:51,858/,$ {
+                d
+                }
+            }' \
+        logs/20170609-22025-threads.log
+
+
+
+# -----------------------------------------------------
+# Basic transitions
+#
+
+
+2017-06-09 17:42:42,891 DEBUG [main-interface-92] [OperationInterceptor] OperationInterceptor.preHandle()
+2017-06-09 17:42:42,891 DEBUG [main-interface-92] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod]
+....
+2017-06-09 17:42:42,966 DEBUG [main-interface-92] [TransactionImpl] begin
+2017-06-09 17:42:42,966 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner] create(Creator)
+2017-06-09 17:42:42,966 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner]   thread [282][main-interface-92]
+2017-06-09 17:42:42,966 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner] Before future()
+2017-06-09 17:42:42,966 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner] After future()
+2017-06-09 17:42:42,966 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner]   thread [282][main-interface-92]
+2017-06-09 17:42:42,966 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner] Before future.get()
+....
+2017-06-09 17:42:42,966 DEBUG [FireThornTaskExecutor-74] [TransactionImpl] begin
+2017-06-09 17:42:42,966 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity$TaskRunner] future(Creator)
+2017-06-09 17:42:42,966 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity$TaskRunner]   thread [141][FireThornTaskExecutor-74]
+2017-06-09 17:42:42,966 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] create(
+2017-06-09 17:42:42,966 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] Creating BlueQuery
+....
+2017-06-09 17:42:42,969 INFO  [FireThornTaskExecutor-74] [AdqlQueryTimings] TIMING - adqlstart()
+....
+2017-06-09 17:42:43,211 INFO  [FireThornTaskExecutor-74] [AdqlQueryTimings] TIMING - adqldone()
+....
+2017-06-09 17:42:43,221 DEBUG [FireThornTaskExecutor-74] [AbstractCollectionPersister] Inserting collection: [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity.params#22025]
+2017-06-09 17:42:43,221 DEBUG [FireThornTaskExecutor-74] [AbstractCollectionPersister] Collection was empty
+2017-06-09 17:42:43,221 DEBUG [FireThornTaskExecutor-74] [AbstractCollectionPersister] Inserting collection: [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity.resources#22025]
+2017-06-09 17:42:43,221 DEBUG [FireThornTaskExecutor-74] [AbstractCollectionPersister] Done inserting collection: 1 rows inserted
+2017-06-09 17:42:43,223 DEBUG [FireThornTaskExecutor-74] [JdbcCoordinatorImpl] HHH000420: Closing un-released batch
+....
+2017-06-09 17:42:43,225 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner] After future.get()
+2017-06-09 17:42:43,225 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner]   result [entity[class[uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity] ident[22025]]]
+2017-06-09 17:42:43,225 DEBUG [main-interface-92] [TransactionImpl] committing
+....
+2017-06-09 17:42:43,230 DEBUG [main-interface-92] [BlueQueryEntity] Before BlueQuery update
+2017-06-09 17:42:43,230 DEBUG [main-interface-92] [BlueQueryEntity]   state [READY]
+2017-06-09 17:42:43,230 DEBUG [main-interface-92] [BlueQueryEntity] Converting current instance [22025]
+2017-06-09 17:42:43,230 DEBUG [main-interface-92] [BlueQueryEntity] services()
+2017-06-09 17:42:43,231 DEBUG [main-interface-92] [TransactionImpl] begin
+....
+2017-06-09 17:42:43,233 DEBUG [main-interface-92] [TransactionImpl] committing
+2017-06-09 17:42:43,233 DEBUG [main-interface-92] [SessionImpl] Disconnecting session
+2017-06-09 17:42:43,234 DEBUG [main-interface-92] [TransactionImpl] begin
+2017-06-09 17:42:43,234 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner] update(Updator)
+2017-06-09 17:42:43,234 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner]   ident [22025]
+2017-06-09 17:42:43,234 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner]   thread [282][main-interface-92]
+2017-06-09 17:42:43,234 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner] Before execute()
+2017-06-09 17:42:43,234 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner] After execute()
+2017-06-09 17:42:43,236 DEBUG [main-interface-92] [BlueTaskEntity$TaskRunner] Before future()
+....
+2017-06-09 17:42:43,234 DEBUG [FireThornTaskExecutor-41] [TransactionImpl] begin
+2017-06-09 17:42:43,236 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity$TaskRunner] execute(Updator)
+2017-06-09 17:42:43,236 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity$TaskRunner]   ident [22025]
+2017-06-09 17:42:43,236 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity$TaskRunner]   thread [107][FireThornTaskExecutor-41]
+2017-06-09 17:42:43,238 DEBUG [FireThornTaskExecutor-41] [BlueQueryEntity] update()
+2017-06-09 17:42:43,238 DEBUG [FireThornTaskExecutor-41] [BlueQueryEntity] Updating BlueQuery [22025]
+2017-06-09 17:42:43,238 DEBUG [FireThornTaskExecutor-41] [BlueQueryEntity]   from [READY]
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-41] [BlueQueryEntity]   next [COMPLETED]
+....
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-41] [BlueQueryEntity] services()
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-41] [TransactionImpl] begin
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity$TaskRunner] update(Updator)
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity$TaskRunner]   ident [22025]
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity$TaskRunner]   thread [107][FireThornTaskExecutor-41]
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity$TaskRunner] Before execute()
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity$TaskRunner] After execute()
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity$TaskRunner] Before future()
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [TransactionImpl] begin
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [BlueTaskEntity$TaskRunner] execute(Updator)
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [BlueTaskEntity$TaskRunner]   ident [22025]
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [BlueTaskEntity$TaskRunner]   thread [164][FireThornTaskExecutor-96]
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [BlueQueryEntity] Converting current instance [22025]
+2017-06-09 17:42:43,239 DEBUG [FireThornTaskExecutor-96] [BlueQueryEntity] services()
+....
+2017-06-09 17:42:43,243 INFO  [FireThornTaskExecutor-96] [AdqlQueryTimings] TIMING - adqlstart()
+....
+2017-06-09 17:42:43,625 INFO  [FireThornTaskExecutor-96] [AdqlQueryTimings] TIMING - adqldone()
+....
+2017-06-09 17:42:43,644 INFO  [FireThornTaskExecutor-96] [AdqlQueryTimings] TIMING - jdbcstart()
+....
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [SQLServerDriver] SQL statement [CREATE TABLE [FirethornUserdataZRQ20170606121652DEV].[dbo].[XX_P2MZFSJM2WGR4AAAAFOI34343M] ....
+....
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] State is READY, initialising Connection
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] With user/pass
+2017-06-09 17:42:43,902 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] connecting ....
+2017-06-09 17:42:43,907 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] .... connected
+....
+2017-06-09 17:42:44,711 DEBUG [FireThornTaskExecutor-96] [SQLServerDriver] SQL result [0]
+2017-06-09 17:42:44,711 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV][1]
+2017-06-09 17:42:44,711 DEBUG [FireThornTaskExecutor-96] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV]
+2017-06-09 17:42:44,711 DEBUG [FireThornTaskExecutor-96] [BlueQueryEntity] JDBC table created
+2017-06-09 17:42:44,712 INFO  [FireThornTaskExecutor-96] [AdqlQueryTimings] TIMING - jdbcdone()
+....
 
 
 
 
 
-        -e 'FireThornTaskExecutor-74' \
-        -e 'FireThornTaskExecutor-96' \
 
 
 
 
-22025
-22025
 
 
 
