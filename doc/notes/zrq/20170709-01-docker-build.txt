@@ -335,7 +335,7 @@ EOF
     # BUG - tomcat dies
 
     doquery
-    for i in {1..10}; do doquery & done
+
     for i in {1..100}; do doquery & done    some return READY
     for i in {1..1000}; do doquery & done   hangs
 

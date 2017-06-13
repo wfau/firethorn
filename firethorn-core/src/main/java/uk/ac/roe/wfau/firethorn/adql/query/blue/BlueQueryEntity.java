@@ -1733,8 +1733,8 @@ implements BlueQuery
 
         //
         // Create a new Handle
-        log.debug("Ithei1ah boL1mahj");
-        handle();
+        //log.debug("Ithei1ah boL1mahj");
+        //handle();
         
         //
         // Execute our workflow.
