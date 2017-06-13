@@ -1722,11 +1722,19 @@ implements BlueQuery
         final OgsaBaseResource dest = this.jdbctable.resource().ogsa().primary() ; 
         log.debug("Found target OgsaBaseResource [{}]", dest.name());
 
-        //TODO Check all the resources are available through the same OgsaService.         
+        // TODO Check all the resources are available through the same OgsaService.         
 
+        //
+        // Mark this query as active.
+        log.debug("ci3ooN5u Ohmei0Ga");
         transition(
             TaskState.SENDING
             );
+
+        //
+        // Create a new Handle
+        log.debug("Ithei1ah boL1mahj");
+        handle();
         
         //
         // Execute our workflow.
