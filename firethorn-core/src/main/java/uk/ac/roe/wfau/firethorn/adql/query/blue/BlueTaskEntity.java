@@ -561,9 +561,13 @@ implements BlueTask<TaskType>
             if (this.state.active() == false)
                 {
                 log.debug("State not active, removing Handler");
+/*
+ * ZRQ - temp fix just to see if this works. 
                 handles.remove(
                     this.ident
                     );
+ * 
+ */
                 }
             }
         }
