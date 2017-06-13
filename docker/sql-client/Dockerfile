@@ -32,7 +32,8 @@ RUN yum -y install pwgen
 
 #
 # Install the sqsh binary.
-RUN yum -y install http://downloads.sourceforge.net/project/sqsh/sqsh/sqsh-2.5/sqsh-2.5-1.el6.x86_64.x86_64.rpm
+#UN yum -y install http://downloads.sourceforge.net/project/sqsh/sqsh/sqsh-2.5/sqsh-2.5-1.el6.x86_64.x86_64.rpm
+RUN yum -y install https://netix.dl.sourceforge.net/project/sqsh/sqsh/sqsh-2.5/sqsh-2.5-1.el6.x86_64.x86_64.rpm
 
 #
 # Install our sql scripts.

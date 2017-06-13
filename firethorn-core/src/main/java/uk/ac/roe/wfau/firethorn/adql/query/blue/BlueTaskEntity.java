@@ -521,6 +521,12 @@ implements BlueTask<TaskType>
             this.ident = task.ident().toString();
             }
 
+        private boolean active = false ;
+        public boolean active()
+            {
+            return this.active;
+            }
+        
         private String ident;
         @Override
         public String ident()
@@ -535,39 +541,64 @@ implements BlueTask<TaskType>
             return this.state;
             }
 
-        /**
-         * Update our {@link TaskState} and notify our listeners.
-         *
-         */
         @Override
         public synchronized void event(final TaskState next)
             {
-            log.debug("event(TaskState)");
-            log.debug("  state [{}][{}]", this.state, next);
-            this.state = next;
-            event();
+            this.event(
+                next,
+                false
+                );
             }
-
-        /**
-         * Notify our listeners, and release this handle if completed.
-         * 
-         */
-        protected synchronized void event()
+        
+        @Override
+        public synchronized void event(final TaskState next, final boolean activate)
             {
-            log.debug("event()");
+            log.debug("event(TaskState, boolean)");
+            log.debug("  state  [{}][{}]", this.state,  next);
+            log.debug("  active [{}][{}]", this.active, activate);
+
+            this.state = next;
+            this.active |= activate ;
+
             log.debug("notify start");
             this.notifyAll();
             log.debug("notify done");
-            if (this.state.active() == false)
+
+// Two states, controller and processor.
+// Processor updates via callback.
+// Controller sets state directly.
+// Processor callback releases handle IF controller has completed its processing.
+
+// Controller sets flag to indicate handle can be released.
+            
+// Controller sets the state to sending
+// Controller sends the request
+// Callback might happen, running, completed or error.
+// Controller checks state and IF still active, updates state to running.
+// Controller releases handle IF no longer active..
+
+            
+            
+            log.debug("-- diHohj8a Reez1OeY --");
+            log.debug("Checking Handler activation");
+            log.debug("  active [{}]", this.active);
+            if (this.active)
                 {
-                log.debug("State not active, removing Handler");
-/*
- * ZRQ - temp fix just to see if this works. 
- * 
- */
-                handles.remove(
-                    this.ident
-                    );
+                log.debug("Handler is active, checking TaskState ");
+                log.debug("  state [{}]", this.state);
+                if (this.state.active())
+                    {
+                    log.debug("TaskState is active, keeping Handler");
+                    }
+                else {
+                    log.debug("TaskState is inactive, removing Handler");
+                    handles.remove(
+                        this.ident
+                        );
+                    }
+                }
+            else {
+                log.debug("Handler has not been activated yet");
                 }
             }
         }
@@ -803,6 +834,8 @@ implements BlueTask<TaskType>
      */
     public static Handle handle(final String key)
         {
+        log.debug("handle(String)");
+        log.debug("  key [{}]", key);
         return handles.get(
             key
             );
@@ -814,6 +847,7 @@ implements BlueTask<TaskType>
      */
     protected Handle newhandle()
         {
+        log.debug("newhandle()");
         return new Handle(
             this
             );
@@ -1164,7 +1198,7 @@ implements BlueTask<TaskType>
     protected void event()
     	{
     	this.event(
-    		this.state
+    		true
             );
     	}
 
@@ -1172,13 +1206,14 @@ implements BlueTask<TaskType>
      * Update our Handle and notify any Listeners.
      * 
      */
-    protected void event(final TaskState state)
+    protected void event(boolean active)
     	{
         final Handle handle = this.handle();
         if (handle != null)
             {
             handle.event(
-        		state
+        		this.state,
+                active
                 );
             }
     	}

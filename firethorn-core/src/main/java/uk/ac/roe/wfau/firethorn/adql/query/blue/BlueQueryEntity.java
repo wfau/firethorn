@@ -1841,9 +1841,20 @@ implements BlueQuery
 				}
     		); 
 
-        //TODO pull the state here
-        //BUG We can have already received a callback by this point.
-        //BUG Need to close and reopen the session to collect the callback results.
+        log.debug("After workflow ...");
+        log.debug("-- Meex9Lae OzoDei0b --");
+        
+        //
+        // We may have already received a callback by this point.
+        // Update the entity to collect the callback results.
+        log.debug("Refreshing entity");
+        this.refresh();    
+        //
+        // Activate our event handler.
+        log.debug("Activating handler");
+        this.event(
+            true
+            );
         
         //
         // Check the return status.

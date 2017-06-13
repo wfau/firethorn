@@ -316,10 +316,22 @@ extends NamedEntity
         public TaskState state();
 
         /**
+         * Check if this {@link Handle} is active.
+         * 
+         */
+        public boolean active();
+
+        /**
          * Update our {@link Handle} with a {@link TaskState} event.
          *
          */
         public void event(final TaskState state);
+
+        /**
+         * Update our {@link Handle} with a {@link TaskState} event.
+         *
+         */
+        public void event(final TaskState state, final boolean activate);
 
         /**
          * Event listener interface.

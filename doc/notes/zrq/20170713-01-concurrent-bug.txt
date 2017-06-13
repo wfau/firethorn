@@ -1,0 +1,322 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Load our secret function.
+#[user@desktop]
+
+    source ${HOME:?}/secret.sh
+    secret 'ping'
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@desktop]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metahost=\${metaname:?}
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+    metajdbc=jdbc:postgresql://\${metaname:?}/\${metadata:?}
+
+#   metatype=mssql
+#   metahost=$(secret 'firethorn.meta.host')
+#   metadata=$(secret 'firethorn.meta.data')
+#   metauser=$(secret 'firethorn.meta.user')
+#   metapass=$(secret 'firethorn.meta.pass')
+#   metadriver=net.sourceforge.jtds.jdbc.Driver
+#   metajdbc=jdbc:jtds:sqlserver://\${metaname:?}/\${metadata:?}
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+    userjdbc=jdbc:jtds:sqlserver://\${username:?}/\${userdata:?}
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+    datajdbc=jdbc:jtds:sqlserver://\${dataname:?}/\${datadata:?}
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=$eval${metajdbc:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=${userjdbc:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Create our tester config.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/tester.properties" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+    chmod a+r "${HOME:?}/tester.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties" 
+
+# -----------------------------------------------------
+# Create our composer env file.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+
+    cat > "${HOME:?}/.env" << EOF
+
+metahost=${metahost:?}
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+datahost=${datahost:?}
+userhost=${userhost:?}
+
+tunneluser=${tunneluser:?}
+tunnelhost=${tunnelhost:?}
+
+EOF
+
+# -----------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Check our previous run has been cleared.
+#[user@desktop]
+
+    export buildtag
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tester.yml" \
+        down
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+
+    export buildtag
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tester.yml" \
+        run tester 
+
+# -----------------------------------------------------
+# Setup our tests.
+#[root@tester]
+
+        source bin/test/test-001.sh
+
+# -----------------------------------------------------
+# Run our tests.
+#[root@tester]
+
+        dostatus
+
+# -----------------------------------------------------
+# Seqential tests.
+#[root@tester]
+
+        for i in {1..2};    do doquery; done
+        for i in {1..5};    do doquery; done
+        for i in {1..10};   do doquery; done
+      # for i in {1..20};   do doquery; done
+      # for i in {1..50};   do doquery; done
+      # for i in {1..100};  do doquery; done
+      # for i in {1..200};  do doquery; done
+      # for i in {1..500};  do doquery; done
+      # for i in {1..1000}; do doquery; done
+
+# -----------------------------------------------------
+# Concurrent tests.
+#[root@tester]
+
+        for i in {1..2};    do doquery & done
+        for i in {1..5};    do doquery & done
+        for i in {1..10};   do doquery & done
+        for i in {1..20};   do doquery & done
+        for i in {1..50};   do doquery & done
+        for i in {1..100};  do doquery & done
+        for i in {1..200};  do doquery & done
+        for i in {1..500};  do doquery & done
+        for i in {1..1000}; do doquery & done
+
+# -----------------------------------------------------
+# Remove the delays.
+#[root@tester]
+
+        doquery()
+            {
+            curl \
+                --silent \
+                --header "firethorn.auth.identity:${identity:?}"   \
+                --header "firethorn.auth.community:${community:?}" \
+                --data "adql.query.input=SELECT TOP 1000 ra, dec FROM atlasSource" \
+                --data "adql.query.status.next=COMPLETED" \
+                --data "adql.query.wait.time=600000" \
+                "${queryspace:?}/queries/create" \
+                | jq -r '.status,.self'
+            }
+
+        for i in {1..2};    do doquery & done
+        for i in {1..5};    do doquery & done
+        for i in {1..10};   do doquery & done
+        for i in {1..20};   do doquery & done
+        for i in {1..50};   do doquery & done
+      # for i in {1..100};  do doquery & done
+      # for i in {1..200};  do doquery & done
+      # for i in {1..500};  do doquery & done
+      # for i in {1..1000}; do doquery & done
+
+# -----------------------------------------------------
+# Reduce the number of rows.
+#[root@tester]
+
+        doquery()
+            {
+            curl \
+                --silent \
+                --header "firethorn.auth.identity:${identity:?}"   \
+                --header "firethorn.auth.community:${community:?}" \
+                --data "adql.query.input=SELECT TOP 10 ra, dec FROM atlasSource" \
+                --data "adql.query.status.next=COMPLETED" \
+                --data "adql.query.wait.time=600000" \
+                "${queryspace:?}/queries/create" \
+                | jq -r '.status,.self'
+            }
+
+        for i in {1..2};    do doquery & done
+        for i in {1..5};    do doquery & done
+        for i in {1..10};   do doquery & done
+        for i in {1..20};   do doquery & done
+        for i in {1..50};   do doquery & done
+        for i in {1..100};  do doquery & done
+        for i in {1..200};  do doquery & done
+        for i in {1..500};  do doquery & done
+        for i in {1..1000}; do doquery & done
+
+# -----------------------------------------------------
+# Restore the original query.
+#[root@tester]
+
+
+    doquery()
+        {
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data "adql.query.input=SELECT TOP 1000 ra, dec FROM atlasSource" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            --data "adql.query.delay.every=5" \
+            "${queryspace:?}/queries/create" \
+            | jq -r '.status,.self'
+        }
+

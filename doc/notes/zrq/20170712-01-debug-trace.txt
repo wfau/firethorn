@@ -138,7 +138,7 @@ sed -i '
 
 
 # -----------------------------------------------------
-# Extreact the log file.
+# Extract the log file.
 #[user@virtual]
 
     docker cp \
