@@ -129,6 +129,7 @@
 
 
     source "${HOME:?}/secret.sh"
+    secret ping
 
 # -----------------------------------------------------
 # Create our chain config.

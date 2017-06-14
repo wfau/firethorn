@@ -1725,7 +1725,7 @@ implements BlueQuery
         // TODO Check all the resources are available through the same OgsaService.         
 
         //
-        // Mark this query as active.
+        // Mark this query as SENDING.
         log.debug("ci3ooN5u Ohmei0Ga");
         transition(
             TaskState.SENDING
