@@ -553,6 +553,7 @@ implements BlueTask<TaskType>
         @Override
         public synchronized void event(final TaskState next, final boolean activate)
             {
+            log.debug("-- Ooj6Loqu gi8Hiej7 [{}]", this.ident());
             log.debug("event(TaskState, boolean)");
             log.debug("  state  [{}][{}]", this.state,  next);
             log.debug("  active [{}][{}]", this.active, activate);
@@ -579,7 +580,7 @@ implements BlueTask<TaskType>
 
             
             
-            log.debug("-- diHohj8a Reez1OeY --");
+            log.debug("-- diHohj8a Reez1OeY [{}]", this.ident());
             log.debug("Checking Handler activation");
             log.debug("  active [{}]", this.active);
             if (this.active)
@@ -1224,7 +1225,7 @@ implements BlueTask<TaskType>
     @Override
     public void waitfor(final TaskState prev, final TaskState next, final Long wait)
     	{
-        log.debug("-- CheaCh0X aew1aiSh --");;
+        log.debug("-- CheaCh0X aew1aiSh [{}]", this.ident());
     	log.debug("waitfor(TaskState, Long)");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state());
@@ -1322,7 +1323,7 @@ implements BlueTask<TaskType>
      */
     protected void ready()
     	{
-        log.debug("-- ahtae3Ma eibo4Zoh --");;
+        log.debug("-- ahtae3Ma eibo4Zoh [{}]", this.ident());
         log.debug("Starting ready()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
@@ -1370,7 +1371,7 @@ implements BlueTask<TaskType>
      */
     protected void running()
         {
-        log.debug("-- Sheejoh7 Xu7zooyo --");;
+        log.debug("-- Sheejoh7 Xu7zooyo [{}]", this.ident());
         log.debug("Starting running()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
@@ -1436,6 +1437,7 @@ implements BlueTask<TaskType>
      */
     protected void finish(final TaskState next)
         {
+        log.debug("-- Vavae7Ba cie1oZoh [{}]", this.ident());
         log.debug("Starting finish()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", state().name(), next.name());

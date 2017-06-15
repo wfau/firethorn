@@ -202,6 +202,15 @@ EOF
 
 
 # -----------------------------------------------------
+# Take down previous tests.
+#[user@virtual]
+
+    export buildtag=${branch}
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        down 
+
+# -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
 
@@ -232,7 +241,7 @@ EOF
     # Build our base images.
     #[root@builder]
 
-        04.01-buildbase.sh
+#       04.01-buildbase.sh
 
     # -----------------------------------------------------
     # Compile our Java code.
