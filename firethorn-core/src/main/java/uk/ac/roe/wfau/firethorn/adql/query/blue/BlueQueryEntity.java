@@ -288,7 +288,7 @@ implements BlueQuery
  */
 
             final Identity outerid = services().contexts().current().oper().identities().primary();
-            log.debug("Outer    [{}][{}]", outerid.ident(), outerid.name());
+            log.debug("Owner (outer) [{}][{}]", outerid.ident(), outerid.name());
             
             log.debug("Calling BlueQuery.Creator");
             final BlueQuery outerq = services().runner().thread(
@@ -302,8 +302,8 @@ implements BlueQuery
                         log.debug("Creating BlueQuery");
 
                         final Identity innerid = outerid.rebase();
-                        log.debug("Inner    [{}][{}]", innerid.ident(), innerid.name());
-                        
+                        log.debug("Owner (inner) [{}][{}]", innerid.ident(), innerid.name());
+
                         return insert(
                     		new BlueQueryEntity(
                 				innerid,
@@ -319,8 +319,18 @@ implements BlueQuery
                     }
                 );
 
-            log.debug("Before BlueQuery update");
+//
+// TODO
+// Make the create simpler - just a create.
+// State starts at EDITING, then Updator to move to READY and beyond.
+            
+            
+            log.debug("-- Sohkue2b Cae5Aifa --");
+            log.debug("Between Creator and Updator");
+            log.debug("  ident [{}]", outerq.ident());
             log.debug("  state [{}]", outerq.state());
+            
+            log.debug("Calling BlueQuery.Updator");
             final TaskState after = services().runner().thread(
                 new BlueQuery.TaskRunner.Updator()
                     {
@@ -1652,9 +1662,9 @@ implements BlueQuery
     protected void execute()
     throws InvalidStateTransitionException
         {
-        log.debug("execute()");
-        log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", state().name());
+        log.debug("Starting execute()");
+        log.debug("  ident [{}]", this.ident());
+        log.debug("  state [{}]", this.state().name());
 
         history().create(
             BlueTaskLogEntry.Level.INFO, 
@@ -1671,14 +1681,7 @@ implements BlueQuery
 
         //
         // Build our target resources.
-        build();
-        //
-        // Mark our task as active.
-/*
-        transition(
-    		TaskState.QUEUED
-    		);
- */
+        this.build();
         
         //
         // Select our target OGSA-DAI service.  
@@ -1726,16 +1729,17 @@ implements BlueQuery
 
         //
         // Mark this query as SENDING.
-        log.debug("ci3ooN5u Ohmei0Ga");
+        log.debug("-- ci3ooN5u Ohmei0Ga --");
+        log.debug("Setting state to [SENDING]");
         transition(
             TaskState.SENDING
             );
-
         //
-        // Create a new Handle
-        //log.debug("Ithei1ah boL1mahj");
-        //handle();
-        
+        // Activate our event handler.
+        log.debug("Activating handler");
+        this.event(
+            true
+            );
         //
         // Execute our workflow.
         log.debug("Executing workflow ...");
@@ -1841,20 +1845,17 @@ implements BlueQuery
 				}
     		); 
 
-        log.debug("After workflow ...");
         log.debug("-- Meex9Lae OzoDei0b --");
+        log.debug("After workflow ...");
+        log.debug("  state [{}]", this.state().name());
         
         //
         // We may have already received a callback by this point.
         // Update the entity to collect the callback results.
         log.debug("Refreshing entity");
         this.refresh();    
-        //
-        // Activate our event handler.
-        log.debug("Activating handler");
-        this.event(
-            true
-            );
+        log.debug("After refresh");
+        log.debug("  state [{}]", this.state().name());
         
         //
         // Check the return status.
@@ -1897,6 +1898,9 @@ implements BlueQuery
 		    		);
 	        	break ;
 			}
+        log.debug("Finishing execute()");
+        log.debug("  ident [{}]", this.ident());
+        log.debug("  state [{}]", this.state().name());
         }
 
     protected static class Handle

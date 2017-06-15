@@ -329,3 +329,59 @@
                 # 26014 - 25910 = 104ms
                 #
 
+
+# -----------------------------------------------------
+# Simplify the logs.
+
+    sed -n \
+        '/\[EntityPrinter\]/{
+            s/{.*}/{}/
+            s/\(BlueQueryEntity{\).*/\1}/
+            p
+            }
+        ' \
+        20170614-32058-threads.log | less
+
+    sed -i \
+        '/\[EntityPrinter\]/{
+            s/{.*}/{}/
+            s/\(BlueQueryEntity{\).*/\1}/
+            }
+        ' \
+        20170614-32058-threads.log
+
+
+
+    sed -n \
+        '/\[EntityReferenceInitializerImpl\]/{
+            s/\(EntityKey was already known\).*/\1;/
+            p
+            }
+        ' \
+        20170614-32058-threads.log | less
+
+    sed -i \
+        '/\[EntityReferenceInitializerImpl\]/{
+            s/\(EntityKey was already known\).*/\1;/
+            }
+        ' \
+        20170614-32058-threads.log
+
+
+    sed -n \
+        '/\[Collections\]/{
+            s/\(Collection found\): \[\(.*\)\], was: \[\(.*\)\].*/\1: [\2]/
+            p
+            }
+        ' \
+        20170614-32058-threads.log | less
+
+    sed -i \
+        '/\[Collections\]/{
+            s/\(Collection found\): \[\(.*\)\], was: \[\(.*\)\].*/\1: [\2]/
+            }
+        ' \
+        20170614-32058-threads.log
+
+
+

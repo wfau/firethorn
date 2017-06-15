@@ -858,11 +858,13 @@ implements BlueTask<TaskType>
         {
         log.debug("handle()");
         log.debug("  ident [{}]", ident());
+        log.debug("  state [{}]", ident());
         if (ident() != null)
             {
             synchronized (handles)
                 {
                 final String key = ident().toString();
+                log.debug("Checking for existing handle [{}]", key);
                 final Handle found = handle(key);
                 if (found != null)
                     {
@@ -870,10 +872,11 @@ implements BlueTask<TaskType>
                     return found;
                     }
                 else {
-                    // Only create a new handle if we are active.
+                    log.debug("No Handle found, checking state [{}]", key);
+                    // Only create a new handle if the current state is active.
 					if (state().active())
 						{
-	                	log.debug("State is active - Creating new Handle [{}]", key);
+	                	log.debug("State is active, creating new Handle [{}]", key);
 	                    final Handle created = newhandle();
 	                    handles.put(
 	                        created.ident,
@@ -882,7 +885,7 @@ implements BlueTask<TaskType>
 	                    return created;
 						}
 					else {
-	                	log.debug("State is not active - no handle");
+	                	log.debug("State is not active, not creating a new Handle");
 	                    return null ;
 						}
                     }
@@ -891,7 +894,7 @@ implements BlueTask<TaskType>
         //
         // If created but not saved, ident is null.
         else {
-        	log.error("Ident is null - no handle");
+        	log.error("Ident is null - no Handle");
             return null ;
             }
         }
