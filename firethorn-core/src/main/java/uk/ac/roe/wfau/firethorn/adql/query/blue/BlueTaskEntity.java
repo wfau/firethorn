@@ -228,7 +228,7 @@ implements BlueTask<TaskType>
         @UpdateAtomicMethod
         public Future<TaskState> future(final Updator<?> updator)
             {
-            log.debug("execute(Updator)");
+            log.debug("future(Updator)");
             log.debug("  ident [{}]", updator.ident());
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             return new AsyncResult<TaskState>(
@@ -241,7 +241,7 @@ implements BlueTask<TaskType>
         public TaskType thread(final Creator<TaskType> creator)
         throws InvalidStateTransitionException
             {
-            log.debug("create(Creator)");
+            log.debug("thread(Creator)");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             
             log.debug("Before future()");

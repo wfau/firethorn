@@ -274,8 +274,8 @@ implements BlueQuery
         throws InvalidRequestException, InternalServerErrorException
             {
             log.debug("create(AdqlResource, String, Mode, Syntax, Limits, Delays, TaskState, Long)");
-            log.debug("  state [{}]", next);
-            log.debug("  wait  [{}]", wait);
+            log.debug("  wait for [{}]", next);
+            log.debug("  wait for [{}]", wait);
 
 /*
  * Reason for doing this inside a new Thread is to force a new Hibernate session.
@@ -290,7 +290,7 @@ implements BlueQuery
             final Identity outerid = services().contexts().current().oper().identities().primary();
             log.debug("Outer    [{}][{}]", outerid.ident(), outerid.name());
             
-            log.debug("Creating BlueQuery");
+            log.debug("Calling BlueQuery.Creator");
             final BlueQuery outerq = services().runner().thread(
                 new BlueQuery.TaskRunner.Creator()
                     {
@@ -298,7 +298,7 @@ implements BlueQuery
                     public BlueQuery create()
                     throws InvalidStateTransitionException, HibernateConvertException
                         {
-                        log.debug("create(");
+                        log.debug("Creator.create()");
                         log.debug("Creating BlueQuery");
 
                         final Identity innerid = outerid.rebase();
@@ -335,7 +335,7 @@ implements BlueQuery
                     @Override
                     public TaskState update()
                         {
-                        log.debug("update()");
+                        log.debug("Updator.update()");
                         log.debug("Updating BlueQuery [{}]", innerq.ident());
 
                         log.debug("  from [{}]", innerq.state());

@@ -214,10 +214,10 @@ EOF
         source bin/test/test-001.sh
 
 # -----------------------------------------------------
-# Run our tests.
+# Run the first query.
 #[root@tester]
 
-        dostatus
+        doquery
 
 # -----------------------------------------------------
 # Seqential tests.

@@ -47,6 +47,12 @@ sed -i '
         s/community=[a-z.]*\.\([A-Za-z]*\)/community=\1/
         s/adqlschema=[a-z.]*\.\([A-Za-z]*\)/adqlschema=\1/
         s/jdbcschema=[a-z.]*\.\([A-Za-z]*\)/jdbcschema=\1/
+        }
+    ' \
+    logs/20170609-22025-threads.log
+
+sed -i '
+    /\[EntityPrinter\]/ {
         /\[EntityPrinter\] OgsaServiceEntity{/ {
             s/http=[^,]*, //
             s/name=[^,]*, //
