@@ -1728,11 +1728,11 @@ implements BlueQuery
         // TODO Check all the resources are available through the same OgsaService.         
 
         //
-        // Mark this query as SENDING.
+        // Mark this query as RUNNING.
         log.debug("-- ci3ooN5u Ohmei0Ga --");
-        log.debug("Setting state to [SENDING]");
+        log.debug("Setting state to [RUNNING]");
         transition(
-            TaskState.SENDING
+            TaskState.RUNNING
             );
         //
         // Activate our event handler.
