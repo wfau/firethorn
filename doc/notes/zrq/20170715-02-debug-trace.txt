@@ -1,0 +1,137 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Find the threads involved ...
+
+
+    grep \
+        -e '27800' \
+        logs/20170615-27800-thread.log
+
+2017-06-15 15:19:02,337 DEBUG [FireThornTaskExecutor-66] [SequenceStructure] Sequence value obtained: 27800 
+
+2017-06-15 15:29:03,874 DEBUG [main-interface-9] [WebappLinkFactory]   ident [27800] 
+
+
+    grep \
+        -e 'main-interface-9' \
+        logs/20170615-27800-thread.log | less
+
+
+2017-06-15 15:19:01,987 DEBUG [main-interface-9] [OperationInterceptor] OperationInterceptor.preHandle() 
+
+2017-06-15 15:29:03,875 DEBUG [main-interface-9] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+....
+2017-06-15 15:29:03,875 DEBUG [main-interface-9] [JdbcCoordinatorImpl] HHH000420: Closing un-released batch 
+
+
+    vi logs/20170615-27800-thread.log
+
+# -----------------------------------------------------
+# Trim the head and tail ..
+
+    sed -i \
+        '1,/-- BEGIN --/ d' \
+        logs/20170615-27800-thread.log
+
+    sed -i \
+        '/-- END --/,$ d' \
+        logs/20170615-27800-thread.log
+
+    vi logs/20170615-27800-thread.log
+
+# -----------------------------------------------------
+# Trim other main threads ..
+
+    sed -i \
+        '
+        /\[main-interface-[^9][0-9]*\]/ {
+            d
+            }
+        ' \
+        logs/20170615-27800-thread.log
+
+    vi logs/20170615-27800-thread.log
+
+# -----------------------------------------------------
+# Trim other main threads ..
+
+    grep \
+        -e '27800' \
+        logs/20170615-27800-thread.log
+
+    main-interface-9
+    callback-interface-1
+    FireThornTaskExecutor-66
+    FireThornTaskExecutor-72
+    FireThornTaskExecutor-74
+    FireThornTaskExecutor-91
+
+    sed -i \
+        '
+        /\[main-interface-[^9][0-9]*\]/ {
+            d
+            }
+        ' \
+        logs/20170615-27800-thread.log
+
+    sed -i \
+        '
+        /\[FireThornTaskExecutor-[1-58][0-9]*\]/ {
+            d
+            }
+        ' \
+        logs/20170615-27800-thread.log
+
+    sed -i \
+        '
+        /\[FireThornTaskExecutor-6[^6]*\]/ {
+            d
+            }
+        ' \
+        logs/20170615-27800-thread.log
+
+    sed -i \
+        '
+        /\[FireThornTaskExecutor-7[^24]*\]/ {
+            d
+            }
+        ' \
+        logs/20170615-27800-thread.log
+
+
+64
+65
+66**
+67
+68
+69
+70
+71
+72**
+73
+
+
+
+
+

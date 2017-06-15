@@ -1224,7 +1224,8 @@ implements BlueTask<TaskType>
     @Override
     public void waitfor(final TaskState prev, final TaskState next, final Long wait)
     	{
-        log.debug("waitfor(TaskState, Long)");
+        log.debug("-- CheaCh0X aew1aiSh --");;
+    	log.debug("waitfor(TaskState, Long)");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state());
         log.debug("  prev  [{}]", prev);
@@ -1321,6 +1322,7 @@ implements BlueTask<TaskType>
      */
     protected void ready()
     	{
+        log.debug("-- ahtae3Ma eibo4Zoh --");;
         log.debug("Starting ready()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
@@ -1368,6 +1370,7 @@ implements BlueTask<TaskType>
      */
     protected void running()
         {
+        log.debug("-- Sheejoh7 Xu7zooyo --");;
         log.debug("Starting running()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
