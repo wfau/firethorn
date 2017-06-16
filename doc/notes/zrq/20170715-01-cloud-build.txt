@@ -276,6 +276,14 @@ EOF
         source bin/test/test-001.sh
 
 # -----------------------------------------------------
+# Tail the logs (separate terminals).
+#[user@virtual]
+
+    docker exec -it compose_gillian_1 tail -f logs/firethorm.log
+
+    docker exec -it compose_jarmila_1 tail -f logs/ogsadai.log
+
+# -----------------------------------------------------
 # Run the first query.
 #[root@tester]
 

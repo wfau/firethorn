@@ -646,7 +646,7 @@ implements BlueTask<TaskType>
                 {
 				if (handle.state().active())
     				{
-                	while (this.done(handle) == false)
+                	while (this.test(handle) == false)
                         {
                         try {
                             this.count++;
@@ -701,22 +701,26 @@ implements BlueTask<TaskType>
                 }
             }
 
-        protected boolean done(final BlueTask.Handle handle)
+        protected boolean test(final BlueTask.Handle handle)
             {
-            log.debug("done()");
+            log.debug("-- aseez2oJ Oa4oophu [{}]", handle.ident());
+            log.debug("test()");
+            log.debug("Checking elapsed time");
             log.debug("  elapsed [{}]", elapsed());
             log.debug("  timeout [{}]", timeout());
             if (timeout() == Long.MAX_VALUE)
                 {
+                log.debug("timeout is MAX_VALUE, return true");
                 return false ;
                 }
             else {
                 if (elapsed() >= timeout())
                 	{
-                	log.debug("done (elapsed >= timeout)");
+                	log.debug("(elapsed >= timeout), return true");
                 	return true ;
                 	}
                 else {
+                    log.debug("(elapsed < timeout), return false");
                 	return false ;
                 	}
                 }
@@ -734,9 +738,11 @@ implements BlueTask<TaskType>
             }
 
         @Override
-        public boolean done(final BlueTask.Handle handle)
+        public boolean test(final BlueTask.Handle handle)
             {
-            log.debug("done()");
+            log.debug("-- taeP4aki ko6weiNe [{}]", handle.ident());
+            log.debug("test()");
+            log.debug("Checking count");
             log.debug("  count [{}]", count);
             // Skip the first test.
         	if (count != 0)
@@ -746,7 +752,7 @@ implements BlueTask<TaskType>
         		}
             // Check the timeout.
         	else {
-        		return super.done(
+        		return super.test(
     				handle
     				);
         		}
@@ -778,36 +784,45 @@ implements BlueTask<TaskType>
         protected TaskState next; 
 
         @Override
-        protected boolean done(final BlueTask.Handle handle)
+        protected boolean test(final BlueTask.Handle handle)
             {
-            log.debug("done()");
-            log.debug("  prev  [{}]", prev);
+            log.debug("-- fei9viGh rieR2soo [{}]", handle.ident());
+            log.debug("test()");
+            log.debug("Checking state");
+            log.debug("  prev  [{}]", this.prev);
             log.debug("  state [{}]", handle.state());
-            log.debug("  next  [{}]", next);
+            log.debug("  next  [{}]", this.next);
             // If the current state is not active
             if (handle.state().active() == false)
         		{
-            	log.debug("done - handle state is not active");
+            	log.debug("Handle state is not active, returning true");
         		return true ;
             	}
-            // If the state has changed.
-            if ((prev != null) && (handle.state() != prev))
-        		{
-            	log.debug("done - prev state has changed");
-        		return true ;
-            	}
-            // If the next state has been reached. 
-            if ((next != null) && (handle.state().ordinal() >= next.ordinal()))
-        		{
-            	log.debug("done - next state reached");
-        		return true ;
-            	}
-            // Check the timeout.
             else {
-            	return super.done(
-            		handle
-            		);
-            	}
+                log.debug("Handle state is active");
+                // If the state has changed.
+                if ((prev != null) && (handle.state() != prev))
+            		{
+                    log.debug("Current state has changed, return true");
+                    log.debug("  prev  [{}]", this.prev);
+                    log.debug("  state [{}]", handle.state());
+            		return true ;
+                	}
+                // If the next state has been reached. 
+                else if ((next != null) && (handle.state().ordinal() >= next.ordinal()))
+            		{
+                    log.debug("Current state is after next, return true");
+                    log.debug("  state [{}]", handle.state());
+                    log.debug("  next  [{}]", this.next);
+            		return true ;
+                	}
+                // Check the timeout.
+                else {
+                	return super.test(
+                		handle
+                		);
+                	}
+                }
             }
         }
     
@@ -858,7 +873,7 @@ implements BlueTask<TaskType>
         {
         log.debug("handle()");
         log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", ident());
+
         if (ident() != null)
             {
             synchronized (handles)
@@ -869,6 +884,8 @@ implements BlueTask<TaskType>
                 if (found != null)
                     {
                     log.debug("Found existing Handle [{}]", key);
+                    log.debug("  ident [{}]", found.ident());
+                    log.debug("  state [{}]", found.state());
                     return found;
                     }
                 else {
@@ -1248,9 +1265,6 @@ implements BlueTask<TaskType>
 	            final BlueTaskEntity.Handle handle = handle();
 	            if (handle != null)
 	            	{
-		            log.debug("  ident [{}]", handle.ident());
-		            log.debug("  state [{}]", handle.state());
-		
 		            log.debug("Before listener.waitfor()");
 		            log.debug("  ident [{}]", this.ident());
 		            log.debug("  ident [{}]", handle.ident());
