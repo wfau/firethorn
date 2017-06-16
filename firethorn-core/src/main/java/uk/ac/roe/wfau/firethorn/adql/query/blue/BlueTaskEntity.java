@@ -607,6 +607,7 @@ implements BlueTask<TaskType>
      * Base class for {@link Listener}. 
      *
      */
+    @Slf4j
     public static abstract class BaseEventListener
     implements BlueTask.Handle.Listener
         {
@@ -640,24 +641,27 @@ implements BlueTask<TaskType>
         public void waitfor(final BlueTask.Handle handle)
             {
             log.debug("waitfor(Handle)");
+            log.debug("  ident [{}]", handle.ident());
             log.debug("  state [{}]", handle.state());
 
             synchronized(handle)
                 {
 				if (handle.state().active())
     				{
-                	while (this.test(handle) == false)
+				    log.debug("Handle state is active, starting loop");
+    				while (this.test(handle) == false)
                         {
+                        log.debug("Handle wait loop [{}]", this.count);
                         try {
                             this.count++;
                             long time = remaining();
                             if (time == Long.MAX_VALUE)
                                 {
-                                log.debug("wait start []");
+                                log.debug("starting wait, no time");
                                 handle.wait();
                                 }
                             else {
-                                log.debug("wait start [{}]", time);
+                                log.debug("starting wait [{}]", time);
                                 handle.wait(
                                     time
                                     );
@@ -727,6 +731,7 @@ implements BlueTask<TaskType>
             }
         }
 
+    @Slf4j
     public static class AnyEventListener
     extends BaseEventListener
         {
@@ -759,6 +764,7 @@ implements BlueTask<TaskType>
             }
         }
 
+    @Slf4j
     public static class StatusEventListener
     extends BaseEventListener
         {
@@ -1307,7 +1313,8 @@ implements BlueTask<TaskType>
 		            log.debug("  state [{}]", handle.state());
 		            log.debug("  next  [{}]", next);
 /*
- * Already done in advance() anyway ..		
+ * Already done in advance() anyway ..
+ */		
 		            //
 		            // Update our entity from the DB.
 		            log.debug("Before refresh()");
@@ -1317,7 +1324,6 @@ implements BlueTask<TaskType>
 		            log.debug("After refresh()");
 		            log.debug("  ident [{}]", this.ident());
 		            log.debug("  state [{}]", this.state());
-*/
     				}
 	            else {
 	                log.debug("Null handle - skipping wait");

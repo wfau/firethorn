@@ -279,7 +279,7 @@ EOF
 # Tail the logs (separate terminals).
 #[user@virtual]
 
-    docker exec -it compose_gillian_1 tail -f logs/firethorm.log
+    docker exec -it compose_gillian_1 tail -f logs/firethorn.log
 
     docker exec -it compose_jarmila_1 tail -f logs/ogsadai.log
 
@@ -293,9 +293,9 @@ EOF
 # Seqential tests.
 #[root@tester]
 
-        for i in {1..2};    do doquery; done
-        for i in {1..5};    do doquery; done
-        for i in {1..10};   do doquery; done
+      # for i in {1..2};    do doquery; done
+      # for i in {1..5};    do doquery; done
+      # for i in {1..10};   do doquery; done
       # for i in {1..20};   do doquery; done
       # for i in {1..50};   do doquery; done
       # for i in {1..100};  do doquery; done
@@ -307,15 +307,15 @@ EOF
 # Concurrent tests.
 #[root@tester]
 
-        for i in {1..2};    do doquery & done
-        for i in {1..5};    do doquery & done
-        for i in {1..10};   do doquery & done
-        for i in {1..20};   do doquery & done
-        for i in {1..50};   do doquery & done
-        for i in {1..100};  do doquery & done
-        for i in {1..200};  do doquery & done
-        for i in {1..500};  do doquery & done
-        for i in {1..1000}; do doquery & done
+      # for i in {1..2};    do doquery & done
+      # for i in {1..5};    do doquery & done
+      # for i in {1..10};   do doquery & done
+      # for i in {1..20};   do doquery & done
+      # for i in {1..50};   do doquery & done
+      # for i in {1..100};  do doquery & done
+      # for i in {1..200};  do doquery & done
+      # for i in {1..500};  do doquery & done
+      # for i in {1..1000}; do doquery & done
 
 # -----------------------------------------------------
 # Remove the delays.
@@ -334,11 +334,11 @@ EOF
                 | jq -r '.status,.self'
             }
 
-        for i in {1..2};    do doquery & done
-        for i in {1..5};    do doquery & done
-        for i in {1..10};   do doquery & done
-        for i in {1..20};   do doquery & done
-        for i in {1..50};   do doquery & done
+      # for i in {1..2};    do doquery & done
+      # for i in {1..5};    do doquery & done
+      # for i in {1..10};   do doquery & done
+      # for i in {1..20};   do doquery & done
+      # for i in {1..50};   do doquery & done
       # for i in {1..100};  do doquery & done
       # for i in {1..200};  do doquery & done
       # for i in {1..500};  do doquery & done
@@ -362,19 +362,21 @@ EOF
             }
 
 
-        for i in {1..2};    do doquery; done
-        for i in {1..5};    do doquery; done
-        for i in {1..10};   do doquery; done
+        doquery &
 
+      # for i in {1..2};    do doquery; done
+      # for i in {1..5};    do doquery; done
+      # for i in {1..10};   do doquery; done
 
-        for i in {1..2};    do doquery & done
-        for i in {1..5};    do doquery & done
-        for i in {1..10};   do doquery & done
-        for i in {1..20};   do doquery & done
-        for i in {1..50};   do doquery & done
-        for i in {1..100};  do doquery & done
-        for i in {1..200};  do doquery & done
-        for i in {1..500};  do doquery & done
-        for i in {1..1000}; do doquery & done
+      # for i in {1..2};    do doquery & done
+      # for i in {1..5};    do doquery & done
+      # for i in {1..10};   do doquery & done
+      # for i in {1..20};   do doquery & done
+      # for i in {1..50};   do doquery & done
+      # for i in {1..100};  do doquery & done
+      # for i in {1..200};  do doquery & done
+      # for i in {1..500};  do doquery & done
+      # for i in {1..1000}; do doquery & done
+
 
 
