@@ -1,0 +1,88 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Identify the threads involved ...
+#
+
+    thread=27334
+    logfile=logs/20170616-${thread}-thread.log
+
+    cp \
+        logs/firethorn.log \
+        ${logfile}
+
+    grep \
+        "${tag}.*\[${thread}\]" \
+        ${logfile}
+
+    #
+    # Main thread
+    tag=ohx7aeRu
+
+        2017-06-16 00:10:03,817 DEBUG [main-interface-1] [BlueQueryEntity] -- ohx7aeRu ain5Cai4 [27334] 
+
+    #
+    # Callback thread
+    tag=Aemei3te
+    tag=thoh3Jeu
+
+        2017-06-16 00:00:03,759 DEBUG [callback-interface-4] [BlueQueryEntity] -- Aemei3te Nahs6ahy [27334] 
+        2017-06-16 00:00:03,764 DEBUG [callback-interface-4] [BlueQueryEntity] -- thoh3Jeu IRae8ahr [27334] 
+
+    #
+    # Event trigger
+    tag=Ooj6Loqu
+
+        2017-06-16 00:00:03,534 DEBUG [FireThornTaskExecutor-6] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27334] 
+        2017-06-16 00:00:03,807 DEBUG [callback-interface-4] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27334] 
+
+    #
+    # Creator thread
+    tag=een6Dae1
+
+    #
+    # Updator thread
+    tag=Joh6azi9
+
+    #
+    # Waitfor thread
+    tag=CheaCh0X
+
+    #
+    # Ready thread
+    tag=Fi1Fahpo
+
+    #
+    # Running thread
+    tag=yae9iTao
+
+    #
+    # Finish thread
+    tag=chieKee1
+
+
+
+
+
+
+

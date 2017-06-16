@@ -1333,6 +1333,8 @@ implements BlueTask<TaskType>
                 @Override
                 public TaskState update()
                     {
+                    log.debug("-- Fi1Fahpo yui5EiNa [{}]", ident());
+                    log.debug("ready.Updator.update()");
                 	try {
 	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
 	                    log.debug("Before prepare()");
@@ -1381,6 +1383,8 @@ implements BlueTask<TaskType>
                 @Override
                 public TaskState update()
                     {
+                    log.debug("-- yae9iTao adoh9ooW [{}]", ident());
+                    log.debug("running.Updator.update()");
                 	try {
 	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
 	                    log.debug("Before prepare()");
@@ -1447,6 +1451,8 @@ implements BlueTask<TaskType>
                 @Override
                 public TaskState update()
                     {
+                    log.debug("-- chieKee1 apePaiy1 [{}]", ident());
+                    log.debug("finish.Updator.update()");
                 	try {
 	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
 	                    log.debug("Before change()");
@@ -1535,69 +1541,6 @@ implements BlueTask<TaskType>
         {
         return new History()
             {
-            /*
-             * 
-                @Override
-                public BlueTaskLogEntry create(Level level, String message)
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
-                    }
-
-                @Override
-                public BlueTaskLogEntry create(uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState state,
-                        Level level, String message)
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
-                    }
-
-                @Override
-                public BlueTaskLogEntry create(Object source, Level level, String message)
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
-                    }
-
-                @Override
-                public BlueTaskLogEntry create(Object source,
-                        uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState state, Level level, String message)
-                    {
-                    // TODO Auto-generated method stub
-                    return null;
-                    }
-
-                @Override
-                public Iterable<BlueTaskLogEntry> select()
-                    {
-                    // TODO Auto-generated method stub
-                    return new EmptyIterable<BlueTaskLogEntry>();
-                    }
-
-                @Override
-                public Iterable<BlueTaskLogEntry> select(Integer limit)
-                    {
-                    // TODO Auto-generated method stub
-                    return new EmptyIterable<BlueTaskLogEntry>();
-                    }
-
-                @Override
-                public Iterable<BlueTaskLogEntry> select(Level level)
-                    {
-                    // TODO Auto-generated method stub
-                    return new EmptyIterable<BlueTaskLogEntry>();
-                    }
-
-                @Override
-                public Iterable<BlueTaskLogEntry> select(Integer limit, Level level)
-                    {
-                    // TODO Auto-generated method stub
-                    return new EmptyIterable<BlueTaskLogEntry>();
-                    }
-             *
-             */
-            /*
-             */ 
             @Override
             public BlueTaskLogEntry create(Level level, String message)
                 {
@@ -1677,9 +1620,6 @@ implements BlueTask<TaskType>
                     level
                     );
                 }
-            /*
-             *  
-             */
             };
         }
     }

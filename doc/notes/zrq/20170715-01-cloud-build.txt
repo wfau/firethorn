@@ -200,7 +200,6 @@ EOF
     wget -O "${composit:?}/tester.yml" \
         'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tester.yml'
 
-
 # -----------------------------------------------------
 # Take down previous tests.
 #[user@virtual]
@@ -241,7 +240,7 @@ EOF
     # Build our base images.
     #[root@builder]
 
-#       04.01-buildbase.sh
+        04.01-buildbase.sh
 
     # -----------------------------------------------------
     # Compile our Java code.
@@ -353,6 +352,13 @@ EOF
                 "${queryspace:?}/queries/create" \
                 | jq -r '.status,.self'
             }
+
+
+        for i in {1..2};    do doquery; done
+        for i in {1..5};    do doquery; done
+        for i in {1..10};   do doquery; done
+
+
 
         for i in {1..2};    do doquery & done
         for i in {1..5};    do doquery & done

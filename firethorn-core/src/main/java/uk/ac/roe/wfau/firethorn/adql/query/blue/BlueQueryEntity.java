@@ -273,7 +273,7 @@ implements BlueQuery
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
         throws InvalidRequestException, InternalServerErrorException
             {
-            log.debug("-- Oi0ieNga Qua8ev1a --");
+            log.debug("-- Oi0ieNga Qua8ev1a []");
             log.debug("create(AdqlResource, String, Mode, Syntax, Limits, Delays, TaskState, Long)");
             log.debug("  wait for [{}]", next);
             log.debug("  wait for [{}]", wait);
@@ -299,7 +299,8 @@ implements BlueQuery
                     public BlueQuery create()
                     throws InvalidStateTransitionException, HibernateConvertException
                         {
-                        log.debug("Creator.create()");
+                        log.debug("-- een6Dae1 Eshohva5 [{}]", outerid.ident());
+                        log.debug("create.Creator.create()");
                         log.debug("Creating BlueQuery");
 
                         final Identity innerid = outerid.rebase();
@@ -345,7 +346,8 @@ implements BlueQuery
                     @Override
                     public TaskState update()
                         {
-                        log.debug("Updator.update()");
+                        log.debug("-- Joh6azi9 loolip2Y [{}]", outerid.ident());
+                        log.debug("create.Updator.update()");
                         log.debug("Updating BlueQuery [{}]", innerq.ident());
 
                         log.debug("  from [{}]", innerq.state());
