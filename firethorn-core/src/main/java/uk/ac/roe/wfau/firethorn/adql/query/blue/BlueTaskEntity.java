@@ -190,7 +190,7 @@ implements BlueTask<TaskType>
         @UpdateAtomicMethod
         public TaskState thread(final Updator<?> updator)
             {
-            log.debug("update(Updator)");
+            log.debug("thread(Updator)");
             log.debug("  ident [{}]", updator.ident());
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
 
@@ -359,7 +359,7 @@ implements BlueTask<TaskType>
      */
     public abstract static class Updator<TaskType extends BlueTask<?>>
     implements TaskRunner.Updator<TaskType>
-        {
+        {   
         /**
          * Our initial {@link BlueTask} entity.
          * 

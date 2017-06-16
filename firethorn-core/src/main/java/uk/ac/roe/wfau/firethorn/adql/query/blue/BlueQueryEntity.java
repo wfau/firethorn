@@ -299,7 +299,7 @@ implements BlueQuery
                     public BlueQuery create()
                     throws InvalidStateTransitionException, HibernateConvertException
                         {
-                        log.debug("-- een6Dae1 Eshohva5 [{}]", outerid.ident());
+                        log.debug("-- een6Dae1 Eshohva5 []");
                         log.debug("create.Creator.create()");
                         log.debug("Creating BlueQuery");
 
@@ -346,7 +346,7 @@ implements BlueQuery
                     @Override
                     public TaskState update()
                         {
-                        log.debug("-- Joh6azi9 loolip2Y [{}]", outerid.ident());
+                        log.debug("-- Joh6azi9 loolip2Y [{}]", innerq.ident());
                         log.debug("create.Updator.update()");
                         log.debug("Updating BlueQuery [{}]", innerq.ident());
 
@@ -401,7 +401,7 @@ implements BlueQuery
 	            log.debug("After BlueQuery refresh");
 	            log.debug("  state [{}]", result.state());
 	            }
-            log.debug("-- ohx7aeRu ain5Cai4 [{}]", outerq.ident());
+            log.debug("-- ohx7acRu ain5Cai4 [{}]", outerq.ident());
             log.debug("Returning BlueQuery");
             log.debug("  state [{}]", result.state());
             return result;

@@ -24,42 +24,44 @@
 # Identify the threads involved ...
 #
 
+    timestamp=$(date +%Y%m%d%H%M%S)
     thread=27334
     thread=27192
-    logfile=logs/$(date +%Y%m%d%H%M%S)-${thread}-thread.log
+    thread=27041
+    logfile=logs/${timestamp}-${thread}-thread.log
 
     cp \
         logs/firethorn.log \
         ${logfile}
 
-    grep \
-        "${tag}.*\[${thread}\]" \
-        ${logfile}
 
     #
     # Main thread
     tag=ohx7aeRu
 
-2017-06-16 01:08:42,049 DEBUG [main-interface-5] [BlueQueryEntity] -- ohx7aeRu raid3Sho [27192] 
-2017-06-16 01:18:42,065 DEBUG [main-interface-5] [BlueQueryEntity] -- ohx7aeRu ain5Cai4 [27192] 
+    grep \
+        "${tag}.*\[${thread}\]" \
+        ${logfile}
+
+2017-06-16 01:54:08,797 DEBUG [main-interface-3] [BlueQueryEntity] -- ohx7aeRu raid3Sho [27041] 
 
     #
     # Callback thread
     tag=Aemei3te
     tag=thoh3Jeu
 
-2017-06-16 01:08:42,003 DEBUG [callback-interface-4] [BlueQueryEntity] -- Aemei3te Nahs6ahy [27192] 
-2017-06-16 01:08:42,006 DEBUG [callback-interface-4] [BlueQueryEntity] -- thoh3Jeu IRae8ahr [27192] 
+2017-06-16 01:54:08,769 DEBUG [callback-interface-5] [BlueQueryEntity] -- Aemei3te Nahs6ahy [27041] 
+2017-06-16 01:54:08,773 DEBUG [callback-interface-5] [BlueQueryEntity] -- thoh3Jeu IRae8ahr [27041] 
 
     #
     # Event trigger
     tag=Ooj6Loqu
 
-2017-06-16 01:08:41,817 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27192] 
-2017-06-16 01:08:42,051 DEBUG [callback-interface-4] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27192] 
+2017-06-16 01:54:08,551 DEBUG [FireThornTaskExecutor-15] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27041] 
+2017-06-16 01:54:08,798 DEBUG [callback-interface-5] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27041] 
 
     #
-    # Creator thread
+    # Creator thread - this one won't trigger in ident
     tag=een6Dae1
 
     #
@@ -70,7 +72,7 @@
     # Waitfor thread
     tag=CheaCh0X
 
-2017-06-16 01:08:42,057 DEBUG [main-interface-5] [BlueTaskEntity] -- CheaCh0X aew1aiSh [27192] 
+2017-06-16 01:54:08,808 DEBUG [main-interface-3] [BlueTaskEntity] -- CheaCh0X aew1aiSh [27041] 
 
     #
     # Ready thread
@@ -80,15 +82,39 @@
     # Running thread
     tag=yae9iTao
 
-2017-06-16 01:08:41,570 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity] -- yae9iTao adoh9ooW [27192] 
+2017-06-16 01:54:08,267 DEBUG [FireThornTaskExecutor-15] [BlueTaskEntity] -- yae9iTao adoh9ooW [27041] 
 
     #
     # Finish thread
     tag=chieKee1
 
 
+# -----------------------------------------------------
+# Trim other main threads ..
 
+    sed -i \
+        '
+        /\[main-interface-[^3][0-9]*\]/ {
+            d
+            }
+        ' \
+        ${logfile}
 
+# -----------------------------------------------------
+# Trim other callback threads ..
 
+    sed -i \
+        '
+        /\[callback-interface-[^5][0-9]*\]/ {
+            d
+            }
+        ' \
+        ${logfile}
 
+# -----------------------------------------------------
+# Mark the beginning and end ..
+
+    vi ${logfile}
+    
+2017-06-16 01:54:08,797 DEBUG [main-interface-3] [BlueQueryEntity] -- ohx7aeRu raid3Sho [27041] 
 
