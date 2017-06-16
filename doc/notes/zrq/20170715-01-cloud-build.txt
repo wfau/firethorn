@@ -240,7 +240,7 @@ EOF
     # Build our base images.
     #[root@builder]
 
-#       04.01-buildbase.sh
+        04.01-buildbase.sh
 
     # -----------------------------------------------------
     # Compile our Java code.
@@ -279,7 +279,7 @@ EOF
 # Run the first query.
 #[root@tester]
 
-        doquery
+        doquery &
 
 # -----------------------------------------------------
 # Seqential tests.
@@ -359,7 +359,6 @@ EOF
         for i in {1..10};   do doquery; done
 
 
-
         for i in {1..2};    do doquery & done
         for i in {1..5};    do doquery & done
         for i in {1..10};   do doquery & done
@@ -370,22 +369,4 @@ EOF
         for i in {1..500};  do doquery & done
         for i in {1..1000}; do doquery & done
 
-# -----------------------------------------------------
-# Restore the original query.
-#[root@tester]
-
-
-    doquery()
-        {
-        curl \
-            --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 1000 ra, dec FROM atlasSource" \
-            --data "adql.query.status.next=COMPLETED" \
-            --data "adql.query.wait.time=600000" \
-            --data "adql.query.delay.every=5" \
-            "${queryspace:?}/queries/create" \
-            | jq -r '.status,.self'
-        }
 

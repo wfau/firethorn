@@ -521,10 +521,11 @@ implements BlueTask<TaskType>
             this.ident = task.ident().toString();
             }
 
-        private boolean active = false ;
-        public boolean active()
+        private boolean sticky = false ;
+        @Override
+        public boolean sticky()
             {
-            return this.active;
+            return this.sticky;
             }
         
         private String ident;
@@ -551,19 +552,19 @@ implements BlueTask<TaskType>
             }
         
         @Override
-        public synchronized void event(final TaskState next, final boolean activate)
+        public synchronized void event(final TaskState next, final boolean sticky)
             {
             log.debug("-- Ooj6Loqu gi8Hiej7 [{}]", this.ident());
             log.debug("event(TaskState, boolean)");
             log.debug("  state  [{}][{}]", this.state,  next);
-            log.debug("  active [{}][{}]", this.active, activate);
+            log.debug("  sticky [{}][{}]", this.sticky, sticky);
 
             this.state = next;
-            this.active |= activate ;
+            this.sticky |= sticky ;
 
-            log.debug("notify start");
+            log.debug("before notify");
             this.notifyAll();
-            log.debug("notify done");
+            log.debug("after notify");
 
 // Two states, controller and processor.
 // Processor updates via callback.
@@ -577,29 +578,27 @@ implements BlueTask<TaskType>
 // Callback might happen, running, completed or error.
 // Controller checks state and IF still active, updates state to running.
 // Controller releases handle IF no longer active..
-
-            
             
             log.debug("-- diHohj8a Reez1OeY [{}]", this.ident());
-            log.debug("Checking Handler activation");
-            log.debug("  active [{}]", this.active);
-            if (this.active)
+            log.debug("Checking Handler");
+            log.debug("  state  [{}]", this.state);
+            log.debug("  sticky [{}]", this.sticky);
+            if (this.state.active())
                 {
-                log.debug("Handler is active, checking TaskState ");
-                log.debug("  state [{}]", this.state);
-                if (this.state.active())
+                log.debug("TaskState is active, keeping Handler");
+                }
+            else {
+                log.debug("TaskState is inactive, checking stickiness [{}]", this.sticky());
+                if (this.sticky())
                     {
-                    log.debug("TaskState is active, keeping Handler");
+                    log.debug("Handler is sticky");
                     }
                 else {
-                    log.debug("TaskState is inactive, removing Handler");
+                    log.debug("Handler is not sticky, releasing");
                     handles.remove(
                         this.ident
                         );
                     }
-                }
-            else {
-                log.debug("Handler has not been activated yet");
                 }
             }
         }
@@ -1210,14 +1209,14 @@ implements BlueTask<TaskType>
      * Update our Handle and notify any Listeners.
      * 
      */
-    protected void event(boolean active)
+    protected void event(boolean sticky)
     	{
         final Handle handle = this.handle();
         if (handle != null)
             {
             handle.event(
         		this.state,
-                active
+                sticky
                 );
             }
     	}

@@ -316,10 +316,10 @@ extends NamedEntity
         public TaskState state();
 
         /**
-         * Check if this {@link Handle} is active.
+         * Check if this {@link Handle} is sticky.
          * 
          */
-        public boolean active();
+        public boolean sticky();
 
         /**
          * Update our {@link Handle} with a {@link TaskState} event.
