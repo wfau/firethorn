@@ -240,7 +240,7 @@ EOF
     # Build our base images.
     #[root@builder]
 
-        04.01-buildbase.sh
+#       04.01-buildbase.sh
 
     # -----------------------------------------------------
     # Compile our Java code.

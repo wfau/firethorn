@@ -25,7 +25,8 @@
 #
 
     thread=27334
-    logfile=logs/20170616-${thread}-thread.log
+    thread=27192
+    logfile=logs/$(date +%Y%m%d%H%M%S)-${thread}-thread.log
 
     cp \
         logs/firethorn.log \
@@ -39,22 +40,23 @@
     # Main thread
     tag=ohx7aeRu
 
-        2017-06-16 00:10:03,817 DEBUG [main-interface-1] [BlueQueryEntity] -- ohx7aeRu ain5Cai4 [27334] 
+2017-06-16 01:08:42,049 DEBUG [main-interface-5] [BlueQueryEntity] -- ohx7aeRu raid3Sho [27192] 
+2017-06-16 01:18:42,065 DEBUG [main-interface-5] [BlueQueryEntity] -- ohx7aeRu ain5Cai4 [27192] 
 
     #
     # Callback thread
     tag=Aemei3te
     tag=thoh3Jeu
 
-        2017-06-16 00:00:03,759 DEBUG [callback-interface-4] [BlueQueryEntity] -- Aemei3te Nahs6ahy [27334] 
-        2017-06-16 00:00:03,764 DEBUG [callback-interface-4] [BlueQueryEntity] -- thoh3Jeu IRae8ahr [27334] 
+2017-06-16 01:08:42,003 DEBUG [callback-interface-4] [BlueQueryEntity] -- Aemei3te Nahs6ahy [27192] 
+2017-06-16 01:08:42,006 DEBUG [callback-interface-4] [BlueQueryEntity] -- thoh3Jeu IRae8ahr [27192] 
 
     #
     # Event trigger
     tag=Ooj6Loqu
 
-        2017-06-16 00:00:03,534 DEBUG [FireThornTaskExecutor-6] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27334] 
-        2017-06-16 00:00:03,807 DEBUG [callback-interface-4] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27334] 
+2017-06-16 01:08:41,817 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27192] 
+2017-06-16 01:08:42,051 DEBUG [callback-interface-4] [BlueTaskEntity] -- Ooj6Loqu gi8Hiej7 [27192] 
 
     #
     # Creator thread
@@ -68,6 +70,8 @@
     # Waitfor thread
     tag=CheaCh0X
 
+2017-06-16 01:08:42,057 DEBUG [main-interface-5] [BlueTaskEntity] -- CheaCh0X aew1aiSh [27192] 
+
     #
     # Ready thread
     tag=Fi1Fahpo
@@ -75,6 +79,8 @@
     #
     # Running thread
     tag=yae9iTao
+
+2017-06-16 01:08:41,570 DEBUG [FireThornTaskExecutor-41] [BlueTaskEntity] -- yae9iTao adoh9ooW [27192] 
 
     #
     # Finish thread
