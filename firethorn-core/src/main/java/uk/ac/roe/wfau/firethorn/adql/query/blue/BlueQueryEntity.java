@@ -522,9 +522,9 @@ implements BlueQuery
             log.debug("-- Aemei3te Nahs6ahy [{}]", ident);
             log.debug("callback(Identifier, CallbackEvent)");
             log.debug("  ident [{}]", ident);
-            log.debug("  next  [{}]", message.state());
-            log.debug("  state [{}]", message.results().state());
-            log.debug("  count [{}]", message.results().count());
+            log.debug("  event state  [{}]", message.state());
+            log.debug("  result state [{}]", message.results().state());
+            log.debug("  result count [{}]", message.results().count());
             final BlueQuery query = select(
                 ident
                 );

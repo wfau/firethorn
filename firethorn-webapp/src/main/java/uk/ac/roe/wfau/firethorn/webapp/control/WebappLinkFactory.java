@@ -74,10 +74,10 @@ implements Entity.LinkFactory<EntityType>
     
     protected String link(final Integer port, final String path, final String ident)
         {
-        log.debug("link(....)");
-        log.debug("  port  [{}]", port);
-        log.debug("  path  [{}]", path);
-        log.debug("  ident [{}]", ident);
+        log.trace("link(....)");
+        log.trace("  port  [{}]", port);
+        log.trace("  path  [{}]", path);
+        log.trace("  ident [{}]", ident);
         UriComponentsBuilder builder ;
         if (baseurl() != null)
             {
