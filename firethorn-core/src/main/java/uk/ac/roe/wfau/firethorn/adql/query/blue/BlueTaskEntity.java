@@ -450,6 +450,17 @@ implements BlueTask<TaskType>
         {
         return this.state;
         }
+    protected void state(final TaskState value)
+        {
+        if (value.compareTo(this.state) > 0)
+            {
+            log.debug("Forward state change [{}]", value);
+            this.state = value;
+            }
+        else {
+            log.error("Backward state change [{}][{}]", value, this.state);
+            }
+        }
 
     @Column(
         name = DB_QUEUED_COL,
@@ -558,8 +569,16 @@ implements BlueTask<TaskType>
             log.debug("event(TaskState, boolean)");
             log.debug("  state  [{}][{}]", this.state,  next);
             log.debug("  sticky [{}][{}]", this.sticky, sticky);
-
-            this.state = next;
+            
+            log.debug("Checking state");
+            if (next.compareTo(this.state) > 0)
+                {
+                log.debug("Accepting forward state change");
+                this.state = next;
+                }
+            else {
+                log.error("Ignoring backward state change");
+                }
             this.sticky |= sticky ;
 
             log.debug("before notify");

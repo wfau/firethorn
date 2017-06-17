@@ -1990,17 +1990,19 @@ implements BlueQuery
                     }
                 }
             );
-        log.debug("Finished thread()");
-        log.debug("  state [{}]", state());
 
-        log.debug("Refreshing state");
-        this.refresh();
+        log.debug("-- Cie4Dahf Mee0aeXo [{}]", this.state());
+        log.debug("Finished thread()");
+        log.debug("  state [{}]", this.state());
+
+        //log.debug("Refreshing state");
+        //this.refresh();
 
         log.debug("Notifying listeners");
         this.event();
 
         log.debug("Finished callback()");
-        log.debug("  state [{}]", state());
+        log.debug("  state [{}]", this.state());
         
         }
     
