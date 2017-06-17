@@ -1975,6 +1975,10 @@ implements BlueQuery
                         entity.transition(
                             message.state()
                             );
+
+                        log.debug("Notifying listeners");
+                        entity.event();
+
                         return entity.state();
                         }
                     catch (InvalidStateTransitionException ouch)
@@ -1998,8 +2002,8 @@ implements BlueQuery
         //log.debug("Refreshing state");
         //this.refresh();
 
-        log.debug("Notifying listeners");
-        this.event();
+        //log.debug("Notifying listeners");
+        //this.event();
 
         log.debug("Finished callback()");
         log.debug("  state [{}]", this.state());
