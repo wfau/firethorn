@@ -1304,26 +1304,26 @@ implements BlueTask<TaskType>
 							handle
 							);
 						}
-
+					
 					log.debug("After listener.waitfor()");
-		            log.debug("  ident [{}]", this.ident());
-		            log.debug("  ident [{}]", handle.ident());
-		            log.debug("  prev  [{}]", prev);
-		            log.debug("  state [{}]", this.state());
-		            log.debug("  state [{}]", handle.state());
-		            log.debug("  next  [{}]", next);
-/*
- * Already done in advance() anyway ..
- */		
-		            //
-		            // Update our entity from the DB.
-		            log.debug("Before refresh()");
-		            log.debug("  ident [{}]", this.ident());
-		            log.debug("  state [{}]", this.state());
-		            refresh();
-		            log.debug("After refresh()");
-		            log.debug("  ident [{}]", this.ident());
-		            log.debug("  state [{}]", this.state());
+		            log.debug("  this ident [{}]", this.ident());
+		            log.debug("  hand ident [{}]", handle.ident());
+		            log.debug("  prev state [{}]", prev);
+		            log.debug("  this state [{}]", this.state());
+		            log.debug("  hand state [{}]", handle.state());
+		            log.debug("  next state [{}]", next);
+
+		            log.debug("Checking Handle status");
+	                if (handle.state().compareTo(this.state()) > 0)
+	                    {
+	                    log.debug("Adopting Handle status");
+	                    this.state = handle.state(); 
+	                    }
+
+//
+//TODO Remove the sticky flag and possibly release the Handle.
+//
+	                
     				}
 	            else {
 	                log.debug("Null handle - skipping wait");
