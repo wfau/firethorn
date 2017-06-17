@@ -397,12 +397,11 @@ implements BlueQuery
 	            log.debug("After BlueQuery wait");
 	            log.debug("  state [{}]", result.state());
                 //result = result.rebase();
-                result.refresh();
-	            log.debug("After BlueQuery refresh");
-	            log.debug("  state [{}]", result.state());
+                //result.refresh();
+	            //log.debug("After BlueQuery refresh");
+	            //log.debug("  state [{}]", result.state());
 	            }
             log.debug("-- Eethia9o Moophie1 [{}]", outerq.ident());
-            //log.debug("-- ohx7acRu ain5Cai4 [{}]", outerq.ident());
             log.debug("Returning BlueQuery");
             log.debug("  state [{}]", result.state());
             return result;

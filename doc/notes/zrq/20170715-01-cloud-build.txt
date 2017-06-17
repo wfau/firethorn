@@ -56,7 +56,13 @@
 # Set the target branch
 #[user@virtual]
 
+    cat > "${HOME:?}/build.settings" << EOF
+
     branch=2.1.10-zrq-concurrent-bug
+    buildtag=\${branch}
+    composit=\${HOME:?}/compose
+
+EOF
 
 # -----------------------------------------------------
 # Add our secret function.
@@ -191,7 +197,7 @@ EOF
 # Download our compose files.
 #[user@virtual]
 
-    composit="${HOME:?}/compose"
+    source "${HOME:?}/build.settings"
     mkdir -p "${composit:?}"
 
     wget -O "${composit:?}/builder.yml" \
@@ -204,7 +210,9 @@ EOF
 # Take down previous tests.
 #[user@virtual]
 
-    export buildtag=${branch}
+    source "${HOME:?}/build.settings"
+    export buildtag
+
     docker-compose \
         --file "${composit:?}/tester.yml" \
         down 
@@ -213,7 +221,9 @@ EOF
 # Run our builder.
 #[user@virtual]
 
-    export branch
+    source "${HOME:?}/build.settings"
+    export buildtag
+
     docker-compose \
         --file "${composit:?}/builder.yml" \
         run builder 
@@ -364,9 +374,9 @@ EOF
 
         doquery &
 
-      # for i in {1..2};    do doquery; done
-      # for i in {1..5};    do doquery; done
-      # for i in {1..10};   do doquery; done
+        for i in {1..2};    do doquery; done
+        for i in {1..5};    do doquery; done
+        for i in {1..10};   do doquery; done
 
       # for i in {1..2};    do doquery & done
       # for i in {1..5};    do doquery & done
