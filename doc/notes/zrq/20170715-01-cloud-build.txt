@@ -223,6 +223,7 @@ EOF
 
     source "${HOME:?}/build.settings"
     export buildtag
+    export branch
 
     docker-compose \
         --file "${composit:?}/builder.yml" \
@@ -240,7 +241,10 @@ EOF
 # Run our tester.
 #[user@virtual]
 
-    export buildtag=${branch}
+    source "${HOME:?}/build.settings"
+    export buildtag
+    export branch
+
     docker-compose \
         --file "${composit:?}/tester.yml" \
         run tester 
@@ -269,35 +273,31 @@ EOF
 # Seqential tests.
 #[root@tester]
 
-      # for i in {1..2};    do doquery; done
-      # for i in {1..5};    do doquery; done
-      # for i in {1..10};   do doquery; done
-      # for i in {1..20};   do doquery; done
-      # for i in {1..50};   do doquery; done
-      # for i in {1..100};  do doquery; done
-      # for i in {1..200};  do doquery; done
-      # for i in {1..500};  do doquery; done
-      # for i in {1..1000}; do doquery; done
+        for i in {1..10};   do doquery; done
+        for i in {1..20};   do doquery; done
+        for i in {1..50};   do doquery; done
+        for i in {1..100};  do doquery; done
+        for i in {1..200};  do doquery; done
+        for i in {1..500};  do doquery; done
+        for i in {1..1000}; do doquery; done
 
 # -----------------------------------------------------
 # Concurrent tests.
 #[root@tester]
 
-      # for i in {1..2};    do doquery & done
-      # for i in {1..5};    do doquery & done
-      # for i in {1..10};   do doquery & done
-      # for i in {1..20};   do doquery & done
-      # for i in {1..50};   do doquery & done
-      # for i in {1..100};  do doquery & done
-      # for i in {1..200};  do doquery & done
-      # for i in {1..500};  do doquery & done
-      # for i in {1..1000}; do doquery & done
+        for i in {1..10};   do doquery & done
+        for i in {1..20};   do doquery & done
+        for i in {1..50};   do doquery & done
+        for i in {1..100};  do doquery & done
+        for i in {1..200};  do doquery & done
+        for i in {1..500};  do doquery & done
+        for i in {1..1000}; do doquery & done
 
 # -----------------------------------------------------
 # Remove the delays.
 #[root@tester]
 
-        doquery()
+        nodelay()
             {
             curl \
                 --silent \
@@ -310,21 +310,21 @@ EOF
                 | jq -r '.status,.self'
             }
 
-      # for i in {1..2};    do doquery & done
-      # for i in {1..5};    do doquery & done
-      # for i in {1..10};   do doquery & done
-      # for i in {1..20};   do doquery & done
-      # for i in {1..50};   do doquery & done
-      # for i in {1..100};  do doquery & done
-      # for i in {1..200};  do doquery & done
-      # for i in {1..500};  do doquery & done
-      # for i in {1..1000}; do doquery & done
+        for i in {1..2};    do nodelay & done
+        for i in {1..5};    do nodelay & done
+        for i in {1..10};   do nodelay & done
+        for i in {1..20};   do nodelay & done
+        for i in {1..50};   do nodelay & done
+        for i in {1..100};  do nodelay & done
+        for i in {1..200};  do nodelay & done
+        for i in {1..500};  do nodelay & done
+        for i in {1..1000}; do nodelay & done
 
 # -----------------------------------------------------
 # Reduce the number of rows.
 #[root@tester]
 
-        doquery()
+        doquick()
             {
             curl \
                 --silent \
@@ -337,53 +337,60 @@ EOF
                 | jq -r '.status,.self'
             }
 
-
-        doquery
-
-        for i in {1..2};    do doquery; done
-        for i in {1..5};    do doquery; done
-        for i in {1..10};   do doquery; done
-
-        for i in {1..2};    do doquery & done
-        for i in {1..5};    do doquery & done
-        for i in {1..10};   do doquery & done
-        for i in {1..20};   do doquery & done
-        for i in {1..50};   do doquery & done
-        for i in {1..100};  do doquery & done
-        for i in {1..200};  do doquery & done
-        for i in {1..500};  do doquery & done
-        for i in {1..1000}; do doquery & done
+        for i in {1..2};    do doquick & done
+        for i in {1..5};    do doquick & done
+        for i in {1..10};   do doquick & done
+        for i in {1..20};   do doquick & done
+        for i in {1..50};   do doquick & done
+        for i in {1..100};  do doquick & done
+        for i in {1..200};  do doquick & done
+        for i in {1..500};  do doquick & done
+        for i in {1..1000}; do doquick & done
 
 # -----------------------------------------------------
-# Restore the original slow query.
+# Increase the rows and delays.
 #[root@tester]
 
-    doquery()
+    doslow()
         {
         curl \
             --silent \
             --header "firethorn.auth.identity:${identity:?}"   \
             --header "firethorn.auth.community:${community:?}" \
-            --data "adql.query.input=SELECT TOP 1000 ra, dec FROM atlasSource" \
+            --data "adql.query.input=SELECT TOP 10000 ra, dec FROM atlasSource" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
-            --data "adql.query.delay.every=5" \
+            --data "adql.query.delay.every=10" \
             "${queryspace:?}/queries/create" \
             | jq -r '.status,.self'
         }
 
+    for i in {1..10};   do doslow & done
 
-        for i in {1..2};    do doquery; done
-        for i in {1..5};    do doquery; done
-        for i in {1..10};   do doquery; done
+# -----------------------------------------------------
+# Run a mixture of quick and slow.
+#[root@tester]
 
-        for i in {1..2};    do doquery & done
-        for i in {1..5};    do doquery & done
-        for i in {1..10};   do doquery & done
-        for i in {1..20};   do doquery & done
-        for i in {1..50};   do doquery & done
-        for i in {1..100};  do doquery & done
-        for i in {1..200};  do doquery & done
-        for i in {1..500};  do doquery & done
-        for i in {1..1000}; do doquery & done
+    for i in {1..10}
+    do
+        doslow  &
+        doquery &
+        doquick &
+    done
+
+    for i in {1..100}
+    do
+        doslow  &
+        doquery &
+        doquick &
+    done
+
+    for i in {1..1000}
+    do
+        doslow  &
+        doquery &
+        doquick &
+    done
+
+
 
