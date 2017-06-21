@@ -66,7 +66,7 @@
         ....
 
     source "${HOME:?}/secret.sh"
-    secret 'ping'
+    secret 'frog'
 
 # -----------------------------------------------------
 # Download our compose file

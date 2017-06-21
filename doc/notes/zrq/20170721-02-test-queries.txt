@@ -43,7 +43,7 @@ EOF
 
 
     source "${HOME:?}/secret.sh"
-    secret ping
+    secret frog
 
 # -----------------------------------------------------
 # Create our chain config.
