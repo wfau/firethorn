@@ -27,8 +27,8 @@
     cat > "${HOME:?}/build.settings" << EOF
 
     #branch=2.1.10-zrq-concurrent-bug
-    branch=2.1.11
-    buildtag=\${branch}
+    #buildtag=\${branch:?}
+    buildtag=2.1.11
     composit=\${HOME:?}/compose
 
 EOF
@@ -58,21 +58,21 @@ EOF
     firename=gillian
     testname=aaliyah
 
-    metatype=pgsql
-    metahost=\${metaname}
-    metadata=postgres
-    metauser=$(pwgen 20 1)
-    metapass=$(pwgen 20 1)
-    metadriver=org.postgresql.Driver
-    metajdbc=jdbc:postgresql://\${metaname:?}/\${metadata:?}
+#    metatype=pgsql
+#    metahost=\${metaname}
+#    metadata=postgres
+#    metauser=$(pwgen 20 1)
+#    metapass=$(pwgen 20 1)
+#    metadriver=org.postgresql.Driver
+#    metajdbc=jdbc:postgresql://\${metaname:?}/\${metadata:?}
 
-#   metatype=mssql
-#   metahost=$(secret 'firethorn.meta.host')
-#   metadata=$(secret 'firethorn.meta.data')
-#   metauser=$(secret 'firethorn.meta.user')
-#   metapass=$(secret 'firethorn.meta.pass')
-#   metadriver=net.sourceforge.jtds.jdbc.Driver
-#   metajdbc=jdbc:jtds:sqlserver://\${metaname:?}/\${metadata:?}
+    metatype=mssql
+    metahost=$(secret 'firethorn.meta.host')
+    metadata=$(secret 'firethorn.meta.data')
+    metauser=$(secret 'firethorn.meta.user')
+    metapass=$(secret 'firethorn.meta.pass')
+    metadriver=net.sourceforge.jtds.jdbc.Driver
+    metajdbc=jdbc:jtds:sqlserver://\${metaname:?}/\${metadata:?}
 
     usertype=mssql
     userhost=$(secret 'firethorn.user.host')
@@ -178,7 +178,6 @@ EOF
 
     source "${HOME:?}/build.settings"
     export buildtag
-    export branch
 
     docker-compose \
         --file "${composit:?}/tester.yml" \
