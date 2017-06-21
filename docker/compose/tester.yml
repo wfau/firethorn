@@ -10,38 +10,38 @@ networks:
 
 services:
 
-    bethany:
-        image:
-            "firethorn/postgres:${buildtag}"
-        read_only:
-            true
-        tmpfs:
-            - /run
-            - /tmp
-        environment:
-            POSTGRES_USER: "${metauser}"
-            POSTGRES_PASSWORD: "${metapass}"
-        networks:
-            - miriam
-
 #    bethany:
 #        image:
-#            "firethorn/sql-proxy:${buildtag}"
+#            "firethorn/postgres:${buildtag}"
 #        read_only:
-#            false
+#            true
 #        tmpfs:
 #            - /run
 #            - /tmp
-#        stdin_open:
-#            true
 #        environment:
-#            targethost: "${metahost}"
-#            tunneluser: "${tunneluser}"
-#            tunnelhost: "${tunnelhost}"
-#        volumes:
-#            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+#            POSTGRES_USER: "${metauser}"
+#            POSTGRES_PASSWORD: "${metapass}"
 #        networks:
 #            - miriam
+
+    bethany:
+        image:
+            "firethorn/sql-proxy:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        environment:
+            targethost: "${metahost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
 
     patricia:
         image:
