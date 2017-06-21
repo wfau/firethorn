@@ -40,13 +40,13 @@ services:
         depends_on:
             - fedora
 
-#    sql-client:
-#        image:
-#            "firethorn/sql-client:${buildtag}"
-#        labels:
-#            uk.ac.roe.firethorn.buildtag: "${buildtag}"
-#        build:
-#            context: '../sql-client'
+    sql-client:
+        image:
+            "firethorn/sql-client:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: '../sql-client'
 
     postgres:
         image:
