@@ -21,38 +21,6 @@
 #
 
 # -----------------------------------------------------
-# Create a new VM.
-#[user@trop]
-
-    createvm
-
-        INFO : Node name [Ibalehar]
-        INFO : Base name [fedora-25-docker-32G-20170331.qcow]
-        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-32G-20170331.qcow]
-        INFO : Disc name [Ibalehar.qcow]
-        INFO : Disc size [32GiB]
-
-# -----------------------------------------------------
-# TODO fix .ssh directory for Stevedore
-#[user@trop]
-
-    ssh root@Ibalehar
-
-        rm -f /home/Stevedore/.ssh
-        cp -r /root/.ssh /home/Stevedore/.ssh
-        chown -R Stevedore /home/Stevedore/.ssh
-        chgrp -R Stevedore /home/Stevedore/.ssh
-        restorecon -R /home/Stevedore/.ssh
-
-        exit
-
-# -----------------------------------------------------
-# Login as Stevedore
-#[user@trop]
-
-        ssh Stevedore@Ibalehar
-
-# -----------------------------------------------------
 # Set the target branch
 #[user@virtual]
 
@@ -195,48 +163,14 @@ tunnelhost=${tunnelhost:?}
 EOF
 
 # -----------------------------------------------------
-# Download our compose files.
+# Download our compose file.
 #[user@virtual]
 
     source "${HOME:?}/build.settings"
     mkdir -p "${composit:?}"
 
-    wget -O "${composit:?}/builder.yml" \
-        'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml'
-
     wget -O "${composit:?}/tester.yml" \
         'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tester.yml'
-
-# -----------------------------------------------------
-# Take down previous tests.
-#[user@virtual]
-
-    source "${HOME:?}/build.settings"
-    export buildtag
-
-    docker-compose \
-        --file "${composit:?}/tester.yml" \
-        down
-
-# -----------------------------------------------------
-# Run our builder.
-#[user@virtual]
-
-    source "${HOME:?}/build.settings"
-    export buildtag
-    export branch
-
-    docker-compose \
-        --file "${composit:?}/builder.yml" \
-        run builder
-
-    # -----------------------------------------------------
-    # Build everything.
-    #[root@builder]
-
-        /builder/bin/00.00-build.sh
-
-        exit
 
 # -----------------------------------------------------
 # Run our tester.
@@ -264,6 +198,8 @@ EOF
 
     docker exec -it compose_jarmila_1 tail -f logs/ogsadai.log
 
+    docker stats --format "{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
+
 # -----------------------------------------------------
 # Run the first query.
 #[root@tester]
@@ -282,7 +218,7 @@ EOF
                 | jq -r '.status,.self'
             }
 
-        doquery &
+        doquery
 
 # -----------------------------------------------------
 # Seqential tests.
@@ -291,10 +227,10 @@ EOF
         for i in {1..10};   do doquery; done
         for i in {1..20};   do doquery; done
         for i in {1..50};   do doquery; done
-        for i in {1..100};  do doquery; done
-        for i in {1..200};  do doquery; done
-        for i in {1..500};  do doquery; done
-        for i in {1..1000}; do doquery; done
+       #for i in {1..100};  do doquery; done
+       #for i in {1..200};  do doquery; done
+       #for i in {1..500};  do doquery; done
+       #for i in {1..1000}; do doquery; done
 
 # -----------------------------------------------------
 # Concurrent tests.
@@ -325,8 +261,6 @@ EOF
                 | jq -r '.status,.self'
             }
 
-        for i in {1..2};    do nodelay & done
-        for i in {1..5};    do nodelay & done
         for i in {1..10};   do nodelay & done
         for i in {1..20};   do nodelay & done
         for i in {1..50};   do nodelay & done
@@ -352,8 +286,6 @@ EOF
                 | jq -r '.status,.self'
             }
 
-        for i in {1..2};    do doquick & done
-        for i in {1..5};    do doquick & done
         for i in {1..10};   do doquick & done
         for i in {1..20};   do doquick & done
         for i in {1..50};   do doquick & done
@@ -409,7 +341,7 @@ EOF
 
     for i in {1..10}
     do
-        for i in {1..100}
+        for j in {1..100}
         do
             doslow  &
             doquery &

@@ -32,5 +32,5 @@ COPY conf/server.xml conf/server.xml
 HEALTHCHECK \
     --interval=30s \
     --timeout=5s \
-    CMD curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1
+    CMD curl --silent --head --fail http://localhost:8081/firethorn/system/info || exit 1
 
