@@ -12,7 +12,7 @@
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
-#  
+#
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #   </meta:licence>
@@ -151,8 +151,8 @@ firethorn.ogsa.resource.scan=PT1M
 
 EOF
 
-    chmod a+r "${HOME:?}/firethorn.properties" 
-    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+    chmod a+r "${HOME:?}/firethorn.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties"
 
 # -----------------------------------------------------
 # Create our tester config.
@@ -170,8 +170,8 @@ EOF
 
 EOF
 
-    chmod a+r "${HOME:?}/tester.properties" 
-    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties" 
+    chmod a+r "${HOME:?}/tester.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties"
 
 # -----------------------------------------------------
 # Create our composer env file.
@@ -215,7 +215,7 @@ EOF
 
     docker-compose \
         --file "${composit:?}/tester.yml" \
-        down 
+        down
 
 # -----------------------------------------------------
 # Run our builder.
@@ -227,7 +227,7 @@ EOF
 
     docker-compose \
         --file "${composit:?}/builder.yml" \
-        run builder 
+        run builder
 
     # -----------------------------------------------------
     # Build everything.
@@ -247,7 +247,7 @@ EOF
 
     docker-compose \
         --file "${composit:?}/tester.yml" \
-        run tester 
+        run tester
 
 # -----------------------------------------------------
 # Setup our tests.
@@ -266,6 +266,20 @@ EOF
 # -----------------------------------------------------
 # Run the first query.
 #[root@tester]
+
+        doquery()
+            {
+            curl \
+                --silent \
+                --header "firethorn.auth.identity:${identity:?}"   \
+                --header "firethorn.auth.community:${community:?}" \
+                --data "adql.query.input=SELECT TOP 1000 ra, dec FROM atlasSource" \
+                --data "adql.query.status.next=COMPLETED" \
+                --data "adql.query.wait.time=600000" \
+                --data "adql.query.delay.every=5" \
+                "${queryspace:?}/queries/create" \
+                | jq -r '.status,.self'
+            }
 
         doquery &
 
@@ -391,6 +405,18 @@ EOF
         doquery &
         doquick &
     done
+
+    for i in {1..10}
+    do
+        for i in {1..100}
+        do
+            doslow  &
+            doquery &
+            doquick &
+        done
+        dostatus &
+    done
+
 
 
 
