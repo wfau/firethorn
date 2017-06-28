@@ -10,49 +10,47 @@ networks:
 
 services:
 
+#    bethany:
+#        image:
+#            "firethorn/postgres:${buildtag}"
+#        read_only:
+#            true
+#        tmpfs:
+#            - /run
+#            - /tmp
+#        environment:
+#            POSTGRES_USER: "${metauser}"
+#            POSTGRES_PASSWORD: "${metapass}"
+#        networks:
+#            - miriam
+
     bethany:
         image:
-           "firethorn/postgres:${buildtag}"
-        read_only:
-            true
-        tmpfs:
-            - '/run'
-            - '/tmp'
-        environment:
-            POSTGRES_USER: "${metauser}"
-            POSTGRES_PASSWORD: "${metapass}"
-        networks:
-            - miriam
-
-#
-#   bethany:
-#       image:
-#          "firethorn/sql-proxy:${buildtag}"
-#       read_only:
-#           false
-#       tmpfs:
-#           - /run
-#           - /tmp
-#       stdin_open:
-#           true
-#       environment:
-#           targethost: "${metahost}"
-#           tunneluser: "${tunneluser}"
-#           tunnelhost: "${tunnelhost}"
-#       volumes:
-#           - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
-#       networks:
-#           - miriam
-#
-
-    patricia:
-        image:
-           "firethorn/sql-proxy:${buildtag}"
+            "firethorn/sql-proxy:${buildtag}"
         read_only:
             false
         tmpfs:
             - /run
             - /tmp
+        stdin_open:
+            true
+        environment:
+            targethost: "${metahost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+
+    patricia:
+        image:
+            "firethorn/sql-proxy:${buildtag}"
+        read_only:
+            false
+        tmpfs:
+            - /tmp
+            - /run
         stdin_open:
             true
         environment:
@@ -66,12 +64,12 @@ services:
 
     elayne:
         image:
-           "firethorn/sql-proxy:${buildtag}"
+            "firethorn/sql-proxy:${buildtag}"
         read_only:
             false
         tmpfs:
-            - /run
             - /tmp
+            - /run
         stdin_open:
             true
         environment:
@@ -85,21 +83,21 @@ services:
 
     jarmila:
         image:
-           "firethorn/ogsadai:${buildtag}"
+            "firethorn/ogsadai:${buildtag}"
         read_only:
             false
         tmpfs:
-            - /run
             - /tmp
+            - /run
         volumes:
             - /etc/localtime:/etc/localtime:ro
         networks:
             - miriam
         depends_on:
             elayne:
-                condition: service_started            
+                condition: service_started
             patricia:
-                condition: service_started            
+                condition: service_started
         healthcheck:
             test: [
                 "CMD-SHELL",
@@ -115,8 +113,8 @@ services:
         read_only:
             true
         tmpfs:
-            - /run
             - /tmp
+            - /run
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - ${HOME}/firethorn.properties:/etc/firethorn.properties
@@ -127,17 +125,17 @@ services:
             firethorn.ogsadai.endpoint: 'http://jarmila:8080/ogsadai/services'
         depends_on:
             bethany:
-                condition: service_started            
+                condition: service_started
             elayne:
-                condition: service_started            
+                condition: service_started
             patricia:
-                condition: service_started            
+                condition: service_started
             jarmila:
-                condition: service_healthy            
+                condition: service_healthy
         healthcheck:
             test: [
                 "CMD-SHELL",
-                "curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1"
+                "curl --silent --head --fail http://localhost:8081/firethorn/system/info || exit 1"
                 ]
             interval: 30s
             timeout: 5s
@@ -162,7 +160,7 @@ services:
             - miriam
         depends_on:
             gillian:
-                condition: service_healthy            
+                condition: service_healthy
         command:
             [bash]
 
