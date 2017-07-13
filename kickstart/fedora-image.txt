@@ -27,7 +27,6 @@ install
 url  --mirrorlist "http://mirrors.fedoraproject.org/mirrorlist?repo=fedora-$releasever&arch=$basearch"
 repo --name fedora
 repo --name updates
-repo --name docker --install --baseurl "https://yum.dockerproject.org/repo/main/fedora/$releasever/"
 
 zerombr
 bootloader --location=mbr --boot-drive=vda
