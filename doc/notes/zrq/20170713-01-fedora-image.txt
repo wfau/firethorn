@@ -101,14 +101,14 @@
         info \
             "${basepath:?}"
 
-        image: /var/lib/libvirt/images/base/fedora-25-base-32G-20170331.qcow
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 1.3G
-        cluster_size: 65536
-        Format specific information:
-            compat: 0.10
-            refcount bits: 16
+            image: /var/lib/libvirt/images/base/fedora-25-base-16G-20170713.qcow
+            file format: qcow2
+            virtual size: 16G (17179869184 bytes)
+            disk size: 1.3G
+            cluster_size: 65536
+            Format specific information:
+                compat: 0.10
+                refcount bits: 16
 
 #---------------------------------------------------------------------
 # Create a compressed copy of the image.
@@ -126,16 +126,16 @@
         info \
             "${basecopy:?}"
 
-        image: /tmp/tmp.NbXDg6yaG4
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 506M
-        cluster_size: 65536
-        Format specific information:
-            compat: 1.1
-            lazy refcounts: false
-            refcount bits: 16
-            corrupt: false
+            image: /tmp/tmp.JWkUoZR3V6
+            file format: qcow2
+            virtual size: 16G (17179869184 bytes)
+            disk size: 497M
+            cluster_size: 65536
+            Format specific information:
+                compat: 1.1
+                lazy refcounts: false
+                refcount bits: 16
+                corrupt: false
 
 #---------------------------------------------------------------------
 # Delete the original volume.
@@ -214,7 +214,7 @@
         --vcpus   "${basecpu:?}" \
         --disk "vol=${basepool:?}/${dockfile:?}" \
         --location   "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
-        --extra-args "ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-docker.txt"
+        --extra-args "inst.ks=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/fedora-docker.txt"
 
    #
    # Delete the virtual machine, leaving the image.
@@ -238,14 +238,14 @@
         info \
             "${dockpath:?}"
 
-        image: /var/lib/libvirt/images/base/fedora-25-docker-32G-20170331.qcow
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 1.6G
-        cluster_size: 65536
-        Format specific information:
-            compat: 0.10
-            refcount bits: 16
+            image: /var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow
+            file format: qcow2
+            virtual size: 16G (17179869184 bytes)
+            disk size: 1.7G
+            cluster_size: 65536
+            Format specific information:
+                compat: 0.10
+                refcount bits: 16
 
 #---------------------------------------------------------------------
 # Create a compressed copy of the image.
@@ -263,16 +263,16 @@
         info \
             "${dockcopy:?}"
 
-        image: /tmp/tmp.nsr3Ns62Vn
-        file format: qcow2
-        virtual size: 32G (34359738368 bytes)
-        disk size: 723M
-        cluster_size: 65536
-        Format specific information:
-            compat: 1.1
-            lazy refcounts: false
-            refcount bits: 16
-            corrupt: false
+            image: /tmp/tmp.305TwWkMwr
+            file format: qcow2
+            virtual size: 16G (17179869184 bytes)
+            disk size: 726M
+            cluster_size: 65536
+            Format specific information:
+                compat: 1.1
+                lazy refcounts: false
+                refcount bits: 16
+                corrupt: false
 
 #---------------------------------------------------------------------
 # Delete the original volume.
@@ -318,7 +318,7 @@
 #[user@desktop] 
 
     basepath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${basefile:?}")
-    basegzip=$(mktmp)
+    basegzip=$(mktemp)
 
     sudo chmod a+r "${basepath:?}"
     
@@ -360,6 +360,7 @@
 #[user@shep] 
 #[user@trop01] 
 #[user@trop02] 
+#[user@trop03] 
 
     : ${basepool:='base'}
     : ${livepool:='live'}
@@ -367,12 +368,12 @@
 
     basecpu=4
     basemem=4096
-    basesize=32G
+    basesize=16G
     basearch=x86_64
 
     basever=25
     basedist=fedora-${basever:?}
-    basedate=20170331
+    basedate=20170713
     basename=${basedist}-base-${basesize}-${basedate:?}
     basefile=${basename}.qcow
     basegzip=${basefile}.gz
@@ -405,8 +406,6 @@
             "${basefile:?}"
 
     rm "${basefile:?}"
-
-
 
     wget \
         -O "${dockgzip:?}" \
