@@ -69,6 +69,11 @@ sshkey --username root "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAqLgL7ClCX68Yr0HzwK1p
 
 %packages
 
+# Developer tools
+svn
+git
+mercurial
+
 # Text editors
 sed
 vim
