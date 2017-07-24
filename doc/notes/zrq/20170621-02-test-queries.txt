@@ -225,7 +225,7 @@ EOF
 
         for i in {1..10};   do doquery; done
         for i in {1..20};   do doquery; done
-        for i in {1..50};   do doquery; done
+       #for i in {1..50};   do doquery; done
        #for i in {1..100};  do doquery; done
        #for i in {1..200};  do doquery; done
        #for i in {1..500};  do doquery; done

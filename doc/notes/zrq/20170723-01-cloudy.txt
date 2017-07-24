@@ -1,0 +1,45 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Linode
+    https://manager.linode.com/
+    $10/mo (.015/hr)
+
+    Amazon AWS
+    https://eu-central-1.console.aws.amazon.com/ec2/v2/home?region=eu-central-1#Instances:sort=instanceId
+
+        Fedora-Cloud-Base-25-201706
+        Fedora-Cloud-Base-25-20170601.0.x86_64-eu-central-1-HVM-gp2-0 - ami-09fe2466
+
+
+    Digital Ocean
+    https://cloud.digitalocean.com/droplets
+
+
+    Google compute
+    https://console.cloud.google.com/compute/instances
+
+
+
+
+
