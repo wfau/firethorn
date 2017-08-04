@@ -1,0 +1,197 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+---+ VO data types
+
+A review of the data types defined in the VO specifications.
+
+---++ !VODataService
+#VODataService
+
+The [[#VODataService][VODataService]] specification defines an XML schema for describing data collections and the services that access them.
+
+This review refers to [[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html][version 1.1 (20101202)]] of the specification.
+
+The data types defined in [[#VODataService][VODataService]] are intended to be used to describe the data in VO data sets and the services and protocols used to access them.
+
+---++ !DataType
+#DataType
+
+[[#DataType][DataType]] is a XML element defined in the [[#VODataService][VODataService]] specification that is used as a common base class for defining data types.
+
+[[#DataType][DataType]] defines the following attributes:
+
+   * =[[#arraysize][arraysize]]=
+   * =[[#delim][delim]]=
+   * =[[#extendedType][extendedType]]=
+   * =[[#extendedSchema][extendedSchema]]=
+
+---++ !TableDataType
+#TableDataType
+
+[[#TableDataType][TableDataType]] is a XML element defined in the [[#VODataService][VODataService]] specification that is used as a common base class for defining data types for table columns.
+
+[[#TableDataType][TableDataType]] extends [[#DataType][DataType]].
+
+---++ !VOTableType
+#VOTableType
+
+[[#VOTableType][VOTableType]] is a XML element defined in the [[#VODataService][VODataService]] specification that describes data types defined in the [[#VOTable][VOTable]] specification.
+
+[[#VOTableType][VOTableType]] inherits the following attributes from [[#DataType][DataType]]:
+
+   * =[[#arraysize][arraysize]]=
+   * =[[#delim][delim]]=
+   * =[[#extendedType][extendedType]]=
+   * =[[#extendedSchema][extendedSchema]]=
+
+[[#VOTableType][VOTableType]] defines the following set of allowed values:
+
+   * =boolean=
+   * =bit=
+   * =unsignedByte=
+   * =short=
+   * =int=
+   * =long=
+   * =char=
+   * =unicodeChar=
+   * =float=
+   * =double=
+   * =floatComplex=
+   * =doubleComplex=
+
+Notes:
+
+[[#VOTableType][VOTableType]] is described in [[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#tbldatatypes][section 3.5.3]] of the specification.
+
+In the [[#VODataService][VODataService]] specification, [[#VOTableType][VOTableType]] is described as _"data types that correspond to the parameter and column types defined in the VOTable schema"_
+
+In the [[#VODataService][VODataService]] XML schema, [[#VOTableType][VOTableType]] is described as _"a data type supported explicitly by the VOTable format"_.
+
+The definition of [[#VOTableType][VOTableType]] does not provide any further details about the sizes, ranges or content of the data types. It is left to the reader to refer to the [[#VOTable][VOTable]] specification for details about the data types.
+
+In the bibliography the reference to the [[#VOTable][VOTable]] specification explicitly refers to [[http://www.ivoa.net/Documents/VOTable/20091130/REC-VOTable-1.2.html][version 1.2 (20091130)]] of the specification, this has since been superceded by [[http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html][version 1.3 (20130920)]].
+
+The  definition of [[#VOTableType][VOTableType]] states that string values of arbitrary length are represented by a data type of =char= with =arraysize="*"=. This excludes the option of using =unicodeChar= as the data type with =arraysize="*"=. It may be clearer to explicitly state *ASCII strings* are represented by =char= with =arraysize="*"= and *unicode strings* are represented by =unicodeChar= and =arraysize="*"=.
+
+---++ !TAPDataType
+#TAPDataType
+
+[[#TAPDataType][TAPDataType]] is a XML element defined in the [[#VODataService][VODataService]] specification that describes a base class for data types defined in the <strike>[[#TAP][TAP]]</strike> [[#ADQL][ADQL]] specification.
+
+
+[[#TAPDataType][TAPDataType]] defines the following attributes:
+
+   * [[#size]]
+
+Notes:
+
+The XML element name reflects the historical situation where the data types were originally defined in the [[#TAP][TAP]] specification. The data type definitions have since been moved to the [[#ADQL][ADQL]] specification, but for compatibility reasons, the XML element name has not been changed.
+
+---++ !TAPType
+#TAPType
+
+[[#TAPType][TAPType]] is a XML element defined in the [[#VODataService][VODataService]] specification that describes data types defined in the <strike>[[#TAP][TAP]]</strike> [[#ADQL][ADQL]] specification.
+
+[[#TAPType][TAPType]] inherits the following attributes from [[#DataType][DataType]]:
+
+   * =[[#arraysize][arraysize]]=
+   * =[[#delim][delim]]=
+   * =[[#extendedType][extendedType]]=
+   * =[[#extendedSchema][extendedSchema]]=
+
+[[#TAPType][TAPType]] inherits the following attributes from [[#TAPDataType][TAPDataType]]:
+
+   * =[[#size][size]]=
+
+[[#TAPType][TAPType]] defines the following set of allowed values:
+
+   * =BOOLEAN=
+   * =SMALLINT=
+   * =INTEGER=
+   * =BIGINT=
+   * =REAL=
+   * =DOUBLE=
+   * =TIMESTAMP=
+   * =CHAR=
+   * =VARCHAR=
+   * =BINARY=
+   * =VARBINARY=
+   * =POINT=
+   * =REGION=
+   * =CLOB=
+   * =BLOB=
+
+Notes:
+
+[[#TAPType][TAPType]] is described in [[http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#tbldatatypes][section 3.5.3]] of the specification.
+
+The XML element name reflects the historical situation where the data types were originally defined in the [[#TAP][TAP]] specification. The data type definitions have since been moved to the [[#ADQL][ADQL]] specification, but for compatibility reasons, the XML element name has not been changed.
+
+The definition of [[#TAPType][TAPType]] does not provide any further details about the sizes, ranges or content of the data types. It is left to the reader to refer to the <strike>[[#TAP][TAP]]</strike> [[#ADQL][ADQL]] specification for details about the data types.
+
+The definition of [[#TAPType][TAPType]] states that string values should be represented by a data type of =VARCHAR=, the definition does not say whether this should be accompanied by an =arraysize= attribute.
+
+---++ !VOTable
+#VOTable
+
+---++ !DALI
+#DALI
+
+---++ !TAP
+#TAP
+
+---++ !ADQL
+#ADQL
+
+
+---++ =xtype=
+#xtype
+
+---++ =arraysize=
+#arraysize
+
+---++ =TAP_SCHEMA=
+#TAP_SCHEMA
+
+---++ =size=
+#size
+
+---++ =delim=
+#delim
+
+---++ =extendedType=
+#extendedType
+
+---++ =extendedSchema=
+#extendedSchema
+
+
+
+
+
+
+<!--
+      * Set ALLOWTOPICRENAME = IVOA.TWikiAdminGroup
+-->

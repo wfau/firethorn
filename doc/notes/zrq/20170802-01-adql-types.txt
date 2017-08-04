@@ -93,6 +93,12 @@ http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101
     In section 3.5.3 (Table Column Data Types), the VODataService schema defines two XML types that derive from vs:TableDataType.
     http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101202.html#tbldatatypes
 
+
+DataType
+TableDataType
+VOTableType
+TAPType
+
     vs:VOTableType, which refers to the VOTable specification.
 
         "Data types that correspond to the parameter and column types defined in the VOTable schema [VOTable]."
@@ -261,8 +267,11 @@ http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101
             "The string that is used to delimit element of an array value when arraysize is not "1"."
             This attribute is optional, but there is no default specified.
 
-    The VOTable, DALI, TAP or ADQL specifications do not refer to or define 'extendedType', 'extendedSchema' or 'delim'.
-    None of the examples of arrays include delim
+    None of the VOTable, DALI, TAP or ADQL specifications refer to or define 'extendedType', 'extendedSchema' or 'delim' attributes.
+    None of the examples of arrays include a delimiter.
+
+
+
 
 
 
@@ -290,10 +299,17 @@ http://www.ivoa.net/documents/VODataService/20101202/REC-VODataService-1.1-20101
 
 
 
-
 --------------------------
 VOTable (REC-VOTable-1.3-20130920)
 http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.pdf
+
+    In section 2.1 VOTable defines the list of primitive types.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC11
+
+    In section 2.2 VOTable defines arrays of primitive types.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC12
+    Arrays are handled the 'datatype' and 'arraysize' attributes.
+    No details about how the array elements are serialzed or delimited.
 
     In section 4.1 VOTable defines the arraysize attribute for a FIELD.
     http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC25
@@ -307,7 +323,6 @@ http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.pdf
 
     In section 4.1 VOTable defines the xtype attribute for a FIELD.
     http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC25
-    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.pdf#subsection.28
 
         "The xtype attribute, added in VOTable 1.2, specifies an extended (or external) datatype.
         It is meant to give details about the column contents beyond the primitive datatype,
@@ -315,9 +330,8 @@ http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.pdf
 
     In section 4.3 VOTable adds more detail to the definition of xtype.
     http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC27
-    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.pdf#subsection.30
 
-    4.3  Extended Datatype xtype
+        4.3  Extended Datatype xtype
     
         "The xtype attribute expands the basic datatype primitives (in Table 1) representing the
         storage units which are valid in any of the VOTable serializations, and corresponds
@@ -335,15 +349,81 @@ http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.pdf
         "The actual values of the xtype attribute are not defined in this VOTable specification"
 
     The title of section 4.3 includes the words 'Extended Datatype', however the text does not
-    make it clear of the VOTable 'vt:xtype' attribute is linked to the to 'vs:extendedType'
+    make it clear if the VOTable 'vt:xtype' attribute is linked to the to 'vs:extendedType'
     defined in VODataService.
 
-    vt:xtype == vs:extendedType .. or not ?
+
+    In section 5.1 VOTable defines the TABLEDATA serialization for arrays.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC36
+
+        "If a cell contains an array of numbers or a complex number, it should be encoded as multiple numbers separated by whitespace."
+        "However in the case of character and Unicode strings (declared in the corresponding FIELD as an array of char or unicodeChar datatype), no separator should exist."
+
+    In section 6 VOTable defines the serialization for the primitive data types listed in section 2.1.
+    http://www.ivoa.net/documents/VOTable/20130920/REC-VOTable-1.3-20130920.html#ToC43
+
+    It explicitly sets the delimiter to whitespace for floatComplex and doubleComplex.
+
+        "The representation of a Floating Complex number in the TABLEDATA serialization is
+        made of two representations of a Single Precision Floating Point numbers separated
+        by whitespace, representing the real and imaginary part respectively."
+
+        "The representation of a Double Complex number in the TABLEDATA serialization is
+        made of two representations of a Double Precision Floating Point numbers separated
+        by whitespace, representing the real and imaginary part respectively."
 
 --------------------------
+TAP (WD-TAP-1.1-20170707)
+http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html
+
+    In section 4.3, the TAP specification defines the columns in the TAP_SCHEMA.columns table.
+    This includes the datatype and xtype columns : 
+
+        "The type of a database column is described in the TAP_SCHEMA.columns table using three (3)
+        columns with an additional (deprecated) column from TAP-1.0 for backwards compatibility."
+
+        "The allowed values for datatype and the syntax for arraysize are specified in VOTable
+        (Ochsenbein and Williams et al., 2013)."
+
+        "Values for xtype are not restricted per se but implementors should use standard values
+        such as those defined in DALI (Dowler and Demleitner et al., 2013) before inventing new xtype(s)." 
+
+        ** Bibliography references for DAI is out of date (should be 2017).
+        ** DALI only defines 
 
 
+--------------------------
+DALI (REC-DALI-1.1)
+http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html
 
+    In section 3.3 on literal values DALI introduces the idea of a prefix for 'non-standard' xtype values.
+    http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3
 
+        "We define some general purpose values for the xtype attribute of the VOTable
+        FIELD and PARAM elements for simple structured values: interval, point, circle,
+        and polygon (see below)."
+
+        "Services may use non-standard xtype values for non-standard datatypes,
+        but if they do so they should include a simple prefix
+        (a string followed by a colon followed by the non-standard xtype)
+        so client software can easily determine if a value is standard or not."
+        
+        "For example, an xtype for a non-standard 3D-vector might be geom:vector3d."
+
+    It doesn't actually say that interval, point, circle, and polygon are standard values for xtype.
+    It doesn't define or refere to a definative list of standard values for xtype.
+
+    In section 3.3, the last sentence defines the 'timestamp' xtype in an example.
+    http://www.ivoa.net/documents/DALI/20170517/REC-DALI-1.1.html#tth_sEc3.3.3
+
+        "Timestamp values serialised on VOTable or in service parameters must have the following
+        metadata in the FIELD element: datatype="char", arraysize="*", xtype="timestamp";
+        the arraysize may be set to a more specific value if it is known
+        (e.g. arraysize="10" for dates only)."
+    
+    
+
+    In the HTML version of the TAP specificaton, references to the "size" column are displayed as ßize"
+    http://www.ivoa.net/documents/TAP/20170707/WD-TAP-1.1-20170707.html#tth_sEc4.3
 
 
