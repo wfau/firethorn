@@ -44,9 +44,9 @@
         The FireThorn webapp.
         ]]>
     </description>
-    
+
     <properties>
-        <tomcat.version>8.5.15</tomcat.version>
+        <tomcat.version>8.5.20</tomcat.version>
     </properties>
 
     <repositories>
@@ -346,7 +346,7 @@
                                 |
                                 | Because of the way Tomcat manager works ...
                                 | If deploy mode is [war], then it is uploaded to server by Maven.
-                                | If deploy mode is [context or both], then Tomcat expects a local file. 
+                                | If deploy mode is [context or both], then Tomcat expects a local file.
                                 | However, if we put the context file in META-INF directory, it is picked up by Tomcat.
                                 +-->
                             <mode>war</mode>

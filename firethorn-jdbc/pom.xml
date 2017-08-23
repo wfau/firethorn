@@ -69,7 +69,7 @@
             <artifactId>liquibase-slf4j</artifactId>
             <version>1.2.1</version>
         </dependency>
-            
+
         <!--+
             | HSQLDB Java database and JDBC driver.
             | http://hsqldb.org/
@@ -89,7 +89,7 @@
     	<dependency>
     		<groupId>org.postgresql</groupId>
     		<artifactId>postgresql</artifactId>
-            <version>42.1.1</version>
+            <version>42.1.4</version>
     	</dependency>
 
         <!--+
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.6</version>
+            <version>8.0.7</version>
         </dependency>
 
         <!--+

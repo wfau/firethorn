@@ -18,7 +18,7 @@
 FROM firethorn/java:2.1.10-zrq-junit-clean
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV TOMCAT_VERSION 8.5.15
+ENV TOMCAT_VERSION 8.5.20
 
 ENV TOMCAT_USER tomcat
 ENV TOMCAT_ROOT /var/local/tomcat
