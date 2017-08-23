@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.10
+FROM firethorn/python:2.1.10-zrq-junit-clean
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
