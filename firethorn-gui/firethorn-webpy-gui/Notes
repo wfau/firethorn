@@ -1,3 +1,0 @@
-Changes to Libraries:
-
-- In jEasyui library, made changes to file jquery.easyui.min.js to line 1197 to add a type to tree elements
