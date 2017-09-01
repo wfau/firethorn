@@ -46,8 +46,8 @@ WORKDIR /tmp
 # Download the tar file
 # Avoid using ADD - unreliable results.
 # https://github.com/moby/moby/issues/34243
-RUN wget -P https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}
-RUN wget -P https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}.md5
+RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}
+RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}.md5
 
 #
 # Check the checksum.
