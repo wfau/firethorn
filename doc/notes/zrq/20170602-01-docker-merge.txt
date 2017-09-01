@@ -160,7 +160,6 @@
     source "${HOME:?}/firethorn.settings"
     less ${FIRETHORN_CODE:?}/doc/notes/zrq/20170528-01-test-queries.txt
 
-
 # -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
