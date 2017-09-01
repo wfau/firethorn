@@ -20,6 +20,9 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 ENV TOMCAT_VERSION 8.5.20
 
+ENV TOMCAT_DIRNAME apache-tomcat-${TOMCAT_VERSION}
+ENV TOMCAT_TARFILE apache-tomcat-${TOMCAT_VERSION}.tar.gz
+
 ENV TOMCAT_USER tomcat
 ENV TOMCAT_ROOT /var/local/tomcat
 
@@ -41,9 +44,10 @@ WORKDIR /tmp
 
 #
 # Download the tar file
-ENV TOMCAT_TARFILE apache-tomcat-${TOMCAT_VERSION}.tar.gz
-ADD https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}     /tmp/
-ADD https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}.md5 /tmp/
+# Avoid using ADD - unreliable results.
+# https://github.com/moby/moby/issues/34243
+RUN wget -P https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}
+RUN wget -P https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}.md5
 
 #
 # Check the checksum.
@@ -56,12 +60,12 @@ RUN rm ${TOMCAT_TARFILE}
 RUN rm ${TOMCAT_TARFILE}.md5
 
 #
-# Relocate the unpacked directory
-RUN mv apache-tomcat-${TOMCAT_VERSION} ${TOMCAT_ROOT}
+# Remove the default webapps.
+RUN rm -rf ${TOMCAT_DIRNAME}/webapps/*
 
 #
-# Remove the default webapps.
-RUN rm -rf ${TOMCAT_ROOT}/webapps/*
+# Relocate the unpacked directory
+RUN mv ${TOMCAT_DIRNAME} ${TOMCAT_ROOT}
 
 #
 # Change ownership of our working directories.
