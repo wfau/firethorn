@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.10</version>
+        <version project='firethorn'>2.1.11</version>
     </parent>
 
     <artifactId>firethorn-jdbc</artifactId>
@@ -69,7 +69,7 @@
             <artifactId>liquibase-slf4j</artifactId>
             <version>1.2.1</version>
         </dependency>
-            
+
         <!--+
             | HSQLDB Java database and JDBC driver.
             | http://hsqldb.org/
@@ -89,7 +89,7 @@
     	<dependency>
     		<groupId>org.postgresql</groupId>
     		<artifactId>postgresql</artifactId>
-            <version>42.1.1</version>
+            <version>42.1.4</version>
     	</dependency>
 
         <!--+

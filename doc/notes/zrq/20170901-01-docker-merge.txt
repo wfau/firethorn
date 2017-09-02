@@ -32,30 +32,16 @@
     createvm
 
         INFO : Node name [Araybwyn]
-        INFO : Base name [fedora-25-docker-32G-20170331.qcow]
-        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-32G-20170331.qcow]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
         INFO : Disc name [Araybwyn.qcow]
-        INFO : Disc size [32GiB]
-
-# -----------------------------------------------------
-# TODO fix .ssh directory for Stevedore
-#[user@trop]
-
-    ssh root@Araybwyn
-
-        rm -f /home/Stevedore/.ssh
-        cp -r /root/.ssh /home/Stevedore/.ssh
-        chown -R Stevedore /home/Stevedore/.ssh
-        chgrp -R Stevedore /home/Stevedore/.ssh
-        restorecon -R /home/Stevedore/.ssh
-
-        exit
+        INFO : Disc size [16GiB]
 
 # -----------------------------------------------------
 # Login as Stevedore
 #[user@trop]
 
-    ssh Stevedore@Araybwyn
+    ssh Araybwyn
 
 # -----------------------------------------------------
 # Add our secret function.
@@ -64,10 +50,11 @@
     vi "${HOME:?}/secret.sh"
 
         ....
-
+        ....
+        ....
 
     source "${HOME:?}/secret.sh"
-    secret 'ping'
+    secret 'frog'
 
 # -----------------------------------------------------
 # Download our compose file
@@ -82,15 +69,17 @@
 
     branch=2.1.8-zrq-fedora-image
     branch=2.1.9-zrq-bug-fixes
+    branch=2.1.10-zrq-junit-clean
 
 # -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
 
-    export branch
     docker-compose \
         --file "builder.yml" \
-        run builder 
+        run \
+            -e branch=${branch:?} \
+            builder 
 
     # -----------------------------------------------------
     # Initialise our path.

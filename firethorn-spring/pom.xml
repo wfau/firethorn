@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.10</version>
+        <version project='firethorn'>2.1.11</version>
     </parent>
 
     <artifactId>firethorn-spring</artifactId>
@@ -49,12 +49,12 @@
 
     <properties>
 
-		<spring.version>4.3.8.RELEASE</spring.version>
+		<spring.version>4.3.10.RELEASE</spring.version>
         <hibernate.version>5.2.10.Final</hibernate.version>
-	    <hibernate.validator>5.4.1.Final</hibernate.validator>
+	    <hibernate.validator>6.0.2.Final</hibernate.validator>
 		<aspectj.version>1.8.10</aspectj.version>
 
-        <jackson.version>2.8.8</jackson.version>
+        <jackson.version>2.9.0</jackson.version>
 
     </properties>
 
@@ -232,7 +232,7 @@
         <!--+
             | Spring runtime weaving.
             | http://stackoverflow.com/questions/7996800/running-unit-tests-using-maven-in-spring-ltw-environment
-            +-->	
+            +-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-instrument</artifactId>
@@ -244,18 +244,18 @@
             | http://ralf.schaeftlein.de/2010/03/10/migrating-a-hibernate-application-from-jpa-1-0-to-2-0/
             | http://docs.jboss.org/hibernate/core/3.6/quickstart/en-US/html/hibernate-gsg-obtain.html#hibernate-gsg-setup-mavenRepoArtifacts
             +-->
-        <dependency>  
-            <groupId>org.hibernate</groupId>  
-            <artifactId>hibernate-core</artifactId>  
-            <version>${hibernate.version}</version>  
-        </dependency>  
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
         <!--+
             | Included by hibernate-entitymanager.
-        <dependency>  
-            <groupId>org.hibernate.java-persistence</groupId>  
-            <artifactId>jpa-api</artifactId>  
-            <version>2.0.Beta-20090815</version>  
-        </dependency>  
+        <dependency>
+            <groupId>org.hibernate.java-persistence</groupId>
+            <artifactId>jpa-api</artifactId>
+            <version>2.0.Beta-20090815</version>
+        </dependency>
             +-->
 
 	    <!--+
@@ -297,7 +297,7 @@
 		    <groupId>javax.servlet.jsp.jstl</groupId>
 		    <artifactId>jstl-api</artifactId>
 		    <version>1.2</version>
-	    </dependency>		
+	    </dependency>
 	    <dependency>
 		    <groupId>org.glassfish.web</groupId>
 		    <artifactId>jstl-impl</artifactId>
@@ -373,7 +373,7 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
             <version>${jackson.version}</version>
-        </dependency>    
+        </dependency>
 	        +-->
 	    <!--+
 	        | Jackson handler for Java7 types.
@@ -382,7 +382,7 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk7</artifactId>
             <version>${jackson.version}</version>
-        </dependency>    
+        </dependency>
 	        +-->
 
     </dependencies>

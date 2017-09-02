@@ -1,3 +1,0 @@
-import SLALIB
-import TangentRectangle
-import config
