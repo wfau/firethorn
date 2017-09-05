@@ -33,6 +33,5 @@
     docker tag "firethorn/postgres:${newversion:?}"   "firethorn/postgres:latest"
     docker tag "firethorn/builder:${newversion:?}"    "firethorn/builder:latest"
     docker tag "firethorn/tester:${newversion:?}"     "firethorn/tester:latest"
-    docker tag "firethorn/sql-tunnel:${newversion:?}" "firethorn/sql-tunnel:latest"
     docker tag "firethorn/sql-proxy:${newversion:?}"  "firethorn/sql-proxy:latest"
 

@@ -75,10 +75,10 @@
 # Run our builder.
 #[user@virtual]
 
+    export branch=${branch:?}
     docker-compose \
         --file "builder.yml" \
         run \
-            -e branch=${branch:?} \
             builder 
 
     # -----------------------------------------------------
@@ -130,34 +130,62 @@
         05.02-javadocker.sh
 
     # -----------------------------------------------------
+    # Dsiplay the merge versions.
+    #[root@builder]
+
+        cat "${HOME}/merge.settings"
+
+    # -----------------------------------------------------
     # Exit our builder.
     #[root@builder]
 
         exit
 
 # -----------------------------------------------------
-# Run our sql administrator.
-#[user@desktop]
-       
-    source "${HOME:?}/firethorn.settings"
-    less ${FIRETHORN_CODE:?}/doc/notes/zrq/20170526-01-mssql-create.txt
-
-# -----------------------------------------------------
 # Run our test queries.
 #[user@desktop]
 
+    # BUG tester needs the new buildtag
+    buildtag=2.1.11
+    
     source "${HOME:?}/firethorn.settings"
-    less ${FIRETHORN_CODE:?}/doc/notes/zrq/20170528-01-test-queries.txt
+    less ${FIRETHORN_CODE:?}/doc/notes/zrq/20170901-02-test-queries.txt
+
+# -----------------------------------------------------
+# Exit from our tester.
+#[root@tester]
+
+    exit
+
+# -----------------------------------------------------
+# Take down our tester.
+#[user@desktop]
+#[user@virtual]
+
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        down
 
 # -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
 
-    export branch
+    export branch=${branch:?}
     docker-compose \
         --file "builder.yml" \
-        run builder 
+        run \
+            builder 
 
+    # -----------------------------------------------------
+    # Restore our settings.
+    # BUG - this should be in a volume
+    #[root@builder]
+
+cat > "${HOME}/merge.settings" << EOF
+devbranch=2.1.10-zrq-junit-clean
+oldversion=2.1.10
+newversion=2.1.11
+EOF
 
     # -----------------------------------------------------
     # Initialise our path.
@@ -182,7 +210,7 @@
 
         source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"
-        
+    
             vi .hg/hgrc
 
                 [paths]
@@ -231,6 +259,13 @@
     # Push our new images
     #[root@builder]
 
+#
+# BUG needs access to secrets
+# BUG nees new vwrsion from merge.settings
+
+        source "${HOME:?}/merge.settings"
+        # Might need an export ?
+
         08.02-docker-push.sh
 
     # -----------------------------------------------------
@@ -253,12 +288,6 @@
             ./bin/rsync-repo.sh
 
         popd
-
-
-
-
-
-
 
 
 

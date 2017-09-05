@@ -38,24 +38,22 @@
     docker push "firethorn/fedora:${newversion:?}"
     docker push "firethorn/java:${newversion:?}"
     docker push "firethorn/tomcat:${newversion:?}"
-    docker push "firethorn/ogsadai:${newversion:?}"
     docker push "firethorn/firethorn:${newversion:?}"
+    docker push "firethorn/ogsadai:${newversion:?}"
 
     docker push "firethorn/builder:${newversion:?}"
     docker push "firethorn/tester:${newversion:?}"
     docker push "firethorn/postgres:${newversion:?}"
-    docker push "firethorn/sql-tunnel:${newversion:?}"
     docker push "firethorn/sql-proxy:${newversion:?}"
 
     docker push "firethorn/fedora:latest"
     docker push "firethorn/java:latest"
     docker push "firethorn/tomcat:latest"
-    docker push "firethorn/ogsadai:latest"
     docker push "firethorn/firethorn:latest"
+    docker push "firethorn/ogsadai:latest"
 
     docker push "firethorn/builder:latest"
     docker push "firethorn/tester:latest"
     docker push "firethorn/postgres:latest"
-    docker push "firethorn/sql-tunnel:latest"
     docker push "firethorn/sql-proxy:latest"
 

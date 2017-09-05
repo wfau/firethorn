@@ -34,7 +34,7 @@
 
         #
         # Commit the merge.
-        message="Commit new version [${newversion:?}]"
+        message="Merging [${devbranch:?}] into [${newversion:?}]"
         confirm "${message:?}"
         if [ $? -ne 0 ]
         then
