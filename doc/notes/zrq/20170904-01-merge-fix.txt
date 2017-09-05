@@ -1,0 +1,78 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Merge done and branch closed.
+    # Some notes left behind.
+    #
+
+# -----------------------------------------------------
+# Moved the changed files to the main branch.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg status
+
+            M doc/notes/zrq/20170901-01-docker-merge.txt
+            M docker/builder/bin/08.01-docker-latest.sh
+            M docker/builder/bin/08.02-docker-push.sh
+            ? doc/notes/zrq/20170901-02-test-queries.txt
+
+        tempdir=$(mktemp -d)
+        mkdir -p ${tempdir:?}/doc/notes/zrq
+        mkdir -p ${tempdir:?}/docker/builder/bin
+
+        cp doc/notes/zrq/20170901-01-docker-merge.txt   ${tempdir:?}/doc/notes/zrq/20170901-01-docker-merge.txt
+        cp docker/builder/bin/08.01-docker-latest.sh    ${tempdir:?}/docker/builder/bin/08.01-docker-latest.sh
+        cp docker/builder/bin/08.02-docker-push.sh      ${tempdir:?}/docker/builder/bin/08.02-docker-push.sh
+        cp doc/notes/zrq/20170901-02-test-queries.txt   ${tempdir:?}/doc/notes/zrq/20170901-02-test-queries.txt
+
+        hg pull
+        hg update
+        hg update --clean
+        hg update default
+
+        hg status
+
+        cp ${tempdir:?}/doc/notes/zrq/20170901-01-docker-merge.txt   doc/notes/zrq/20170901-01-docker-merge.txt
+        cp ${tempdir:?}/docker/builder/bin/08.01-docker-latest.sh    docker/builder/bin/08.01-docker-latest.sh
+        cp ${tempdir:?}/docker/builder/bin/08.02-docker-push.sh      docker/builder/bin/08.02-docker-push.sh
+        cp ${tempdir:?}/doc/notes/zrq/20170901-02-test-queries.txt   doc/notes/zrq/20170901-02-test-queries.txt
+
+        hg status
+
+            M doc/notes/zrq/20170901-01-docker-merge.txt
+            M docker/builder/bin/07.03-merge-commit.sh
+            M docker/builder/bin/08.01-docker-latest.sh
+            M docker/builder/bin/08.02-docker-push.sh
+            ? doc/notes/zrq/20170901-02-test-queries.txt
+            ? doc/notes/zrq/20170904-01-merge-fix.txt
+
+        hg commit -m "Fix missing files in merge"
+
+        hg push
+
+    popd
+

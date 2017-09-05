@@ -1,0 +1,625 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Locate our compose file.
+#[user@desktop]
+#[user@virtual]
+
+    if [ -e "${HOME:?}/firethorn.settings" ]
+    then
+
+        source "${HOME:?}/firethorn.settings"
+        composit="${FIRETHORN_CODE:?}/docker/compose"
+
+    else
+
+        composit="${HOME:?}/compose"
+        mkdir -p "${composit:?}"
+
+        wget -O "${composit:?}/tester.yml" \
+            'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tester.yml'
+
+    fi
+
+# -----------------------------------------------------
+# Load our secret function.
+#[user@desktop]
+#[user@virtual]
+
+    source ${HOME:?}/secret.sh
+    secret 'frog'
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@desktop]
+#[user@virtual]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=jdbc:postgresql://${metaname:?}/${metadata:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=jdbc:jtds:sqlserver://${username:?}/${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties"
+
+# -----------------------------------------------------
+# Create our tester config.
+#[user@desktop]
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/tester.properties" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+    chmod a+r "${HOME:?}/tester.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties"
+
+# -----------------------------------------------------
+# Create our composer env file.
+#[user@desktop]
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+
+    cat > "${HOME:?}/.env" << EOF
+
+buildtag=${buildtag:?}
+
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+datahost=${datahost:?}
+userhost=${userhost:?}
+
+tunneluser=${tunneluser:?}
+tunnelhost=${tunnelhost:?}
+
+EOF
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+#[user@virtual]
+
+    docker-compose \
+        --file "${composit:?}/tester.yml" \
+        run \
+            tester
+
+# -----------------------------------------------------
+# Load our configuration.
+#[root@tester]
+
+        source /etc/tester.properties
+
+# -----------------------------------------------------
+# Configure our identity.
+#[root@tester]
+
+        identity=${identity:-$(date '+%H:%M:%S')}
+        community=${community:-$(date '+%A %-d %B %Y')}
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            "${endpointurl:?}/system/info" \
+            | jq '.' | tee /tmp/system-info.json
+
+# -----------------------------------------------------
+# Create a JdbcResource to represent the local JDBC database.
+#[root@tester]
+
+        jdbcname="ATLAS JDBC resource"
+        jdbcurl="jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "jdbc.resource.name=${jdbcname:?}" \
+            --data   "jdbc.connection.url=${jdbcurl:?}" \
+            --data   "jdbc.connection.user=${datauser:?}" \
+            --data   "jdbc.connection.pass=${datapass:?}" \
+            --data   "jdbc.connection.driver=${datadriver:?}" \
+            --data   "jdbc.resource.catalog=ATLASDR1" \
+            "${endpointurl:?}/jdbc/resource/create" \
+            | jq '.' | tee /tmp/atlas-jdbc.json
+
+        atlasjdbc=$(
+            jq -r '.self' /tmp/atlas-jdbc.json
+            )
+
+        echo "Atlas JDBC [${atlasjdbc:?}]"
+
+        curl \
+            --silent \
+            ${atlasjdbc:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Create an empty AdqlResource to represent the local JDBC database.
+#[root@tester]
+
+        adqlname="ATLAS ADQL resource"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.resource.name=${adqlname:?}" \
+            "${endpointurl:?}/adql/resource/create" \
+            | jq '.' | tee /tmp/atlas-adql.json
+
+        atlasadql=$(
+            jq -r '.self' /tmp/atlas-adql.json
+            )
+
+        echo "Atlas ADQL [${atlasadql:?}]"
+
+        curl \
+            --silent \
+            ${atlasadql:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Locate the JdbcSchema based on catalog and schema name.
+#[root@tester]
+
+        catalog="ATLASDR1"
+        schema="dbo"
+        
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "jdbc.schema.catalog=${catalog:?}" \
+            --data   "jdbc.schema.schema=${schema:?}" \
+            "${atlasjdbc:?}/schemas/select" \
+            | jq '.' | tee /tmp/jdbc-schema.json
+
+        jdbcschema=$(
+            jq -r '.self' /tmp/jdbc-schema.json
+            )
+
+        echo "JDBC schema [${jdbcschema:?}]"
+
+        curl \
+            --silent \
+            ${jdbcschema:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Import the mapping between JDBC and ADQL tables.
+#[root@tester]
+
+        metadoc="meta/ATLASDR1_TablesSchema.xml"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "metadoc.base=${jdbcschema:?}" \
+            --form   "metadoc.file=@${metadoc:?}" \
+            "${atlasadql:?}/metadoc/import" \
+            | jq '.' | tee /tmp/adql-schema.json
+
+        adqlschema=$(
+            jq -r '.[].self' /tmp/adql-schema.json
+            )
+
+        echo "ADQL schema [${adqlschema:?}]"
+
+        curl \
+            --silent \
+            ${adqlschema:?} \
+            | jq '.'
+
+# --------------------------------------
+# Create an IvoaResource to represent the GAIA TAP resource.
+#[root@tester]
+
+        tapname="GAIA TAP service"
+        tapurl="http://gea.esac.esa.int/tap-server/tap"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.resource.name=${tapname}" \
+            --data   "ivoa.resource.endpoint=${tapurl:?}" \
+            "${endpointurl:?}/ivoa/resource/create" \
+            | jq '.' | tee /tmp/gaia-ivoa.json
+
+        gaiaivoa=$(
+            jq -r '.self' /tmp/gaia-ivoa.json
+            )
+
+        echo "Gaia IVOA [${gaiaivoa:?}]"
+
+        curl \
+            --silent \
+            ${gaiaivoa:?} \
+            | jq '.'
+
+# --------------------------------------
+# Import the VOSI metadata.
+#[root@tester]
+
+        vosifile='vosi/gaia/gaia-tableset.xml'
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --form   "vosi.tableset=@${vosifile:?}" \
+            "${gaiaivoa:?}/vosi/import" \
+            | jq '.'
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create a new ADQL resource to act as a workspace.
+#[root@tester]
+
+        adqlname="Query workspace"
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.resource.name=${adqlname:?}" \
+            "${endpointurl:?}/adql/resource/create" \
+            | jq '.' | tee /tmp/query-space.json
+
+        queryspace=$(
+            jq -r '.self' /tmp/query-space.json
+            )
+
+        echo "Query space [${queryspace:?}]"
+
+        curl \
+            --silent \
+            ${queryspace:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Find the AtlasDR1 schema by name.
+#[root@tester]
+
+        selector=ATLASDR1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.schema.name=${selector:?}" \
+            "${atlasadql:?}/schemas/select" \
+            | jq '.' | tee /tmp/atlas-schema.json
+
+        atlasschema=$(
+            jq -r '.self' /tmp/atlas-schema.json
+            )
+
+        echo "Atlas schema [${atlasschema:?}]"
+
+        curl \
+            --silent \
+            ${atlasschema:?} \
+            | jq '.'
+
+# --------------------------------------
+# Find the Gaia DR1 schema by name.
+#[root@tester]
+
+        selector=gaiadr1
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "ivoa.schema.name=${selector:?}" \
+            "${gaiaivoa:?}/schemas/select" \
+            | jq '.' | tee /tmp/gaia-schema.json
+
+        gaiaschema=$(
+            jq -r '.self' /tmp/gaia-schema.json
+            )
+
+        echo "Gaia schema [${gaiaschema:?}]"
+
+        curl \
+            --silent \
+            ${gaiaschema:?} \
+            | jq '.'
+
+# -----------------------------------------------------
+# Add the Atlas DR1 schema.
+#[root@tester]
+
+        name=ATLASDR1
+        base=${atlasschema}
+        
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.schema.name=${name:?}" \
+            --data   "adql.schema.base=${base:?}" \
+            "${queryspace:?}/schemas/import" \
+            | jq '.'
+
+# -----------------------------------------------------
+# Add the Gaia DR1 schema.
+#[root@tester]
+
+        name=GAIADR1
+        base=${gaiaschema}
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data   "adql.schema.name=${name:?}" \
+            --data   "adql.schema.base=${base:?}" \
+            "${queryspace:?}/schemas/import" \
+            | jq '.'
+
+# -----------------------------------------------------
+# List the workspace schema.
+#[root@tester]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            "${queryspace:?}/schemas/select" \
+            | jq '.'
+
+# -----------------------------------------------------
+# Query the local JDBC database.
+#[root@tester]
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        COUNT(sourceID),
+        (ROUND( ra/10, 0) * 10) AS rablock,
+        (ROUND(dec/10, 0) * 10) AS decblock
+    FROM
+        ATLASDR1.atlasSource
+    WHERE
+        sourceID <> 0
+    GROUP BY
+        (ROUND( ra/10, 0) * 10),
+        (ROUND(dec/10, 0) * 10)
+    ORDER BY
+        rablock,
+        decblock
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/atlas-query.json
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/atlas-query.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/atlas-data.xml
+
+# -----------------------------------------------------
+# Query the remote TAP service.
+#[root@tester]
+
+cat > /tmp/gaia-query.adql << EOF
+SELECT
+    source_id
+FROM
+    GAIADR1.tgas_source AS tgas
+WHERE
+    tgas.parallax > (10.0 * tgas.parallax_error)
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/gaia-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/gaia-query.json
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/gaia-query.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/gaia-data.xml
+
+
+# -----------------------------------------------------
+# Query local database (nested query aliased field).
+#[root@tester]
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        CrossMatch.masterObjID
+    FROM
+        atlasSourceXDR8PhotoObj AS CrossMatch,
+        (
+        SELECT
+            TOP 10000 s.sourceID AS id
+        FROM
+            atlasSource AS s
+        ORDER BY
+            ra
+        ) AS T
+    WHERE
+        T.id = CrossMatch.masterObjID
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | jq '.' | tee /tmp/atlas-query.json
+
+# -----------------------------------------------------
+# Get the result table.
+#[root@tester]
+
+    resultlink=$(jq -r '.results.table' /tmp/atlas-query.json)
+
+    curl \
+        --silent \
+        ${resultlink:?} \
+        | jq '.' | tee /tmp/result-table.json
+
+    resultname=$( jq -r '.fullname' /tmp/result-table.json)
+    resultspace=$(jq -r '.resource' /tmp/result-table.json)
+
+    curl \
+        --silent \
+        ${resultspace:?} \
+        | jq '.' | tee /tmp/result-space.json
+
+# -----------------------------------------------------
+# Query the results table.
+#[root@tester]
+
+cat > /tmp/result-query.adql << EOF
+    SELECT
+        TOP 10
+        masterObjID
+    FROM
+        ${resultname}
+    ORDER BY
+        masterObjID
+EOF
+
+        curl \
+            --silent \
+            --header "firethorn.auth.identity:${identity:?}"   \
+            --header "firethorn.auth.community:${community:?}" \
+            --data-urlencode "adql.query.input@/tmp/result-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${resultspace:?}/queries/create" \
+            | jq '.' | tee /tmp/result-pager.json
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/result-pager.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/result-data.xml
+
+
