@@ -252,27 +252,6 @@
     rm "${dockcopy:?}"
 
 #---------------------------------------------------------------------
-# Push the base image to our webserver.
-#[user@desktop]
-
-    basepath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${basefile:?}")
-    basegzip=$(mktemp)
-
-    sudo chmod a+r "${basepath:?}"
-
-    gzip -c "${basepath:?}" > "${basegzip:?}"
-    chmod a+r "${basegzip:?}"
-
-    rsync \
-        --stats \
-        --progress \
-        --human-readable \
-        "${basegzip:?}" \
-        "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${basefile:?}.gz"
-
-    rm "${basegzip:?}"
-
-#---------------------------------------------------------------------
 # Push the docker image to our webserver.
 #[user@desktop]
 
