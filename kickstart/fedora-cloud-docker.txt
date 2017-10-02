@@ -53,19 +53,6 @@ shutdown
 lang en_GB.UTF-8
 timezone Europe/London
 
-#
-# Roor user account
-#rootpw --iscrypted $6$oh6Aic$Ep47UfaFUAy785YJs9tireb7p4BrWxPi4MGfDWdt6XxIpE6evRKzOz7VdQGSm9kfR6IARQNh6xaab1OeVLIfR0
-#sshkey --username root "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDCRRTQ9UK4kDGdBQPHRqe5p3jiADCxtiFschsXsoaIa5QNMnYKSCbA4t98vKrFAaB+oiBdjCE4uHh0Y3gpxKaqQ/Io39hXXNn89IZctbyvf94lWhFUWW48svLj3myqqTIbyc/kOckqBOC/hJW0xPGgoAOEjonnfJGJy5M+wqC/1y5S2/12Q+f1OYBAV9gIhJRRF7+hVrehhY8XmmSYkdotx1gWfA9uSjEqW4QFf00p/ZKJy7110Mxb6YIc3io5YPkB657wEn6ieZIYBsO9Vnq4k8XbJSDe+r1s+2h2yUJDYCqhrDakJjAx39aZITB0QmDN9nOMCj/DtrD8rMEAsdCz4Ws7wLxK0sie0/GGVRHxl/TzXnludo3YqbQumnHsm4LWo4YG9q8BbdX59+wK1n/7+LrzKIWy3M8b+3wQfJ8DyydsIA/gfzUvHh6oez/nTm36zFBWS1Lq61KWkjlCAO13WbCY5hw3i192FsnsXsAqcF3pLYrON/NaUm+kJRJAJAgSa7pAcHtRNS1RSXxnOgTFGP4nOPbwbPmFJg9qqY8J2BAIr4CXFLmiVxb0J4KD4ixqaSVVtL0c8rXzjy5fRfmLoHe90YXwMdFrmK3kXtsASFD5WlF+AsjAZMbf2zWDpJk3nF6TFgpiNFxNkpDAN7KIjblWKkQefnPto27UB/7Rbw== dmr@roe.ac.uk"
-#sshkey --username root "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDdqcK5D91MTuwc51Bo+3hAfQYfYVimvKqBkN8lOM5tXp4QlpSgQtWwQucELuFyhDY58oiEveyQrIa0z8OREe5aHACpOiDYgnnvyZgO4rBo5jviIbjrlQ+W0kIkHn4ZzGio0zb0O1kyHecfnAB9ISJttMzRDyZl4glCpK6fJ9zx4Az+Jt2kIihX1BRTdgZxeua1hIQLiWydyFU4+k/V7k2nhuoQGFovGL4uGhzJioI9xROXo3QosEN3ZnmVcch/T9d+trzlzrpoLVNCXBXlfYv6f8hzxG45N4l68Mhm9LeJWum7jIHCtIdgsGW+BOOOgZahE6bPkGkoGkvoIAzczHIpgdsTRJgw23oeYp/U2fierL3C9vlr6FOLaxQS8Iw15VQyTNeGfvRgeT1UQsqwcwZ/HAE697gRFyWu/ikrTtpCFShyrmWaOPEA1I6/mAB1FB2BHEdjWgxDzQBKlF52iGRIFb+0qR9GGGFFNTdLINoYtahMjhra9F6NKf+RJWjZ4keiMV8mv4UGNhnG/7BECuUbkYaLmMxyDLdRCsSE93Wc/+B2F9cR5WLuPJaV9JnSB3XDVklrCR+XK8Kfmqh9zJXAi/AjRZIuDJOGKfj06sh1SNaZw6JNzp6flYSIjRgreT0TktsJT32JrjNc6IWsphNxAfOy3Gx8kxi9QFhd6zLVAw== stv@roe.ac.uk"
-#sshkey --username root "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAqLgL7ClCX68Yr0HzwK1ptdWTdbArkOFYgh3XAc2vNzaGAlsA5JzFnBkVO3V+P2xQzALAwKtb4wRtm/jFldykHpPF++QpfvEUKy3RsFBdc4ybgAV36XvRmCtRGujkwDpRXE3MklgcUcLprOQJhc7dYPeJWibTVNSrcUaFiu5GKK3YoTKcuS2cR7QUZuDFXdaryNEAoX9Sf0mGraBvgm10sD5oLZHb1Gogml+u7DKA5jIFRSn/DeoGbriwMCzncsEKxAK5CWTpz1lZmTbq+8aElxWrbhnGczWuaUfSjFalQUMyuwiFgw8+V0Hr18sXOrpZIXpI4FPhukTdI+Gb7mfVPQ== msh@roe.ac.uk"
-
-#
-# Stevedore user account.
-# https://bugzilla.redhat.com/show_bug.cgi?id=1316816
-#user --name Stevedore --password NO-PASSWORD --iscrypted --shell bash --uid 1010 --gid 1010 --groups users,wheel,docker
-#sshkey --username Stevedore "ssh-rsa AAAAB3NzaC1yc2 ...."
-
 %packages
 
 # OpenStack cloud-init
@@ -184,46 +171,6 @@ pushd $(mktemp -d)
   semodule_package -m dockersock.mod -o dockersock.pp
   semodule -i dockersock.pp
 popd
-
-#
-# Add the Stevedore user account.
-#useruid=1010
-#username=Stevedore
-#userhome=/home/${username:?}
-#useradd \
-#    --user-group \
-#    --create-home \
-#    --shell /bin/bash \
-#    --uid ${useruid:?} \
-#    --home-dir ${userhome:?} \
-#    --groups users,docker,wheel \
-#    ${username:?}
-#
-#
-# Copy authorized keys from root.
-#mkdir \
-#    ${userhome:?}/.ssh
-#cp -n \
-#    /root/.ssh/authorized_keys \
-#    ${userhome:?}/.ssh/authorized_keys
-#
-#chmod \
-#    g=,o=,u=rwx \
-#    ${userhome:?}/.ssh
-#chmod \
-#    g=r,o=r,u=rw \
-#    ${userhome:?}/.ssh/authorized_keys
-#
-#chown -R \
-#    $(id ${username:?} -u) \
-#    ${userhome:?}/.ssh
-#chgrp -R \
-#    $(id ${username:?} -g) \
-#    ${userhome:?}/.ssh
-#
-#restorecon -r \
-#    ${userhome:?}/.ssh
-#
 
 #
 # Configure NTP server.
