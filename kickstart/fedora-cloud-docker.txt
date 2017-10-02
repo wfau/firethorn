@@ -53,6 +53,10 @@ shutdown
 lang en_GB.UTF-8
 timezone Europe/London
 
+#
+# Root user (disabled)
+rootpw --iscrypted $6$oh6Aic$Ep47UfaFUAy785YJs9tireb7p4BrWxPi4MGfDWdt6XxIpE6evRKzOz7VdQGSm9kfR6IARQNh6xaab1OeVLIfR0
+
 %packages
 
 # OpenStack cloud-init
