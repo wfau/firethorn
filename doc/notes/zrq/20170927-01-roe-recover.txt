@@ -1,0 +1,183 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+# -----------------------------------------------------
+# Recover commands from the history.
+#[root@float01]
+
+    history
+
+        592  tapservicevmip=http://192.168.201.12
+        593  clearwingvmip=http://192.168.201.11
+        594  # -----------------------------------------------------
+        595  # Create our secret function.
+        596  #[root@hebenu]
+        597      secrethost='stv@shepseskaf.roe.ac.uk'
+        598      secretfile='${HOME:?}/secret.store.blue'
+        599      secret()         {         local key=${1:?};         ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" ;         }
+        600      secret 'firethorn.user.host'
+        601      source run.sh 13 default  ${newversion:?} 1.2.3-genius  ${clearwingvmip:?} ${tapservicevmip:?}
+        602      newversion=2.1.5
+        603      source run.sh 13 default  ${newversion:?} 1.2.3-genius  ${clearwingvmip:?} ${tapservicevmip:?}
+
+# -----------------------------------------------------
+# Identify the key commands.
+#[root@float01]
+
+        592  tapservicevmip=http://192.168.201.12
+        593  clearwingvmip=http://192.168.201.11
+        602      newversion=2.1.5
+        603      source run.sh 13 default  ${newversion:?} 1.2.3-genius  ${clearwingvmip:?} ${tapservicevmip:?}
+
+# -----------------------------------------------------
+# Examine the 'run' script.
+#[root@float01]
+
+    cat run.sh
+
+        if [ $testname -eq 13 ];
+        then
+            source setup/setup.sh
+            sleep 30
+            source setup/apache-proxy-run.sh  ${input_variable2:?} ${input_variable3:?}
+        else
+
+# -----------------------------------------------------
+# Examine the 'setup' script.
+#[root@float01]
+
+    less setup/setup.sh
+
+        # -----------------------------------------------------
+        # Remove existing docker containers and images
+        #
+
+            # Delete all containers
+            docker rm -f -v $(docker ps -a -q)
+            # Delete all images
+            docker rmi -f $(docker images -q)
+
+        ....
+        ....
+        ....
+        ....
+
+
+        # -----------------------------------------------------
+        # Run our build container.
+        #
+
+            docker run \
+                -it \
+                --name builder \
+                --env "branch=${branch:?}" \
+                --env "version=${version:?}" \
+                --volume /var/local/cache:/cache \
+                --volume /var/local/projects:/projects \
+                --volume /var/run/docker.sock:/var/run/docker.sock \
+                --volume $(pwd)/setup/build.sh:/build.sh \
+                firethorn/builder:1 \
+                bash ./build.sh
+
+# -----------------------------------------------------
+# Examine the 'apache-proxy-run' script.
+#[root@float01]
+
+    less setup/apache-proxy-run.sh
+
+        homedir="${HOME:?}"
+        setupdir="${HOME:?}/setup"
+        clearwingip=$1
+        tapserviceip=$2
+
+        chcon -t svirt_sandbox_file_t "${setupdir:?}/apache-proxy-config-script.sh"
+        chmod +x "${setupdir:?}/apache-proxy-config-script.sh"
+
+        firepachelogs="/var/logs/firepache"
+
+        directory "${firepachelogs:?}"
+
+        docker run -p 80:80 --name firepache  --memory 512M --volume "${firepachelogs:?}:/var/log/apache2" --volume "${setupdir:?}/apache-proxy-config-script.sh:${setupdir:?}/apache-proxy-config-script.sh" --env "tapserviceip=${tapserviceip:?}" --env "clearwingip=${clearwingip:?}" -d firethorn/apache:${version:?}
+
+        docker exec  firepache /bin/sh -l -c ${setupdir:?}/apache-proxy-config-script.sh
+
+# -----------------------------------------------------
+# Examine the 'apache-proxy-config' script.
+#[root@float01]
+
+    less setup/apache-proxy-config-script.sh
+
+
+        cat >> /etc/apache2/sites-enabled/000-default.conf <<EOF
+
+        <VirtualHost *:80>
+            ServerName osa.metagrid.xyz
+
+            ProxyRequests Off
+            ProxyPreserveHost On
+
+            <Proxy *>
+                Order deny,allow
+                Allow from all
+            </Proxy>
+
+            ProxyPass ^/(.*)$  http://${clearwingip:?}/$1
+            ProxyPassMatch ^/(.*)$  http://${clearwingip:?}/$1  retry=0 connectiontimeout=14400 timeout=14400
+            ProxyPassReverse  ^/(.*)$  http://${clearwingip:?}/$1
+        </VirtualHost>
+
+
+        <VirtualHost *:80>
+            ServerName genius.metagrid.xyz
+
+            ProxyRequests Off
+            ProxyPreserveHost On
+
+            <Proxy *>
+                Order deny,allow
+                Allow from all
+            </Proxy>
+
+            ProxyPass ^/(.*)$  http://${tapserviceip:?}/$1
+            ProxyPassMatch ^/(.*)$  http://${tapserviceip:?}/$1  retry=0 connectiontimeout=14400 timeout=14400
+            ProxyPassReverse  ^/(.*)$  http://${tapserviceip:?}/$1
+
+        </VirtualHost>
+
+        EOF
+
+        sudo service apache2 reload
+
+
+
+
+
+
+
+
+
+
+
+
+
