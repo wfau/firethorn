@@ -176,10 +176,10 @@
         info \
             "${dockpath:?}"
 
-            image: /var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow
+            image: /var/lib/libvirt/images/base/fedora-26-docker-cloud-20171002.qcow
             file format: qcow2
             virtual size: 16G (17179869184 bytes)
-            disk size: 1.7G
+            disk size: 1.9G
             cluster_size: 65536
             Format specific information:
                 compat: 0.10
@@ -201,10 +201,10 @@
         info \
             "${dockcopy:?}"
 
-            image: /tmp/tmp.305TwWkMwr
+            image: /tmp/tmp.4gPgIL0gSZ
             file format: qcow2
             virtual size: 16G (17179869184 bytes)
-            disk size: 726M
+            disk size: 757M
             cluster_size: 65536
             Format specific information:
                 compat: 1.1
