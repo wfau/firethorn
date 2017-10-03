@@ -120,6 +120,10 @@ policycoreutils-python-utils
 %post
 
 #
+# Disable SELinux for now ..
+setenforce Permissive
+
+#
 # Configure the cloud-init user accounts.
 # https://docs.openstack.org/image-guide/fedora-image.html
 cat >> /etc/cloud/cloud.cfg << 'EOF'
@@ -137,6 +141,7 @@ users:
     groups: [users, wheel, docker]
     shell: /bin/bash
     passwd: $6$rhfed05N$22N1s4OvAjDFYFoclbBiDe4VCH0aoL2lkeJpP1sRYIuEYN2dNz6jX.HhqlSM9EHWjld8ngr2tIgksOiVWIHOh1
+
 EOF
 
 #
