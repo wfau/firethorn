@@ -263,6 +263,9 @@
     gzip -c "${dockpath:?}" > "${dockgzip:?}"
     chmod a+r "${dockgzip:?}"
 
+    echo "${dockgzip:?}"
+        /tmp/tmp.lG2NipmT5L
+
     rsync \
         --stats \
         --progress \
