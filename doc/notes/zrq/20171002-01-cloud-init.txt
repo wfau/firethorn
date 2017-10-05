@@ -291,7 +291,7 @@
     basesize=16G
     basearch=x86_64
 
-    basever=25
+    basever=26
     basedist=fedora-${basever:?}
     basedate=20170713
     basename=${basedist}-base-${basesize}-${basedate:?}

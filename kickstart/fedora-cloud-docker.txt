@@ -124,18 +124,36 @@ policycoreutils-python-utils
 setenforce Permissive
 
 #
+# Enable cloud-init
+systemctl enable cloud-init.service
+
+sed -n '
+    /^users:/,/^[^ ]/ {
+        p
+        }
+    ' init.txt
+
+#
+# Install yawn-yaml-cli
+#dnf install npm
+#npm install yawn-yaml-cli --global
+
+#
 # Configure the cloud-init user accounts.
 # https://docs.openstack.org/image-guide/fedora-image.html
-cat >> /etc/cloud/cloud.cfg << 'EOF'
+cat >> /etc/cloud/cloud.cfg.d/10-users.yml << 'EOF'
 
 groups:
+
   - docker
 
 users:
+
   - name: Stevedore
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     groups: [users, wheel, docker]
     shell: /bin/bash
+
   - name: Ham
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     groups: [users, wheel, docker]
