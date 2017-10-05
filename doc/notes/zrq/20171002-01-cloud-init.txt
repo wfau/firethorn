@@ -266,6 +266,8 @@
     echo "${dockgzip:?}"
         /tmp/tmp.lG2NipmT5L
 
+    dockgzip=/tmp/tmp.lG2NipmT5L
+
     rsync \
         --stats \
         --progress \
