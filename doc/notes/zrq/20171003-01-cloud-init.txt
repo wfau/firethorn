@@ -185,7 +185,7 @@ EOF
 
     dnf -y install wget
 
-    imagename=fedora-26-docker-cloud-20171002
+    imagename=fedora-26-docker-cloud-20171003
     imagefile=${imagename:?}.qcow
     imagegzip=${imagefile:?}.gz
     imagepath=${HOME}/temp/${imagefile:?}
@@ -213,24 +213,24 @@ EOF
         +------------------+----------------------------------------------------------------------------------------------------------------------------------------------------+
         | Field            | Value                                                                                                                                              |
         +------------------+----------------------------------------------------------------------------------------------------------------------------------------------------+
-        | checksum         | 2f838eaf2a0d5637cd4c9151238c646a                                                                                                                   |
+        | checksum         | d50ce863251251bbf33b5725e5545c6b                                                                                                                   |
         | container_format | bare                                                                                                                                               |
-        | created_at       | 2017-10-03T13:53:30Z                                                                                                                               |
+        | created_at       | 2017-10-04T01:08:35Z                                                                                                                               |
         | disk_format      | qcow2                                                                                                                                              |
-        | file             | /v2/images/a9955e10-4243-4000-83b1-a69747eababa/file                                                                                               |
-        | id               | a9955e10-4243-4000-83b1-a69747eababa                                                                                                               |
+        | file             | /v2/images/d1b9e609-5d20-4d27-b208-bcda4ab8dd6e/file                                                                                               |
+        | id               | d1b9e609-5d20-4d27-b208-bcda4ab8dd6e                                                                                                               |
         | min_disk         | 0                                                                                                                                                  |
         | min_ram          | 0                                                                                                                                                  |
-        | name             | fedora-26-docker-cloud-20171002                                                                                                                    |
+        | name             | fedora-26-docker-cloud-20171003                                                                                                                    |
         | owner            | c2ff1afa3e874e0eb6f5a48f7e77208b                                                                                                                   |
-        | properties       | direct_url='rbd://294bc494-81ba-4c3c-ac5d-af7b3442a2a5/images/a9955e10-4243-4000-83b1-a69747eababa/snap', locations='[{u'url': u'rbd://294bc494    |
-        |                  | -81ba-4c3c-ac5d-af7b3442a2a5/images/a9955e10-4243-4000-83b1-a69747eababa/snap', u'metadata': {}}]'                                                 |
+        | properties       | direct_url='rbd://294bc494-81ba-4c3c-ac5d-af7b3442a2a5/images/d1b9e609-5d20-4d27-b208-bcda4ab8dd6e/snap', locations='[{u'url': u'rbd://294bc494    |
+        |                  | -81ba-4c3c-ac5d-af7b3442a2a5/images/d1b9e609-5d20-4d27-b208-bcda4ab8dd6e/snap', u'metadata': {}}]'                                                 |
         | protected        | False                                                                                                                                              |
         | schema           | /v2/schemas/image                                                                                                                                  |
-        | size             | 796938752                                                                                                                                          |
+        | size             | 794480128                                                                                                                                          |
         | status           | active                                                                                                                                             |
         | tags             |                                                                                                                                                    |
-        | updated_at       | 2017-10-03T13:53:50Z                                                                                                                               |
+        | updated_at       | 2017-10-04T01:08:58Z                                                                                                                               |
         | virtual_size     | None                                                                                                                                               |
         | visibility       | private                                                                                                                                            |
         +------------------+----------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -245,7 +245,7 @@ EOF
         +--------------------------------------+---------------------------------+--------+
         | ID                                   | Name                            | Status |
         +--------------------------------------+---------------------------------+--------+
-        | a9955e10-4243-4000-83b1-a69747eababa | fedora-26-docker-cloud-20171002 | active |
+        | d1b9e609-5d20-4d27-b208-bcda4ab8dd6e | fedora-26-docker-cloud-20171003 | active |
         | 78f2f6e8-70c3-440e-bbf3-8ed639808706 | fedora-25-docker-16G-20170713   | active |
         | d608b269-de15-4852-96b0-2dda15466cb6 | Centos 6 - 1612                 | active |
         | b241c7ea-63f5-4a77-86de-e18a1e8bee45 | Centos 7 - 1612                 | active |
@@ -318,7 +318,7 @@ EOF
     openstack \
         server \
         create \
-        --image 'a9955e10-4243-4000-83b1-a69747eababa' \
+        --image 'd1b9e609-5d20-4d27-b208-bcda4ab8dd6e' \
         --flavor 2 \
         --nic 'net-id=6e5fd378-cc05-4c00-abb2-38bf288b2dba' \
         --key-name 'dmr' \
@@ -337,13 +337,13 @@ EOF
         | accessIPv4                           |                                                                        |
         | accessIPv6                           |                                                                        |
         | addresses                            |                                                                        |
-        | adminPass                            | 4Hr7kp6cb5YN                                                           |
+        | adminPass                            | abFpJnid2SxQ                                                           |
         | config_drive                         |                                                                        |
-        | created                              | 2017-10-03T14:10:11Z                                                   |
+        | created                              | 2017-10-04T01:11:20Z                                                   |
         | flavor                               | m1.small (2)                                                           |
         | hostId                               |                                                                        |
-        | id                                   | a662e06f-7645-4cee-92dc-2bc25140796e                                   |
-        | image                                | fedora-26-docker-cloud-20171002 (a9955e10-4243-4000-83b1-a69747eababa) |
+        | id                                   | 1a105125-ce1b-4f22-abd6-836d3c529494                                   |
+        | image                                | fedora-26-docker-cloud-20171003 (d1b9e609-5d20-4d27-b208-bcda4ab8dd6e) |
         | key_name                             | dmr                                                                    |
         | name                                 | albert                                                                 |
         | os-extended-volumes:volumes_attached | []                                                                     |
@@ -352,7 +352,7 @@ EOF
         | properties                           |                                                                        |
         | security_groups                      | [{u'name': u'default'}]                                                |
         | status                               | BUILD                                                                  |
-        | updated                              | 2017-10-03T14:10:11Z                                                   |
+        | updated                              | 2017-10-04T01:11:21Z                                                   |
         | user_id                              | 3d241b5fa2d0b3378901e08e86e10284dc9f9dae3732b99f71f809cf46ccb0d5       |
         +--------------------------------------+------------------------------------------------------------------------+
 
@@ -362,7 +362,7 @@ EOF
 
     openstack \
         server show \
-        'a662e06f-7645-4cee-92dc-2bc25140796e'
+        '1a105125-ce1b-4f22-abd6-836d3c529494'
 
         +--------------------------------------+------------------------------------------------------------------------+
         | Field                                | Value                                                                  |
@@ -372,17 +372,17 @@ EOF
         | OS-EXT-STS:power_state               | Running                                                                |
         | OS-EXT-STS:task_state                | None                                                                   |
         | OS-EXT-STS:vm_state                  | active                                                                 |
-        | OS-SRV-USG:launched_at               | 2017-10-03T14:10:50.000000                                             |
+        | OS-SRV-USG:launched_at               | 2017-10-04T01:12:07.000000                                             |
         | OS-SRV-USG:terminated_at             | None                                                                   |
         | accessIPv4                           |                                                                        |
         | accessIPv6                           |                                                                        |
-        | addresses                            | VM Network Public=192.168.2.6, 129.215.193.78                          |
+        | addresses                            | VM Network Public=192.168.2.13                                         |
         | config_drive                         |                                                                        |
-        | created                              | 2017-10-03T14:10:11Z                                                   |
+        | created                              | 2017-10-04T01:11:20Z                                                   |
         | flavor                               | m1.small (2)                                                           |
         | hostId                               | bb3167bfa94994b7d7a4ae0344b2de9ba73064d5e49a16e0f9aee40a               |
-        | id                                   | a662e06f-7645-4cee-92dc-2bc25140796e                                   |
-        | image                                | fedora-26-docker-cloud-20171002 (a9955e10-4243-4000-83b1-a69747eababa) |
+        | id                                   | 1a105125-ce1b-4f22-abd6-836d3c529494                                   |
+        | image                                | fedora-26-docker-cloud-20171003 (d1b9e609-5d20-4d27-b208-bcda4ab8dd6e) |
         | key_name                             | dmr                                                                    |
         | name                                 | albert                                                                 |
         | os-extended-volumes:volumes_attached | []                                                                     |
@@ -391,11 +391,9 @@ EOF
         | properties                           |                                                                        |
         | security_groups                      | [{u'name': u'default'}]                                                |
         | status                               | ACTIVE                                                                 |
-        | updated                              | 2017-10-03T14:10:50Z                                                   |
+        | updated                              | 2017-10-04T01:12:08Z                                                   |
         | user_id                              | 3d241b5fa2d0b3378901e08e86e10284dc9f9dae3732b99f71f809cf46ccb0d5       |
         +--------------------------------------+------------------------------------------------------------------------+
-
-
 
 # -----------------------------------------------------
 # Allocate a floating IP address.
@@ -467,7 +465,7 @@ EOF
         server \
         add \
         floating ip \
-        'a662e06f-7645-4cee-92dc-2bc25140796e' \
+        '1a105125-ce1b-4f22-abd6-836d3c529494' \
         '129.215.193.78'
 
     openstack \
@@ -477,7 +475,7 @@ EOF
         +--------------------------------------+---------------------+------------------+--------------------------------------+
         | ID                                   | Floating IP Address | Fixed IP Address | Port                                 |
         +--------------------------------------+---------------------+------------------+--------------------------------------+
-        | 6188b2bc-9436-4287-b37e-cfce2c9aab64 | 129.215.193.78      | 192.168.2.6      | 53be1065-906b-4249-95c9-96126ed9b34a |
+        | 6188b2bc-9436-4287-b37e-cfce2c9aab64 | 129.215.193.78      | 192.168.2.13     | 43f5df05-2865-443e-907c-5cc2c26593ea |
         | 78790f33-3834-4be2-b7c6-94feef1abd4e | 172.16.49.57        | None             | None                                 |
         +--------------------------------------+---------------------+------------------+--------------------------------------+
 
