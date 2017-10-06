@@ -141,7 +141,7 @@ sed -n '
 #
 # Configure the cloud-init user accounts.
 # https://docs.openstack.org/image-guide/fedora-image.html
-cat >> /etc/cloud/cloud.cfg.d/10-users.yml << 'EOF'
+cat >> /etc/cloud/cloud.cfg.d/10-users.cfg << 'EOF'
 
 groups:
 
