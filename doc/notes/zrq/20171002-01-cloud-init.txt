@@ -263,10 +263,9 @@
     gzip -c "${dockpath:?}" > "${dockgzip:?}"
     chmod a+r "${dockgzip:?}"
 
-    echo "${dockgzip:?}"
-        /tmp/tmp.lG2NipmT5L
-
-    dockgzip=/tmp/tmp.lG2NipmT5L
+#    echo "${dockgzip:?}"
+#        /tmp/tmp.WHrKg0RVYC
+#    dockgzip=/tmp/tmp.lG2NipmT5L
 
     rsync \
         --stats \
@@ -279,55 +278,11 @@
 
 #---------------------------------------------------------------------
 # Install the new image.
-#[user@shep]
-#[user@trop01]
-#[user@trop02]
 #[user@trop03]
 
-    : ${basepool:='base'}
-    : ${livepool:='live'}
-    : ${connection:='qemu:///system'}
-
-    basecpu=4
-    basemem=4096
-    basesize=16G
-    basearch=x86_64
-
-    basever=26
-    basedist=fedora-${basever:?}
-    basedate=20170713
-    basename=${basedist}-base-${basesize}-${basedate:?}
-    basefile=${basename}.qcow
-    basegzip=${basefile}.gz
-
-    docksize=${basesize:?}
-    dockdate=${basedate:?}
-    dockname=${basedist}-docker-${docksize:?}-${dockdate:?}
+    dockname=
     dockfile=${dockname}.qcow
     dockgzip=${dockfile}.gz
-
-    wget \
-        -O "${basegzip:?}" \
-        "http://data.metagrid.co.uk/ischnura/base/${basegzip:?}"
-
-    gunzip "${basegzip:?}"
-
-    virsh \
-        --connect "${connection:?}" \
-        vol-create-as \
-            "${basepool:?}" \
-            "${basefile:?}" \
-            "${basesize:?}" \
-            --format 'qcow2'
-
-    virsh \
-        --connect "${connection:?}" \
-        vol-upload \
-            --pool "${basepool:?}" \
-            "${basefile:?}" \
-            "${basefile:?}"
-
-    rm "${basefile:?}"
 
     wget \
         -O "${dockgzip:?}" \
@@ -335,20 +290,4 @@
 
     gunzip "${dockgzip:?}"
 
-    virsh \
-        --connect "${connection:?}" \
-        vol-create-as \
-            "${basepool:?}" \
-            "${dockfile:?}" \
-            "${docksize:?}" \
-            --format 'qcow2'
-
-    virsh \
-        --connect "${connection:?}" \
-        vol-upload \
-            --pool "${basepool:?}" \
-            "${dockfile:?}" \
-            "${dockfile:?}"
-
-    rm "${dockfile:?}"
 
