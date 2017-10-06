@@ -127,19 +127,27 @@ setenforce Permissive
 # Enable cloud-init
 systemctl enable cloud-init.service
 
-sed -n '
-    /^users:/,/^[^ ]/ {
-        p
-        }
-    ' init.txt
-
 #
 # Install yawn-yaml-cli
 #dnf install npm
 #npm install yawn-yaml-cli --global
 
 #
-# Configure the cloud-init user accounts.
+# Comment out the default users: section.
+# https://docs.openstack.org/image-guide/fedora-image.html
+sed -i '
+    /^users:/,/^[^ ]/ {
+        /^users:/ {
+            s/\(.*\)/#\1/
+            }
+        /^[^ ]/ !{
+            s/\(.*\)/#\1/
+            }
+        }
+    ' /etc/cloud/cloud.cfg
+
+#
+# Configure our cloud-init user accounts.
 # https://docs.openstack.org/image-guide/fedora-image.html
 cat >> /etc/cloud/cloud.cfg.d/10-users.cfg << 'EOF'
 

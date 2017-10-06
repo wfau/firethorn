@@ -274,20 +274,8 @@
         "${dockgzip:?}" \
         "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${dockfile:?}.gz"
 
+    echo "${dockfile:?}"
+
     rm "${dockgzip:?}"
-
-#---------------------------------------------------------------------
-# Install the new image.
-#[user@trop03]
-
-    dockname=
-    dockfile=${dockname}.qcow
-    dockgzip=${dockfile}.gz
-
-    wget \
-        -O "${dockgzip:?}" \
-        "http://data.metagrid.co.uk/ischnura/base/${dockgzip:?}"
-
-    gunzip "${dockgzip:?}"
 
 
