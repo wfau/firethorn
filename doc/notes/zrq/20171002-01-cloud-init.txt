@@ -213,6 +213,25 @@
             corrupt: false
 
 #---------------------------------------------------------------------
+# Push the docker image to our webserver.
+#[user@desktop]
+
+    dockgzip=$(mktemp)
+
+    gzip -c "${dockcopy:?}" > "${dockgzip:?}"
+    chmod a+r "${dockgzip:?}"
+
+    echo "Copy [${dockcopy:?}]"
+    echo "Gzip [${dockgzip:?}]"
+
+    rsync \
+        --stats \
+        --progress \
+        --human-readable \
+        "${dockgzip:?}" \
+        "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${dockfile:?}.gz"
+
+#---------------------------------------------------------------------
 # Delete the original volume.
 #[user@desktop]
 
@@ -223,59 +242,10 @@
             "${dockfile:?}"
 
 #---------------------------------------------------------------------
-# Create a new (empty) volume.
-#[user@desktop]
-
-    virsh \
-        --connect "${connection:?}" \
-        vol-create-as \
-            "${basepool:?}" \
-            "${dockfile:?}" \
-            "${docksize:?}" \
-            --format qcow2
-
-#---------------------------------------------------------------------
-# Upload the compressed version.
-#[user@desktop]
-
-    virsh \
-        --connect "${connection:?}" \
-        vol-upload \
-            --pool "${basepool:?}" \
-            "${dockfile:?}" \
-            "${dockcopy:?}"
-
-#---------------------------------------------------------------------
 # Delete the compressed version.
 #[user@desktop]
 
     rm "${dockcopy:?}"
-
-#---------------------------------------------------------------------
-# Push the docker image to our webserver.
-#[user@desktop]
-
-    dockpath=$(virsh --connect "${connection:?}" vol-path --pool "${basepool:?}" "${dockfile:?}")
-    dockgzip=$(mktemp)
-
-    sudo chmod a+r ${dockpath:?}
-
-    gzip -c "${dockpath:?}" > "${dockgzip:?}"
-    chmod a+r "${dockgzip:?}"
-
-#    echo "${dockgzip:?}"
-#        /tmp/tmp.WHrKg0RVYC
-#    dockgzip=/tmp/tmp.lG2NipmT5L
-
-    rsync \
-        --stats \
-        --progress \
-        --human-readable \
-        "${dockgzip:?}" \
-        "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${dockfile:?}.gz"
-
-    echo "${dockfile:?}"
-
     rm "${dockgzip:?}"
 
 
