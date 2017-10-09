@@ -187,19 +187,19 @@ EOF
           "virtual_size": null, 
           "name": "fedora-26-docker-cloud-20171006", 
           "tags": "", 
-          "checksum": "1287fbebe8461b6a768ea2595109dccc", 
-          "created_at": "2017-10-06T13:12:21Z", 
+          "checksum": "4ba3cf9fd64f72d93a078f34f32c9122", 
+          "created_at": "2017-10-09T10:55:08Z", 
           "disk_format": "qcow2", 
-          "updated_at": "2017-10-06T13:12:49Z", 
+          "updated_at": "2017-10-09T10:55:38Z", 
           "visibility": "private", 
           "properties": "direct_url='rbd://294bc494-81ba-4c3c-ac5d-af7b3442a2a5/....', locations='[{u'url': u'rbd://294bc494-81ba-4c3c-ac5d-af7b3442a2a5/....', u'metadata': {}}]'", 
           "owner": "c2ff1afa3e874e0eb6f5a48f7e77208b", 
           "protected": false, 
-          "file": "/v2/images/df66bc03-8217-4037-bb7b-b578f336df02/file", 
+          "file": "/v2/images/98d60043-5727-48e9-88cb-ed9bfd1e0205/file", 
           "container_format": "bare", 
           "min_disk": 0, 
-          "size": 819319808, 
-          "id": "df66bc03-8217-4037-bb7b-b578f336df02", 
+          "size": 822007808, 
+          "id": "98d60043-5727-48e9-88cb-ed9bfd1e0205", 
           "schema": "/v2/schemas/image"
         }
 
@@ -333,7 +333,7 @@ EOF
 # Boot a server instance.
 #[root@container]
 
-    servername='Brandy Lee'
+    servername='Cloudbuster'
 
     openstack \
         server create \
@@ -348,11 +348,11 @@ EOF
         {
           "OS-EXT-STS:task_state": "scheduling", 
           "addresses": "", 
-          "image": "fedora-26-docker-cloud-20171006 (df66bc03-8217-4037-bb7b-b578f336df02)", 
+          "image": "fedora-26-docker-cloud-20171006 (98d60043-5727-48e9-88cb-ed9bfd1e0205)", 
           "OS-EXT-STS:vm_state": "building", 
           "OS-SRV-USG:launched_at": null, 
           "flavor": "m1.small (2)", 
-          "id": "03116b61-647a-4130-9b95-232a40992c42", 
+          "id": "c099d5bd-7377-480e-a0af-171a8e76fa34", 
           "security_groups": [
             {
               "name": "default"
@@ -367,15 +367,15 @@ EOF
           "project_id": "c2ff1afa3e874e0eb6f5a48f7e77208b", 
           "config_drive": "", 
           "status": "BUILD", 
-          "updated": "2017-10-06T13:15:52Z", 
+          "updated": "2017-10-09T10:57:16Z", 
           "hostId": "", 
           "OS-SRV-USG:terminated_at": null, 
           "key_name": "dmr", 
           "properties": "", 
           "OS-EXT-AZ:availability_zone": "", 
-          "name": "trevor", 
-          "adminPass": "3LB6HUJBFLr5", 
-          "created": "2017-10-06T13:15:51Z", 
+          "name": "Cloudbuster", 
+          "adminPass": "bdd6MJHjH97q", 
+          "created": "2017-10-09T10:57:15Z", 
           "os-extended-volumes:volumes_attached": []
         }
 
@@ -392,13 +392,13 @@ EOF
         | tee server.json
 
         {
-          "OS-EXT-STS:task_state": "spawning", 
-          "addresses": "", 
-          "image": "fedora-26-docker-cloud-20171006 (df66bc03-8217-4037-bb7b-b578f336df02)", 
-          "OS-EXT-STS:vm_state": "building", 
-          "OS-SRV-USG:launched_at": null, 
+          "OS-EXT-STS:task_state": null, 
+          "addresses": "VM Network Public=192.168.2.16", 
+          "image": "fedora-26-docker-cloud-20171006 (98d60043-5727-48e9-88cb-ed9bfd1e0205)", 
+          "OS-EXT-STS:vm_state": "active", 
+          "OS-SRV-USG:launched_at": "2017-10-09T10:58:01.000000", 
           "flavor": "m1.small (2)", 
-          "id": "03116b61-647a-4130-9b95-232a40992c42", 
+          "id": "c099d5bd-7377-480e-a0af-171a8e76fa34", 
           "security_groups": [
             {
               "name": "default"
@@ -409,18 +409,18 @@ EOF
           "accessIPv4": "", 
           "accessIPv6": "", 
           "progress": 0, 
-          "OS-EXT-STS:power_state": "NOSTATE", 
+          "OS-EXT-STS:power_state": "Running", 
           "project_id": "c2ff1afa3e874e0eb6f5a48f7e77208b", 
           "config_drive": "", 
-          "status": "BUILD", 
-          "updated": "2017-10-06T13:15:56Z", 
+          "status": "ACTIVE", 
+          "updated": "2017-10-09T10:58:01Z", 
           "hostId": "bb3167bfa94994b7d7a4ae0344b2de9ba73064d5e49a16e0f9aee40a", 
           "OS-SRV-USG:terminated_at": null, 
           "key_name": "dmr", 
           "properties": "", 
           "OS-EXT-AZ:availability_zone": "nova", 
-          "name": "trevor", 
-          "created": "2017-10-06T13:15:51Z", 
+          "name": "Cloudbuster", 
+          "created": "2017-10-09T10:57:15Z", 
           "os-extended-volumes:volumes_attached": []
         }
 
@@ -438,16 +438,16 @@ EOF
           "router_id": null, 
           "status": "DOWN", 
           "description": "", 
-          "created_at": "2017-10-06T13:21:19Z", 
-          "updated_at": "2017-10-06T13:21:19Z", 
+          "created_at": "2017-10-09T10:59:40Z", 
+          "updated_at": "2017-10-09T10:59:40Z", 
           "floating_network_id": "d1e55e07-6f28-4d98-8116-e11ca10c3e8f", 
           "headers": "", 
           "fixed_ip_address": null, 
-          "floating_ip_address": "129.215.193.83", 
+          "floating_ip_address": "129.215.193.84", 
           "revision_number": 1, 
           "project_id": "c2ff1afa3e874e0eb6f5a48f7e77208b", 
           "port_id": null, 
-          "id": "915cfc6a-9c4a-485e-a7ef-5d08f654bcdc"
+          "id": "28667c3c-bd38-43ec-a56d-06d3c52b3706"
         }
 
     floatipv4address=$(jq -r '.floating_ip_address' floatip.json)
@@ -468,16 +468,29 @@ EOF
     +--------------------------------------+---------------------+------------------+--------------------------------------+
     | ID                                   | Floating IP Address | Fixed IP Address | Port                                 |
     +--------------------------------------+---------------------+------------------+--------------------------------------+
-    | 915cfc6a-9c4a-485e-a7ef-5d08f654bcdc | 129.215.193.83      | 192.168.2.6      | 6f49b0ba-f59c-4532-9eaa-6125305a1789 |
+    | 28667c3c-bd38-43ec-a56d-06d3c52b3706 | 129.215.193.84      | 192.168.2.16     | e9a3bf09-097b-4544-ab24-c85f9897c6ef |
     +--------------------------------------+---------------------+------------------+--------------------------------------+
 
 # -----------------------------------------------------
 # Test the IP address.
 #[user@desktop]
 
-    ssh -v Stevedore@129.215.193.83
+    ssh -v Stevedore@129.215.193.84
 
 FAIL
+
+
+    User Stevedore created.
+    SSH key assigned to root not Stevedore
+    root login blocked
+
+
+    # Default user is set in /etc/cloud/cloud-init.cfg
+    # https://github.com/fedora-cloud/cloud-init/blob/master/cloud-init-fedora.cfg
+
+    # kickstart removes part of it ...
+    # Init process is not getting the message .. 
+
 
 
 # -----------------------------------------------------
