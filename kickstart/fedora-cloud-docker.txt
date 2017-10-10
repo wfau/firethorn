@@ -121,16 +121,21 @@ policycoreutils-python-utils
 
 #
 # Disable SELinux for now ..
-setenforce Permissive
+# setenforce Permissive
 
 #
 # Enable cloud-init
+# We should not need to do this, it should already be done by the rpm install.
+# https://github.com/fedora-cloud/cloud-init/blob/master/cloud-init.spec#L113
+systemctl enable cloud-config.service
+systemctl enable cloud-final.service
 systemctl enable cloud-init.service
+systemctl enable cloud-init-local.service
 
 #
 # Install yawn-yaml-cli
-#dnf install npm
-#npm install yawn-yaml-cli --global
+# dnf install npm
+# npm install yawn-yaml-cli --global
 
 #
 # Comment out the default users: section.
@@ -152,16 +157,13 @@ sed -i '
 cat >> /etc/cloud/cloud.cfg.d/10-users.cfg << 'EOF'
 
 groups:
-
   - docker
 
 users:
-
   - name: Stevedore
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     groups: [users, wheel, docker]
     shell: /bin/bash
-
   - name: Ham
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     groups: [users, wheel, docker]

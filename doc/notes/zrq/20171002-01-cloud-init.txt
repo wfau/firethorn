@@ -20,9 +20,6 @@
 #
 #
 
-
-
-
     Cloud init reference
     https://www.zetta.io/en/help/articles-tutorials/cloud-init-reference/
 
@@ -232,7 +229,7 @@
         "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${dockfile:?}.gz"
 
 #---------------------------------------------------------------------
-# Delete the original volume.
+# Delete the uncompressed volume.
 #[user@desktop]
 
     virsh \
@@ -242,7 +239,7 @@
             "${dockfile:?}"
 
 #---------------------------------------------------------------------
-# Delete the compressed version.
+# Delete the compressed copies.
 #[user@desktop]
 
     rm "${dockcopy:?}"
