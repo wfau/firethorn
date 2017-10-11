@@ -154,7 +154,7 @@ EOF
 # Download our image.
 #[root@container]
 
-    imagename=fedora-26-docker-cloud-20171006
+    imagename=fedora-26-docker-cloud-20171010
     imagefile=${imagename:?}.qcow
     imagegzip=${imagefile:?}.gz
     imagepath=${HOME:?}/temp/${imagefile:?}
@@ -475,7 +475,7 @@ EOF
 # Test the IP address.
 #[user@desktop]
 
-    ssh -v Stevedore@129.215.193.84
+    ssh -v Stevedore@129.215.193.82
 
 FAIL
 

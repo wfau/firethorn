@@ -12,7 +12,7 @@
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
-#
+#  
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #   </meta:licence>
@@ -20,76 +20,19 @@
 #
 #
 
-    Cloud init reference
-    https://www.zetta.io/en/help/articles-tutorials/cloud-init-reference/
-
-    Cloud init via CDROM
-    http://blog.oddbit.com/2015/03/10/booting-cloud-images-with-libvirt/
-
-    Cloud init user and groups
-    https://cloudinit.readthedocs.io/en/latest/topics/examples.html#including-users-and-groups
-
-    Cloud init instance keys
-    https://cloudinit.readthedocs.io/en/latest/topics/examples.html#configure-instances-ssh-keys
-
-    Fedora image with cloud init
-    https://docs.openstack.org/image-guide/fedora-image.html
 
 # -----------------------------------------------------
-# Create a new branch.
-#[user@desktop]
+# Install virt-install.
+#[root@trop03]
 
-    export devname=zrq-cloud-init
-
-    source "${HOME:?}/firethorn.settings"
-    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt &
-
-#---------------------------------------------------------------------
-# Create a new kickstart file with cloud-init settings
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        gedit kickstart/fedora-cloud-docker.txt &
-
-        +   # OpenStack cloud-init
-        +   # https://docs.openstack.org/image-guide/fedora-image.html
-        +   acpid
-        +   cloud-init
-        +   cloud-utils-growpart
-
-        +   #
-        +   # Configure the cloud-init user accounts.
-        +   # https://docs.openstack.org/image-guide/fedora-image.html
-        +   cat >> /etc/cloud/cloud.cfg << EOF
-        +
-        +   groups:
-        +     - docker
-        +
-        +   users:
-        +     - name: Stevedore
-        +       primary-group: foobar
-        +       groups: users,wheel,docker
-        +       sudo: ALL=(ALL) NOPASSWD:ALL
-        +
-        +   EOF
-
-        +   #
-        +   # Disable the default zeroconf route.
-        +   # https://docs.openstack.org/image-guide/fedora-image.html
-        +   echo "NOZEROCONF=yes" >> /etc/sysconfig/network
-
-
-    popd
+    apt-get update
+    apt-get install virtinst
 
 #---------------------------------------------------------------------
 # Build settings
-#[user@desktop]
+#[user@trop03]
 
-    : ${basepool:='base'}
-    : ${livepool:='live'}
-    : ${connection:='qemu:///system'}
+    source "${HOME}/ischnura.settings"
 
     basecpu=4
     basemem=4096
@@ -245,5 +188,7 @@
 
     rm "${dockcopy:?}"
     rm "${dockgzip:?}"
+
+
 
 
