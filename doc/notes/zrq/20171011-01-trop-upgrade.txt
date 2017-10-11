@@ -1,0 +1,134 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Install virt-install.
+#[root@trop03]
+
+    apt-get update
+    apt-get install virtinst
+
+# -----------------------------------------------------
+# Old version of virt-install.
+#[root@trop03]
+
+    virt-install --version
+
+        1.0.1
+
+# -----------------------------------------------------
+# System update from 8 (jessie) to 9 (stretch).
+# https://linuxconfig.org/how-to-upgrade-debian-8-jessie-to-debian-9-stretch
+#
+# -----------------------------------------------------
+# Upgrade current Jessie system
+#[root@trop03]
+
+    apt-get update
+    apt-get upgrade
+    apt-get dist-upgrade
+
+# -----------------------------------------------------
+# Check for problems
+#[root@trop03]
+
+    dpkg -C
+
+        -
+        
+# -----------------------------------------------------
+# Check for held packages
+#[root@trop03]
+
+    apt-mark showhold
+
+        -
+
+# -----------------------------------------------------
+# Edit the sources list, replacing jessie with stretch.
+#[root@trop03]
+
+    cp /etc/apt/sources.list /etc/apt/jessie-sources.list
+
+    sed -i '
+        s/jessie/stretch/g
+        ' /etc/apt/sources.list
+
+# -----------------------------------------------------
+# Update the package index.
+#[root@trop03]
+
+    apt-get update
+
+# -----------------------------------------------------
+# List the packages to be changed.
+#[root@trop03]
+
+    apt list --upgradable
+
+        ....
+        libvirt-clients/stable 3.0.0-4 amd64 [upgradable from: 1.2.9-9+deb8u4]
+        libvirt-daemon/stable 3.0.0-4 amd64 [upgradable from: 1.2.9-9+deb8u4]
+        libvirt-daemon-system/stable 3.0.0-4 amd64 [upgradable from: 1.2.9-9+deb8u4]
+        libvirt0/stable 3.0.0-4 amd64 [upgradable from: 1.2.9-9+deb8u4]
+        ....
+        qemu-kvm/stable 1:2.8+dfsg-6+deb9u2 amd64 [upgradable from: 1:2.1+dfsg-12+deb8u6]
+        qemu-system-common/stable 1:2.8+dfsg-6+deb9u2 amd64 [upgradable from: 1:2.1+dfsg-12+deb8u6]
+        qemu-system-x86/stable 1:2.8+dfsg-6+deb9u2 amd64 [upgradable from: 1:2.1+dfsg-12+deb8u6]
+        qemu-utils/stable 1:2.8+dfsg-6+deb9u2 amd64 [upgradable from: 1:2.1+dfsg-12+deb8u6]
+        ....
+        virt-viewer/stable 5.0-1 amd64 [upgradable from: 1.0-1]
+        virtinst/stable 1:1.4.0-5 all [upgradable from: 1:1.0.1-5]
+        ....
+
+# -----------------------------------------------------
+# Perform the upgrade.
+#[root@trop03]
+
+    apt-get upgrade
+    apt-get dist-upgrade
+
+
+
+# -----------------------------------------------------
+# Reboot.
+#[root@trop03]
+
+    reboot
+
+
+# -----------------------------------------------------
+# Check the version.
+# https://linuxconfig.org/check-what-debian-version-you-are-running-on-your-linux-system
+#[root@trop03]
+
+
+
+
+
+# -----------------------------------------------------
+# Check for obsolete packages.
+#[root@trop03]
+
+    aptitude search '~o'
+

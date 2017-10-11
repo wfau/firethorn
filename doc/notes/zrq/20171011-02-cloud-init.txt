@@ -28,6 +28,62 @@
     apt-get update
     apt-get install virtinst
 
+# -----------------------------------------------------
+# Old version of virt-install.
+#[root@trop03]
+
+    virt-install --version
+
+        1.0.1
+
+# -----------------------------------------------------
+# System update from 8 (jessie) to 9 (stretch).
+# https://linuxconfig.org/how-to-upgrade-debian-8-jessie-to-debian-9-stretch
+#
+# -----------------------------------------------------
+# Upgrade current Jessie system
+#[root@trop03]
+
+    apt-get update
+    apt-get upgrade
+    apt-get dist-upgrade
+
+# -----------------------------------------------------
+# Upgrade current Jessie system
+#[root@trop03]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #---------------------------------------------------------------------
 # Build settings
 #[user@trop03]
@@ -56,7 +112,7 @@
 
 #---------------------------------------------------------------------
 # Create our docker install
-#[user@desktop]
+#[user@trop03]
 
    #
    # Delete any existing machine.
@@ -102,7 +158,7 @@
 
 #---------------------------------------------------------------------
 # Check the file info.
-#[user@desktop]
+#[user@trop03]
 
     dockpath=$(
         virsh \
@@ -127,7 +183,7 @@
 
 #---------------------------------------------------------------------
 # Create a compressed copy of the image.
-#[user@desktop]
+#[user@trop03]
 
     dockcopy=$(mktemp)
     sudo qemu-img \
@@ -155,7 +211,7 @@
 
 #---------------------------------------------------------------------
 # Push the docker image to our webserver.
-#[user@desktop]
+#[user@trop03]
 
     dockgzip=$(mktemp)
 
@@ -174,7 +230,7 @@
 
 #---------------------------------------------------------------------
 # Delete the uncompressed volume.
-#[user@desktop]
+#[user@trop03]
 
     virsh \
         --connect "${connection:?}" \
@@ -184,7 +240,7 @@
 
 #---------------------------------------------------------------------
 # Delete the compressed copies.
-#[user@desktop]
+#[user@trop03]
 
     rm "${dockcopy:?}"
     rm "${dockgzip:?}"
