@@ -96,23 +96,22 @@ EOF
     source "${HOME:?}/chain.properties"
     cat > "${HOME:?}/firethorn.properties" << EOF
 
-        firethorn.meta.type:   "pgsql"
-        firethorn.meta.driver: "org.postgresql.Driver"
+        firethorn.meta.type=pgsql
+        firethorn.meta.driver=org.postgresql.Driver
 
         firethorn.meta.host=umbrolt
         firethorn.meta.data=postgres
         firethorn.meta.user=${metauser:?}
         firethorn.meta.pass=${metapass:?}
 
+        firethorn.user.type=mssql
+        firethorn.user.url=jdbc:jtds:sqlserver://${userhost}/${userdata}
+        firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+
         firethorn.user.host=${userhost:?}
         firethorn.user.data=${userdata:?}
         firethorn.user.user=${useruser:?}
         firethorn.user.pass=${userpass:?}
-
-        firethorn.user.type:   "mssql"
-        firethorn.user.url:    "jdbc:jtds:sqlserver://${userhost}/${userdata}"
-        firethorn.user.driver: "net.sourceforge.jtds.jdbc.Driver"
-
 
 EOF
 
@@ -180,7 +179,6 @@ EOF
         --file "deployer.yml" \
         run \
             deployer
-
 
 # -----------------------------------------------------
 # Configure our identity.
