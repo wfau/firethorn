@@ -12,7 +12,7 @@ services:
 
     bethany:
         hostname:
-            metadata
+            "${metahost}"
         image:
            "firethorn/postgres:${buildtag:-latest}"
         read_only:
@@ -28,7 +28,7 @@ services:
 
     jarmila:
         hostname:
-            ogsa-dai
+            "${ogsahost}"
         image:
            "firethorn/ogsadai:${buildtag:-latest}"
         read_only:
@@ -50,7 +50,8 @@ services:
             retries:  5
 
     gillian:
-        hostname: firethorn
+        hostname:
+            "firethorn"
         image:
            "firethorn/firethorn:${buildtag:-latest}"
         read_only:
@@ -65,19 +66,9 @@ services:
             - miriam
             - rosana
         environment:
-            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
-
-            firethorn.meta.type:   "${metatype}"
-            firethorn.meta.url:    "jdbc:postgresql://bethany/${metadata}"
-            firethorn.meta.user:   "${metauser}"
-            firethorn.meta.pass:   "${metapass}"
-            firethorn.meta.driver: "${metadriver}"
-
-            firethorn.user.type:   "${usertype}"
-            firethorn.user.url:    "jdbc:jtds:sqlserver://${userhost}/${userdata}"
-            firethorn.user.user:   "${useruser}"
-            firethorn.user.pass:   "${userpass}"
-            firethorn.user.driver: "${userdriver}"
+            firethorn.meta.url: "jdbc:postgresql://${metahost}/${metadata}"
+            firethorn.user.url: "jdbc:jtds:sqlserver://${userhost}/${userdata}"
+            firethorn.ogsadai.endpoint: "http://${ogsahost}:8080/ogsadai/services"
         depends_on:
             bethany:
                 condition: service_started            
@@ -94,7 +85,40 @@ services:
 
     deployer:
         hostname:
-            deployer
+            "deployer"
+        image:
+           "firethorn/tester:${buildtag:-latest}"
+        read_only:
+            true
+        stdin_open:
+            true
+        tty:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/deployer.properties:/etc/deployer.properties
+        networks:
+            - miriam
+        environment:
+            dataname:    "${datahost}"
+            datadata:    "${datadata}"
+            datauser:    "${datauser}"
+            datapass:    "${datapass}"
+            datadriver:  "net.sourceforge.jtds.jdbc.Driver"
+            endpointurl: "http://gillian:8080/firethorn"
+        depends_on:
+            gillian:
+                condition: service_healthy            
+        command:
+            [bash]
+
+
+    tester:
+        hostname:
+            "tester"
         image:
            "firethorn/tester:${buildtag:-latest}"
         read_only:
@@ -116,12 +140,11 @@ services:
             datadata:    "${datadata}"
             datauser:    "${datauser}"
             datapass:    "${datapass}"
-            datadriver:  "${datadriver}"
+            datadriver:  "net.sourceforge.jtds.jdbc.Driver"
             endpointurl: "http://gillian:8080/firethorn"
         depends_on:
             gillian:
                 condition: service_healthy            
         command:
             [bash]
-
 

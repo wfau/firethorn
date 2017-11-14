@@ -1,0 +1,255 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+Creating separate Firethorn objects for each workspace:
+
+    osa = Firethorn("OSA")
+    vsa = Firethorn("VSA")
+
+    data1 = osa.query('....')
+    data2 = vsa.query('....')
+
+    osa.import(
+        vsa.get_schema(
+            'SVORIONv20100429'
+            )
+
+
+
+
+
+Creating a single Firethorn connection object, and then separate workspace objects:
+
+    ft =  Firethorn()
+
+    osa = Firethorn.get_workspace("OSA")
+    vsa = Firethorn.get_workspace("VSA")
+
+    data1 = osa.query('....')
+    data2 = vsa.query('....')
+
+    osa.import(
+        vsa.get_schema(
+            'SVORIONv20100429'
+            )
+
+
+User workspace style #1
+
+    myspace = Firethorn()
+
+User workspace style #2
+
+    ft =  Firethorn(user, pass)
+
+    myspace = ft.new_workspace()
+
+
+
+
+Anonymous connection :
+    ft = Firethorn()
+    
+Authenticated connection :
+
+    ft = Firethorn(user='xxx', pass='yyy')
+
+Authenticated connection :
+
+    ft = Firethorn(
+        Firethorn.jupyter_auth()
+        )
+
+User space :
+    myspace = Firethorn()
+
+OSA workspace :
+
+    osa = Firethorn('OSA')
+
+
+
+
+
+
+Anonymous connection :
+    ft = Firethorn()
+User space :
+    myspace = Firethorn()
+
+
+
+
+A Firethorn object represents a connection to a Firethorn server.
+
+Anonymous connection to default server :
+    ft = Firethorn()
+
+Authenticated connection to default server :
+    ft = Firethorn(
+        user='xxx',
+        pass='yyy'
+        )
+
+Anonymous connection to specific server :
+    ft = Firethorn(
+        endpoint= 'http://osa.roe.ac.uk:8080/firethorn'
+        )
+
+Authenticated connection to specific server :
+    ft = Firethorn(
+        endpoint= 'http://osa.roe.ac.uk:8080/firethorn',
+        user='xxx',
+        pass='yyy'
+        )
+
+The Firethorn object contains public workspaces
+
+To get a list of public workspaces
+    ft.get_public_workspaces()
+
+    
+Get the OSA workspace (read only)
+    osa = ft.get_workspace('OSA')
+
+Query the OSA workspace
+    result = osa.query('.....')
+
+
+   
+Get the VSA workspace (read only)
+    vsa = ft.get_workspace('VSA')
+
+Query the VSA workspace
+    result = vsa.query('.....')
+
+
+
+
+
+
+
+
+
+
+
+    // Authenticated connection to default server.
+    ft = Firethorn(
+        user='xxx',
+        pass='yyy'
+        )
+
+
+    // Anonymous connection to default server.
+    ft = Firethorn()
+
+    // Get the OSA workspace (read only)
+    osa = ft.get_workspace('OSA')
+
+
+
+
+    // Create a Query.
+    query = osa.newQuery('.....')
+
+    // Run the Query (async).
+    query.run()
+
+    // Check the query status.
+    while (query.getStatus() != COMPLETED)
+        wait()
+
+
+
+
+
+    // Create and run a Query (async).
+    query = osa.runQuery('.....')
+
+    // Wait for the query to complete.
+    query.waitStatus('COMPLETED')
+
+
+
+    // Query the OSA workspace (sync).
+    query = osa.query('.....')
+
+
+
+
+    // Get the results as an Astropy table.
+    atpy = query.results().asAstropy()
+
+
+
+
+
+
+    // Create and run a Query (async).
+    query = osa.runQuery('.....')
+
+    // Wait for at least 10 rows.
+    query.waitRows(10)
+
+
+// Connector, handles login.
+Firethorn()
+
+// Workspace, represents a local or remote resource.
+ft.getWorkspace('OSA')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Anonymous connection to default server.
+    ft = Firethorn()
+
+    // Get the OSA workspace (read only)
+    osa = ft.get_workspace('OSA')
+
+
+
+
+    // Create a Query.
+    query = osa.newQuery('.....')
+
+    // Run the Query (async).
+    query.run()
+
+    // Check the query status.
+    while (query.getStatus() != COMPLETED)
+        wait()
+
+
