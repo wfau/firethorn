@@ -180,6 +180,11 @@ EOF
         run \
             deployer
 
+            deploy wfau/osa.json
+            deploy wfau/wsa.json
+            deploy wfau/vsa.json
+
+
 # -----------------------------------------------------
 # Configure our identity.
 #[root@deployer]
