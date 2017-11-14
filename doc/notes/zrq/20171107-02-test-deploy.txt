@@ -133,8 +133,8 @@ EOF
 
 EOF
 
-    chmod a+r "${HOME:?}/tester.properties"
-    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties"
+    chmod a+r "${HOME:?}/deployer.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/deployer.properties"
 
 # -----------------------------------------------------
 # Create our tester properties.
