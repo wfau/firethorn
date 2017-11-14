@@ -21,68 +21,14 @@
 #
 
 
-# -----------------------------------------------------
-# Install virt-install.
-#[root@trop03]
-
-    apt-get update
-    apt-get install virtinst
 
 # -----------------------------------------------------
-# Old version of virt-install.
-#[root@trop03]
+# Check version of virt-install.
+#[user@trop03]
 
     virt-install --version
 
-        1.0.1
-
-# -----------------------------------------------------
-# System update from 8 (jessie) to 9 (stretch).
-# https://linuxconfig.org/how-to-upgrade-debian-8-jessie-to-debian-9-stretch
-#
-# -----------------------------------------------------
-# Upgrade current Jessie system
-#[root@trop03]
-
-    apt-get update
-    apt-get upgrade
-    apt-get dist-upgrade
-
-# -----------------------------------------------------
-# Upgrade current Jessie system
-#[root@trop03]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        1.4.0
 
 #---------------------------------------------------------------------
 # Build settings
@@ -139,9 +85,14 @@
             --format qcow2
 
     #
+    # Set the MAC address to match our DHCP range.
+    macaddress='52:54:00:02:03:0F'
+
+    #
     # Create a new installation.
     virt-install \
         --noreboot \
+        --network "network=default,mac=${macaddress:?}" \
         --connect "${connection:?}" \
         --name    "${dockname:?}" \
         --memory  "${basemem:?}" \
@@ -150,11 +101,9 @@
         --location   "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
         --extra-args "inst.ks=${kickstarthref:?}"
 
-   #
-   # Delete the virtual machine, leaving the image.
-   virsh \
-       --connect "${connection:?}" \
-       undefine "${dockname:?}"
+#
+# Edits ?
+# ....
 
 #---------------------------------------------------------------------
 # Check the file info.
@@ -172,10 +121,10 @@
         info \
             "${dockpath:?}"
 
-        image: /var/lib/libvirt/images/base/fedora-26-docker-cloud-20171010.qcow
+        image: /var/lib/libvirt/images/base/fedora-26-docker-cloud-20171011.qcow
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
-        disk size: 1.9G
+        disk size: 2.0G
         cluster_size: 65536
         Format specific information:
             compat: 0.10
@@ -197,11 +146,10 @@
         info \
             "${dockcopy:?}"
 
-
-        image: /tmp/tmp.5rMTNsYF7E
+        image: /tmp/tmp.EVMfFi3CSm
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
-        disk size: 782M
+        disk size: 787M
         cluster_size: 65536
         Format specific information:
             compat: 1.1
@@ -210,8 +158,8 @@
             corrupt: false
 
 #---------------------------------------------------------------------
-# Push the docker image to our webserver.
-#[user@trop03]
+# Push the compressed image to our webserver.
+#[user@desktop]
 
     dockgzip=$(mktemp)
 
@@ -229,6 +177,22 @@
         "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${dockfile:?}.gz"
 
 #---------------------------------------------------------------------
+# Delete the compressed copies.
+#[user@desktop]
+
+    rm "${dockcopy:?}"
+    rm "${dockgzip:?}"
+
+
+#---------------------------------------------------------------------
+# Delete the virtual machine.
+#[user@trop03]
+
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${dockname:?}"
+
+#---------------------------------------------------------------------
 # Delete the uncompressed volume.
 #[user@trop03]
 
@@ -237,14 +201,5 @@
         vol-delete \
             --pool "${basepool}" \
             "${dockfile:?}"
-
-#---------------------------------------------------------------------
-# Delete the compressed copies.
-#[user@trop03]
-
-    rm "${dockcopy:?}"
-    rm "${dockgzip:?}"
-
-
 
 

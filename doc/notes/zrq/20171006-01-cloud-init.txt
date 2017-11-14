@@ -154,7 +154,7 @@ EOF
 # Download our image.
 #[root@container]
 
-    imagename=fedora-26-docker-cloud-20171010
+    imagename=fedora-26-docker-cloud-20171011
     imagefile=${imagename:?}.qcow
     imagegzip=${imagefile:?}.gz
     imagepath=${HOME:?}/temp/${imagefile:?}
@@ -333,7 +333,7 @@ EOF
 # Boot a server instance.
 #[root@container]
 
-    servername='Cloudbuster'
+    servername='CloudInit'
 
     openstack \
         server create \

@@ -108,27 +108,49 @@
     apt-get upgrade
     apt-get dist-upgrade
 
-
-
 # -----------------------------------------------------
 # Reboot.
 #[root@trop03]
 
     reboot
 
-
 # -----------------------------------------------------
 # Check the version.
 # https://linuxconfig.org/check-what-debian-version-you-are-running-on-your-linux-system
-#[root@trop03]
+#[user@trop03]
+
+    cat /etc/issue
+
+        Debian GNU/Linux 9 \n \l
 
 
+    cat /etc/debian_version
+
+        9.2
 
 
+    cat /etc/os-release
 
-# -----------------------------------------------------
-# Check for obsolete packages.
-#[root@trop03]
+        PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+        NAME="Debian GNU/Linux"
+        VERSION_ID="9"
+        VERSION="9 (stretch)"
+        ID=debian
+        HOME_URL="https://www.debian.org/"
+        SUPPORT_URL="https://www.debian.org/support"
+        BUG_REPORT_URL="https://bugs.debian.org/"
 
-    aptitude search '~o'
+
+    hostnamectl
+
+           Static hostname: trop03
+                 Icon name: computer-server
+                   Chassis: server
+                Machine ID: bbc02722cdda4e09aba372c88a5ff7d2
+                   Boot ID: 02db68b099c14ae8823f9acae1beb1d8
+          Operating System: Debian GNU/Linux 9 (stretch)
+                    Kernel: Linux 4.9.0-4-amd64
+              Architecture: x86-64
+
+
 
