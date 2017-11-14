@@ -126,8 +126,8 @@ EOF
     source "${HOME:?}/chain.properties"
     cat > "${HOME:?}/deployer.properties" << EOF
 
+        datahost=${datahost:?}
         datadata=${datadata:?}
-        dataname=${dataname:?}
         datauser=${datauser:?}
         datapass=${datapass:?}
 
@@ -153,9 +153,12 @@ EOF
 
 branch=${branch:?}
 
+metahost=alberto
 metadata=postgres
 metauser=${metauser:?}
 metapass=${metapass:?}
+
+ogsahost=ricardo
 
 userhost=${userhost:?}
 userdata=${userdata:?}
@@ -177,6 +180,7 @@ EOF
         --file "deployer.yml" \
         run \
             deployer
+
 
 # -----------------------------------------------------
 # Configure our identity.
