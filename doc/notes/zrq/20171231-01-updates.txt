@@ -45,6 +45,7 @@
             cp ../working/doc/notes/zrq/20171231-01-updates.txt
             cp ../working/kickstart/fedora-cloud-docker.txt
 
+            hg add .
             hg commit -m "Manual merge from cloud-init branch"
             hg push
 
