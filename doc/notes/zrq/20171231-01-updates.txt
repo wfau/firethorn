@@ -62,4 +62,66 @@
 
     popd
 
+# -----------------------------------------------------
+# Manual merge, copy changes from genius-config branch.
+#[user@virtual]
+
+    clone='20171231-clone'
+    branch='2.0.2-zrq-genius-config'
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_BASE:?}"
+
+        pushd working
+
+            hg update 'default'
+
+            hg revert "${branch:?}" doc/notes/zrq/20151125-roe-quarterly.txt
+            hg revert "${branch:?}" doc/presentations/dave/20151125/firethorn-20151006.odg
+            hg revert "${branch:?}" doc/presentations/dave/20151125/firethorn-20151006.pdf
+            hg revert "${branch:?}" doc/presentations/dave/20151125/images/GENIUS.png
+            hg revert "${branch:?}" doc/presentations/dave/20151125/images/container.png
+            hg revert "${branch:?}" doc/presentations/dave/20151125/images/genius-demo.png
+            hg revert "${branch:?}" doc/presentations/dave/20151125/images/ivoa.jpg
+            hg revert "${branch:?}" doc/presentations/dave/20151125/images/ogsadai-tiny-mod.png
+            hg revert "${branch:?}" doc/presentations/dave/20151125/images/ogsadai-tiny.gif
+            hg revert "${branch:?}" doc/presentations/dave/20151125/images/small_v-trans.png
+
+            hg add .
+            hg commit -m "Manual merge from [${branch:?}]"
+            hg push
+
+        popd
+
+
+    popd
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Close unused branches.
+#[user@virtual]
+
+    branch='2.0.22-zrq-version-update'
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg update "${branch:?}"
+        hg commit --close-branch -m "Close dev branch [${branch:?}]"
+        hg push
+
+        hg update 'default'
+
+    popd
+
+
+
 

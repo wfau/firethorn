@@ -1,0 +1,77 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Strength/Success
+
+        New TAP implementation
+            Passing Mark Taylor's taplint tests :-)
+            Gold standard for TAP services.
+        
+        Query parsers
+            ADLQ parser > 95%
+            OGSA-DAI parser > 80%
+
+        Genius demo online
+            Acccess to local tables, ATLASDR1, TWOMASS etc
+            Acccess to remote tables, gaia@ESAC, icecube@GAVO
+            Local/remote JOIN in development (see below)
+
+        Docker containers
+            Learning and developing expertise.
+            Reproducible deployment and testing.
+
+    Weakness/
+
+        Error reporting
+            Still mostly 'a bad thing happened'
+            Work in progress to improve useability
+
+        Low visibility
+            'in progress' development work on internal
+            infrastructure tends not to be visible until
+            the final feature is released
+
+    Opportunity/ToDo
+
+        Distributed queries - DQP
+            In progress
+            Recent work on infrastructure improves support for DQP.
+            New round of testing and development in progress.
+
+        User data
+            In progress
+            Recent work on infrastructure improves support for UD.
+
+    Threat/Risks
+
+        Distributed queries - DQP
+            Original work on this was 2013.
+            Not used it for a while.
+            
+            New round of testing may reveal complex issues.
+            Fixing the issues may delay release of DQP to users.
+
+
+
+
+
+
