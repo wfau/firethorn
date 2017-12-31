@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.11
+FROM firethorn/python:2.1.11-zrq-update-depends
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
