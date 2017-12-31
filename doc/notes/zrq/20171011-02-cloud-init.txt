@@ -1,0 +1,205 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+# -----------------------------------------------------
+# Check version of virt-install.
+#[user@trop03]
+
+    virt-install --version
+
+        1.4.0
+
+#---------------------------------------------------------------------
+# Build settings
+#[user@trop03]
+
+    source "${HOME}/ischnura.settings"
+
+    basecpu=4
+    basemem=4096
+    basesize=16G
+    basearch=x86_64
+
+    basever=26
+    basedate=$(date +%Y%m%d)
+    basedist=fedora-${basever:?}
+    basename=${basedist}-base-cloud-${basedate:?}
+    basefile=${basename}.qcow
+
+    kickstartfile=fedora-cloud-docker.txt
+    kickstarthref=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/${kickstartfile}
+
+    docksize=${basesize:?}
+    dockdate=${basedate:?}
+    dockname=${basedist}-docker-cloud-${dockdate:?}
+    dockfile=${dockname}.qcow
+    dockgzip=${dockfile}.gz
+
+#---------------------------------------------------------------------
+# Create our docker install
+#[user@trop03]
+
+   #
+   # Delete any existing machine.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${dockname:?}"
+
+    #
+    # Delete any existing volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${dockfile:?}"
+
+    #
+    # Create a new (empty) volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${dockfile:?}" \
+            "${docksize:?}" \
+            --format qcow2
+
+    #
+    # Set the MAC address to match our DHCP range.
+    macaddress='52:54:00:02:03:0F'
+
+    #
+    # Create a new installation.
+    virt-install \
+        --noreboot \
+        --network "network=default,mac=${macaddress:?}" \
+        --connect "${connection:?}" \
+        --name    "${dockname:?}" \
+        --memory  "${basemem:?}" \
+        --vcpus   "${basecpu:?}" \
+        --disk "vol=${basepool:?}/${dockfile:?}" \
+        --location   "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
+        --extra-args "inst.ks=${kickstarthref:?}"
+
+#
+# Edits ?
+# ....
+
+#---------------------------------------------------------------------
+# Check the file info.
+#[user@trop03]
+
+    dockpath=$(
+        virsh \
+            --connect "${connection:?}" \
+            vol-path \
+                --pool "${basepool:?}" \
+                "${dockfile:?}"
+                )
+
+    sudo qemu-img \
+        info \
+            "${dockpath:?}"
+
+        image: /var/lib/libvirt/images/base/fedora-26-docker-cloud-20171011.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 2.0G
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+#---------------------------------------------------------------------
+# Create a compressed copy of the image.
+#[user@trop03]
+
+    dockcopy=$(mktemp)
+    sudo qemu-img \
+        convert \
+            -c \
+            -O qcow2 \
+            "${dockpath:?}" \
+            "${dockcopy:?}"
+
+    sudo qemu-img \
+        info \
+            "${dockcopy:?}"
+
+        image: /tmp/tmp.EVMfFi3CSm
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 787M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+#---------------------------------------------------------------------
+# Push the compressed image to our webserver.
+#[user@desktop]
+
+    dockgzip=$(mktemp)
+
+    gzip -c "${dockcopy:?}" > "${dockgzip:?}"
+    chmod a+r "${dockgzip:?}"
+
+    echo "Copy [${dockcopy:?}]"
+    echo "Gzip [${dockgzip:?}]"
+
+    rsync \
+        --stats \
+        --progress \
+        --human-readable \
+        "${dockgzip:?}" \
+        "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${dockfile:?}.gz"
+
+#---------------------------------------------------------------------
+# Delete the compressed copies.
+#[user@desktop]
+
+    rm "${dockcopy:?}"
+    rm "${dockgzip:?}"
+
+
+#---------------------------------------------------------------------
+# Delete the virtual machine.
+#[user@trop03]
+
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${dockname:?}"
+
+#---------------------------------------------------------------------
+# Delete the uncompressed volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${dockfile:?}"
+
+

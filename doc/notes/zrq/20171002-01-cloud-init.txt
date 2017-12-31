@@ -1,0 +1,249 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Cloud init reference
+    https://www.zetta.io/en/help/articles-tutorials/cloud-init-reference/
+
+    Cloud init via CDROM
+    http://blog.oddbit.com/2015/03/10/booting-cloud-images-with-libvirt/
+
+    Cloud init user and groups
+    https://cloudinit.readthedocs.io/en/latest/topics/examples.html#including-users-and-groups
+
+    Cloud init instance keys
+    https://cloudinit.readthedocs.io/en/latest/topics/examples.html#configure-instances-ssh-keys
+
+    Fedora image with cloud init
+    https://docs.openstack.org/image-guide/fedora-image.html
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    export devname=zrq-cloud-init
+
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt &
+
+#---------------------------------------------------------------------
+# Create a new kickstart file with cloud-init settings
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        gedit kickstart/fedora-cloud-docker.txt &
+
+        +   # OpenStack cloud-init
+        +   # https://docs.openstack.org/image-guide/fedora-image.html
+        +   acpid
+        +   cloud-init
+        +   cloud-utils-growpart
+
+        +   #
+        +   # Configure the cloud-init user accounts.
+        +   # https://docs.openstack.org/image-guide/fedora-image.html
+        +   cat >> /etc/cloud/cloud.cfg << EOF
+        +
+        +   groups:
+        +     - docker
+        +
+        +   users:
+        +     - name: Stevedore
+        +       primary-group: foobar
+        +       groups: users,wheel,docker
+        +       sudo: ALL=(ALL) NOPASSWD:ALL
+        +
+        +   EOF
+
+        +   #
+        +   # Disable the default zeroconf route.
+        +   # https://docs.openstack.org/image-guide/fedora-image.html
+        +   echo "NOZEROCONF=yes" >> /etc/sysconfig/network
+
+
+    popd
+
+#---------------------------------------------------------------------
+# Build settings
+#[user@desktop]
+
+    : ${basepool:='base'}
+    : ${livepool:='live'}
+    : ${connection:='qemu:///system'}
+
+    basecpu=4
+    basemem=4096
+    basesize=16G
+    basearch=x86_64
+
+    basever=26
+    basedate=$(date +%Y%m%d)
+    basedist=fedora-${basever:?}
+    basename=${basedist}-base-cloud-${basedate:?}
+    basefile=${basename}.qcow
+
+    kickstartfile=fedora-cloud-docker.txt
+    kickstarthref=http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/kickstart/${kickstartfile}
+
+    docksize=${basesize:?}
+    dockdate=${basedate:?}
+    dockname=${basedist}-docker-cloud-${dockdate:?}
+    dockfile=${dockname}.qcow
+    dockgzip=${dockfile}.gz
+
+#---------------------------------------------------------------------
+# Create our docker install
+#[user@desktop]
+
+   #
+   # Delete any existing machine.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${dockname:?}"
+
+    #
+    # Delete any existing volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${dockfile:?}"
+
+    #
+    # Create a new (empty) volume.
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${dockfile:?}" \
+            "${docksize:?}" \
+            --format qcow2
+
+    #
+    # Create a new installation.
+    virt-install \
+        --noreboot \
+        --connect "${connection:?}" \
+        --name    "${dockname:?}" \
+        --memory  "${basemem:?}" \
+        --vcpus   "${basecpu:?}" \
+        --disk "vol=${basepool:?}/${dockfile:?}" \
+        --location   "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
+        --extra-args "inst.ks=${kickstarthref:?}"
+
+   #
+   # Delete the virtual machine, leaving the image.
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${dockname:?}"
+
+#---------------------------------------------------------------------
+# Check the file info.
+#[user@desktop]
+
+    dockpath=$(
+        virsh \
+            --connect "${connection:?}" \
+            vol-path \
+                --pool "${basepool:?}" \
+                "${dockfile:?}"
+                )
+
+    sudo qemu-img \
+        info \
+            "${dockpath:?}"
+
+        image: /var/lib/libvirt/images/base/fedora-26-docker-cloud-20171010.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 1.9G
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+#---------------------------------------------------------------------
+# Create a compressed copy of the image.
+#[user@desktop]
+
+    dockcopy=$(mktemp)
+    sudo qemu-img \
+        convert \
+            -c \
+            -O qcow2 \
+            "${dockpath:?}" \
+            "${dockcopy:?}"
+
+    sudo qemu-img \
+        info \
+            "${dockcopy:?}"
+
+
+        image: /tmp/tmp.5rMTNsYF7E
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 782M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+#---------------------------------------------------------------------
+# Push the docker image to our webserver.
+#[user@desktop]
+
+    dockgzip=$(mktemp)
+
+    gzip -c "${dockcopy:?}" > "${dockgzip:?}"
+    chmod a+r "${dockgzip:?}"
+
+    echo "Copy [${dockcopy:?}]"
+    echo "Gzip [${dockgzip:?}]"
+
+    rsync \
+        --stats \
+        --progress \
+        --human-readable \
+        "${dockgzip:?}" \
+        "root@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${dockfile:?}.gz"
+
+#---------------------------------------------------------------------
+# Delete the uncompressed volume.
+#[user@desktop]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${dockfile:?}"
+
+#---------------------------------------------------------------------
+# Delete the compressed copies.
+#[user@desktop]
+
+    rm "${dockcopy:?}"
+    rm "${dockgzip:?}"
+
+

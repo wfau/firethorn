@@ -1,0 +1,517 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM to work with.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Etalema]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [Etalema.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to the new VM.
+#[user@trop]
+
+    ssh Stevedore@Etalema
+
+# -----------------------------------------------------
+# Configure our secrets function.
+#[user@virtual]
+
+cat > "${HOME}/secret.sh" << 'EOF'
+....
+....
+EOF
+
+    source "${HOME}/secret.sh"
+    secret frog
+
+# -----------------------------------------------------
+# Configure our OpenStack settings.
+# https://horizon.ecdf.ed.ac.uk/dashboard/project/access_and_security/api_access/openrc/
+#[user@virtual]
+
+    cat > "${HOME}/openstack.settings" << EOF
+
+export OS_INTERFACE=public
+export OS_IDENTITY_API_VERSION=3
+
+export OS_AUTH_URL=https://keystone.ecdf.ed.ac.uk/v3
+
+export OS_USER_DOMAIN_NAME="ed"
+export OS_REGION_NAME="Edinburgh"
+
+export OS_USERNAME=$(secret openstack.user)
+export OS_PASSWORD=$(secret openstack.pass)
+
+export OS_PROJECT_ID=c2ff1afa3e874e0eb6f5a48f7e77208b
+export OS_PROJECT_NAME=virtual-observatory-services
+
+#export OS_PROJECT_ID=fcef6dd450f64a1ab4ffa5a7234c4161
+#export OS_PROJECT_NAME=lsst
+
+EOF
+
+# -----------------------------------------------------
+# Run a copy of the latest Fedora.
+#[user@virtual]
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --volume "${HOME}/openstack.settings:/openstack.settings" \
+        fedora \
+        bash
+
+# -----------------------------------------------------
+# Load our settings.
+#[root@container]
+
+    source /openstack.settings
+
+# -----------------------------------------------------
+# Check our user name and password.
+#[root@container]
+
+    cat << EOF
+Username [${OS_USERNAME:?}]
+Password [${OS_PASSWORD:?}]
+Project  [${OS_PROJECT_NAME:?}]
+Project  [${OS_PROJECT_ID:?}]
+EOF
+
+# -----------------------------------------------------
+# Install the old OpenStack clients.
+# https://github.com/openstack/python-novaclient
+# https://docs.openstack.org/python-novaclient/latest/
+# https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux_OpenStack_Platform/4/html/End_User_Guide/install_clients.html
+#[root@container]
+#
+#    dnf \
+#        install -y \
+#        python-novaclient \
+#        python-glanceclient \
+#        python-cinderclient \
+#        python-neutronclient
+#
+
+# -----------------------------------------------------
+# Install the new OpenStack client.
+# https://docs.openstack.org/python-openstackclient/latest/
+#[root@container]
+
+    dnf \
+        install -y \
+        python-openstackclient
+
+# -----------------------------------------------------
+# Install the JQ JSON parser.
+# https://stedolan.github.io/jq/
+#[root@container]
+
+    dnf \
+        install -y \
+        jq
+
+# -----------------------------------------------------
+# Show our project details.
+#[root@container]
+
+    openstack \
+        project show \
+        ${OS_PROJECT_ID:?}
+
+        +-------------+----------------------------------+
+        | Field       | Value                            |
+        +-------------+----------------------------------+
+        | description |                                  |
+        | domain_id   | 450db9c9d59f4e888f9f44c4a9904118 |
+        | enabled     | True                             |
+        | id          | c2ff1afa3e874e0eb6f5a48f7e77208b |
+        | is_domain   | False                            |
+        | name        | virtual-observatory-services     |
+        | parent_id   | 450db9c9d59f4e888f9f44c4a9904118 |
+        +-------------+----------------------------------+
+
+# -----------------------------------------------------
+# List our available images.
+#[root@container]
+
+    openstack \
+        image list
+
+        +--------------------------------------+-------------------------------+--------+
+        | ID                                   | Name                          | Status |
+        +--------------------------------------+-------------------------------+--------+
+        | 78f2f6e8-70c3-440e-bbf3-8ed639808706 | fedora-25-docker-16G-20170713 | active |
+        | d608b269-de15-4852-96b0-2dda15466cb6 | Centos 6 - 1612               | active |
+        | b241c7ea-63f5-4a77-86de-e18a1e8bee45 | Centos 7 - 1612               | active |
+        | 2326063c-5a0f-4430-b76c-e977100a3e0d | Scientific Linux 7.2          | active |
+        | b3bb4c27-ec69-4115-a02e-dfe9e8e65acb | Ubuntu 14.04 Spark 1.3.1      | active |
+        | 21649978-8542-4b5b-88c0-d1cde75b8516 | Ubuntu 14.04 Vanilla 2.7.1    | active |
+        | 039046a1-0a88-4a5b-b997-b18fa2264e0b | Ubuntu 14.04                  | active |
+        | 65a5d008-5d58-48f9-973a-1fd1e917ba7d | Scientific Linux 6.8          | active |
+        | 909b980e-3514-4589-a250-444e0dcbad04 | Ubuntu 16.04                  | active |
+        +--------------------------------------+-------------------------------+--------+
+
+# -----------------------------------------------------
+# Download our image.
+#[root@container]
+
+    dnf -y install wget
+
+    imagename=fedora-26-docker-cloud-20171003
+    imagefile=${imagename:?}.qcow
+    imagegzip=${imagefile:?}.gz
+    imagepath=${HOME:?}/temp/${imagefile:?}
+    imagelink=http://data.metagrid.co.uk/ischnura/base/${imagegzip:?}
+
+    mkdir $(dirname ${imagepath:?})
+    pushd $(dirname ${imagepath:?})
+
+        wget -4 ${imagelink:?}
+        gunzip ${imagegzip:?}
+
+    popd
+
+# -----------------------------------------------------
+# Upload our image.
+#[root@container]
+
+    openstack \
+        image create \
+        --disk-format qcow2 \
+        --container-format bare \
+        --file "${imagepath:?}" \
+        "${imagename:?}"
+
+        +------------------+---------------------------------------------------------------+
+        | Field            | Value                                                         |
+        +------------------+---------------------------------------------------------------+
+        | checksum         | d50ce863251251bbf33b5725e5545c6b                              |
+        | container_format | bare                                                          |
+        | created_at       | 2017-10-05T13:19:19Z                                          |
+        | disk_format      | qcow2                                                         |
+        | file             | /v2/images/01493414-421b-458e-a8d6-fd9c46a2a480/file          |
+        | id               | 01493414-421b-458e-a8d6-fd9c46a2a480                          |
+        | min_disk         | 0                                                             |
+        | min_ram          | 0                                                             |
+        | name             | fedora-26-docker-cloud-20171003                               |
+        | owner            | c2ff1afa3e874e0eb6f5a48f7e77208b                              |
+        | properties       | direct_url='rbd://294bc494-81ba-4c3c-ac5d-af7b3442a2 ....     |
+        |                  | .... a8d6-fd9c46a2a480/snap', u'metadata': {}}]'              |
+        | protected        | False                                                         |
+        | schema           | /v2/schemas/image                                             |
+        | size             | 794480128                                                     |
+        | status           | active                                                        |
+        | tags             |                                                               |
+        | updated_at       | 2017-10-05T13:19:39Z                                          |
+        | virtual_size     | None                                                          |
+        | visibility       | private                                                       |
+        +------------------+---------------------------------------------------------------+
+
+# -----------------------------------------------------
+# List our available images.
+#[root@container]
+
+    openstack \
+        image list
+
+        +--------------------------------------+---------------------------------+--------+
+        | ID                                   | Name                            | Status |
+        +--------------------------------------+---------------------------------+--------+
+        | 01493414-421b-458e-a8d6-fd9c46a2a480 | fedora-26-docker-cloud-20171003 | active |
+        | 78f2f6e8-70c3-440e-bbf3-8ed639808706 | fedora-25-docker-16G-20170713   | active |
+        | d608b269-de15-4852-96b0-2dda15466cb6 | Centos 6 - 1612                 | active |
+        | b241c7ea-63f5-4a77-86de-e18a1e8bee45 | Centos 7 - 1612                 | active |
+        | 2326063c-5a0f-4430-b76c-e977100a3e0d | Scientific Linux 7.2            | active |
+        | b3bb4c27-ec69-4115-a02e-dfe9e8e65acb | Ubuntu 14.04 Spark 1.3.1        | active |
+        | 21649978-8542-4b5b-88c0-d1cde75b8516 | Ubuntu 14.04 Vanilla 2.7.1      | active |
+        | 039046a1-0a88-4a5b-b997-b18fa2264e0b | Ubuntu 14.04                    | active |
+        | 65a5d008-5d58-48f9-973a-1fd1e917ba7d | Scientific Linux 6.8            | active |
+        | 909b980e-3514-4589-a250-444e0dcbad04 | Ubuntu 16.04                    | active |
+        +--------------------------------------+---------------------------------+--------+
+
+# -----------------------------------------------------
+# List the available flavors.
+#[root@container]
+
+    openstack \
+        flavor \
+        list
+
+        +--------------------------------------+------------+-------+------+-----------+-------+-----------+
+        | ID                                   | Name       |   RAM | Disk | Ephemeral | VCPUs | Is Public |
+        +--------------------------------------+------------+-------+------+-----------+-------+-----------+
+        | 09086afb-9d80-4719-974c-45e700a795bb | m1.xxlarge | 32768 |  160 |         0 |    16 | True      |
+        | 2                                    | m1.small   |  2048 |   20 |         0 |     1 | True      |
+        | 2b93be09-8179-4db2-9f27-e98dd0c8fbaf | l1.xxlarge | 98304 |  320 |         0 |    16 | True      |
+        | 3                                    | m1.medium  |  4096 |   40 |         0 |     2 | True      |
+        | 4                                    | m1.large   |  8192 |   80 |         0 |     4 | True      |
+        | 5                                    | m1.xlarge  | 16384 |  160 |         0 |     8 | True      |
+        | 6                                    | l1.small   |  6144 |   40 |         0 |     1 | True      |
+        | 7                                    | l1.medium  | 12288 |   80 |         0 |     2 | True      |
+        | 8                                    | l1.large   | 24576 |  160 |         0 |     4 | True      |
+        | 9                                    | l1.xlarge  | 49152 |  320 |         0 |     8 | True      |
+        +--------------------------------------+------------+-------+------+-----------+-------+-----------+
+
+# -----------------------------------------------------
+# List our available networks.
+#[root@container]
+
+    openstack \
+        network \
+        list
+
+        +--------------------------------------+--------------------------------------------+--------------------------------------+
+        | ID                                   | Name                                       | Subnets                              |
+        +--------------------------------------+--------------------------------------------+--------------------------------------+
+        | 4f2774d1-dfb8-4833-8374-806e1fc40827 | Floating Network Private (UoE access only) | 6ab469f9-ff01-4aee-af59-5f1da7e26e81 |
+        | 6e5fd378-cc05-4c00-abb2-38bf288b2dba | VM Network Public                          | c1896ce6-efcb-4124-8462-df572b371fee |
+        | bfe7eeca-3c9a-4a02-8a79-0f715c14c141 | VM Network Private                         | ecf2027b-6979-4484-8af1-58bd899d09b9 |
+        | d1e55e07-6f28-4d98-8116-e11ca10c3e8f | Floating Network Public                    | e1c72964-3276-473f-a169-b60de622c385 |
+        +--------------------------------------+--------------------------------------------+--------------------------------------+
+
+# -----------------------------------------------------
+# List our SSH keys.
+#[root@container]
+
+    openstack \
+        keypair list
+
+        +------+-------------------------------------------------+
+        | Name | Fingerprint                                     |
+        +------+-------------------------------------------------+
+        | dmr  | 68:33:1e:9d:d7:46:20:8d:5a:04:e8:3c:19:b4:00:b4 |
+        | stv  | 8c:09:1a:eb:9c:db:b2:5d:30:5b:a9:b0:cb:26:6c:4e |
+        +------+-------------------------------------------------+
+
+# -----------------------------------------------------
+# Boot an instance.
+#[root@container]
+
+    openstack \
+        server \
+        create \
+        --image '01493414-421b-458e-a8d6-fd9c46a2a480' \
+        --flavor 2 \
+        --nic 'net-id=6e5fd378-cc05-4c00-abb2-38bf288b2dba' \
+        --key-name 'dmr' \
+        albert
+
+        +--------------------------------------+------------------------------------------------------------------------+
+        | Field                                | Value                                                                  |
+        +--------------------------------------+------------------------------------------------------------------------+
+        | OS-DCF:diskConfig                    | MANUAL                                                                 |
+        | OS-EXT-AZ:availability_zone          |                                                                        |
+        | OS-EXT-STS:power_state               | NOSTATE                                                                |
+        | OS-EXT-STS:task_state                | scheduling                                                             |
+        | OS-EXT-STS:vm_state                  | building                                                               |
+        | OS-SRV-USG:launched_at               | None                                                                   |
+        | OS-SRV-USG:terminated_at             | None                                                                   |
+        | accessIPv4                           |                                                                        |
+        | accessIPv6                           |                                                                        |
+        | addresses                            |                                                                        |
+        | adminPass                            | F348tn2qvi6K                                                           |
+        | config_drive                         |                                                                        |
+        | created                              | 2017-10-05T13:24:00Z                                                   |
+        | flavor                               | m1.small (2)                                                           |
+        | hostId                               |                                                                        |
+        | id                                   | c9fc0f89-e1e3-4cbc-bf78-508252947e01                                   |
+        | image                                | fedora-26-docker-cloud-20171003 (01493414-421b-458e-a8d6-fd9c46a2a480) |
+        | key_name                             | dmr                                                                    |
+        | name                                 | albert                                                                 |
+        | os-extended-volumes:volumes_attached | []                                                                     |
+        | progress                             | 0                                                                      |
+        | project_id                           | c2ff1afa3e874e0eb6f5a48f7e77208b                                       |
+        | properties                           |                                                                        |
+        | security_groups                      | [{u'name': u'default'}]                                                |
+        | status                               | BUILD                                                                  |
+        | updated                              | 2017-10-05T13:24:00Z                                                   |
+        | user_id                              | 3d241b5fa2d0b3378901e08e86e10284dc9f9dae3732b99f71f809cf46ccb0d5       |
+        +--------------------------------------+------------------------------------------------------------------------+
+
+instance='c9fc0f89-e1e3-4cbc-bf78-508252947e01'
+
+# -----------------------------------------------------
+# Check our instance.
+#[root@container]
+
+    openstack \
+        server show \
+        "${instance:?}"
+
+        +--------------------------------------+------------------------------------------------------------------------+
+        | Field                                | Value                                                                  |
+        +--------------------------------------+------------------------------------------------------------------------+
+        | OS-DCF:diskConfig                    | MANUAL                                                                 |
+        | OS-EXT-AZ:availability_zone          | nova                                                                   |
+        | OS-EXT-STS:power_state               | Running                                                                |
+        | OS-EXT-STS:task_state                | None                                                                   |
+        | OS-EXT-STS:vm_state                  | active                                                                 |
+        | OS-SRV-USG:launched_at               | 2017-10-05T13:24:44.000000                                             |
+        | OS-SRV-USG:terminated_at             | None                                                                   |
+        | accessIPv4                           |                                                                        |
+        | accessIPv6                           |                                                                        |
+        | addresses                            | VM Network Public=192.168.2.5                                          |
+        | config_drive                         |                                                                        |
+        | created                              | 2017-10-05T13:24:00Z                                                   |
+        | flavor                               | m1.small (2)                                                           |
+        | hostId                               | bb3167bfa94994b7d7a4ae0344b2de9ba73064d5e49a16e0f9aee40a               |
+        | id                                   | c9fc0f89-e1e3-4cbc-bf78-508252947e01                                   |
+        | image                                | fedora-26-docker-cloud-20171003 (01493414-421b-458e-a8d6-fd9c46a2a480) |
+        | key_name                             | dmr                                                                    |
+        | name                                 | albert                                                                 |
+        | os-extended-volumes:volumes_attached | []                                                                     |
+        | progress                             | 0                                                                      |
+        | project_id                           | c2ff1afa3e874e0eb6f5a48f7e77208b                                       |
+        | properties                           |                                                                        |
+        | security_groups                      | [{u'name': u'default'}]                                                |
+        | status                               | ACTIVE                                                                 |
+        | updated                              | 2017-10-05T13:24:45Z                                                   |
+        | user_id                              | 3d241b5fa2d0b3378901e08e86e10284dc9f9dae3732b99f71f809cf46ccb0d5       |
+        +--------------------------------------+------------------------------------------------------------------------+
+
+# -----------------------------------------------------
+# Allocate a floating IP address.
+#[root@container]
+
+    openstack \
+        network \
+        list
+
+        +--------------------------------------+--------------------------------------------+--------------------------------------+
+        | ID                                   | Name                                       | Subnets                              |
+        +--------------------------------------+--------------------------------------------+--------------------------------------+
+        | 4f2774d1-dfb8-4833-8374-806e1fc40827 | Floating Network Private (UoE access only) | 6ab469f9-ff01-4aee-af59-5f1da7e26e81 |
+        | 6e5fd378-cc05-4c00-abb2-38bf288b2dba | VM Network Public                          | c1896ce6-efcb-4124-8462-df572b371fee |
+        | bfe7eeca-3c9a-4a02-8a79-0f715c14c141 | VM Network Private                         | ecf2027b-6979-4484-8af1-58bd899d09b9 |
+        | d1e55e07-6f28-4d98-8116-e11ca10c3e8f | Floating Network Public                    | e1c72964-3276-473f-a169-b60de622c385 |
+        +--------------------------------------+--------------------------------------------+--------------------------------------+
+
+floatnetpub='d1e55e07-6f28-4d98-8116-e11ca10c3e8f'
+floatnetpriv='4f2774d1-dfb8-4833-8374-806e1fc40827'
+
+virualnetpub='6e5fd378-cc05-4c00-abb2-38bf288b2dba'
+virualnetpriv='bfe7eeca-3c9a-4a02-8a79-0f715c14c141'
+
+    openstack \
+        floating ip \
+        list
+
+        +--------------------------------------+---------------------+------------------+------+
+        | ID                                   | Floating IP Address | Fixed IP Address | Port |
+        +--------------------------------------+---------------------+------------------+------+
+        | 78790f33-3834-4be2-b7c6-94feef1abd4e | 172.16.49.57        | None             | None |
+        +--------------------------------------+---------------------+------------------+------+
+
+    openstack \
+        floating ip \
+        create \
+        "${floatnetpub:?}"
+
+        +---------------------+--------------------------------------+
+        | Field               | Value                                |
+        +---------------------+--------------------------------------+
+        | created_at          | 2017-10-03T14:01:29Z                 |
+        | description         |                                      |
+        | fixed_ip_address    | None                                 |
+        | floating_ip_address | 129.215.193.78                       |
+        | floating_network_id | d1e55e07-6f28-4d98-8116-e11ca10c3e8f |
+        | headers             |                                      |
+        | id                  | 6188b2bc-9436-4287-b37e-cfce2c9aab64 |
+        | port_id             | None                                 |
+        | project_id          | c2ff1afa3e874e0eb6f5a48f7e77208b     |
+        | project_id          | c2ff1afa3e874e0eb6f5a48f7e77208b     |
+        | revision_number     | 1                                    |
+        | router_id           | None                                 |
+        | status              | DOWN                                 |
+        | updated_at          | 2017-10-03T14:01:29Z                 |
+        +---------------------+--------------------------------------+
+
+    openstack \
+        floating ip \
+        list
+
+        +--------------------------------------+---------------------+------------------+------+
+        | ID                                   | Floating IP Address | Fixed IP Address | Port |
+        +--------------------------------------+---------------------+------------------+------+
+        | 78790f33-3834-4be2-b7c6-94feef1abd4e | 172.16.49.57        | None             | None |
+        | a51bdd1b-1a32-43b2-80c8-abc7f1480184 | 129.215.193.72      | None             | None |
+        | 6188b2bc-9436-4287-b37e-cfce2c9aab64 | 129.215.193.78      | None             | None |
+        +--------------------------------------+---------------------+------------------+------+
+
+floatippub='129.215.193.72'
+
+# -----------------------------------------------------
+# Add our IP address to our instance.
+#[root@container]
+
+    openstack \
+        server \
+        add \
+        floating ip \
+        "${instance:?}" \
+        "${floatippub:?}"
+
+    openstack \
+        floating ip \
+        list
+
+        +--------------------------------------+---------------------+------------------+--------------------------------------+
+        | ID                                   | Floating IP Address | Fixed IP Address | Port                                 |
+        +--------------------------------------+---------------------+------------------+--------------------------------------+
+        | 78790f33-3834-4be2-b7c6-94feef1abd4e | 172.16.49.57        | None             | None                                 |
+        | 6188b2bc-9436-4287-b37e-cfce2c9aab64 | 129.215.193.78      | None             | None                                 |
+        | a51bdd1b-1a32-43b2-80c8-abc7f1480184 | 129.215.193.72      | 192.168.2.5      | 372aede9-3df4-4a63-bb3c-13d02743c0b9 |
+        +--------------------------------------+---------------------+------------------+--------------------------------------+
+
+# -----------------------------------------------------
+# Test the IP address.
+#[user@desktop]
+
+    ssh -v Stevedore@129.215.193.72
+
+FAIL
+
+
+# -----------------------------------------------------
+# Check the network config.
+#[user@virtual]
+
+    ifconfig
+
+
+# -----------------------------------------------------
+# Check external access.
+#[user@virtual]
+
+    curl -s http://icanhazip.com/
+
+
+

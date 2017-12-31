@@ -1,0 +1,64 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Manual merge, copy changes from cloud-init branch into default branch.
+    # Close cloud-init branch.
+
+
+# -----------------------------------------------------
+# Manual merge, copy changes from cloud-init branch.
+#[user@virtual]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_BASE:?}"
+
+        hg clone ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code 20171231-clone
+
+        pushd 20171231-clone
+
+            cp ../working/kickstart/fedora-docker.txt
+            cp ../working/doc/notes/zrq/20171002-01-cloud-init.txt
+            cp ../working/doc/notes/zrq/20171003-01-cloud-init.txt
+            cp ../working/doc/notes/zrq/20171006-01-cloud-init.txt
+            cp ../working/doc/notes/zrq/20171011-01-trop-upgrade.txt
+            cp ../working/doc/notes/zrq/20171011-02-cloud-init.txt
+            cp ../working/doc/notes/zrq/20171231-01-updates.txt
+            cp ../working/kickstart/fedora-cloud-docker.txt
+
+            hg commit -m "Manual merge from cloud-init branch"
+            hg push
+
+        popd
+
+        pushd working
+
+            message='Close dev branch [2.1.11-zrq-cloud-init]'
+            hg commit --close-branch -m "${message:?}"
+
+            hg update default
+
+        popd
+
+    popd
+
+

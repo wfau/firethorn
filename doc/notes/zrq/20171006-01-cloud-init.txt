@@ -1,0 +1,510 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM to work with.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Etalema]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [Etalema.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to the new VM.
+#[user@trop]
+
+    ssh Stevedore@Etalema
+
+# -----------------------------------------------------
+# Configure our secrets function.
+#[user@virtual]
+
+cat > "${HOME}/secret.sh" << 'EOF'
+....
+....
+EOF
+
+    source "${HOME}/secret.sh"
+    secret frog
+
+# -----------------------------------------------------
+# Configure our OpenStack settings.
+# https://horizon.ecdf.ed.ac.uk/dashboard/project/access_and_security/api_access/openrc/
+#[user@virtual]
+
+    cat > "${HOME}/openstack.settings" << EOF
+
+export OS_INTERFACE=public
+export OS_IDENTITY_API_VERSION=3
+
+export OS_AUTH_URL=https://keystone.ecdf.ed.ac.uk/v3
+
+export OS_USER_DOMAIN_NAME="ed"
+export OS_REGION_NAME="Edinburgh"
+
+export OS_USERNAME=$(secret openstack.user)
+export OS_PASSWORD=$(secret openstack.pass)
+
+export OS_PROJECT_ID=c2ff1afa3e874e0eb6f5a48f7e77208b
+export OS_PROJECT_NAME=virtual-observatory-services
+
+#export OS_PROJECT_ID=fcef6dd450f64a1ab4ffa5a7234c4161
+#export OS_PROJECT_NAME=lsst
+
+EOF
+
+# -----------------------------------------------------
+# Run a copy of the latest Fedora.
+#[user@virtual]
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --volume "${HOME}/openstack.settings:/openstack.settings" \
+        fedora \
+        bash
+
+# -----------------------------------------------------
+# Load our settings.
+#[root@container]
+
+    source /openstack.settings
+
+# -----------------------------------------------------
+# Check our user name and password.
+#[root@container]
+
+    cat << EOF
+Username [${OS_USERNAME:?}]
+Password [${OS_PASSWORD:?}]
+Project  [${OS_PROJECT_NAME:?}]
+Project  [${OS_PROJECT_ID:?}]
+EOF
+
+# -----------------------------------------------------
+# Install the new OpenStack client.
+# https://docs.openstack.org/python-openstackclient/latest/
+#[root@container]
+
+    dnf \
+        install -y \
+        python-openstackclient
+
+# -----------------------------------------------------
+# Install the JQ JSON parser.
+# https://stedolan.github.io/jq/
+#[root@container]
+
+    dnf \
+        install -y \
+        jq
+
+# -----------------------------------------------------
+# Install wget.
+#[root@container]
+
+    dnf \
+        install -y \
+        wget
+
+# -----------------------------------------------------
+# Show our project details.
+#[root@container]
+
+    openstack \
+        project show \
+        -f json \
+        ${OS_PROJECT_ID:?}
+
+        {
+          "is_domain": false, 
+          "description": "", 
+          "enabled": true, 
+          "domain_id": "450db9c9d59f4e888f9f44c4a9904118", 
+          "parent_id": "450db9c9d59f4e888f9f44c4a9904118", 
+          "id": "c2ff1afa3e874e0eb6f5a48f7e77208b", 
+          "name": "virtual-observatory-services"
+        }
+
+# -----------------------------------------------------
+# Download our image.
+#[root@container]
+
+    imagename=fedora-26-docker-cloud-20171011
+    imagefile=${imagename:?}.qcow
+    imagegzip=${imagefile:?}.gz
+    imagepath=${HOME:?}/temp/${imagefile:?}
+    imagelink=http://data.metagrid.co.uk/ischnura/base/${imagegzip:?}
+
+    mkdir $(dirname ${imagepath:?})
+    pushd $(dirname ${imagepath:?})
+
+        wget -4 ${imagelink:?}
+        gunzip ${imagegzip:?}
+
+    popd
+
+# -----------------------------------------------------
+# Upload our image.
+#[root@container]
+
+    openstack \
+        image create \
+        -f json \
+        --disk-format qcow2 \
+        --container-format bare \
+        --file "${imagepath:?}" \
+        "${imagename:?}" \
+        | tee image.json
+
+        {
+          "min_ram": 0, 
+          "status": "active", 
+          "virtual_size": null, 
+          "name": "fedora-26-docker-cloud-20171006", 
+          "tags": "", 
+          "checksum": "4ba3cf9fd64f72d93a078f34f32c9122", 
+          "created_at": "2017-10-09T10:55:08Z", 
+          "disk_format": "qcow2", 
+          "updated_at": "2017-10-09T10:55:38Z", 
+          "visibility": "private", 
+          "properties": "direct_url='rbd://294bc494-81ba-4c3c-ac5d-af7b3442a2a5/....', locations='[{u'url': u'rbd://294bc494-81ba-4c3c-ac5d-af7b3442a2a5/....', u'metadata': {}}]'", 
+          "owner": "c2ff1afa3e874e0eb6f5a48f7e77208b", 
+          "protected": false, 
+          "file": "/v2/images/98d60043-5727-48e9-88cb-ed9bfd1e0205/file", 
+          "container_format": "bare", 
+          "min_disk": 0, 
+          "size": 822007808, 
+          "id": "98d60043-5727-48e9-88cb-ed9bfd1e0205", 
+          "schema": "/v2/schemas/image"
+        }
+
+    imageident=$(jq -r '.id' image.json)
+
+# -----------------------------------------------------
+# List the available flavors.
+#[root@container]
+
+    openstack \
+        flavor list \
+        -f json \
+        | tee flavorlist.json
+
+        [
+          {
+            "Name": "m1.xxlarge", 
+            "RAM": 32768, 
+            "Ephemeral": 0, 
+            "VCPUs": 16, 
+            "Is Public": true, 
+            "Disk": 160, 
+            "ID": "09086afb-9d80-4719-974c-45e700a795bb"
+          }, 
+          {
+            "Name": "m1.small", 
+            "RAM": 2048, 
+            "Ephemeral": 0, 
+            "VCPUs": 1, 
+            "Is Public": true, 
+            "Disk": 20, 
+            "ID": "2"
+          }, 
+          ....
+          ....
+          ....
+          {
+            "Name": "l1.large", 
+            "RAM": 24576, 
+            "Ephemeral": 0, 
+            "VCPUs": 4, 
+            "Is Public": true, 
+            "Disk": 160, 
+            "ID": "8"
+          }, 
+          {
+            "Name": "l1.xlarge", 
+            "RAM": 49152, 
+            "Ephemeral": 0, 
+            "VCPUs": 8, 
+            "Is Public": true, 
+            "Disk": 320, 
+            "ID": "9"
+          }
+        ]
+
+    flavorname='m1.small'
+    flavorident=$(jq -r ".[] | select(.Name == \"${flavorname:?}\") | .ID" flavorlist.json)
+
+# -----------------------------------------------------
+# List our available networks.
+#[root@container]
+
+    openstack \
+        network list \
+        -f json \
+        | tee networklist.json
+
+        [
+          {
+            "Subnets": "6ab469f9-ff01-4aee-af59-5f1da7e26e81", 
+            "ID": "4f2774d1-dfb8-4833-8374-806e1fc40827", 
+            "Name": "Floating Network Private (UoE access only)"
+          }, 
+          {
+            "Subnets": "c1896ce6-efcb-4124-8462-df572b371fee", 
+            "ID": "6e5fd378-cc05-4c00-abb2-38bf288b2dba", 
+            "Name": "VM Network Public"
+          }, 
+          {
+            "Subnets": "ecf2027b-6979-4484-8af1-58bd899d09b9", 
+            "ID": "bfe7eeca-3c9a-4a02-8a79-0f715c14c141", 
+            "Name": "VM Network Private"
+          }, 
+          {
+            "Subnets": "e1c72964-3276-473f-a169-b60de622c385", 
+            "ID": "d1e55e07-6f28-4d98-8116-e11ca10c3e8f", 
+            "Name": "Floating Network Public"
+          }
+        ]
+
+# -----------------------------------------------------
+# Capture the network identifiers.
+#[root@container]
+
+    networkname='Floating Network Public'
+    floatnetexternal=$(jq -r ".[] | select(.Name | startswith( \"${networkname:?}\")) | .ID " networklist.json)
+
+    networkname='Floating Network Private'
+    floatnetinternal=$(jq -r ".[] | select(.Name | startswith( \"${networkname:?}\")) | .ID " networklist.json)
+
+    networkname='VM Network Public'
+    virtnetexternal=$(jq -r ".[] | select(.Name | startswith( \"${networkname:?}\")) | .ID " networklist.json)
+
+    networkname='VM Network Private'
+    virtnetinternal=$(jq -r ".[] | select(.Name | startswith( \"${networkname:?}\")) | .ID " networklist.json)
+
+# -----------------------------------------------------
+# List our SSH keys.
+#[root@container]
+
+    openstack \
+        keypair list \
+        -f json \
+        | tee keylist.json
+
+        [
+          {
+            "Name": "dmr", 
+            "Fingerprint": "68:33:1e:9d:d7:46:20:8d:5a:04:e8:3c:19:b4:00:b4"
+          }, 
+          {
+            "Name": "stv", 
+            "Fingerprint": "8c:09:1a:eb:9c:db:b2:5d:30:5b:a9:b0:cb:26:6c:4e"
+          }
+        ]
+
+    keyname='dmr'
+
+# -----------------------------------------------------
+# Boot a server instance.
+#[root@container]
+
+    servername='CloudInit'
+
+    openstack \
+        server create \
+        -f json \
+        --nic "net-id=${virtnetexternal:?}" \
+        --image "${imageident:?}" \
+        --flavor "${flavorident:?}" \
+        --key-name "${keyname:?}" \
+        "${servername:?}" \
+        | tee server.json
+
+        {
+          "OS-EXT-STS:task_state": "scheduling", 
+          "addresses": "", 
+          "image": "fedora-26-docker-cloud-20171006 (98d60043-5727-48e9-88cb-ed9bfd1e0205)", 
+          "OS-EXT-STS:vm_state": "building", 
+          "OS-SRV-USG:launched_at": null, 
+          "flavor": "m1.small (2)", 
+          "id": "c099d5bd-7377-480e-a0af-171a8e76fa34", 
+          "security_groups": [
+            {
+              "name": "default"
+            }
+          ], 
+          "user_id": "3d241b5fa2d0b3378901e08e86e10284dc9f9dae3732b99f71f809cf46ccb0d5", 
+          "OS-DCF:diskConfig": "MANUAL", 
+          "accessIPv4": "", 
+          "accessIPv6": "", 
+          "progress": 0, 
+          "OS-EXT-STS:power_state": "NOSTATE", 
+          "project_id": "c2ff1afa3e874e0eb6f5a48f7e77208b", 
+          "config_drive": "", 
+          "status": "BUILD", 
+          "updated": "2017-10-09T10:57:16Z", 
+          "hostId": "", 
+          "OS-SRV-USG:terminated_at": null, 
+          "key_name": "dmr", 
+          "properties": "", 
+          "OS-EXT-AZ:availability_zone": "", 
+          "name": "Cloudbuster", 
+          "adminPass": "bdd6MJHjH97q", 
+          "created": "2017-10-09T10:57:15Z", 
+          "os-extended-volumes:volumes_attached": []
+        }
+
+    serverident=$(jq -r '.id' server.json)
+
+# -----------------------------------------------------
+# Check our server instance.
+#[root@container]
+
+    openstack \
+        server show \
+        -f json \
+        "${serverident:?}" \
+        | tee server.json
+
+        {
+          "OS-EXT-STS:task_state": null, 
+          "addresses": "VM Network Public=192.168.2.16", 
+          "image": "fedora-26-docker-cloud-20171006 (98d60043-5727-48e9-88cb-ed9bfd1e0205)", 
+          "OS-EXT-STS:vm_state": "active", 
+          "OS-SRV-USG:launched_at": "2017-10-09T10:58:01.000000", 
+          "flavor": "m1.small (2)", 
+          "id": "c099d5bd-7377-480e-a0af-171a8e76fa34", 
+          "security_groups": [
+            {
+              "name": "default"
+            }
+          ], 
+          "user_id": "3d241b5fa2d0b3378901e08e86e10284dc9f9dae3732b99f71f809cf46ccb0d5", 
+          "OS-DCF:diskConfig": "MANUAL", 
+          "accessIPv4": "", 
+          "accessIPv6": "", 
+          "progress": 0, 
+          "OS-EXT-STS:power_state": "Running", 
+          "project_id": "c2ff1afa3e874e0eb6f5a48f7e77208b", 
+          "config_drive": "", 
+          "status": "ACTIVE", 
+          "updated": "2017-10-09T10:58:01Z", 
+          "hostId": "bb3167bfa94994b7d7a4ae0344b2de9ba73064d5e49a16e0f9aee40a", 
+          "OS-SRV-USG:terminated_at": null, 
+          "key_name": "dmr", 
+          "properties": "", 
+          "OS-EXT-AZ:availability_zone": "nova", 
+          "name": "Cloudbuster", 
+          "created": "2017-10-09T10:57:15Z", 
+          "os-extended-volumes:volumes_attached": []
+        }
+
+# -----------------------------------------------------
+# Allocate a floating IP address.
+#[root@container]
+
+    openstack \
+        floating ip create \
+        -f json \
+        "${floatnetexternal:?}" \
+        | tee floatip.json
+
+        {
+          "router_id": null, 
+          "status": "DOWN", 
+          "description": "", 
+          "created_at": "2017-10-09T10:59:40Z", 
+          "updated_at": "2017-10-09T10:59:40Z", 
+          "floating_network_id": "d1e55e07-6f28-4d98-8116-e11ca10c3e8f", 
+          "headers": "", 
+          "fixed_ip_address": null, 
+          "floating_ip_address": "129.215.193.84", 
+          "revision_number": 1, 
+          "project_id": "c2ff1afa3e874e0eb6f5a48f7e77208b", 
+          "port_id": null, 
+          "id": "28667c3c-bd38-43ec-a56d-06d3c52b3706"
+        }
+
+    floatipv4address=$(jq -r '.floating_ip_address' floatip.json)
+
+# -----------------------------------------------------
+# Add our IP address to our instance.
+#[root@container]
+
+    openstack \
+        server add floating ip \
+        "${serverident:?}" \
+        "${floatipv4address:?}"
+    
+    openstack \
+        floating ip \
+        list
+
+    +--------------------------------------+---------------------+------------------+--------------------------------------+
+    | ID                                   | Floating IP Address | Fixed IP Address | Port                                 |
+    +--------------------------------------+---------------------+------------------+--------------------------------------+
+    | 28667c3c-bd38-43ec-a56d-06d3c52b3706 | 129.215.193.84      | 192.168.2.16     | e9a3bf09-097b-4544-ab24-c85f9897c6ef |
+    +--------------------------------------+---------------------+------------------+--------------------------------------+
+
+# -----------------------------------------------------
+# Test the IP address.
+#[user@desktop]
+
+    ssh -v Stevedore@129.215.193.82
+
+FAIL
+
+
+    User Stevedore created.
+    SSH key assigned to root not Stevedore
+    root login blocked
+
+
+    # Default user is set in /etc/cloud/cloud-init.cfg
+    # https://github.com/fedora-cloud/cloud-init/blob/master/cloud-init-fedora.cfg
+
+    # kickstart removes part of it ...
+    # Init process is not getting the message .. 
+
+
+
+# -----------------------------------------------------
+# Check the network config.
+#[user@virtual]
+
+    ifconfig
+
+
+# -----------------------------------------------------
+# Check external access.
+#[user@virtual]
+
+    curl -s http://icanhazip.com/
+
+
+
