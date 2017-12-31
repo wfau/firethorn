@@ -103,7 +103,9 @@
 #[user@virtual]
 
     branch='2.0.22-zrq-version-update'
+    branch='2.0.1-zrq-maven-updates'
     branch='2.0.0-zrq-hibernate-map'
+
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
@@ -111,7 +113,6 @@
         hg update "${branch:?}"
         hg commit --close-branch -m "Close old branch [${branch:?}]"
         hg push
-
         hg update 'default'
 
     popd
