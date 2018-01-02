@@ -184,9 +184,9 @@
         <createChecksum>true</createChecksum>
 
         <!--+
-            | Build for Java 1.9.
+            | Build for Java 1.8.
             +-->
-        <project.javaversion>1.9</project.javaversion>
+        <project.javaversion>1.8</project.javaversion>
         <project.build.sourceencoding>UTF-8</project.build.sourceencoding>
 
         <!--+
