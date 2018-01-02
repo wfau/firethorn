@@ -131,7 +131,7 @@
         05.02-javadocker.sh
 
     # -----------------------------------------------------
-    # Dsiplay the merge versions.
+    # Display the merge versions.
     #[root@builder]
 
         cat "${HOME}/merge.settings"
@@ -148,9 +148,11 @@
 
     # BUG tester needs the new buildtag
     buildtag=2.1.11
+    buildtag=2.1.12
     
     source "${HOME:?}/firethorn.settings"
     less ${FIRETHORN_CODE:?}/doc/notes/zrq/20170901-02-test-queries.txt
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20170901-02-test-queries.txt &
 
 # -----------------------------------------------------
 # Exit from our tester.

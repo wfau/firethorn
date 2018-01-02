@@ -91,12 +91,12 @@
 
         <!--+
             | The Sun Jersey client.
+            +-->
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
             <version>${ogsadai.jersey.version}</version>
         </dependency>
-            +-->
 
         <!--+
             | The OGSA-DAI components used by our Activity.
@@ -112,21 +112,21 @@
             <artifactId>ogsadai-client</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-basic-client</artifactId>
             <version>${ogsadai.version}</version>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-jersey-client</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-jersey-common</artifactId>
             <version>${ogsadai.version}</version>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-clientserver</artifactId>
