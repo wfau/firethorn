@@ -60,9 +60,9 @@ RUN dnf -y install mercurial
 
 #
 # Install Java JDK
-RUN dnf -y install java-1.8.0-openjdk
-RUN dnf -y install java-1.8.0-openjdk-devel
-RUN dnf -y install java-1.8.0-openjdk-headless
+RUN dnf -y install java-9-openjdk
+RUN dnf -y install java-9-openjdk-devel
+RUN dnf -y install java-9-openjdk-headless
 
 #
 # Install Maven

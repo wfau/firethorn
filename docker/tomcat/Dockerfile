@@ -18,7 +18,7 @@
 FROM firethorn/java:2.1.11-zrq-update-depends
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV TOMCAT_VERSION 8.5.20
+ENV TOMCAT_VERSION 8.5.24
 
 ENV TOMCAT_DIRNAME apache-tomcat-${TOMCAT_VERSION}
 ENV TOMCAT_TARFILE apache-tomcat-${TOMCAT_VERSION}.tar.gz

@@ -15,36 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM fedora:21
+FROM firethorn/fedora:2.1.11-zrq-update-depends
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-#
-# Declare the system cache as a volume.
-VOLUME /var/cache/
+ENV JAVA_VERSION 9
 
 #
-# Clear the cache.
-RUN yum -y clean all
-
-#
-# Enable delta rpms.
-RUN yum -y install deltarpm
-
-#
-# Update (almost) everything (excluding filesystem).
-# https://bugzilla.redhat.com/show_bug.cgi?id=1171928
-#RUN yum -y -x filesystem update
-
-#
-# Add common tools.
-RUN yum -y install sed
-RUN yum -y install tar
-RUN yum -y install wget
-RUN yum -y install nano
-RUN yum -y install gzip
-RUN yum -y install pwgen
-
-# https://github.com/docker/docker/issues/9299
-ENV TERM xterm
-
+# Install Java
+RUN dnf -y install java-${JAVA_VERSION}-openjdk-headless
 

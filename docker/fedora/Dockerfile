@@ -15,14 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM fedora:24
-MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+# FROM fedora:27
+# https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedora27
+FROM fedora@sha256:25f7dac76b2c88d8b7e0b1d6213d3406e77c7f230bfa1e66bd1cbb81a944eaaf
+
+MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
+
+#
+# Mount the DNF cache as a volume.
+# TODO - check for side effects ? 
+# VOLUME /var/cache/dnf
 
 #
 # Install common admin tools.
 RUN dnf install -y sed
 RUN dnf install -y tar
 RUN dnf install -y zip
+RUN dnf install -y less
 RUN dnf install -y wget
 RUN dnf install -y nano
 RUN dnf install -y gzip
