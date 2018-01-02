@@ -26,9 +26,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+//import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.annotation.Rollback;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -48,13 +49,14 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
         "classpath:component-config.xml"
         }
     )
+@Rollback(
+    false
+    )    
+// https://jira.spring.io/browse/SPR-13472
 @Transactional(
     readOnly=false,
-    propagation=Propagation.REQUIRES_NEW
-    )
-@TransactionConfiguration(
-    transactionManager="FireThornTransactionManager",
-    defaultRollback = false
+    propagation=Propagation.REQUIRES_NEW,
+    transactionManager="FireThornTransactionManager"
     )
 public abstract class TestBase
     {

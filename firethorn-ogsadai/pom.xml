@@ -71,8 +71,8 @@
         <ogsadai.jersey.version>1.10</ogsadai.jersey.version>
         <ogsadai.jackson.version>1.9.9</ogsadai.jackson.version>
 
-        <ogsadai.webapp.path>albert</ogsadai.webapp.path>
-        <ogsadai.webapp.port>8081</ogsadai.webapp.port>
+        <!--ogsadai.webapp.path>albert</ogsadai.webapp.path-->
+        <!--ogsadai.webapp.port>8081</ogsadai.webapp.port-->
         <ogsadai.version>4.2.2198</ogsadai.version>
 
     </properties>

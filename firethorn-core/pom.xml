@@ -140,24 +140,10 @@
             | Starlink Tables library.
             +-->
         <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-fits</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-tamfits</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-table</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-votable</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-stil</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
 
         <!--+
@@ -172,11 +158,11 @@
         <!--+
             | Jadira Type Libraries.
             | http://blog.jadira.co.uk/
-            +-->	
         <dependency>
             <groupId>org.jadira.usertype</groupId>
             <artifactId>usertype.core</artifactId>
         </dependency>
+            +-->	
 
         <!--+
             | Apache Commons Lang
@@ -190,11 +176,11 @@
         <!--+
             | os-platform-finder
             | https://github.com/aurbroszniowski/os-platform-finder
-            +-->
         <dependency>
             <groupId>org.jsoftbiz</groupId>
             <artifactId>os-platform-finder</artifactId>
         </dependency>
+            +-->
 
     </dependencies>
 

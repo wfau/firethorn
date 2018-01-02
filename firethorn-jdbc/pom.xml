@@ -104,6 +104,16 @@
         </dependency>
 
         <!--+
+            | MariaDB driver.
+            | https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+            +-->
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+
+        <!--+
             | jTDS SQLServer JDBC driver.
             | http://jtds.sourceforge.net/
             +-->

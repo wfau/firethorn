@@ -46,17 +46,6 @@
     </description>
     
     <dependencies>
-
-        <!--+
-            | CDS dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-cds-depends</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
     </dependencies>
 
 </project>

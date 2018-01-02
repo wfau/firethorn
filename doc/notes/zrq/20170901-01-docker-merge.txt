@@ -45,7 +45,7 @@
 
 # -----------------------------------------------------
 # Add our secret function.
-#[root@builder]
+#[user@virtual]
 
     vi "${HOME:?}/secret.sh"
 
