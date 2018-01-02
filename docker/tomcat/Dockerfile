@@ -16,8 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 FROM firethorn/java:2.1.11-zrq-update-depends
-MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
 
+# https://tomcat.apache.org/whichversion.html
 ENV TOMCAT_VERSION 8.5.24
 
 ENV TOMCAT_DIRNAME apache-tomcat-${TOMCAT_VERSION}

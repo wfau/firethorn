@@ -184,9 +184,9 @@
         <createChecksum>true</createChecksum>
 
         <!--+
-            | Build for Java 1.7.
+            | Build for Java 1.9.
             +-->
-        <project.javaversion>1.7</project.javaversion>
+        <project.javaversion>1.9</project.javaversion>
         <project.build.sourceencoding>UTF-8</project.build.sourceencoding>
 
         <!--+
@@ -194,13 +194,18 @@
             | Making it a propery means it can be overridden on the command line.
             | mvn -D "docker.host=http://172.17.0.2:2375/" ....
             +-->
-        <!--docker.host>http://127.0.0.1:2375</docker.host-->
         <docker.host>unix:///var/run/docker.sock</docker.host>
 
         <!--+
             | Docker container tag.
             +-->
         <docker.buildtag>${env.buildtag}</docker.buildtag>
+
+        <!--+
+            | Tomcat version.
+            | https://tomcat.apache.org/whichversion.html
+            +-->
+        <tomcat.version>8.5.24</tomcat.version>
 
     </properties>
 
@@ -476,6 +481,20 @@
                 <groupId>org.jsoftbiz</groupId>
                 <artifactId>os-platform-finder</artifactId>
                 <version>1.0</version>
+            </dependency>
+
+            <!--+
+                | Tomcat specific classes.
+                +-->
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-servlet-api</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-catalina</artifactId>
+                <version>${tomcat.version}</version>
             </dependency>
 
         </dependencies>

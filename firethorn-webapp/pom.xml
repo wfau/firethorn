@@ -46,7 +46,6 @@
     </description>
 
     <properties>
-        <tomcat.version>9.0.2</tomcat.version>
     </properties>
 
     <repositories>
@@ -168,13 +167,11 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
-            <version>${tomcat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <version>${tomcat.version}</version>
             <scope>provided</scope>
         </dependency>
 
