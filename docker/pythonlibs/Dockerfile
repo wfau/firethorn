@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.12
+FROM firethorn/python:2.1.12-zrq-basic-auth
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
