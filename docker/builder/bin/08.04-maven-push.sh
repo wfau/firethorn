@@ -23,13 +23,83 @@
 # -------------------------------------------------------------------------------------------
 # Push our changes to our Maven repository.
 
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
+    mvnport=22
+    mvnuser=Zarquan
+    mvnhost=data.metagrid.co.uk
+    mvnpath=/var/local/websites/data/wfau/maven
+    mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
 
-        #
-        # Need credentials ...
-        #
+    mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
 
-    popd
+    #
+    # Sync the FireThorn binaries.
+    rsync \
+        --verbose \
+        --checksum \
+        --recursive \
+        --copy-links \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --include='/uk' \
+        --include='/uk/ac' \
+        --include='/uk/ac/roe' \
+        --include='/uk/ac/roe/wfau' \
+        --include='/uk/ac/roe/wfau/**' \
+        --exclude='*' \
+        "${mvnlocal:?}/" \
+        "${mvnrepo:?}/firethorn"
+
+    #
+    # Sync the OGSA-DAI binaries.
+    rsync \
+        --verbose \
+        --checksum \
+        --recursive \
+        --copy-links \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --include='/uk' \
+        --include='/uk/org' \
+        --include='/uk/org/ogsadai' \
+        --include='/uk/org/ogsadai/**' \
+        --exclude='*' \
+        "${mvnlocal:?}/" \
+        "${mvnrepo:?}/ogsadai"
+
+    #
+    # Sync the STIL binaries.
+    rsync \
+        --verbose \
+        --checksum \
+        --recursive \
+        --copy-links \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --include='/uk' \
+        --include='/uk/ac' \
+        --include='/uk/ac/starlink' \
+        --include='/uk/ac/starlink/**' \
+        --exclude='*' \
+        "${mvnlocal:?}/" \
+        "${mvnrepo:?}/archive"
+
+    #
+    # Sync the 3rd party binaries.
+    rsync \
+        --verbose \
+        --checksum \
+        --recursive \
+        --copy-links \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --exclude='/uk/ac/roe/wfau/**' \
+        --exclude='/uk/org/ogsadai/**' \
+        --exclude='/.cache' \
+        "${mvnlocal:?}/" \
+        "${mvnrepo:?}/external"
 
 

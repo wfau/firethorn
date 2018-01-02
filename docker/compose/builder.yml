@@ -16,7 +16,7 @@ services:
         hostname:
             "builder"
         image:
-            "firethorn/builder:2.1.9"
+            "firethorn/builder:2.1.12"
         tty:
             true
         stdin_open:

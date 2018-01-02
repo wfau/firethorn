@@ -231,26 +231,6 @@ EOF
 
         07.03-merge-commit.sh
 
-    # -----------------------------------------------------
-    # Push our merged code
-    #[root@builder]
-
-        source "${HOME:?}/firethorn.settings"
-        pushd "${FIRETHORN_CODE:?}"
-
-            source 'bin/util.sh'
-            
-            message="Push version [$(getversion)]"
-            confirm "${message:?}"
-            if [ $? -ne 0 ]
-            then
-                echo "EXIT : Cancelled"
-                exit 0
-            fi
-
-            hg push 'push-repo'
-
-        popd
 
     # -----------------------------------------------------
     # Tag our new images
@@ -259,38 +239,23 @@ EOF
         08.01-docker-latest.sh
 
     # -----------------------------------------------------
-    # Push our new images
+    # Push changes to Mercurial 
     #[root@builder]
 
-#
-# BUG needs access to secrets
-# BUG nees new vwrsion from merge.settings
-
-        source "${HOME:?}/merge.settings"
-        # Might need an export ?
-
-        08.02-docker-push.sh
+        source 08.03-mercurial-push.sh
 
     # -----------------------------------------------------
-    # Push our new libraries.
+    # Push images to Docker.
     #[root@builder]
 
-        mvnport=22
-        mvnuser=Zarquan
-        mvnhost=data.metagrid.co.uk
-        mvnpath=/var/local/websites/data/wfau/maven/firethorn
-        mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
+        # BUG needs access to secrets
+        source 08.02-docker-push.sh
 
-        mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
+    # -----------------------------------------------------
+    # Push binaries to Maven repo.
+    #[root@builder]
 
-        source "${HOME:?}/firethorn.settings"
-        pushd "${FIRETHORN_CODE:?}"
-
-            export mvnrepo
-            export mvnlocal
-            ./bin/rsync-repo.sh
-
-        popd
+        source 08.04-maven-push.sh
 
 
 
