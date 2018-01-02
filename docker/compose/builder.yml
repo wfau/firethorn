@@ -13,6 +13,8 @@ volumes:
 services:
 
     builder:
+        hostname:
+            "builder"
         image:
             "firethorn/builder:2.1.9"
         tty:

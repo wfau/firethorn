@@ -185,9 +185,9 @@
     #[root@builder]
 
 cat > "${HOME}/merge.settings" << EOF
-devbranch=2.1.10-zrq-junit-clean
-oldversion=2.1.10
-newversion=2.1.11
+devbranch=2.1.11-zrq-update-depends
+oldversion=2.1.11
+newversion=2.1.12
 EOF
 
     # -----------------------------------------------------
