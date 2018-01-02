@@ -526,9 +526,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.7.0</version>
                     <configuration>
-                        <encoding>UTF-8</encoding>
                         <source>${project.javaversion}</source>
                         <target>${project.javaversion}</target>
+                        <encoding>${project.build.sourceencoding}</encoding>
                     </configuration>
                 </plugin>
 
