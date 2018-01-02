@@ -44,7 +44,7 @@ RUN dnf -y install dnf-plugins-core
 RUN dnf -y config-manager \
     --add-repo \
     https://download.docker.com/linux/fedora/docker-ce.repo
-RUN dnf -y makecache fast
+RUN dnf -y makecache
 RUN dnf -y install docker-ce
 
 #

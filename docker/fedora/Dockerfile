@@ -27,6 +27,10 @@ MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
 # VOLUME /var/cache/dnf
 
 #
+# Update the repo data.
+RUN dnf -y makecache
+
+#
 # Install common admin tools.
 RUN dnf install -y sed
 RUN dnf install -y tar
