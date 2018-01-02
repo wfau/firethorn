@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--+
     |
-    | Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+    | Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
     | All rights reserved.
     |
     | This program is free software: you can redistribute it and/or modify
@@ -25,31 +25,34 @@
     >
     <modelVersion>4.0.0</modelVersion>
 
-    <!--+
-        | Maven parent/child inheritance.
-        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
-        +-->
-    <parent>
-        <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai-dqp</artifactId>
-        <version project='firethorn'>2.1.12</version>
-    </parent>
-
-    <artifactId>firethorn-ogsadai-dqp-common</artifactId>
+    <groupId>uk.ac.starlink</groupId>
+    <artifactId>stil-table</artifactId>
+    <version>3.2.3</version>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed queries (common)</name>
+    <name>STIL util</name>
     <description>
         <![CDATA[
-        Commion (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.
-        Based on a clone of the OGSA-DAI code in svn.
+        Basic Maven POM for the STIL table jar.
         ]]>
     </description>
+
+    <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
 
     <properties>
     </properties>
 
     <dependencies>
+
+        <!--+
+            | STIL util.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>stil-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

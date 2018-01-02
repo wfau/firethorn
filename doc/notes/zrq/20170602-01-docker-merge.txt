@@ -251,7 +251,7 @@
         mvnport=22
         mvnuser=Zarquan
         mvnhost=data.metagrid.co.uk
-        mvnpath=/var/local/websites/data/wfau/maven/firethorn
+        mvnpath=/var/local/websites/data/wfau/maven
         mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
 
         mvnlocal=${mvnlocal:-'/var/local/cache/maven'}

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:2.1.11
+FROM firethorn/fedora:2.1.12
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
@@ -44,7 +44,7 @@ RUN dnf -y install dnf-plugins-core
 RUN dnf -y config-manager \
     --add-repo \
     https://download.docker.com/linux/fedora/docker-ce.repo
-RUN dnf -y makecache fast
+RUN dnf -y makecache
 RUN dnf -y install docker-ce
 
 #
@@ -60,9 +60,9 @@ RUN dnf -y install mercurial
 
 #
 # Install Java JDK
-RUN dnf -y install java-1.8.0-openjdk
-RUN dnf -y install java-1.8.0-openjdk-devel
-RUN dnf -y install java-1.8.0-openjdk-headless
+RUN dnf -y install java-9-openjdk
+RUN dnf -y install java-9-openjdk-devel
+RUN dnf -y install java-9-openjdk-headless
 
 #
 # Install Maven

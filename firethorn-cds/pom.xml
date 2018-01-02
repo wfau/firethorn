@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.11</version>
+        <version project='firethorn'>2.1.12</version>
     </parent>
 
     <artifactId>firethorn-cds</artifactId>
@@ -50,10 +50,7 @@
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <modules>
-        <module>depends</module>
         <module>adql</module>
-        <!--module>firethorn-cds-lib</module-->
-        <!--module>firethorn-cds-tap</module-->
     </modules>
 
 </project>

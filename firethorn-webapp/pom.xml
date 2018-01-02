@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.11</version>
+        <version project='firethorn'>2.1.12</version>
     </parent>
 
     <artifactId>firethorn-webapp</artifactId>
@@ -46,7 +46,6 @@
     </description>
 
     <properties>
-        <tomcat.version>8.5.20</tomcat.version>
     </properties>
 
     <repositories>
@@ -114,16 +113,6 @@
             <type>jar</type>
         </dependency>
 
-        <!--+
-            | FireThorn OGSA-DAI metadata server.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-metadata-server</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-            +-->
-
 	    <!--+
 	        | Servlet libraries.
             | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
@@ -165,6 +154,7 @@
         <!--+
             | os-platform-finder
             | https://github.com/aurbroszniowski/os-platform-finder
+            | * Not available in Maven central, need to compile from source.
             +-->
         <dependency>
             <groupId>org.jsoftbiz</groupId>
@@ -177,70 +167,17 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
-            <version>${tomcat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <version>${tomcat.version}</version>
             <scope>provided</scope>
         </dependency>
-
-        <!--+
-            | Jackson JSON/XML tools.
-            | (already included n firethorn-spring)
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.8.5</version>
-        </dependency>
-            +-->
 
     </dependencies>
 
     <build>
-
-        <plugins>
-
-            <!--+
-                | Tomcat 7 plugin.
-                | https://tomcat.apache.org/maven-plugin-2.0/
-                +-->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <!--+
-                        | Enable JNDI nameing service.
-                        +-->
-                    <enableNaming>true</enableNaming>
-                    <!--+
-                        | Use the Maven test classpath.
-                        +-->
-                    <useTestClasspath>true</useTestClasspath>
-                    <!--+
-                        | The webapp context path.
-                        +-->
-                    <path>/firethorn</path>
-                    <!--+
-                        | The webapp context file.
-                        +-->
-                    <contextFile>src/test/conf/test-context.xml</contextFile>
-                    <!--+
-                        | Set the maximum allowed memory.
-                        | http://stackoverflow.com/questions/11928689/increase-memory-of-tomcat7-maven-plugin
-                        +-->
-                    <systemProperties>
-                        <!--JAVA_OPTS>-Xms128m -Xmx256m -XX:MaxPermSize=64m</JAVA_OPTS-->
-                        <!--JAVA_OPTS>-Xmx256m</JAVA_OPTS-->
-                        <!--Xmx>256m</Xmx-->
-                    </systemProperties>
-                </configuration>
-            </plugin>
-
-        </plugins>
 
         <resources>
 
@@ -277,7 +214,6 @@
 
     <reporting>
         <plugins>
-
             <!--+
                 | Project reports.
                 | https://maven.apache.org/plugins/maven-project-info-reports-plugin/
@@ -313,52 +249,6 @@
         </plugins>
     </reporting>
 
-    <profiles>
-        <profile>
-            <id>tomcat-alpha</id>
-            <build>
-                <defaultGoal>tomcat7:deploy</defaultGoal>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <configuration>
-
-                            <!--+
-                                | Server user name and password in ~/.m2/settings.xml
-                                | https://tomcat.apache.org/maven-plugin-2.1/tomcat7-maven-plugin/deploy-mojo.html
-                                |
-                                +-->
-                            <server>rho.virtual.metagrid.co.uk</server>
-                            <url>http://rho.virtual.metagrid.co.uk:8080/manager/text</url>
-
-                            <!--+
-                                | Sedployment context file.
-                                | ${project.build.directory}/${project.build.finalName}/META-INF/context.xml
-                                | https://tomcat.apache.org/maven-plugin-2.1/tomcat7-maven-plugin/deploy-mojo.html
-                                |
-                                | <contextFile></contextFile>
-                                +-->
-
-                            <!--+
-                                | Deployment mode [war|context|both].
-                                | https://tomcat.apache.org/maven-plugin-2.1/tomcat7-maven-plugin/deploy-mojo.html
-                                |
-                                | Because of the way Tomcat manager works ...
-                                | If deploy mode is [war], then it is uploaded to server by Maven.
-                                | If deploy mode is [context or both], then Tomcat expects a local file.
-                                | However, if we put the context file in META-INF directory, it is picked up by Tomcat.
-                                +-->
-                            <mode>war</mode>
-                            <update>true</update>
-                            <path>/firethorn</path>
-
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
 
 

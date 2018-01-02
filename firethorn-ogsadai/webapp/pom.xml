@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>2.1.11</version>
+        <version project='firethorn'>2.1.12</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-webapp</artifactId>
@@ -86,11 +86,6 @@
             <artifactId>firethorn-ogsadai-dqp-server</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-dqp-firethorn</artifactId>
-            <version>${project.version}</version>
-        </dependency-->
 
         <!--+
             | Our Astronomy extenstions.
@@ -129,16 +124,10 @@
             | Starlink Tables library.
             +-->
         <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-table</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-votable</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-stil</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
 
     </dependencies>
@@ -188,47 +177,6 @@
                     </overlays>
                 </configuration>
             </plugin>
-
-            <!--+
-                | Tomcat 7 plugin.
-                | https://tomcat.apache.org/maven-plugin-2.0/
-                +-->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <!--+
-                        | The network port number.
-                        +-->
-                    <port>${ogsadai.webapp.port}</port>
-                    <!--+
-                        | Enable JNDI service.
-                        +-->
-                    <enableNaming>true</enableNaming>
-                    <!--+
-                        | Use the Maven test classpath.
-                        +-->
-                    <useTestClasspath>true</useTestClasspath>
-                    <!--+
-                        | The webapp context path.
-                        +-->
-                    <path>/${ogsadai.webapp.path}</path>
-                    <!--+
-                        | The webapp context file.
-                    <contextFile>src/test/conf/test-context.xml</contextFile>
-                        +-->
-
-                    <!--+
-                        | Use the unpacked war file as the webapp.
-                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
-                        +-->
-                    <warSourceDirectory>
-                        ${project.build.directory}/${project.build.finalName}
-                    </warSourceDirectory>
-                </configuration>
-            </plugin>
-
         </plugins>
 
         <resources>

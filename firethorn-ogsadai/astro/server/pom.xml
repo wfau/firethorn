@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-astro</artifactId>
-        <version project='firethorn'>2.1.11</version>
+        <version project='firethorn'>2.1.12</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-astro-server</artifactId>
@@ -71,16 +71,6 @@
         </dependency>
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-basic-client</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-basic-server</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-clientserver</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
@@ -99,11 +89,6 @@
             <artifactId>firethorn-ogsadai-dqp-server</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-metadata-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <!--+
 	        | The Apache HttpComponent libraries, used by our TAP client. 
@@ -118,16 +103,10 @@
             | The StarLink VOTAble library, used by our TAP client. 
             +-->
         <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-table</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-votable</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-stil</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
 
     </dependencies>

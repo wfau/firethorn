@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-activity</artifactId>
-        <version project='firethorn'>2.1.11</version>
+        <version project='firethorn'>2.1.12</version>
 	</parent>
 
     <artifactId>firethorn-ogsadai-activity-client</artifactId>
@@ -60,15 +60,6 @@
         </dependency>
 
         <!--+
-            | OGSA-DAI Astronomy extensions.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-astro-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!--+
             | FireThorn logging dependencies.
             +-->
         <dependency>
@@ -87,7 +78,7 @@
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
-
+        
         <!--+
             | FireThorn testing dependencies.
             +-->

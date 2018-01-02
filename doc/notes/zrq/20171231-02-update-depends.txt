@@ -1,0 +1,247 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new clone.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_BASE:?}"
+
+        mv working 20171231-old
+        hg clone ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code working
+
+    popd
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    export devname=zrq-update-depends
+
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt &
+
+# -----------------------------------------------------
+# Update our Maven and Docker build files.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        buildtag=$(hg branch)
+
+        source 'bin/util.sh'
+
+        pomversions "${buildtag:?}"
+        dockerfiles "${buildtag:?}"
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Update our java dependencies.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Clean build.
+        mvn clean install eclipse:eclipse
+
+        #
+        # Display dependency updates
+        mvn versions:display-dependency-updates
+
+        #
+        # Display plugin updates.
+        mvn versions:display-plugin-updates
+
+        #
+        # Display dependency tree
+        mvn dependency:tree -D detail
+
+        #
+        # Display used, unused etc.
+        mvn dependency:analyze
+
+    popd
+
+
+# -------------------------------------------------------------------------------------------
+# Update our STIL libraries.
+#[user@desktop]
+
+            #
+            # Dependencies, based on the .project files in GitHub ..
+            util
+                junit
+                apache-bzip2
+            table
+                util.jar
+                htmIndex.jar
+                PixTools.jar
+                vecmath.jar
+            votable
+                util
+                table
+                tamfits
+            fits
+            tamfits
+
+# -------------------------------------------------------------------------------------------
+# Update our STIL libraries.
+#[user@desktop]
+
+    temp=$(mktemp -d)
+    pushd "${temp:?}"
+
+        wget http://www.star.bristol.ac.uk/~mbt/stil/stil_jars.zip
+        unzip stil_jars.zip
+
+    popd
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-stil
+
+            for name in 'util' 'table' 'votable'
+            do
+                jarfile=${name?}.jar
+                pomfile=${name?}.pom
+
+                mvn install:install-file   \
+                    -DcreateChecksum=true  \
+                    -DpomFile=${pomfile:?} \
+                    -Dfile=${temp:?}/${jarfile:?}
+            done
+
+        popd
+
+    popd
+        
+
+# -------------------------------------------------------------------------------------------
+# Archive our STIL libraries.
+#[user@desktop]
+
+    mvnport=22
+    mvnuser=Zarquan
+    mvnhost=data.metagrid.co.uk
+    mvnpath=/var/local/websites/data/wfau/maven
+    mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
+
+    mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
+
+    #
+    # Sync the STIL binaries.
+    rsync \
+        --verbose \
+        --checksum \
+        --recursive \
+        --copy-links \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --include='/uk' \
+        --include='/uk/ac' \
+        --include='/uk/ac/starlink' \
+        --include='/uk/ac/starlink/**' \
+        --exclude='*' \
+        "${mvnlocal:?}/" \
+        "${mvnrepo:?}/archive"
+
+    #
+    # Sync the jsoftbiz binaries.
+    rsync \
+        --verbose \
+        --checksum \
+        --recursive \
+        --copy-links \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --include='/org' \
+        --include='/org/jsoftbiz' \
+        --include='/org/jsoftbiz/**' \
+        --exclude='*' \
+        "${mvnlocal:?}/" \
+        "${mvnrepo:?}/archive"
+
+    #
+    # Sync the 3rd party cache.
+    rsync \
+        --verbose \
+        --checksum \
+        --recursive \
+        --copy-links \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --exclude='/uk/ac/roe/wfau/**' \
+        --exclude='/uk/org/ogsadai/**' \
+        --exclude='/uk/ac/starlink/**' \
+        --exclude='/.cache' \
+        "${mvnlocal:?}/" \
+        "${mvnrepo:?}/external"
+
+
+    #
+    # Sync the Firethorn binaries.
+    rsync \
+        --verbose \
+        --checksum \
+        --recursive \
+        --copy-links \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --include='/uk' \
+        --include='/uk/ac' \
+        --include='/uk/ac/roe' \
+        --include='/uk/ac/roe/wfau' \
+        --include='/uk/ac/roe/wfau/**' \
+        --exclude='*' \
+        "${mvnlocal:?}/" \
+        "${mvnrepo:?}/firethorn"
+
+    #
+    # Sync the OGSA-DAI binaries.
+    rsync \
+        --verbose \
+        --checksum \
+        --recursive \
+        --copy-links \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --include='/uk' \
+        --include='/uk/org' \
+        --include='/uk/org/ogsadai' \
+        --include='/uk/org/ogsadai/**' \
+        --exclude='*' \
+        "${mvnlocal:?}/" \
+        "${mvnrepo:?}/ogsadai"
+
+
+

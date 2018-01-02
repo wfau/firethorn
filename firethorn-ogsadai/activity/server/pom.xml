@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-activity</artifactId>
-        <version project='firethorn'>2.1.11</version>
+        <version project='firethorn'>2.1.12</version>
 	</parent>
 	
     <artifactId>firethorn-ogsadai-activity-server</artifactId>
@@ -53,12 +53,12 @@
         <!--+
             | OGSA-DAI FireThorn server classes.
             | TODO - this just needs SecurityContext, which should probably be in a separate package.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-firethorn-server</artifactId>
             <version>${project.version}</version>
         </dependency>
+            +-->
 
         <!--+
             | OGSA-DAI Astronomy extensions.
@@ -117,24 +117,42 @@
             <version>${ogsadai.version}</version>
         </dependency>
 
+        <!--+
+            | OGSA-DAI Jersey service classes.
+            | (includes the security context factory)
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-jersey-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+            +-->
+
+        <!--+
+            | Spring framework HTTP tools.
+            +-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${ogsadai.spring.version}</version>
         </dependency>
 
+        <!--+
+            | Jackson JSON tools.
+            +-->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${ogsadai.jackson.version}</version>
+        </dependency>
 
         <!--+
             | The StarLink VOTAble library, used by our TAP client Activity. 
             +-->
         <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-votable</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.starlink</groupId>
-            <artifactId>stil-table</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-stil</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
 
 	    <!--+

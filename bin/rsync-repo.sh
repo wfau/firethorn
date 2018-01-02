@@ -48,7 +48,7 @@ rsync \
     --include='/uk/ac/roe/wfau/**' \
     --exclude='*' \
     "${mvnlocal:?}/" \
-    "${mvnrepo:?}"
+    "${mvnrepo:?}/firethorn"
 
 #
 # Sync the OGSA-DAI binaries.
@@ -66,7 +66,25 @@ rsync \
     --include='/uk/org/ogsadai/**' \
     --exclude='*' \
     "${mvnlocal:?}/" \
-    "${mvnrepo:?}"
+    "${mvnrepo:?}/ogsadai"
+
+#
+# Sync the STIL binaries.
+rsync \
+    --verbose \
+    --checksum \
+    --recursive \
+    --copy-links \
+    --stats --human-readable --progress \
+    --prune-empty-dirs \
+    --omit-dir-times \
+    --include='/uk' \
+    --include='/uk/ac' \
+    --include='/uk/ac/starlink' \
+    --include='/uk/ac/starlink/**' \
+    --exclude='*' \
+    "${mvnlocal:?}/" \
+    "${mvnrepo:?}/archive"
 
 #
 # Sync the 3rd party binaries.
@@ -82,7 +100,8 @@ rsync \
     --exclude='/uk/org/ogsadai/**' \
     --exclude='/.cache' \
     "${mvnlocal:?}/" \
-    "${mvnrepo:?}"
+    "${mvnrepo:?}/external"
+
 
 #
 # Make everything read/write to users.

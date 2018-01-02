@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-metadata</artifactId>
-        <version project='firethorn'>2.1.11</version>
+        <version project='firethorn'>2.1.12</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata-client</artifactId>
@@ -95,12 +95,12 @@
 
         <!--+
             | Jackson JSON tools.
-            +-->
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
             <version>${ogsadai.jackson.version}</version>
         </dependency>
+            +-->
 
         <!--+
             | The OGSA-DAI components used by our code.

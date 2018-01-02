@@ -15,10 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/java:2.1.11
-MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+FROM firethorn/java:2.1.12
+MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
 
-ENV TOMCAT_VERSION 8.5.20
+# https://tomcat.apache.org/whichversion.html
+ENV TOMCAT_VERSION 8.5.24
 
 ENV TOMCAT_DIRNAME apache-tomcat-${TOMCAT_VERSION}
 ENV TOMCAT_TARFILE apache-tomcat-${TOMCAT_VERSION}.tar.gz

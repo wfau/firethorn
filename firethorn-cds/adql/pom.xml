@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-cds</artifactId>
-		<version project='firethorn'>2.1.11</version>
+		<version project='firethorn'>2.1.12</version>
 	</parent>
 
     <artifactId>firethorn-cds-adql</artifactId>
@@ -46,17 +46,6 @@
     </description>
     
     <dependencies>
-
-        <!--+
-            | CDS dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-cds-depends</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
     </dependencies>
 
 </project>
