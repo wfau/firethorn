@@ -199,7 +199,6 @@ implements BaseTable<TableType, ColumnType>
     @Override
     public abstract String alias();
 
-    /**/
     @Basic(fetch = FetchType.EAGER)
     @Enumerated(
         EnumType.STRING
@@ -345,34 +344,4 @@ implements BaseTable<TableType, ColumnType>
                 }
             };
         }
-
-    /*
-     * 
-    @Override
-    @Deprecated
-    public AdqlQuery greenquery()
-        {
-        return root().greenquery();
-        }
-
-    @Override
-    public BlueQuery bluequery()
-        {
-        return root().bluequery();
-        }
-
-    @Override
-    @Deprecated
-    public AdqlQuery greenquery()
-        {
-        return null;
-        }
-
-    @Override
-    public BlueQuery bluequery()
-        {
-        return null;
-        }
-     * 
-     */
     }

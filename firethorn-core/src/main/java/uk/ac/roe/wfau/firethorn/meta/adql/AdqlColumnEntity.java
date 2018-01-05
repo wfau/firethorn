@@ -494,8 +494,6 @@ public class AdqlColumnEntity
             }
         }
 
-    /*
-     */
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlTableEntity.class
@@ -523,8 +521,6 @@ public class AdqlColumnEntity
         return this.table().resource();
         }
 
-    /*
-     */
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = BaseColumnEntity.class

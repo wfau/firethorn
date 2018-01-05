@@ -158,8 +158,6 @@ extends TreeComponentEntity<ColumnType>
     @Enumerated(
         EnumType.STRING
         )
-    /*
-     */
     @Basic(
         fetch = FetchType.EAGER
         )
