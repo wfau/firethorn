@@ -495,19 +495,17 @@ public class AdqlColumnEntity
         }
 
     /*
-     * @ManyToOne(
+     */
+    @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlTableEntity.class
         )
-     */
-    /*
-     * @JoinColumn(
+    @JoinColumn(
         name = DB_PARENT_COL,
         unique = false,
         nullable = false,
         updatable = true
         )
-     */
     private AdqlTable table;
     @Override
     public AdqlTable table()
@@ -526,19 +524,17 @@ public class AdqlColumnEntity
         }
 
     /*
-     * @ManyToOne(
+     */
+    @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = BaseColumnEntity.class
         )
-     */
-    /*
-     * @JoinColumn(
+    @JoinColumn(
         name = DB_BASE_COL,
         unique = false,
         nullable = false,
         updatable = false
         )
-     */
     private BaseColumn<?> base ;
     @Override
     public BaseColumn<?> base()

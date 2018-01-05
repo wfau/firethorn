@@ -159,6 +159,7 @@ extends TreeComponentEntity<ColumnType>
         EnumType.STRING
         )
     /*
+     */
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -168,7 +169,6 @@ extends TreeComponentEntity<ColumnType>
         nullable = true,
         updatable = true
         )
-     */
     private AdqlColumn.AdqlType adqltype ;
     protected AdqlColumn.AdqlType adqltype()
         {
