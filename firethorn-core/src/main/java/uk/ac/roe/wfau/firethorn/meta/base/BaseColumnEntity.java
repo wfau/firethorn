@@ -155,7 +155,10 @@ extends TreeComponentEntity<ColumnType>
     @Override
     public abstract BaseColumn<?> root();
 
-    
+    @Enumerated(
+        EnumType.STRING
+        )
+    /*
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -165,9 +168,7 @@ extends TreeComponentEntity<ColumnType>
         nullable = true,
         updatable = true
         )
-    @Enumerated(
-        EnumType.STRING
-        )
+     */
     private AdqlColumn.AdqlType adqltype ;
     protected AdqlColumn.AdqlType adqltype()
         {

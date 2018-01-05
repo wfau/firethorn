@@ -199,15 +199,18 @@ implements BaseTable<TableType, ColumnType>
     @Override
     public abstract String alias();
 
+    /*
+     * 
     @Basic(fetch = FetchType.EAGER)
+    @Enumerated(
+        EnumType.STRING
+        )
+     */
     @Column(
         name = DB_ADQL_STATUS_COL,
         unique = false,
         nullable = true,
         updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
         )
     protected AdqlTable.TableStatus adqlstatus ;
     protected AdqlTable.TableStatus adqlstatus()
