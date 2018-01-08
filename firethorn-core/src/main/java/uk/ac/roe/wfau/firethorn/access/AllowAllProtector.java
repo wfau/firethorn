@@ -16,24 +16,28 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.identity;
+package uk.ac.roe.wfau.firethorn.access;
+
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
- * An authentication, connecting an {@link Identity} and a {@link Method}.  
+ * A simple Protector that allows everything. 
  * 
  */
-public interface Authentication
+public class AllowAllProtector
+extends AbstractProtector
+implements Protector
     {
     /**
-     * The {@link Method} for this {@link Authentication}.
-     *
+     * Public constructor. 
      */
-    public Method method();
+    public AllowAllProtector()
+        {
+        }
 
-    /**
-     * The {@link Identity} this {@link Authentication} is for.
-     *
-     */
-    public Identity identity();
-
+    @Override
+    public boolean check(final Identity identity, final Action action)
+        {
+        return true;
+        }
     }

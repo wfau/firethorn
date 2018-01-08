@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.entity.access;
 
+import uk.ac.roe.wfau.firethorn.access.AbstractProtector;
 import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.access.ProtectorException;
@@ -24,18 +25,19 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
- * An abstract base class for Protector implementations.
+ * An abstract base class for {@Entity} {@link Protector} implementations.
  *
  */
 public abstract class AbstractEntityProtector
-    implements EntityProtector
+extends AbstractProtector
+implements EntityProtector
     {
 
     @Override
     public Protector accept(Identity identity, Action action)
     throws ProtectorException
         {
-        if (this.allow(identity, action))
+        if (this.check(identity, action))
             {
             return this;
             }
@@ -57,7 +59,7 @@ public abstract class AbstractEntityProtector
 
     /**
      * Resolve an Identity with the entity.
-     * - probably better to make this part of entity itself ?
+     * Convert a specific Identity into the generic 'owner' Identity. 
      *  
      */
 

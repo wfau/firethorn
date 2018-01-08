@@ -45,16 +45,23 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         {
         /**
          * Create (CREATE) a JDBC schema.
+         * @todo Should this be part of JdbcResource.JdbcDriver ?
          *
          */
         public void create(final JdbcSchema schema);
 
         /**
          * Delete (DROP) a JDBC schema.
+         * @todo Should this be part of JdbcResource.JdbcDriver ?
          *
          */
         public void drop(final JdbcSchema schema);
-        
+
+        /*
+         * Modify (this) schema ?
+         *  
+         */
+
         }
 
     /**

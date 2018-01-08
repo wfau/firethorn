@@ -43,15 +43,22 @@ extends BaseColumn<JdbcColumn>
         {
         /**
          * Create (CREATE) a JDBC column.
+         * @todo Should this be part of JdbcTable.JdbcDriver ?
          *
          */
         public void create(final JdbcColumn column);
 
         /**
          * Delete (DROP) this {@link JdbcColumn}.
+         * @todo Should this be part of JdbcTable.JdbcDriver ?
          *
          */
         public void drop(final JdbcColumn column);
+
+        /*
+         * Modify (this) column ?
+         *  
+         */
         
         }
 

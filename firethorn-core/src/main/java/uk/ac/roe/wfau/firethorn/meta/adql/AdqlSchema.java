@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;

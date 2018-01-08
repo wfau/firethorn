@@ -44,7 +44,7 @@ implements Protector
     private boolean value ;
 
     @Override
-    public boolean allow(Identity identity, Action action)
+    public boolean check(Identity identity, Action action)
         {
         return this.value;
         }

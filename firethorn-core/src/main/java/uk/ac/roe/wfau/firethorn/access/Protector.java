@@ -17,40 +17,34 @@
  */
 package uk.ac.roe.wfau.firethorn.access;
 
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
- * Public interface for an Entity Protector.
+ * Public interface to protect an {@link Entity}.
  *
  */
 public interface Protector
     {
 
     /**
-     * The list of Actions that this Protector handles. 
-     *  
-     */
-    public Iterable<Action> actions(); 
-    
-    /**
-     * Check if an Identity is allowed to perform an Action on the protected object.
-     * 
-     * @param identity
-     * @param action
-     * @returns true if the Identity is allowed to perform the Action. 
+     * Check if the {@link Identity} from an {@link Authentication} is allowed to perform an {@link Action} on the protected {@link Entity}.
+     * @param authentication The {@link Authentication} to check.
+     * @param action The {@Action} to check for.
+     * @returns true if the Identity from the {@link Authentication} is allowed to perform an {@link Action}. 
      *
      */
-    public boolean allow(final Identity identity, final Action action); 
+    public boolean check(final Authentication authentication, final Action action); 
 
     /**
-     * Accept that an Identity is allowed to perform an Action or throw an Exception.
-     * 
-     * @param identity
-     * @param action
-     * @throws ProtectorException if the Identity is NOT allowed to perform the Action. 
+     * Check that the {@link Identity} from an {@link Authentication} is allowed to perform an {@link Action}, or throw an {@link Exception}.
+     * @param authentication The {@link Authentication} to check.
+     * @param action The {@Action} to check for.
+     * @return A reference to the {@link Protector) that accepted the {@link Action}.
+     * @throws {@link ProtectorException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
      * 
      */
-    public Protector accept(final Identity identity, final Action action)
+    public Protector accept(final Authentication authentication, final Action action)
     throws ProtectorException ; 
 
     }

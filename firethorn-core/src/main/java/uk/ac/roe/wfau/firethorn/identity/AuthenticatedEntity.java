@@ -50,7 +50,7 @@ import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
     AccessType.FIELD
     )
 @Table(
-    name = AuthenticationEntity.DB_TABLE_NAME
+    name = AuthenticatedEntity.DB_TABLE_NAME
     )
 @Inheritance(
     strategy = InheritanceType.JOINED
@@ -59,9 +59,9 @@ import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
         {
         }
     )
-public class AuthenticationEntity
+public class AuthenticatedEntity
 extends AbstractEntity
-implements Authentication
+implements Authenticated
     {
     /**
      * Hibernate table mapping.
@@ -79,25 +79,25 @@ implements Authentication
 
     @Component
     public static class EntityFactory
-    extends AbstractEntityFactory<Authentication>
-    implements Authentication.EntityFactory
+    extends AbstractEntityFactory<Authenticated>
+    implements Authenticated.EntityFactory
         {
         @Override
         public Class<?> etype()
             {
-            return AuthenticationEntity.class ;
+            return AuthenticatedEntity.class ;
             }
 
         @Override
         @CreateMethod
-        public Authentication create(final Operation operation, final Identity identity, final String method)
+        public Authenticated create(final Operation operation, final Identity identity, final String method)
            {
            log.debug("create(Operation, Identity, String)");
            log.debug("  Operation [{}]", operation.method());
            log.debug("  Identity  [{}]", identity.name());
            log.debug("  Method    [{}]", method);
            return this.insert(
-                new AuthenticationEntity(
+                new AuthenticatedEntity(
                     operation,
                     identity,
                     method
@@ -106,7 +106,7 @@ implements Authentication
             }
 
         @Override
-        public Authentication current()
+        public Authenticated current()
             {
             throw new NotImplementedException();
             }
@@ -119,13 +119,13 @@ implements Authentication
     @Slf4j
     @Component
     public static class EntityServices
-    implements Authentication.EntityServices
+    implements Authenticated.EntityServices
         {
         /**
          * Our singleton instance.
          * 
          */
-        private static AuthenticationEntity.EntityServices instance ; 
+        private static AuthenticatedEntity.EntityServices instance ; 
 
         /**
          * Our singleton instance.
@@ -133,7 +133,7 @@ implements Authentication
          */
         public static EntityServices instance()
             {
-            return AuthenticationEntity.EntityServices.instance ;
+            return AuthenticatedEntity.EntityServices.instance ;
             }
 
         /**
@@ -152,9 +152,9 @@ implements Authentication
         protected void init()
             {
             log.debug("init()");
-            if (AuthenticationEntity.EntityServices.instance == null)
+            if (AuthenticatedEntity.EntityServices.instance == null)
                 {
-                AuthenticationEntity.EntityServices.instance = this ;
+                AuthenticatedEntity.EntityServices.instance = this ;
                 }
             else {
                 log.error("Setting instance more than once");
@@ -165,42 +165,42 @@ implements Authentication
             }
         
         @Autowired
-        private Authentication.IdentFactory idents;
+        private Authenticated.IdentFactory idents;
         @Override
-        public Authentication.IdentFactory idents()
+        public Authenticated.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        private Authentication.LinkFactory links;
+        private Authenticated.LinkFactory links;
         @Override
-        public Authentication.LinkFactory links()
+        public Authenticated.LinkFactory links()
             {
             return this.links;
             }
 
         @Autowired
-        private Authentication.EntityFactory entities;
+        private Authenticated.EntityFactory entities;
         @Override
-        public Authentication.EntityFactory entities()
+        public Authenticated.EntityFactory entities()
             {
             return this.entities;
             }
         }
 
     @Override
-    protected Authentication.EntityFactory factory()
+    protected Authenticated.EntityFactory factory()
         {
         log.debug("factory()");
-        return AuthenticationEntity.EntityServices.instance().entities() ; 
+        return AuthenticatedEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
-    protected Authentication.EntityServices services()
+    protected Authenticated.EntityServices services()
         {
         log.debug("services()");
-        return AuthenticationEntity.EntityServices.instance() ; 
+        return AuthenticatedEntity.EntityServices.instance() ; 
         }
 
     @Override
@@ -215,16 +215,15 @@ implements Authentication
      * Protected constructor.
      *
      */
-    protected AuthenticationEntity()
+    protected AuthenticatedEntity()
         {
         }
 
     /**
      * Protected constructor.
-     * @todo remove name
      *
      */
-    protected AuthenticationEntity(final Operation operation, final Identity identity, final String method)
+    protected AuthenticatedEntity(final Operation operation, final Identity identity, final String method)
         {
         super(
             true
@@ -251,9 +250,16 @@ implements Authentication
         )
     private String method ;
     @Override
-    public String method()
+    public Method method()
         {
-        return this.method ;
+        return new Method()
+            {
+            @Override
+            public String urn()
+                {
+                return AuthenticatedEntity.this.method;
+                }
+            };
         }
 
     @ManyToOne(
@@ -284,7 +290,6 @@ implements Authentication
         updatable = false
         )
     private Operation operation ;
-    @Override
     public Operation operation()
         {
         return this.operation;

@@ -25,11 +25,59 @@ import java.net.URI;
  */
 public interface Action
     {
+    /**
+     * The simple name for this {@link Action}.
+     * 
+     */
+    public String name();
 
     /**
-     * The URI identifier for this action.
+     * The URI identifier for this {@link Action}.
      * 
      */
     public URI uri();
 
+    /**
+     * Core types of {@link Action}.
+     *  
+     */
+    public enum ActionType
+        {
+        SELECT(false),
+        UPDATE(true),
+        CREATE(true),
+        DELETE(true);
+
+        /**
+         * Private constructor. 
+         * @param modify True if this {@link Action} modifies something.
+         * 
+         */
+        private ActionType(boolean modify)
+            {
+            this.modify = modify ;
+            }
+
+        /**
+         * Flag to indicate if this {@link Action} modifies something.
+         * 
+         */
+        private boolean modify;
+
+        /**
+         * Flag to indicate if this {@link Action} modifies something.
+         * 
+         */
+        public boolean modify()
+            {
+            return this.modify;
+            }
+        }
+
+    /**
+     * The type of {@link Action}.
+     *  
+     */
+    public ActionType type();
+    
     }

@@ -308,7 +308,7 @@ implements Operation
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = AuthenticationEntity.class
+        targetEntity = AuthenticatedEntity.class
         )
     @JoinColumn(
         name = DB_AUTH_COL,
@@ -316,14 +316,14 @@ implements Operation
         nullable = true,
         updatable = true
         )
-    private Authentication primary ;
+    private Authenticated primary ;
 
-    private Authentication primary()
+    private Authenticated primary()
         {
         return this.primary;
         }
 
-    private void primary(final Authentication auth)
+    private void primary(final Authenticated auth)
         {
         log.debug("primary(Authentication)");
         log.debug("  Authentication [{}]", auth);
@@ -341,20 +341,20 @@ implements Operation
     @OneToMany(
         fetch   = FetchType.LAZY,
         mappedBy = "operation",
-        targetEntity = AuthenticationEntity.class
+        targetEntity = AuthenticatedEntity.class
         )
-    private final List<Authentication> authentications = new ArrayList<Authentication>();
+    private final List<Authenticated> authentications = new ArrayList<Authenticated>();
 
     /**
      * Create a new Authentication for this Operation.
      *
      */
-    private Authentication create(final Identity identity, final String method)
+    private Authenticated create(final Identity identity, final String method)
         {
         log.debug("create(Identity, String)");
         log.debug("  Identity [{}]", identity.name());
         log.debug("  Method   [{}]", method);
-        final Authentication auth = factories().authentication().entities().create(
+        final Authenticated auth = factories().authentication().entities().create(
             this,
             identity,
             method
@@ -374,19 +374,19 @@ implements Operation
         return new Authentications()
             {
             @Override
-            public Authentication primary()
+            public Authenticated primary()
                 {
                 return OperationEntity.this.primary();
                 }
 
             @Override
-            public Iterable<Authentication> select()
+            public Iterable<Authenticated> select()
                 {
                 return authentications;
                 }
 
             @Override
-            public Authentication create(final Identity identity, final String method)
+            public Authenticated create(final Identity identity, final String method)
                 {
                 return OperationEntity.this.create(
                     identity,
@@ -404,7 +404,7 @@ implements Operation
 			@Override
 			public Identity primary()
 				{
-				final Authentication auth = OperationEntity.this.primary();
+				final Authenticated auth = OperationEntity.this.primary();
 				if (auth != null)
 					{
 					return auth.identity();

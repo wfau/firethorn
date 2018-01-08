@@ -537,11 +537,13 @@ implements Entity
         return builder.toHashCode();
         }
 
+    @Transient
+    private EntityProtector protector = new SimpleEntityProtector(
+        this
+        );
     @Override
     public EntityProtector protector()
         {
-        return new SimpleEntityProtector(
-            this
-            );
+        return this.protector;
         }
     }

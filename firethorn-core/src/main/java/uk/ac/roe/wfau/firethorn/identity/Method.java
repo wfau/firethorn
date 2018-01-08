@@ -19,21 +19,15 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 /**
- * An authentication, connecting an {@link Identity} and a {@link Method}.  
+ * Public interface for an {@link Authenticated} method.
  * 
  */
-public interface Authentication
+public interface Method
     {
     /**
-     * The {@link Method} for this {@link Authentication}.
+     * The URN for this method.
      *
      */
-    public Method method();
-
-    /**
-     * The {@link Identity} this {@link Authentication} is for.
-     *
-     */
-    public Identity identity();
+    public String urn();
 
     }

@@ -39,6 +39,11 @@ extends BaseResource<JdbcSchema>
     public static interface JdbcDriver
     extends JdbcSchema.JdbcDriver
         {
+
+        /*
+         * Modify (this) resource ?
+         *  
+         */
         
         }
 
@@ -185,8 +190,10 @@ extends BaseResource<JdbcSchema>
 
         /**
          * The default catalog/schema for this resource.
+         * Only used by simple form of Identity space.
          *
          */
+        @Deprecated
         public JdbcSchema simple()
         throws EntityNotFoundException;
 
@@ -214,13 +221,13 @@ extends BaseResource<JdbcSchema>
     public static final String ALL_CATALOGS = "*" ;
 
     /**
-     * The resource catalog name.
+     * The primary catalog name.
      *
      */
     public String catalog();
 
     /**
-     * The resource catalog name.
+     * The primary catalog name.
      *
      */
     public void catalog(final String catalog);
@@ -268,7 +275,7 @@ extends BaseResource<JdbcSchema>
          */
         public Iterable<OgsaJdbcResource> select();
 
-    }
+        }
 
     /**
      * Access to the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.

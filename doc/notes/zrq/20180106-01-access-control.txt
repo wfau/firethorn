@@ -1,0 +1,319 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+
+    Higher level 'Service' entity ?
+
+    // Needs admin user to create an AdqlService.
+    AdqlService.create() <-- Identity == {firethorn.admin.name, firethorn.admin.pass}
+
+    // Later ...
+    // Admin user may change the owner to someone else.
+    // Admin user may change the access controls to allow someone else to manage the AdqlService.
+    
+    AdqlService exposes list of AdqlResource(s) e.g. ATLASDR1, GAIADR1 etc ...
+
+    AdqlService.resources().select()    <-- SELECT on the AdqlService
+    AdqlService.resources().create()    <-- UPDATE on the AdqlService
+
+    AdqlService.resources().select()    <-- SELECT on the AdqlService
+    AdqlService.resources().select(
+        PUBLIC
+        )
+
+    // Publicly accessible and publicly visible are different things.
+    // Owner of AdqlService controls visibility
+    // Owner of AdqlResource controls access
+
+    AdqlResource.visibility()           <-- UPDATE on the parent AdqlService
+
+    Access enum {
+        PUBLIC,         // Allows anaon SELECT and QUERY.
+        PROTECTED,      // Requires [group] for SELECT and QUERY.
+        PRIVATE         // Requires [owner] for SELECT and QUERY.
+        }
+
+    Visibility enum {
+        PUBLIC,         // Publicly listed and registered.
+        PROTECTED,      // Requires [group] for SELECT.
+        PRIVATE         // Requires [owner] for SELECT.
+        }
+
+    
+        OSA
+        http://osa.roe.ac.uk/
+
+        WSA
+        http://wsa.roe.ac.uk/
+
+        VSA
+        http://horus.roe.ac.uk/vsa/
+
+        SSA
+        http://ssa.roe.ac.uk/
+
+        6dFGS
+        http://www-wfau.roe.ac.uk/6dFGS/
+
+
+    // User data is not listed as part of the AdqlService.
+    // User data is accessed via AdqlResource(s), but they are not *publicly* listed in the AdqlService.
+
+    // List filtering.
+    Entity.visible()                      <-- public API checks in Entity is visible to the current Identity ?
+
+    public class IterableFilter<EntityType extends Entity>
+    implements Iterable<EntityType>
+        {
+        public IterableFilter<EntityType>(
+            Iterable<EntityType> iter
+            ){
+            }
+        }
+
+    new IterableFilter()
+        {
+        }
+
+
+
+
+
+    AdqlResource.schemas()          <-- SELECT on the AdqlResource
+    AdqlResource.schemas().create() <-- UPDATE on the AdqlResource
+    AdqlResource.schemas().inport() <-- UPDATE on the AdqlResource
+
+    AdqlResource.blues()            <-- SELECT on the AdqlResource
+    AdqlResource.blues().select()   <-- SELECT on the AdqlResource
+        // List (all) the queries for a resource.
+        // List (my) queries for a resource ?
+
+    AdqlResource.blues().create()   <-- QUERY the AdqlResource
+
+    AdqlResource.ogsa()             <-- SELECT on the AdqlResource
+    AdqlResource.ogsa().select()    <-- SELECT on the AdqlResource
+    AdqlResource.ogsa().primary()   <-- SELECT on the AdqlResource
+
+    AdqlResource.translator()       <--n/a
+
+    AdqlResource.meta()             <-- public
+
+    ----
+
+    BaseResource.meta()             <-- public
+
+    BaseResource.schemas()          <-- SELECT on the BaseResource
+    BaseResource.schemas().select() <-- SELECT on the BaseResource
+    BaseResource.schemas().search() <-- SELECT on the BaseResource
+
+    ----
+
+    TreeComponent.fullname()        <-- public
+
+    BaseComponent.status()          <-- public
+
+    ----
+
+    NamedEntity.name()              <-- public
+    NamedEntity.name(name)          <-- UPDATE ? (deny on JdbcSchema, JdbcTable, JdbcColumn, IvoaSchema, IvoaTable, IvoaColumn)
+    
+    NamedEntity.text()              <-- public
+    NamedEntity.text(text)          <-- UPDATE on the AdqlResource
+
+    ----
+    
+    Entity.ident()                  <-- public
+    Entity.link()                   <-- public
+    Entity.owner()                  <-- public
+    Entity.created()                <-- public
+    Entity.modified()               <-- public
+    Entity.protector()              <-- public
+
+    ----
+
+    AdqlSchema.resource()           <-- SELECT on the AdqlSchema
+    BaseSchema.resource()           <-- SELECT on the AdqlSchema
+
+    AdqlSchema.tables()             <-- SELECT on the AdqlSchema
+    AdqlSchema.tables().create()    <-- UPDATE on the AdqlSchema
+    AdqlSchema.tables().inport()    <-- UPDATE on the AdqlSchema
+
+    AdqlSchema.meta()               <-- public
+
+    ----
+    
+    BaseSchema.tables()             <-- SELECT on the BaseSchema
+    BaseSchema.tables().select()    <-- SELECT on the BaseSchema
+    BaseSchema.tables().search()    <-- SELECT on the BaseSchema
+
+    BaseSchema.root()               <-- SELECT on the BaseSchema
+    BaseSchema.base()               <-- SELECT on the BaseSchema
+    BaseSchema.resource()           <-- SELECT on the BaseSchema
+
+    BaseSchema.meta()               <-- public
+
+    ----
+
+    AdqlTable.resource()            <-- SELECT on the AdqlTable
+    AdqlTable.schema()              <-- SELECT on the AdqlTable
+    AdqlTable.base()                <-- SELECT on the AdqlTable
+
+    AdqlTable.columns()             <-- SELECT on the AdqlTable
+    AdqlTable.columns().create()    <-- SELECT on the AdqlTable
+    AdqlTable.columns().inport()    <-- SELECT on the AdqlTable
+
+    AdqlTable.meta()                <-- public
+    AdqlTable.meta().adql()         <-- public
+
+    ----
+
+    BaseTable.columns()             <-- SELECT on the BaseTable
+    BaseTable.columns().select()    <-- SELECT on the BaseTable
+    BaseTable.columns().search()    <-- SELECT on the BaseTable
+
+    BaseTable.meta()                <-- public
+    BaseTable.meta().name()         <-- public
+    BaseTable.meta().adql()         <-- public
+
+    BaseTable.alias()               <-- public
+
+    BaseTable.bluequery()           <-- public
+
+    ----
+
+    AdqlColumn.resource()           <-- SELECT on the AdqlColumn
+    AdqlColumn.schema()             <-- SELECT on the AdqlColumn
+    AdqlColumn.table()              <-- SELECT on the AdqlColumn
+    AdqlColumn.base()               <-- SELECT on the AdqlColumn
+    
+    AdqlColumn.meta()               <-- public
+    AdqlColumn.update()             <-- UPDATE on the AdqlColumn
+    AdqlColumn.meta().adql()        <-- public
+
+    AdqlColumn.meta().adql().arraysize()    <-- UPDATE on the AdqlColumn
+    AdqlColumn.meta().adql().type()         <-- UPDATE on the AdqlColumn
+    AdqlColumn.meta().adql().utype()        <-- UPDATE on the AdqlColumn
+    AdqlColumn.meta().adql().units()        <-- UPDATE on the AdqlColumn
+    AdqlColumn.meta().adql().ucd()          <-- UPDATE on the AdqlColumn
+
+    ----
+
+    BaseColumn.resource()           <-- SELECT on the BaseColumn
+    BaseColumn.schema()             <-- SELECT on the BaseColumn
+    BaseColumn.table()              <-- SELECT on the BaseColumn
+    BaseColumn.base()               <-- SELECT on the BaseColumn
+    BaseColumn.root()               <-- SELECT on the BaseColumn
+
+    BaseColumn.alias()              <--public
+
+    BaseColumn.meta()               <-- public
+    BaseColumn.meta().name()        <-- deprecated
+
+    ----
+
+    Identity
+
+    Operation <-- read only ?
+
+    ----
+
+    JdbcResource.create() <-- Not anon, group ?
+
+    JdbcResource.jdbcdriver()
+    JdbcResource.connection()
+
+    JdbcResource.catalog()      <-- Only used for user space.
+    JdbcResource.catalog(name)  <-- not used
+
+    JdbcResource.schemas()
+    JdbcResource.schemas().create() <-- UPDATE on the JdbcResource
+    JdbcResource.schemas().select() <-- SELECT on the JdbcResource
+    JdbcResource.schemas().simple() <-- Only used for user space.
+
+    JdbcResource.ogsa()             <-- SELECT on the JdbcResource
+    JdbcResource.ogsa().select()    <-- SELECT on the JdbcResource
+    JdbcResource.ogsa().primary()   <-- SELECT on the JdbcResource
+
+    JdbcResource.meta()             <-- public
+
+    ----
+
+    JdbcSchema.resource()
+    JdbcSchema.tables()
+    JdbcSchema.tables().create()
+    JdbcSchema.tables().pending() <-- Internal, GC specific
+    JdbcSchema.tables().builder()
+
+    JdbcSchema.catalog()
+    JdbcSchema.schema()
+
+    JdbcSchema.meta()
+    JdbcSchema.meta().jdbc()
+    JdbcSchema.meta().jdbc().catalog()
+    JdbcSchema.meta().jdbc().schema()
+    JdbcSchema.meta().jdbc().fullname()
+
+
+    ----
+
+    JdbcTable
+
+    ----
+
+    JdbcColumn
+
+    ----
+
+    IvoaResource
+
+    ----
+
+    IvoaSchema
+
+    ----
+
+    IvoaTable
+
+    ----
+
+    IvoaColumn
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

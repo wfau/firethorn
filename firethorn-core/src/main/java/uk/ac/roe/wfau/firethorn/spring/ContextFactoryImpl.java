@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.spring;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
-import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Authenticated;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 
@@ -47,7 +47,7 @@ implements Context.Factory
                 }
 
             @Override
-            public Authentication auth()
+            public Authenticated auth()
                 {
                 Operation oper = this.oper();
                 if (oper != null)
@@ -60,7 +60,7 @@ implements Context.Factory
             @Override
             public Identity identity()
                 {
-                Authentication auth = this.auth();
+                Authenticated auth = this.auth();
                 if (auth != null)
                     {
                     return auth.identity();

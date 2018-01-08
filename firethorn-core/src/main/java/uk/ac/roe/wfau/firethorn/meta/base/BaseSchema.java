@@ -154,6 +154,7 @@ extends TreeComponent
          * The schema name.
          * 
          */
+        @Deprecated
         public String name();
 
         }

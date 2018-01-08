@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.entity.access;
 import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
 
 /**
  * Simple implementation of the EntityProtector interface.
@@ -55,22 +54,25 @@ public class SimpleEntityProtector
         {
         return this.entity;
         }
-    
-    @Override
-    public Iterable<Action> actions()
-        {
-        return new EmptyIterable<Action>();
-        }
 
     @Override
-    public boolean allow(Identity identity, Action action)
+    public boolean check(Identity identity, Action action)
         {
-        if (identity.equals(entity.owner()))
+        if (action.type().modify())
             {
-            return true ;
+            // Allow owner to modify.
+            if (identity.equals(entity.owner()))
+                {
+                return true ;
+                }
+            // Deny other to modify.
+            else {
+                return false ;
+                }
             }
+        // Allow anyone to read.
         else {
-            return false ;
+            return true ;
             }
         }
     }

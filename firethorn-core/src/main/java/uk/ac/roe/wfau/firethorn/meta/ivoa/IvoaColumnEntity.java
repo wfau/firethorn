@@ -254,8 +254,7 @@ public class IvoaColumnEntity
         public IvoaColumn select(final IvoaTable parent, final String name)
         throws NameNotFoundException
             {
-            try
-                {
+            try {
                 return super.single(
                     super.query(
                         "IvoaColumn-select-parent.name"

@@ -46,6 +46,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
         {
         /**
          * Create (CREATE) a JDBC table.
+         * @todo Should this be part of JdbcSchema.JdbcDriver ?
          *
          */
         public void create(final JdbcTable table);
@@ -61,6 +62,11 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public void drop(final JdbcTable table);
+
+        /*
+         * Modify (this) table ?
+         *  
+         */
 
         }
 

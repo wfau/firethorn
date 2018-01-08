@@ -21,7 +21,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 
 /**
- * Public interface for an operation.
+ * Public interface for a service {@link Operation} (request).
  *
  */
 public interface Operation
@@ -108,19 +108,19 @@ extends Entity
          * The primary Authentication for this operation.
          *
          */
-        public Authentication primary();
+        public Authenticated primary();
 
         /**
          * Create a new Authentication for this operation.
          *
          */
-        public Authentication create(final Identity identity, final String method);
+        public Authenticated create(final Identity identity, final String method);
 
         /**
          * Get the list of Authentication(s) for this operation.
          *
          */
-        public Iterable<Authentication> select();
+        public Iterable<Authenticated> select();
 
         }
 

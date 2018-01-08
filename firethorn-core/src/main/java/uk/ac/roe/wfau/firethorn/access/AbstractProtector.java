@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.access;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -30,24 +31,29 @@ public abstract class AbstractProtector
 implements Protector
     {
 
-    private List<Action> actions = new ArrayList<Action>();
-    protected void add(final Action action)
+    /**
+     * Check if an {@link Identity} is allowed to perform an {@linkl Action}.
+     * @param identity The {@link Identity}.
+     * @param action The {@link Action}.
+     * @return True if the {@link Identity} is allowed to perform the {@linkl Action}.
+     * 
+     */
+    abstract
+    public boolean check(final Identity identity, final Action action);
+
+    @Override
+    public boolean check(final Authentication authentication, final Action action)
         {
-        this.actions.add(
+        return check(
+            authentication.identity(),
             action
             );
         }
-    @Override
-    public Iterable<Action> actions()
-        {
-        return this.actions;
-        }
 
-    @Override
     public Protector accept(final Identity identity, final Action action)
-        throws ProtectorException
+    throws ProtectorException
         {
-        if (this.allow(identity, action))
+        if (this.check(identity, action))
             {
             return this;
             }
@@ -57,5 +63,15 @@ implements Protector
                 action
                 );
             }
+        }
+
+    @Override
+    public Protector accept(final Authentication authentication, final Action action)
+    throws ProtectorException
+        {
+        return accept(
+            authentication.identity(),
+            action
+            );
         }
     }

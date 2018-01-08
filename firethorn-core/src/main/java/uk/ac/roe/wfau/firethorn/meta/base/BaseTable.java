@@ -179,6 +179,7 @@ extends TreeComponent
 
     /**
      * The {@link BlueQuery} that generated this table.
+     * @TODO Should this only be on AdqlTable ? 
      *
      */
     public BlueQuery bluequery();
@@ -200,6 +201,7 @@ extends TreeComponent
          * The table name.
          * 
          */
+        @Deprecated
         public String name();
 
         }

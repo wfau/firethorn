@@ -25,7 +25,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Authenticated;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
@@ -60,7 +60,7 @@ implements HandlerInterceptor
             {
             log.debug(" Oper [{}]", operation.ident());
 
-            final Authentication primary = operation.authentications().primary();
+            final Authenticated primary = operation.authentications().primary();
             if (primary != null)
                 {
                 log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());

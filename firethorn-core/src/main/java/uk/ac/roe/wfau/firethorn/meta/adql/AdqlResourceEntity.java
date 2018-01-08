@@ -102,7 +102,7 @@ implements AdqlResource
 
         @Override
         @CreateMethod
-        public AdqlResource  create(final String name)
+        public AdqlResource create(final String name)
             {
             return super.insert(
                 new AdqlResourceEntity(
@@ -113,7 +113,7 @@ implements AdqlResource
 
         @Override
         @CreateMethod
-        public AdqlResource  create()
+        public AdqlResource create()
             {
             return super.insert(
                 new AdqlResourceEntity(

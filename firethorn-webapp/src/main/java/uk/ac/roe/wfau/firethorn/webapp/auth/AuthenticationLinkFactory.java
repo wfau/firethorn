@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Authenticated;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -33,8 +33,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class AuthenticationLinkFactory
-extends WebappLinkFactory<Authentication>
-implements Authentication.LinkFactory
+extends WebappLinkFactory<Authenticated>
+implements Authenticated.LinkFactory
     {
     protected AuthenticationLinkFactory()
         {
@@ -56,7 +56,7 @@ implements Authentication.LinkFactory
     public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final Authentication entity)
+    public String link(final Authenticated entity)
         {
         return link(
             ENTITY_PATH,
@@ -65,9 +65,9 @@ implements Authentication.LinkFactory
         }
 
     @Autowired
-    private Authentication.EntityFactory factory ;
+    private Authenticated.EntityFactory factory ;
     @Override
-    public Authentication resolve(String link)
+    public Authenticated resolve(String link)
     throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
         {
         if (this.matches(link))
