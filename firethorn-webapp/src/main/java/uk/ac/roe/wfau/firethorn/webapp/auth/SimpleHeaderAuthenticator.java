@@ -25,7 +25,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.community.Community;
+import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
@@ -34,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
  *
  */
 @Slf4j
-public class AnonymousAuthenticator
+public class SimpleHeaderAuthenticator
 implements HandlerInterceptor
     {
     /**
@@ -44,36 +47,66 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
-    public static final String ANON_AUTH_METHOD    = "anon.auth" ;
-    public static final String ANON_IDENTITY_NAME  = "Anonymous" ;
-    public static final String ANON_COMMUNITY_NAME = "anon.community" ;
+    static final String METHOD_NAME = "http:header" ;
+
+    static final String USERNAME_ATTRIB  = "firethorn.auth.simple.username"  ;
+    static final String PASSWORD_ATTRIB  = "firethorn.auth.simple.password"  ;
+    static final String COMMUNITY_ATTRIB = "firethorn.auth.simple.community" ;
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
+    throws UnauthorizedException
         {
         log.debug("preHandle()");
 
-        final Operation operation =  factories.operations().entities().current();
-        log.debug(" Operation [{}]", operation);
+        final String username = request.getHeader(USERNAME_ATTRIB);
+        final String password = request.getHeader(PASSWORD_ATTRIB);
+        final String comident = request.getHeader(COMMUNITY_ATTRIB);
 
+        final Operation operation = factories.operations().entities().current();
+
+        log.debug("Username  [{}]", username);
+        log.debug("Password  [{}]", password);
+        log.debug("Community [{}]", comident);
+        log.debug("Operation [{}]", operation);
+
+        Community community = null ;
+        Identity  identity  = null ;
+        
         if (operation != null)
             {
-            final Authentication primary = operation.authentications().primary();
-            log.debug(" Primary [{}]", primary);
-
-            if (primary == null)
+            if (comident != null)
                 {
-                log.debug(" Primary authentication is null, adding an anonymous identity");
+                try {
+                    community = factories.communities().entities().select(comident);
+                    }
+                catch (EntityNotFoundException ouch)
+                    {
+                    log.warn("FAIL : Unknown community [{}]", comident);
+                    throw new UnauthorizedException();
+                    }
+                }
+            if (community != null)
+                {
+                if (username != null)
+                    {
+                    identity = community.login(
+                        username,
+                        password
+                        );
+                    }
+                }
+
+            if (identity != null)
+                {
                 operation.authentications().create(
-                        factories.communities().entities().create(
-                            ANON_COMMUNITY_NAME
-                            ).members().create(
-                                ANON_IDENTITY_NAME
-                                ),
-                    ANON_AUTH_METHOD
+                    identity,
+                    METHOD_NAME
                     );
                 }
             }
+
+        log.debug("Primary   [{}]", operation.authentications().primary());
 
         return true ;
         }

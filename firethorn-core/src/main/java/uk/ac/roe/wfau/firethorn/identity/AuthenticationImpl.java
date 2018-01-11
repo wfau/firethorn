@@ -20,49 +20,49 @@ package uk.ac.roe.wfau.firethorn.identity;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
- * An {@link Authentication} that connects an {@link Identity} to an {@link Operation}.
+ * Public interface for an {@link Authentication} {@link Entity}.
  *
  */
-public interface Authenticated
+public interface AuthenticationImpl
 extends Entity, Authentication
     {
 
     /**
-     * {@link Authenticated} {@link Link} factory interface.
+     * {@link AuthenticationImpl} {@link Link} factory interface.
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<Authenticated>
+    extends Entity.LinkFactory<AuthenticationImpl>
         {
         }
 
     /**
-     * {@link Authenticated} {@link Identifier} factory interface.
+     * {@link AuthenticationImpl} {@link Identifier} factory interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<Authenticated>
+    extends Entity.IdentFactory<AuthenticationImpl>
         {
         }
 
     /**
-     * {@link Authenticated} factory interface.
+     * {@link AuthenticationImpl} factory interface.
      *
      */
     public interface EntityFactory
-    extends Entity.EntityFactory<Authenticated>
+    extends Entity.EntityFactory<AuthenticationImpl>
         {
         /**
-         * Get the current active {@link Authenticated}.
+         * Get the current active {@link AuthenticationImpl}.
          *
          */
-        public Authenticated current();
+        public AuthenticationImpl current();
 
         /**
-         * Create a new {@link Authenticated}.
+         * Create a new {@link AuthenticationImpl}.
          *
          */
-        public Authenticated create(final Operation oper, final Identity identity, final String method);
+        public AuthenticationImpl create(final Operation oper, final Identity identity, final String method);
 
         }
 
@@ -71,13 +71,13 @@ extends Entity, Authentication
      * 
      */
     public static interface EntityServices
-    extends Entity.EntityServices<Authenticated>
+    extends Entity.EntityServices<AuthenticationImpl>
         {
         /**
-         * Our {@link Authenticated.EntityFactory} instance.
+         * Our {@link AuthenticationImpl.EntityFactory} instance.
          *
          */
-        public Authenticated.EntityFactory entities();
+        public AuthenticationImpl.EntityFactory entities();
         }
 
     /**

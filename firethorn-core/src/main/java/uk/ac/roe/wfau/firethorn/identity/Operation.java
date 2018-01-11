@@ -108,19 +108,19 @@ extends Entity
          * The primary Authentication for this operation.
          *
          */
-        public Authenticated primary();
+        public Authentication primary();
 
         /**
          * Create a new Authentication for this operation.
          *
          */
-        public Authenticated create(final Identity identity, final String method);
+        public Authentication create(final Identity identity, final String method);
 
         /**
          * Get the list of Authentication(s) for this operation.
          *
          */
-        public Iterable<Authenticated> select();
+        public Iterable<Authentication> select();
 
         }
 

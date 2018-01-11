@@ -44,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
  *
@@ -111,7 +112,7 @@ implements Operation
             }
 
         /*
-         * ThreadLocal Operation.
+         * ThreadLocal store for the current {@link Operation}.
          *
          */
         private final ThreadLocal<Operation> local = new ThreadLocal<Operation>();
@@ -248,7 +249,9 @@ implements Operation
         {
         super(true);
 	    // Question - how can Operation get an owner, when we haven't handled the authentication yet. 
-        // Because the ThreadLocal Operation does not get cleared when a Thread from a ThreadPool is re-used ? 
+        // Because the ThreadLocal Operation does not get cleared when a Thread from a ThreadPool is re-used ?
+        log.debug("OperationEntity()");
+        log.debug("  Owner [{}]", this.owner());
         this.target = target ;
         this.method = method ;
         this.source = source ;
@@ -308,7 +311,7 @@ implements Operation
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = AuthenticatedEntity.class
+        targetEntity = AuthenticationImplEntity.class
         )
     @JoinColumn(
         name = DB_AUTH_COL,
@@ -316,14 +319,14 @@ implements Operation
         nullable = true,
         updatable = true
         )
-    private Authenticated primary ;
+    private AuthenticationImpl primary ;
 
-    private Authenticated primary()
+    private AuthenticationImpl primary()
         {
         return this.primary;
         }
 
-    private void primary(final Authenticated auth)
+    private void primary(final AuthenticationImpl auth)
         {
         log.debug("primary(Authentication)");
         log.debug("  Authentication [{}]", auth);
@@ -341,20 +344,20 @@ implements Operation
     @OneToMany(
         fetch   = FetchType.LAZY,
         mappedBy = "operation",
-        targetEntity = AuthenticatedEntity.class
+        targetEntity = AuthenticationImplEntity.class
         )
-    private final List<Authenticated> authentications = new ArrayList<Authenticated>();
+    private final List<AuthenticationImpl> authentications = new ArrayList<AuthenticationImpl>();
 
     /**
      * Create a new Authentication for this Operation.
      *
      */
-    private Authenticated create(final Identity identity, final String method)
+    private AuthenticationImpl create(final Identity identity, final String method)
         {
         log.debug("create(Identity, String)");
         log.debug("  Identity [{}]", identity.name());
         log.debug("  Method   [{}]", method);
-        final Authenticated auth = factories().authentication().entities().create(
+        final AuthenticationImpl auth = factories().authentication().entities().create(
             this,
             identity,
             method
@@ -374,19 +377,21 @@ implements Operation
         return new Authentications()
             {
             @Override
-            public Authenticated primary()
+            public AuthenticationImpl primary()
                 {
                 return OperationEntity.this.primary();
                 }
 
             @Override
-            public Iterable<Authenticated> select()
+            public Iterable<Authentication> select()
                 {
-                return authentications;
+                return new GenericIterable<Authentication, AuthenticationImpl>(
+                    OperationEntity.this.authentications
+                    );
                 }
 
             @Override
-            public Authenticated create(final Identity identity, final String method)
+            public AuthenticationImpl create(final Identity identity, final String method)
                 {
                 return OperationEntity.this.create(
                     identity,
@@ -404,7 +409,7 @@ implements Operation
 			@Override
 			public Identity primary()
 				{
-				final Authenticated auth = OperationEntity.this.primary();
+				final AuthenticationImpl auth = OperationEntity.this.primary();
 				if (auth != null)
 					{
 					return auth.identity();

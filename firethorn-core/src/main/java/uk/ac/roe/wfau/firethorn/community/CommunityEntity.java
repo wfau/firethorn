@@ -39,6 +39,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
@@ -62,8 +63,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
             query = "FROM CommunityEntity ORDER BY ident desc"
             ),
         @NamedQuery(
-            name = "Comunity-select-uri",
-            query = "FROM CommunityEntity WHERE uri = :uri ORDER BY ident desc"
+            name = "Comunity-select-name",
+            query = "FROM CommunityEntity WHERE name = :name ORDER BY ident desc"
             )
         }
     )
@@ -81,8 +82,9 @@ implements Community
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_URI_COL   = "uri" ;
-    protected static final String DB_SPACE_COL = "space" ;
+    protected static final String DB_URI_COL    = "uri" ;
+    protected static final String DB_SPACE_COL  = "space" ;
+    protected static final String DB_AUTOCREATE_COL = "autocreate" ;
 
     /**
      * EntityFactory implementation.
@@ -101,56 +103,32 @@ implements Community
 
         @Override
         @CreateMethod
-        public Community create(final String uri)
+        public Community create(final String name)
             {
-            log.debug("create(String) [{}]", uri);
+            log.debug("create(String) [{}]", name);
             return create(
-                uri,
-                uri
+                name,
+                factories().jdbc().resources().entities().userdata()
                 );
             }
 
         @Override
         @CreateMethod
-        public Community create(final String uri, final String name)
+        public Community create(final String name, final JdbcResource space)
             {
-            log.debug("create(String, String) [{}][{}]", name, uri);
-            final Community community = this.select(
-                uri
+            log.debug("create(String, JdbcResource) [{}][{}][{}]", name, space);
+            final Community found = this.search(
+                name
                 );
-            if (community != null)
+            if (found != null)
                 {
-                log.debug("Found existing community [{}][{}]", uri, community.ident());
-                return community ;
+                log.debug("Found existing community [{}][{}]", name, found.ident());
+                return found ;
                 }
             else {
-                log.debug("Creating new community [{}]", uri);
-                return create(
-                    uri,
-                    name,
-                    factories().jdbc().resources().entities().userdata()
-                    );
-                }
-            }
-
-        @Override
-        @CreateMethod
-        public Community create(final String uri, final String name, final JdbcResource space)
-            {
-            log.debug("create(String, String, JdbcResource) [{}][{}][{}]", uri, name, space);
-            final Community community = this.select(
-                uri
-                );
-            if (community != null)
-                {
-                log.debug("Found existing community [{}][{}]", uri, community.ident());
-                return community ;
-                }
-            else {
-                log.debug("Creating new community [{}]", uri);
+                log.debug("Creating new community [{}]", name);
                 return super.insert(
                     new CommunityEntity(
-                        uri,
                         name,
                         space
                         )
@@ -160,15 +138,30 @@ implements Community
 
         @Override
         @SelectMethod
-        public Community select(final String uri)
+        public Community select(final String name)
+        throws EntityNotFoundException
             {
-            log.debug("select(String) [{}]", uri);
+            log.debug("select(String) [{}]", name);
+            final Community found = search(name);
+            if (found != null)
+                {
+                return found;
+                }
+            else {
+                throw new EntityNotFoundException(); 
+                }
+            }
+
+        @SelectMethod
+        public Community search(final String name)
+            {
+            log.debug("search (String) [{}]", name);
             return super.first(
                 super.query(
-                    "Comunity-select-uri"
+                    "Comunity-select-name"
                     ).setString(
-                        "uri",
-                        uri
+                        "name",
+                        name
                     )
                 );
             }
@@ -303,16 +296,17 @@ implements Community
      * Create a new Community.
      *
      */
-    protected CommunityEntity(final String uri, final String name, final JdbcResource space)
+    protected CommunityEntity(final String name, final JdbcResource space)
         {
         super(
             name
             );
-        log.debug("CommunityEntity(String, String. JdbcResource) [{}][{}]", uri, name, space);
+        log.debug("CommunityEntity(String, JdbcResource) [{}][{}]", name, space);
         this.space = space ;
-        this.uri = uri ;
         }
 
+    /*
+     * 
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -328,7 +322,42 @@ implements Community
         {
         return this.uri;
         }
+     * 
+     */
+    
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_AUTOCREATE_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private Boolean autocreate = false;
+    public Boolean autocreate()
+        {
+        return this.autocreate;
+        }
 
+    @Override
+    public Identity login(final String name, final String pass)
+    throws UnauthorizedException
+        {
+        final Identity found = members().search(name);
+        if (found != null)
+            {
+            return found ;
+            }
+        else if (autocreate)
+            {
+            return members().create(name);
+            }
+        else {
+            throw new UnauthorizedException();
+            }
+        }
+    
     @Override
     public Members members()
         {
@@ -350,6 +379,13 @@ implements Community
                     CommunityEntity.this,
                     name
                     );
+                }
+
+            @Override
+            public Identity search(String name)
+                {
+                // TODO Auto-generated method stub
+                return null;
                 }
             };
         }

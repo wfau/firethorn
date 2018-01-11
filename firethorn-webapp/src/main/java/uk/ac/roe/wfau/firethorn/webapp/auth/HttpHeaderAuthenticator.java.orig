@@ -25,6 +25,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.community.Community;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
@@ -43,97 +46,37 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
-    static final String DEFAULT_METHOD = "http:header" ;
+    static final String METHOD_NAME = "http:header" ;
 
-    static final String DEFAULT_IDENTITY  = "anon.identity"  ;
-    static final String DEFAULT_COMMUNITY = "s" ;
-
-    static final String DEFAULT_IDENTITY_ATTRIB   = "firethorn.auth.identity"  ;
-    static final String DEFAULT_COMMUNITY_ATTRIB  = "firethorn.auth.community" ;
-
-    private String method = DEFAULT_METHOD ;
-    public String getMethod()
-        {
-        return method;
-        }
-    public void setMethod(final String value)
-        {
-        method = value;
-        }
-
-    private String defaultCommunity ;
-    public String getDefaultCommunity()
-        {
-        return defaultCommunity;
-        }
-    public void setDefaultCommunity(final String name)
-        {
-        defaultCommunity = name ;
-        }
-
-    private String defaultIdentity ;
-    public String getDefaultIdentity()
-        {
-        return defaultIdentity ;
-        }
-    public void setDefaultIdentity(final String name)
-        {
-        defaultIdentity = name ;
-        }
-
-    private String identityAttrib = DEFAULT_IDENTITY_ATTRIB ;
-    public String getIdentityAttrib()
-        {
-        return identityAttrib;
-        }
-    public void setIdentityAttrib(final String attrib)
-        {
-        identityAttrib = attrib ;
-        }
-
-    private String communityAttrib = DEFAULT_COMMUNITY_ATTRIB ;
-    public String getCommunityAttrib()
-        {
-        return communityAttrib;
-        }
-    public void setCommunityAttrib(final String attrib)
-        {
-        communityAttrib = attrib ;
-        }
+    static final String USERNAME_ATTRIB  = "firethorn.auth.username"  ;
+    static final String PASSWORD_ATTRIB  = "firethorn.auth.password"  ;
+    static final String COMMUNITY_ATTRIB = "firethorn.auth.community" ;
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
         {
-        log.debug("preHandle()");
+        log.debug("HttpHeaderAuthenticator.preHandle()");
 
-        String iname = request.getHeader(identityAttrib);
-        String cname = request.getHeader(communityAttrib);
-
-        if (iname == null)
-            {
-            iname = defaultIdentity ;
-            }
-
-        if (cname == null)
-            {
-            cname = defaultCommunity;
-            }
+        final String username  = request.getHeader(USERNAME_ATTRIB);
+        final String password  = request.getHeader(PASSWORD_ATTRIB);
+        final String community = request.getHeader(COMMUNITY_ATTRIB);
 
         final Operation operation = factories.operations().entities().current();
 
-        log.debug("Identity  [{}]", iname);
-        log.debug("Community [{}]", cname);
+        log.debug("Identity  [{}]", username);
+        log.debug("Community [{}]", community);
         log.debug("Operation [{}]", operation);
 
-        if ((operation != null) && (cname != null) && (iname != null))
+        if ((operation != null) && (community != null) && (username != null))
             {
             operation.authentications().create(
                     factories.communities().entities().create(
-                        cname
-                        ).members().create(
-                            iname
-                            ),
-                method
+                        community,
+                        community
+                    ).members().create(
+                    username
+                    ),
+                METHOD_NAME
                 );
             }
 
@@ -146,13 +89,41 @@ implements HandlerInterceptor
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
-        log.debug("postHandle()");
+        log.debug("HttpHeaderAuthenticator.postHandle()");
+
+        final Operation operation = factories.operations().entities().current();
+        log.debug("Operation [{}]", operation);
+
+        if (operation != null)
+            {
+            final Authentication primary = operation.authentications().primary();
+            log.debug("Primary [{}]", primary);
+
+            if (primary != null)
+                {
+                final Identity identity = primary.identity();
+                log.debug("Identity [{}]", identity);
+                response.setHeader(
+                    USERNAME_ATTRIB,
+                    identity.name()
+                    );
+
+                final Community community = identity.community();
+                log.debug("Community [{}]", community);
+                if (community != null)
+                    {
+                    response.setHeader(
+                        COMMUNITY_ATTRIB,
+                        community.name()
+                        );
+                    }
+                }
+            }
         }
 
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
-        log.debug("afterCompletion()");
+        log.debug("HttpHeaderAuthenticator.afterCompletion()");
         }
-
     }

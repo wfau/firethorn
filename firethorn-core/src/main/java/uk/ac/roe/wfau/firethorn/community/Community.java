@@ -70,37 +70,28 @@ extends NamedEntity
     extends Entity.EntityFactory<Community>
         {
         /**
-         * Create a new {@link Community}.
-         * @param uri The {@link Community} URI.
-         *
-         */
-        public Community create(final String uri);
-
-        /**
-         * Select or create a {@link Community}.
-         * @param uri  The {@link Community} URI.
+         * Select or create a new {@link Community}.
          * @param name The {@link Community} name.
          *
          */
-        public Community create(final String uri, final String name);
+        public Community create(final String name);
 
         /**
-         * Select or create a {@link Community}.
-         * @param uri   The {@link Community} URI.
-         * @param space The {@link JdbcResource} to use for storing {@link Community} member's data.  
+         * Select or create a new {@link Community}.
          * @param name  The {@link Community} name.
+         * @param space The {@link JdbcResource} to use for storing {@link Community} member's data.  
          *
          */
-        public Community create(final String uri, final String name, final JdbcResource space);
+        public Community create(final String name, final JdbcResource space);
 
         /**
          * Select a Community based on URI.
-         * @param uri The {@link Community} URI.
+         * @param name The {@link Community} name.
          * @return The corresponding {@link Community}.
          * @throws EntityNotFoundException If no matching {@link Community} was found.
          *
          */
-        public Community select(final String uri)
+        public Community select(final String name)
         throws EntityNotFoundException;
 
         /**
@@ -148,13 +139,21 @@ extends NamedEntity
 
         /**
          * Select an existing {@link Identity} by name.
-         * @param name The {@link Identity} name to look for.
+         * @param name The name of the {@link Identity}.
          * @return The corresponding {@link Identity}.
          * @throws NameNotFoundException If no matching {@link Identity} was found.
          *
          */
         public Identity select(final String name)
         throws NameNotFoundException;
+
+        /**
+         * Seach fo an existing {@link Identity} by name.
+         * @param name The name of the {@link Identity}.
+         * @return The corresponding {@link Identity}, or null if not found.
+         *
+         */
+        public Identity search(final String name);
 
         }
 
@@ -169,8 +168,8 @@ extends NamedEntity
      * The unique identifier (URI) for this {@link Community}.
      * @return The {@link Community} URI.
      *
-     */
     public String uri();
+     */
 
     /**
      * The {@link JdbcResource} to use as storage space for this {@link Community}.
@@ -187,4 +186,15 @@ extends NamedEntity
      */
     public JdbcResource space(final boolean create);
 
+    /**
+     * Login using name and password.
+     * @param name The name of the {@link Identity}.
+     * @param pass The password.
+     * @return The corresponding {@link Identity}.
+     * @throws UnauthorizedException If unable to login.
+     *
+     */
+    public Identity login(final String name, final String pass)
+    throws UnauthorizedException;
+    
     }

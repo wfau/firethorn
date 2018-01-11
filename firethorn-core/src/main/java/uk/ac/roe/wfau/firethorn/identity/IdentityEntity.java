@@ -119,7 +119,7 @@ implements Identity
         @CreateMethod
         public Identity create(final Community community, final String name)
             {
-            log.debug("create(Community, String) [{}][{}]", community.uri(), name);
+            log.debug("create(Community, String) [{}][{}]", community.name(), name);
             final Identity member = this.select(
                 community,
                 name
@@ -266,7 +266,7 @@ implements Identity
         }
 
     /**
-     * Create a new IdentityEntity, setting the owner to null.
+     * Create a new IdentityEntity.
      *
      */
     protected IdentityEntity(final Community community, final String name)
@@ -290,14 +290,7 @@ implements Identity
     @Override
     public Identity owner()
         {
-        if (super.owner() != null)
-            {
-            return super.owner();
-            }
-        else
-            {
-            return this;
-            }
+        return this;
         }
 
     @ManyToOne(

@@ -28,9 +28,9 @@ then
     targethost=${target}
 fi
 
-echo "Target host [${targethost}]"
-echo "Tunnel host [${tunnelhost}]"
-echo "Tunnel user [${tunneluser}]"
+echo "Target host [${targethost:?}]"
+echo "Tunnel host [${tunnelhost:?}]"
+echo "Tunnel user [${tunneluser:?}]"
 
 # ROE network
 LOCALNET='129.215.*'
@@ -51,8 +51,8 @@ route()
     local target=${1:?}
     ip route get "${target:?}" |
     sed -n '
-        /^'${target}'/ {
-            s/^'${target}' via \([0-9.]*\)\b.*$/\1/p
+        /^'${target:?}'/ {
+            s/^'${target:?}' via \([0-9.]*\)\b.*$/\1/p
             }
         '
     }
@@ -64,7 +64,7 @@ proxy()
     local targethost=${1:?}
 
     echo "Proxy connection"
-    echo "Target host [${targethost}]"
+    echo "Target host [${targethost:?}]"
 
     targetip=$(host -t A ${targethost:?} | cut -d ' ' -f 4)
 
@@ -82,9 +82,9 @@ tunnel()
     local tunneluser=${3:?}
 
     echo "SSH connection"
-    echo "Target host [${targethost}]"
-    echo "Tunnel host [${tunnelhost}]"
-    echo "Tunnel user [${tunneluser}]"
+    echo "Target host [${targethost:?}]"
+    echo "Tunnel host [${tunnelhost:?}]"
+    echo "Tunnel user [${tunneluser:?}]"
 
     export SSH_AUTH_SOCK=/tmp/ssh_auth_sock
     ssh-keyscan "${tunnelhost:?}" 2> /dev/null >> /etc/ssh/ssh_known_hosts
@@ -95,7 +95,7 @@ tunnel()
 #
 # Get our external IP address.
 external=$(extern)
-echo "External IP [${external}]"
+echo "External IP [${external:?}]"
 
 #
 # If our address is in ROE.
@@ -104,27 +104,27 @@ then
     echo "INTERNAL network"
     #
     # Check the route to ramses1.
-    via=$(route ${TESTHOST})
-    echo "VIA [${via}]"
+    via=$(route ${TESTHOST:?})
+    echo "VIA [${via:?}]"
     #
     # If the route is direct (has no via).
-    if [ -z ${via} ]
+    if [ -z ${via:?} ]
     then
         echo "DIRECT route"
         #
         # Proxy the SQLServer connection.
-        proxy ${targethost}
+        proxy ${targethost:?}
     else
         echo "INDIRECT route"
         #
         # Tunnel the SQLServer connection.
-        tunnel ${targethost} ${tunnelhost} ${tunneluser}
+        tunnel ${targethost:?} ${tunnelhost:?} ${tunneluser:?}
     fi
 else
     echo "EXTERNAL network"
     #
     # Tunnel the SQLServer connection.
-    tunnel ${targethost} ${tunnelhost} ${tunneluser}
+    tunnel ${targethost:?} ${tunnelhost:?} ${tunneluser:?}
 fi
 
 

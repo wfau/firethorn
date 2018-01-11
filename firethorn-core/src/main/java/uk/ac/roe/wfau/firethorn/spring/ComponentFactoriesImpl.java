@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
-import uk.ac.roe.wfau.firethorn.identity.Authenticated;
+import uk.ac.roe.wfau.firethorn.identity.AuthenticationImpl;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
@@ -192,9 +192,9 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
-    protected Authenticated.EntityServices authentications;
+    protected AuthenticationImpl.EntityServices authentications;
     @Override
-	public Authenticated.EntityServices authentication()
+	public AuthenticationImpl.EntityServices authentication()
         {
         return this.authentications;
         }

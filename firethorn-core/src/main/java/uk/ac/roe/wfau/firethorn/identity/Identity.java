@@ -76,7 +76,7 @@ extends Entity, NamedEntity
          *
          */
         public Identity select(final Community community, final String name);
-
+        
         }
 
     /**

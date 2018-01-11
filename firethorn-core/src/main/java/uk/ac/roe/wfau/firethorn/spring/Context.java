@@ -1,6 +1,6 @@
 package uk.ac.roe.wfau.firethorn.spring;
 
-import uk.ac.roe.wfau.firethorn.identity.Authenticated;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 
@@ -21,7 +21,7 @@ public interface Context
      * The primary Authentication.
      *
      */
-    public Authenticated auth();
+    public Authentication auth();
 
     /**
      * The primary Identity.

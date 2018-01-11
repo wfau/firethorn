@@ -12,7 +12,7 @@ services:
 
     bethany:
         hostname:
-            "${metahost}"
+            "bethany"
         image:
            "firethorn/postgres:${buildtag:-latest}"
         read_only:
@@ -28,7 +28,7 @@ services:
 
     jarmila:
         hostname:
-            "${ogsahost}"
+            "jarmila"
         image:
            "firethorn/ogsadai:${buildtag:-latest}"
         read_only:
@@ -51,7 +51,7 @@ services:
 
     gillian:
         hostname:
-            "firethorn"
+            "gillian"
         image:
            "firethorn/firethorn:${buildtag:-latest}"
         read_only:
@@ -66,7 +66,7 @@ services:
             - miriam
             - rosana
         environment:
-            firethorn.ogsadai.endpoint: "http://${ogsahost}:8080/ogsadai/services"
+            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
         depends_on:
             bethany:
                 condition: service_started            
@@ -101,11 +101,6 @@ services:
         networks:
             - miriam
         environment:
-            dataname:    "${datahost}"
-            datadata:    "${datadata}"
-            datauser:    "${datauser}"
-            datapass:    "${datapass}"
-            datadriver:  "net.sourceforge.jtds.jdbc.Driver"
             endpointurl: "http://gillian:8080/firethorn"
         depends_on:
             gillian:

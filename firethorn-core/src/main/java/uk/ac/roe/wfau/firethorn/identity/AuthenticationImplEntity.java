@@ -50,7 +50,7 @@ import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
     AccessType.FIELD
     )
 @Table(
-    name = AuthenticatedEntity.DB_TABLE_NAME
+    name = AuthenticationImplEntity.DB_TABLE_NAME
     )
 @Inheritance(
     strategy = InheritanceType.JOINED
@@ -59,9 +59,9 @@ import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
         {
         }
     )
-public class AuthenticatedEntity
+public class AuthenticationImplEntity
 extends AbstractEntity
-implements Authenticated
+implements AuthenticationImpl
     {
     /**
      * Hibernate table mapping.
@@ -73,31 +73,31 @@ implements Authenticated
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_METHOD_COL    = "method"    ;
-    protected static final String DB_IDENTITY_COL  = "actor"     ;
     protected static final String DB_OPERATION_COL = "operation" ;
+    protected static final String DB_METHOD_COL    = "method"    ;
+    protected static final String DB_IDENTITY_COL  = "identity"  ;
 
     @Component
     public static class EntityFactory
-    extends AbstractEntityFactory<Authenticated>
-    implements Authenticated.EntityFactory
+    extends AbstractEntityFactory<AuthenticationImpl>
+    implements AuthenticationImpl.EntityFactory
         {
         @Override
         public Class<?> etype()
             {
-            return AuthenticatedEntity.class ;
+            return AuthenticationImplEntity.class ;
             }
 
         @Override
         @CreateMethod
-        public Authenticated create(final Operation operation, final Identity identity, final String method)
+        public AuthenticationImpl create(final Operation operation, final Identity identity, final String method)
            {
            log.debug("create(Operation, Identity, String)");
            log.debug("  Operation [{}]", operation.method());
            log.debug("  Identity  [{}]", identity.name());
            log.debug("  Method    [{}]", method);
            return this.insert(
-                new AuthenticatedEntity(
+                new AuthenticationImplEntity(
                     operation,
                     identity,
                     method
@@ -106,7 +106,7 @@ implements Authenticated
             }
 
         @Override
-        public Authenticated current()
+        public AuthenticationImpl current()
             {
             throw new NotImplementedException();
             }
@@ -119,13 +119,13 @@ implements Authenticated
     @Slf4j
     @Component
     public static class EntityServices
-    implements Authenticated.EntityServices
+    implements AuthenticationImpl.EntityServices
         {
         /**
          * Our singleton instance.
          * 
          */
-        private static AuthenticatedEntity.EntityServices instance ; 
+        private static AuthenticationImplEntity.EntityServices instance ; 
 
         /**
          * Our singleton instance.
@@ -133,7 +133,7 @@ implements Authenticated
          */
         public static EntityServices instance()
             {
-            return AuthenticatedEntity.EntityServices.instance ;
+            return AuthenticationImplEntity.EntityServices.instance ;
             }
 
         /**
@@ -152,9 +152,9 @@ implements Authenticated
         protected void init()
             {
             log.debug("init()");
-            if (AuthenticatedEntity.EntityServices.instance == null)
+            if (AuthenticationImplEntity.EntityServices.instance == null)
                 {
-                AuthenticatedEntity.EntityServices.instance = this ;
+                AuthenticationImplEntity.EntityServices.instance = this ;
                 }
             else {
                 log.error("Setting instance more than once");
@@ -165,42 +165,42 @@ implements Authenticated
             }
         
         @Autowired
-        private Authenticated.IdentFactory idents;
+        private AuthenticationImpl.IdentFactory idents;
         @Override
-        public Authenticated.IdentFactory idents()
+        public AuthenticationImpl.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        private Authenticated.LinkFactory links;
+        private AuthenticationImpl.LinkFactory links;
         @Override
-        public Authenticated.LinkFactory links()
+        public AuthenticationImpl.LinkFactory links()
             {
             return this.links;
             }
 
         @Autowired
-        private Authenticated.EntityFactory entities;
+        private AuthenticationImpl.EntityFactory entities;
         @Override
-        public Authenticated.EntityFactory entities()
+        public AuthenticationImpl.EntityFactory entities()
             {
             return this.entities;
             }
         }
 
     @Override
-    protected Authenticated.EntityFactory factory()
+    protected AuthenticationImpl.EntityFactory factory()
         {
         log.debug("factory()");
-        return AuthenticatedEntity.EntityServices.instance().entities() ; 
+        return AuthenticationImplEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
-    protected Authenticated.EntityServices services()
+    protected AuthenticationImpl.EntityServices services()
         {
         log.debug("services()");
-        return AuthenticatedEntity.EntityServices.instance() ; 
+        return AuthenticationImplEntity.EntityServices.instance() ; 
         }
 
     @Override
@@ -215,7 +215,7 @@ implements Authenticated
      * Protected constructor.
      *
      */
-    protected AuthenticatedEntity()
+    protected AuthenticationImplEntity()
         {
         }
 
@@ -223,7 +223,7 @@ implements Authenticated
      * Protected constructor.
      *
      */
-    protected AuthenticatedEntity(final Operation operation, final Identity identity, final String method)
+    protected AuthenticationImplEntity(final Operation operation, final Identity identity, final String method)
         {
         super(
             true
@@ -257,7 +257,7 @@ implements Authenticated
             @Override
             public String urn()
                 {
-                return AuthenticatedEntity.this.method;
+                return AuthenticationImplEntity.this.method;
                 }
             };
         }
@@ -293,5 +293,26 @@ implements Authenticated
     public Operation operation()
         {
         return this.operation;
+        }
+
+    @Override
+    public String toString()
+        {
+        final StringBuffer buffer = new StringBuffer();
+        buffer.append("Authentication[");
+            buffer.append("Ident[");
+            buffer.append(ident());
+            buffer.append("]");
+    
+            buffer.append("Identity[");
+            buffer.append(identity().name());
+            buffer.append("]");
+            
+            buffer.append("Method[");
+            buffer.append(method);
+            buffer.append("]");
+        buffer.append("]");
+       
+        return buffer.toString();
         }
     }

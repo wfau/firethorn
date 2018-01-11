@@ -11,6 +11,8 @@ networks:
 services:
 
     bethany:
+        hostname:
+            "bethany"
         image:
            "firethorn/postgres:${buildtag}"
         read_only:
@@ -25,6 +27,8 @@ services:
             - miriam
 
     patricia:
+        hostname:
+            "patricia"
         image:
            "firethorn/sql-proxy:${buildtag}"
         read_only:
@@ -44,6 +48,8 @@ services:
             - miriam
 
     elayne:
+        hostname:
+            "elayne"
         image:
            "firethorn/sql-proxy:${buildtag}"
         read_only:
@@ -63,6 +69,8 @@ services:
             - miriam
 
     jarmila:
+        hostname:
+            "jarmila"
         image:
            "firethorn/ogsadai:${buildtag}"
         read_only:
@@ -89,6 +97,8 @@ services:
             retries: 5
 
     gillian:
+        hostname:
+            "firethorn"
         image:
            "firethorn/firethorn:${buildtag}"
         read_only:
@@ -103,6 +113,8 @@ services:
             - miriam
             - rosana
         environment:
+            firethorn.meta.url:    'jdbc:postgresql://bethany/postgres'
+            firethorn.meta.driver: 'org.postgresql.Driver'
             firethorn.ogsadai.endpoint: 'http://jarmila:8080/ogsadai/services'
         depends_on:
             bethany:
@@ -141,6 +153,8 @@ services:
             - ${HOME}/tester.properties:/etc/tester.properties
         networks:
             - miriam
+        environment:
+            endpointurl: 'http://gillian:8080/firethorn'
         depends_on:
             gillian:
                 condition: service_healthy            

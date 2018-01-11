@@ -20,12 +20,13 @@ package uk.ac.roe.wfau.firethorn.spring;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
-import uk.ac.roe.wfau.firethorn.identity.Authenticated;
+import uk.ac.roe.wfau.firethorn.identity.AuthenticationImpl;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 
 /**
- *
+ * Factory for accessing the current {@link Operation}, {@link AuthenticationImpl} and {@link Identity}.  
  *
  */
 @Component
@@ -33,7 +34,6 @@ public class ContextFactoryImpl
 extends AbstractComponent
 implements Context.Factory
     {
-    
     
     @Override
     public Context current()
@@ -47,7 +47,7 @@ implements Context.Factory
                 }
 
             @Override
-            public Authenticated auth()
+            public Authentication auth()
                 {
                 Operation oper = this.oper();
                 if (oper != null)
@@ -60,39 +60,13 @@ implements Context.Factory
             @Override
             public Identity identity()
                 {
-                Authenticated auth = this.auth();
+                Authentication auth = this.auth();
                 if (auth != null)
                     {
                     return auth.identity();
                     }
                 return null ;
                 }
-
-            
-/*
- * 
-            @Override
-            public DataSpace space()
-                {
-                return new DataSpace()
-                    {
-                    //TODO .... remove this
-                    @Override
-                    public JdbcSchema jdbc()
-                        {
-                        return identity().spaces().jdbc().current();
-                        }
-                    //TODO .... fix this
-                    @Override
-                    public AdqlSchema adql()
-                        {
-                        return null;
-                        }
-                    };
-                }
- *             
- */
-
             };
         }
     }
