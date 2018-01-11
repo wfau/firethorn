@@ -25,6 +25,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -64,14 +65,21 @@ implements HandlerInterceptor
             if (primary == null)
                 {
                 log.debug(" Primary authentication is null, adding an anonymous identity");
-                operation.authentications().create(
-                        factories.communities().entities().create(
-                            ANON_COMMUNITY_NAME
-                            ).members().create(
-                                ANON_IDENTITY_NAME
-                                ),
-                    ANON_AUTH_METHOD
-                    );
+                try {
+                    operation.authentications().create(
+                            factories.communities().entities().create(
+                                ANON_COMMUNITY_NAME
+                                ).members().create(
+                                    ANON_IDENTITY_NAME
+                                    ),
+                        ANON_AUTH_METHOD
+                        );
+                    }
+                catch (DuplicateEntityException ouch)
+                    {
+                    // TODO Auto-generated catch block
+                    ouch.printStackTrace();
+                    }
                 }
             }
 

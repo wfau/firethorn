@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.community;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -74,7 +75,8 @@ extends NamedEntity
          * @param name The {@link Community} name.
          *
          */
-        public Community create(final String name);
+        public Community create(final String name)
+        throws DuplicateEntityException;
 
         /**
          * Select or create a new {@link Community}.
@@ -82,10 +84,11 @@ extends NamedEntity
          * @param space The {@link JdbcResource} to use for storing {@link Community} member's data.  
          *
          */
-        public Community create(final String name, final JdbcResource space);
+        public Community create(final String name, final JdbcResource space)
+        throws DuplicateEntityException;
 
         /**
-         * Select a Community based on URI.
+         * Select a Community based on name.
          * @param name The {@link Community} name.
          * @return The corresponding {@link Community}.
          * @throws EntityNotFoundException If no matching {@link Community} was found.
@@ -95,11 +98,25 @@ extends NamedEntity
         throws EntityNotFoundException;
 
         /**
-         * Our local Identity member factory.
-         * 
-        public Identity.EntityFactory members();
+         * Search for a Community based on name.
+         * @param name The {@link Community} name.
+         * @return The corresponding {@link Community}, or null if no match found.
+         *
          */
-        
+        public Community search(final String name);
+
+        /**
+         * Login to a {@link Community} using name and password.
+         * @param comm The {@link Community} name.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
+         * @return The corresponding {@link Identity}.
+         * @throws UnauthorizedException If unable to login.
+         *
+         */
+        public Identity login(final String comm, final String name, final String pass)
+        throws UnauthorizedException;
+
         }
 
     /**
@@ -135,13 +152,25 @@ extends NamedEntity
          * @return The new {@link Identity}.
          *
          */
-        public Identity create(final String name);
+        public Identity create(final String name)
+        throws DuplicateEntityException;
+        
+        /**
+         * Create a new {@link Identity}.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
+         * @return The new {@link Identity}.
+         *
+         */
+        public Identity create(final String name, final String pass)
+        throws DuplicateEntityException;
 
         /**
          * Select an existing {@link Identity} by name.
          * @param name The name of the {@link Identity}.
          * @return The corresponding {@link Identity}.
          * @throws NameNotFoundException If no matching {@link Identity} was found.
+         * @throws EntityNotFoundException 
          *
          */
         public Identity select(final String name)
@@ -187,9 +216,9 @@ extends NamedEntity
     public JdbcResource space(final boolean create);
 
     /**
-     * Login using name and password.
-     * @param name The name of the {@link Identity}.
-     * @param pass The password.
+     * Login to this {@link Community} using name and password.
+     * @param name The {@link Identity} name.
+     * @param pass The {@link Identity} password.
      * @return The corresponding {@link Identity}.
      * @throws UnauthorizedException If unable to login.
      *

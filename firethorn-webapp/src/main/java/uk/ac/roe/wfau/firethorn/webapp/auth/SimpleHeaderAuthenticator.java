@@ -64,43 +64,22 @@ implements HandlerInterceptor
         final String comident = request.getHeader(COMMUNITY_ATTRIB);
 
         final Operation operation = factories.operations().entities().current();
+        log.debug("Operation [{}]", operation);
 
         log.debug("Username  [{}]", username);
         log.debug("Password  [{}]", password);
         log.debug("Community [{}]", comident);
-        log.debug("Operation [{}]", operation);
-
-        Community community = null ;
-        Identity  identity  = null ;
         
         if (operation != null)
             {
-            if (comident != null)
-                {
-                try {
-                    community = factories.communities().entities().select(comident);
-                    }
-                catch (EntityNotFoundException ouch)
-                    {
-                    log.warn("FAIL : Unknown community [{}]", comident);
-                    throw new UnauthorizedException();
-                    }
-                }
-            if (community != null)
-                {
-                if (username != null)
-                    {
-                    identity = community.login(
-                        username,
-                        password
-                        );
-                    }
-                }
-
-            if (identity != null)
+            if ((comident != null) || (username != null) || (password != null))
                 {
                 operation.authentications().create(
-                    identity,
+                    factories.communities().entities().login(
+                        comident,
+                        username,
+                        password
+                        ),
                     METHOD_NAME
                     );
                 }

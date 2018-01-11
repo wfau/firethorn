@@ -25,6 +25,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
@@ -127,14 +128,20 @@ implements HandlerInterceptor
 
         if ((operation != null) && (cname != null) && (iname != null))
             {
-            operation.authentications().create(
+            try {
+                operation.authentications().create(
                     factories.communities().entities().create(
                         cname
                         ).members().create(
                             iname
                             ),
-                method
-                );
+                    method
+                    );
+                }
+            catch (DuplicateEntityException ouch)
+                {
+                log.debug("Duplicate exception ", ouch);
+                }
             }
 
         log.debug("Operation [{}]", operation);

@@ -39,8 +39,10 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -118,22 +120,40 @@ implements Identity
         @Override
         @CreateMethod
         public Identity create(final Community community, final String name)
+        throws DuplicateEntityException
             {
             log.debug("create(Community, String) [{}][{}]", community.name(), name);
-            final Identity member = this.select(
+            return create(
+                community,
+                name,
+                null
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public Identity create(final Community community, final String name, final String pass)
+        throws DuplicateEntityException
+            {
+            log.debug("create(Community, String, String) [{}][{}]", community.name(), name);
+            final Identity found = this.search(
                 community,
                 name
                 );
-            if (member != null)
+            if (found == null)
                 {
-                return member ;
-                }
-            else {
                 return super.insert(
                     new IdentityEntity(
                         community,
-                        name
+                        name,
+                        pass
                         )
+                    );
+                }
+            else {
+                log.error("Duplicate Identity [{}][{}]", community.name(), name);
+                throw new DuplicateEntityException(
+                    found
                     );
                 }
             }
@@ -141,7 +161,28 @@ implements Identity
         @Override
         @SelectMethod
         public Identity select(final Community community, final String name)
+        throws NameNotFoundException
             {
+            log.debug("select(Community, String) [{}][{}]", community.name(), name);
+            final Identity found = search(
+                community,
+                name
+                );
+            if (found != null)
+                {
+                return found;
+                }
+            else {
+                throw new NameNotFoundException(
+                    name
+                    );
+                }
+            }
+
+        @Override
+        public Identity search(Community community, String name)
+            {
+            log.debug("search(Community, String) [{}][{}]", community.name(), name);
             return super.first(
                 super.query(
                     "Identity-select-community.name"
@@ -269,7 +310,7 @@ implements Identity
      * Create a new IdentityEntity.
      *
      */
-    protected IdentityEntity(final Community community, final String name)
+    protected IdentityEntity(final Community community, final String name, final String pass)
         {
         super(name);
         this.community = community;

@@ -19,6 +19,9 @@ package uk.ac.roe.wfau.firethorn.identity;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
@@ -67,15 +70,33 @@ extends Entity, NamedEntity
 
         /**
          * Create a new {@link Identity}.
+         * @param name The {@link Identity} name.
          *
          */
-        public Identity create(final Community community, final String name);
+        public Identity create(final Community community, final String name)
+        throws DuplicateEntityException;
 
         /**
-         * Select a {@link Identity}.
+         * Create a new {@link Identity}.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
          *
          */
-        public Identity select(final Community community, final String name);
+        public Identity create(final Community community, final String name, final String pass)
+        throws DuplicateEntityException;
+
+        /**
+         * Select an {@link Identity}, based on name.
+         *
+         */
+        public Identity select(final Community community, final String name)
+        throws NameNotFoundException;
+
+        /**
+         * Search for an {@link Identity} based on name.
+         *
+         */
+        public Identity search(final Community community, final String name);
         
         }
 

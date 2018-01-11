@@ -39,7 +39,10 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
@@ -87,6 +90,24 @@ implements Community
     protected static final String DB_AUTOCREATE_COL = "autocreate" ;
 
     /**
+     * System {@link Community} name.
+     * 
+     */
+    protected static final String SYSTEM_COMMUNITY_NAME = "system";
+
+    /**
+     * System {@link Community} {@link Identity} name.
+     * 
+     */
+    protected static final String SYSTEM_COMMUNITY_USER = "admin";
+
+    /**
+     * Anon {@link Community} name.
+     * 
+     */
+    protected static final String ANON_COMMUNITY_NAME = "anon";
+
+    /**
      * EntityFactory implementation.
      *
      */
@@ -104,6 +125,7 @@ implements Community
         @Override
         @CreateMethod
         public Community create(final String name)
+        throws DuplicateEntityException
             {
             log.debug("create(String) [{}]", name);
             return create(
@@ -115,17 +137,14 @@ implements Community
         @Override
         @CreateMethod
         public Community create(final String name, final JdbcResource space)
+        throws DuplicateEntityException
             {
             log.debug("create(String, JdbcResource) [{}][{}][{}]", name, space);
             final Community found = this.search(
                 name
                 );
-            if (found != null)
+            if (found == null)
                 {
-                log.debug("Found existing community [{}][{}]", name, found.ident());
-                return found ;
-                }
-            else {
                 log.debug("Creating new community [{}]", name);
                 return super.insert(
                     new CommunityEntity(
@@ -134,21 +153,27 @@ implements Community
                         )
                     );
                 }
+            else {
+                log.debug("Duplicate community [{}][{}]", name, found.ident());
+                throw new DuplicateEntityException(found);
+                }
             }
 
         @Override
         @SelectMethod
         public Community select(final String name)
-        throws EntityNotFoundException
+        throws NameNotFoundException
             {
             log.debug("select(String) [{}]", name);
-            final Community found = search(name);
+            final Community found = this.search(name);
             if (found != null)
                 {
                 return found;
                 }
             else {
-                throw new EntityNotFoundException(); 
+                throw new NameNotFoundException(
+                    name
+                    ); 
                 }
             }
 
@@ -163,6 +188,93 @@ implements Community
                         "name",
                         name
                     )
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public Identity login(final String comm, final String name, final String pass)
+        throws UnauthorizedException
+            {
+            log.debug("login(String, String, String)");
+            log.debug("  community [{}]", comm);
+            log.debug("  username  [{}]", name);
+            log.debug("  password  [{}]", pass);
+            //
+            // Check for null params.
+            if (comm == null)
+                {
+                log.warn("FAIL : Null community");
+                throw new UnauthorizedException();
+                }
+            if (name == null)
+                {
+                log.warn("FAIL : Null username");
+                throw new UnauthorizedException();
+                }
+            if (pass == null)
+                {
+                log.warn("FAIL : Null password");
+                throw new UnauthorizedException();
+                }
+            //
+            // Check for a matching Community.
+            // If we don't find a match, check if this is the system community.
+            Community community = search(comm);
+            if (community == null)
+                {
+                if (SYSTEM_COMMUNITY_NAME.equals(comm))
+                    {
+                    try {
+                        log.debug("Creating system community [{}]", comm);
+                        community = this.create(comm);
+                        }
+                    catch (DuplicateEntityException ouch)
+                        {
+                        log.error("Duplicate Community [{}]", comm, ouch);
+                        throw new EntityServiceException(
+                            "Duplicate Community [" + comm + "]"
+                            );
+                        }
+                    }
+                else {
+                    log.warn("LOGIN FAIL unknown community [{}]", comm);
+                    throw new UnauthorizedException();
+                    }
+                }
+            //
+            // Check for a matching Identity.
+            // If we don't find a match, check if this is the system community.
+            Identity identity = community.members().search(name);
+            if (identity == null)
+                {
+                if ((SYSTEM_COMMUNITY_NAME.equals(comm)) && (SYSTEM_COMMUNITY_USER.equals(name)))
+                    {
+                    try {
+                        log.debug("Creating system identity [{}][{}]", comm, name);
+                        identity = community.members().create(
+                            name,
+                            pass
+                            );
+                        }
+                    catch (DuplicateEntityException ouch)
+                        {
+                        log.error("Duplicate Identity [{}]", comm, name, ouch);
+                        throw new EntityServiceException(
+                            "Duplicate Identity [" + comm + "][" + name + "]"
+                            );
+                        }
+                    }
+                else {
+                    log.warn("LOGIN FAIL unknown identity [{}][{}]", comm, name);
+                    throw new UnauthorizedException();
+                    }
+                }
+            //
+            // Try to login to the community.
+            return community.login(
+                name,
+                pass
                 );
             }
         }
@@ -305,26 +417,6 @@ implements Community
         this.space = space ;
         }
 
-    /*
-     * 
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_URI_COL,
-        unique = true,
-        nullable = false,
-        updatable = false
-        )
-    private String uri;
-    @Override
-    public String uri()
-        {
-        return this.uri;
-        }
-     * 
-     */
-    
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -344,6 +436,10 @@ implements Community
     public Identity login(final String name, final String pass)
     throws UnauthorizedException
         {
+        log.debug("login(String, String)");
+        log.debug("  name [{}]", name);
+        log.debug("  pass [{}]", pass);
+        
         final Identity found = members().search(name);
         if (found != null)
             {
@@ -351,7 +447,19 @@ implements Community
             }
         else if (autocreate)
             {
-            return members().create(name);
+            try {
+                return members().create(
+                    name,
+                    pass
+                    );
+                }
+            catch (DuplicateEntityException ouch)
+                {
+                log.error("Duplicate Identity [{}]", this.name(), name, ouch);
+                throw new EntityServiceException(
+                    "Duplicate Identity [" + this.name() + "][" + name + "]"
+                    );
+                }
             }
         else {
             throw new UnauthorizedException();
@@ -365,6 +473,7 @@ implements Community
             {
             @Override
             public Identity create(final String name)
+            throws DuplicateEntityException
                 {
                 return services().identities().create(
                     CommunityEntity.this,
@@ -373,7 +482,19 @@ implements Community
                 }
 
             @Override
+            public Identity create(final String name, final String pass)
+            throws DuplicateEntityException
+                {
+                return services().identities().create(
+                    CommunityEntity.this,
+                    name,
+                    pass
+                    );
+                }
+
+            @Override
             public Identity select(final String name)
+            throws NameNotFoundException
                 {
                 return services().identities().select(
                     CommunityEntity.this,
@@ -384,8 +505,10 @@ implements Community
             @Override
             public Identity search(String name)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return services().identities().search(
+                    CommunityEntity.this,
+                    name
+                    );
                 }
             };
         }

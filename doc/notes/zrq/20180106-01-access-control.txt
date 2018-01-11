@@ -307,6 +307,24 @@
 
 
 
+--------------------
+
+
+    'system' community
+
+    if community doesn't exist, create it
+
+    if user exists
+        login using identity
+    else
+        login using config properties        
+        if login success
+            create identity
+
+
+
+
+
 
 
 

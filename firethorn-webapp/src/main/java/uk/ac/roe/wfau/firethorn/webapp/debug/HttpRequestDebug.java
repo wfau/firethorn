@@ -43,17 +43,20 @@ implements HandlerInterceptor
         {
         log.debug("preHandle()");
 
-        log.debug("scheme      [{}]", request.getScheme());
-        log.debug("serverName  [{}]", request.getServerName());
-        log.debug("serverPort  [{}]", request.getServerPort());
-        log.debug("serverPath  [{}]", request.getServletPath());
-        log.debug("pathInfo    [{}]", request.getPathInfo());
-        log.debug("pathTrans   [{}]", request.getPathTranslated());
-        log.debug("requestURI  [{}]", request.getRequestURI());
-        log.debug("requestURL  [{}]", request.getRequestURL());
-        log.debug("protocol    [{}]", request.getProtocol());
-        log.debug("queryString [{}]", request.getQueryString());
-        log.debug("authType    [{}]", request.getAuthType());        
+        log.debug("----");
+        log.debug("Servlet");
+
+        log.debug("  scheme      [{}]", request.getScheme());
+        log.debug("  serverName  [{}]", request.getServerName());
+        log.debug("  serverPort  [{}]", request.getServerPort());
+        log.debug("  serverPath  [{}]", request.getServletPath());
+        log.debug("  pathInfo    [{}]", request.getPathInfo());
+        log.debug("  pathTrans   [{}]", request.getPathTranslated());
+        log.debug("  requestURI  [{}]", request.getRequestURI());
+        log.debug("  requestURL  [{}]", request.getRequestURL());
+        log.debug("  protocol    [{}]", request.getProtocol());
+        log.debug("  queryString [{}]", request.getQueryString());
+        log.debug("  authType    [{}]", request.getAuthType());        
         
         log.debug("----");
         log.debug("Headers");

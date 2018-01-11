@@ -185,7 +185,7 @@ EOF
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn install
+        mvn clean install
 
     popd
 
@@ -235,19 +235,37 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}" \
-            --header "firethorn.auth.community:${community:?}" \
-            "${endpointurl:?}/system/info" \
+            "${endpointurl:?}/system/info"
+            
+            \
             | jq '.' | tee /tmp/system-info.json
-
 
         curl \
             --silent \
-            --header "firethorn.auth.simple.username:albert" \
-            --header "firethorn.auth.simple.password:secret" \
-            --header "firethorn.auth.simple.community:wizards" \
-            "${endpointurl:?}/system/info" \
+            --header "firethorn.auth.simple.username:admin" \
+            --header "firethorn.auth.simple.password:yyyy" \
+            --header "firethorn.auth.simple.community:system" \
+            "${endpointurl:?}/system/info"
+            
+            
+            \
             | jq '.' | tee /tmp/system-info.json
+
+# -----------------------------------------------------
+# Create a community for our users.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.simple.username:xxxx" \
+            --header "firethorn.auth.simple.password:yyyy" \
+            --header "firethorn.auth.simple.community:system" \
+            --data   "community.name=${community:?}" \
+            "${endpointurl:?}/community/create" \
+            | jq '.' | tee /tmp/community.json
+
+    
+
 
 
 
