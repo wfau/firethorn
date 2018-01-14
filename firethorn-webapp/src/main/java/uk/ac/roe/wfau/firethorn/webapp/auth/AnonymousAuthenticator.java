@@ -25,8 +25,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
@@ -45,9 +47,8 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
-    public static final String ANON_AUTH_METHOD    = "anon.auth" ;
-    public static final String ANON_IDENTITY_NAME  = "Anonymous" ;
-    public static final String ANON_COMMUNITY_NAME = "anon.community" ;
+    public static final String METHOD_NAME = "anonymous" ;
+    public static final String ANON_AUTH_NAME = "anonymous" ;
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
@@ -64,22 +65,16 @@ implements HandlerInterceptor
 
             if (primary == null)
                 {
-                log.debug(" Primary authentication is null, adding an anonymous identity");
-                try {
-                    operation.authentications().create(
-                            factories.communities().entities().create(
-                                ANON_COMMUNITY_NAME
-                                ).members().create(
-                                    ANON_IDENTITY_NAME
-                                    ),
-                        ANON_AUTH_METHOD
-                        );
-                    }
-                catch (DuplicateEntityException ouch)
-                    {
-                    // TODO Auto-generated catch block
-                    ouch.printStackTrace();
-                    }
+                log.debug("Null primary, adding anonymous Authentication");
+                final Community guests = factories.communities().entities().guests();
+                final Identity  guest  = guests.members().select(
+                    ANON_AUTH_NAME,
+                    true
+                    );
+                operation.authentications().create(
+                    guest,
+                    METHOD_NAME
+                    );
                 }
             }
 

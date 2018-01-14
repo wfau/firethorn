@@ -25,9 +25,13 @@ import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.AbstractProtector;
+import uk.ac.roe.wfau.firethorn.access.Action;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -317,6 +321,18 @@ implements Entity.EntityFactory<EntityType>
         return new StringBuilder(text).append("%").toString();
         }
 
+    @Override
+    public Protector protector()
+        {
+        return new AbstractProtector()
+            {
+            @Override
+            public boolean check(final Identity identity, final Action action)
+                {
+                return false;
+                }
+            };
+        }
     }
 
 

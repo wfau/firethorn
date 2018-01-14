@@ -100,6 +100,10 @@ datapass=$(secret 'firethorn.data.pass')
 tunneluser=$(secret 'ssh.tunnel.user')
 tunnelhost=$(secret 'ssh.tunnel.host')
 
+systemuser=$(pwgen 20 1)
+systempass=$(pwgen 20 1)
+systemcomm=system
+
 EOF
 
 # -----------------------------------------------------
@@ -126,6 +130,10 @@ EOF
         firethorn.user.data=${userdata:?}
         firethorn.user.user=${useruser:?}
         firethorn.user.pass=${userpass:?}
+
+        firethorn.system.user=${systemuser:?}
+        firethorn.system.pass=${systempass:?}
+        firethorn.system.comm=${systemcomm:?}
 
 EOF
 
@@ -178,6 +186,14 @@ EOF
 
     compose="${FIRETHORN_CODE:?}/docker/compose"
 
+# -----------------------------------------------------
+# Shutdown our tester.
+#[user@virtual]
+
+    docker-compose \
+        --file "${compose:?}/tester.yml" \
+        down
+
 #---------------------------------------------------------------------
 # Compile our Java code.
 #[user@desktop]
@@ -209,10 +225,6 @@ EOF
 
     docker-compose \
         --file "${compose:?}/tester.yml" \
-        down
-
-    docker-compose \
-        --file "${compose:?}/tester.yml" \
         run \
             tester
 
@@ -223,13 +235,6 @@ EOF
         source /etc/tester.properties
 
 # -----------------------------------------------------
-# Configure our identity.
-#[root@deployer]
-
-        identity=${identity:-$(date '+%H:%M:%S')}
-        community=${community:-$(date '+%A %-d %B %Y')}
-
-# -----------------------------------------------------
 # Check the system info.
 #[root@deployer]
 
@@ -237,13 +242,18 @@ EOF
             --silent \
             "${endpointurl:?}/system/info"
             
-            \
+            
+             \
             | jq '.' | tee /tmp/system-info.json
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@deployer]
 
         curl \
             --silent \
             --header "firethorn.auth.simple.username:admin" \
-            --header "firethorn.auth.simple.password:yyyy" \
+            --header "firethorn.auth.simple.password:pass" \
             --header "firethorn.auth.simple.community:system" \
             "${endpointurl:?}/system/info"
             

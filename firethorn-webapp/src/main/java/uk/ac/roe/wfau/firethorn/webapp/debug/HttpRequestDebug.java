@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.debug;
 
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -114,6 +116,23 @@ implements HandlerInterceptor
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
         log.debug("postHandle()");
+
+        log.debug("----");
+        log.debug("Headers");
+        final Iterator<String> headers = response.getHeaderNames().iterator();
+        if (headers != null)
+            {
+            while (headers.hasNext())
+                {
+                final String name  = headers.next();
+                final String value = response.getHeader(name);
+                log.debug("  [{}][{}]", name, StringUtils.abbreviate(value, 20));
+                }
+            }
+        else {
+            log.debug("-- null --");;
+            }
+        log.debug("----");
         }
 
     @Override

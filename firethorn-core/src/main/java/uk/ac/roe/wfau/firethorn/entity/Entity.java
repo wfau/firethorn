@@ -174,6 +174,7 @@ extends Protected
      *
      */
     public interface EntityFactory<EntityType extends Entity>
+    extends Protected
         {
         /**
          * Select a specific Entity by Identifier.

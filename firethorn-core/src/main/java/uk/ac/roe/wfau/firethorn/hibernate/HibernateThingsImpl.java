@@ -111,6 +111,8 @@ public class HibernateThingsImpl
                     "Attempting to insert a null entity"
                     );
                 }
+            /*
+             * Need to allow this for system Identity and Community.
             else if (entity.ident() != null)
                 {
                 log.error("Attempting to insert an entity with ident already set [{}][{}]", entity.getClass().getName(), entity.ident());
@@ -118,6 +120,8 @@ public class HibernateThingsImpl
                     "Attempting to insert an entity with ident already set"
                     );
                 }
+             * 
+             */
             else {
                 session().save(
                     entity

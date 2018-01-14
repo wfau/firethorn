@@ -17,6 +17,7 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.community.Community;
+import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -67,6 +68,11 @@ extends Entity, NamedEntity
     public static interface EntityFactory
     extends Entity.EntityFactory<Identity>
         {
+        /**
+         * Access to the system {@link Identity}.
+         * 
+         */
+        public Identity system();
 
         /**
          * Create a new {@link Identity}.
@@ -93,10 +99,45 @@ extends Entity, NamedEntity
         throws NameNotFoundException;
 
         /**
+         * Select an {@link Identity}, based on name.
+         * @param community The {@link Community}.
+         * @param name The {@link Identity} name.
+         * @param create Create a new {@link Identity} if not found.
+         * @return The corresponding {@link Identity}, or null if the {@link Identity} was not found or created.
+         *
+         */
+        public Identity select(final Community community, final String name, boolean create);
+        
+        /**
          * Search for an {@link Identity} based on name.
          *
          */
         public Identity search(final Community community, final String name);
+
+        /**
+         * Select an {@link Identity}, based on name.
+         *
+         */
+        public Identity select(final String name)
+        throws NameNotFoundException;
+
+        /**
+         * Search for an {@link Identity} based on name.
+         *
+         */
+        public Identity search(final String name);
+        
+        /**
+         * Login to an {@link Identity} using name and password.
+         * @param community The {@link Community}.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
+         * @return The corresponding {@link Identity}.
+         * @throws UnauthorizedException If unable to login.
+         *
+         */
+        public Identity login(final Community community, final String name, final String pass)
+        throws UnauthorizedException;
         
         }
 
@@ -193,6 +234,17 @@ extends Entity, NamedEntity
      */
     public Identity rebase()
 	throws HibernateConvertException;
-    
+
+    /**
+     * Login to an {@link Identity} using name and password.
+     * @param name The {@link Identity} name (for comparison).
+     * @param pass The {@link Identity} password.
+     * @return true if the login succeed.
+     * @throws UnauthorizedException If the login failed.
+     *
+     */
+    public boolean login(final String name, final String pass)
+    throws UnauthorizedException;
+
     }
 

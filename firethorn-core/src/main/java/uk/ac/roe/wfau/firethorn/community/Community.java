@@ -32,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 public interface Community
 extends NamedEntity
     {
+        
     /**
      * Public interface for a {@link Community} {@link NamedEntity.NameFactory}.
      * @see NamedEntity.LinkFactory
@@ -70,6 +71,18 @@ extends NamedEntity
     public interface EntityFactory
     extends Entity.EntityFactory<Community>
         {
+        /**
+         * Access to the system community.
+         * 
+         */
+        public Community system();
+
+        /**
+         * Access to the guest community.
+         * 
+         */
+        public Community guests();
+        
         /**
          * Select or create a new {@link Community}.
          * @param name The {@link Community} name.
@@ -116,7 +129,7 @@ extends NamedEntity
          */
         public Identity login(final String comm, final String name, final String pass)
         throws UnauthorizedException;
-
+        
         }
 
     /**
@@ -137,7 +150,7 @@ extends NamedEntity
          * 
          */
         public Identity.EntityFactory identities();
-        
+
         }
 
     /**
@@ -170,19 +183,38 @@ extends NamedEntity
          * @param name The name of the {@link Identity}.
          * @return The corresponding {@link Identity}.
          * @throws NameNotFoundException If no matching {@link Identity} was found.
-         * @throws EntityNotFoundException 
          *
          */
         public Identity select(final String name)
         throws NameNotFoundException;
 
         /**
-         * Seach fo an existing {@link Identity} by name.
+         * Select an {@link Identity} by name.
+         * @param name The name of the {@link Identity}.
+         * @param create If true, then the {@link Identity} is created if not found.
+         * @return The corresponding {@link Identity}, or null if not selected or created.
+         *
+         */
+        public Identity select(final String name, boolean create);
+        
+        /**
+         * Search for an existing {@link Identity} by name.
          * @param name The name of the {@link Identity}.
          * @return The corresponding {@link Identity}, or null if not found.
          *
          */
         public Identity search(final String name);
+
+        /**
+         * Login to a {@link Community} using name and password.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
+         * @return The corresponding {@link Identity}.
+         * @throws UnauthorizedException If unable to login.
+         *
+         */
+        public Identity login(final String name, final String pass)
+        throws UnauthorizedException;
 
         }
 
@@ -192,13 +224,6 @@ extends NamedEntity
      *
      */
     public Members members();
-
-    /**
-     * The unique identifier (URI) for this {@link Community}.
-     * @return The {@link Community} URI.
-     *
-    public String uri();
-     */
 
     /**
      * The {@link JdbcResource} to use as storage space for this {@link Community}.
@@ -225,5 +250,31 @@ extends NamedEntity
      */
     public Identity login(final String name, final String pass)
     throws UnauthorizedException;
-    
+
+    /**
+     * Flag to allow accounts to be created automatically on login.
+     * @return The autocreate flag.
+     * 
+     */
+    public Boolean autocreate();
+
+    /**
+     * Flag to allow accounts to be created automatically on login.
+     * 
+     */
+    public void autocreate(final Boolean value);
+
+    /**
+     * Flag to allow users to create their own accounts.
+     * @return The usercreate flag.
+     * 
+     */
+    public Boolean usercreate();
+
+    /**
+     * Flag to allow users to create their own accounts.
+     * 
+     */
+    public void usercreate(final Boolean value);
+
     }

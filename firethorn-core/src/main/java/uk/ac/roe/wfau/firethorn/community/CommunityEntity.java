@@ -30,19 +30,29 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.AbstractProtector;
+import uk.ac.roe.wfau.firethorn.access.Action;
+import uk.ac.roe.wfau.firethorn.access.Protector;
+import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.LongIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityServiceException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
@@ -88,25 +98,8 @@ implements Community
     protected static final String DB_URI_COL    = "uri" ;
     protected static final String DB_SPACE_COL  = "space" ;
     protected static final String DB_AUTOCREATE_COL = "autocreate" ;
-
-    /**
-     * System {@link Community} name.
-     * 
-     */
-    protected static final String SYSTEM_COMMUNITY_NAME = "system";
-
-    /**
-     * System {@link Community} {@link Identity} name.
-     * 
-     */
-    protected static final String SYSTEM_COMMUNITY_USER = "admin";
-
-    /**
-     * Anon {@link Community} name.
-     * 
-     */
-    protected static final String ANON_COMMUNITY_NAME = "anon";
-
+    protected static final String DB_USERCREATE_COL = "usercreate" ;
+    
     /**
      * EntityFactory implementation.
      *
@@ -116,6 +109,89 @@ implements Community
     extends AbstractEntityFactory<Community>
     implements Community.EntityFactory
         {
+        /**
+         * The 'system' {@link Community) name.
+         * 
+         */
+        @Value("${firethorn.system.community.name:system}")
+        protected String SYSTEM_COMMUNITY_NAME ;
+
+        /**
+         * The 'system' {@link Community) identifier.
+         * 
+         */
+        @Value("${firethorn.system.community.ident:00}")
+        protected Long SYSTEM_COMMUNITY_IDENT ;
+
+        @Override
+        @CreateMethod
+        public synchronized Community system()
+            {
+            log.debug("system()");
+            final Community found = this.search(
+                    SYSTEM_COMMUNITY_NAME
+                    );
+            if (found != null)
+                {
+                log.debug("  found [{}]", found);
+                return found;
+                }
+            else {
+                final Community created = super.insert(
+                    new CommunityEntity(
+                        SYSTEM_COMMUNITY_IDENT,
+                        (Identity) null,
+                        SYSTEM_COMMUNITY_NAME,
+                        factories().jdbc().resources().entities().userdata()
+                        )
+                    );
+                log.debug("  created [{}]", created);
+                return created ;
+                }
+            }
+
+        /**
+         * The 'guest' {@link Community) name.
+         * 
+         */
+        @Value("${firethorn.guests.community.name:guests}")
+        protected String GUEST_COMMUNITY_NAME ;
+
+        /**
+         * The 'guest' {@link Community) identifier.
+         * 
+         */
+        @Value("${firethorn.guests.community.ident:00}")
+        protected Long GUEST_COMMUNITY_IDENT ;
+
+        @Override
+        @CreateMethod
+        public synchronized Community guests()
+            {
+            log.debug("guests()");
+            final Community found = this.search(
+                    GUEST_COMMUNITY_NAME
+                    );
+            if (found != null)
+                {
+                log.debug("  found [{}]", found);
+                return found;
+                }
+            else {
+                final Community created = super.insert(
+                    new CommunityEntity(
+                        GUEST_COMMUNITY_IDENT,
+                        (Identity) null,
+                        GUEST_COMMUNITY_NAME,
+                        factories().jdbc().resources().entities().userdata()
+                        )
+                    );
+                created.autocreate(true);
+                log.debug("  created [{}]", created);
+                return created ;
+                }
+            }
+        
         @Override
         public Class<?> etype()
             {
@@ -139,7 +215,7 @@ implements Community
         public Community create(final String name, final JdbcResource space)
         throws DuplicateEntityException
             {
-            log.debug("create(String, JdbcResource) [{}][{}][{}]", name, space);
+            log.debug("create(String, JdbcResource) [{}][{}]", name, space);
             final Community found = this.search(
                 name
                 );
@@ -159,6 +235,52 @@ implements Community
                 }
             }
 
+        /*
+         * 
+        @Override
+        @CreateMethod
+        public Community select(final String name, boolean create)
+            {
+            log.debug("select(String, boolean) [{}][{}]", name, create);
+            return select(
+                name,
+                factories().jdbc().resources().entities().userdata(),
+                create
+                );
+            }
+        
+        protected Community select(final String name, final JdbcResource space, boolean create)
+            {
+            log.debug("select(String, JdbcResource, boolean) [{}][{}][{}]", name, space, create);
+            final Community found = this.search(
+                name
+                );
+            if (found != null)
+                {
+                log.debug("Found matching Community [{}][{}]", found.ident(), found.name());
+                return found ;
+                }
+            else {
+                log.debug("Community not found [{}]", name);
+                if (create)
+                    {
+                    log.debug("Creating new Community [{}]", name);
+                    return super.insert(
+                        new CommunityEntity(
+                            name,
+                            space
+                            )
+                        );
+                    }
+                else {
+                    log.debug("Null Community");
+                    return null ;
+                    }
+                }
+            }
+         * 
+         */
+        
         @Override
         @SelectMethod
         public Community select(final String name)
@@ -218,57 +340,25 @@ implements Community
                 throw new UnauthorizedException();
                 }
             //
+            // Load the system Identity and Community for comparison.
+            final Identity system = factories().identities().entities().system();
+            log.debug("System Identity  [{}][{}]", system.ident(), system.name());
+            log.debug("System Community [{}][{}]", system.community().ident(), system.community().name());
+            //
             // Check for a matching Community.
-            // If we don't find a match, check if this is the system community.
-            Community community = search(comm);
+            final Community community = search(comm);
             if (community == null)
                 {
-                if (SYSTEM_COMMUNITY_NAME.equals(comm))
-                    {
-                    try {
-                        log.debug("Creating system community [{}]", comm);
-                        community = this.create(comm);
-                        }
-                    catch (DuplicateEntityException ouch)
-                        {
-                        log.error("Duplicate Community [{}]", comm, ouch);
-                        throw new EntityServiceException(
-                            "Duplicate Community [" + comm + "]"
-                            );
-                        }
-                    }
-                else {
-                    log.warn("LOGIN FAIL unknown community [{}]", comm);
-                    throw new UnauthorizedException();
-                    }
+                log.warn("LOGIN FAIL unknown community [{}]", comm);
+                throw new UnauthorizedException();
                 }
             //
             // Check for a matching Identity.
-            // If we don't find a match, check if this is the system community.
             Identity identity = community.members().search(name);
             if (identity == null)
                 {
-                if ((SYSTEM_COMMUNITY_NAME.equals(comm)) && (SYSTEM_COMMUNITY_USER.equals(name)))
-                    {
-                    try {
-                        log.debug("Creating system identity [{}][{}]", comm, name);
-                        identity = community.members().create(
-                            name,
-                            pass
-                            );
-                        }
-                    catch (DuplicateEntityException ouch)
-                        {
-                        log.error("Duplicate Identity [{}]", comm, name, ouch);
-                        throw new EntityServiceException(
-                            "Duplicate Identity [" + comm + "][" + name + "]"
-                            );
-                        }
-                    }
-                else {
-                    log.warn("LOGIN FAIL unknown identity [{}][{}]", comm, name);
-                    throw new UnauthorizedException();
-                    }
+                log.warn("LOGIN FAIL unknown identity [{}][{}]", comm, name);
+                throw new UnauthorizedException();
                 }
             //
             // Try to login to the community.
@@ -276,6 +366,37 @@ implements Community
                 name,
                 pass
                 );
+            }
+
+        @Override
+        public Protector protector()
+            {
+            return new AbstractProtector()
+                {
+                @Override
+                public boolean check(Identity identity, Action action)
+                    {
+                    switch(action.type())
+                        {
+                        case SELECT:
+                            return true;
+
+                        case UPDATE:
+                        case CREATE:
+                        case DELETE:
+                            if (identity.name().equals(SYSTEM_COMMUNITY_NAME) && identity.community().name().equals(SYSTEM_COMMUNITY_NAME))
+                                {
+                                return true;
+                                }
+                            else {
+                                return false;
+                                }
+
+                        default:
+                            return false;
+                        }
+                    }
+                };
             }
         }
     
@@ -405,7 +526,7 @@ implements Community
         }
 
     /**
-     * Create a new Community.
+     * Protected constructor.
      *
      */
     protected CommunityEntity(final String name, final JdbcResource space)
@@ -416,6 +537,21 @@ implements Community
         log.debug("CommunityEntity(String, JdbcResource) [{}][{}]", name, space);
         this.space = space ;
         }
+    
+    /**
+     * Protected constructor.
+     *
+     */
+    protected CommunityEntity(final Long ident, final Identity owner, final String name, final JdbcResource space)
+        {
+        super(
+            ident,
+            owner,
+            name
+            );
+        log.debug("CommunityEntity(Long, String, Identity , String, JdbcResource) [{}][{}]", name, space);
+        this.space = space ;
+        }
 
     @Basic(
         fetch = FetchType.EAGER
@@ -424,14 +560,41 @@ implements Community
         name = DB_AUTOCREATE_COL,
         unique = false,
         nullable = false,
-        updatable = false
+        updatable = true
         )
     private Boolean autocreate = false;
+    @Override
     public Boolean autocreate()
         {
         return this.autocreate;
         }
+    @Override
+    public void autocreate(final Boolean value)
+        {
+        this.autocreate = value;
+        }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_USERCREATE_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    private Boolean usercreate = false;
+    @Override
+    public Boolean usercreate()
+        {
+        return this.usercreate;
+        }
+    @Override
+    public void usercreate(final Boolean value)
+        {
+        this.usercreate = value;
+        }
+    
     @Override
     public Identity login(final String name, final String pass)
     throws UnauthorizedException
@@ -508,6 +671,27 @@ implements Community
                 return services().identities().search(
                     CommunityEntity.this,
                     name
+                    );
+                }
+
+            @Override
+            public Identity select(String name, boolean create)
+                {
+                return services().identities().select(
+                    CommunityEntity.this,
+                    name,
+                    create
+                    );
+                }
+
+            @Override
+            public Identity login(String name, String pass)
+            throws UnauthorizedException
+                {
+                return services().identities().login(
+                    CommunityEntity.this,
+                    name,
+                    pass
                     );
                 }
             };

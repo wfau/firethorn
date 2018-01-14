@@ -27,7 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -40,18 +40,14 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 public class SimpleHeaderAuthenticator
 implements HandlerInterceptor
     {
-    /**
-     * Autowired system services.
-     *
-     */
     @Autowired
     private ComponentFactories factories;
 
     static final String METHOD_NAME = "http:header" ;
 
-    static final String USERNAME_ATTRIB  = "firethorn.auth.simple.username"  ;
-    static final String PASSWORD_ATTRIB  = "firethorn.auth.simple.password"  ;
-    static final String COMMUNITY_ATTRIB = "firethorn.auth.simple.community" ;
+    static final String COMMUNITY_ATTRIB = "firethorn.auth.community" ;
+    static final String USERNAME_ATTRIB  = "firethorn.auth.username"  ;
+    static final String PASSWORD_ATTRIB  = "firethorn.auth.password"  ;
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
@@ -59,16 +55,16 @@ implements HandlerInterceptor
         {
         log.debug("preHandle()");
 
+        final String comident = request.getHeader(COMMUNITY_ATTRIB);
         final String username = request.getHeader(USERNAME_ATTRIB);
         final String password = request.getHeader(PASSWORD_ATTRIB);
-        final String comident = request.getHeader(COMMUNITY_ATTRIB);
 
         final Operation operation = factories.operations().entities().current();
         log.debug("Operation [{}]", operation);
 
+        log.debug("Community [{}]", comident);
         log.debug("Username  [{}]", username);
         log.debug("Password  [{}]", password);
-        log.debug("Community [{}]", comident);
         
         if (operation != null)
             {
@@ -94,6 +90,32 @@ implements HandlerInterceptor
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
         log.debug("postHandle()");
+
+        final Operation operation = factories.operations().entities().current();
+        if (operation != null)
+            {
+            log.debug("Operation [{}]", operation.ident());
+            final Authentication authentication = operation.authentications().primary();
+            if (authentication != null)
+                {
+                log.debug("Authentication [{}]", authentication);
+                final Identity identity = authentication.identity();
+
+                if (identity != null)
+                    {
+                    log.debug("Identity [{}][{}]", identity.ident(), identity.name());
+                    response.addHeader(USERNAME_ATTRIB, identity.name());
+
+                    final Community community = identity.community();
+                    log.debug("Community [{}][{}]", community.ident(), community.name());
+
+                    if (community != null)
+                        {
+                        response.addHeader(COMMUNITY_ATTRIB, community.name());
+                        }
+                    }
+                }
+            }
         }
 
     @Override

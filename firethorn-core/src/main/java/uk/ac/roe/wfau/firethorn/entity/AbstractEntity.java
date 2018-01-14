@@ -28,12 +28,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import org.joda.time.DateTime;
 
 import lombok.extern.slf4j.Slf4j;
@@ -243,6 +245,19 @@ implements Entity
         }
 
     /**
+     * Protected constructor, sets the owner and create date.
+     *
+     */
+    protected AbstractEntity(final Long ident, final Identity owner)
+        {
+        super();
+        this.ident = ident;
+        this.init(
+            owner
+            );
+        }
+    
+    /**
      * Set the owner and create date.
      *
      */
@@ -298,6 +313,18 @@ implements Entity
      * http://sourceforge.net/projects/hsqldb/forums/forum/73674/topic/4537620
      * Support for 'hilo' generator has been removed
      * http://stackoverflow.com/questions/33103355/hilo-generator-strategy-not-working
+     * 
+     * https://stackoverflow.com/questions/41981896/deprecated-sequencehilogenerator-sequence-based-id-generator-use-sequencestyleg
+     * http://blog.eyallupu.com/2011/01/hibernatejpa-identity-generators.html
+     * https://docs.jboss.org/hibernate/orm/5.2/javadocs/org/hibernate/id/enhanced/SequenceStyleGenerator.html
+     *
+     *
+        strategy="org.hibernate.id.enhanced.SequenceStyleGenerator",
+        parameters={
+            @Parameter(value="INITIAL_PARAM", name="10")
+            }
+     *
+        initialValue=100
      *
      */
     @Id
@@ -310,9 +337,8 @@ implements Entity
     @GeneratedValue(
         generator="ident-generator"
         )
-    @GenericGenerator(
-        name="ident-generator",
-        strategy="seqhilo"
+    @SequenceGenerator(
+        name="ident-generator"
         )
     private Long ident ;
 

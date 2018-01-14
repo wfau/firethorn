@@ -29,14 +29,17 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
+import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.LongIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -48,6 +51,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
@@ -78,6 +82,10 @@ import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
         @NamedQuery(
             name = "Identity-select-community.name",
             query = "FROM IdentityEntity WHERE community = :community AND name = :name ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name = "Identity-select-name",
+            query = "FROM IdentityEntity WHERE name = :name ORDER BY ident desc"
             )
         }
     )
@@ -111,6 +119,64 @@ implements Identity
     extends AbstractEntityFactory<Identity>
     implements Identity.EntityFactory
         {
+        /**
+         * The 'system' {@link Identity) name.
+         * 
+         */
+        @Value("${firethorn.system.user.name:admin}")
+        protected String SYSTEM_IDENTITY_NAME ;
+
+        /**
+         * The 'system' {@link Identity) password.
+         * 
+         */
+        @Value("${firethorn.system.user.pass:admin}")
+        protected String SYSTEM_IDENTITY_PASS ;
+
+        /**
+         * The 'system' {@link Identity) identifier.
+         * 
+         */
+        @Value("${firethorn.system.user.ident:01}")
+        protected Long SYSTEM_IDENTITY_IDENT ;
+
+        @Override
+        @CreateMethod
+        public synchronized Identity system()
+            {
+            log.debug("system()");
+            /*
+             * 
+            Identity found = this.search(
+                new LongIdentifier(
+                    SYSTEM_IDENTITY_IDENT
+                    )
+                );
+             * 
+             */
+            final Identity found = this.search(
+                SYSTEM_IDENTITY_NAME
+                );
+            if (found != null)
+                {
+                log.debug("  found [{}]", found);
+                return found ;
+                }
+                {
+                final Community community = factories().communities().entities().system();
+                final Identity created = super.insert(
+                    new IdentityEntity(
+                        SYSTEM_IDENTITY_IDENT,
+                        community,
+                        SYSTEM_IDENTITY_NAME,
+                        SYSTEM_IDENTITY_PASS
+                        )
+                    );
+                log.debug("  created [{}]", created);
+                return created ;
+                }
+            }
+        
         @Override
         public Class<?> etype()
             {
@@ -136,7 +202,7 @@ implements Identity
         throws DuplicateEntityException
             {
             log.debug("create(Community, String, String) [{}][{}]", community.name(), name);
-            final Identity found = this.search(
+            final Identity found = search(
                 community,
                 name
                 );
@@ -194,6 +260,82 @@ implements Identity
                         name
                         )
                 );
+            }
+
+        
+        @Override
+        @SelectMethod
+        public Identity select(final String name)
+        throws NameNotFoundException
+            {
+            log.debug("select(String) [{}][{}]", name);
+            final Identity found = search(
+                name
+                );
+            if (found != null)
+                {
+                return found;
+                }
+            else {
+                throw new NameNotFoundException(
+                    name
+                    );
+                }
+            }
+
+        @Override
+        public Identity search(String name)
+            {
+            log.debug("search(String) [{}][{}]", name);
+            return super.first(
+                super.query(
+                    "Identity-select-name"
+                    ).setString(
+                        "name",
+                        name
+                        )
+                );
+            }
+
+        @Override
+        public Identity login(final Community community, String name, String pass) throws UnauthorizedException
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
+
+        @Override
+        public Identity select(final Community community, final String name, boolean create)
+            {
+            log.debug("select(Community, String, boolean) [{}][{}]", community.name(), name, create);
+
+            final Identity found = search(
+                community,
+                name
+                );
+            if (found != null)
+                {
+                log.debug("Found matching Identity [{}][{}]", found.ident(), found.name());
+                return found;
+                }
+            else {
+                log.debug("Identity not found [{}]", name);
+                if (create)
+                    {
+                    log.debug("Creating new Identity [{}]", name);
+                    return super.insert(
+                        new IdentityEntity(
+                            community,
+                            name,
+                            null
+                            )
+                        );
+                    }
+                else {
+                    log.debug("Null Identity");
+                    return null ;
+                    }
+                }
             }
         }
 
@@ -307,12 +449,27 @@ implements Identity
         }
 
     /**
-     * Create a new IdentityEntity.
+     * Protected constructor.
      *
      */
     protected IdentityEntity(final Community community, final String name, final String pass)
         {
         super(name);
+        this.community = community;
+        }
+
+    /**
+     * Protected constructor.
+     *
+     */
+    protected IdentityEntity(final Long ident, final Community community, final String name, final String pass)
+        {
+        super(
+            ident,
+            (Identity) null,
+            name
+            );
+        this.owner(this) ;
         this.community = community;
         }
 
@@ -507,6 +664,13 @@ implements Identity
     			ouch
     			);
         	}
+        }
+
+    @Override
+    public boolean login(String name, String pass) throws UnauthorizedException
+        {
+        // TODO Auto-generated method stub
+        return false;
         }
     }
 
