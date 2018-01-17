@@ -234,52 +234,6 @@ implements Community
                 throw new DuplicateEntityException(found);
                 }
             }
-
-        /*
-         * 
-        @Override
-        @CreateMethod
-        public Community select(final String name, boolean create)
-            {
-            log.debug("select(String, boolean) [{}][{}]", name, create);
-            return select(
-                name,
-                factories().jdbc().resources().entities().userdata(),
-                create
-                );
-            }
-        
-        protected Community select(final String name, final JdbcResource space, boolean create)
-            {
-            log.debug("select(String, JdbcResource, boolean) [{}][{}][{}]", name, space, create);
-            final Community found = this.search(
-                name
-                );
-            if (found != null)
-                {
-                log.debug("Found matching Community [{}][{}]", found.ident(), found.name());
-                return found ;
-                }
-            else {
-                log.debug("Community not found [{}]", name);
-                if (create)
-                    {
-                    log.debug("Creating new Community [{}]", name);
-                    return super.insert(
-                        new CommunityEntity(
-                            name,
-                            space
-                            )
-                        );
-                    }
-                else {
-                    log.debug("Null Community");
-                    return null ;
-                    }
-                }
-            }
-         * 
-         */
         
         @Override
         @SelectMethod
@@ -345,7 +299,7 @@ implements Community
             log.debug("System Identity  [{}][{}]", system.ident(), system.name());
             log.debug("System Community [{}][{}]", system.community().ident(), system.community().name());
             //
-            // Check for a matching Community.
+            // Locate the Community.
             final Community community = search(comm);
             if (community == null)
                 {
@@ -353,15 +307,7 @@ implements Community
                 throw new UnauthorizedException();
                 }
             //
-            // Check for a matching Identity.
-            Identity identity = community.members().search(name);
-            if (identity == null)
-                {
-                log.warn("LOGIN FAIL unknown identity [{}][{}]", comm, name);
-                throw new UnauthorizedException();
-                }
-            //
-            // Try to login to the community.
+            // Try to login to the Community.
             return community.login(
                 name,
                 pass
@@ -602,31 +548,7 @@ implements Community
         log.debug("login(String, String)");
         log.debug("  name [{}]", name);
         log.debug("  pass [{}]", pass);
-        
-        final Identity found = members().search(name);
-        if (found != null)
-            {
-            return found ;
-            }
-        else if (autocreate)
-            {
-            try {
-                return members().create(
-                    name,
-                    pass
-                    );
-                }
-            catch (DuplicateEntityException ouch)
-                {
-                log.error("Duplicate Identity [{}]", this.name(), name, ouch);
-                throw new EntityServiceException(
-                    "Duplicate Identity [" + this.name() + "][" + name + "]"
-                    );
-                }
-            }
-        else {
-            throw new UnauthorizedException();
-            }
+        return members().login(name, pass);
         }
     
     @Override
@@ -666,6 +588,16 @@ implements Community
                 }
 
             @Override
+            public Identity search(String name, boolean create)
+                {
+                return services().identities().search(
+                    CommunityEntity.this,
+                    name,
+                    create
+                    );
+                }
+
+            @Override
             public Identity search(String name)
                 {
                 return services().identities().search(
@@ -675,20 +607,13 @@ implements Community
                 }
 
             @Override
-            public Identity select(String name, boolean create)
-                {
-                return services().identities().select(
-                    CommunityEntity.this,
-                    name,
-                    create
-                    );
-                }
-
-            @Override
             public Identity login(String name, String pass)
             throws UnauthorizedException
                 {
-                return services().identities().login(
+                log.debug("login(String, String)");
+                log.debug("  name [{}]", name);
+                log.debug("  pass [{}]", pass);
+            	return services().identities().login(
                     CommunityEntity.this,
                     name,
                     pass

@@ -324,8 +324,6 @@ implements Entity
             @Parameter(value="INITIAL_PARAM", name="10")
             }
      *
-        initialValue=100
-     *
      */
     @Id
     @Column(

@@ -14,7 +14,7 @@ services:
         hostname:
             "bethany"
         image:
-           "firethorn/postgres:${buildtag}"
+           "firethorn/postgres:${buildtag:-latest}"
         read_only:
             true
         tmpfs:
@@ -30,7 +30,7 @@ services:
         hostname:
             "patricia"
         image:
-           "firethorn/sql-proxy:${buildtag}"
+           "firethorn/sql-proxy:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -51,7 +51,7 @@ services:
         hostname:
             "elayne"
         image:
-           "firethorn/sql-proxy:${buildtag}"
+           "firethorn/sql-proxy:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -72,7 +72,7 @@ services:
         hostname:
             "jarmila"
         image:
-           "firethorn/ogsadai:${buildtag}"
+           "firethorn/ogsadai:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -98,9 +98,9 @@ services:
 
     gillian:
         hostname:
-            "firethorn"
+            "gillian"
         image:
-           "firethorn/firethorn:${buildtag}"
+           "firethorn/firethorn:${buildtag:-latest}"
         read_only:
             true
         tmpfs:

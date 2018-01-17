@@ -65,8 +65,12 @@ services:
         networks:
             - miriam
             - rosana
+        ports:
+            - "8080:8080"
         environment:
-            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
+            firethorn.meta.url:    'jdbc:postgresql://bethany/postgres'
+            firethorn.meta.driver: 'org.postgresql.Driver'
+            firethorn.ogsadai.endpoint: 'http://jarmila:8080/ogsadai/services'
         depends_on:
             bethany:
                 condition: service_started            

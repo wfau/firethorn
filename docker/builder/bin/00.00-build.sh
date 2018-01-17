@@ -35,11 +35,6 @@
     02.01-checkout.sh
 
 # -----------------------------------------------------
-# Update our POM version.
-
-    02.02-versions.sh
-
-# -----------------------------------------------------
 # Build our base images.
 
     04.01-buildbase.sh

@@ -191,11 +191,11 @@ extends NamedEntity
         /**
          * Select an {@link Identity} by name.
          * @param name The name of the {@link Identity}.
-         * @param create If true, then the {@link Identity} is created if not found.
+         * @param create If true, then the {@link Identity} is created if needed.
          * @return The corresponding {@link Identity}, or null if not selected or created.
          *
          */
-        public Identity select(final String name, boolean create);
+        public Identity search(final String name, boolean create);
         
         /**
          * Search for an existing {@link Identity} by name.
@@ -206,7 +206,7 @@ extends NamedEntity
         public Identity search(final String name);
 
         /**
-         * Login to a {@link Community} using name and password.
+         * Login to an {@link Identity} using name and password.
          * @param name The {@link Identity} name.
          * @param pass The {@link Identity} password.
          * @return The corresponding {@link Identity}.

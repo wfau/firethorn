@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.identity;
 import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -109,6 +111,9 @@ implements Identity
 
     protected static final String DB_ADQL_SCHEMA_COL = "adqlschema" ;
     protected static final String DB_ADQL_RESOURCE_COL = "adqlresource" ;
+
+    protected static final String DB_PASSHASH_COL = "passhash" ;
+    protected static final String DB_PASSSALT_COL = "passsalt" ;
 
     /**
      * Factory implementation.
@@ -284,6 +289,7 @@ implements Identity
             }
 
         @Override
+        @SelectMethod
         public Identity search(String name)
             {
             log.debug("search(String) [{}][{}]", name);
@@ -298,14 +304,8 @@ implements Identity
             }
 
         @Override
-        public Identity login(final Community community, String name, String pass) throws UnauthorizedException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
-
-        @Override
-        public Identity select(final Community community, final String name, boolean create)
+        @CreateMethod
+        public Identity search(final Community community, final String name, boolean create)
             {
             log.debug("select(Community, String, boolean) [{}][{}]", community.name(), name, create);
 
@@ -335,6 +335,54 @@ implements Identity
                     log.debug("Null Identity");
                     return null ;
                     }
+                }
+            }
+
+        @Override
+        @CreateMethod
+        public Identity login(final Community community, String name, String pass)
+		throws UnauthorizedException
+            {
+            log.debug("login(Community, String, String) [{}][{}]", community.name(), name);
+
+            log.debug("Checking for identity [{}][{}]", community.name(), name);
+            final Identity found = super.first(
+                super.query(
+                    "Identity-select-community.name"
+                    ).setEntity(
+                        "community",
+                        community
+                    ).setString(
+                        "name",
+                        name
+                        )
+                );
+
+            if (found != null)
+            	{
+                log.debug("Identity found [{}][{}]", community.name(), name);
+            	found.login(name, pass);
+            	return found;
+                }
+            else {
+                log.debug("Identity not found [{}][{}]", community.name(), name);
+            	if (community.autocreate())
+	            	{
+	                log.debug("Auto-create new identity [{}][{}]", community.name(), name);
+	            	final Identity created = super.insert(
+	                    new IdentityEntity(
+	                        community,
+	                        name,
+	                        pass
+	                        )
+	                    );
+	            	created.login(name, pass);
+	            	return created;
+	            	}
+            	else {
+                    log.warn("FAIL : Identity not found [{}][{}]", community.name(), name);
+            		throw new UnauthorizedException();
+            		}
                 }
             }
         }
@@ -666,11 +714,85 @@ implements Identity
         	}
         }
 
+    // Prefix salt from config.
+    
+    
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_PASSHASH_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String passhash ;
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_PASSSALT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String passsalt ;
+
+    protected void passhash(final String oldpass, final String newpass)
+    throws UnauthorizedException
+	    {
+    	log.debug("passhash(String, String)");
+    	log.debug("  Identity [{}][{}]", this.ident(), this.name());
+    	log.debug("  Password [{}][{}]", oldpass, newpass);
+
+    	passtest(oldpass);
+
+    	this.passsalt = "";
+    	this.passhash = "";
+
+	    }
+
+    private void passtest(final String pass)
+    throws UnauthorizedException
+    	{
+    	log.debug("passtest(String)");
+    	log.debug("  Identity [{}][{}]", this.ident(), this.name());
+    	log.debug("  Password [{}]", pass);
+    	if (null == pass)
+    		{
+    		log.debug("null password");;
+    		throw new UnauthorizedException();
+    		}
+
+/*
+ * 
+    	
+https://crackstation.net/hashing-security.htm
+https://github.com/defuse/password-hashing
+https://github.com/jedisct1/libsodium
+https://download.libsodium.org/doc/
+https://www.gitbook.com/book/jedisct1/libsodium/details
+https://download.libsodium.org/doc/bindings_for_other_languages/
+https://github.com/joshjdevl/libsodium-jni/blob/master/example/Sodium/app/src/main/java/android/alex/com/sodium/MainActivity.java
+https://github.com/naphaso/jsodium/tree/master/native
+https://download.libsodium.org/doc/bindings_for_other_languages/index.html
+
+https://github.com/abstractj/kalium/blob/master/src/main/java/org/abstractj/kalium/crypto/Password.java
+https://github.com/abstractj/kalium/blob/master/src/test/java/org/abstractj/kalium/crypto/PasswordTest.java
+
+
+ * 
+ */
+    	
+		
+    	}
+    
     @Override
-    public boolean login(String name, String pass) throws UnauthorizedException
+    public void login(String name, String pass)
+	throws UnauthorizedException
         {
+    	
         // TODO Auto-generated method stub
-        return false;
         }
     }
 

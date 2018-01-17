@@ -93,10 +93,22 @@ extends Entity, NamedEntity
 
         /**
          * Select an {@link Identity}, based on name.
+         * @param community The {@link Community}.
+         * @param name The {@link Identity} name.
+         * @return The corresponding {@link Identity}.
          *
          */
         public Identity select(final Community community, final String name)
         throws NameNotFoundException;
+
+        /**
+         * Search for an {@link Identity} based on name.
+         * @param community The {@link Community}.
+         * @param name The {@link Identity} name.
+         * @return The corresponding {@link Identity}, or null if the {@link Identity} was not found.
+         *
+         */
+        public Identity search(final Community community, final String name);
 
         /**
          * Select an {@link Identity}, based on name.
@@ -106,23 +118,21 @@ extends Entity, NamedEntity
          * @return The corresponding {@link Identity}, or null if the {@link Identity} was not found or created.
          *
          */
-        public Identity select(final Community community, final String name, boolean create);
+        public Identity search(final Community community, final String name, boolean create);
         
         /**
-         * Search for an {@link Identity} based on name.
-         *
-         */
-        public Identity search(final Community community, final String name);
-
-        /**
-         * Select an {@link Identity}, based on name.
+         * Select an {@link Identity}, from any {@link Community} based on just the name.
+         * @param name The {@link Identity} name.
+         * @return The corresponding {@link Identity}.
          *
          */
         public Identity select(final String name)
         throws NameNotFoundException;
 
         /**
-         * Search for an {@link Identity} based on name.
+         * Search for an {@link Identity},from any {@link Community}, based on just the name.
+         * @param name The {@link Identity} name.
+         * @return The corresponding {@link Identity}, or null if the {@link Identity} was not found.
          *
          */
         public Identity search(final String name);
@@ -239,11 +249,10 @@ extends Entity, NamedEntity
      * Login to an {@link Identity} using name and password.
      * @param name The {@link Identity} name (for comparison).
      * @param pass The {@link Identity} password.
-     * @return true if the login succeed.
      * @throws UnauthorizedException If the login failed.
      *
      */
-    public boolean login(final String name, final String pass)
+    public void login(final String name, final String pass)
     throws UnauthorizedException;
 
     }
