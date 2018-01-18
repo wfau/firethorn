@@ -47,7 +47,7 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
-    public static final String METHOD_NAME = "anonymous" ;
+    public static final String METHOD_NAME    = "anonymous" ;
     public static final String ANON_AUTH_NAME = "anonymous" ;
 
     @Override
@@ -67,7 +67,7 @@ implements HandlerInterceptor
                 {
                 log.debug("Null primary, adding anonymous Authentication");
                 final Community guests = factories.communities().entities().guests();
-                final Identity  guest  = guests.members().select(
+                final Identity  guest  = guests.members().search(
                     ANON_AUTH_NAME,
                     true
                     );

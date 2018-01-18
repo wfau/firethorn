@@ -32,11 +32,19 @@
         INFO : Disc name [Araybwyn.qcow]
         INFO : Disc size [16GiB]
 
+        INFO : Node name [Lothigometh]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [Lothigometh.qcow]
+        INFO : Disc size [16GiB]
+
 # -----------------------------------------------------
 # Login as normal user.
 #[user@trop]
 
     ssh Araybwyn
+
+    ssh Lothigometh
 
 # -----------------------------------------------------
 # Add our secret function.
