@@ -139,8 +139,6 @@ implements Community
             else {
                 final Community created = super.insert(
                     new CommunityEntity(
-                        SYSTEM_COMMUNITY_IDENT,
-                        (Identity) null,
                         SYSTEM_COMMUNITY_NAME,
                         factories().jdbc().resources().entities().userdata()
                         )
@@ -180,13 +178,13 @@ implements Community
             else {
                 final Community created = super.insert(
                     new CommunityEntity(
-                        GUEST_COMMUNITY_IDENT,
-                        (Identity) null,
                         GUEST_COMMUNITY_NAME,
-                        factories().jdbc().resources().entities().userdata()
+                        factories().jdbc().resources().entities().userdata(),
+                        true,
+                        true
                         )
                     );
-                created.autocreate(true);
+                //created.autocreate(true);
                 log.debug("  created [{}]", created);
                 return created ;
                 }
@@ -477,26 +475,27 @@ implements Community
      */
     protected CommunityEntity(final String name, final JdbcResource space)
         {
-        super(
-            name
+    	this(
+			name,
+			space,
+			false,
+			false
             );
-        log.debug("CommunityEntity(String, JdbcResource) [{}][{}]", name, space);
-        this.space = space ;
         }
-    
+
     /**
      * Protected constructor.
      *
      */
-    protected CommunityEntity(final Long ident, final Identity owner, final String name, final JdbcResource space)
+    protected CommunityEntity(final String name, final JdbcResource space, boolean autocreate, boolean usercreate)
         {
         super(
-            ident,
-            owner,
             name
             );
-        log.debug("CommunityEntity(Long, String, Identity , String, JdbcResource) [{}][{}]", name, space);
+        log.debug("CommunityEntity(String, JdbcResource, boolean, boolean) [{}][{}][{}][{}]", name, space, autocreate, usercreate);
         this.space = space ;
+        this.autocreate = autocreate;
+        this.usercreate = usercreate;
         }
 
     @Basic(

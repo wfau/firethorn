@@ -113,7 +113,6 @@ implements Identity
     protected static final String DB_ADQL_RESOURCE_COL = "adqlresource" ;
 
     protected static final String DB_PASSHASH_COL = "passhash" ;
-    protected static final String DB_PASSSALT_COL = "passsalt" ;
 
     /**
      * Factory implementation.
@@ -150,15 +149,7 @@ implements Identity
         public synchronized Identity system()
             {
             log.debug("system()");
-            /*
-             * 
-            Identity found = this.search(
-                new LongIdentifier(
-                    SYSTEM_IDENTITY_IDENT
-                    )
-                );
-             * 
-             */
+
             final Identity found = this.search(
                 SYSTEM_IDENTITY_NAME
                 );
@@ -171,7 +162,6 @@ implements Identity
                 final Community community = factories().communities().entities().system();
                 final Identity created = super.insert(
                     new IdentityEntity(
-                        SYSTEM_IDENTITY_IDENT,
                         community,
                         SYSTEM_IDENTITY_NAME,
                         SYSTEM_IDENTITY_PASS
@@ -503,13 +493,15 @@ implements Identity
     protected IdentityEntity(final Community community, final String name, final String pass)
         {
         super(name);
+        this.owner(this) ;
+    	this.passhash  = this.hashpass(pass);
         this.community = community;
         }
 
     /**
      * Protected constructor.
      *
-     */
+    @Deprecated
     protected IdentityEntity(final Long ident, final Community community, final String name, final String pass)
         {
         super(
@@ -518,8 +510,10 @@ implements Identity
             name
             );
         this.owner(this) ;
+    	this.passhash  = this.hashpass(pass);
         this.community = community;
         }
+     */
 
     @Override
     public String link()
@@ -726,17 +720,7 @@ implements Identity
         nullable = true,
         updatable = true
         )
-    private String passhash ;
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_PASSSALT_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String passsalt ;
+    private String passhash = null ;
 
     protected void passhash(final String oldpass, final String newpass)
     throws UnauthorizedException
@@ -745,25 +729,32 @@ implements Identity
     	log.debug("  Identity [{}][{}]", this.ident(), this.name());
     	log.debug("  Password [{}][{}]", oldpass, newpass);
 
-    	passtest(oldpass);
-
-    	this.passsalt = "";
-    	this.passhash = "";
-
+    	if (passtest(oldpass))
+		    {
+	    	this.passhash = hashpass(newpass);
+		    }
+	    else {
+    		throw new UnauthorizedException();
+		    }
 	    }
 
-    private void passtest(final String pass)
+    private boolean passtest(final String pass)
     throws UnauthorizedException
     	{
     	log.debug("passtest(String)");
     	log.debug("  Identity [{}][{}]", this.ident(), this.name());
     	log.debug("  Password [{}]", pass);
-    	if (null == pass)
+    	if ((null == this.passhash) && (null == pass))
     		{
-    		log.debug("null password");;
+    		log.debug("PASS - no password");
+    		return true ;
+    		}
+    	else if (null == pass)
+    		{
+    		log.debug("FAIL - null password");;
     		throw new UnauthorizedException();
     		}
-
+    	else {
 /*
  * 
     	
@@ -780,13 +771,25 @@ https://download.libsodium.org/doc/bindings_for_other_languages/index.html
 https://github.com/abstractj/kalium/blob/master/src/main/java/org/abstractj/kalium/crypto/Password.java
 https://github.com/abstractj/kalium/blob/master/src/test/java/org/abstractj/kalium/crypto/PasswordTest.java
 
-
  * 
  */
-    	
-		
+    		if (this.passhash.equals(hashpass(pass)))	
+    			{
+           		log.debug("PASS - password match");;
+        		return true ;
+    			}
+    		else {
+        		log.debug("FAIL - wrong password");;
+        		throw new UnauthorizedException();
+    			}
+    		}
     	}
-    
+
+    protected String hashpass(final String pass)
+    	{
+    	return "abc-" + pass + "-xyz";
+    	}
+
     @Override
     public void login(String name, String pass)
 	throws UnauthorizedException
