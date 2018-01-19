@@ -103,7 +103,7 @@ implements HandlerInterceptor
 
                 if (identity != null)
                     {
-                    log.debug("Identity [{}][{}]", identity.ident(), identity.name());
+                    log.debug("Identity  [{}][{}]", identity.ident(), identity.name());
                     response.addHeader(USERNAME_ATTRIB, identity.name());
 
                     final Community community = identity.community();
