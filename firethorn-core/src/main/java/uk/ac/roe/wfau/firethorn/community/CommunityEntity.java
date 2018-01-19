@@ -286,11 +286,6 @@ implements Community
                 log.warn("FAIL : Null username");
                 throw new UnauthorizedException();
                 }
-            if (pass == null)
-                {
-                log.warn("FAIL : Null password");
-                throw new UnauthorizedException();
-                }
             //
             // Load the system Identity and Community for comparison.
             final Identity system = factories().identities().entities().system();
