@@ -556,6 +556,14 @@ implements Community
         return new Members()
             {
             @Override
+            public Identity create()
+                {
+                return services().identities().create(
+                    CommunityEntity.this
+                    );
+                }
+
+            @Override
             public Identity create(final String name)
             throws DuplicateEntityException
                 {

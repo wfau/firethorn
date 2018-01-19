@@ -42,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.LongIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.UniqueNamefactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -178,6 +179,20 @@ implements Identity
             return IdentityEntity.class;
             }
 
+        @Override
+        @CreateMethod
+        public Identity create(final Community community)
+            {
+            log.debug("create(Community) [{}]", community.name());
+            return super.insert(
+                new IdentityEntity(
+                    community,
+                    null,
+                    null
+                    )
+                );
+            }
+        
         @Override
         @CreateMethod
         public Identity create(final Community community, final String name)
@@ -499,21 +514,27 @@ implements Identity
         }
 
     /**
-     * Protected constructor.
-     *
-    @Deprecated
-    protected IdentityEntity(final Long ident, final Community community, final String name, final String pass)
-        {
-        super(
-            ident,
-            (Identity) null,
-            name
-            );
-        this.owner(this) ;
-    	this.passhash  = this.hashpass(pass);
-        this.community = community;
-        }
+     * Static name factory.
+     * 
      */
+    static final UniqueNamefactory names = new UniqueNamefactory(
+		"anon",
+		"-"
+		);
+
+    @Override
+    protected void init(final String name)
+    	{
+        if (name != null)
+            {
+            this.name = name;
+            }
+        else {
+            this.name = names.name(
+        		this
+        		);
+        	}
+    	}
 
     @Override
     public String link()

@@ -160,6 +160,13 @@ extends NamedEntity
     public interface Members
         {
         /**
+         * Create a new {@link Identity} with a generated name.
+         * @return The new {@link Identity}.
+         *
+         */
+        public Identity create();
+
+        /**
          * Create a new {@link Identity}.
          * @param name The {@link Identity} name.
          * @return The new {@link Identity}.

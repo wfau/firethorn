@@ -59,7 +59,10 @@ implements HandlerInterceptor
         log.debug("  protocol    [{}]", request.getProtocol());
         log.debug("  queryString [{}]", request.getQueryString());
         log.debug("  authType    [{}]", request.getAuthType());        
-        
+
+        log.debug("  remoteAddr  [{}]", request.getRemoteAddr());        
+        log.debug("  remoteHost  [{}]", request.getRemoteHost());        
+
         log.debug("----");
         log.debug("Headers");
         final Enumeration<String> headers = request.getHeaderNames();

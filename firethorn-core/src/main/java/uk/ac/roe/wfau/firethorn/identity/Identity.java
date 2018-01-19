@@ -75,6 +75,12 @@ extends Entity, NamedEntity
         public Identity system();
 
         /**
+         * Create a new {@link Identity} with a generated name.
+         *
+         */
+        public Identity create(final Community community);
+
+        /**
          * Create a new {@link Identity}.
          * @param name The {@link Identity} name.
          *
