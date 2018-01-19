@@ -88,9 +88,6 @@ services:
             timeout:  5s
             retries:  5
 
-
-
-
     deployer:
         hostname:
             "deployer"
