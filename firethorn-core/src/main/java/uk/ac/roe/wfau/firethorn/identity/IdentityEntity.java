@@ -750,12 +750,15 @@ implements Identity
     	log.debug("  Identity [{}][{}]", this.ident(), this.name());
     	log.debug("  Password [{}][{}]", oldpass, newpass);
 
-    	if (passtest(oldpass))
-		    {
-	    	this.passhash = hashpass(newpass);
-		    }
-	    else {
-    		throw new UnauthorizedException();
+    	if (this.passhash != null)
+    		{
+	    	if (passtest(oldpass))
+			    {
+		    	this.passhash = hashpass(newpass);
+			    }
+		    else {
+	    		throw new UnauthorizedException();
+			    }
 		    }
 	    }
 
