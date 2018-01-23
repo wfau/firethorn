@@ -72,7 +72,7 @@ extends Entity, NamedEntity
          * Access to the system {@link Identity}.
          * 
          */
-        public Identity system();
+        public Identity admin();
 
         /**
          * Create a new {@link Identity} with a generated name.

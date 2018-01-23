@@ -113,23 +113,16 @@ implements Community
          * The 'system' {@link Community) name.
          * 
          */
-        @Value("${firethorn.system.community.name:system}")
-        protected String SYSTEM_COMMUNITY_NAME ;
-
-        /**
-         * The 'system' {@link Community) identifier.
-         * 
-         */
-        @Value("${firethorn.system.community.ident:00}")
-        protected Long SYSTEM_COMMUNITY_IDENT ;
+        @Value("${firethorn.admin.community:admin}")
+        protected String ADMIN_COMMUNITY_NAME ;
 
         @Override
         @CreateMethod
-        public synchronized Community system()
+        public synchronized Community admins()
             {
-            log.debug("system()");
+            log.debug("admin()");
             final Community found = this.search(
-                    SYSTEM_COMMUNITY_NAME
+                    ADMIN_COMMUNITY_NAME
                     );
             if (found != null)
                 {
@@ -139,7 +132,7 @@ implements Community
             else {
                 final Community created = super.insert(
                     new CommunityEntity(
-                        SYSTEM_COMMUNITY_NAME,
+                        ADMIN_COMMUNITY_NAME,
                         factories().jdbc().resources().entities().userdata()
                         )
                     );
@@ -152,15 +145,8 @@ implements Community
          * The 'guest' {@link Community) name.
          * 
          */
-        @Value("${firethorn.guests.community.name:guests}")
+        @Value("${firethorn.guest.community:guests}")
         protected String GUEST_COMMUNITY_NAME ;
-
-        /**
-         * The 'guest' {@link Community) identifier.
-         * 
-         */
-        @Value("${firethorn.guests.community.ident:00}")
-        protected Long GUEST_COMMUNITY_IDENT ;
 
         @Override
         @CreateMethod
@@ -184,7 +170,6 @@ implements Community
                         true
                         )
                     );
-                //created.autocreate(true);
                 log.debug("  created [{}]", created);
                 return created ;
                 }
@@ -275,10 +260,29 @@ implements Community
             log.debug("  username  [{}]", name);
             log.debug("  password  [{}]", pass);
             //
-            // Check for null params.
+            // Load the guest Community for comparison.
+            final Community guests = factories().communities().entities().guests();
+            log.debug("Guest Community [{}][{}]", guests.ident(), guests.name());
+            //
+            // Load the system Identity for comparison.
+            final Identity system = factories().identities().entities().admin();
+            log.debug("System Identity  [{}][{}]", system.ident(), system.name());
+            log.debug("System Community [{}][{}]", system.community().ident(), system.community().name());
+
+            //
+            // Check the Community.
+            Community community;
             if (comm == null)
                 {
-                log.warn("FAIL : Null community");
+                community = guests;
+                }
+            else {
+                community = search(comm);
+                }
+
+            if (community == null)
+                {
+                log.warn("LOGIN FAIL unknown community [{}]", comm);
                 throw new UnauthorizedException();
                 }
             if (name == null)
@@ -286,21 +290,7 @@ implements Community
                 log.warn("FAIL : Null username");
                 throw new UnauthorizedException();
                 }
-            //
-            // Load the system Identity and Community for comparison.
-            final Identity system = factories().identities().entities().system();
-            log.debug("System Identity  [{}][{}]", system.ident(), system.name());
-            log.debug("System Community [{}][{}]", system.community().ident(), system.community().name());
-            //
-            // Locate the Community.
-            final Community community = search(comm);
-            if (community == null)
-                {
-                log.warn("LOGIN FAIL unknown community [{}]", comm);
-                throw new UnauthorizedException();
-                }
-            //
-            // Try to login to the Community.
+
             return community.login(
                 name,
                 pass
@@ -323,7 +313,7 @@ implements Community
                         case UPDATE:
                         case CREATE:
                         case DELETE:
-                            if (identity.name().equals(SYSTEM_COMMUNITY_NAME) && identity.community().name().equals(SYSTEM_COMMUNITY_NAME))
+                            if (identity.name().equals(ADMIN_COMMUNITY_NAME) && identity.community().name().equals(ADMIN_COMMUNITY_NAME))
                                 {
                                 return true;
                                 }

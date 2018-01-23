@@ -100,9 +100,11 @@ datapass=$(secret 'firethorn.data.pass')
 tunneluser=$(secret 'ssh.tunnel.user')
 tunnelhost=$(secret 'ssh.tunnel.host')
 
-systemuser=$(pwgen 20 1)
-systempass=$(pwgen 20 1)
-systemcomm=system
+admingroup=wombles
+adminuser=orinoco
+adminpass=wombleden
+
+guestgroup=friends
 
 EOF
 
@@ -110,14 +112,14 @@ EOF
 # Create our Firethorn properties.
 #[user@virtual]
 
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
         firethorn.meta.type=pgsql
         firethorn.meta.driver=org.postgresql.Driver
         firethorn.meta.host=bethany
         firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
         firethorn.meta.data=postgres
-
-    source "${HOME:?}/chain.properties"
-    cat > "${HOME:?}/firethorn.properties" << EOF
 
         firethorn.meta.user=${metauser:?}
         firethorn.meta.pass=${metapass:?}
@@ -131,9 +133,11 @@ EOF
         firethorn.user.user=${useruser:?}
         firethorn.user.pass=${userpass:?}
 
-        firethorn.system.user=${systemuser:?}
-        firethorn.system.pass=${systempass:?}
-        firethorn.system.comm=${systemcomm:?}
+        firethorn.admin.community=${admingroup:?}
+        firethorn.admin.user.name=${adminuser:?}
+        firethorn.admin.user.pass=${adminpass:?}
+
+        firethorn.guest.community=${guestgroup:?}
 
 EOF
 
@@ -152,6 +156,12 @@ EOF
         datauser=${datauser:?}
         datapass=${datapass:?}
         datadriver=net.sourceforge.jtds.jdbc.Driver
+
+        admingroup=${admingroup:?}
+        adminuser=${adminuser:?}
+        adminpass=${adminpass:?}
+
+        guestgroup=${guestgroup:?}
 
 EOF
 
@@ -232,49 +242,248 @@ EOF
 # Load our configuration.
 #[root@tester]
 
+        cat /etc/tester.properties
+
         source /etc/tester.properties
 
 # -----------------------------------------------------
-# Check the system info.
-#[root@deployer]
+# Create our sed functions.
+#[root@tester]
 
-        curl \
-            --silent \
-            "${endpointurl:?}/system/info"
-            
-            
-             \
-            | jq '.' | tee /tmp/system-info.json
+httpcode()
+    {
+    sed -n 's/\(^HTTP.*\) \r/\1/p' /tmp/system-headers.txt
+    }
+
+username()
+    {
+    sed -n 's/^firethorn.auth.username: \(.*\)\r/\1/p' /tmp/system-headers.txt
+    }
+
+commname()
+    {
+    sed -n 's/^firethorn.auth.community: \(.*\)\r/\1/p' /tmp/system-headers.txt
+    }
+
+headers()
+    {
+    echo "----"
+    echo "HTTP code [$(httpcode)]"
+    echo "Community [$(commname)]"
+    echo "Username  [$(username)]"
+    echo "----"
+    }
 
 # -----------------------------------------------------
-# Check the system info.
+# Make a HEAD request to check admin username.
 #[root@deployer]
 
         curl \
+            --head \
             --silent \
-            --header "firethorn.auth.simple.username:admin" \
-            --header "firethorn.auth.simple.password:pass" \
-            --header "firethorn.auth.simple.community:system" \
-            "${endpointurl:?}/system/info"
-            
-            
-            \
-            | jq '.' | tee /tmp/system-info.json
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
 
 # -----------------------------------------------------
-# Create a community for our users.
+# Make a HEAD request to get anon username.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        guestuser=$(username)
+
+        headers
+
+# -----------------------------------------------------
+# Check no community works.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Check no passsword works.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            --header "firethorn.auth.community:${guestgroup:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Check null passsword works.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.password:" \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            --header "firethorn.auth.community:${guestgroup:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Check wrong passsword FAILS.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.password:xxxx" \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            --header "firethorn.auth.community:${guestgroup:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Make a HEAD request to choose our username.
+#[root@deployer]
+
+        testuser=$(pwgen 8 1)@example.com
+        testpass=$(pwgen 20 1)
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Check no community works.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Check no passsword fails.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.username:${testuser:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Check null passsword fails.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.password:" \
+            --header "firethorn.auth.username:${testuser:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Check wrong passsword fails.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.password:xxxx" \
+            --header "firethorn.auth.username:${testuser:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Check right passsword works.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --header "firethorn.auth.username:${testuser:?}" \
+            "${endpointurl:?}/system/info" \
+            | tee /tmp/system-headers.txt
+
+        headers
+
+# -----------------------------------------------------
+# Get the system status.
 #[root@deployer]
 
         curl \
             --silent \
-            --header "firethorn.auth.simple.username:xxxx" \
-            --header "firethorn.auth.simple.password:yyyy" \
-            --header "firethorn.auth.simple.community:system" \
-            --data   "community.name=${community:?}" \
-            "${endpointurl:?}/community/create" \
-            | jq '.' | tee /tmp/community.json
+            --header "firethorn.auth.password:${testpass:?}" \
+            --header "firethorn.auth.username:${testuser:?}" \
+            "${endpointurl:?}/system/info" \
+            | jq '.' | tee /tmp/system-info.json
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -75,7 +75,7 @@ extends NamedEntity
          * Access to the system community.
          * 
          */
-        public Community system();
+        public Community admins();
 
         /**
          * Access to the guest community.

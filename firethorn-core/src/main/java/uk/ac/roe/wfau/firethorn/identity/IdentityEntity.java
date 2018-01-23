@@ -128,31 +128,24 @@ implements Identity
          * The 'system' {@link Identity) name.
          * 
          */
-        @Value("${firethorn.system.user.name:admin}")
-        protected String SYSTEM_IDENTITY_NAME ;
+        @Value("${firethorn.admin.user.name:admin}")
+        protected String ADMIN_IDENTITY_NAME ;
 
         /**
          * The 'system' {@link Identity) password.
          * 
          */
-        @Value("${firethorn.system.user.pass:admin}")
-        protected String SYSTEM_IDENTITY_PASS ;
-
-        /**
-         * The 'system' {@link Identity) identifier.
-         * 
-         */
-        @Value("${firethorn.system.user.ident:01}")
-        protected Long SYSTEM_IDENTITY_IDENT ;
+        @Value("${firethorn.admin.user.pass:admin}")
+        protected String ADMIN_IDENTITY_PASS ;
 
         @Override
         @CreateMethod
-        public synchronized Identity system()
+        public synchronized Identity admin()
             {
-            log.debug("system()");
+            log.debug("admin()");
 
             final Identity found = this.search(
-                SYSTEM_IDENTITY_NAME
+                ADMIN_IDENTITY_NAME
                 );
             if (found != null)
                 {
@@ -160,12 +153,12 @@ implements Identity
                 return found ;
                 }
                 {
-                final Community community = factories().communities().entities().system();
+                final Community community = factories().communities().entities().admins();
                 final Identity created = super.insert(
                     new IdentityEntity(
                         community,
-                        SYSTEM_IDENTITY_NAME,
-                        SYSTEM_IDENTITY_PASS
+                        ADMIN_IDENTITY_NAME,
+                        ADMIN_IDENTITY_PASS
                         )
                     );
                 log.debug("  created [{}]", created);
@@ -729,9 +722,6 @@ implements Identity
         	}
         }
 
-    // Prefix salt from config.
-    
-    
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -743,6 +733,25 @@ implements Identity
         )
     private String passhash = null ;
 
+    /*
+     * 
+            
+    https://crackstation.net/hashing-security.htm
+    https://github.com/defuse/password-hashing
+    https://github.com/jedisct1/libsodium
+    https://download.libsodium.org/doc/
+    https://www.gitbook.com/book/jedisct1/libsodium/details
+    https://download.libsodium.org/doc/bindings_for_other_languages/
+    https://github.com/joshjdevl/libsodium-jni/blob/master/example/Sodium/app/src/main/java/android/alex/com/sodium/MainActivity.java
+    https://github.com/naphaso/jsodium/tree/master/native
+    https://download.libsodium.org/doc/bindings_for_other_languages/index.html
+
+    https://github.com/abstractj/kalium/blob/master/src/main/java/org/abstractj/kalium/crypto/Password.java
+    https://github.com/abstractj/kalium/blob/master/src/test/java/org/abstractj/kalium/crypto/PasswordTest.java
+
+     * 
+     */
+    
     protected void passhash(final String oldpass, final String newpass)
     throws UnauthorizedException
 	    {
@@ -762,12 +771,37 @@ implements Identity
 		    }
 	    }
 
+    private boolean nametest(final String name)
+    throws UnauthorizedException
+        {
+        log.debug("nametest(String)");
+        log.debug("  Identity [{}][{}]", this.ident(), this.name());
+        log.debug("  Username [{}]", name);
+
+        if (name != null)
+            {
+            if (this.name().equals(name))
+                {
+                return true ;
+                }
+            else {
+                log.debug("FAIL - wrong username");;
+                throw new UnauthorizedException();
+                }
+            }
+        else {
+            log.debug("FAIL - null username");;
+            throw new UnauthorizedException();
+            }
+        }
+
     private boolean passtest(final String pass)
     throws UnauthorizedException
     	{
     	log.debug("passtest(String)");
     	log.debug("  Identity [{}][{}]", this.ident(), this.name());
-    	log.debug("  Password [{}]", pass);
+        log.debug("  Password [{}]", pass);
+        log.debug("  Passhash [{}]", this.passhash);
     	if ((null == this.passhash) && (null == pass))
     		{
     		log.debug("PASS - no password");
@@ -778,48 +812,43 @@ implements Identity
     		log.debug("FAIL - null password");;
     		throw new UnauthorizedException();
     		}
-    	else {
-/*
- * 
-    	
-https://crackstation.net/hashing-security.htm
-https://github.com/defuse/password-hashing
-https://github.com/jedisct1/libsodium
-https://download.libsodium.org/doc/
-https://www.gitbook.com/book/jedisct1/libsodium/details
-https://download.libsodium.org/doc/bindings_for_other_languages/
-https://github.com/joshjdevl/libsodium-jni/blob/master/example/Sodium/app/src/main/java/android/alex/com/sodium/MainActivity.java
-https://github.com/naphaso/jsodium/tree/master/native
-https://download.libsodium.org/doc/bindings_for_other_languages/index.html
-
-https://github.com/abstractj/kalium/blob/master/src/main/java/org/abstractj/kalium/crypto/Password.java
-https://github.com/abstractj/kalium/blob/master/src/test/java/org/abstractj/kalium/crypto/PasswordTest.java
-
- * 
- */
-    		if (this.passhash.equals(hashpass(pass)))	
-    			{
-           		log.debug("PASS - password match");;
-        		return true ;
-    			}
-    		else {
-        		log.debug("FAIL - wrong password");;
-        		throw new UnauthorizedException();
-    			}
-    		}
+        else if (null == this.passhash)
+            {
+            log.debug("FAIL - null passhash");;
+            throw new UnauthorizedException();
+            }
+    	else if (this.passhash.equals(hashpass(pass)))	
+			{
+       		log.debug("PASS - password match");;
+    		return true ;
+			}
+		else {
+    		log.debug("FAIL - wrong password");;
+    		throw new UnauthorizedException();
+			}
     	}
 
     protected String hashpass(final String pass)
     	{
-    	return "abc-" + pass + "-xyz";
+    	if (pass == null)
+    	    {
+    	    return null ;
+    	    }
+    	else {
+    	    return "abc-" + pass + "-xyz";
+    	    }
     	}
 
     @Override
-    public void login(String name, String pass)
+    public void login(final String name, final String pass)
 	throws UnauthorizedException
         {
-    	
-        // TODO Auto-generated method stub
+        log.debug("login(String, String)");
+        log.debug("  Identity [{}][{}]", this.ident(), this.name());
+
+        nametest(name);
+        passtest(pass);
+
         }
     }
 
