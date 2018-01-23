@@ -539,6 +539,7 @@ implements Community
             {
             @Override
             public Identity create()
+            throws ProtectionException
                 {
                 return services().identities().create(
                     CommunityEntity.this
@@ -547,7 +548,7 @@ implements Community
 
             @Override
             public Identity create(final String name)
-            throws DuplicateEntityException
+            throws ProtectionException, DuplicateEntityException
                 {
                 return services().identities().create(
                     CommunityEntity.this,
@@ -557,7 +558,7 @@ implements Community
 
             @Override
             public Identity create(final String name, final String pass)
-            throws DuplicateEntityException
+            throws ProtectionException, DuplicateEntityException
                 {
                 return services().identities().create(
                     CommunityEntity.this,
@@ -568,7 +569,7 @@ implements Community
 
             @Override
             public Identity select(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 return services().identities().select(
                     CommunityEntity.this,
@@ -578,6 +579,7 @@ implements Community
 
             @Override
             public Identity search(String name, boolean create)
+            throws ProtectionException
                 {
                 return services().identities().search(
                     CommunityEntity.this,
@@ -588,6 +590,7 @@ implements Community
 
             @Override
             public Identity search(String name)
+            throws ProtectionException
                 {
                 return services().identities().search(
                     CommunityEntity.this,
@@ -597,7 +600,7 @@ implements Community
 
             @Override
             public Identity login(String name, String pass)
-            throws UnauthorizedException
+            throws ProtectionException, UnauthorizedException
                 {
                 log.debug("login(String, String)");
                 log.debug("  name [{}]", name);

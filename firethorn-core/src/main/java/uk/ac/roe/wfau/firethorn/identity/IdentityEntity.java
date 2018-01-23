@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
 import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
@@ -141,6 +142,7 @@ implements Identity
         @Override
         @CreateMethod
         public synchronized Identity admin()
+        throws ProtectionException
             {
             log.debug("admin()");
 
@@ -339,7 +341,7 @@ implements Identity
         @Override
         @CreateMethod
         public Identity login(final Community community, String name, String pass)
-		throws UnauthorizedException
+		throws UnauthorizedException, ProtectionException
             {
             log.debug("login(Community, String, String) [{}][{}]", community.name(), name);
 
@@ -621,6 +623,7 @@ implements Identity
     private JdbcSchema jdbcschema ;
 
     protected JdbcSchema jdbcschema()
+    throws ProtectionException
         {
         log.debug("jdbcschema()");
         if (this.jdbcschema == null)
@@ -662,12 +665,14 @@ implements Identity
 					{
 					@Override
 					public Iterable<AdqlSchema> select()
+                    throws ProtectionException
 						{
 						// TODO .. 
 						return new EmptyIterable<AdqlSchema>();
 						}
 					@Override
 					public AdqlSchema current()
+                    throws ProtectionException
 						{
 						return adqlschema();
 						}
@@ -681,6 +686,7 @@ implements Identity
 					{
 					@Override
 					public Iterable<JdbcSchema> select()
+                    throws ProtectionException
 						{
 						// TODO .. 
 						return new EmptyIterable<JdbcSchema>();
@@ -688,6 +694,7 @@ implements Identity
 
 					@Override
 					public JdbcSchema current()
+			        throws ProtectionException
 						{
 						return jdbcschema();
 						}
@@ -699,12 +706,13 @@ implements Identity
     /**
      * Get the corresponding Hibernate entity for the current thread.
      * @throws HibernateConvertException 
+     * @throws ProtectionException 
      * @todo Move to a generic base class. 
      *
      */
     @Override
     public Identity rebase()
-    throws HibernateConvertException
+    throws HibernateConvertException, ProtectionException
     	{
         log.debug("Converting current instance [{}]", ident());
         try {

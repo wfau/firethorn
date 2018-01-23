@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -424,12 +425,13 @@ implements Operation
     /**
      * Get the corresponding Hibernate entity for the current thread.
      * @throws HibernateConvertException 
+     * @throws ProtectionException 
      * @todo Move to a generic base class. 
      *
      */
     @Override
     public Operation rebase()
-    throws HibernateConvertException
+    throws HibernateConvertException, ProtectionException
     	{
         log.debug("Converting current instance [{}]", ident());
         try {

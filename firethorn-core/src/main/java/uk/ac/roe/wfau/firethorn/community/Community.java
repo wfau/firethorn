@@ -150,10 +150,7 @@ extends NamedEntity
     public static interface EntityServices
     extends NamedEntity.EntityServices<Community>
         {
-        /**
-         * Our {@link Community.EntityFactory} instance.
-         *
-         */
+        @Override
         public Community.EntityFactory entities();
 
         /**

@@ -1402,6 +1402,7 @@ implements BlueQuery
                     {
                     @Override
                     public TaskState execute()
+                    throws ProtectionException
                         {
                         try {
 // Need to initialise current context.                        
@@ -2069,13 +2070,14 @@ implements BlueQuery
     /**
      * Get the corresponding Hibernate entity for the current thread.
      * @throws HibernateConvertException 
+     * @throws ProtectionException 
      * @todo Move to a generic base class. 
      * @todo Is this the same as BaseComponentEntity.self()
      *
      */
     @Override
     public BlueQuery rebase()
-    throws HibernateConvertException
+    throws HibernateConvertException, ProtectionException
     	{
         log.debug("Converting current instance [{}]", ident());
         try {

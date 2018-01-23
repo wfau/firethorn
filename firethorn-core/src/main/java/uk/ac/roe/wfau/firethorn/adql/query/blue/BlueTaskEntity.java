@@ -1260,6 +1260,7 @@ implements BlueTask<TaskType>
                 {
                 @Override
                 public TaskState execute()
+                throws ProtectionException
                     {
                 	try {
 	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
@@ -1376,6 +1377,7 @@ implements BlueTask<TaskType>
                 {
                 @Override
                 public TaskState execute()
+                throws ProtectionException
                     {
                 	try {
 	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();

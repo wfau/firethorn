@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 
@@ -152,10 +153,11 @@ extends Entity
     
     /**
      * Get the {@link Entity} instance linked to the current {@link Thread}.
+     * @throws ProtectionException 
      * @todo Move this to a base class.
      * 
      */
     public Operation rebase()
-	throws HibernateConvertException;
+	throws HibernateConvertException, ProtectionException;
     
     }

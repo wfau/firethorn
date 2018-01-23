@@ -354,10 +354,12 @@ extends NamedEntity
 
     /**
      * Get the {@link Entity} instance linked to the current {@link Thread}.
+     * @todo Move to a generic base class. 
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     public TaskType rebase()
-	throws HibernateConvertException;
+	throws HibernateConvertException, ProtectionException;
     
     /**
      * The date/time the {@link BlueTask} was queued.

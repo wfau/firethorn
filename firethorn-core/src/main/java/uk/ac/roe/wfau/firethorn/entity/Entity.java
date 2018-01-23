@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.entity ;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.access.Protected;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -68,22 +69,27 @@ extends Protected
         {
         /**
          * Generate an alias.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public String alias(final EntityType entity);
+        public String alias(final EntityType entity)
+        throws ProtectionException;
 
         /**
          * Check if this {@link AliasFactory} can parse a {@link String}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public boolean matches(final String alias);
+        public boolean matches(final String alias)
+        throws ProtectionException;
         
         /**
          * Resolve an alias into an entity.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public EntityType resolve(final String alias)
-        throws EntityNotFoundException;
+        throws ProtectionException, EntityNotFoundException;
         
         }
 
@@ -134,10 +140,11 @@ extends Protected
 
         /**
          * Resolve a link into an entity.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public EntityType resolve(final String link)
-        throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException;
+        throws ProtectionException, IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException;
 
         }
 
@@ -178,18 +185,21 @@ extends Protected
         {
         /**
          * Select a specific Entity by Identifier.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public EntityType select(final Identifier ident)
-        throws IdentifierNotFoundException;
+        throws ProtectionException, IdentifierNotFoundException;
 
         /**
          * Search for a specific Entity by Identifier.
          * @return The matching Entity, or null if not found.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public EntityType search(final Identifier ident);
-
+        public EntityType search(final Identifier ident)
+        throws ProtectionException;
+        
         }
 
     /**
@@ -206,18 +216,21 @@ extends Protected
 
     /**
      * Get the Entity owner.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     public Identity owner();
 
     /**
      * The date/time when the Entity was created.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     public DateTime created();
 
     /**
      * The date/time when the Entity was last modified.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     public DateTime modified();
