@@ -23,11 +23,13 @@ import java.util.concurrent.Future;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
@@ -84,22 +86,28 @@ extends NamedEntity
 
             /**
              * Execute the step.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public TaskState execute();
+            public TaskState execute()
+            throws ProtectionException;
             }
 
         /**
          * Execute an {@link TaskRunner.Updator} in a new {@link Thread}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public TaskState thread(final Updator<?> updator);
+        public TaskState thread(final Updator<?> updator)
+        throws ProtectionException;
 
         /**
          * Execute an {@link TaskRunner.Updator} in a {@link Future}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Future<TaskState> future(final Updator<?> updator);
+        public Future<TaskState> future(final Updator<?> updator)
+        throws ProtectionException;
         
         /**
          * Public interface for a {@link BlueTask} creator.
@@ -111,10 +119,11 @@ extends NamedEntity
              * Execute the step.
              * @throws HibernateConvertException
              * @throws InvalidStateTransitionException
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
             public TaskType create()
-            throws InvalidStateTransitionException, HibernateConvertException;
+            throws ProtectionException, InvalidStateTransitionException, HibernateConvertException;
 
             }
 
@@ -124,16 +133,19 @@ extends NamedEntity
          * Running the {@link TaskRunner.Creator} in a new {@link Thread} means that it is run in
          * a new Hibernate {@link Session}, which gets committed to the database when
          * the {@link TaskRunner.Creator} completes its operation.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
          * 
          */
         public TaskType thread(final Creator<TaskType> creator)
-        throws InvalidStateTransitionException;
+        throws InvalidStateTransitionException, ProtectionException;
 
         /**
          * Execute an {@link TaskRunner.Creator} in a {@link Future}.
-         * 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
+         *  
          */
-        public Future<TaskType> future(final Creator<TaskType> creator);
+        public Future<TaskType> future(final Creator<TaskType> creator)
+        throws ProtectionException ;
 
         }
 
@@ -146,9 +158,11 @@ extends NamedEntity
         {
         /**
          * Select all the available tasks.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<TaskType> select();
+        public Iterable<TaskType> select()
+        throws ProtectionException;
 
         /**
          * Advance the {@link TaskState} of a {@link BlueTask}.
@@ -156,10 +170,11 @@ extends NamedEntity
          * @param prev The current/previous {@link TaskState}. 
          * @param next The next {@link TaskState} to move to. 
          * @param wait The blocking time in milliseconds. 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
         public TaskType advance(final Identifier ident, final TaskState prev, final TaskState next, long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException;
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException;
        
         }
 
@@ -249,28 +264,11 @@ extends NamedEntity
 
     /**
      * The task {@link TaskState}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public TaskState state();
-
-    /**
-     * Advance to the next {@link TaskState},
-     * called in response to a user action. 
-     * @param prev The next {@link TaskState} to move to. 
-     * 
-    public void advance(final TaskState next)
-    throws InvalidStateTransitionException;
-     */
-
-    /**
-     * Advance to the next {@link TaskState},
-     * called in response to a user action.
-     * @param next The next {@link TaskState} to move to. 
-     * @param wait The blocking time in milliseconds. 
-     * 
-    public void advance(final TaskState next, long wait)
-    throws InvalidStateTransitionException;
-     */
+    public TaskState state()
+    throws ProtectionException;
 
     /**
      * Advance to the next {@link TaskState},
@@ -278,19 +276,22 @@ extends NamedEntity
      * @param prev The current/previous {@link TaskState}. 
      * @param next The next {@link TaskState} to move to. 
      * @param wait The blocking time in milliseconds. 
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     public void advance(final TaskState prev, final TaskState next, final Long wait)
-    throws InvalidStateRequestException;
+    throws ProtectionException, InvalidStateRequestException;
 
     /**
      * Wait for a state {@link TaskState} change.
      * @param prev The current/previous {@link TaskState}. 
      * @param prev The next {@link TaskState} to move to. 
      * @param wait The blocking time in milliseconds. 
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void waitfor(final TaskState prev, final TaskState next, final Long wait);
+    public void waitfor(final TaskState prev, final TaskState next, final Long wait)
+    throws ProtectionException;
 
     /**
      * An event notification handle.
@@ -345,9 +346,11 @@ extends NamedEntity
 
     /**
      * Our {@link BlueTask.Handle}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public Handle handle();
+    public Handle handle()
+    throws ProtectionException;
 
     /**
      * Get the {@link Entity} instance linked to the current {@link Thread}.
@@ -358,21 +361,27 @@ extends NamedEntity
     
     /**
      * The date/time the {@link BlueTask} was queued.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public DateTime queued();
+    public DateTime queued()
+    throws ProtectionException;
 
     /**
      * The date/time the {@link BlueTask} was started.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public DateTime started();
+    public DateTime started()
+    throws ProtectionException;
 
     /**
      * The date/time the {@link BlueTask} was completed.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public DateTime completed();
+    public DateTime completed()
+    throws ProtectionException;
 
     /**
      *  Public interface for the task parameters.
@@ -384,15 +393,18 @@ extends NamedEntity
          * A {@link Map} of task parameters.
          * 
          */
-        public Map<String, String> map();
+        public Map<String, String> map()
+        throws ProtectionException;
 
         }
 
     /**
-     *  Access to the {@link BlueTask} parameters.
+     * Access to the {@link BlueTask} parameters.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *  
      */
-    public Param param();
+    public Param param()
+    throws ProtectionException;
 
     /**
      * Public interface for the {@link Entity} message log.
@@ -402,62 +414,80 @@ extends NamedEntity
         {
         /**
          * Create a new log entry.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public BlueTaskLogEntry create(final BlueTaskLogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final BlueTaskLogEntry.Level level, final String message)
+        throws ProtectionException;
 
         /**
          * Create a new log entry.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public BlueTaskLogEntry create(final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message)
+        throws ProtectionException;
 
         /**
          * Create a new log entry.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public BlueTaskLogEntry create(final Object source, final BlueTaskLogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final Object source, final BlueTaskLogEntry.Level level, final String message)
+        throws ProtectionException;
 
         /**
          * Create a new log entry.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public BlueTaskLogEntry create(final Object source, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final Object source, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message)
+        throws ProtectionException;
 
         /**
          * Select all the log entries for this entity.
          * @Deprecated Use select(Integer count).
- 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
          */
         @Deprecated
-        public Iterable<BlueTaskLogEntry> select();
+        public Iterable<BlueTaskLogEntry> select()
+        throws ProtectionException;
 
         /**
          * Select the most recent log entries for this entity.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Iterable<BlueTaskLogEntry> select(final Integer limit);
+        public Iterable<BlueTaskLogEntry> select(final Integer limit)
+        throws ProtectionException;
 
         /**
          * Select all the log entries with a specific level for this entity.
          * @Deprecated Use select(Integer count, Level level).
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
         @Deprecated
-        public Iterable<BlueTaskLogEntry> select(final BlueTaskLogEntry.Level level);
+        public Iterable<BlueTaskLogEntry> select(final BlueTaskLogEntry.Level level)
+        throws ProtectionException;
 
         /**
          * Select the most recent log entries with a specific level for this entity.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Iterable<BlueTaskLogEntry> select(final Integer limit, final BlueTaskLogEntry.Level level);
+        public Iterable<BlueTaskLogEntry> select(final Integer limit, final BlueTaskLogEntry.Level level)
+        throws ProtectionException;
 
         }
 
     /**
      * Access to the {@link BlueTask} message log.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public History history();
+    public History history()
+    throws ProtectionException;
 
     }

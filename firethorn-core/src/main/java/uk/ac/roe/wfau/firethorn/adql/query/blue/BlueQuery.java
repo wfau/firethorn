@@ -279,7 +279,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
      * 
      */
     public void callback(final BlueQuery.CallbackEvent message)
-    throws InvalidStateRequestException;
+    throws InvalidStateRequestException, ProtectionException;
 
     /**
      * The {@link CallbackEvent} URL (as a string).

@@ -48,6 +48,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.Handle.Listener;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry.Level;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -134,14 +135,14 @@ implements BlueTask<TaskType>
     @Slf4j
     @Repository
     public abstract static class EntityFactory<TaskType extends BlueTask<?>>
-        extends AbstractEntityFactory<TaskType>
-        implements BlueTask.EntityFactory<TaskType>
+    extends AbstractEntityFactory<TaskType>
+    implements BlueTask.EntityFactory<TaskType>
         {
 
         @Override
         @UpdateAtomicMethod
         public TaskType advance(final Identifier ident, final TaskState prev, final TaskState next, long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException
+        throws IdentifierNotFoundException, InvalidStateRequestException, ProtectionException
             {
             log.debug("advance(Identifier, TaskState, TaskState, long)");
             log.debug("  ident [{}]", ident);
@@ -188,6 +189,7 @@ implements BlueTask<TaskType>
         @Override
         @UpdateAtomicMethod
         public TaskState thread(final Updator<?> updator)
+        throws ProtectionException
             {
             log.debug("update(Updator)");
             log.debug("  ident [{}]", updator.ident());
@@ -226,6 +228,7 @@ implements BlueTask<TaskType>
         @Override
         @UpdateAtomicMethod
         public Future<TaskState> future(final Updator<?> updator)
+        throws ProtectionException
             {
             log.debug("execute(Updator)");
             log.debug("  ident [{}]", updator.ident());
@@ -238,7 +241,7 @@ implements BlueTask<TaskType>
         @Override
         @UpdateAtomicMethod
         public TaskType thread(final Creator<TaskType> creator)
-        throws InvalidStateTransitionException
+        throws InvalidStateTransitionException, ProtectionException
             {
             log.debug("create(Creator)");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
@@ -297,6 +300,7 @@ implements BlueTask<TaskType>
         @Override
         @UpdateAtomicMethod
         public Future<TaskType> future(final Creator<TaskType> creator)
+        throws ProtectionException
             {
             log.debug("future(Creator)");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
@@ -498,10 +502,11 @@ implements BlueTask<TaskType>
 
     /**
      * Execute our task.
+     * @throws  
      * 
      */
     protected abstract void execute()
-    throws InvalidStateTransitionException;
+    throws ProtectionException, InvalidStateTransitionException;
 
     /**
      * {@link BlueTask.Handle} implementation.
@@ -515,6 +520,7 @@ implements BlueTask<TaskType>
          * 
          */
         protected Handle(final BlueTask<?> task)
+        throws ProtectionException        
             {
             this.state = task.state();
             this.ident = task.ident().toString();
@@ -805,9 +811,11 @@ implements BlueTask<TaskType>
 
     /**
      * Create a {@link Handle} for this task.
+     * @throws ProtectionException 
      * 
      */
     protected Handle newhandle()
+    throws ProtectionException
         {
         return new Handle(
             this
@@ -816,6 +824,7 @@ implements BlueTask<TaskType>
 
     @Override
     public Handle handle()
+    throws ProtectionException
         {
         log.debug("handle()");
         log.debug("  ident [{}]", ident());
@@ -999,7 +1008,7 @@ implements BlueTask<TaskType>
     
     @Override
     public void advance(final TaskState prev, final TaskState next, final Long wait)
-    throws InvalidStateRequestException
+    throws InvalidStateRequestException, ProtectionException
         {
         log.debug("advance(TaskState, TaskState, Long)");
         log.debug("  ident [{}]", ident());
@@ -1113,9 +1122,11 @@ implements BlueTask<TaskType>
 
     /**
      * Update our Handle and notify any Listeners.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
      * 
      */
     protected void event()
+    throws ProtectionException
     	{
     	this.event(
     		this.state
@@ -1124,9 +1135,12 @@ implements BlueTask<TaskType>
 
     /**
      * Update our Handle and notify any Listeners.
+     * @throws ProtectionException 
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
      * 
      */
     protected void event(final TaskState state)
+    throws ProtectionException
     	{
         final Handle handle = this.handle();
         if (handle != null)
@@ -1139,6 +1153,7 @@ implements BlueTask<TaskType>
 
     @Override
     public void waitfor(final TaskState prev, final TaskState next, final Long wait)
+    throws ProtectionException
     	{
         log.debug("waitfor(TaskState, Long)");
         log.debug("  ident [{}]", ident());
@@ -1231,9 +1246,11 @@ implements BlueTask<TaskType>
     /**
      * Prepare our task.
      * Calling {@link #prepare()} in a new {@link Thread} performs the operation in a separate Hibernate {@link Session}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
      * 
      */
     protected void ready()
+    throws ProtectionException
     	{
         log.debug("Starting ready()");
         log.debug("  ident [{}]", ident());
@@ -1278,9 +1295,11 @@ implements BlueTask<TaskType>
 
     /**
      * Run our task in a new {@link Thread}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
      * 
      */
     protected void running()
+    throws ProtectionException
         {
         log.debug("Starting running()");
         log.debug("  ident [{}]", ident());
@@ -1290,6 +1309,7 @@ implements BlueTask<TaskType>
                 {
                 @Override
                 public TaskState execute()
+                throws ProtectionException
                     {
                 	try {
 	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
@@ -1343,9 +1363,10 @@ implements BlueTask<TaskType>
 
     /**
      * Finish our task.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
      * 
      */
-    protected void finish(final TaskState next)
+    protected void finish(final TaskState next) throws ProtectionException
         {
         log.debug("Starting finish()");
         log.debug("  ident [{}]", ident());
@@ -1446,6 +1467,7 @@ implements BlueTask<TaskType>
             {
             @Override
             public BlueTaskLogEntry create(Level level, String message)
+            throws ProtectionException
                 {
                 return factories().logger().entities().create(
                     BlueTaskEntity.this,
@@ -1456,6 +1478,7 @@ implements BlueTask<TaskType>
 
             @Override
             public BlueTaskLogEntry create(Object source, Level level, String message)
+            throws ProtectionException
                 {
                 return factories().logger().entities().create(
                     source,
@@ -1468,6 +1491,7 @@ implements BlueTask<TaskType>
 
             @Override
             public BlueTaskLogEntry create(final BlueTask.TaskState state, final Level level, final String message)
+            throws ProtectionException
                 {
                 return factories().logger().entities().create(
                     BlueTaskEntity.this,
@@ -1479,6 +1503,7 @@ implements BlueTask<TaskType>
 
             @Override
             public BlueTaskLogEntry create(final Object source, final BlueTask.TaskState state, final Level level, final String message)
+            throws ProtectionException
                 {
                 return factories().logger().entities().create(
                     source,
@@ -1491,6 +1516,7 @@ implements BlueTask<TaskType>
 
             @Override
             public Iterable<BlueTaskLogEntry> select()
+            throws ProtectionException
                 {
                 return factories().logger().entities().select(
                     BlueTaskEntity.this
@@ -1499,6 +1525,7 @@ implements BlueTask<TaskType>
 
             @Override
             public Iterable<BlueTaskLogEntry> select(final Integer limit)
+            throws ProtectionException
                 {
                 return factories().logger().entities().select(
                     BlueTaskEntity.this,
@@ -1508,6 +1535,7 @@ implements BlueTask<TaskType>
 
             @Override
             public Iterable<BlueTaskLogEntry> select(final Level level)
+            throws ProtectionException
                 {
                 return factories().logger().entities().select(
                     BlueTaskEntity.this,
@@ -1517,6 +1545,7 @@ implements BlueTask<TaskType>
 
             @Override
             public Iterable<BlueTaskLogEntry> select(final Integer limit, final Level level)
+            throws ProtectionException
                 {
                 return factories().logger().entities().select(
                     BlueTaskEntity.this,

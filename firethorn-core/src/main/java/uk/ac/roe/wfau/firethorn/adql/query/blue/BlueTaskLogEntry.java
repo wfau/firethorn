@@ -18,8 +18,10 @@
 
 package uk.ac.roe.wfau.firethorn.adql.query.blue;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Public interface for a LogEntry.
@@ -70,51 +72,67 @@ public interface BlueTaskLogEntry
         {
         /**
          * Create a new {@link BlueTaskLogEntry}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
          * 
          */
-        public BlueTaskLogEntry create(final BlueTask<?> task, final BlueTaskLogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final BlueTask<?> task, final BlueTaskLogEntry.Level level, final String message)
+        throws ProtectionException;
 
         /**
          * Create a new {@link BlueTaskLogEntry}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
          *  
          */
-        public BlueTaskLogEntry create(final BlueTask<?> task, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final BlueTask<?> task, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message)
+        throws ProtectionException;
 
         /**
          * Create a new {@link BlueTaskLogEntry}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
          *  
          */
-        public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final BlueTaskLogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final BlueTaskLogEntry.Level level, final String message)
+        throws ProtectionException;
 
         /**
          * Create a new {@link BlueTaskLogEntry}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
          *  
          */
-        public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message);
+        public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final BlueTask.TaskState state, final BlueTaskLogEntry.Level level, final String message)
+        throws ProtectionException;
         
         /**
          * Select all the log entries for an {@link Entity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
          * 
          */
-        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task);
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task)
+        throws ProtectionException;
 
         /**
          * Select the most recent log entries for an {@link Entity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
          * 
          */
-        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit);
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit)
+        throws ProtectionException;
 
         /**
          * Select all the log entries with a specific level for an {@link Entity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
          * 
          */
-        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final BlueTaskLogEntry.Level level);
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final BlueTaskLogEntry.Level level)
+        throws ProtectionException;
 
         /**
          * Select all the log entries with a specific level for an {@link Entity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
          * 
          */
-        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit, final BlueTaskLogEntry.Level level);
+        public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit, final BlueTaskLogEntry.Level level)
+        throws ProtectionException;
 
         }
     
