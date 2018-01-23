@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.access;
 
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 
 /**
  * Public interface to protect an {@link Entity}.
@@ -26,6 +27,23 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  */
 public interface Protector
     {
+
+    /**
+     * Check if the {@link Identity} from the current {@link Authentication} is allowed to perform an {@link Action} on the protected {@link Entity}.
+     * @param action The {@Action} to check for.
+     * @returns true if the Identity from the {@link Authentication} is allowed to perform an {@link Action}. 
+     *
+     */
+    public boolean check(final Action action); 
+
+    /**
+     * Check if an {@link Identity} is allowed to perform an {@link Action} on the protected {@link Entity}.
+     * @param identity The {@link Identity} to check.
+     * @param action The {@Action} to check for.
+     * @returns true if the Identity from the {@link Authentication} is allowed to perform an {@link Action}. 
+     *
+     */
+    public boolean check(final Identity identity, final Action action); 
 
     /**
      * Check if the {@link Identity} from an {@link Authentication} is allowed to perform an {@link Action} on the protected {@link Entity}.
@@ -37,14 +55,76 @@ public interface Protector
     public boolean check(final Authentication authentication, final Action action); 
 
     /**
+     * Check if an {@link Authentication} from an {@link Iterable} of {@link Authentication}s is allowed to perform an {@link Action} on the protected {@link Entity}.
+     * @param authentications The {@link Iterable} of {@link Authentication}s to check.
+     * @param action The {@Action} to check for.
+     * @returns true if the Identity from the {@link Authentication} is allowed to perform an {@link Action}. 
+     *
+     */
+    public boolean check(final Iterable<Authentication> authentications, final Action action); 
+
+    /**
+     * Check if one of an {@link Operation} {@link Authentication}s is allowed to perform an {@link Action} on the protected {@link Entity}.
+     * @param authentications The {@link Operation} {@link Authentications} to check.
+     * @param action The {@Action} to check for.
+     * @returns true if the Identity from the {@link Authentication} is allowed to perform an {@link Action}. 
+     *
+     */
+    public boolean check(final Operation.Authentications authentications, final Action action); 
+
+    /**
+     * Check if the {@link Identity} from the current {@link Authentication} is allowed to perform an {@link Action} on the protected {@link Entity}.
+     * @param authentication The {@link Authentication} to check.
+     * @param action The {@Action} to check for.
+     * @return A reference to the {@link Protector) that accepted the {@link Action}.
+     * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
+     * 
+     */
+    public Protector accept(final Action action)
+    throws ProtectionException ; 
+
+    /**
+     * Check that an {@link Identity} is allowed to perform an {@link Action}, or throw an {@link Exception}.
+     * @param identity The {@link Identity} to check.
+     * @param action The {@Action} to check for.
+     * @return A reference to the {@link Protector) that accepted the {@link Action}.
+     * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
+     * 
+     */
+    public Protector accept(final Identity identity, final Action action)
+    throws ProtectionException ; 
+
+    /**
      * Check that the {@link Identity} from an {@link Authentication} is allowed to perform an {@link Action}, or throw an {@link Exception}.
      * @param authentication The {@link Authentication} to check.
      * @param action The {@Action} to check for.
      * @return A reference to the {@link Protector) that accepted the {@link Action}.
-     * @throws {@link ProtectorException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
+     * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
      * 
      */
     public Protector accept(final Authentication authentication, final Action action)
-    throws ProtectorException ; 
+    throws ProtectionException ; 
 
+    /**
+     * Check if an {@link Authentication} from an {@link Iterable} of {@link Authentication}s is allowed to perform an {@link Action} on the protected {@link Entity}.
+     * @param authentication The {@link Authentication} to check.
+     * @param action The {@Action} to check for.
+     * @return A reference to the {@link Protector) that accepted the {@link Action}.
+     * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
+     * 
+     */
+    public Protector accept(final Iterable<Authentication> authentications, final Action action)
+    throws ProtectionException ; 
+
+    /**
+     * Check if one of an {@link Operation} {@link Authentication}s is allowed to perform an {@link Action} on the protected {@link Entity}.
+     * @param authentications The {@link Operation} {@link Authentications} to check.
+     * @param action The {@Action} to check for.
+     * @return A reference to the {@link Protector) that accepted the {@link Action}.
+     * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
+     * 
+     */
+    public Protector accept(final Operation.Authentications authentications, final Action action)
+    throws ProtectionException ; 
+    
     }

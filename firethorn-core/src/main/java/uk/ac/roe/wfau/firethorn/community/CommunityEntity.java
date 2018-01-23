@@ -37,7 +37,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.access.AbstractProtector;
+import uk.ac.roe.wfau.firethorn.access.BaseProtector;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
@@ -119,6 +120,7 @@ implements Community
         @Override
         @CreateMethod
         public synchronized Community admins()
+        throws ProtectionException
             {
             log.debug("admin()");
             final Community found = this.search(
@@ -300,10 +302,10 @@ implements Community
         @Override
         public Protector protector()
             {
-            return new AbstractProtector()
+            return new BaseProtector(EntityFactory.this)
                 {
                 @Override
-                public boolean check(Identity identity, Action action)
+                public boolean check(final Identity identity, final Action action)
                     {
                     switch(action.type())
                         {
@@ -313,13 +315,7 @@ implements Community
                         case UPDATE:
                         case CREATE:
                         case DELETE:
-                            if (identity.name().equals(ADMIN_COMMUNITY_NAME) && identity.community().name().equals(ADMIN_COMMUNITY_NAME))
-                                {
-                                return true;
-                                }
-                            else {
-                                return false;
-                                }
+                            return isAdmin(identity);
 
                         default:
                             return false;

@@ -39,6 +39,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.Action;
+import uk.ac.roe.wfau.firethorn.access.BaseProtector;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -103,6 +107,29 @@ public class JdbcResourceEntity
         {
 
         @Override
+        public Protector protector()
+            {
+            return new BaseProtector(EntityFactory.this)
+                {
+                @Override
+                public boolean check(final Identity identity, final Action action)
+                    {
+                    switch (action.type())
+                        {
+                        case CREATE:
+                            return isAdmin(identity);
+
+                        case SELECT:
+                            return true ;
+                            
+                        default :
+                            return false ;
+                        }
+                    }
+                };
+            }
+        
+        @Override
         public Class<?> etype()
             {
             return JdbcResourceEntity.class ;
@@ -111,7 +138,9 @@ public class JdbcResourceEntity
         @Override
         @SelectMethod
         public Iterable<JdbcResource> select()
+        throws ProtectionException
             {
+            protector().accept(Action.select);
             return super.iterable(
                 super.query(
                     "JdbcResource-select-all"
@@ -122,6 +151,7 @@ public class JdbcResourceEntity
         @Override
         @CreateMethod
         public JdbcResource create(final String name, final String url)
+        throws ProtectionException
             {
             return this.create(
                 null,
@@ -133,7 +163,9 @@ public class JdbcResourceEntity
         @Override
         @CreateMethod
         public JdbcResource create(final String catalog, final String name, final String url)
+        throws ProtectionException
             {
+            protector().accept(Action.create);
             return super.insert(
                 new JdbcResourceEntity(
                     catalog,
@@ -146,7 +178,9 @@ public class JdbcResourceEntity
 		@Override
         @CreateMethod
         public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass)
+        throws ProtectionException
 		    {
+            protector().accept(Action.create);
 		    return super.insert(
                 new JdbcResourceEntity(
                     catalog,
@@ -161,7 +195,9 @@ public class JdbcResourceEntity
 		@Override
 	    @CreateMethod
 	    public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+        throws ProtectionException
 		    {
+            protector().accept(Action.create);
 		    return super.insert(
 		        new JdbcResourceEntity(
 		            catalog,
@@ -216,7 +252,9 @@ public class JdbcResourceEntity
         @Override
         @CreateMethod
         public JdbcResource userdata()
+        throws ProtectionException
             {
+            protector().accept(Action.select);
             log.debug("userdata()");
             log.debug(" url [{}]", udurl);
             JdbcResource userdata = super.first(
@@ -237,6 +275,8 @@ public class JdbcResourceEntity
                 log.debug(" user [{}]", uduser);
                 log.debug(" pass [{}]", udpass);
                 log.debug(" driver [{}]", uddriver);
+
+                // Create as system admin.
                 
                 userdata = this.create(
                     udcat,
@@ -443,7 +483,9 @@ public class JdbcResourceEntity
 
             @Override
             public Iterable<JdbcSchema> select()
+            throws ProtectionException
                 {
+                protector().accept(Action.select);
                 return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this
                     );

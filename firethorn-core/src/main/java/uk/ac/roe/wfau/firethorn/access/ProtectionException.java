@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  *
  */
 @ResponseStatus(value = HttpStatus.FORBIDDEN)
-public class ProtectorException
+public class ProtectionException
 extends Exception
     {
     /**
@@ -41,13 +41,46 @@ extends Exception
      * Public constructor.
      * 
      */
-    public ProtectorException(final Identity identity, final Action action)
+    public ProtectionException(final Identity identity, final Action action)
         {
-        super();
-        this.identity = identity;
-        this.action = action;
+        this(
+            null,
+            identity,
+            action
+            );
         }
 
+    /**
+     * Public constructor.
+     * 
+     */
+    public ProtectionException(final Protector protector, final Action action)
+        {
+        this(
+            protector,
+            null,
+            action
+            );
+        }
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public ProtectionException(final Protector protector, final Identity identity, final Action action)
+        {
+        super();
+        this.action    = action;
+        this.identity  = identity;
+        this.protector = protector;
+        }
+
+    private Protector protector;
+    public Protector protector()
+        {
+        return this.protector;
+        }
+    
     private Identity identity;
     public Identity identity()
         {

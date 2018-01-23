@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  *
  */
 public class SimpleEntityProtector
-    extends AbstractEntityProtector
+    extends BaseEntityProtector
     implements EntityProtector
     {
     /**
@@ -37,42 +37,25 @@ public class SimpleEntityProtector
      */
     public SimpleEntityProtector(final Entity entity)
         {
-        this.entity = entity ;
-        }
-
-    /**
-     * The entity being protected. 
-     * 
-     */
-    protected Entity entity ;
-
-    /**
-     * The entity being protected. 
-     * 
-     */
-    public Entity entity()
-        {
-        return this.entity;
+        super(entity);
         }
 
     @Override
-    public boolean check(Identity identity, Action action)
+    public boolean check(final Identity identity, final Action action)
         {
+        // Allow anyone to read.
+        if (action.type().select())
+            {
+            return (identity != null);
+            }
+        // Require owner to modify.
         if (action.type().modify())
             {
-            // Allow owner to modify.
-            if (identity.equals(entity.owner()))
-                {
-                return true ;
-                }
-            // Deny other to modify.
-            else {
-                return false ;
-                }
+            return isOwner(identity);
             }
-        // Allow anyone to read.
+        // Allow admin anything else.
         else {
-            return true ;
+            return isAdmin(identity);
             }
         }
     }

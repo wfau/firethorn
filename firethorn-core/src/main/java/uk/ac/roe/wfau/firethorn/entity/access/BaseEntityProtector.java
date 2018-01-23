@@ -17,10 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.entity.access;
 
-import uk.ac.roe.wfau.firethorn.access.AbstractProtector;
 import uk.ac.roe.wfau.firethorn.access.Action;
+import uk.ac.roe.wfau.firethorn.access.BaseProtector;
 import uk.ac.roe.wfau.firethorn.access.Protector;
-import uk.ac.roe.wfau.firethorn.access.ProtectorException;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -28,14 +28,31 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  * An abstract base class for {@Entity} {@link Protector} implementations.
  *
  */
-public abstract class AbstractEntityProtector
-extends AbstractProtector
+public abstract class BaseEntityProtector
+extends BaseProtector
 implements EntityProtector
     {
 
+    /**
+     * Protected constructor.
+     *
+     */
+    protected BaseEntityProtector(final Entity entity)
+        {
+        super(entity);
+        this.entity = entity ;
+        }
+
+    private Entity entity;
     @Override
-    public Protector accept(Identity identity, Action action)
-    throws ProtectorException
+    public Entity entity()
+        {
+        return this.entity;
+        }
+
+    @Override
+    public Protector accept(final Identity identity, final Action action)
+    throws ProtectionException
         {
         if (this.check(identity, action))
             {
@@ -50,17 +67,23 @@ implements EntityProtector
             }
         }
 
-    private Entity entity;
-    @Override
-    public Entity entity()
-        {
-        return this.entity;
-        }
-
     /**
-     * Resolve an Identity with the entity.
-     * Convert a specific Identity into the generic 'owner' Identity. 
-     *  
+     * Check if an {@link Identity} is our target {@Entity} owner.
+     * 
      */
-
+    public boolean isOwner(final Identity identity)
+        {
+        if (identity != null)
+            {
+            if (this.entity != null)
+                {
+                final Identity owner = this.entity.owner();
+                if (owner != null)
+                    {
+                    return owner.equals(identity);
+                    }
+                }
+            }
+        return false;
+        }
     }

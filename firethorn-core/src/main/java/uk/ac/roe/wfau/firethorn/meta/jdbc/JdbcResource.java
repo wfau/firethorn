@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -90,41 +91,45 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Create a new {@link JdbcResource}.
-         * @todo Re-order the params (name, url)
+         * @throws ProtectionException 
          *
          */
-        public JdbcResource create(final String name, final String url);
+        public JdbcResource create(final String name, final String url)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcResource}.
-         * @todo Re-order the params (name, url, catalog)
+         * @throws ProtectionException 
          *
          */
-        public JdbcResource create(final String catalog, final String name, final String url);
+        public JdbcResource create(final String catalog, final String name, final String url)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcResource}.
-         * @todo Re-order the params (name, url, user, pass)
-         * @todo Re-order the params (name, url, catalog, user, pass)
+         * @throws ProtectionException 
          *
          */
-        public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass);
+        public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcResource}.
-         * @todo Re-order the params (name, url, driver, user, pass)
-         * @todo Re-order the params (name, url, driver, catalog, user, pass)
+         * @throws ProtectionException 
          *
          */
-        public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver);
+        public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+        throws ProtectionException;
 
         /**
          * Select the default 'userdata' Resource.
          * @todo Move this to a data space interface.
+         * @throws ProtectionException 
          *
          */
         @Deprecated
-        public JdbcResource userdata();
+        public JdbcResource userdata()
+        throws ProtectionException;
 
         }
 

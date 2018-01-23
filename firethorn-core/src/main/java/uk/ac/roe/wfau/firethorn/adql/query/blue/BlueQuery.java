@@ -19,11 +19,13 @@ package uk.ac.roe.wfau.firethorn.adql.query.blue;
 
 import java.net.URI;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -142,61 +144,70 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
          * @param delays The {@link AdqlQueryBase.Delays}.
          * @param next   The next {@link BlueTask.TaskState} to wait for. 
          * @param wait   How long to wait for the next {@link BlueTask.TaskState}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *  
          */
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
+        throws ProtectionException, InvalidRequestException, InternalServerErrorException;
 
         /**
          * Create a new {@link BlueQuery} for an {@link AdqlResource}.
          * 
          * @param source The {@link AdqlResource} to query.
          * @param input  The ADQL query.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
         public BlueQuery create(final AdqlResource source, final String input)
-        throws InvalidRequestException, InternalServerErrorException;
+        throws ProtectionException, InvalidRequestException, InternalServerErrorException;
 
         /**
          * Update a {@link BlueQuery} with an ADQL string, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public BlueQuery update(final Identifier ident, final String input, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException;
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException;
 
         /**
          * Update a {@link BlueQuery} with an ADQL string, {@link AdqlQueryBase.Limits}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException;
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException;
 
         /**
          * Update a new {@link BlueQuery} with an ADQL string, {@link AdqlQueryBase.Limits}, {@link AdqlQueryBase.Delays}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException;
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException;
 
         /**
          * Select a {@link BlueQuery} with a state and wait limit.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public BlueQuery select(final Identifier ident, final TaskState prev, final TaskState next, Long wait)
-        throws IdentifierNotFoundException;
+        throws ProtectionException, IdentifierNotFoundException;
         
         /**
          * Select all the {@link BlueQuery}s for an {@link AdqlResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<BlueQuery> select(final AdqlResource resource);
+        public Iterable<BlueQuery> select(final AdqlResource resource)
+        throws ProtectionException;
 
         /**
          * Handle a {@link CallbackEvent} for a {@link BlueQuery}. 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
         public BlueQuery callback(final Identifier ident, final CallbackEvent message)
-        throws IdentifierNotFoundException, InvalidStateRequestException;
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException;
 
         }
 
@@ -264,6 +275,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
     
     /**
      * Handle a {@link CallbackEvent} message. 
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     public void callback(final BlueQuery.CallbackEvent message)
@@ -289,24 +301,27 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
 
     /**
      * Update our input query.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     public void update(final String input)
-    throws InvalidStateRequestException;
+    throws ProtectionException, InvalidStateRequestException;
 
     /**
      * Update our input query and {@link AdqlQueryBase.Limits}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     public void update(final String input, final AdqlQueryBase.Limits limits)
-    throws InvalidStateRequestException;
+    throws ProtectionException,InvalidStateRequestException;
 
     /**
      * Update our input query and {@link AdqlQueryBase.Limits} and {@link AdqlQueryBase.Delays}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     public void update(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
-    throws InvalidStateRequestException;
+    throws ProtectionException, InvalidStateRequestException;
     
     /**
      * Our ADQL query.
@@ -402,9 +417,11 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
 
     /**
      * Our results.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public Results results();
+    public Results results()
+    throws ProtectionException;
 
     /**
      * The {@link AdqlQueryBase.SelectField}s used by the query.
@@ -417,9 +434,11 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
 
     /**
      * The {@link AdqlQueryBase.SelectField}s used by the query.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public Fields fields();
+    public Fields fields()
+    throws ProtectionException;
 
     /**
      * The {@link AdqlColumn}s used by the query.
@@ -436,9 +455,11 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
         }
     /**
      * The {@link AdqlColumn}s used by the query.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public Columns columns();
+    public Columns columns()
+    throws ProtectionException;
 
     /**
      * The {@link AdqlTable}s used by this query.
@@ -455,9 +476,11 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
 
     /**
      * The {@link AdqlTable}s used by this query.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public Tables tables();
+    public Tables tables()
+    throws ProtectionException;
 
     /**
      * The {@link BaseResource}s used by this query.
@@ -481,9 +504,11 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
     
     /**
      * The {@link BaseResource}s used by this query.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public Resources resources();
+    public Resources resources()
+    throws ProtectionException;
 
     /**
      * Event notification handle.
@@ -493,11 +518,5 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
     extends BlueTask.Handle
         {
         }
-
-    /**
-     * Our {@link BlueQuery.Handle}.
-     *
-    public Handle handle();
-     */
 
     }

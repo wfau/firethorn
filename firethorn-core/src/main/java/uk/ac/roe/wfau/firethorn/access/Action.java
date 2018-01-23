@@ -43,19 +43,20 @@ public interface Action
      */
     public enum ActionType
         {
-        SELECT(false),
-        UPDATE(true),
-        CREATE(true),
-        DELETE(true);
+        SELECT(false, true),
+        UPDATE(true,  true),
+        CREATE(false, false),
+        DELETE(false, false);
 
         /**
          * Private constructor. 
          * @param modify True if this {@link Action} modifies something.
          * 
          */
-        private ActionType(boolean modify)
+        private ActionType(boolean modify, boolean select)
             {
             this.modify = modify ;
+            this.select = select ;
             }
 
         /**
@@ -72,6 +73,22 @@ public interface Action
             {
             return this.modify;
             }
+
+        /**
+         * Flag to indicate if this {@link Action} selects something.
+         * 
+         */
+        private boolean select;
+
+        /**
+         * Flag to indicate if this {@link Action} selects something.
+         * 
+         */
+        public boolean select()
+            {
+            return this.select;
+            }
+
         }
 
     /**
@@ -79,5 +96,44 @@ public interface Action
      *  
      */
     public ActionType type();
+
+    /**
+     * Simple create {@link Action}.
+     * 
+     */
+    public static final Action create = new BaseAction(
+        Action.ActionType.CREATE,
+        "core:create",
+        "create"
+        );
     
+    /**
+     * Simple select (read) {@link Action}.
+     * 
+     */
+    public static final Action select = new BaseAction(
+        Action.ActionType.SELECT,
+        "core:select",
+        "select"
+        );
+
+    /**
+     * Simple update (write) {@link Action}.
+     * 
+     */
+    public static final Action update = new BaseAction(
+        Action.ActionType.UPDATE,
+        "core:update",
+        "update"
+        );
+
+    /**
+     * Simple delete {@link Action}.
+     * 
+     */
+    public static final Action delete = new BaseAction(
+        Action.ActionType.DELETE,
+        "core:delete",
+        "delete"
+        );
     }

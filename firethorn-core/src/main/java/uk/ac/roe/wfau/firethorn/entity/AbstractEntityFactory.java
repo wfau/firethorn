@@ -25,7 +25,7 @@ import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.access.AbstractProtector;
+import uk.ac.roe.wfau.firethorn.access.BaseProtector;
 import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -324,7 +324,7 @@ implements Entity.EntityFactory<EntityType>
     @Override
     public Protector protector()
         {
-        return new AbstractProtector()
+        return new BaseProtector(AbstractEntityFactory.this)
             {
             @Override
             public boolean check(final Identity identity, final Action action)

@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  *
  */
 public class BooleanProtector
-extends AbstractProtector
+extends BaseProtector
 implements Protector
     {
 
@@ -32,8 +32,9 @@ implements Protector
      * Public constructor.
      * 
      */
-    public BooleanProtector(boolean value)
+    public BooleanProtector(final Protected target, boolean value)
         {
+        super(target);
         this.value = value ;
         }
 
@@ -44,7 +45,7 @@ implements Protector
     private boolean value ;
 
     @Override
-    public boolean check(Identity identity, Action action)
+    public boolean check(final Identity identity, final Action action)
         {
         return this.value;
         }

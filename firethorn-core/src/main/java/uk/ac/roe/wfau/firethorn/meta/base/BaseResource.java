@@ -17,9 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
 
 /**
@@ -57,10 +59,11 @@ extends TreeComponent
         {
         /**
          * Select all the available resources.
-         * @todo Need a better entry point.
+         * @throws ProtectionException 
          *
          */
-        public Iterable<ResourceType> select();
+        public Iterable<ResourceType> select()
+        throws ProtectionException;
 
         }
 
@@ -72,22 +75,27 @@ extends TreeComponent
         {
         /**
          * Select all the {@link BaseSchema schema} for this resource.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<SchemaType> select();
+        public Iterable<SchemaType> select()
+        throws ProtectionException;
 
         /**
          * Select a {@link BaseSchema schema} by name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public SchemaType select(final String name)
-        throws NameNotFoundException;
+        throws ProtectionException, NameNotFoundException;
 
         /**
          * Search for a {@link BaseSchema schema} by name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public SchemaType search(final String name);
+        public SchemaType search(final String name)
+        throws ProtectionException;
 
         }
 
@@ -107,9 +115,11 @@ extends TreeComponent
 
     /**
      * The {@link BaseResource} metadata.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseResource.Metadata meta();
+    public BaseResource.Metadata meta()
+    throws ProtectionException;
     
     /**
      * Interface to access the {@link OgsaBaseResource} OGSA-DAI resources for this {@link BaseResource}.
@@ -120,9 +130,11 @@ extends TreeComponent
         {
         /**
          * Select the primary {@link OgsaBaseResource} OGSA-DAI resource for this {@link BaseResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public OgsaBaseResource primary();
+        public OgsaBaseResource primary()
+        throws ProtectionException;
         }
 
     /**

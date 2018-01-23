@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.community;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -73,9 +74,11 @@ extends NamedEntity
         {
         /**
          * Access to the system community.
+         * @throws ProtectionException 
          * 
          */
-        public Community admins();
+        public Community admins()
+        throws ProtectionException;
 
         /**
          * Access to the guest community.

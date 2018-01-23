@@ -18,26 +18,22 @@
 
 package uk.ac.roe.wfau.firethorn.access;
 
-import uk.ac.roe.wfau.firethorn.identity.Identity;
-
 /**
  * A simple Protector that allows everything. 
  * 
  */
 public class AllowAllProtector
-extends AbstractProtector
+extends BooleanProtector
 implements Protector
     {
     /**
      * Public constructor. 
      */
-    public AllowAllProtector()
+    public AllowAllProtector(final Protected target)
         {
-        }
-
-    @Override
-    public boolean check(final Identity identity, final Action action)
-        {
-        return true;
+        super(
+            target,
+            true
+            );
         }
     }
