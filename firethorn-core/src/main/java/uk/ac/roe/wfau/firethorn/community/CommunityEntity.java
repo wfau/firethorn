@@ -153,6 +153,7 @@ implements Community
         @Override
         @CreateMethod
         public synchronized Community guests()
+        throws ProtectionException
             {
             log.debug("guests()");
             final Community found = this.search(
@@ -186,7 +187,7 @@ implements Community
         @Override
         @CreateMethod
         public Community create(final String name)
-        throws DuplicateEntityException
+        throws DuplicateEntityException, ProtectionException
             {
             log.debug("create(String) [{}]", name);
             return create(
@@ -255,7 +256,7 @@ implements Community
         @Override
         @CreateMethod
         public Identity login(final String comm, final String name, final String pass)
-        throws UnauthorizedException
+        throws UnauthorizedException, ProtectionException
             {
             log.debug("login(String, String, String)");
             log.debug("  community [{}]", comm);
@@ -523,7 +524,7 @@ implements Community
     
     @Override
     public Identity login(final String name, final String pass)
-    throws UnauthorizedException
+    throws UnauthorizedException, ProtectionException
         {
         log.debug("login(String, String)");
         log.debug("  name [{}]", name);
@@ -628,6 +629,7 @@ implements Community
         }
     @Override
     public JdbcResource space(final boolean create)
+    throws ProtectionException
         {
         log.debug("space(boolean) [{}]", create);
         if ((create) && (this.space == null))

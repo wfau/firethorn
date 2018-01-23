@@ -282,7 +282,7 @@ extends NamedEntity
      *
      */
     public Identity login(final String name, final String pass)
-    throws UnauthorizedException;
+    throws UnauthorizedException, ProtectionException;
 
     /**
      * Flag to allow accounts to be created automatically on login.
