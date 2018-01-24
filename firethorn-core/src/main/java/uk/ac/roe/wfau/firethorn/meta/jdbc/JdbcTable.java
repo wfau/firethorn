@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
@@ -47,26 +48,27 @@ extends BaseTable<JdbcTable, JdbcColumn>
         /**
          * Create (CREATE) a JDBC table.
          * @todo Should this be part of JdbcSchema.JdbcDriver ?
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public void create(final JdbcTable table);
+        public void create(final JdbcTable table)
+        throws ProtectionException;
 
         /**
          * Delete (DELETE) the contents of JDBC data.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public void delete(final JdbcTable table);
+        public void delete(final JdbcTable table)
+        throws ProtectionException;
 
         /**
          * Delete (DROP) a JDBC table.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public void drop(final JdbcTable table);
-
-        /*
-         * Modify (this) table ?
-         *  
-         */
+        public void drop(final JdbcTable table)
+        throws ProtectionException;
 
         }
 
@@ -79,10 +81,11 @@ extends BaseTable<JdbcTable, JdbcColumn>
         {
         /**
          * Create or update a table.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public JdbcTable build(final JdbcTable.Metadata meta)
-        throws DuplicateEntityException;
+        throws ProtectionException, DuplicateEntityException;
         }
     
     /**
@@ -144,50 +147,56 @@ extends BaseTable<JdbcTable, JdbcColumn>
         {
         /**
          * Create a new {@link JdbcTable} with a generated name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create(final JdbcSchema parent);
+        public JdbcTable create(final JdbcSchema parent)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcTable}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final JdbcTable.Metadata meta);
+        public JdbcTable create(final JdbcSchema parent, final JdbcTable.Metadata meta)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcTable}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         @Deprecated
-        public JdbcTable create(final JdbcSchema parent, final String name);
+        public JdbcTable create(final JdbcSchema parent, final String name)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcTable}.
          * Used by {@link JdbcSchemaEntity#scanimpl()}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final String name, final JdbcType type);
+        public JdbcTable create(final JdbcSchema parent, final String name, final JdbcType type)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcTable}.
          * Used by AdqlQuery.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final BlueQuery query);
+        public JdbcTable create(final JdbcSchema parent, final BlueQuery query)
+        throws ProtectionException;
 
         /**
          * Get the next set of tables for garbage collection ..
          * @Move this to the data space interface.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page);
+        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page)
+        throws ProtectionException;
 
-        /**
-         * Our physical JDBC factory.
-         *
-        public JdbcTable.JdbcDriver driver();
-         */
-        
         }
 
     /**
@@ -239,26 +248,34 @@ extends BaseTable<JdbcTable, JdbcColumn>
         /**
          * Create a new {@link JdbcColumn}.
          * Used by JdbcColumn.Builder
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcColumn create(final JdbcColumn.Metadata meta);
+        public JdbcColumn create(final JdbcColumn.Metadata meta)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcColumn}.
          * Used by JdbcTableEntity.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcColumn create(final String name, final JdbcColumn.JdbcType type, final Integer size);
+        public JdbcColumn create(final String name, final JdbcColumn.JdbcType type, final Integer size)
+        throws ProtectionException;
 
         /**
          * Create a {@link JdbcColumn.Builder}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcColumn.Builder builder();  
+        public JdbcColumn.Builder builder()  
+        throws ProtectionException;
         
         }
+
     @Override
-    public Columns columns();
+    public Columns columns()
+    throws ProtectionException;
 
     /**
      * Enum for the JDBC table types.
@@ -334,37 +351,43 @@ extends BaseTable<JdbcTable, JdbcColumn>
              * The table name.
              * 
              */
-            public String name();
+            public String name()
+            throws ProtectionException;
             
             /**
              * The table row count.
              *
              */
-            public Long count();
+            public Long count()
+            throws ProtectionException;
 
             /**
              * Get the JDBC table type.
              *
              */
-            public JdbcType type();
+            public JdbcType type()
+            throws ProtectionException;
 
             /**
              * Set the JDBC table type.
              *
              */
-            public void type(final JdbcType type);
+            public void type(final JdbcType type)
+            throws ProtectionException;
 
             /**
              * Get the JDBC table status.
              *
              */
-            public JdbcTable.TableStatus status() ;
+            public JdbcTable.TableStatus status()
+            throws ProtectionException;
 
             /**
              * Set the JDBC table status.
              *
              */
-            public void status(final JdbcTable.TableStatus status) ;
+            public void status(final JdbcTable.TableStatus status)
+            throws ProtectionException;
 
             }
 
@@ -372,17 +395,20 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * The JDBC table metadata.
          *
          */
-        public Jdbc jdbc();
+        public Jdbc jdbc()
+        throws ProtectionException;
 
         }
 
     @Override
-    public JdbcTable.Metadata meta();
+    public JdbcTable.Metadata meta()
+    throws ProtectionException;
 
     /**
      * Update the table properties.
      * 
      */
-    public void update(final JdbcTable.Metadata meta);
+    public void update(final JdbcTable.Metadata meta)
+    throws ProtectionException;
 
     }

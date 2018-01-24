@@ -42,6 +42,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
@@ -160,12 +161,14 @@ public class JdbcSchemaEntity
 
         @Override
         protected String name(JdbcSchema.Metadata meta)
+        throws ProtectionException
             {
             return meta.jdbc().fullname();
             }
 
         @Override
         protected void update(final JdbcSchema schema, final JdbcSchema.Metadata meta)
+        throws ProtectionException
             {
             schema.update(
                 meta
@@ -244,21 +247,10 @@ public class JdbcSchemaEntity
             return JdbcSchemaEntity.class ;
             }
 
-        //TODO Resolve the full name problem
-        @Override
-        public JdbcSchema create(final JdbcResource parent, final JdbcSchema.Metadata meta)
-            {
-            return this.create(
-                parent,
-                meta.jdbc().catalog(),
-                meta.jdbc().schema()
-                );
-            }
-
-        
         @Override
         @CreateMethod
         public JdbcSchema build(final JdbcResource parent, final Identity identity)
+        throws ProtectionException
             {
 // TODO Need the resource catalog name ?
 // NameFactory - Generate a unique name from JdbcResource and Identity.
@@ -276,8 +268,20 @@ public class JdbcSchemaEntity
             }
 
         @Override
+        public JdbcSchema create(final JdbcResource parent, final JdbcSchema.Metadata meta)
+        throws ProtectionException
+            {
+            return this.create(
+                parent,
+                meta.jdbc().catalog(),
+                meta.jdbc().schema()
+                );
+            }
+        
+        @Override
         @CreateMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema)
+        throws ProtectionException
             {
             log.debug("JdbcSchema create(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
@@ -305,6 +309,7 @@ public class JdbcSchemaEntity
         @Override
         @SelectMethod
         public Iterable<JdbcSchema> select(final JdbcResource parent)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -319,7 +324,7 @@ public class JdbcSchemaEntity
         @Override
         @SelectMethod
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
-        throws NameNotFoundException
+        throws ProtectionException, NameNotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
@@ -345,6 +350,7 @@ public class JdbcSchemaEntity
         @Override
         @SelectMethod
         public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema)
+        throws ProtectionException
             {
             log.debug("JdbcSchema search(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
@@ -418,7 +424,7 @@ public class JdbcSchemaEntity
         @Override
         @SelectMethod
         public JdbcSchema select(final JdbcResource parent, final String name)
-        throws NameNotFoundException
+        throws ProtectionException, NameNotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String)");
             log.debug("  Resource [{}][{}]", parent.ident(), parent.name());
@@ -449,6 +455,7 @@ public class JdbcSchemaEntity
         @Override
         @SelectMethod
         public JdbcSchema search(final JdbcResource parent, final String name)
+        throws ProtectionException
             {
             return super.first(
                 super.query(
@@ -466,6 +473,7 @@ public class JdbcSchemaEntity
         @Override
         @SelectMethod
         public Iterable<JdbcSchema> select(final JdbcResource parent, final Identity owner)
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -695,6 +703,7 @@ public class JdbcSchemaEntity
 
     @Override
     public JdbcSchema.Tables tables()
+    throws ProtectionException
         {
         log.debug("tables() for [{}][{}]", ident(), namebuilder());
         scan();
@@ -702,6 +711,7 @@ public class JdbcSchemaEntity
             {
             @Override
             public Iterable<JdbcTable> select()
+            throws ProtectionException
                 {
                 return factories().jdbc().tables().entities().select(
                     JdbcSchemaEntity.this
@@ -710,6 +720,7 @@ public class JdbcSchemaEntity
 
             @Override
             public JdbcTable search(final String name)
+            throws ProtectionException
                 {
                 return factories().jdbc().tables().entities().search(
                     JdbcSchemaEntity.this,
@@ -719,7 +730,7 @@ public class JdbcSchemaEntity
 
             @Override
             public JdbcTable select(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 return factories().jdbc().tables().entities().select(
                     JdbcSchemaEntity.this,
@@ -729,6 +740,7 @@ public class JdbcSchemaEntity
 
             @Override
             public JdbcTable create()
+            throws ProtectionException
                 {
                 return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this
@@ -737,17 +749,8 @@ public class JdbcSchemaEntity
 
             @Override
             @Deprecated
-            public JdbcTable create(final String name)
-                {
-                return factories().jdbc().tables().entities().create(
-                    JdbcSchemaEntity.this,
-                    name
-                    );
-                }
-
-            @Override
-            @Deprecated
             public JdbcTable create(final String name, final JdbcTable.JdbcType type)
+            throws ProtectionException
                 {
                 return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this,
@@ -758,6 +761,7 @@ public class JdbcSchemaEntity
 
             @Override
             public JdbcTable create(final JdbcTable.Metadata meta)
+            throws ProtectionException
                 {
                 return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this,
@@ -767,6 +771,7 @@ public class JdbcSchemaEntity
 
             @Override
             public JdbcTable create(final BlueQuery query)
+            throws ProtectionException
                 {
                 return factories().jdbc().tables().entities().create(
                     JdbcSchemaEntity.this,
@@ -776,9 +781,8 @@ public class JdbcSchemaEntity
 
             @Override
             public JdbcTable select(final Identifier ident)
-            throws IdentifierNotFoundException
+            throws ProtectionException, IdentifierNotFoundException
                 {
-                // TODO Add parent constraint.
                 return factories().jdbc().tables().entities().select(
                     ident
                     );
@@ -786,6 +790,7 @@ public class JdbcSchemaEntity
 
             @Override
             public Iterable<JdbcTable> pending(final DateTime date, final int page)
+            throws ProtectionException
                 {
                 return factories().jdbc().tables().entities().pending(
                     JdbcSchemaEntity.this,
@@ -796,12 +801,13 @@ public class JdbcSchemaEntity
 
             @Override
             public JdbcTable.Builder builder()
+            throws ProtectionException
                 {
                 return new JdbcTableEntity.Builder(this.select())
                     {
                     @Override
                     protected JdbcTable create(final JdbcTable.Metadata meta)
-                        throws DuplicateEntityException
+                    throws ProtectionException, DuplicateEntityException
                         {
                         return factories().jdbc().tables().entities().create(
                             JdbcSchemaEntity.this,
@@ -815,6 +821,7 @@ public class JdbcSchemaEntity
 
     @Override
     protected void scanimpl()
+    throws ProtectionException
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         //
@@ -868,6 +875,7 @@ public class JdbcSchemaEntity
         }
 
     protected void scan(final Map<String, JdbcTable> known, final Map<String, JdbcTable> matching, final JdbcMetadataScanner.Schema schema)
+    throws ProtectionException
         {
         log.debug("scanning schema [{}]", (schema != null) ? schema.name() : null);
         if (schema == null)
@@ -898,6 +906,7 @@ public class JdbcSchemaEntity
         }
 
     protected void scan(final Map<String, JdbcTable> existing, final Map<String, JdbcTable> matching, final JdbcMetadataScanner.Table table)
+    throws ProtectionException
         {
         String name = table.name();
         log.trace("Scanning for table [{}]", name);
@@ -933,23 +942,27 @@ public class JdbcSchemaEntity
      * 
      */
     public JdbcSchema.Metadata.Jdbc jdbcmeta()
+    throws ProtectionException
         {
         return new JdbcSchema.Metadata.Jdbc()
             {
             @Override
             public String fullname()
+            throws ProtectionException
                 {
                 return JdbcSchemaEntity.this.name();
                 }
 
             @Override
             public String schema()
+            throws ProtectionException
                 {
                 return JdbcSchemaEntity.this.schema();
                 }
 
             @Override
             public String catalog()
+            throws ProtectionException
                 {
                 return JdbcSchemaEntity.this.catalog();
                 }
@@ -958,31 +971,36 @@ public class JdbcSchemaEntity
 
     @Override
     public JdbcSchema.Metadata meta()
+    throws ProtectionException
         {
         return new JdbcSchema.Metadata()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return JdbcSchemaEntity.this.name();
                 }
 
             @Override
             public Adql adql()
+            throws ProtectionException
                 {
-                return adqlmeta();
+                return JdbcSchemaEntity.this.adqlmeta();
                 }
 
             @Override
             public Jdbc jdbc()
+            throws ProtectionException
                 {
-                return jdbcmeta();
+                return JdbcSchemaEntity.this.jdbcmeta();
                 }
             };
         }
 
     @Override
     public void update(final JdbcSchema.Metadata meta)
+    throws ProtectionException
         {
         if (meta.adql() != null)
             {

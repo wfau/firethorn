@@ -91,7 +91,7 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Create a new {@link JdbcResource}.
-         * @throws ProtectionException 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public JdbcResource create(final String name, final String url)
@@ -99,7 +99,7 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Create a new {@link JdbcResource}.
-         * @throws ProtectionException 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public JdbcResource create(final String catalog, final String name, final String url)
@@ -107,7 +107,7 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Create a new {@link JdbcResource}.
-         * @throws ProtectionException 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass)
@@ -115,7 +115,7 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Create a new {@link JdbcResource}.
-         * @throws ProtectionException 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
@@ -124,7 +124,7 @@ extends BaseResource<JdbcSchema>
         /**
          * Select the default 'userdata' Resource.
          * @todo Move this to a data space interface.
-         * @throws ProtectionException 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         @Deprecated
@@ -162,62 +162,76 @@ extends BaseResource<JdbcSchema>
         {
         /**
          * Create a new {@link JdbcSchema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcSchema create(final JdbcSchema.Metadata meta);
+        public JdbcSchema create(final JdbcSchema.Metadata meta)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcSchema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         @Deprecated
-        public JdbcSchema create(final String catalog, final String schema);
+        public JdbcSchema create(final String catalog, final String schema)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcSchema} owned by an Identity.
          * @todo Move this to a data space interface.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcSchema create(final Identity identity);
+        public JdbcSchema create(final Identity identity)
+        throws ProtectionException;
 
         /**
          * Select a {@link JdbcSchema} by catalog name and schema name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public JdbcSchema select(final String catalog, final String schema)
-        throws NameNotFoundException;
+        throws ProtectionException, NameNotFoundException;
 
         /**
          * Search for a {@link JdbcSchema} by catalog name and schema name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcSchema search(final String catalog, final String schema);
+        public JdbcSchema search(final String catalog, final String schema)
+        throws ProtectionException;
 
         /**
          * The default catalog/schema for this resource.
          * Only used by simple form of Identity space.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         @Deprecated
         public JdbcSchema simple()
-        throws EntityNotFoundException;
+        throws ProtectionException, EntityNotFoundException;
 
         /**
          * Create a {@link JdbcSchema.Builder}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcSchema.Builder builder();  
+        public JdbcSchema.Builder builder()  
+        throws ProtectionException;
         
         }
 
     @Override
-    public Schemas schemas();
+    public Schemas schemas()
+    throws ProtectionException;
 
     /**
      * Access to our JDBC connection.
      *
      */
-    public JdbcConnector connection();
+    public JdbcConnector connection()
+    throws ProtectionException;
 
     /**
      * The 'wildcard' catalog name.
@@ -227,15 +241,19 @@ extends BaseResource<JdbcSchema>
 
     /**
      * The primary catalog name.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public String catalog();
+    public String catalog()
+    throws ProtectionException;
 
     /**
      * The primary catalog name.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public void catalog(final String catalog);
+    public void catalog(final String catalog)
+    throws ProtectionException;
 
     /**
      * The {@link JdbcResource} metadata.
@@ -253,13 +271,17 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Access to the JDBC specific metadata.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Jdbc jdbc();
+        public Jdbc jdbc()
+        throws ProtectionException;
+
         }
 
     @Override
-    public JdbcResource.Metadata meta();
+    public JdbcResource.Metadata meta()
+    throws ProtectionException;
     
     /**
      * Interface to access the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.
@@ -270,22 +292,27 @@ extends BaseResource<JdbcSchema>
         {
         /**
          * Select the primary {@link OgsaJdbcResource} OGSA-DAI resource.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public OgsaJdbcResource primary();
+        public OgsaJdbcResource primary()
+        throws ProtectionException;
         
         /**
          * Select all the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.
          * 
          */
-        public Iterable<OgsaJdbcResource> select();
+        public Iterable<OgsaJdbcResource> select()
+        throws ProtectionException;
 
         }
 
     /**
      * Access to the {@link OgsaJdbcResource} OGSA-DAI resources for this {@link JdbcResource}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public OgsaJdbcResources ogsa();
+    public OgsaJdbcResources ogsa()
+    throws ProtectionException;
 
     }

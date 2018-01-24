@@ -479,13 +479,17 @@ public class IvoaColumnEntity
         {
         return this.table;
         }
+
     @Override
     public IvoaSchema schema()
+    throws ProtectionException
         {
         return this.table.schema();
         }
+
     @Override
     public IvoaResource resource()
+    throws ProtectionException
         {
         return this.table.resource();
         }
