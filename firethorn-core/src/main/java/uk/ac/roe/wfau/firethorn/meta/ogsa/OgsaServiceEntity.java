@@ -49,6 +49,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -141,6 +142,7 @@ implements OgsaService
         @Override
         @SelectMethod
         public Iterable<OgsaService> select()
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -152,6 +154,7 @@ implements OgsaService
         @Override
         @SelectMethod
         public Iterable<OgsaService> select(final OgsaService.OgStatus ogstatus)
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -169,6 +172,7 @@ implements OgsaService
         @Override
         @CreateMethod
         public OgsaService primary()
+        throws ProtectionException
             {
             log.debug("primary()");
             // Really really simple - just get the first ACTIVE service.
@@ -220,6 +224,7 @@ implements OgsaService
         @Override
         @CreateMethod
         public OgsaService create(final String endpoint)
+        throws ProtectionException
             {
             log.debug("create(String)");
             return create(
@@ -231,6 +236,7 @@ implements OgsaService
         @Override
         @CreateMethod
         public OgsaService create(final String name, final String endpoint)
+        throws ProtectionException
             {
             log.debug("create(String, String)");
             log.debug("  name [{}]", name);
@@ -246,6 +252,7 @@ implements OgsaService
         @Override
         @CreateMethod
         public OgsaService create(final String proto, final String host, final Integer port, final String path)
+        throws ProtectionException
             {
             log.debug("create(String, String, Integer, String)");
             return this.create(
@@ -261,6 +268,7 @@ implements OgsaService
         @Override
         @CreateMethod
         public OgsaService create(final String name, final String proto, final String host, final Integer port, final String path)
+        throws ProtectionException
             {
             log.debug("create(String, String, String, Integer, String)");
             return this.create(
@@ -641,11 +649,13 @@ implements OgsaService
 
     @Override
     public OgsaIvoaResources ivoa()
+    throws ProtectionException
         {
         return new OgsaIvoaResources()
             {
             @Override
             public OgsaIvoaResource create(IvoaResource source)
+            throws ProtectionException
                 {
                 return factories().ogsa().ivoa().entities().create(
                     OgsaServiceEntity.this,
@@ -655,6 +665,7 @@ implements OgsaService
 
             @Override
             public Iterable<OgsaIvoaResource> select()
+            throws ProtectionException
                 {
                 return factories().ogsa().ivoa().entities().select(
                     OgsaServiceEntity.this
@@ -663,6 +674,7 @@ implements OgsaService
 
             @Override
             public Iterable<OgsaIvoaResource> select(IvoaResource source)
+            throws ProtectionException
                 {
                 return factories().ogsa().ivoa().entities().select(
                     OgsaServiceEntity.this,
@@ -674,11 +686,13 @@ implements OgsaService
 
     @Override
     public OgsaJdbcResources jdbc()
+    throws ProtectionException
         {
         return new OgsaJdbcResources()
             {
             @Override
             public OgsaJdbcResource create(JdbcResource source)
+            throws ProtectionException
                 {
                 return factories().ogsa().jdbc().entities().create(
                     OgsaServiceEntity.this,
@@ -688,6 +702,7 @@ implements OgsaService
 
             @Override
             public Iterable<OgsaJdbcResource> select()
+            throws ProtectionException
                 {
                 return factories().ogsa().jdbc().entities().select(
                     OgsaServiceEntity.this
@@ -696,6 +711,7 @@ implements OgsaService
 
             @Override
             public Iterable<OgsaJdbcResource> select(JdbcResource source)
+            throws ProtectionException
                 {
                 return factories().ogsa().jdbc().entities().select(
                     OgsaServiceEntity.this,
@@ -705,6 +721,7 @@ implements OgsaService
 
             @Override
             public OgsaJdbcResource primary(JdbcResource source)
+            throws ProtectionException
                 {
                 return factories().ogsa().jdbc().entities().primary(
                     OgsaServiceEntity.this,

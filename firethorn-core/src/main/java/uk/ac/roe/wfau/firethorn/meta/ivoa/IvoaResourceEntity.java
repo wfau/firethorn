@@ -365,6 +365,7 @@ public class IvoaResourceEntity
             {
             @Override
             public OgsaIvoaResource primary()
+            throws ProtectionException
                 {
                 return factories().ogsa().ivoa().entities().primary(
                     IvoaResourceEntity.this
@@ -373,6 +374,7 @@ public class IvoaResourceEntity
 
             @Override
             public Iterable<OgsaIvoaResource> select()
+            throws ProtectionException
                 {
                 return factories().ogsa().ivoa().entities().select(
                     IvoaResourceEntity.this

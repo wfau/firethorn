@@ -49,6 +49,7 @@ import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery.DuplicateFieldException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.adql.parser.green.MyQueryChecker;
@@ -576,7 +577,7 @@ implements AdqlParser
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery object)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, ADQLQuery)");
         /*
@@ -611,7 +612,7 @@ implements AdqlParser
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter, Boolean additem)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)");
         for (final ADQLObject clause: iter)
@@ -724,7 +725,7 @@ implements AdqlParser
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Operation oper)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, Operation)");
         log.debug(" Operation ----");
@@ -753,7 +754,7 @@ implements AdqlParser
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ClauseSelect clause, Boolean additem)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, ClauseSelect)");
         for (final SelectItem item : clause)
@@ -797,7 +798,7 @@ implements AdqlParser
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final SelectAllColumns selectall)
-    throws DuplicateFieldException
+    throws ProtectionException, DuplicateFieldException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, SelectAllColumns)");
         //
@@ -831,9 +832,11 @@ implements AdqlParser
     /**
      * Process a column reference outside the SELECT clause.
      * Adds the column to the list of columns used by the query.
+     * @throws ProtectionException 
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ADQLColumn column)
+    throws ProtectionException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, ADQLColumn)");
         if (column.getDBLink() == null)
@@ -862,6 +865,7 @@ implements AdqlParser
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table)
+    throws ProtectionException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, ADQLTable)");
         if (table.getDBLink() == null)
@@ -891,7 +895,7 @@ implements AdqlParser
      */
     @Deprecated
     public void additem(final AdqlParserQuery subject,final MySelectField field)
-    throws DuplicateFieldException
+    throws ProtectionException, DuplicateFieldException
         {
         subject.add(
             field
@@ -904,7 +908,7 @@ implements AdqlParser
      *
      */
     public void additem(final AdqlParserQuery subject,final MySelectItem item)
-    throws DuplicateFieldException
+    throws ProtectionException, DuplicateFieldException
         {
         // Check the name is valid.
         // Adds generated alias if needed.
@@ -924,7 +928,7 @@ implements AdqlParser
      *
      */
     protected void fields(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table)
-    throws DuplicateFieldException
+    throws ProtectionException, DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, ADQLQuery, ADQLTable)");
         log.debug("ADQLTable [{}][{}]", table.getName(), table.getClass().getName());
@@ -959,7 +963,7 @@ implements AdqlParser
      *
      */
     protected void fields(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table, final FromContent from)
-    throws DuplicateFieldException
+    throws ProtectionException, DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, ADQLQuery, ADQLTable, FromContent)");
         log.debug("  table [{}][{}]", table.getName(), table.getAlias());
@@ -1010,7 +1014,7 @@ implements AdqlParser
      *
      */
     protected void fields(final AdqlParserQuery subject, final ADQLQuery query)
-    throws DuplicateFieldException
+    throws ProtectionException, DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, ADQLQuery)");
         log.debug("  ADQLQuery [{}]", query.getName());
@@ -1037,7 +1041,7 @@ implements AdqlParser
      *
      */
     protected void fields(final AdqlParserQuery subject, final AdqlParserTable table)
-    throws DuplicateFieldException
+    throws ProtectionException, DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, AdqlParserTable)");
         fields(
@@ -1051,7 +1055,7 @@ implements AdqlParser
      *
      */
     protected void fields(final AdqlParserQuery subject, final AdqlTable table)
-    throws DuplicateFieldException
+    throws ProtectionException, DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, AdqlTable)");
         log.debug("  AdqlTable [{}]", table.namebuilder());
@@ -1150,6 +1154,7 @@ implements AdqlParser
     implements MySelectField
         {
         private MySelectFieldWrapper(final MySelectField field)
+        throws ProtectionException
             {
             this(
                 field.name(),
@@ -1159,6 +1164,7 @@ implements AdqlParser
             }
 
         private MySelectFieldWrapper(final String name, final MySelectField field)
+        throws ProtectionException
         	{
             this(
 	            name,
@@ -1190,6 +1196,7 @@ implements AdqlParser
         private final AdqlColumn.AdqlType type;
         @Override
         public AdqlColumn.AdqlType type()
+        throws ProtectionException
             {
         	if (this.type != null)
         		{
@@ -1208,6 +1215,7 @@ implements AdqlParser
 
         @Override
         public Integer arraysize()
+        throws ProtectionException
             {
             return this.field.arraysize();
             }
@@ -1221,7 +1229,7 @@ implements AdqlParser
     implements MySelectItem
         {
         protected MySelectItemWrapper(final SelectItem item)
-        throws AdqlParserException
+        throws ProtectionException, AdqlParserException
             {
             this.item  = item;
             this.field = wrap(
@@ -1260,11 +1268,13 @@ implements AdqlParser
             }
         @Override
         public Integer arraysize()
+        throws ProtectionException
             {
             return this.field.arraysize();
             }
         @Override
         public AdqlColumn.AdqlType type()
+        throws ProtectionException
             {
             return this.field.type();
             }
@@ -1337,11 +1347,13 @@ implements AdqlParser
         
         @Override
         public Integer arraysize()
+        throws ProtectionException
             {
             return this.adql.meta().adql().arraysize();
             }
         @Override
         public AdqlColumn.AdqlType type()
+        throws ProtectionException
             {
             return this.adql.meta().adql().type();
             }
@@ -1352,7 +1364,7 @@ implements AdqlParser
      *
      */
     public static MySelectItem wrap(final SelectItem item)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.trace("wrap(SelectItem)");
         log.trace("  alias [{}]", item.getAlias());
@@ -1368,7 +1380,7 @@ implements AdqlParser
      *
      */
     protected static AdqlColumn.AdqlType type(final ADQLOperand operand)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("type(ADQLOperand)");
         log.debug("  operand [{}]", operand);
@@ -1419,7 +1431,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final ADQLOperand oper)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.trace("wrap(ADQLOperand)");
         log.trace("  name   [{}]", oper.getName());
@@ -1489,7 +1501,7 @@ implements AdqlParser
      *
      */
     protected static AdqlColumn.AdqlType type(final ADQLColumn column)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("type(ADQLColumn)");
         log.debug("  column [{}]", column);
@@ -1514,7 +1526,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final ADQLColumn column)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.trace("wrap(ADQLColumn)");
         log.trace("  name   [{}]", column.getName());
@@ -1543,6 +1555,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final AdqlColumn column)
+    throws ProtectionException
         {
         log.trace("wrap(AdqlColumn)");
         log.trace("  adql [{}]", column.namebuilder());
@@ -1559,7 +1572,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final NegativeOperand oper)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.trace("wrap(NegativeOperand)");
         log.trace("  name   [{}]", oper.getName());
@@ -1617,7 +1630,7 @@ implements AdqlParser
      *
      */
     public static AdqlColumn.AdqlType type(final Operation oper)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("type(Operation)");
         log.debug("  name   [{}]", oper.getName());
@@ -1703,7 +1716,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final Operation oper)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.trace("wrap(Operation)");
         log.trace("  name   [{}]", oper.getName());
@@ -1722,7 +1735,7 @@ implements AdqlParser
      *
      */
     public static AdqlColumn.AdqlType type(final ADQLFunction funct)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("type(ADQLFunction)");
         if (funct instanceof SQLFunction)
@@ -1753,7 +1766,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final ADQLFunction funct)
-    throws ArrayIndexOutOfBoundsException, AdqlParserException
+    throws ProtectionException, AdqlParserException, ArrayIndexOutOfBoundsException
         {
         log.trace("wrap(ADQLFunction)");
         log.trace("  name   [{}]", funct.getName());
@@ -1787,7 +1800,7 @@ implements AdqlParser
      *
      */
     public static AdqlColumn.AdqlType type(final SQLFunction funct)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("type(SQLFunction)");
         switch (funct.getType())
@@ -1816,7 +1829,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final SQLFunction funct)
-    throws ArrayIndexOutOfBoundsException, AdqlParserException
+    throws ProtectionException, AdqlParserException, ArrayIndexOutOfBoundsException
         {
         log.trace("wrap(SQLFunction)");
         log.trace("  name   [{}]", funct.getName());
@@ -1854,7 +1867,7 @@ implements AdqlParser
      *
      */
     public static AdqlColumn.AdqlType ftype(final ADQLOperand oper)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("ftype(ADQLOperand)");
         switch (type(oper))
@@ -1882,7 +1895,7 @@ implements AdqlParser
      *
      */
     public static AdqlColumn.AdqlType type(final MathFunction funct)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("type(MathFunction)");
         switch (funct.getType())
@@ -1934,7 +1947,7 @@ implements AdqlParser
      *
      */
     public static AdqlColumn.AdqlType type(final CastFunction funct)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.debug("type(CastFunction)");
         switch(funct.type())
@@ -1969,7 +1982,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final MathFunction funct)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.trace("wrap(MathFunction)");
         log.trace("  name   [{}]", funct.getName());
@@ -2038,7 +2051,7 @@ implements AdqlParser
      *
      */
     public static MySelectField wrap(final CastFunction funct)
-    throws AdqlParserException
+    throws ProtectionException, AdqlParserException
         {
         log.trace("wrap(castFunction)");
         log.trace("  name   [{}]", funct.type());

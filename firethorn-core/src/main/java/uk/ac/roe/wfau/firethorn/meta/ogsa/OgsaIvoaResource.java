@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 
 /**
@@ -55,60 +57,74 @@ public interface OgsaIvoaResource
         /**
          * Select all the {@link OgsaIvoaResource}(s).
          * @return An {@link Iterable} set of {@link OgsaIvoaResource}(s). 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaIvoaResource> select();
+        public Iterable<OgsaIvoaResource> select()
+        throws ProtectionException;
 
         /**
          * Select the {@link OgsaIvoaResource}(s) for a {@link OgsaService}.
          * @param service The {@link OgsaService} service.
          * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaIvoaResource> select(final OgsaService service);
+        public Iterable<OgsaIvoaResource> select(final OgsaService service)
+        throws ProtectionException;
 
         /**
          * Select the {@link OgsaIvoaResource}(s) for an {@link IvoaResource}.
          * @param source  The {@link IvoaResource}.
          * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaIvoaResource> select(final IvoaResource source);
+        public Iterable<OgsaIvoaResource> select(final IvoaResource source)
+        throws ProtectionException;
 
         /**
          * Select the {@link OgsaIvoaResource}(s) for an {@link OgsaService} and {@link IvoaResource}.
          * @param service The {@link OgsaService}.
          * @param source  The {@link IvoaResource}.
          * @return An {@link Iterable} list of {@link OgsaIvoaResource}(s).
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source);
+        public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource source)
+        throws ProtectionException;
 
         /**
          * Create a new {@link OgsaIvoaResource} for an {@link OgsaService} and {@link IvoaResource}.
          * @param service The parent {@link OgsaService}.
          * @param source  The source {@link IvoaResource}.
          * @return A new {@link OgsaIvoaResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaIvoaResource create(final OgsaService service, final IvoaResource source);
+        public OgsaIvoaResource create(final OgsaService service, final IvoaResource source)
+        throws ProtectionException;
 
         /**
          * Select the primary {@link OgsaIvoaResource} for a {@link IvoaResource}.
          * @param source The {@link IvoaResource} resource.
          * @return The primary {@link OgsaIvoaResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaIvoaResource primary(final IvoaResource source);
+        public OgsaIvoaResource primary(final IvoaResource source)
+        throws ProtectionException;
 
         /**
          * Select the primary {@link OgsaIvoaResource} for an {@link OgsaService} and {@link IvoaResource}.
          * @param service The {@link OgsaService}.
          * @param source  The {@link IvoaResource}.
          * @return The primary {@link OgsaIvoaResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaIvoaResource primary(final OgsaService service, final IvoaResource source);
+        public OgsaIvoaResource primary(final OgsaService service, final IvoaResource source)
+        throws ProtectionException;
         
         }
 
@@ -128,15 +144,19 @@ public interface OgsaIvoaResource
     
     /**
      * The parent {@link IvoaResource}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *  
      */
-    public IvoaResource resource();
-
+    public IvoaResource resource()
+    throws ProtectionException;
+    
     /**
      * Initialize the OGSA-DAI resource, creating a new one if needed.
      * @return The resource status.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *  
      */
-    public OgsaStatus init();
+    public OgsaStatus init()
+    throws ProtectionException;
 
     }

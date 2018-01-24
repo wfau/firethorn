@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import liquibase.changelog.ChangeSet;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
@@ -36,6 +37,7 @@ implements JdbcTable.OldBuilder
 
     @Override
     public JdbcTable create(final JdbcTable table)
+    throws ProtectionException
         {
         log.debug("create(JdbcTable)");
         log.debug("  table [{}][{}]", table.ident(), table.name());

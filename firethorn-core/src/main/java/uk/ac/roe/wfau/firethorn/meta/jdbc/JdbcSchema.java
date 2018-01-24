@@ -203,15 +203,18 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         {
         /**
          * Create a {@link JdbcSchema}.
+         * @throws ProtectionException 
          *
          */
-        public JdbcSchema create(final JdbcSchema schema);
+        public JdbcSchema create(final JdbcSchema schema)
+        throws ProtectionException;
 
         /**
          * Delete a {@link JdbcSchema}.
          *
          */
-        public void delete(final JdbcSchema schema);
+        public void delete(final JdbcSchema schema)
+        throws ProtectionException;
 
         }
 
@@ -282,19 +285,17 @@ extends BaseSchema<JdbcSchema, JdbcTable>
 
     /**
      * The catalog name.
-     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+     * @todo Not protected by ProtectionException due to Liquibase plugin.
      *
      */
-    public String catalog()
-    throws ProtectionException;
-
+    public String catalog();
+    
     /**
      * The schema name.
-     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+     * @todo Not protected by ProtectionException due to Liquibase plugin.
      *
      */
-    public String schema()
-    throws ProtectionException;
+    public String schema();
 
     /**
      * The schema metadata.

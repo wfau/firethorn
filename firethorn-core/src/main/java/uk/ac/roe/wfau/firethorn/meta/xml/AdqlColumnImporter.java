@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -35,9 +36,11 @@ public class AdqlColumnImporter
     {
     /**
      * Public constructor.
+     * @throws ProtectionException 
      * 
      */
     public AdqlColumnImporter(final AdqlTable table)
+    throws ProtectionException
         {
         this.table = table ;
         //
@@ -98,7 +101,7 @@ public class AdqlColumnImporter
     private Map<String, AdqlColumn> matching = new HashMap<String, AdqlColumn>();
     
     public AdqlColumn inport(final String name)
-    throws NameNotFoundException
+    throws ProtectionException, NameNotFoundException
         {
         log.debug("Importing column [{}][{}]", table.base().fullname(), name);
         //

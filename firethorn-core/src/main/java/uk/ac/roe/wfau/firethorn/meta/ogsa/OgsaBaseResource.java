@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
@@ -40,30 +42,38 @@ public interface OgsaBaseResource
     /**
      * The parent {@link OgsaService}.
      * @return The {@link OgsaService}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public OgsaService service();
+    public OgsaService service()
+    throws ProtectionException;
 
     /**
      * The parent {@link BaseResource}.
      * @return The {@link BaseResource}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseResource<?> resource();
+    public BaseResource<?> resource()
+    throws ProtectionException;
 
     /**
      * Get the OGSA-DAI resource identifier.
      * @return The identifier
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public String ogsaid();
+    public String ogsaid()
+    throws ProtectionException;
 
     /**
      * Set the OGSA-DAI resource identifier.
      * @return The resource status.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public OgsaStatus ogsaid(final OgsaStatus status, final String ogsaid);
+    public OgsaStatus ogsaid(final OgsaStatus status, final String ogsaid)
+    throws ProtectionException;
 
     /**
      * OGSA-DAI resource status.
@@ -92,15 +102,18 @@ public interface OgsaBaseResource
     /**
      * Get the resource status.
      * @return The resource status.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public OgsaStatus ogstatus();
+    public OgsaStatus ogstatus()
+    throws ProtectionException;
 
     /**
      * Set the resource status.
      * @return The resource status.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public OgsaStatus ogstatus(final OgsaStatus status);
-
+    public OgsaStatus ogstatus(final OgsaStatus status)
+    throws ProtectionException;
     }

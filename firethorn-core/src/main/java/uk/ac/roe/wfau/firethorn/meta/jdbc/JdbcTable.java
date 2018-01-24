@@ -132,9 +132,11 @@ extends BaseTable<JdbcTable, JdbcColumn>
     @Deprecated
     public static interface OldBuilder
         {
-        public JdbcTable create(final JdbcTable table);
+        public JdbcTable create(final JdbcTable table)
+        throws ProtectionException;
 
-        public void delete(final JdbcTable table);
+        public void delete(final JdbcTable table)
+        throws ProtectionException;
 
         }
     

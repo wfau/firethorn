@@ -44,6 +44,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
@@ -166,6 +167,7 @@ implements OgsaBaseResource
    protected String ogsaid;
    @Override
    public String ogsaid()
+   throws ProtectionException
        {
        log.debug("ogsaid [{}][{}]", this.ogstatus, this.ogsaid);
        this.scan();
@@ -256,12 +258,15 @@ implements OgsaBaseResource
 
    /**
     * Initialise our OGSA-DAI resource.
+ * @throws ProtectionException 
     * 
     */
-   protected abstract OgsaStatus init();
+   protected abstract OgsaStatus init()
+   throws ProtectionException;
 
    @Override
    protected void scanimpl()
+   throws ProtectionException
        {
        log.debug("scanimpl()");
        log.debug("  name   [{}]", this.name());
@@ -304,9 +309,11 @@ implements OgsaBaseResource
    
     /**
      * Check our OGSA-DAI resource.
+     * @throws ProtectionException 
      *
      */
     public HttpStatus ping()
+    throws ProtectionException
    		{
         log.debug("ping()");
         log.debug("  name   [{}]", this.name());

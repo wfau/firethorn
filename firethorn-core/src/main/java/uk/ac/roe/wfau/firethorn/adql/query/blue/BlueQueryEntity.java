@@ -1090,6 +1090,7 @@ implements BlueQuery
 
             @Override
             public void add(AdqlColumn column)
+            throws ProtectionException
                 {
                 log.debug("add(AdqlColumn)");
                 log.debug("  Name [{}]", column.name());
@@ -1103,6 +1104,7 @@ implements BlueQuery
 
             @Override
             public void add(AdqlTable table)
+            throws ProtectionException
                 {
                 log.debug("add(AdqlTable)");
                 log.debug("  Name [{}]", table.name());
@@ -1126,6 +1128,7 @@ implements BlueQuery
             
             @Override
             public void add(SelectField field)
+            throws ProtectionException
                 {
                 log.debug("add(SelectField)");
                 log.debug("  Name [{}]", field.name());
@@ -1679,13 +1682,19 @@ implements BlueQuery
 			service.exec().primary().ogsaid()
     		);
 
+        //
+        // Fix for permission issues.
+        final String source = from.ogsaid();
+        final String sink   = dest.ogsaid();
+        final String table  = this.jdbctable.fullname();
+        
         final BlueWorkflow.Result result = workflow.execute(
 			new BlueWorkflow.Param()
 				{
 				@Override
 				public String source()
 					{
-					return from.ogsaid();
+					return source;
 					}
 					
 				@Override
@@ -1702,13 +1711,13 @@ implements BlueQuery
 						@Override
 						public String resource()
 							{
-							return dest.ogsaid();
+							return sink;
 							}
 
 						@Override
 						public String table()
 							{
-							return BlueQueryEntity.this.jdbctable.fullname();
+							return table;
 							}
 
 						@Override
@@ -1918,9 +1927,11 @@ implements BlueQuery
     
     /**
      * Build our result tables.
+     * @throws ProtectionException 
      * 
      */
     protected void build()
+    throws ProtectionException
     	{
         log.debug("build()");
         //
@@ -1990,11 +2001,13 @@ implements BlueQuery
                             }
                         @Override
                         public Integer arraysize()
+                        throws ProtectionException
                             {
                             return field.arraysize();
                             }
                         @Override
                         public AdqlType type()
+                        throws ProtectionException
                             {
                             return field.type();
                             }
@@ -2027,11 +2040,13 @@ implements BlueQuery
                             }
                         @Override
                         public JdbcType jdbctype()
+                        throws ProtectionException
                             {
                             return field.type().jdbctype();
                             }
                         @Override
                         public Integer arraysize()
+                        throws ProtectionException
                             {
                             return field.arraysize();
                             }

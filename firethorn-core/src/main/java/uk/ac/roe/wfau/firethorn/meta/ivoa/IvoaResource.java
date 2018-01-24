@@ -139,11 +139,10 @@ extends BaseResource<IvoaSchema>
 
         /**
          * The resource endpoint URL as a String.
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         * @todo Find a better name ?
          *
          */
-        public String string()
-        throws ProtectionException;    
+        public String string();
 
         }
 

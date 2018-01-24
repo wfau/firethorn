@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -54,15 +55,19 @@ public interface AdqlParserQuery
 
     /**
      * Add an AdqlColumn reference.
+     * @throws ProtectionException 
      *
      */
-    public void add(final AdqlColumn column);
+    public void add(final AdqlColumn column)
+    throws ProtectionException;
 
     /**
      * Add an AdqlTable reference.
+     * @throws ProtectionException 
      *
      */
-    public void add(final AdqlTable table);
+    public void add(final AdqlTable table)
+    throws ProtectionException;
 
     /**
      * An Exception thrown when a duplicate select field is added.
@@ -91,10 +96,11 @@ public interface AdqlParserQuery
 
     /**
      * Add the metadata for a SELECT field.
+     * @throws ProtectionException 
      *
      */
     public void add(final AdqlQueryBase.SelectField field)
-    throws DuplicateFieldException;
+    throws DuplicateFieldException, ProtectionException;
 
     /**
      * Get the ADQL parser syntax.

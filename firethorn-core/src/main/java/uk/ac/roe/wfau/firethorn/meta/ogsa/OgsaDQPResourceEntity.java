@@ -35,6 +35,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
@@ -140,6 +141,7 @@ public class OgsaDQPResourceEntity
         @Override
         @CreateMethod
         public OgsaDQPResource primary(OgsaService service)
+        throws ProtectionException
             {
             // TODO Do something similar for the other resource types.
             // Get the list of active resources from the database.
@@ -180,6 +182,7 @@ public class OgsaDQPResourceEntity
 
         @Override
         public OgsaDQPResource primary()
+        throws ProtectionException
             {
             return primary(
                 services.primary()
@@ -318,6 +321,7 @@ public class OgsaDQPResourceEntity
     
     @Override
     public OgsaStatus init()
+    throws ProtectionException
         {
         log.debug("init()");
         log.debug("  name   [{}]", this.name());

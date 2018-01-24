@@ -20,8 +20,10 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
@@ -88,40 +90,50 @@ extends BaseComponent
         /**
          * Select the primary service.
          * @return The primary {@link OgsaService}. 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaService primary();
+        public OgsaService primary()
+        throws ProtectionException;
 
         /**
          * Select all the services.
          * @return An {@link Iterable} set of {@link OgsaService}(s). 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaService> select();
+        public Iterable<OgsaService> select()
+        throws ProtectionException;
 
         /**
          * Select all the services with a particular status.
          * @return An {@link Iterable} set of {@link OgsaService}(s). 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaService> select(final OgStatus status);
+        public Iterable<OgsaService> select(final OgStatus status)
+        throws ProtectionException;
 
         /**
          * Create a new service.
          * @param endpoint The service endpoint URL.
          * @return A new {@link OgsaService}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaService create(final String endpoint);
+        public OgsaService create(final String endpoint)
+        throws ProtectionException;
 
         /**
          * Create a new service.
          * @param name     The service name.
          * @param endpoint The service endpoint URL.
          * @return A new {@link OgsaService}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaService create(final String name, final String endpoint);
+        public OgsaService create(final String name, final String endpoint)
+        throws ProtectionException;
 
         /**
          * Create a new service.
@@ -130,9 +142,11 @@ extends BaseComponent
          * @param port  The service endpoint URL port {8080}.
          * @param path  The service endpoint URL path {ogsadai}.
          * @return A new {@link OgsaService}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaService create(final String proto, final String host, final Integer port, final String path);
+        public OgsaService create(final String proto, final String host, final Integer port, final String path)
+        throws ProtectionException;
 
         /**
          * Create a new service.
@@ -142,9 +156,11 @@ extends BaseComponent
          * @param port  The service endpoint URL port {8080}.
          * @param path  The service endpoint URL path {ogsadai}.
          * @return A new {@link OgsaService}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaService create(final String name, final String proto, final String host, final Integer port, final String path);
+        public OgsaService create(final String name, final String proto, final String host, final Integer port, final String path)
+        throws ProtectionException;
 
         }
 
@@ -177,38 +193,47 @@ extends BaseComponent
 
     /**
      * Get the service status.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public OgStatus ogstatus();
+    public OgStatus ogstatus()
+    throws ProtectionException;
 
     /**
      * Set the service status.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public OgStatus ogstatus(final OgStatus status);
+    public OgStatus ogstatus(final OgStatus status)
+    throws ProtectionException;
 
     /**
      * The OGSA-DAI service endpoint URL.
      * @return The endpoint URL.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public String endpoint();
+    public String endpoint()
+    throws ProtectionException;
 
     /**
      * The base webapp URI.
      * @return The base webapp URI.
      * @throws URISyntaxException If the endpoint is not a valid URI.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     public URI baseuri()
-    throws URISyntaxException ;
+    throws ProtectionException, URISyntaxException ;
 
     /**
      * The OGSA-DAI -service version.
      * @return The service version.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public String version();
+    public String version()
+    throws ProtectionException;
 
     /**
      * Access to the {@link OgsaIvoaResource}(s) provided by this {@link OgsaService}.
@@ -219,29 +244,37 @@ extends BaseComponent
 
         /**
          * Create a new {@link OgsaIvoaResource} for an {@link IvoaResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaIvoaResource create(final IvoaResource source);
+        public OgsaIvoaResource create(final IvoaResource source)
+        throws ProtectionException;
 
         /**
          * List all the {@link OgsaIvoaResource}(s) for this {@link OgsaService}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaIvoaResource> select();
+        public Iterable<OgsaIvoaResource> select()
+        throws ProtectionException;
 
         /**
          * List all the {@link OgsaIvoaResource}(s) for an {@link IvoaResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaIvoaResource> select(final IvoaResource source);
+        public Iterable<OgsaIvoaResource> select(final IvoaResource source)
+        throws ProtectionException;
         
         }
 
     /**
      * Access to the {@link OgsaIvoaResource}(s) provided by this {@link OgsaService}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public OgsaIvoaResources ivoa();
+    public OgsaIvoaResources ivoa()
+    throws ProtectionException;
 
     /**
      * Access to the {@link OgsaJdbcResource}(s) provided by this {@link OgsaService}.
@@ -252,35 +285,45 @@ extends BaseComponent
 
         /**
          * Create a new {@link OgsaJdbcResource} for a {@link JdbcResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaJdbcResource create(final JdbcResource source);
+        public OgsaJdbcResource create(final JdbcResource source)
+        throws ProtectionException;
 
         /**
          * List all the {@link OgsaJdbcResource}(s) for this {@link OgsaService}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaJdbcResource> select();
+        public Iterable<OgsaJdbcResource> select()
+        throws ProtectionException;
 
         /**
          * List all the {@link OgsaJdbcResource}(s) for a {@link JdbcResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaJdbcResource> select(final JdbcResource source);
+        public Iterable<OgsaJdbcResource> select(final JdbcResource source)
+        throws ProtectionException;
 
         /**
          * Get the primary {@link OgsaJdbcResource} for a {@link JdbcResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaJdbcResource primary(final JdbcResource source);
+        public OgsaJdbcResource primary(final JdbcResource source)
+        throws ProtectionException;
         
         }
 
     /**
      * Access to the {@link OgsaJdbcResource}(s) provided by this {@link OgsaService}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public OgsaJdbcResources jdbc();
+    public OgsaJdbcResources jdbc()
+    throws ProtectionException;
 
     /**
      * Access to the {@link OgsaExecutionResource}(s) provided by this {@link OgsaService}.
@@ -291,28 +334,36 @@ extends BaseComponent
 
         /**
          * Create a new {@link OgsaExecResources}
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaExecResource create();
+        public OgsaExecResource create()
+        throws ProtectionException;
 
         /**
          * List all the {@link OgsaExecResource}(s) for this {@link OgsaService}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaExecResource> select();
+        public Iterable<OgsaExecResource> select()
+        throws ProtectionException;
 
         /**
          * Get the primary {@link OgsaExecResource} for this {@link OgsaService}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaExecResource primary();
+        public OgsaExecResource primary()
+        throws ProtectionException;
         
         }
 
     /**
      * Access to the {@link OgsaExecResource}(s) provided by this {@link OgsaService}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public OgsaExecResources exec();
-    
+    public OgsaExecResources exec()
+    throws ProtectionException;
+
     }

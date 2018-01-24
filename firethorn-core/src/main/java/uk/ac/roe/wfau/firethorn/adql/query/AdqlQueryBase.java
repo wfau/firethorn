@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
@@ -441,13 +442,16 @@ public interface AdqlQueryBase
          * The field size.
          *
          */
-        public abstract Integer arraysize();
+        public abstract Integer arraysize()
+        throws ProtectionException;
 
         /**
          * The field type.
+         * @throws ProtectionException 
          *
          */
-        public abstract AdqlColumn.AdqlType type();
+        public abstract AdqlColumn.AdqlType type()
+        throws ProtectionException;
 
         
         }

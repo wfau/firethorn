@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
@@ -64,6 +65,7 @@ implements JdbcResource.JdbcDriver
     @Override
     @CreateMethod
     public void create(final JdbcTable table)
+    throws ProtectionException
         {
         log.debug("Create JdbcTable [{}]", table.name());
 
@@ -108,6 +110,7 @@ implements JdbcResource.JdbcDriver
     @Override
     @DeleteMethod
     public void drop(final JdbcTable table)
+    throws ProtectionException
         {
         log.debug("Drop JdbcTable [{}]", table.name());
         final StringBuilder statement = new StringBuilder(
@@ -126,6 +129,7 @@ implements JdbcResource.JdbcDriver
     @Override
     @UpdateMethod
     public void delete(final JdbcTable table)
+    throws ProtectionException
         {
         log.debug("Delete JdbcTable [{}]", table.name());
         final StringBuilder statement = new StringBuilder(
@@ -143,6 +147,7 @@ implements JdbcResource.JdbcDriver
     
     @UpdateMethod
     public void truncate(final JdbcTable table)
+    throws ProtectionException
         {
         log.debug("Truncate JdbcTable [{}]", table.name());
         final StringBuilder statement = new StringBuilder(
@@ -159,6 +164,7 @@ implements JdbcResource.JdbcDriver
         }
 
     protected void execute(final JdbcConnector connection, final String statement)
+    throws ProtectionException
         {
         try {
             log.debug("SQL statement [{}]", statement);
@@ -275,6 +281,7 @@ implements JdbcResource.JdbcDriver
  */
 
     protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
+    throws ProtectionException
         {
         final StringBuilder tempbuilder = new StringBuilder(); 
         log.debug("sqltype()");
@@ -359,6 +366,7 @@ implements JdbcResource.JdbcDriver
         }
 	
     protected void fullname(final StringBuilder builder, final JdbcSchema schema)
+    throws ProtectionException
     	{
 		sqlname(
 			builder,
@@ -372,6 +380,7 @@ implements JdbcResource.JdbcDriver
     	}
 
     protected void fullname(final StringBuilder builder, final JdbcTable table)
+    throws ProtectionException
     	{
 		fullname(
 			builder,

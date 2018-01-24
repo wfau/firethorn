@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
@@ -28,9 +30,11 @@ public interface OgsaTableResolver
     {
     /**
      * Resolve a table based on its alias.
-     * @throws EntityNotFoundException 
-     * 
+     * @throws EntityNotFoundException If no match was found. 
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
+     *  
      */
-    public BaseTable<?,?> resolve(String alias) throws EntityNotFoundException;
+    public BaseTable<?,?> resolve(String alias)
+    throws ProtectionException, EntityNotFoundException;
     
     }
