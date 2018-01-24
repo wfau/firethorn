@@ -101,9 +101,11 @@ extends TreeComponent
 
     /**
      * Our resource {@link BaseSchema schema}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public Schemas<SchemaType> schemas();
+    public Schemas<SchemaType> schemas()
+    throws ProtectionException;
 
     /**
      * The {@link BaseResource} metadata.

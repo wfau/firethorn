@@ -17,12 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 
 /**
@@ -67,42 +69,53 @@ extends TreeComponent
         {
         /**
          * Select all the schemas from a resource.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<SchemaType> select(final ResourceType parent);
+        public Iterable<SchemaType> select(final ResourceType parent)
+        throws ProtectionException;
 
         /**
          * Select a schema by name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public SchemaType select(final ResourceType parent, final String name)
-        throws NameNotFoundException;
+        throws NameNotFoundException, ProtectionException;
 
         /**
          * Search for a schema by name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public SchemaType search(final ResourceType parent, final String name);
+        public SchemaType search(final ResourceType parent, final String name)
+        throws ProtectionException;
 
         }
 
     /**
      * The {@link BaseSchema} this schema is derived from.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseSchema<?, ?> base();
+    public BaseSchema<?, ?> base()
+    throws ProtectionException;
 
     /**
      * The root of the chain that this schema is derived from.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseSchema<?, ?> root();
+    public BaseSchema<?, ?> root()
+    throws ProtectionException;
 
     /**
      * Our parent {@linkBaseResource resource}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseResource<?> resource();
+    public BaseResource<?> resource()
+    throws ProtectionException;
 
     /**
      * Our schema {@link BaseTable tables}.
@@ -110,39 +123,48 @@ extends TreeComponent
      */
     public interface Tables<TableType>
         {
+
         /**
          * Select all of the {@link BaseTable tables} in this schema.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<TableType> select();
+        public Iterable<TableType> select()
+        throws ProtectionException;
 
         /**
          * Search for a {@link BaseTable table} by name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public TableType search(final String name);
+        public TableType search(final String name)
+        throws ProtectionException;
 
         /**
          * Select a {@link BaseTable table} by name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public TableType select(final String name)
-        throws NameNotFoundException;
+        throws ProtectionException, NameNotFoundException;
 
         /**
          * Select a {@link BaseTable table} by ident.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public TableType select(final Identifier ident)
-        throws IdentifierNotFoundException;
+        throws ProtectionException, IdentifierNotFoundException;
 
         }
 
     /**
      * Our table {@link BaseTable tables}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public Tables<TableType> tables();
+    public Tables<TableType> tables()
+    throws ProtectionException;
 
     /**
      * The {@link BaseSchema} metadata.

@@ -126,13 +126,20 @@ extends BaseColumn<AdqlColumn>
         }
     
     @Override
-    public AdqlTable table();
+    public AdqlTable table()
+    throws ProtectionException;
+
     @Override
-    public AdqlSchema schema();
+    public AdqlSchema schema()
+    throws ProtectionException;
+
     @Override
-    public AdqlResource resource();
+    public AdqlResource resource()
+    throws ProtectionException;
+
     @Override
-    public BaseColumn<?> base();
+    public BaseColumn<?> base()
+    throws ProtectionException;
 
     /**
      * An enumeration of the VOTable data types, as defined in section 2.1 of the VOTable-1.2 specification.

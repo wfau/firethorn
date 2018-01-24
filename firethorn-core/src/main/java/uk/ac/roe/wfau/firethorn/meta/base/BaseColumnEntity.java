@@ -31,6 +31,8 @@ import javax.persistence.InheritanceType;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -125,6 +127,7 @@ extends TreeComponentEntity<ColumnType>
 
     @Override
     public StringBuilder namebuilder()
+    throws ProtectionException
         {
         StringBuilder builder = this.table().namebuilder();
         if (this.name() != null)
@@ -140,20 +143,24 @@ extends TreeComponentEntity<ColumnType>
 
     @Override
     public BaseSchema<?,?> schema()
+    throws ProtectionException
         {
         return this.table().schema();
         }
     @Override
     public BaseResource<?> resource()
+    throws ProtectionException
         {
         return this.table().resource();
         }
 
     @Override
-    public abstract BaseColumn<?> base();
+    public abstract BaseColumn<?> base()
+    throws ProtectionException;
 
     @Override
-    public abstract BaseColumn<?> root();
+    public abstract BaseColumn<?> root()
+    throws ProtectionException;
 
     @Enumerated(
         EnumType.STRING
@@ -169,10 +176,12 @@ extends TreeComponentEntity<ColumnType>
         )
     private AdqlColumn.AdqlType adqltype ;
     protected AdqlColumn.AdqlType adqltype()
+    throws ProtectionException
         {
         return this.adqltype;
         }
     protected void adqltype(final AdqlColumn.AdqlType type)
+    throws ProtectionException
         {
         if (type == null)
             {
@@ -183,6 +192,7 @@ extends TreeComponentEntity<ColumnType>
             }
         }
     protected void adqltype(final String type)
+    throws ProtectionException
         {
         adqltype(
             AdqlColumn.AdqlType.resolve(
@@ -202,10 +212,12 @@ extends TreeComponentEntity<ColumnType>
         )
     private Integer adqlsize ;
     protected Integer adqlsize()
+    throws ProtectionException
         {
         return this.adqlsize ;
         }
     protected void adqlsize(final Integer size)
+    throws ProtectionException
         {
         if (size != null)
             {
@@ -227,10 +239,12 @@ extends TreeComponentEntity<ColumnType>
         )
     protected String adqlunit ;
     protected String adqlunit()
+    throws ProtectionException
         {
         return this.adqlunit ;
         }
     protected void adqlunit(final String value)
+    throws ProtectionException
         {
         this.adqlunit = emptystr(
             value
@@ -248,38 +262,17 @@ extends TreeComponentEntity<ColumnType>
         )
     protected String adqlutype ;
     protected String adqlutype()
+    throws ProtectionException
         {
         return this.adqlutype ;
         }
     protected void adqlutype(final String value)
+    throws ProtectionException
         {
         this.adqlutype = emptystr(
             value
             );
         }
-
-    /*
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_ADQL_DTYPE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    protected String adqldtype ;
-    protected String adqldtype()
-        {
-        return this.adqldtype ;
-        }
-    protected void adqldtype(final String value)
-        {
-        this.adqldtype = emptystr(
-            value
-            );
-        }
-    */
 
     @Basic(
         fetch = FetchType.EAGER
@@ -292,10 +285,12 @@ extends TreeComponentEntity<ColumnType>
         )
     protected String adqlucd ;
     protected String adqlucd()
+    throws ProtectionException
         {
         return this.adqlucd ;
         }
     protected void adqlucd(final String value)
+    throws ProtectionException
         {
         this.adqlucd = emptystr(
             value
@@ -304,19 +299,23 @@ extends TreeComponentEntity<ColumnType>
 
     /**
      * Generate the {@link AdqlColumn.Metadata.Adql adql} metadata.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     protected AdqlColumn.Modifier.Adql adqlmeta()
+    throws ProtectionException
         {
         return new AdqlColumn.Modifier.Adql()
             {
             @Override
             public Integer arraysize()
+            throws ProtectionException
                 {
                 return adqlsize();
                 }
             @Override
             public void arraysize(final Integer size)
+            throws ProtectionException
                 {
                 adqlsize(
                     size
@@ -324,11 +323,13 @@ extends TreeComponentEntity<ColumnType>
                 }
             @Override
             public AdqlColumn.AdqlType type()
+            throws ProtectionException
                 {
                 return adqltype();
                 }
             @Override
             public void type(final AdqlColumn.AdqlType type)
+            throws ProtectionException
                 {
                 adqltype(
                     type
@@ -336,6 +337,7 @@ extends TreeComponentEntity<ColumnType>
                 }
             @Override
             public void type(final String dtype)
+            throws ProtectionException
                 {
                 adqltype(
                     dtype
@@ -344,11 +346,13 @@ extends TreeComponentEntity<ColumnType>
 
             @Override
             public String units()
+            throws ProtectionException
                 {
                 return adqlunit();
                 }
             @Override
             public void units(final String units)
+            throws ProtectionException
                 {
                 adqlunit(
                     units
@@ -357,11 +361,13 @@ extends TreeComponentEntity<ColumnType>
 
             @Override
             public String utype()
+            throws ProtectionException
                 {
                 return adqlutype();
                 }
             @Override
             public void utype(final String utype)
+            throws ProtectionException
                 {
                 adqlutype(
                     utype
@@ -370,11 +376,13 @@ extends TreeComponentEntity<ColumnType>
 
             @Override
             public String ucd()
+            throws ProtectionException
                 {
                 return adqlucd();
                 }
             @Override
             public void ucd(final String value)
+            throws ProtectionException
                 {
                 adqlucd(
                     value
@@ -382,11 +390,13 @@ extends TreeComponentEntity<ColumnType>
                 }
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return BaseColumnEntity.this.name();
                 }
             @Override
             public String text()
+            throws ProtectionException
                 {
                 return BaseColumnEntity.this.text();
                 }
@@ -395,16 +405,19 @@ extends TreeComponentEntity<ColumnType>
 
     @Override
     public AdqlColumn.Modifier meta()
+    throws ProtectionException
         {
         return new AdqlColumn.Modifier()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return BaseColumnEntity.this.name();
                 }
             @Override
             public AdqlColumn.Modifier.Adql adql()
+            throws ProtectionException
                 {
                 return adqlmeta();
                 }
@@ -413,6 +426,7 @@ extends TreeComponentEntity<ColumnType>
 
     @Override
     public void update(final AdqlColumn.Metadata.Adql meta)
+    throws ProtectionException
     	{
         if (meta.text() != null)
             {

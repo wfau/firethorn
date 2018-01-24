@@ -80,22 +80,27 @@ extends TreeComponent
         {
         /**
          * Select all the columns from a table.
+         * @throws ProtectionException 
          *
          */
-        public Iterable<ColumnType> select(final TableType parent);
+        public Iterable<ColumnType> select(final TableType parent)
+        throws ProtectionException;
 
         /**
          * Select a column by name.
+         * @throws ProtectionException 
          *
          */
         public ColumnType select(final TableType parent, final String name)
-        throws NameNotFoundException;
+        throws NameNotFoundException, ProtectionException;
 
         /**
          * Search for a column by name.
+         * @throws ProtectionException 
          *
          */
-        public ColumnType search(final TableType parent, final String name);
+        public ColumnType search(final TableType parent, final String name)
+        throws ProtectionException;
 
         }
 

@@ -35,11 +35,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -152,7 +154,7 @@ public class AdqlColumnEntity
         
         @Override
         public AdqlColumn resolve(String alias)
-            throws EntityNotFoundException
+            throws EntityNotFoundException, IdentifierFormatException, ProtectionException
             {
             return entities.select(
                 idents.ident(
@@ -201,7 +203,7 @@ public class AdqlColumnEntity
         @Override
         @SelectMethod
         public AdqlColumn select(final Identifier ident)
-        throws IdentifierNotFoundException
+        throws IdentifierNotFoundException, ProtectionException
             {
             log.debug("select(Identifier) [{}]", ident);
             if (ident instanceof ProxyIdentifier)
@@ -231,6 +233,7 @@ public class AdqlColumnEntity
         @Override
         @CreateMethod
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base)
+        throws ProtectionException
             {
             return this.insert(
                 new AdqlColumnEntity(
@@ -243,6 +246,7 @@ public class AdqlColumnEntity
         @Override
         @CreateMethod
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name)
+        throws ProtectionException
             {
             return this.insert(
                 new AdqlColumnEntity(
@@ -256,6 +260,7 @@ public class AdqlColumnEntity
         @Override
         @CreateMethod
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final AdqlColumn.Metadata meta)
+        throws ProtectionException
             {
             return this.insert(
                 new AdqlColumnEntity(
@@ -269,6 +274,7 @@ public class AdqlColumnEntity
         @Override
         @SelectMethod
         public Iterable<AdqlColumn> select(final AdqlTable parent)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -283,7 +289,7 @@ public class AdqlColumnEntity
         @Override
         @SelectMethod
         public AdqlColumn select(final AdqlTable parent, final String name)
-        throws NameNotFoundException
+        throws ProtectionException, NameNotFoundException
             {
             try {
                 return super.single(
@@ -311,6 +317,7 @@ public class AdqlColumnEntity
         @Override
         @SelectMethod
         public AdqlColumn search(final AdqlTable parent, final String name)
+        throws ProtectionException
             {
             return super.first(
                 super.query(
@@ -443,6 +450,7 @@ public class AdqlColumnEntity
 
     @Override
     public String alias()
+    throws ProtectionException
         {
         return services().aliases().alias(
             this
@@ -464,6 +472,7 @@ public class AdqlColumnEntity
         }
 
     protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base, final AdqlColumn.Metadata meta)
+    throws ProtectionException
         {
         this(
             table,
@@ -484,6 +493,7 @@ public class AdqlColumnEntity
 
     @Override
     public String text()
+    throws ProtectionException
         {
         if (super.text() == null)
             {
@@ -539,17 +549,20 @@ public class AdqlColumnEntity
         }
     @Override
     public BaseColumn<?> root()
+    throws ProtectionException
         {
         return base().root();
         }
 
     @Override
     protected void scanimpl()
+    throws ProtectionException
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         }
 
     protected AdqlColumn.AdqlType adqltype()
+    throws ProtectionException
         {
         if (super.adqltype() != null)
             {
@@ -561,6 +574,7 @@ public class AdqlColumnEntity
         }
 
     protected Integer adqlsize()
+    throws ProtectionException
         {
         if (super.adqlsize() != null)
             {
@@ -572,6 +586,7 @@ public class AdqlColumnEntity
         }
 
     protected String adqlunit()
+    throws ProtectionException
         {
         if (this.adqlunit != null)
             {
@@ -583,6 +598,7 @@ public class AdqlColumnEntity
         }
 
     protected String adqlutype()
+    throws ProtectionException
         {
         if (this.adqlutype != null)
             {
@@ -594,6 +610,7 @@ public class AdqlColumnEntity
         }
 
     protected String adqlucd()
+    throws ProtectionException
         {
         if (this.adqlucd != null)
             {

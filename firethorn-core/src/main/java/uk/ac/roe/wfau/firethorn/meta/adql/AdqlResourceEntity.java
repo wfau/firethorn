@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
@@ -264,6 +265,7 @@ implements AdqlResource
 
     @Override
     public AdqlResource.Schemas schemas()
+    throws ProtectionException
         {
         log.debug("schemas() for [{}][{}]", ident(), namebuilder());
         scan();
@@ -271,6 +273,7 @@ implements AdqlResource
             {
             @Override
             public Iterable<AdqlSchema> select()
+            throws ProtectionException
                 {
                 return factories().adql().schemas().entities().select(
                     AdqlResourceEntity.this
@@ -279,6 +282,7 @@ implements AdqlResource
 
             @Override
             public AdqlSchema search(final String name)
+            throws ProtectionException
                 {
                 return factories().adql().schemas().entities().search(
                     AdqlResourceEntity.this,
@@ -288,7 +292,7 @@ implements AdqlResource
 
             @Override
             public AdqlSchema select(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 return factories().adql().schemas().entities().select(
                     AdqlResourceEntity.this,
@@ -298,6 +302,7 @@ implements AdqlResource
 
             @Override
             public AdqlSchema create(final String name)
+            throws ProtectionException
                 {
                 return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
@@ -307,6 +312,7 @@ implements AdqlResource
 
             @Override
             public AdqlSchema create(final String name, final BaseTable<?, ?> base)
+            throws ProtectionException
                 {
                 return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
@@ -317,6 +323,7 @@ implements AdqlResource
 
             @Override
 			public AdqlSchema create(final BaseSchema<?,?> base)
+            throws ProtectionException
 			    {
 			    return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
@@ -326,6 +333,7 @@ implements AdqlResource
 				}
             @Override
             public AdqlSchema create(final CopyDepth depth, final BaseSchema<?, ?> base)
+            throws ProtectionException
                 {
                 return factories().adql().schemas().entities().create(
                     depth,
@@ -337,6 +345,7 @@ implements AdqlResource
 
             @Override
             public AdqlSchema create(final String name, final BaseSchema<?,?> base)
+            throws ProtectionException
                 {
                 return factories().adql().schemas().entities().create(
                     AdqlResourceEntity.this,
@@ -347,6 +356,7 @@ implements AdqlResource
 
             @Override
             public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?, ?> base)
+            throws ProtectionException
                 {
                 return factories().adql().schemas().entities().create(
                     depth,
@@ -358,6 +368,7 @@ implements AdqlResource
 
             @Override
             public AdqlSchema inport(final String name, final BaseSchema<?, ?> base)
+            throws ProtectionException
                 {
                 log.debug("schemas().inport(String, BaseSchema)");
                 log.debug("  name [{}]", name);
@@ -417,6 +428,7 @@ implements AdqlResource
             {
             @Override
             public Iterable<BlueQuery> select()
+            throws ProtectionException
                 {
                 return services().blues().select(
                     AdqlResourceEntity.this
@@ -425,7 +437,7 @@ implements AdqlResource
 
             @Override
             public BlueQuery create(final String input)
-                throws InvalidRequestException, InternalServerErrorException
+            throws ProtectionException, InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
                     AdqlResourceEntity.this,
@@ -435,7 +447,7 @@ implements AdqlResource
 
             @Override
             public BlueQuery create(String input, AdqlQueryBase.Mode mode, AdqlQueryBase.Syntax.Level syntax, AdqlQueryBase.Limits limits, AdqlQueryBase.Delays delays, BlueTask.TaskState next, Long wait)
-                throws InvalidRequestException, InternalServerErrorException
+            throws ProtectionException, InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
                     AdqlResourceEntity.this,

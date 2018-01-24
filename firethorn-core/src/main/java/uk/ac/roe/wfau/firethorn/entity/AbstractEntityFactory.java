@@ -26,6 +26,7 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.BaseProtector;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -60,6 +61,7 @@ implements Entity.EntityFactory<EntityType>
     @SelectMethod
     @SuppressWarnings("unchecked")
     public EntityType search(final Identifier ident)
+    throws ProtectionException
         {
         //log.debug("search() [{}]", (ident != null) ? ident.value() : null);
         return (EntityType) factories().hibernate().select(
@@ -71,7 +73,7 @@ implements Entity.EntityFactory<EntityType>
     @Override
     @SelectMethod
     public EntityType select(final Identifier ident)
-    throws IdentifierNotFoundException
+    throws IdentifierNotFoundException, ProtectionException
         {
         //log.debug("select() [{}]", (ident != null) ? ident.value() : null);
         final EntityType result = search(

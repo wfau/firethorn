@@ -17,9 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
@@ -66,45 +68,59 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         {
         /**
          * Create an empty schema.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final AdqlResource parent, final String name);
+        public AdqlSchema create(final AdqlResource parent, final String name)
+        throws ProtectionException;
 
         /**
          * Create a new schema, importing a base table.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?,?> base);
+        public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new schema, importing a base table.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseTable<?,?> base);
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseTable<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new schema, importing the tables from a base schema.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final AdqlResource parent, final BaseSchema<?,?> base);
+        public AdqlSchema create(final AdqlResource parent, final BaseSchema<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new schema, importing the tables from a base schema.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?,?> base);
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new schema, importing the tables from a base schema.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?,?> base);
+        public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new schema, importing the tables from a base schema.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?,?> base);
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?,?> base)
+        throws ProtectionException;
 
         }
 
@@ -139,38 +155,48 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         {
         /**
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlTable create(final BaseTable<?,?> base);
+        public AdqlTable create(final BaseTable<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlTable create(final BaseTable<?,?> base, final String name);
+        public AdqlTable create(final BaseTable<?,?> base, final String name)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base);
+        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlTable table}, importing the columns from a {@link BaseTable base table}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, final String name);
+        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, final String name)
+        throws ProtectionException;
 
         /**
          * Import a {@link AdqlTable table} from our base schema..
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public AdqlTable inport(final String name)
-        throws NameNotFoundException;
+        throws ProtectionException, NameNotFoundException;
 
         }
     @Override
-    public Tables tables();
+    public Tables tables()
+    throws ProtectionException;
 
     /**
      * The {@link AdqlSchema} metadata.

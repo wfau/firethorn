@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
@@ -24,6 +25,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -73,15 +75,19 @@ extends BaseResource<AdqlSchema>
         {
         /**
          * Create a new {@link AdqlResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlResource create();
+        public AdqlResource create()
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlResource create(final String name);
+        public AdqlResource create(final String name)
+        throws ProtectionException;
 
         }
 
@@ -120,50 +126,65 @@ extends BaseResource<AdqlSchema>
         {
         /**
          * Create a new {@link AdqlSchema schema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final String name);
+        public AdqlSchema create(final String name)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlSchema schema}, importing a {@link BaseTable}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final String name, final BaseTable<?,?> base);
+        public AdqlSchema create(final String name, final BaseTable<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final BaseSchema<?,?> base);
+        public AdqlSchema create(final BaseSchema<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final TreeComponent.CopyDepth depth, final BaseSchema<?,?> base);
+        public AdqlSchema create(final TreeComponent.CopyDepth depth, final BaseSchema<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final String name, final BaseSchema<?,?> base);
+        public AdqlSchema create(final String name, final BaseSchema<?,?> base)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlSchema schema}, importing all the tables from a {@link BaseSchema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema create(final TreeComponent.CopyDepth depth, final String name, final BaseSchema<?,?> base);
+        public AdqlSchema create(final TreeComponent.CopyDepth depth, final String name, final BaseSchema<?,?> base)
+        throws ProtectionException;
 
         /**
          * Import a {@link BaseSchema}.
          * @todo How is this different from create ?
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlSchema inport(final String name, final BaseSchema<?, ?> base);
+        public AdqlSchema inport(final String name, final BaseSchema<?, ?> base)
+        throws ProtectionException;
 
         }
     @Override
-    public Schemas schemas();
+    public Schemas schemas()
+    throws ProtectionException;
 
     /**
      * The {@link AdqlResource} metadata.
@@ -182,7 +203,8 @@ extends BaseResource<AdqlSchema>
         }
 
     @Override
-    public AdqlResource.Metadata meta();
+    public AdqlResource.Metadata meta()
+    throws ProtectionException;
 
     /**
      * The {@link BlueQuery}s associated with this {@link AdqlResource}.
@@ -192,29 +214,14 @@ extends BaseResource<AdqlSchema>
         {
         /**
          * Select all the {@link BlueQuery}s.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Iterable<BlueQuery> select();
-
-        /*
-         *
-        public BlueQuery create(final String input)
-        throws InvalidRequestException, InternalServerErrorException;
-
-        public BlueQuery create(final String input, final TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
-
-        public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
-
-        public BlueQuery create(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
-         * 
-         */
+        public Iterable<BlueQuery> select()
+        throws ProtectionException;
 
         /**
          * Create a new {@link BlueQuery} for this {@link AdqlResource}.
-         * 
          * @param input  The ADQL query.
          * @param mode   The {@link AdqlQueryBase.Mode}.
          * @param syntax The {@link AdqlQueryBase.Syntax.Level}.
@@ -222,19 +229,20 @@ extends BaseResource<AdqlSchema>
          * @param delays The {@link AdqlQueryBase.Delays}.
          * @param next   The next {@link BlueTask.TaskState} to wait for. 
          * @param wait   How long to wait for the next {@link BlueTask.TaskState}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
         public BlueQuery create(final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
+        throws ProtectionException, InvalidRequestException, InternalServerErrorException;
 
         /**
          * Create a new {@link BlueQuery} for this {@link AdqlResource}.
-         * 
          * @param input  The ADQL query.
-         * @return
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
+         *  
          */
         public BlueQuery create(String string)
-        throws InvalidRequestException, InternalServerErrorException;
+        throws ProtectionException, InvalidRequestException, InternalServerErrorException;
 
         }
 
@@ -242,6 +250,7 @@ extends BaseResource<AdqlSchema>
      * The {@link BlueQuery}s associated with this {@link AdqlResource}.
      * 
      */
-    public Blues blues();
+    public Blues blues()
+    throws ProtectionException;
     
     }
