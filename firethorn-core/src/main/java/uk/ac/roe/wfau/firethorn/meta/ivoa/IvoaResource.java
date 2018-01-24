@@ -17,8 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 
@@ -65,15 +67,19 @@ extends BaseResource<IvoaSchema>
         {
         /**
          * Create a new {@link IvoaResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public IvoaResource create(final String endpoint);
+        public IvoaResource create(final String endpoint)
+        throws ProtectionException;    
 
         /**
          * Create a new {@link IvoaResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public IvoaResource create(final String name, final String endpoint);
+        public IvoaResource create(final String name, final String endpoint)
+        throws ProtectionException;    
 
         }
 
@@ -106,25 +112,16 @@ extends BaseResource<IvoaSchema>
         {
         /**
          * Create a {@link IvoaSchema.Builder}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public IvoaSchema.Builder builder();  
+        public IvoaSchema.Builder builder()  
+        throws ProtectionException;    
 
         }
     @Override
-    public Schemas schemas();
-
-    /**
-     * The resource registry URI.
-     *
-    public String ivoaid();
-     */
-
-    /**
-     * The resource registry URI.
-     *
-    public void ivoaid(final String ivoaid);
-     */
+    public Schemas schemas()
+    throws ProtectionException;    
 
     /**
      * Public interface for a service Endpoint.
@@ -134,58 +131,30 @@ extends BaseResource<IvoaSchema>
         {
         /**
          * The parent resource.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public IvoaResource resource();
+        public IvoaResource resource()
+        throws ProtectionException;    
 
         /**
          * The resource endpoint URL as a String.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public String string();
+        public String string()
+        throws ProtectionException;    
 
         }
 
     /**
      * The service endpoint.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public Endpoint endpoint();
+    public Endpoint endpoint()
+    throws ProtectionException;    
     
-    /**
-     * Public  interface for the service Endpoint(s).
-     * 
-     *
-    public interface Endpoints
-        {
-        **
-         * Add a new service Endpoint.
-         * 
-         *
-        public Endpoint create(final String endpoint);
-
-        **
-         * Select a list of the service Endpoint(s).
-         * 
-         *
-        public Iterable<Endpoint> select();
-
-        **
-         * Select the primary Endpoint.
-         * 
-         *
-        public Endpoint primary();
-
-        }
-     *http
-     */
-    
-    /**
-     * Access to the service Endpoint(s).
-     * 
-    public Endpoints endpoints();
-     */
-
     /**
      * The {@link IvoaResource} metadata.
      *
@@ -203,13 +172,17 @@ extends BaseResource<IvoaSchema>
 
         /**
          * The IVOA metadata.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Ivoa ivoa();
+        public Ivoa ivoa()
+        throws ProtectionException;    
+
         }
 
     @Override
-    public IvoaResource.Metadata meta();
+    public IvoaResource.Metadata meta()
+    throws ProtectionException;    
     
     /**
      * Interface to access the {@link OgsaIvoaResource} OGSA-DAI resources.
@@ -220,22 +193,28 @@ extends BaseResource<IvoaSchema>
         {
         /**
          * Select the primary {@link OgsaIvoaResource} OGSA-DAI resource.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public OgsaIvoaResource primary();
+        public OgsaIvoaResource primary()
+        throws ProtectionException;    
         
         /**
          * Select all the {@link OgsaIvoaResource} OGSA-DAI resources for this {@link IvoaResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Iterable<OgsaIvoaResource> select();
+        public Iterable<OgsaIvoaResource> select()
+        throws ProtectionException;    
 
-    }
+        }
 
     /**
      * Access the {@link OgsaIvoaResource} OGSA-DAI resources.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public OgsaIvoaResources ogsa();
-    
+    public OgsaIvoaResources ogsa()
+    throws ProtectionException;    
+
     }

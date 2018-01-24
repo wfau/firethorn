@@ -80,7 +80,7 @@ extends TreeComponent
         {
         /**
          * Select all the columns from a table.
-         * @throws ProtectionException 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public Iterable<ColumnType> select(final TableType parent)
@@ -88,7 +88,7 @@ extends TreeComponent
 
         /**
          * Select a column by name.
-         * @throws ProtectionException 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public ColumnType select(final TableType parent, final String name)
@@ -96,7 +96,7 @@ extends TreeComponent
 
         /**
          * Search for a column by name.
-         * @throws ProtectionException 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public ColumnType search(final TableType parent, final String name)

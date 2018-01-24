@@ -213,25 +213,33 @@ extends BaseSchema<AdqlSchema, AdqlTable>
             {
             /**
              * The schema name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String name();
+            public String name()
+            throws ProtectionException;
 
             /**
              * The schema description.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String text();
+            public String text()
+            throws ProtectionException;
+
             }
 
         /**
          * The ADQL metadata.
          * 
          */
-        public Adql adql();
+        public Adql adql()
+        throws ProtectionException;
+
         }
 
     @Override
-    public AdqlSchema.Metadata meta();
+    public AdqlSchema.Metadata meta()
+    throws ProtectionException;
 
     }

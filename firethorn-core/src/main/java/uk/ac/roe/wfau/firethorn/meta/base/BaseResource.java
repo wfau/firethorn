@@ -142,9 +142,11 @@ extends TreeComponent
     /**
      * Access to the {@link OgsaBaseResource} OGSA-DAI resources for this {@link BaseResource}.
      * @todo Move this to {@link RootResource} rather than {@link BaseResource}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public OgsaBaseResources ogsa();
+    public OgsaBaseResources ogsa()
+    throws ProtectionException;
 
     /**
      * Access to the ADQLTranslator for this resource.

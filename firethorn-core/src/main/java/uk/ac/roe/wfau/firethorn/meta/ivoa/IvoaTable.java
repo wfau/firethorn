@@ -17,10 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
@@ -40,10 +42,11 @@ extends BaseTable<IvoaTable, IvoaColumn>
         {
         /**
          * Create or update an {@link IvoaTable}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public IvoaTable build(final IvoaTable.Metadata meta)
-        throws DuplicateEntityException;
+        throws ProtectionException, DuplicateEntityException;
         }
 
     /**
@@ -91,10 +94,11 @@ extends BaseTable<IvoaTable, IvoaColumn>
         {
         /**
          * Create a new {@link IvoaTable}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public IvoaTable create(final IvoaSchema parent, final IvoaTable.Metadata meta);
-        
+        public IvoaTable create(final IvoaSchema parent, final IvoaTable.Metadata meta)
+        throws ProtectionException;        
         }
 
     /**
@@ -124,10 +128,12 @@ extends BaseTable<IvoaTable, IvoaColumn>
         }
     
     @Override
-    public IvoaResource resource();
+    public IvoaResource resource()
+    throws ProtectionException;        
 
     @Override
-    public IvoaSchema schema();
+    public IvoaSchema schema()
+    throws ProtectionException;        
 
     /**
      * Our table {@link IvoaColumn columns}.
@@ -136,21 +142,17 @@ extends BaseTable<IvoaTable, IvoaColumn>
     public interface Columns extends BaseTable.Columns<IvoaColumn>
         {
         /**
-         * Create a {@link IvoaColumn}.
-         * 
-        public IvoaColumn create(final String name)
-        throws DuplicateEntityException;
-         */
-        
-        /**
          * Create a new {@link IvoaColumn.Builder}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public IvoaColumn.Builder builder();  
+        public IvoaColumn.Builder builder()  
+        throws ProtectionException;        
 
         }
     @Override
-    public Columns columns();
+    public Columns columns()
+    throws ProtectionException;        
 
     /**
      * The table metadata.
@@ -169,50 +171,66 @@ extends BaseTable<IvoaTable, IvoaColumn>
             {
             /**
              * The table name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String name();
+            public String name()
+            throws ProtectionException;        
 
             /**
              * The table title.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String title();
+            public String title()
+            throws ProtectionException;        
 
             /**
              * The table description.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String text();
+            public String text()
+            throws ProtectionException;        
 
             /**
              * The table uType.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String utype();
+            public String utype()
+            throws ProtectionException;        
             
             }
         
         /**
          * The IVOA metadata.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Ivoa ivoa();
+        public Ivoa ivoa()
+        throws ProtectionException;        
+
         }
 
     @Override
-    public IvoaTable.Metadata meta();
+    public IvoaTable.Metadata meta()
+    throws ProtectionException;        
 
     /**
      * Update the table properties.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void update(final IvoaTable.Metadata meta);
+    public void update(final IvoaTable.Metadata meta)
+    throws ProtectionException;        
 
     /**
      * Update the table properties.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void update(final IvoaTable.Metadata.Ivoa ivoa);
+    public void update(final IvoaTable.Metadata.Ivoa ivoa)
+    throws ProtectionException;        
     
     }

@@ -54,10 +54,11 @@ extends TreeComponent
          * @throws IdentifierFormatException
          * @throws IdentifierNotFoundException 
          * @throws EntityNotFoundException 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *  
          */
         public BaseSchema<?,?> resolve(String link)
-        throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException;
+        throws ProtectionException, IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException;
         }
 
     /**
@@ -174,17 +175,20 @@ extends TreeComponent
         {
         /**
          * The schema name.
-         * 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          */
         @Deprecated
-        public String name();
+        public String name()
+        throws ProtectionException;
 
         }
 
     /**
      * The {@link BaseSchema} metadata.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public AdqlSchema.Metadata meta();
+    public AdqlSchema.Metadata meta()
+    throws ProtectionException;
 
     }

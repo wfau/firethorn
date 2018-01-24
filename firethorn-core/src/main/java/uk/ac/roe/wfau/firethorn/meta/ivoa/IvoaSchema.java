@@ -17,10 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 
@@ -40,10 +42,10 @@ extends BaseSchema<IvoaSchema, IvoaTable>
         {
         /**
          * Create or update an {@link IvoaSchema}.
-         *
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          */
         public IvoaSchema build(final IvoaSchema.Metadata param)
-        throws DuplicateEntityException;
+        throws ProtectionException, DuplicateEntityException;
         }
 
     /**
@@ -82,9 +84,11 @@ extends BaseSchema<IvoaSchema, IvoaTable>
         {
         /**
          * Create a new {@link IvoaSchema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public IvoaSchema create(final IvoaResource parent, final IvoaSchema.Metadata param);
+        public IvoaSchema create(final IvoaResource parent, final IvoaSchema.Metadata param)
+        throws ProtectionException;
         
         }
 
@@ -106,10 +110,12 @@ extends BaseSchema<IvoaSchema, IvoaTable>
          *
          */
         public IvoaTable.EntityFactory tables();
+
         }
     
     @Override
-    public IvoaResource resource();
+    public IvoaResource resource()
+    throws ProtectionException;
 
     /**
      * The schema {@link IvoaTable tables}.
@@ -119,12 +125,17 @@ extends BaseSchema<IvoaSchema, IvoaTable>
         {
         /**
          * Create a {@link IvoaTable.Builder}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public IvoaTable.Builder builder();  
+        public IvoaTable.Builder builder()  
+        throws ProtectionException;
+
         }
+
     @Override
-    public Tables tables();
+    public Tables tables()
+    throws ProtectionException;
 
     /**
      * The schema metadata.
@@ -142,49 +153,66 @@ extends BaseSchema<IvoaSchema, IvoaTable>
             {
             /**
              * The schema name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String name();
+            public String name()
+            throws ProtectionException;
 
             /**
              * The schema title.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String title();
+            public String title()
+            throws ProtectionException;
 
             /**
              * The schema description.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String text();
+            public String text()
+            throws ProtectionException;
 
             /**
              * The schema uType.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String utype();
+            public String utype()
+            throws ProtectionException;
+            
             }
 
         /**
          * The IVOA metadata.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Ivoa ivoa();
+        public Ivoa ivoa()
+        throws ProtectionException;
+        
         }
 
     @Override
-    public IvoaSchema.Metadata meta();
+    public IvoaSchema.Metadata meta()
+    throws ProtectionException;
 
     /**
      * Update the schema properties.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void update(final IvoaSchema.Metadata meta);
+    public void update(final IvoaSchema.Metadata meta)
+    throws ProtectionException;
 
     /**
      * Update the schema properties.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void update(final IvoaSchema.Metadata.Ivoa ivoa);
+    public void update(final IvoaSchema.Metadata.Ivoa ivoa)
+    throws ProtectionException;
 
     }

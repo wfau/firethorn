@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Abstract base class for {@link EntityBuilder} implementations. 
@@ -35,9 +37,11 @@ implements EntityBuilder<EntityType, EntityParam>
      * Resolve an entity name.
      * @param param The {@link EntityParam} containing the name.
      * @return The entity name.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    protected abstract String name(final EntityParam param);
+    protected abstract String name(final EntityParam param)
+    throws ProtectionException;
 
     /**
      * Our map of Entity(s) to process.
@@ -85,7 +89,7 @@ implements EntityBuilder<EntityType, EntityParam>
         
     @Override
     public EntityType build(final EntityParam param)
-    throws DuplicateEntityException
+    throws DuplicateEntityException, ProtectionException
         {
         log.debug("build(EntityParam)");
         log.debug("  todo [{}]", todo.size());
@@ -151,16 +155,19 @@ implements EntityBuilder<EntityType, EntityParam>
 
     /**
      * Create a new Entity.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     protected abstract EntityType create(final EntityParam param)
-    throws DuplicateEntityException;
+    throws DuplicateEntityException, ProtectionException;
 
     /**
      * Update an existing Entity.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    protected abstract void update(final EntityType entity, final EntityParam param);
+    protected abstract void update(final EntityType entity, final EntityParam param)
+    throws ProtectionException;
 
     /**
      * Finish an un-processed Entity.

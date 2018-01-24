@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.adql.parser.TAPServiceTranslator;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
@@ -73,12 +74,6 @@ public class IvoaResourceEntity
      * 
      */
     protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaResourceEntity";
-
-    /**
-     * Hibernate column mapping, {@value}.
-     * 
-    protected static final String DB_IVOAID_COL = "ivoaid";
-     */
 
     /**
      * {@link IvoaResource.EntityFactory} implementation.
@@ -273,30 +268,10 @@ public class IvoaResourceEntity
                 );
             }
         }
-/*
- * 
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_IVOAID_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String ivoaid;
-    @Override
-    public String ivoaid()
-        {
-        return this.ivoaid;
-        }
-    @Override
-    public void ivoaid(final String ivoaid)
-        {
-        this.ivoaid = ivoaid ;
-        }
-*
-*/
+
     @Override
     public IvoaResource.Schemas schemas()
+    throws ProtectionException
         {
         log.debug("schemas() for [{}][{}]", ident(), namebuilder());
         scan();
@@ -304,6 +279,7 @@ public class IvoaResourceEntity
             {
             @Override
             public Iterable<IvoaSchema> select()
+            throws ProtectionException
                 {
                 return factories().ivoa().schemas().entities().select(
                     IvoaResourceEntity.this
@@ -312,7 +288,7 @@ public class IvoaResourceEntity
 
             @Override
             public IvoaSchema select(String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 return factories().ivoa().schemas().entities().select(
                     IvoaResourceEntity.this,
@@ -322,6 +298,7 @@ public class IvoaResourceEntity
 
             @Override
             public IvoaSchema search(final String name)
+            throws ProtectionException
                 {
                 return factories().ivoa().schemas().entities().search(
                     IvoaResourceEntity.this,
@@ -331,12 +308,13 @@ public class IvoaResourceEntity
 
             @Override
             public IvoaSchema.Builder builder()
+            throws ProtectionException
                 {
                 return new IvoaSchemaEntity.Builder(this.select())
                     {
                     @Override
                     protected IvoaSchema create(final IvoaSchema.Metadata param)
-                        throws DuplicateEntityException
+                    throws DuplicateEntityException, ProtectionException
                         {
                         return factories().ivoa().schemas().entities().create(
                             IvoaResourceEntity.this,
@@ -364,61 +342,6 @@ public class IvoaResourceEntity
         {
         return this.endpoint;
         }
-
-    /*
-     * 
-    @OneToMany(
-        fetch   = FetchType.LAZY,
-        mappedBy = "resource",
-        targetEntity = IvoaEndpointEntity.class
-        )
-    private Set<Endpoint> endpoints = new HashSet<Endpoint>();
-    
-    @Override
-    public Endpoints endpoints()
-        {
-        return new Endpoints()
-            {
-            @Override
-            public Endpoint create(String url)
-                {
-                Endpoint endpoint = new IvoaEndpointEntity(
-                    IvoaResourceEntity.this,
-                    url
-                    );
-                 endpoints.add(
-                     endpoint
-                    );
-                 // This does not get saved in the database.
-                 // Needs to be part of a transaction.
-                 
-                 return endpoint;
-                 }
-
-            @Override
-            public Iterable<IvoaResource.Endpoint> select()
-                {
-                return new GenericIterable<IvoaResource.Endpoint, Endpoint>(
-                    endpoints
-                    ); 
-                }
-
-            @Override
-            public Endpoint primary()
-                {
-                Iterator<Endpoint> iter = endpoints.iterator();
-                if (iter.hasNext())
-                    {
-                    return iter.next();
-                    }
-                else {
-                    return null;
-                    }
-                }
-            };
-        }
-      * 
-      */
 
     @Override
     public IvoaResource.Metadata meta()

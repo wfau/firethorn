@@ -29,6 +29,7 @@ import javax.persistence.InheritanceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -67,7 +68,7 @@ implements BaseSchema<SchemaType, TableType>
         {
         @Override
         public BaseSchema<?,?> resolve(String link)
-        throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+        throws ProtectionException, IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
             {
             if (adql.matches(link))
                 {
@@ -161,10 +162,12 @@ implements BaseSchema<SchemaType, TableType>
         )
     protected String adqlutype ;
     protected String adqlutype()
+    throws ProtectionException
         {
         return this.adqlutype ;
         }
     protected void adqlutype(final String value)
+    throws ProtectionException
         {
         this.adqlutype = emptystr(
             value
@@ -173,6 +176,7 @@ implements BaseSchema<SchemaType, TableType>
     
     @Override
     public StringBuilder namebuilder()
+    throws ProtectionException
         {
         if (this.name() != null)
             {
@@ -190,17 +194,20 @@ implements BaseSchema<SchemaType, TableType>
      *
      */
     protected AdqlSchema.Metadata.Adql adqlmeta()
+    throws ProtectionException
         {
         return new AdqlSchema.Metadata.Adql()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return BaseSchemaEntity.this.name();
                 }
 
             @Override
             public String text()
+            throws ProtectionException
                 {
                 return BaseSchemaEntity.this.text();
                 }
@@ -209,16 +216,19 @@ implements BaseSchema<SchemaType, TableType>
 
     @Override
     public AdqlSchema.Metadata meta()
+    throws ProtectionException
         {
         return new AdqlSchema.Metadata()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return BaseSchemaEntity.this.name();
                 }
             @Override
             public AdqlSchema.Metadata.Adql adql()
+            throws ProtectionException
                 {
                 return adqlmeta();
                 }

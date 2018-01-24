@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.entity;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Common interface for building lists of {@link Entity}(s).
@@ -43,10 +45,11 @@ public interface EntityBuilder<EntityType extends NamedEntity, EntityMeta>
 
     /**
      * Create or update an Entity.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     public EntityType build(final EntityMeta meta)
-    throws DuplicateEntityException;
+    throws DuplicateEntityException, ProtectionException;
 
     /**
      * Finish processing the list.   

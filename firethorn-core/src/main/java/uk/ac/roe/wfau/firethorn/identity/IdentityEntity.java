@@ -602,6 +602,7 @@ implements Identity
     private AdqlSchema adqlschema ;
 
     protected AdqlSchema adqlschema()
+    throws ProtectionException
         {
         log.debug("adqlschema()");
         if (this.adqlschema == null)
@@ -666,11 +667,13 @@ implements Identity
 
 	@Override
 	public Spaces spaces()
+    throws ProtectionException
 		{
 		return new Spaces()
 			{
 			@Override
 			public AdqlSpaces adql()
+	        throws ProtectionException
 				{
 				return new AdqlSpaces()
 					{
@@ -692,6 +695,7 @@ implements Identity
 
 			@Override
 			public JdbcSpaces jdbc()
+	        throws ProtectionException
 				{
 				return new JdbcSpaces()
 					{
