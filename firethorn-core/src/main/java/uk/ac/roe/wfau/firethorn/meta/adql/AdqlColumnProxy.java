@@ -200,7 +200,7 @@ implements AdqlColumn
 
     @Override
     public void name(final String name)
-    throws NameFormatException
+    throws ProtectionException, NameFormatException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
@@ -216,6 +216,7 @@ implements AdqlColumn
 
     @Override
     public void text(final String text)
+    throws ProtectionException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
@@ -245,12 +246,14 @@ implements AdqlColumn
 
     @Override
     public Status status()
+    throws ProtectionException
         {
         return this.base.status();
         }
 
     @Override
-    public void status(final Status status) throws InvalidStatusException
+    public void status(final Status status)
+    throws ProtectionException, InvalidStatusException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
@@ -259,6 +262,7 @@ implements AdqlColumn
 
     @Override
     public CopyDepth depth()
+    throws ProtectionException
         {
         return CopyDepth.PROXY;
         }
@@ -294,7 +298,7 @@ implements AdqlColumn
     @Override
     public EntityProtector protector()
         {
-        throw new NotImplementedException(); 
+        return this.table.protector();
         }
 
 	@Override

@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
@@ -74,27 +76,35 @@ extends BaseTable<AdqlTable, AdqlColumn>
 
         /**
          * Create a new {@link AdqlTable}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base);
+        public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlTable}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base);
+        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlTable}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
+        public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlTable}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
+        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+        throws ProtectionException;
 
         }
 
@@ -132,38 +142,45 @@ extends BaseTable<AdqlTable, AdqlColumn>
         {
         /**
          * Create a {@link AdqlColumn}.
-         * @todo Add name change
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlColumn create(final BaseColumn<?> base);
+        public AdqlColumn create(final BaseColumn<?> base)
+        throws ProtectionException;
 
         /**
          * Create a {@link AdqlColumn}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlColumn create(final BaseColumn<?> base, final String name);
+        public AdqlColumn create(final BaseColumn<?> base, final String name)
+        throws ProtectionException;
 
         /**
          * Create a {@link AdqlColumn}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlColumn create(final BaseColumn<?> base, final AdqlColumn.Metadata meta);
+        public AdqlColumn create(final BaseColumn<?> base, final AdqlColumn.Metadata meta)
+        throws ProtectionException;
 
         /**
          * Import a {@link AdqlColumn} from our base table.
-         * @todo Add name change
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public AdqlColumn inport(final String name)
-        throws NameNotFoundException;
+        throws ProtectionException, NameNotFoundException;
 
         }
 
     @Override
-    public Columns columns();
+    public Columns columns()
+    throws ProtectionException;
 
     @Override
-    public BaseTable<?,?> base();
+    public BaseTable<?,?> base()
+    throws ProtectionException;
 
     /**
      * Enum for the table status.
@@ -193,56 +210,74 @@ extends BaseTable<AdqlTable, AdqlColumn>
             {
             /**
              * The table name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String name();
+            public String name()
+            throws ProtectionException;
 
             /**
              * The table description.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String text();
+            public String text()
+            throws ProtectionException;
             
             /**
              * Get the table row count.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public Long count();
+            public Long count()
+            throws ProtectionException;
 
             /**
              * Get the table status.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public TableStatus status();
+            public TableStatus status()
+            throws ProtectionException;
 
             /**
              * Set the table status.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public void status(final TableStatus value);
+            public void status(final TableStatus value)
+            throws ProtectionException;
 
             /**
              * Get the table uType.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String utype();
+            public String utype()
+            throws ProtectionException;
 
             /**
              * Set the table uType.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public void utype(String utype);
+            public void utype(String utype)
+            throws ProtectionException;
 
             }
 
         /**
          * The ADQL metadata.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Adql adql();
+        public Adql adql()
+        throws ProtectionException;
+
         }
 
     @Override
-    public AdqlTable.Metadata meta();
+    public AdqlTable.Metadata meta()
+    throws ProtectionException;
 
     }

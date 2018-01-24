@@ -51,9 +51,11 @@ extends BaseComponent
 
     /**
      * The copy depth.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public CopyDepth depth();
+    public CopyDepth depth()
+    throws ProtectionException;
 
     /**
      * The fully qualified name builder.

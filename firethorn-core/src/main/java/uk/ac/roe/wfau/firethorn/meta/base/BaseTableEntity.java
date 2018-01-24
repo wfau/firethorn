@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -89,7 +90,7 @@ implements BaseTable<TableType, ColumnType>
         {
         @Override
         public BaseTable<?,?> resolve(String link)
-        throws IdentifierFormatException, EntityNotFoundException, EntityNotFoundException
+        throws ProtectionException, IdentifierFormatException, EntityNotFoundException, EntityNotFoundException
             {
             if (adql.matches(link))
                 {
@@ -175,6 +176,7 @@ implements BaseTable<TableType, ColumnType>
 
     @Override
     public StringBuilder namebuilder()
+    throws ProtectionException
         {
         StringBuilder builder = this.schema().namebuilder();
         if (this.name() != null)
@@ -189,15 +191,20 @@ implements BaseTable<TableType, ColumnType>
         }
 
     @Override
-    public abstract BaseTable<?, ?> base();
-    @Override
-    public abstract BaseTable<?, ?> root();
+    public abstract BaseTable<?, ?> base()
+    throws ProtectionException;
 
     @Override
-    public abstract BaseResource<?> resource();
+    public abstract BaseTable<?, ?> root()
+    throws ProtectionException;
 
     @Override
-    public abstract String alias();
+    public abstract BaseResource<?> resource()
+    throws ProtectionException;
+
+    @Override
+    public abstract String alias()
+    throws ProtectionException;
 
     @Basic(fetch = FetchType.EAGER)
     @Enumerated(
@@ -211,6 +218,7 @@ implements BaseTable<TableType, ColumnType>
         )
     protected AdqlTable.TableStatus adqlstatus ;
     protected AdqlTable.TableStatus adqlstatus()
+    throws ProtectionException
         {
         if (this.adqlstatus != null)
             {
@@ -221,6 +229,7 @@ implements BaseTable<TableType, ColumnType>
             }
         }
     protected void adqlstatus(final AdqlTable.TableStatus next)
+    throws ProtectionException
         {
         if (next == AdqlTable.TableStatus.UNKNOWN)
             {
@@ -238,6 +247,7 @@ implements BaseTable<TableType, ColumnType>
         )
     protected Long adqlcount ;
     protected Long adqlcount()
+    throws ProtectionException
         {
         if (this.adqlcount != null)
             {
@@ -248,6 +258,7 @@ implements BaseTable<TableType, ColumnType>
             }
         }
     protected void adqlcount(final Long count)
+    throws ProtectionException
         {
         this.adqlcount = count;
         }
@@ -263,10 +274,12 @@ implements BaseTable<TableType, ColumnType>
         )
     protected String adqlutype ;
     protected String adqlutype()
+    throws ProtectionException
         {
         return this.adqlutype ;
         }
     protected void adqlutype(final String value)
+    throws ProtectionException
         {
         this.adqlutype = emptystr(
             value
@@ -278,47 +291,54 @@ implements BaseTable<TableType, ColumnType>
      *
      */
     protected AdqlTable.Metadata.Adql adqlmeta()
+    throws ProtectionException
         {
         return new AdqlTable.Metadata.Adql()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return BaseTableEntity.this.name();
                 }
 
             @Override
             public String text()
+            throws ProtectionException
                 {
                 return BaseTableEntity.this.text();
                 }
 
             @Override
             public Long count()
+            throws ProtectionException
                 {
                 return adqlcount();
                 }
 
             @Override
             public TableStatus status()
+            throws ProtectionException
                 {
                 return adqlstatus();
                 }
             @Override
             public void status(AdqlTable.TableStatus status)
+            throws ProtectionException
                 {
                 adqlstatus(
                     status
                     );
                 }
-
             @Override
             public String utype()
+            throws ProtectionException
                 {
                 return adqlutype();
                 }
             @Override
             public void utype(final String utype)
+            throws ProtectionException
                 {
                 adqlutype(
                     utype
@@ -329,16 +349,19 @@ implements BaseTable<TableType, ColumnType>
 
     @Override
     public AdqlTable.Metadata meta()
+    throws ProtectionException
         {
         return new AdqlTable.Metadata()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return BaseTableEntity.this.name();
                 }
             @Override
             public AdqlTable.Metadata.Adql adql()
+            throws ProtectionException
                 {
                 return adqlmeta();
                 }

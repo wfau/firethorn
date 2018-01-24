@@ -24,6 +24,7 @@ import javax.persistence.Transient;
 import org.joda.time.DateTime;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
@@ -201,8 +202,9 @@ public class AdqlTableProxy
 
     @Override
     public BaseTable<?, ?> root()
+    throws ProtectionException
         {
-        return base().root();
+        return this.base.root();
         }
 
     private Identifier ident ;
@@ -223,25 +225,25 @@ public class AdqlTableProxy
     @Override
     public Identity owner()
         {
-        return schema().owner();
+        return this.schema.owner();
         }
 
     @Override
     public DateTime created()
         {
-        return schema().created();
+        return this.schema.created();
         }
 
     @Override
     public DateTime modified()
         {
-        return schema().modified();
+        return this.schema.modified();
         }
 
     @Override
     public String name()
         {
-        return base().name();
+        return this.base.name();
         }
 
     @Override
@@ -254,12 +256,14 @@ public class AdqlTableProxy
 
     @Override
     public String text()
+    throws ProtectionException
         {
-        return base().text();
+        return this.base.text();
         }
 
     @Override
     public void text(final String text)
+    throws ProtectionException
         {
         throw new UnsupportedOperationException(
             "Can't modify a read only table"
@@ -268,29 +272,34 @@ public class AdqlTableProxy
 
     @Override
     public String alias()
+    throws ProtectionException
         {
-        return base().alias();
+        return this.base.alias();
         }
 
     @Override
     public StringBuilder namebuilder()
+    throws ProtectionException
         {
-        return this.schema().namebuilder().append(".").append(this.name());
+        return this.schema.namebuilder().append(".").append(this.name());
         }
     @Override
     public String fullname()
+    throws ProtectionException
         {
         return namebuilder().toString();
         }
 
     @Override
     public Status status()
+    throws ProtectionException
         {
-        return base().status();
+        return this.base.status();
         }
 
     @Override
-    public void status(final Status status) throws InvalidStatusException
+    public void status(final Status status)
+    throws ProtectionException, InvalidStatusException
         {
         throw new UnsupportedOperationException(
             "Can't modify a read only table"
@@ -299,20 +308,14 @@ public class AdqlTableProxy
 
     @Override
     public CopyDepth depth()
+    throws ProtectionException
         {
         return CopyDepth.PROXY;
         }
 
     @Override
-    public void depth(final CopyDepth copytype)
-        {
-        throw new UnsupportedOperationException(
-            "Can't modify a read only table"
-            );
-        }
-
-    @Override
     public Metadata meta()
+    throws ProtectionException
         {
         // TODO Need to make this read only.
         return base.meta();
@@ -320,12 +323,14 @@ public class AdqlTableProxy
 
     @Override
     public Columns columns()
+    throws ProtectionException
         {
         return new Columns()
             {
             @Override
             @SuppressWarnings("unchecked")
             public Iterable<AdqlColumn> select()
+            throws ProtectionException
                 {
                 return new AdqlColumnProxy.ProxyIterable(
                     (Iterable<BaseColumn<?>>)base.columns().select(),
@@ -335,6 +340,7 @@ public class AdqlTableProxy
 
             @Override
             public AdqlColumn search(final String name)
+            throws ProtectionException
                 {
                 try {
                     return select(
@@ -349,7 +355,7 @@ public class AdqlTableProxy
 
             @Override
             public AdqlColumn select(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 return new AdqlColumnProxy(
                     base.columns().select(name),
@@ -359,6 +365,7 @@ public class AdqlTableProxy
 
             @Override
             public AdqlColumn create(final BaseColumn<?> base)
+            throws ProtectionException
                 {
                 return new AdqlColumnProxy(
                     base,
@@ -368,6 +375,7 @@ public class AdqlTableProxy
 
             @Override
             public AdqlColumn create(final BaseColumn<?> base, final String name)
+            throws ProtectionException
                 {
                 log.error("AdqlTableProxy can't rename base column [{}][{}]", base.fullname(), name);
                 throw new IllegalArgumentException();
@@ -375,6 +383,7 @@ public class AdqlTableProxy
 
             @Override
             public AdqlColumn create(final BaseColumn<?> base, final AdqlColumn.Metadata meta)
+            throws ProtectionException
                 {
                 log.error("AdqlTableProxy can't rename base column [{}][{}]", base.fullname(), meta.adql().name());
                 throw new IllegalArgumentException();
@@ -382,7 +391,7 @@ public class AdqlTableProxy
 
             @Override
             public AdqlColumn select(final Identifier ident)
-            throws IdentifierNotFoundException
+            throws ProtectionException, IdentifierNotFoundException
                 {
                 return new AdqlColumnProxy(
                     base().columns().select(
@@ -394,7 +403,7 @@ public class AdqlTableProxy
 
             @Override
             public AdqlColumn inport(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 throw new UnsupportedOperationException(
                     "Can't modify a read only table"
@@ -413,6 +422,7 @@ public class AdqlTableProxy
 
 	@Override
 	public BlueQuery bluequery()
+    throws ProtectionException
 	    {
 		return base.bluequery();
 	    }

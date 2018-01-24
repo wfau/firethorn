@@ -469,9 +469,11 @@ implements AdqlSchema
 
     /**
      * Create a copy of a base table, with CopyDepth set to FULL. 
+     * @throws ProtectionException 
      *
      */
     protected void realize(final BaseTable<?, ?> base)
+    throws ProtectionException
         {
         realize(
             CopyDepth.FULL,
@@ -481,10 +483,12 @@ implements AdqlSchema
 
     /**
      * Create a copy of a base table.
+     * @throws ProtectionException 
      * @todo Delay the full scan until the data is actually requested.
      *
      */
     protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
+        throws ProtectionException
         {
         log.debug("realize(CopyDepth, BaseTable) [{}][{}][{}][{}][{}]", ident(), name(), depth, base.ident(), base.name());
         factories().adql().tables().entities().create(
