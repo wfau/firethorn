@@ -26,8 +26,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -95,13 +98,15 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * @param ident The {@link AdqlColumn} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return The target {@link AdqlColumn}.
      * @throws IdentifierNotFoundException If the {@link AdqlColumn} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public AdqlColumn entity(
         @PathVariable("ident")
         final String ident
-        ) throws IdentifierNotFoundException {
+        ) throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException {
         log.debug("entity() [{}]", ident);
         return factories().adql().columns().entities().select(
             factories().adql().columns().idents().ident(
@@ -137,6 +142,8 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * <br/>Optional {@link AdqlColumn} params :
      * @param name  The {@link AdqlColumn} name, [{@value #COLUMN_NAME_PARAM}].
      * @return The updated {@link AdqlColumn} wrapped in a {@link AdqlColumnBean}.
+     * @throws ProtectionException 
+     * @throws NameFormatException 
      * 
      */
     @ResponseBody
@@ -147,7 +154,9 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         final String name,
         @ModelAttribute(TARGET_ENTITY)
         final AdqlColumn column
-        ){
+        )
+    throws NameFormatException, ProtectionException
+        {
         if (name != null)
             {
             if (name.length() > 0)

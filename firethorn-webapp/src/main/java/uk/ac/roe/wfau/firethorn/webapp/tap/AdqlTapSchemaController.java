@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -88,11 +90,13 @@ public class AdqlTapSchemaController extends AbstractController {
 
 	/**
 	 * Get the target workspace based on the ident in the path.
+	 * @throws ProtectionException 
+	 * @throws IdentifierFormatException 
 	 * 
 	 */
 	@ModelAttribute(TARGET_ENTITY)
 	public AdqlResource entity(@PathVariable("ident") final String ident)
-			throws IdentifierNotFoundException {
+			throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException {
 		log.debug("entity() [{}]", ident);
 		return factories().adql().resources().entities()
 				.select(factories().adql().resources().idents().ident(ident));

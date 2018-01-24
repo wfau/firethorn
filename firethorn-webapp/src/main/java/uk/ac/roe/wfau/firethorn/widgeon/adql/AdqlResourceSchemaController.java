@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -105,13 +106,15 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @param ident The {@link AdqlResource} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return The parent {@link AdqlResource}.
      * @throws IdentifierNotFoundException If the {@link AdqlResource} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
     public AdqlResource entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws IdentifierNotFoundException {
+        ) throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException {
         log.debug("entity() [{}]", ident);
         return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
@@ -126,6 +129,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
      * @return An {@Iterable} set of {@link AdqlSchemaBean}.
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
@@ -133,7 +137,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     public Iterable<AdqlSchemaBean> select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource
-        ){
+        ) throws ProtectionException{
         log.debug("select()");
         return bean(
             resource.schemas().select()
@@ -148,6 +152,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @param name The {@link AdqlSchema} name to look for, [{@value #SCHEMA_SELECT_NAME_PARAM}].
      * @return The matching {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @throws NameNotFoundException If a matching {@link AdqlSchema} could not be found.
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
@@ -157,7 +162,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final AdqlResource resource,
         @RequestParam(SCHEMA_SELECT_NAME_PARAM)
         final String name
-        ) throws NameNotFoundException {
+        ) throws NameNotFoundException, ProtectionException {
         log.debug("select(String) [{}]", name);
         return bean(
             resource.schemas().select(
@@ -173,6 +178,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
      * @param name The {@link AdqlSchema} name, [{@value #SCHEMA_SELECT_NAME_PARAM}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
+     * @throws ProtectionException 
      * @todo Rejects duplicate names.
      * 
      */
@@ -183,7 +189,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final AdqlResource resource,
         @RequestParam(value=SCHEMA_CREATE_NAME_PARAM, required=true)
         final String name
-        ){
+        ) throws ProtectionException{
         log.debug("create(String) [{}][{}]", name);
         return created(
             resource.schemas().create(
@@ -202,6 +208,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      * @todo Rejects duplicate names.
      * @todo Merge with next method.
      * 
@@ -215,7 +222,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final TreeComponent.CopyDepth depth,
         @RequestParam(value=SCHEMA_IMPORT_BASE_PARAM, required=true)
         final String base
-        ) throws IdentifierFormatException, EntityNotFoundException {
+        ) throws IdentifierFormatException, EntityNotFoundException, ProtectionException {
         log.debug("inport(CopyDepth, String) [{}][{}]", depth, base);
         return created(
             resource.schemas().create(
@@ -238,6 +245,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      * @todo Rejects duplicate names.
      * @todo Make name optional, default to the base name.
      * 
@@ -253,7 +261,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final String base,
         @RequestParam(value=SCHEMA_IMPORT_NAME_PARAM, required=true)
         final String name
-        ) throws IdentifierFormatException, EntityNotFoundException {
+        ) throws IdentifierFormatException, EntityNotFoundException, ProtectionException {
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", depth, base, name);
         return created(
             resource.schemas().create(

@@ -27,10 +27,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -145,14 +148,17 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * @param ident The {@link AdqlResource} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return The target {@link AdqlResource}.
      * @throws IdentifierNotFoundException If the {@link AdqlResource} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public AdqlResource entity(
         @PathVariable("ident")
         final String ident
-        ) throws IdentifierNotFoundException  {
-        log.debug("entity() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
                 ident
@@ -188,6 +194,8 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * @param name   The {@link AdqlResource} name, [{@value #RESOURCE_NAME_PARAM}].
      * @param status The {@link AdqlResource} {@link BaseComponent.Status}, [{@value #RESOURCE_STATUS_PARAM}].
      * @return The updated {@link AdqlResource} wrapped in a {@link AdqlResourceBean}.
+     * @throws ProtectionException 
+     * @throws NameFormatException 
      * 
      */
     @ResponseBody
@@ -200,8 +208,9 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         final String name,
         @RequestParam(value=RESOURCE_STATUS_PARAM, required=false)
         final String status
-        ){
-
+        )
+    throws NameFormatException, ProtectionException
+        {
         if (name != null)
             {
             if (name.length() > 0)

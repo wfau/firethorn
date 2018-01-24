@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -92,13 +94,15 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * @param ident The {@link AdqlTable} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return The parent {@link AdqlTable}.
      * @throws IdentifierNotFoundException If the {@link AdqlTable} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(AdqlTableController.TARGET_ENTITY)
     public AdqlTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws IdentifierNotFoundException {
+        ) throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException {
         log.debug("entity() [{}]", ident);
         return factories().adql().tables().entities().select(
             factories().adql().tables().idents().ident(
@@ -113,6 +117,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param table The parent {@link AdqlTable} selected using the {@Identifier} in the request path.
      * @return An {@Iterable} set of {@link AdqlColumnBean}.
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
@@ -120,7 +125,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     public Iterable<AdqlColumnBean> select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table
-        ){
+        ) throws ProtectionException{
         log.debug("select()");
         return bean(
             table.columns().select()
@@ -135,6 +140,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * @param name  The {@link AdqlColumn} name to look for, [{@value #COLUMN_NAME_PARAM}].
      * @return The matching {@link AdqlColumn} wrapped in an {@link AdqlColumnBean}.
      * @throws NameNotFoundException If a matching {@link AdqlColumn} could not be found.
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
@@ -144,8 +150,9 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         final AdqlTable table,
         @RequestParam(COLUMN_NAME_PARAM)
         final String name
-        ) throws NameNotFoundException{
-        log.debug("select(String) [{}]", name);
+        )
+    throws NameNotFoundException, ProtectionException
+        {
         return bean(
             table.columns().select(
                 name

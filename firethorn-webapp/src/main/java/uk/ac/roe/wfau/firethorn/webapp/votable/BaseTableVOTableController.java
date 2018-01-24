@@ -27,6 +27,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -137,6 +138,7 @@ extends AbstractTableController
 
     @Override
     public void head(final PrintWriter writer, final BaseTable<?,?> table)
+    throws ProtectionException
         {
         writer.append("<?xml version='1.0' encoding='UTF-8'?>");
         writer.append("<VOTABLE");
@@ -227,9 +229,11 @@ extends AbstractTableController
      * Write a the VOTable FIELD metadata for {@link BaseColumn} to a {@link PrintWriter}
      * @param writer  The {@link PrintWriter} to write the field to.
      * @param columnn The {@link BaseColumn} to write the FIELD metadata for.
+     * @throws ProtectionException 
      *
      */
     protected void field(final PrintWriter writer, final BaseColumn<?> column)
+    throws ProtectionException
         {
         writer.append("<FIELD ID='column.");
             writer.append(column.ident().toString());
@@ -359,6 +363,7 @@ extends AbstractTableController
     
     @Override
     public void foot(final PrintWriter writer, final BaseTable<?,?> table)
+    throws ProtectionException
         {
         writer.append("</TABLEDATA>");
         writer.append("</DATA>");
@@ -376,6 +381,7 @@ extends AbstractTableController
 
     @Override
     public FieldFormatter formatter(final BaseColumn<?> column)
+    throws ProtectionException
         {
         switch(column.meta().adql().type())
             {

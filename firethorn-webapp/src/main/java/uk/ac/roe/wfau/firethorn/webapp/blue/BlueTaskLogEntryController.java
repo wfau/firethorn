@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
@@ -117,8 +118,7 @@ extends AbstractController
 
         @Override
         public BlueTaskLogEntry resolve(final String link)
-            throws IdentifierFormatException, IdentifierNotFoundException,
-            EntityNotFoundException
+        throws IdentifierFormatException, IdentifierNotFoundException,EntityNotFoundException, ProtectionException
             {
             if (this.matches(link))
                 {
@@ -152,6 +152,8 @@ extends AbstractController
      * @param ident The {@link BlueTaskLogEntry} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return A {@link BlueTaskLogEntryBean} wrapping the {@link BlueTaskLogEntry}.
      * @throws EntityNotFoundException If the {@link BlueTaskLogEntry} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      * 
      */
     @ResponseBody
@@ -159,7 +161,9 @@ extends AbstractController
     public BlueTaskLogEntryBean select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException  {
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return new BlueTaskLogEntryBean(
             factories().logger().entities().select(
                 factories().logger().idents().ident(

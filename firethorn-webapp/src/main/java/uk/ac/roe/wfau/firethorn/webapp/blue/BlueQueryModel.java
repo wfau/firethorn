@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
@@ -242,8 +243,7 @@ public abstract class BlueQueryModel
 
         @Override
         public BlueQuery resolve(final String link)
-            throws IdentifierFormatException, IdentifierNotFoundException,
-            EntityNotFoundException
+        throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException, ProtectionException
             {
             if (this.matches(link))
                 {

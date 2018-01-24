@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
@@ -94,6 +95,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The parent {@link AdqlResource} identifier in the request path.
      * @return An {@Iterable} of {@link BlueQueryBean}.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      * 
      */
     @ResponseBody
@@ -101,9 +104,9 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
     public Iterable<BlueQueryBean> select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws IdentifierNotFoundException {
-        log.debug("select(String)");
-        log.debug("  ident [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return bean(
             factories().adql().resources().entities().select(
                 factories().adql().resources().idents().ident(
@@ -119,11 +122,11 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The parent {@link AdqlResource} identifier in the request path.
      * @param input The {@link BlueQuery} input, [{@value BlueQueryController#QUERY_INPUT_PARAM}].
-
      * 
      * @return A new {@link BlueQuery} wrapped in an {@link BlueQueryBean}.
      * @throws InvalidStateTransitionException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      * @throws HibernateConvertException 
      * 
      */
@@ -160,11 +163,8 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         @RequestParam(value=BlueQueryModel.STATUS_WAIT_PARAM, required=false)
         final Long wait
 
-        ) throws
-        IdentifierNotFoundException,
-        IdentifierFormatException,
-        InvalidRequestException,
-        InternalServerErrorException
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
         log.debug("create(String, String)");
         log.debug("  ident [{}]", ident);

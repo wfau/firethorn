@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.webapp.blue;
 
 import java.util.Iterator;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionError;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
@@ -115,9 +117,11 @@ public class BlueQueryBean
 
     /**
      * The {@link BlueQuery} {@link BlueTask.TaskState} status.
+     * @throws ProtectionException 
      *
      */
     public BlueTask.TaskState getStatus()
+    throws ProtectionException
         {
         return entity().state();
         }
@@ -160,25 +164,33 @@ public class BlueQueryBean
             @Override
             public Iterator<String> iterator()
                 {
-                return new Iterator<String>()
+                try {
+                    return new Iterator<String>()
+                        {
+                        Iterator<BaseResource<?>> iter = entity().resources().select().iterator();
+                        @Override
+                        public boolean hasNext()
+                            {
+                            return this.iter.hasNext();
+                            }
+                        @Override
+                        public String next()
+                            {
+                            return this.iter.next().link();
+                            }
+                        @Override
+                        public void remove()
+                            {
+                            this.iter.remove();
+                            }
+                        };
+                    }
+                catch (final ProtectionException ouch)
                     {
-                    Iterator<BaseResource<?>> iter = entity().resources().select().iterator();
-                    @Override
-                    public boolean hasNext()
-                        {
-                        return this.iter.hasNext();
-                        }
-                    @Override
-                    public String next()
-                        {
-                        return this.iter.next().link();
-                        }
-                    @Override
-                    public void remove()
-                        {
-                        this.iter.remove();
-                        }
-                    };
+                    throw new ProtectionError(
+                        ouch
+                        );
+                    }
                 }
             };
         }
@@ -194,25 +206,33 @@ public class BlueQueryBean
             @Override
             public Iterator<String> iterator()
                 {
-                return new Iterator<String>()
+                try {
+                    return new Iterator<String>()
+                        {
+                        Iterator<AdqlTable> iter = entity().tables().select().iterator();
+                        @Override
+                        public boolean hasNext()
+                            {
+                            return this.iter.hasNext();
+                            }
+                        @Override
+                        public String next()
+                            {
+                            return this.iter.next().link();
+                            }
+                        @Override
+                        public void remove()
+                            {
+                            this.iter.remove();
+                            }
+                        };
+                    }
+                catch (final ProtectionException ouch)
                     {
-                    Iterator<AdqlTable> iter = entity().tables().select().iterator();
-                    @Override
-                    public boolean hasNext()
-                        {
-                        return this.iter.hasNext();
-                        }
-                    @Override
-                    public String next()
-                        {
-                        return this.iter.next().link();
-                        }
-                    @Override
-                    public void remove()
-                        {
-                        this.iter.remove();
-                        }
-                    };
+                    throw new ProtectionError(
+                        ouch
+                        );
+                    }
                 }
             };
         }
@@ -228,25 +248,33 @@ public class BlueQueryBean
             @Override
             public Iterator<String> iterator()
                 {
-                return new Iterator<String>()
+                try {
+                    return new Iterator<String>()
+                        {
+                        Iterator<AdqlColumn> iter = entity().columns().select().iterator();
+                        @Override
+                        public boolean hasNext()
+                            {
+                            return this.iter.hasNext();
+                            }
+                        @Override
+                        public String next()
+                            {
+                            return this.iter.next().link();
+                            }
+                        @Override
+                        public void remove()
+                            {
+                            this.iter.remove();
+                            }
+                        };
+                    }
+                catch (final ProtectionException ouch)
                     {
-                    Iterator<AdqlColumn> iter = entity().columns().select().iterator();
-                    @Override
-                    public boolean hasNext()
-                        {
-                        return this.iter.hasNext();
-                        }
-                    @Override
-                    public String next()
-                        {
-                        return this.iter.next().link();
-                        }
-                    @Override
-                    public void remove()
-                        {
-                        this.iter.remove();
-                        }
-                    };
+                    throw new ProtectionError(
+                        ouch
+                        );
+                    }
                 }
             };
         }
@@ -331,21 +359,27 @@ public class BlueQueryBean
         {
         /**
          * A URL to access the {@link AdqlTable} results
+         * @throws ProtectionException 
          *
          */
-        public String getTable();
+        public String getTable()
+        throws ProtectionException;
         
         /**
          * The result row count.
+         * @throws ProtectionException 
          * 
          */
-        public Long getCount();
+        public Long getCount()
+        throws ProtectionException;
 
         /**
          * The {@link ResultState} state
+         * @throws ProtectionException 
          *
          */
-        public ResultState getState();
+        public ResultState getState()
+        throws ProtectionException;
 
         /**
     	 * Direct access to the result data. 
@@ -357,9 +391,11 @@ public class BlueQueryBean
         
         /**
     	 * Direct access to the result data. 
+         * @throws ProtectionException 
     	 * 
     	 */
-        public Formats getFormats();
+        public Formats getFormats()
+        throws ProtectionException;
         
         }
 
@@ -373,6 +409,7 @@ public class BlueQueryBean
             {
             @Override
             public String getTable()
+            throws ProtectionException
                 {
                 if (entity().results().adql() != null)
                     {
@@ -384,16 +421,19 @@ public class BlueQueryBean
                 }
             @Override
             public Long getCount()
+            throws ProtectionException
                 {
                 return entity().results().rowcount();
                 }
             @Override
             public ResultState getState()
+            throws ProtectionException
                 {
                 return entity().results().state();
                 }
     		@Override
     		public Formats getFormats()
+	        throws ProtectionException
     			{
     			return new Formats()
     				{
@@ -401,6 +441,7 @@ public class BlueQueryBean
     				
     				@Override
     				public String getVotable()
+			            throws ProtectionException
     					{
     					if (adql != null)
     						{
@@ -415,6 +456,7 @@ public class BlueQueryBean
 
     				@Override
     				public String getDatatable()
+			            throws ProtectionException
     					{
     					if (adql != null)
     						{
@@ -437,11 +479,14 @@ public class BlueQueryBean
      */
     public interface FieldBean
         {
-        public String  getName();
+        public String  getName()
+        throws ProtectionException;
 
-        public Integer getLength();
+        public Integer getLength()
+        throws ProtectionException;
 
-        public String  getType();
+        public String  getType()
+        throws ProtectionException;
         }
 
     /**
@@ -455,47 +500,58 @@ public class BlueQueryBean
             @Override
             public Iterator<FieldBean> iterator()
                 {
-                return new Iterator<FieldBean>()
-                    {
-                    final Iterator<AdqlQueryBase.SelectField> iter = entity().fields().select().iterator();
-                    protected Iterator<AdqlQueryBase.SelectField> iter()
+                try {
+                    return new Iterator<FieldBean>()
                         {
-                        return this.iter;
-                        }
-                    @Override
-                    public boolean hasNext()
-                        {
-                        return this.iter.hasNext();
-                        }
-                    @Override
-                    public FieldBean next()
-                        {
-                        return new FieldBean(){
-                            final AdqlQueryBase.SelectField field = iter().next();
-                            @Override
-                            public String getName()
-                                {
-                                return this.field.name();
-                                }
-                            @Override
-                            public Integer getLength()
-                                {
-                                return this.field.arraysize();
-                                }
+                        final Iterator<AdqlQueryBase.SelectField> iter = entity().fields().select().iterator();
 
-                            @Override
-                            public String getType()
-                                {
-                                return this.field.type().name();
-                                }
-                            };
-                        }
-                    @Override
-                    public void remove()
-                        {
-                        this.iter.remove();
-                        }
-                    };
+                        protected Iterator<AdqlQueryBase.SelectField> iter()
+                            {
+                            return this.iter;
+                            }
+                        @Override
+                        public boolean hasNext()
+                            {
+                            return this.iter.hasNext();
+                            }
+                        @Override
+                        public FieldBean next()
+                            {
+                            return new FieldBean(){
+                                final AdqlQueryBase.SelectField field = iter().next();
+                                @Override
+                                public String getName()
+                                    {
+                                    return this.field.name();
+                                    }
+                                @Override
+                                public Integer getLength()
+                                throws ProtectionException
+                                    {
+                                    return this.field.arraysize();
+                                    }
+
+                                @Override
+                                public String getType()
+                                throws ProtectionException
+                                    {
+                                    return this.field.type().name();
+                                    }
+                                };
+                            }
+                        @Override
+                        public void remove()
+                            {
+                            this.iter.remove();
+                            }
+                        };
+                    }
+                catch (final ProtectionException ouch)
+                    {
+                    throw new ProtectionError(
+                        ouch
+                        );
+                    }
                 }
             };
         }
@@ -588,9 +644,11 @@ public class BlueQueryBean
 
     /**
      * Get the {@BlueQuery} {@link BlueTask.History}.
+     * @throws ProtectionException 
      *
      */
     public Iterable<BlueTaskLogEntryBean> getHistory()
+    throws ProtectionException
         {
         final BlueTask.History history = entity().history(); 
         if (history != null)

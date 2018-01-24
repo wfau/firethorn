@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -75,6 +76,7 @@ extends BaseTableBean<AdqlTable>
         }
 
     public String getQuery()
+    throws ProtectionException
         {
         if (entity().bluequery() != null)
             {
@@ -90,8 +92,11 @@ extends BaseTableBean<AdqlTable>
         {
         public interface AdqlMetadataBean
             {
-            public Long getCount();
-            public AdqlTable.TableStatus getStatus();
+            public Long getCount()
+            throws ProtectionException;
+
+            public AdqlTable.TableStatus getStatus()
+            throws ProtectionException;
             }
         public AdqlMetadataBean getAdql();
         }
@@ -106,11 +111,13 @@ extends BaseTableBean<AdqlTable>
                     {
                     @Override
                     public Long getCount()
+                    throws ProtectionException
                         {
                         return entity().meta().adql().count();
                         }
                     @Override
                     public TableStatus getStatus()
+                    throws ProtectionException
                         {
                         return entity().meta().adql().status();
                         }
@@ -129,10 +136,12 @@ extends BaseTableBean<AdqlTable>
         /**
          * Access to the {@AdqlTable} data as a VOTable.   
          * @return A URL to access the {@AdqlTable} data as a VOTable.
+         * @throws ProtectionException 
          * @see AdqlTableVOTableController
          * 
          */
-        public String getVotable();
+        public String getVotable()
+        throws ProtectionException;
 
         /**
          * Access to the {@AdqlTable} data as a DataTable.
@@ -140,7 +149,9 @@ extends BaseTableBean<AdqlTable>
          * @see AdqlTableDataTableController
          * 
          */
-        public String getDatatable();
+        public String getDatatable()
+        throws ProtectionException;
+
         }
 
     /**

@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
@@ -60,6 +62,8 @@ extends BaseTableDataTableController
 
     /**
      * DataTable GET request.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ResponseBody
@@ -68,8 +72,9 @@ extends BaseTableDataTableController
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
         final HttpServletResponse response
-        ) throws EntityNotFoundException, IOException {
-       
+        )
+    throws EntityNotFoundException, IOException, IdentifierFormatException, ProtectionException
+        {
         response.setCharacterEncoding(
             "UTF-8"
             );

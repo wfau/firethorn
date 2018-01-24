@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -109,6 +110,8 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
 
     /**
      * Get the parent {@link AdqlResource} based on the ident in the request.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      * @throws EntityNotFoundException
      *
      */
@@ -116,8 +119,9 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     public AdqlResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws IdentifierNotFoundException {
-        log.debug("parent() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
                 ident
@@ -138,6 +142,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @throws XMLParserException
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -149,8 +154,9 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final String base,
         @RequestPart(value=METADOC_IMPORT_FILE, required=true)
         final MultipartFile metadoc
-        ) throws XMLParserException, XMLReaderException, IOException, IdentifierFormatException, EntityNotFoundException {
-        log.debug("inport(BaseSchema, File) [{}]", base);
+        )
+    throws XMLParserException, XMLReaderException, IOException, IdentifierFormatException, EntityNotFoundException, ProtectionException
+        {
         return bean(
             reader.inport(
                 new InputStreamReader(

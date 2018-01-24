@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
@@ -68,12 +69,14 @@ public class BlueQueryController
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param ident The {@link BlueQuery} {@link Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
+     * @throws ProtectionException 
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
      * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public Iterable<BlueQueryBean> select()
+    throws ProtectionException
         {
         log.debug("select()");
         return bean(
@@ -93,6 +96,8 @@ public class BlueQueryController
      * 
      * @return The target {@link BlueQuery} wrapped in a {@link BlueQueryBean}.
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      * 
      */
     @ResponseBody
@@ -107,7 +112,9 @@ public class BlueQueryController
         final TaskState next,
         @RequestParam(value=STATUS_WAIT_PARAM, required=false)
         final Long wait
-        ) throws IdentifierNotFoundException {
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         log.debug("select(String, TaskStatus, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
         log.debug("  prev  [{}]", next);
@@ -139,6 +146,7 @@ public class BlueQueryController
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
      * @throws InvalidStateTransitionException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
@@ -171,11 +179,8 @@ public class BlueQueryController
         @RequestParam(value=QUERY_DELAY_LAST, required=false)
         final Integer last
 
-        ) throws
-            IdentifierNotFoundException,
-            IdentifierFormatException,
-            InvalidRequestException,
-            InternalServerErrorException
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
         log.debug("update(String, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
@@ -215,6 +220,7 @@ public class BlueQueryController
      * @throws IdentifierNotFoundException If the {@link BlueQuery} could not be found.
      * @throws InvalidStateTransitionException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
@@ -230,11 +236,8 @@ public class BlueQueryController
         final Long resultcount,
         @RequestParam(value=CALLBACK_RESULT_STATE, required=false)
         final BlueQuery.ResultState resultstate
-        ) throws
-            IdentifierNotFoundException,
-            IdentifierFormatException,
-            InvalidRequestException,
-            InternalServerErrorException
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
         log.debug("callback(String, TaskState, Long, ResultState)");
         log.debug("  ident [{}]", ident);
@@ -359,6 +362,7 @@ public class BlueQueryController
      * @throws InvalidStateTransitionException 
      * @throws InternalServerErrorException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
@@ -368,11 +372,8 @@ public class BlueQueryController
         final String ident,
         @RequestBody
         final RequestBean bean 
-        ) throws
-            IdentifierNotFoundException,
-            IdentifierFormatException,
-            InvalidRequestException,
-            InternalServerErrorException
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
         log.debug("callback(String, TaskStatus, Long)");
         log.debug("  ident [{}]", ident);
