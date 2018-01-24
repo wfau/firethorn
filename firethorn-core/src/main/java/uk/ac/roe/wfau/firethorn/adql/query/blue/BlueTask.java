@@ -359,7 +359,7 @@ extends NamedEntity
      * 
      */
     public TaskType rebase()
-	throws HibernateConvertException, ProtectionException;
+	throws HibernateConvertException;
     
     /**
      * The date/time the {@link BlueTask} was queued.

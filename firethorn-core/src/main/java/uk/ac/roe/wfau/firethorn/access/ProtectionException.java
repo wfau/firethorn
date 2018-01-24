@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.access;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -28,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  */
 @ResponseStatus(value = HttpStatus.FORBIDDEN)
 public class ProtectionException
-extends Exception
+extends FirethornCheckedException
     {
     /**
      * Serial version ID. 

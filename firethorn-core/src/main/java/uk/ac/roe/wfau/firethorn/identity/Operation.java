@@ -158,6 +158,6 @@ extends Entity
      * 
      */
     public Operation rebase()
-	throws HibernateConvertException, ProtectionException;
+	throws HibernateConvertException;
     
     }

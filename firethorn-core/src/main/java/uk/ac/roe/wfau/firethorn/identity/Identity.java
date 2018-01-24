@@ -71,10 +71,9 @@ extends Entity, NamedEntity
         {
         /**
          * Access to the system {@link Identity}.
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Identity admin() throws ProtectionException;
+        public Identity admin();
 
         /**
          * Create a new {@link Identity} with a generated name.
@@ -164,11 +163,10 @@ extends Entity, NamedEntity
          * @param pass The {@link Identity} password.
          * @return The corresponding {@link Identity}.
          * @throws UnauthorizedException If unable to login.
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public Identity login(final Community community, final String name, final String pass)
-        throws ProtectionException, UnauthorizedException;
+        throws UnauthorizedException;
         
         }
 
@@ -275,22 +273,20 @@ extends Entity, NamedEntity
     /**
      * Get the {@link Entity} instance linked to the current {@link Thread}.
      * @todo Move this to a base class.
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     public Identity rebase()
-	throws ProtectionException, HibernateConvertException;
+	throws HibernateConvertException;
 
     /**
      * Login to an {@link Identity} using name and password.
      * @param name The {@link Identity} name (for comparison).
      * @param pass The {@link Identity} password.
      * @throws UnauthorizedException If the login failed.
-     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     public void login(final String name, final String pass)
-    throws ProtectionException, UnauthorizedException;
+    throws UnauthorizedException;
 
     }
 

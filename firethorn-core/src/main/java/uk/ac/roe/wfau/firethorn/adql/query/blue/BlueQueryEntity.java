@@ -2077,7 +2077,7 @@ implements BlueQuery
      */
     @Override
     public BlueQuery rebase()
-    throws HibernateConvertException, ProtectionException
+    throws HibernateConvertException
     	{
         log.debug("Converting current instance [{}]", ident());
         try {
@@ -2093,5 +2093,13 @@ implements BlueQuery
     			ouch
     			);
         	}
-        }
+        catch (final ProtectionException ouch)
+            {
+            log.error("ProtectionException [{}][{}]", this.getClass().getName(), ident());
+            throw new HibernateConvertException(
+                ident(),
+                ouch
+                );
+            }
+    	}
     }

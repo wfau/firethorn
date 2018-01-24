@@ -103,6 +103,7 @@ implements Protector
             }
 
         public Identity admin()
+        throws ProtectionException
             {
             return identities.admin();
             }
@@ -260,6 +261,13 @@ implements Protector
      */
     public boolean isAdmin(final Identity identity)
         {
-        return services().admin().ident().equals(identity.ident());
+        try {
+            return services().admin().ident().equals(identity.ident());
+            }
+        catch (final ProtectionException ouch)
+            {
+            log.error("ProtectionException checking admin account");
+            return false ;
+            }
         }
     }

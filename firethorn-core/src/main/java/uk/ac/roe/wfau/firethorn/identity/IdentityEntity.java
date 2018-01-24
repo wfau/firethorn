@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionError;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
@@ -50,6 +51,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -142,7 +144,6 @@ implements Identity
         @Override
         @CreateMethod
         public synchronized Identity admin()
-        throws ProtectionException
             {
             log.debug("admin()");
 
@@ -154,17 +155,27 @@ implements Identity
                 log.debug("  found [{}]", found);
                 return found ;
                 }
-                {
-                final Community community = factories().communities().entities().admins();
-                final Identity created = super.insert(
-                    new IdentityEntity(
-                        community,
-                        ADMIN_IDENTITY_NAME,
-                        ADMIN_IDENTITY_PASS
-                        )
-                    );
-                log.debug("  created [{}]", created);
-                return created ;
+            else {
+                try {
+                    final Community admins = factories().communities().entities().admins();
+                    final Identity  created = super.insert(
+                        new IdentityEntity(
+                            admins,
+                            ADMIN_IDENTITY_NAME,
+                            ADMIN_IDENTITY_PASS
+                            )
+                        );
+                    log.debug("  created [{}]", created);
+                    return created ;
+                    }
+                catch (final ProtectionException ouch)
+                    {
+                    log.error("ProtectionException loading admin community");
+                    throw new ProtectionError(
+                        "ProtectionException loading admin community",
+                        ouch
+                        );
+                    }
                 }
             }
         
@@ -341,7 +352,7 @@ implements Identity
         @Override
         @CreateMethod
         public Identity login(final Community community, String name, String pass)
-		throws UnauthorizedException, ProtectionException
+		throws UnauthorizedException
             {
             log.debug("login(Community, String, String) [{}][{}]", community.name(), name);
 
@@ -706,13 +717,12 @@ implements Identity
     /**
      * Get the corresponding Hibernate entity for the current thread.
      * @throws HibernateConvertException 
-     * @throws ProtectionException 
      * @todo Move to a generic base class. 
      *
      */
     @Override
     public Identity rebase()
-    throws HibernateConvertException, ProtectionException
+    throws HibernateConvertException
     	{
         log.debug("Converting current instance [{}]", ident());
         try {
@@ -728,6 +738,14 @@ implements Identity
     			ouch
     			);
         	}
+        catch (final ProtectionException ouch)
+            {
+            log.error("ProtectionException selecting instance [{}][{}]", this.getClass().getName(), ident());
+            throw new HibernateConvertException(
+                ident(),
+                ouch
+                );
+            }
         }
 
     @Basic(

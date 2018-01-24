@@ -284,11 +284,9 @@ extends NamedEntity
     /**
      * Flag to allow accounts to be created automatically on login.
      * @return The autocreate flag.
-     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public Boolean autocreate()
-    throws ProtectionException;
+    public Boolean autocreate();
 
     /**
      * Flag to allow accounts to be created automatically on login.
@@ -302,11 +300,9 @@ extends NamedEntity
     /**
      * Flag to allow users to create their own accounts.
      * @return The usercreate flag.
-     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public Boolean usercreate()
-    throws ProtectionException;
+    public Boolean usercreate();
 
     /**
      * Flag to allow users to create their own accounts.

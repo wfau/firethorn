@@ -431,7 +431,7 @@ implements Operation
      */
     @Override
     public Operation rebase()
-    throws HibernateConvertException, ProtectionException
+    throws HibernateConvertException
     	{
         log.debug("Converting current instance [{}]", ident());
         try {
@@ -447,5 +447,13 @@ implements Operation
     			ouch
     			);
         	}
+        catch (final ProtectionException ouch)
+            {
+            log.error("ProtectionException [{}][{}]", this.getClass().getName(), ident());
+            throw new HibernateConvertException(
+                ident(),
+                ouch
+                );
+            }
         }
     }
