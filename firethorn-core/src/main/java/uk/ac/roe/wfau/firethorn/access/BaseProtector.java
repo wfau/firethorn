@@ -143,11 +143,13 @@ implements Protector
     @Override
     public boolean check(final Action action)
         {
+        log.debug("check(Action)");
+        log.debug("  Action [{}]", action);
         final Operation operation = services().operation(); 
         if (null != operation)
             {
             return check(
-                operation.authentications().select(),
+                operation.authentications(),
                 action
                 );
             }
@@ -157,6 +159,9 @@ implements Protector
     @Override
     public boolean check(final Authentication authentication, final Action action)
         {
+        log.debug("check(Authentication, Action)");
+        log.debug("  Authentication [{}]", authentication);
+        log.debug("  Action [{}]", action);
         return check(
             authentication.identity(),
             action
@@ -166,6 +171,8 @@ implements Protector
     @Override
     public boolean check(final Operation.Authentications authentications, final Action action)
         {
+        log.debug("check(Authentications, Action)");
+        log.debug("  Action [{}]", action);
         return check(
             authentications.select(),
             action
@@ -175,6 +182,8 @@ implements Protector
     @Override
     public boolean check(final Iterable<Authentication> authentications, final Action action)
         {
+        log.debug("check(Iterable<Authentication>, Action)");
+        log.debug("  Action [{}]", action);
         for (final Authentication authentication: authentications)
             {
             if (check(authentication, action))
@@ -189,6 +198,8 @@ implements Protector
     public Protector accept(final Action action)
     throws ProtectionException
         {
+        log.debug("accept(Action)");
+        log.debug("  Action [{}]", action);
         final Operation operation = services().operation(); 
         if (null != operation)
             {
@@ -207,6 +218,9 @@ implements Protector
     public Protector accept(final Identity identity, final Action action)
     throws ProtectionException
         {
+        log.debug("accept(Identity, Action)");
+        log.debug("  Identity [{}]", identity);
+        log.debug("  Action   [{}]", action);
         if (check(identity, action))
             {
             return this;
@@ -222,6 +236,8 @@ implements Protector
     public Protector accept(final Authentication authentication, final Action action)
     throws ProtectionException
         {
+        log.debug("accept(Authentication, Action)");
+        log.debug("  Action [{}]", action);
         return accept(
             authentication.identity(),
             action
@@ -232,6 +248,8 @@ implements Protector
     public Protector accept(final Operation.Authentications authentications, final Action action)
     throws ProtectionException
         {
+        log.debug("accept(Authentications, Action)");
+        log.debug("  Action [{}]", action);
         return accept(
             authentications.select(),
             action
@@ -242,6 +260,8 @@ implements Protector
     public Protector accept(final Iterable<Authentication> authentications, final Action action)
     throws ProtectionException
         {
+        log.debug("accept(Iterable<Authentication>, Action)");
+        log.debug("  Action [{}]", action);
         for (final Authentication authentication: authentications)
             {
             if (check(authentication, action))
@@ -261,6 +281,8 @@ implements Protector
      */
     public boolean isAdmin(final Identity identity)
         {
+        log.debug("isAdmin(Identity)");
+        log.debug("  Identity [{}]", identity);
         try {
             return services().admin().ident().equals(identity.ident());
             }

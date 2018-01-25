@@ -148,15 +148,18 @@ implements Community
         throws ProtectionException
             {
             log.debug("guests()");
+            log.debug("calling search()");
             final Community found = this.search(
                     GUEST_COMMUNITY_NAME
                     );
+            log.debug("done search() [{}]", found);
             if (found != null)
                 {
                 log.debug("  found [{}]", found);
                 return found;
                 }
             else {
+                log.debug("calling insert()");
                 final Community created = super.insert(
                     new CommunityEntity(
                         GUEST_COMMUNITY_NAME,

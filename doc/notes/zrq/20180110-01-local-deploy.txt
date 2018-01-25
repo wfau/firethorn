@@ -364,7 +364,7 @@ headers()
 # Make a HEAD request to choose our username.
 #[root@deployer]
 
-        testuser=$(pwgen 8 1)@example.com
+        testuser=albert.augustus@example.com
         testpass=$(pwgen 20 1)
 
         curl \

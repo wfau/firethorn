@@ -113,6 +113,9 @@ public class JdbcResourceEntity
                 @Override
                 public boolean check(final Identity identity, final Action action)
                     {
+                    log.debug("check(Identity, Action)");
+                    log.debug("  Identity [{}]", identity);
+                    log.debug("  Action   [{}]", action);
                     switch (action.type())
                         {
                         case CREATE:
@@ -253,7 +256,7 @@ public class JdbcResourceEntity
         public JdbcResource userdata()
         throws ProtectionException
             {
-            protector().accept(Action.select);
+            // Uses local calls to super.first() and super.insert() to avoid protectors.
             log.debug("userdata()");
             log.debug(" url [{}]", udurl);
             JdbcResource userdata = super.first(
@@ -275,17 +278,18 @@ public class JdbcResourceEntity
                 log.debug(" pass [{}]", udpass);
                 log.debug(" driver [{}]", uddriver);
 
-                // Create as system admin.
-                
-                userdata = this.create(
-                    udcat,
-                    "Userdata resource",
-                    udurl,
-                    uduser,
-                    udpass,
-                    uddriver
+                userdata = super.insert(
+                    new JdbcResourceEntity(
+                        udcat,
+                        "Userdata resource",
+                        udurl,
+                        uduser,
+                        udpass,
+                        uddriver
+                        )
                     );
                 }
+
             log.debug("Userdata resource [{}][{}]", userdata.ident(), userdata.name());
             return userdata ;
             }
