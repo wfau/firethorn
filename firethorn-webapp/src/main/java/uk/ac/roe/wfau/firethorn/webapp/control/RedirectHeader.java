@@ -22,6 +22,10 @@ import java.net.URI;
 import org.springframework.http.HttpHeaders;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.community.Community;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 
 /**
  * Extension of the Spring HttpHeaders to set the location.

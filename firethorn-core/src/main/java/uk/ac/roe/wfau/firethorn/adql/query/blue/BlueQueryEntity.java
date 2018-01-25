@@ -54,6 +54,7 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
@@ -245,6 +246,12 @@ implements BlueQuery
     extends BlueTaskEntity.EntityFactory<BlueQuery>
     implements BlueQuery.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+        
         @Override
         public Class<?> etype()
             {

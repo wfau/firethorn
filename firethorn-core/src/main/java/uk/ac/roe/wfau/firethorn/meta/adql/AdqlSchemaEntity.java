@@ -36,8 +36,10 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -110,6 +112,12 @@ implements AdqlSchema
     extends BaseSchemaEntity.EntityFactory<AdqlResource, AdqlSchema>
     implements AdqlSchema.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+        
         @Override
         public Class<?> etype()
             {

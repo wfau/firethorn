@@ -323,17 +323,68 @@ implements Entity.EntityFactory<EntityType>
         return new StringBuilder(text).append("%").toString();
         }
 
-    @Override
-    public Protector protector()
+    /**
+     * Base class for an {@link EntityFactory} {@link Protector}.
+     *
+     */
+    public abstract class FactoryProtector
+    extends BaseProtector
+    implements Protector
         {
-        return new BaseProtector(AbstractEntityFactory.this)
+        public FactoryProtector()
             {
-            @Override
-            public boolean check(final Identity identity, final Action action)
+            super(AbstractEntityFactory.this);
+            }
+        }
+
+    public class FactoryAdminCreateProtector
+    extends FactoryProtector
+    implements Protector
+        {
+        @Override
+        public boolean check(Identity identity, Action action)
+            {
+            log.debug("check(Identity, Action)");
+            log.debug("  Identity [{}]", identity);
+            log.debug("  Action   [{}]", action);
+            switch (action.type())
                 {
-                return false;
+                case CREATE:
+                case UPDATE:
+                    return isAdmin(
+                        identity
+                        );
+
+                case SELECT:
+                    return true ;
+                    
+                default :
+                    return false ;
                 }
-            };
+            }
+        }
+
+    public class FactoryAllowCreateProtector
+    extends FactoryProtector
+    implements Protector
+        {
+        @Override
+        public boolean check(Identity identity, Action action)
+            {
+            log.debug("check(Identity, Action)");
+            log.debug("  Identity [{}]", identity);
+            log.debug("  Action   [{}]", action);
+            switch (action.type())
+                {
+                case CREATE:
+                case UPDATE:
+                case SELECT:
+                    return true ;
+                    
+                default :
+                    return false ;
+                }
+            }
         }
     }
 

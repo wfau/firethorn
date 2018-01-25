@@ -80,7 +80,7 @@ public interface Protector
      * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
      * 
      */
-    public Protector accept(final Action action)
+    public Protector affirm(final Action action)
     throws ProtectionException ; 
 
     /**
@@ -91,7 +91,7 @@ public interface Protector
      * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
      * 
      */
-    public Protector accept(final Identity identity, final Action action)
+    public Protector affirm(final Identity identity, final Action action)
     throws ProtectionException ; 
 
     /**
@@ -102,7 +102,7 @@ public interface Protector
      * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
      * 
      */
-    public Protector accept(final Authentication authentication, final Action action)
+    public Protector affirm(final Authentication authentication, final Action action)
     throws ProtectionException ; 
 
     /**
@@ -113,7 +113,7 @@ public interface Protector
      * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
      * 
      */
-    public Protector accept(final Iterable<Authentication> authentications, final Action action)
+    public Protector affirm(final Iterable<Authentication> authentications, final Action action)
     throws ProtectionException ; 
 
     /**
@@ -124,7 +124,7 @@ public interface Protector
      * @throws {@link ProtectionException} if the {@link Identity} is NOT allowed to perform the {@link Action}. 
      * 
      */
-    public Protector accept(final Operation.Authentications authentications, final Action action)
+    public Protector affirm(final Operation.Authentications authentications, final Action action)
     throws ProtectionException ; 
     
     }

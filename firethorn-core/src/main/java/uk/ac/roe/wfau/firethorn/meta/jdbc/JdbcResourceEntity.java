@@ -40,7 +40,6 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.Action;
-import uk.ac.roe.wfau.firethorn.access.BaseProtector;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
@@ -108,27 +107,7 @@ public class JdbcResourceEntity
         @Override
         public Protector protector()
             {
-            return new BaseProtector(EntityFactory.this)
-                {
-                @Override
-                public boolean check(final Identity identity, final Action action)
-                    {
-                    log.debug("check(Identity, Action)");
-                    log.debug("  Identity [{}]", identity);
-                    log.debug("  Action   [{}]", action);
-                    switch (action.type())
-                        {
-                        case CREATE:
-                            return isAdmin(identity);
-
-                        case SELECT:
-                            return true ;
-                            
-                        default :
-                            return false ;
-                        }
-                    }
-                };
+            return new FactoryAdminCreateProtector();
             }
         
         @Override
@@ -142,7 +121,7 @@ public class JdbcResourceEntity
         public Iterable<JdbcResource> select()
         throws ProtectionException
             {
-            protector().accept(Action.select);
+            protector().affirm(Action.select);
             return super.iterable(
                 super.query(
                     "JdbcResource-select-all"
@@ -155,6 +134,7 @@ public class JdbcResourceEntity
         public JdbcResource create(final String name, final String url)
         throws ProtectionException
             {
+            protector().affirm(Action.create);
             return this.create(
                 null,
                 name,
@@ -167,7 +147,7 @@ public class JdbcResourceEntity
         public JdbcResource create(final String catalog, final String name, final String url)
         throws ProtectionException
             {
-            protector().accept(Action.create);
+            protector().affirm(Action.create);
             return super.insert(
                 new JdbcResourceEntity(
                     catalog,
@@ -182,7 +162,7 @@ public class JdbcResourceEntity
         public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass)
         throws ProtectionException
 		    {
-            protector().accept(Action.create);
+            protector().affirm(Action.create);
 		    return super.insert(
                 new JdbcResourceEntity(
                     catalog,
@@ -199,7 +179,7 @@ public class JdbcResourceEntity
 	    public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
         throws ProtectionException
 		    {
-            protector().accept(Action.create);
+            protector().affirm(Action.create);
 		    return super.insert(
 		        new JdbcResourceEntity(
 		            catalog,
@@ -489,7 +469,7 @@ public class JdbcResourceEntity
             public Iterable<JdbcSchema> select()
             throws ProtectionException
                 {
-                protector().accept(Action.select);
+                protector().affirm(Action.select);
                 return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this
                     );

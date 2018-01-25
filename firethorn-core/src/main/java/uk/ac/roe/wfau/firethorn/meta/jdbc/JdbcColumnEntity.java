@@ -43,7 +43,9 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -278,6 +280,11 @@ public class JdbcColumnEntity
     extends BaseColumnEntity.EntityFactory<JdbcTable, JdbcColumn>
     implements JdbcColumn.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()

@@ -250,29 +250,49 @@ EOF
 # Create our sed functions.
 #[root@tester]
 
-httpcode()
-    {
-    sed -n 's/\(^HTTP.*\) \r/\1/p' /tmp/system-headers.txt
-    }
+        split-headers()
+            {
+            sed -n '
+                0,/^\r$/ {
+                    /^\r$/ !{
+                        w /tmp/response-headers.txt
+                        }
+                    }
+                0,/^\r$/ !{
+                    p
+                    }
+                '
+            }
 
-username()
-    {
-    sed -n 's/^firethorn.auth.username: \(.*\)\r/\1/p' /tmp/system-headers.txt
-    }
+        get-httpcode()
+            {
+            sed -n '
+                s/\(^HTTP.*\) \r/\1/p
+                ' /tmp/response-headers.txt
+            }
 
-commname()
-    {
-    sed -n 's/^firethorn.auth.community: \(.*\)\r/\1/p' /tmp/system-headers.txt
-    }
+        get-username()
+            {
+            sed -n '
+                s/^firethorn.auth.username: \(.*\)\r/\1/p
+                ' /tmp/response-headers.txt
+            }
 
-headers()
-    {
-    echo "----"
-    echo "HTTP code [$(httpcode)]"
-    echo "Community [$(commname)]"
-    echo "Username  [$(username)]"
-    echo "----"
-    }
+        get-commname()
+            {
+            sed -n '
+                s/^firethorn.auth.community: \(.*\)\r/\1/p
+                ' /tmp/response-headers.txt
+            }
+
+        print-headers()
+            {
+            echo "----"
+            echo "HTTP code [$(get-httpcode)]"
+            echo "Community [$(get-commname)]"
+            echo "Username  [$(get-username)]"
+            echo "----"
+            }
 
 # -----------------------------------------------------
 # Make a HEAD request to check admin username.
@@ -285,23 +305,23 @@ headers()
             --header "firethorn.auth.password:${adminpass:?}" \
             --header "firethorn.auth.community:${admingroup:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
-# Make a HEAD request to get anon username.
+# Make a HEAD request to get a guest username.
 #[root@deployer]
 
         curl \
             --head \
             --silent \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        guestuser=$(username)
+        print-headers
 
-        headers
+        guestuser=$(get-username)
 
 # -----------------------------------------------------
 # Check no community works.
@@ -312,9 +332,9 @@ headers()
             --silent \
             --header "firethorn.auth.username:${guestuser:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Check no passsword works.
@@ -326,9 +346,9 @@ headers()
             --header "firethorn.auth.username:${guestuser:?}" \
             --header "firethorn.auth.community:${guestgroup:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Check null passsword works.
@@ -341,9 +361,9 @@ headers()
             --header "firethorn.auth.username:${guestuser:?}" \
             --header "firethorn.auth.community:${guestgroup:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Check wrong passsword FAILS.
@@ -356,9 +376,9 @@ headers()
             --header "firethorn.auth.username:${guestuser:?}" \
             --header "firethorn.auth.community:${guestgroup:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Make a HEAD request to choose our username.
@@ -373,9 +393,9 @@ headers()
             --header "firethorn.auth.username:${testuser:?}" \
             --header "firethorn.auth.password:${testpass:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Check no community works.
@@ -387,9 +407,9 @@ headers()
             --header "firethorn.auth.username:${testuser:?}" \
             --header "firethorn.auth.password:${testpass:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Check no passsword fails.
@@ -400,9 +420,9 @@ headers()
             --silent \
             --header "firethorn.auth.username:${testuser:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Check null passsword fails.
@@ -414,9 +434,9 @@ headers()
             --header "firethorn.auth.password:" \
             --header "firethorn.auth.username:${testuser:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Check wrong passsword fails.
@@ -428,9 +448,9 @@ headers()
             --header "firethorn.auth.password:xxxx" \
             --header "firethorn.auth.username:${testuser:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Check right passsword works.
@@ -439,12 +459,12 @@ headers()
         curl \
             --head \
             --silent \
-            --header "firethorn.auth.password:${testpass:?}" \
             --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             "${endpointurl:?}/system/info" \
-            | tee /tmp/system-headers.txt
+            | split-headers
 
-        headers
+        print-headers
 
 # -----------------------------------------------------
 # Get the system status.
@@ -452,53 +472,35 @@ headers()
 
         curl \
             --silent \
-            --header "firethorn.auth.password:${testpass:?}" \
+            --include \
             --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             "${endpointurl:?}/system/info" \
+            | split-headers \
             | jq '.' | tee /tmp/system-info.json
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        print-headers
 
 # -----------------------------------------------------
-# Create a JdbcResource to represent the local JDBC database.
+# Load our configuration.
+#[root@tester]
+
+        cat /etc/tester.properties
+
+        source /etc/tester.properties
+
+# -----------------------------------------------------
+# Try creating a JdbcResource as guest user.
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
-        jdbcurl="jdbc:jtds:sqlserver://${dataname:?}/ATLASDR1"
+        jdbcurl="jdbc:jtds:sqlserver://${datadata:?}/ATLASDR1"
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
             --data   "jdbc.connection.url=${jdbcurl:?}" \
             --data   "jdbc.connection.user=${datauser:?}" \
@@ -506,6 +508,36 @@ headers()
             --data   "jdbc.connection.driver=${datadriver:?}" \
             --data   "jdbc.resource.catalog=ATLASDR1" \
             "${endpointurl:?}/jdbc/resource/create" \
+            | split-headers
+
+        print-headers
+
+# -----------------------------------------------------
+# Try creating a JdbcResource as admin user.
+#[root@deployer]
+
+        jdbcname="ATLAS JDBC resource"
+        jdbcurl="jdbc:jtds:sqlserver://${datadata:?}/ATLASDR1"
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --data   "jdbc.resource.name=${jdbcname:?}" \
+            --data   "jdbc.connection.url=${jdbcurl:?}" \
+            --data   "jdbc.connection.user=${datauser:?}" \
+            --data   "jdbc.connection.pass=${datapass:?}" \
+            --data   "jdbc.connection.driver=${datadriver:?}" \
+            --data   "jdbc.resource.catalog=ATLASDR1" \
+            "${endpointurl:?}/jdbc/resource/create" \
+            | split-headers
+
+        print-headers
+
+
+
+
             | jq '.' | tee /tmp/atlas-jdbc.json
 
         atlasjdbc=$(

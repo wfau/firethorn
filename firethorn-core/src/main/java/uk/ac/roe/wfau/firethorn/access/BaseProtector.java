@@ -153,6 +153,7 @@ implements Protector
                 action
                 );
             }
+        log.debug("FAIL - Check fails");
         return false ;
         }
 
@@ -191,19 +192,20 @@ implements Protector
                 return true;
                 }
             }
+        log.debug("FAIL - No match, check fails");
         return false ;
         }
 
     @Override
-    public Protector accept(final Action action)
+    public Protector affirm(final Action action)
     throws ProtectionException
         {
-        log.debug("accept(Action)");
+        log.debug("affirm(Action)");
         log.debug("  Action [{}]", action);
         final Operation operation = services().operation(); 
         if (null != operation)
             {
-            return accept(
+            return affirm(
                 operation.authentications(),
                 action
                 );
@@ -215,16 +217,17 @@ implements Protector
         }
     
     @Override
-    public Protector accept(final Identity identity, final Action action)
+    public Protector affirm(final Identity identity, final Action action)
     throws ProtectionException
         {
-        log.debug("accept(Identity, Action)");
+        log.debug("affirm(Identity, Action)");
         log.debug("  Identity [{}]", identity);
         log.debug("  Action   [{}]", action);
         if (check(identity, action))
             {
             return this;
             }
+        log.debug("FAIL - Affirm fails");
         throw new ProtectionException(
             this,
             identity,
@@ -233,34 +236,34 @@ implements Protector
         }
     
     @Override
-    public Protector accept(final Authentication authentication, final Action action)
+    public Protector affirm(final Authentication authentication, final Action action)
     throws ProtectionException
         {
-        log.debug("accept(Authentication, Action)");
+        log.debug("affirm(Authentication, Action)");
         log.debug("  Action [{}]", action);
-        return accept(
+        return affirm(
             authentication.identity(),
             action
             );
         }
 
     @Override
-    public Protector accept(final Operation.Authentications authentications, final Action action)
+    public Protector affirm(final Operation.Authentications authentications, final Action action)
     throws ProtectionException
         {
-        log.debug("accept(Authentications, Action)");
+        log.debug("affirm(Authentications, Action)");
         log.debug("  Action [{}]", action);
-        return accept(
+        return affirm(
             authentications.select(),
             action
             );
         }
 
     @Override
-    public Protector accept(final Iterable<Authentication> authentications, final Action action)
+    public Protector affirm(final Iterable<Authentication> authentications, final Action action)
     throws ProtectionException
         {
-        log.debug("accept(Iterable<Authentication>, Action)");
+        log.debug("affirm(Iterable<Authentication>, Action)");
         log.debug("  Action [{}]", action);
         for (final Authentication authentication: authentications)
             {
@@ -269,6 +272,7 @@ implements Protector
                 return this;
                 }
             }
+        log.debug("FAIL - No match, affirm fails");
         throw new ProtectionException(
             this,
             action

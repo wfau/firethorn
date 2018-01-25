@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
- *
+ * Authenticate our identity based on simple header fields.
  *
  */
 @Slf4j
@@ -44,11 +44,11 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
-    static final String METHOD_NAME = "http:header" ;
+    public static final String METHOD_NAME = "http:header" ;
 
-    static final String COMMUNITY_ATTRIB = "firethorn.auth.community" ;
-    static final String USERNAME_ATTRIB  = "firethorn.auth.username"  ;
-    static final String PASSWORD_ATTRIB  = "firethorn.auth.password"  ;
+    public static final String COMMUNITY_ATTRIB = "firethorn.auth.community" ;
+    public static final String USERNAME_ATTRIB  = "firethorn.auth.username"  ;
+    public static final String PASSWORD_ATTRIB  = "firethorn.auth.password"  ;
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
@@ -56,24 +56,24 @@ implements HandlerInterceptor
         {
         log.debug("preHandle()");
 
-        final String comident = request.getHeader(COMMUNITY_ATTRIB);
+        final String commname = request.getHeader(COMMUNITY_ATTRIB);
         final String username = request.getHeader(USERNAME_ATTRIB);
         final String password = request.getHeader(PASSWORD_ATTRIB);
 
         final Operation operation = factories.operations().entities().current();
         log.debug("Operation [{}]", operation);
 
-        log.debug("Community [{}]", comident);
+        log.debug("Community [{}]", commname);
         log.debug("Username  [{}]", username);
         log.debug("Password  [{}]", password);
         
         if (operation != null)
             {
-            if ((comident != null) || (username != null) || (password != null))
+            if ((commname != null) || (username != null) || (password != null))
                 {
                 operation.authentications().create(
                     factories.communities().entities().login(
-                        comident,
+                        commname,
                         username,
                         password
                         ),
@@ -83,7 +83,7 @@ implements HandlerInterceptor
             }
 
         log.debug("Primary   [{}]", operation.authentications().primary());
-
+       
         return true ;
         }
 
@@ -92,6 +92,14 @@ implements HandlerInterceptor
         {
         log.debug("postHandle()");
 
+        /*
+         * postHandle() doesn't work with @ResponseBody controller methods.
+         * https://stackoverflow.com/a/39994876
+         * https://stackoverflow.com/questions/30702970/spring-modifying-headers-for-every-request-after-processing-in-posthandle
+         * https://mtyurt.net/post/spring-modify-response-headers-after-processing.html
+         * 
+         */
+        
         final Operation operation = factories.operations().entities().current();
         if (operation != null)
             {

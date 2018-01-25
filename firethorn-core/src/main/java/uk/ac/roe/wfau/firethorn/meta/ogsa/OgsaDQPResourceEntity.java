@@ -33,6 +33,8 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
@@ -90,6 +92,11 @@ public class OgsaDQPResourceEntity
     extends OgsaBaseResourceEntity.EntityFactory<OgsaDQPResource>
     implements OgsaDQPResource.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()

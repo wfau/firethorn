@@ -36,6 +36,8 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
@@ -103,6 +105,11 @@ public class OgsaIvoaResourceEntity
     extends OgsaBaseResourceEntity.EntityFactory<OgsaIvoaResource>
     implements OgsaIvoaResource.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()

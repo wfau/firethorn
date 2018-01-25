@@ -37,7 +37,7 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.Action;
-import uk.ac.roe.wfau.firethorn.access.BaseProtector;
+import uk.ac.roe.wfau.firethorn.access.ProtectionError;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -102,6 +102,57 @@ implements Community
     extends AbstractEntityFactory<Community>
     implements Community.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
+        
+        /**
+         * Private search method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Community find(final String name)
+            {
+            log.debug("find (String) [{}]", name);
+            return super.first(
+                super.query(
+                    "Comunity-select-name"
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+        /**
+         * Private create method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Community make(final String name, final JdbcResource space)
+            {
+            return make(
+                name,
+                space,
+                false,
+                false
+                );
+            }
+        /**
+         * Private create method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Community make(final String name, final JdbcResource space, boolean autocreate, boolean usercreate)
+            {
+            return super.insert(
+                new CommunityEntity(
+                    name,
+                    space,
+                    autocreate,
+                    usercreate
+                    )
+                );
+            }
+
         /**
          * The 'system' {@link Community) name.
          * 
@@ -115,23 +166,34 @@ implements Community
         throws ProtectionException
             {
             log.debug("admin()");
-            final Community found = this.search(
-                    ADMIN_COMMUNITY_NAME
-                    );
+            final Community found = find(
+                ADMIN_COMMUNITY_NAME
+                );
             if (found != null)
                 {
                 log.debug("  found [{}]", found);
                 return found;
                 }
             else {
-                final Community created = super.insert(
-                    new CommunityEntity(
+                try {
+                    final Community created = make(
                         ADMIN_COMMUNITY_NAME,
-                        factories().jdbc().resources().entities().userdata()
-                        )
-                    );
-                log.debug("  created [{}]", created);
-                return created ;
+                        factories().jdbc().resources().entities().userdata(),
+                        false,
+                        false
+                        );
+                    log.debug("  created [{}]", created);
+                    return created ;
+                    }
+                // Only needed because finding the default space may throw an exception. 
+                catch (final ProtectionException ouch)
+                    {
+                    log.error("ProtectionException creating admin community");
+                    throw new ProtectionError(
+                        "ProtectionException creating admin community",
+                        ouch
+                        );
+                    }
                 }
             }
 
@@ -148,28 +210,34 @@ implements Community
         throws ProtectionException
             {
             log.debug("guests()");
-            log.debug("calling search()");
-            final Community found = this.search(
-                    GUEST_COMMUNITY_NAME
-                    );
-            log.debug("done search() [{}]", found);
+            final Community found = find(
+                GUEST_COMMUNITY_NAME
+                );
             if (found != null)
                 {
                 log.debug("  found [{}]", found);
                 return found;
                 }
             else {
-                log.debug("calling insert()");
-                final Community created = super.insert(
-                    new CommunityEntity(
+                try {
+                    final Community created = make(
                         GUEST_COMMUNITY_NAME,
                         factories().jdbc().resources().entities().userdata(),
                         true,
                         true
-                        )
-                    );
-                log.debug("  created [{}]", created);
-                return created ;
+                        );
+                    log.debug("  created [{}]", created);
+                    return created ;
+                    }
+                // Only needed because finding the default space may throw an exception. 
+                catch (final ProtectionException ouch)
+                    {
+                    log.error("ProtectionException creating guest community");
+                    throw new ProtectionError(
+                        "ProtectionException creating guest community",
+                        ouch
+                        );
+                    }
                 }
             }
         
@@ -184,7 +252,7 @@ implements Community
         public Community create(final String name)
         throws DuplicateEntityException, ProtectionException
             {
-            log.debug("create(String) [{}]", name);
+            protector().affirm(Action.create);
             return create(
                 name,
                 factories().jdbc().resources().entities().userdata()
@@ -194,20 +262,19 @@ implements Community
         @Override
         @CreateMethod
         public Community create(final String name, final JdbcResource space)
-        throws DuplicateEntityException
+        throws DuplicateEntityException, ProtectionException
             {
             log.debug("create(String, JdbcResource) [{}][{}]", name, space);
-            final Community found = this.search(
+            protector().affirm(Action.create);
+            final Community found = find(
                 name
                 );
             if (found == null)
                 {
                 log.debug("Creating new community [{}]", name);
-                return super.insert(
-                    new CommunityEntity(
-                        name,
-                        space
-                        )
+                return make(
+                    name,
+                    space
                     );
                 }
             else {
@@ -219,10 +286,13 @@ implements Community
         @Override
         @SelectMethod
         public Community select(final String name)
-        throws NameNotFoundException
+        throws NameNotFoundException, ProtectionException
             {
             log.debug("select(String) [{}]", name);
-            final Community found = this.search(name);
+            protector().affirm(Action.select);
+            final Community found = find(
+                name
+                );
             if (found != null)
                 {
                 return found;
@@ -235,16 +305,12 @@ implements Community
             }
 
         @SelectMethod
-        public Community search(final String name)
+        public Community search(final String name) throws ProtectionException
             {
             log.debug("search (String) [{}]", name);
-            return super.first(
-                super.query(
-                    "Comunity-select-name"
-                    ).setString(
-                        "name",
-                        name
-                    )
+            protector().affirm(Action.select);
+            return find(
+                name
                 );
             }
 
@@ -270,12 +336,14 @@ implements Community
             //
             // Check the Community.
             Community community;
-            if (comm == null)
+            if (comm != null)
                 {
-                community = guests;
+                community = find(
+                    comm
+                    );
                 }
             else {
-                community = search(comm);
+                community = guests;
                 }
 
             if (community == null)
@@ -293,31 +361,6 @@ implements Community
                 name,
                 pass
                 );
-            }
-
-        @Override
-        public Protector protector()
-            {
-            return new BaseProtector(EntityFactory.this)
-                {
-                @Override
-                public boolean check(final Identity identity, final Action action)
-                    {
-                    switch(action.type())
-                        {
-                        case SELECT:
-                            return true;
-
-                        case UPDATE:
-                        case CREATE:
-                        case DELETE:
-                            return isAdmin(identity);
-
-                        default:
-                            return false;
-                        }
-                    }
-                };
             }
         }
     

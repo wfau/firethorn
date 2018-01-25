@@ -36,14 +36,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.ProtectionError;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
 import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.UniqueNamefactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -124,6 +127,64 @@ implements Identity
     extends AbstractEntityFactory<Identity>
     implements Identity.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+
+        /**
+         * Private search method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Identity find(final String name)
+            {
+            log.debug("find (String) [{}]", name);
+            return super.first(
+                super.query(
+                    "Identity-select-name"
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
+        /**
+         * Private search method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Identity find(final Community community, final String name)
+            {
+            log.debug("find (Community, String) [{}]", name);
+            return super.first(
+                super.query(
+                    "Identity-select-community.name"
+                    ).setEntity(
+                        "community",
+                        community
+                    ).setString(
+                        "name",
+                        name
+                        )
+                );
+            }
+
+        /**
+         * Private create method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Identity make(final Community community, final String name, final String pass)
+            {
+            return super.insert(
+                new IdentityEntity(
+                    community,
+                    name,
+                    pass
+                    )
+                );
+            }
+
         /**
          * The 'system' {@link Identity) name.
          * 
@@ -143,8 +204,7 @@ implements Identity
         public synchronized Identity admin()
             {
             log.debug("admin()");
-
-            final Identity found = this.search(
+            final Identity found = this.find(
                 ADMIN_IDENTITY_NAME
                 );
             if (found != null)
@@ -155,21 +215,20 @@ implements Identity
             else {
                 try {
                     final Community admins = factories().communities().entities().admins();
-                    final Identity  created = super.insert(
-                        new IdentityEntity(
-                            admins,
-                            ADMIN_IDENTITY_NAME,
-                            ADMIN_IDENTITY_PASS
-                            )
+                    final Identity  created = make(
+                        admins,
+                        ADMIN_IDENTITY_NAME,
+                        ADMIN_IDENTITY_PASS
                         );
                     log.debug("  created [{}]", created);
                     return created ;
                     }
+                // Only needed because finding the admin community may throw an exception. 
                 catch (final ProtectionException ouch)
                     {
-                    log.error("ProtectionException loading admin community");
+                    log.error("ProtectionException creating admin identity");
                     throw new ProtectionError(
-                        "ProtectionException loading admin community",
+                        "ProtectionException creating admin identity",
                         ouch
                         );
                     }
@@ -185,23 +244,24 @@ implements Identity
         @Override
         @CreateMethod
         public Identity create(final Community community)
+        throws ProtectionException
             {
             log.debug("create(Community) [{}]", community.name());
-            return super.insert(
-                new IdentityEntity(
-                    community,
-                    null,
-                    null
-                    )
+            //protector().affirm(Action.create);
+            return make(
+                community,
+                null,
+                null
                 );
             }
         
         @Override
         @CreateMethod
         public Identity create(final Community community, final String name)
-        throws DuplicateEntityException
+        throws DuplicateEntityException, ProtectionException
             {
             log.debug("create(Community, String) [{}][{}]", community.name(), name);
+            //protector().affirm(Action.create);
             return create(
                 community,
                 name,
@@ -212,21 +272,20 @@ implements Identity
         @Override
         @CreateMethod
         public Identity create(final Community community, final String name, final String pass)
-        throws DuplicateEntityException
+        throws DuplicateEntityException, ProtectionException
             {
             log.debug("create(Community, String, String) [{}][{}]", community.name(), name);
-            final Identity found = search(
+            //protector().affirm(Action.create);
+            final Identity found = find(
                 community,
                 name
                 );
             if (found == null)
                 {
-                return super.insert(
-                    new IdentityEntity(
-                        community,
-                        name,
-                        pass
-                        )
+                return make(
+                    community,
+                    name,
+                    pass
                     );
                 }
             else {
@@ -240,9 +299,10 @@ implements Identity
         @Override
         @SelectMethod
         public Identity select(final Community community, final String name)
-        throws NameNotFoundException
+        throws NameNotFoundException, ProtectionException
             {
             log.debug("select(Community, String) [{}][{}]", community.name(), name);
+            //protector().affirm(Action.select);
             final Identity found = search(
                 community,
                 name
@@ -260,8 +320,10 @@ implements Identity
 
         @Override
         public Identity search(Community community, String name)
+        throws ProtectionException
             {
             log.debug("search(Community, String) [{}][{}]", community.name(), name);
+            //protector().affirm(Action.select);
             return super.first(
                 super.query(
                     "Identity-select-community.name"
@@ -279,9 +341,10 @@ implements Identity
         @Override
         @SelectMethod
         public Identity select(final String name)
-        throws NameNotFoundException
+        throws NameNotFoundException, ProtectionException
             {
             log.debug("select(String) [{}][{}]", name);
+            //protector().affirm(Action.select);
             final Identity found = search(
                 name
                 );
@@ -299,26 +362,23 @@ implements Identity
         @Override
         @SelectMethod
         public Identity search(String name)
+        throws ProtectionException
             {
             log.debug("search(String) [{}][{}]", name);
-            return super.first(
-                super.query(
-                    "Identity-select-name"
-                    ).setString(
-                        "name",
-                        name
-                        )
+            //protector().affirm(Action.select);
+            return find(
+                name
                 );
             }
 
         @Override
         @CreateMethod
         public Identity search(final Community community, final String name, boolean create)
+        throws ProtectionException
             {
             log.debug("select(Community, String, boolean) [{}][{}]", community.name(), name, create);
-
-            final Identity found = search(
-                community,
+            //protector().affirm(Action.select);
+            final Identity found = find(
                 name
                 );
             if (found != null)
@@ -330,13 +390,12 @@ implements Identity
                 log.debug("Identity not found [{}]", name);
                 if (create)
                     {
+                    //protector().affirm(Action.create);
                     log.debug("Creating new Identity [{}]", name);
-                    return super.insert(
-                        new IdentityEntity(
-                            community,
-                            name,
-                            null
-                            )
+                    return make(
+                        community,
+                        name,
+                        null
                         );
                     }
                 else {
@@ -354,22 +413,18 @@ implements Identity
             log.debug("login(Community, String, String) [{}][{}]", community.name(), name);
 
             log.debug("Checking for identity [{}][{}]", community.name(), name);
-            final Identity found = super.first(
-                super.query(
-                    "Identity-select-community.name"
-                    ).setEntity(
-                        "community",
-                        community
-                    ).setString(
-                        "name",
-                        name
-                        )
+            final Identity found = find(
+                community,
+                name
                 );
 
             if (found != null)
             	{
                 log.debug("Identity found [{}][{}]", community.name(), name);
-            	found.login(name, pass);
+            	found.login(
+        	        name,
+        	        pass
+        	        );
             	return found;
                 }
             else {
@@ -377,14 +432,15 @@ implements Identity
             	if (community.autocreate())
 	            	{
 	                log.debug("Auto-create new identity [{}][{}]", community.name(), name);
-	            	final Identity created = super.insert(
-	                    new IdentityEntity(
-	                        community,
-	                        name,
-	                        pass
-	                        )
+	            	final Identity created = make(
+                        community,
+                        name,
+                        pass
 	                    );
-	            	created.login(name, pass);
+	            	created.login(
+            	        name,
+            	        pass
+            	        );
 	            	return created;
 	            	}
             	else {

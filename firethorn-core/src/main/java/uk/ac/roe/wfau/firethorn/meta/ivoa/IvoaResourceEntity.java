@@ -32,8 +32,10 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.adql.parser.TAPServiceTranslator;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -84,6 +86,11 @@ public class IvoaResourceEntity
     extends BaseResourceEntity.EntityFactory<IvoaResource>
     implements IvoaResource.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()

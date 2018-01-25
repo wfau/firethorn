@@ -35,8 +35,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 
@@ -82,6 +84,12 @@ implements AuthenticationImpl
     extends AbstractEntityFactory<AuthenticationImpl>
     implements AuthenticationImpl.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+        
         @Override
         public Class<?> etype()
             {

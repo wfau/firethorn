@@ -128,16 +128,6 @@
             class="uk.ac.roe.wfau.firethorn.webapp.oper.OperationInterceptor">
         </bean>
 
-        <!--bean id="header-authentication"
-            class="uk.ac.roe.wfau.firethorn.webapp.auth.HttpHeaderAuthenticator"
-            >
-            [!-+
-                | Default configuration ..
-            <property name="identityAttrib"   value="firethorn.auth.identity"/>
-            <property name="communityAttrib"  value="firethorn.auth.community"/>
-                +-]
-        </bean-->
-
         <bean id="simple-authentication"
             class="uk.ac.roe.wfau.firethorn.webapp.auth.SimpleHeaderAuthenticator">
         </bean>

@@ -51,7 +51,7 @@ implements EntityProtector
         }
 
     @Override
-    public Protector accept(final Identity identity, final Action action)
+    public Protector affirm(final Identity identity, final Action action)
     throws ProtectionException
         {
         if (this.check(identity, action))

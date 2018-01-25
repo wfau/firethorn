@@ -41,6 +41,7 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -131,6 +132,12 @@ public class BlueTaskLogEntity
     extends AbstractEntityFactory<BlueTaskLogEntry>
     implements BlueTaskLogEntry.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+        
         @Override
         public Class<?> etype()
             {

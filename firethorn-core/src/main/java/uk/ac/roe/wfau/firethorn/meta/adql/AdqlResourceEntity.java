@@ -31,12 +31,14 @@ import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -84,6 +86,12 @@ implements AdqlResource
     extends BaseResourceEntity.EntityFactory<AdqlResource>
     implements AdqlResource.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+        
         @Override
         public Class<?> etype()
             {
