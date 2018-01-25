@@ -120,12 +120,14 @@ public class AttribServiceController
      *
      */
     @ResponseBody
+    @SuppressWarnings("unchecked")
     @RequestMapping(value=COLUMN_LIST_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public ColumnBean.Iter jsonSelect(
         @PathVariable(AttribServiceController.TABLE_ALIAS_FIELD)
         final String alias
-        ) throws EntityNotFoundException, ProtectionException {
-        // GENERICS :-(
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
         return new ColumnBean.Iter(
             (Iterable<BaseColumn<?>>) factories().ogsa().tables().resolve(
                 alias

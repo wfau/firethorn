@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -88,13 +89,16 @@ extends AbstractEntityController<IvoaResource, IvoaResourceBean>
 
     /**
      * JSON GET request to select all.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public Iterable<IvoaResourceBean> select(
         final ModelAndView model
-        ){
+        )
+    throws ProtectionException
+        {
         return bean(
             factories().ivoa().resources().entities().select()
             );
@@ -102,6 +106,7 @@ extends AbstractEntityController<IvoaResource, IvoaResourceBean>
 
     /**
      * JSON POST request to create a new resource.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -111,7 +116,9 @@ extends AbstractEntityController<IvoaResource, IvoaResourceBean>
         final String name,
         @RequestParam(value=RESOURCE_ENDPOINT_PARAM, required=false)
         final String endpoint
-        ){
+        )
+    throws ProtectionException
+        {
         return created(
             factories().ivoa().resources().entities().create(
                 name,

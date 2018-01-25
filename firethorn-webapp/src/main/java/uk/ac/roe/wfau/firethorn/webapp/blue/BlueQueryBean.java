@@ -25,7 +25,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;

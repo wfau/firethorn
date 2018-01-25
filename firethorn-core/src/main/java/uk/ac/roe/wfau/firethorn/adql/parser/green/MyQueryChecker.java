@@ -23,13 +23,11 @@ import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.db.SearchTableApi;
 import adql.parser.QueryChecker;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  *
  *
  */
-@Slf4j
 public class MyQueryChecker
     extends DBChecker
     implements QueryChecker

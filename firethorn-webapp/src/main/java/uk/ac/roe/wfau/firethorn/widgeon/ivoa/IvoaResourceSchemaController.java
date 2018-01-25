@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -86,14 +88,17 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
     /**
      * Get the parent resource based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
     public IvoaResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException{
-        log.debug("parent() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().ivoa().resources().entities().select(
             factories().ivoa().resources().idents().ident(
                 ident
@@ -103,6 +108,7 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
 
     /**
      * JSON GET request to select all.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -110,7 +116,9 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
     public Iterable<IvoaSchemaBean> select(
         @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
         final IvoaResource resource
-        ){
+        )
+    throws ProtectionException
+        {
         log.debug("select()");
         return bean(
             resource.schemas().select()
@@ -119,6 +127,7 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
 
     /**
      * JSON request to select by name.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -128,8 +137,9 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
         final IvoaResource resource,
         @RequestParam(SCHEMA_NAME_PARAM)
         final String name
-        ) throws EntityNotFoundException {
-        log.debug("select(String) [{}]", name);
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
         return bean(
             resource.schemas().select(
                 name

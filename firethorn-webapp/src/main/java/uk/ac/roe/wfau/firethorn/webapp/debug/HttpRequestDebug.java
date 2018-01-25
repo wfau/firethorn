@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.debug;
 
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 

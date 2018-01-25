@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -43,7 +42,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
  * <br/>Controller path : [{@value AdqlTableLinkFactory#ENTITY_PATH}]
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlTableLinkFactory.TABLE_PATH)
 public class AdqlTableController

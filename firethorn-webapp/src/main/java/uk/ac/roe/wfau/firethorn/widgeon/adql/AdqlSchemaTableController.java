@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -46,7 +45,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
  * <br/>Controller path : [{@value AdqlSchemaLinkFactory#SCHEMA_TABLE_PATH}]
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class AdqlSchemaTableController

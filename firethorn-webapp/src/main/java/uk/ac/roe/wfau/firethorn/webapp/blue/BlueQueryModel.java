@@ -20,12 +20,10 @@ package uk.ac.roe.wfau.firethorn.webapp.blue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
-import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -40,7 +38,6 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  * @todo Apply this separation to all of our controllers.  
  *
  */
-@Slf4j
 public abstract class BlueQueryModel
     extends AbstractEntityController<BlueQuery, BlueQueryBean>
     {
@@ -191,7 +188,6 @@ public abstract class BlueQueryModel
     /**
      * Our{@link BlueQuery.NameFactory} implementation.
      *
-     */
     @Component
     public static class NameFactory
     extends DateNameFactory<BlueQuery>
@@ -203,6 +199,7 @@ public abstract class BlueQueryModel
             return datename();
             }
         }
+     */
 
     /**
      * Our{@link BlueQuery.LinkFactory} implementation.

@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -68,7 +69,7 @@ implements OgsaJdbcResource.LinkFactory
     private OgsaJdbcResource.EntityFactory factory ;
     @Override
     public OgsaJdbcResource resolve(String link)
-    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException, ProtectionException
         {
         if (this.matches(link))
             {

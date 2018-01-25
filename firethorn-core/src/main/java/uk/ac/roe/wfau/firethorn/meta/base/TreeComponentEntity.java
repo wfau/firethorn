@@ -26,14 +26,12 @@ import javax.persistence.MappedSuperclass;
 
 import org.springframework.stereotype.Repository;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 
 /**
  * {@link TreeComponent} implementation.
  *
  */
-@Slf4j
 @Access(
     AccessType.FIELD
     )

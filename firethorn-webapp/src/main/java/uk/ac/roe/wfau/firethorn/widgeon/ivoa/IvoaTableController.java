@@ -25,8 +25,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -37,7 +39,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaTableLinkFactory;
  * Spring MVC controller for <code>IvoaTables</code>.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(IvoaTableLinkFactory.TABLE_PATH)
 public class IvoaTableController
@@ -105,14 +106,17 @@ public class IvoaTableController
     /**
      * Get the target table based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(IvoaTableController.TARGET_ENTITY)
     public IvoaTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException {
-        log.debug("table() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException 
+        {
         return factories().ivoa().tables().entities().select(
             factories().ivoa().tables().idents().ident(
                 ident
@@ -130,7 +134,6 @@ public class IvoaTableController
         @ModelAttribute(TARGET_ENTITY)
         final IvoaTable entity
         ){
-        log.debug("select()");
         return bean(
             entity
             );
@@ -138,6 +141,8 @@ public class IvoaTableController
 
     /**
      * POST update name request.
+     * @throws ProtectionException 
+     * @throws NameFormatException 
      *
      */
     @ResponseBody
@@ -147,9 +152,9 @@ public class IvoaTableController
         final IvoaTable entity,
         @RequestParam(value=TABLE_NAME_PARAM, required=true)
         final String name
-        ){
-        log.debug("update(String)");
-        log.debug(" name [{}]", name);
+        )
+    throws NameFormatException, ProtectionException
+        {
         //
         // Needs a transaction ..
         if (null != name)

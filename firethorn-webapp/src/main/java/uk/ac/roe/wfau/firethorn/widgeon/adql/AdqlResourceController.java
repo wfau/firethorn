@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
@@ -45,7 +44,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
  * <br/>Controller path : [{@value AdqlResourceLinkFactory#ENTITY_PATH}]
  *
  */
-@Slf4j
+
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_PATH)
 public class AdqlResourceController

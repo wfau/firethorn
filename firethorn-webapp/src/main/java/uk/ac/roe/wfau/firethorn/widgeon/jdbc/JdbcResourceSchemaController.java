@@ -25,8 +25,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -38,7 +39,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceLinkFactory;
  * Spring MVC controller for <code>JdbcResource</code> schema.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class JdbcResourceSchemaController
@@ -92,14 +92,17 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
     /**
      * Get the parent resource based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
     public JdbcResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException{
-        log.debug("parent() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().jdbc().resources().entities().select(
             factories().jdbc().resources().idents().ident(
                 ident
@@ -109,6 +112,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
 
     /**
      * JSON GET request to select all.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -116,8 +120,9 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
     public Iterable<JdbcSchemaBean> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource
-        ){
-        log.debug("select()");
+        )
+    throws ProtectionException
+        {
         return bean(
             resource.schemas().select()
             );
@@ -125,6 +130,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
 
     /**
      * JSON request to select by name.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -134,8 +140,9 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         final JdbcResource resource,
         @RequestParam(SCHEMA_NAME_PARAM)
         final String name
-        ) throws EntityNotFoundException {
-        log.debug("select(String) [{}]", name);
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
         return bean(
             resource.schemas().select(
                 name
@@ -145,6 +152,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
 
     /**
      * JSON request to select by schema and catalog name.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -156,8 +164,9 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         final String catalog,
         @RequestParam(SCHEMA_NAME_PARAM)
         final String schema
-        ) throws EntityNotFoundException {
-        log.debug("select(String, String) [{}][{}]", catalog, schema);
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
         return bean(
             resource.schemas().select(
                 catalog,

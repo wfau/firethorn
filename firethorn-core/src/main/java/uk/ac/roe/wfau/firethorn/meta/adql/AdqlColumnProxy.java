@@ -27,7 +27,6 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;

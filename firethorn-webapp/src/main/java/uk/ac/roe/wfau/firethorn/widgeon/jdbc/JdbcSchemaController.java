@@ -24,8 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -36,7 +37,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcSchemaLinkFactory;
  * Spring MVC controller for <code>JdbcSchema</code>.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(JdbcSchemaLinkFactory.SCHEMA_PATH)
 public class JdbcSchemaController
@@ -85,14 +85,17 @@ public class JdbcSchemaController
     /**
      * Get the target schema based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public JdbcSchema entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException {
-        log.debug("schema() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().jdbc().schemas().entities().select(
             factories().jdbc().schemas().idents().ident(
                 ident
@@ -110,7 +113,6 @@ public class JdbcSchemaController
         @ModelAttribute(TARGET_ENTITY)
         final JdbcSchema entity
         ){
-        log.debug("select()");
         return bean(
             entity
             );

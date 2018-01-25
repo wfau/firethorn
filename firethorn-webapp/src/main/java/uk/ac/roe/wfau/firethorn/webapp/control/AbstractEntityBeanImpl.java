@@ -72,12 +72,6 @@ implements EntityBean<EntityType>
         }
 
     @Override
-    public URI getIdent()
-        {
-        return getSelf();
-        }
-
-    @Override
     public URI getSelf()
         {
         try {

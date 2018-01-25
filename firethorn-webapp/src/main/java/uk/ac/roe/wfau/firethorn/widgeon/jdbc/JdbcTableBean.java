@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -67,6 +68,7 @@ extends BaseTableBean<JdbcTable>
         }
     
     public String getQuery()
+    throws ProtectionException
         {
         if (entity().bluequery() != null)
             {
@@ -80,13 +82,21 @@ extends BaseTableBean<JdbcTable>
     public interface MetadataBean
     extends AdqlTableBean.MetadataBean
         {
+        
         public interface JdbcMetadataBean
             {
-            public Long getCount();
-            public JdbcTable.JdbcType getType();
-            public JdbcTable.TableStatus getStatus();
+            public Long getCount()
+            throws ProtectionException;
+
+            public JdbcTable.JdbcType getType()
+            throws ProtectionException;
+
+            public JdbcTable.TableStatus getStatus()
+            throws ProtectionException;
             }
+        
         public JdbcMetadataBean getJdbc();
+        
         }
 
     public MetadataBean getMetadata()
@@ -100,12 +110,14 @@ extends BaseTableBean<JdbcTable>
                     {
                     @Override
                     public Long getCount()
+                    throws ProtectionException
                         {
                         return entity().meta().adql().count();
                         }
 
                     @Override
                     public AdqlTable.TableStatus getStatus()
+                    throws ProtectionException
                         {
                         return entity().meta().adql().status();
                         }
@@ -119,18 +131,21 @@ extends BaseTableBean<JdbcTable>
                     {
                     @Override
                     public Long getCount()
+                    throws ProtectionException
                         {
                         return entity().meta().jdbc().count();
                         }
 
                     @Override
                     public JdbcTable.JdbcType getType()
+                    throws ProtectionException
                         {
                         return entity().meta().jdbc().type();
                         }
 
                     @Override
                     public JdbcTable.TableStatus getStatus()
+                    throws ProtectionException
                         {
                         return entity().meta().jdbc().status();
                         }

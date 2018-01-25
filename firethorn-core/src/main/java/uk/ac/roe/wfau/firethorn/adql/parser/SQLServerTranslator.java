@@ -29,7 +29,6 @@ import adql.query.ADQLQuery;
 import adql.query.ClauseSelect;
 import adql.query.IdentifierField;
 import adql.query.constraint.ConstraintsGroup;
-import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.CastFunction;
@@ -47,11 +46,9 @@ import adql.query.operand.function.geometry.IntersectsFunction;
 import adql.query.operand.function.geometry.PointFunction;
 import adql.query.operand.function.geometry.PolygonFunction;
 import adql.query.operand.function.geometry.RegionFunction;
-import adql.translator.ADQLTranslator;
 import adql.translator.JDBCTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /*
  * This file was part of ADQLLibrary.

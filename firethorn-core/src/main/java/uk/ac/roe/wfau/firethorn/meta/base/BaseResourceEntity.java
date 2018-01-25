@@ -25,13 +25,10 @@ import javax.persistence.InheritanceType;
 
 import org.springframework.stereotype.Repository;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * {@link BaseResource} implementation.
  *
  */
-@Slf4j
 @Entity
 @Access(
     AccessType.FIELD

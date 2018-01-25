@@ -24,8 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -35,7 +36,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcColumnLinkFactory;
  * Spring MVC controller for <code>JdbcColumn</code>.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(JdbcColumnLinkFactory.COLUMN_PATH)
 public class JdbcColumnController
@@ -90,14 +90,17 @@ public class JdbcColumnController
     /**
      * Get the target column based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public JdbcColumn entity(
         @PathVariable("ident")
         final String ident
-        ) throws EntityNotFoundException {
-        log.debug("table() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().jdbc().columns().entities().select(
             factories().jdbc().columns().idents().ident(
                 ident
@@ -115,7 +118,6 @@ public class JdbcColumnController
         @ModelAttribute(TARGET_ENTITY)
         final JdbcColumn entity
         ){
-        log.debug("select()");
         return bean(
             entity
             ) ;

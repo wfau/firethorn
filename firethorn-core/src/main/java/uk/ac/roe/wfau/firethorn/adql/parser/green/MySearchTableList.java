@@ -28,7 +28,6 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionError;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
-import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;

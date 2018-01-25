@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -49,7 +48,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
  *
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_METADOC_PATH)
 public class AdqlResourceMetadocController

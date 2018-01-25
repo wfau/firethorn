@@ -34,12 +34,9 @@ import javax.persistence.Version;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 import org.joda.time.DateTime;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.entity.access.BaseEntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
 import uk.ac.roe.wfau.firethorn.identity.Identity;

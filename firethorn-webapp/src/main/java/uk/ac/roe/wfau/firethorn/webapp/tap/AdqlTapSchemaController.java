@@ -111,6 +111,7 @@ public class AdqlTapSchemaController extends AbstractController {
 	 * @throws IOException
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
+	 * @throws ProtectionException 
 	 */
 	@RequestMapping(value = "generateTapSchema", method = {  RequestMethod.POST, RequestMethod.GET })
 	public void generateTapSchema(
@@ -128,7 +129,7 @@ public class AdqlTapSchemaController extends AbstractController {
 			final HttpServletResponse response,
 			HttpServletRequest request)
 			throws IdentifierNotFoundException, IOException, SQLException,
-			ClassNotFoundException {
+			ClassNotFoundException, ProtectionException {
 		JDBCParams params = new JDBCParams(url, user, pass, driver, catalog);
 		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "/WEB-INF/data/sqlserver_tap_schema.sql");
 		generator.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());

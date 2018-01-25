@@ -25,9 +25,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
@@ -41,7 +43,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceLinkFactory;
  * Spring MVC controller for <code>JdbcResource</code>.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.RESOURCE_PATH)
 public class JdbcResourceController
@@ -125,14 +126,17 @@ public class JdbcResourceController
 
     /**
      * Get the target resource based on the identifier in the request.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public JdbcResource entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException  {
-        log.debug("entity() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         final JdbcResource entity = factories().jdbc().resources().entities().select(
             factories().jdbc().resources().idents().ident(
                 ident
@@ -158,6 +162,8 @@ public class JdbcResourceController
 
     /**
      * JSON POST update.
+     * @throws ProtectionException 
+     * @throws NameFormatException 
      *
      */
     @ResponseBody
@@ -176,8 +182,9 @@ public class JdbcResourceController
         String user,
         @RequestParam(value=CONNECTION_PASS_PARAM, required=false) final
         String pass
-        ){
-
+        )
+    throws NameFormatException, ProtectionException
+        {
         if (name != null)
             {
             if (name.length() > 0)

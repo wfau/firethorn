@@ -30,11 +30,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.vosi.VosiTableSetReader;
@@ -50,7 +51,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaResourceLinkFactory;
  * Spring MVC controller for <code>IvoaResource</code>.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(IvoaResourceLinkFactory.RESOURCE_PATH)
 public class IvoaResourceController
@@ -110,14 +110,17 @@ public class IvoaResourceController
 
     /**
      * Get the target resource based on the identifier in the request.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public IvoaResource entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException  {
-        log.debug("entity() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         final IvoaResource entity = factories().ivoa().resources().entities().select(
             factories().ivoa().resources().idents().ident(
                 ident
@@ -143,6 +146,8 @@ public class IvoaResourceController
 
     /**
      * JSON POST update.
+     * @throws ProtectionException 
+     * @throws NameFormatException 
      *
      */
     @ResponseBody
@@ -155,7 +160,9 @@ public class IvoaResourceController
         String name,
         @RequestParam(value=RESOURCE_STATUS_PARAM, required=false) final
         String status
-        ){
+        )
+    throws NameFormatException, ProtectionException
+        {
 
         if (name != null)
             {
@@ -201,6 +208,7 @@ public class IvoaResourceController
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
      * @throws DuplicateEntityException 
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -210,15 +218,9 @@ public class IvoaResourceController
         final IvoaResource resource,
         @RequestPart(value=VOSI_IMPORT_FILE, required=true)
         final MultipartFile vosidata
-        ) throws
-            XMLParserException,
-            XMLReaderException,
-            IOException,
-            IdentifierFormatException,
-            EntityNotFoundException,
-            DuplicateEntityException
+        )
+    throws XMLParserException, XMLReaderException, IOException, IdentifierFormatException, EntityNotFoundException, DuplicateEntityException, ProtectionException
         {
-        log.debug("inport(IvoaResource, File) [{}]", resource.ident());
 
         // TODO Move this into IvoaResource.schemas()
         // TODO Support flexible namespaces

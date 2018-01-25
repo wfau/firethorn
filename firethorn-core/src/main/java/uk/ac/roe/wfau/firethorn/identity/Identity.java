@@ -22,7 +22,6 @@ import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
-import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;

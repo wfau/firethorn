@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.webapp.community;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -71,7 +72,7 @@ implements Community.LinkFactory
     private Community.EntityFactory factory ;
     @Override
     public Community resolve(String link)
-    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException, ProtectionException
         {
         if (this.matches(link))
             {

@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -67,6 +68,7 @@ extends BaseTableBean<IvoaTable>
         }
 
     public String getQuery()
+    throws ProtectionException
         {
         if (entity().bluequery() != null)
             {
@@ -78,15 +80,16 @@ extends BaseTableBean<IvoaTable>
         }
     
     public String getBlueQuery()
-    {
-    if (entity().bluequery() != null)
+    throws ProtectionException
         {
-        return entity().bluequery().link();
+        if (entity().bluequery() != null)
+            {
+            return entity().bluequery().link();
+            }
+        else {
+            return null ;
+            }
         }
-    else {
-        return null ;
-        }
-    }
 
 
     public interface MetadataBean
@@ -110,12 +113,14 @@ extends BaseTableBean<IvoaTable>
                     {
                     @Override
                     public Long getCount()
+                    throws ProtectionException
                         {
                         return entity().meta().adql().count();
                         }
 
                     @Override
                     public AdqlTable.TableStatus getStatus()
+                    throws ProtectionException
                         {
                         return entity().meta().adql().status();
                         }

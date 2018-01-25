@@ -17,8 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
-import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
  * Public interface for an {@link Authentication} {@link Entity}.

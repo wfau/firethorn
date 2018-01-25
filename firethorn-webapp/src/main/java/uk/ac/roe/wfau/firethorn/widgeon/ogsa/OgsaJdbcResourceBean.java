@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaJdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -61,6 +62,7 @@ extends AbstractEntityBeanImpl<OgsaJdbcResource>
         }
 
     public String getOgsaid()
+    throws ProtectionException
         {
         return entity().ogsaid();
         }

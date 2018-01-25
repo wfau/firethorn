@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -65,6 +67,8 @@ extends BaseTableVOTableController
      * <br/>Request path : [{@value JdbcTableLinkFactory#VOTABLE_PATH}] 
      * @param ident The {@link JdbcTable} identifier from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @param response The {@link HttpServletResponse} to write the VOTable to.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      * @throws {@link EntityNotFoundException} If the {@link JdbcTable} could not be found.
      * @throws {@link IOException} If there is an error writing to the {@link HttpServletResponse}.   
      *
@@ -75,7 +79,9 @@ extends BaseTableVOTableController
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
         final HttpServletResponse response
-        ) throws EntityNotFoundException, IOException {
+        )
+    throws EntityNotFoundException, IOException, IdentifierFormatException, ProtectionException
+        {
         response.setContentType(
             TEXT_XML_MIME
             );
