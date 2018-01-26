@@ -22,6 +22,7 @@ EXPOSE 1433
 
 RUN dnf -y install curl
 RUN dnf -y install socat
+RUN dnf -y install iproute
 RUN dnf -y install bind-utils
 RUN dnf -y install openssh-clients
 

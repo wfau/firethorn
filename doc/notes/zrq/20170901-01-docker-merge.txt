@@ -42,6 +42,7 @@
 #[user@trop]
 
     ssh Araybwyn
+    ssh Lothigometh
 
 # -----------------------------------------------------
 # Add our secret function.
@@ -71,6 +72,7 @@
     branch=2.1.9-zrq-bug-fixes
     branch=2.1.10-zrq-junit-clean
     branch=2.1.11-zrq-update-depends
+    branch=2.1.12-zrq-basic-auth
 
 # -----------------------------------------------------
 # Run our builder.
@@ -149,16 +151,11 @@
     # BUG tester needs the new buildtag
     buildtag=2.1.11
     buildtag=2.1.12
+    buildtag=2.1.13
     
     source "${HOME:?}/firethorn.settings"
-    less ${FIRETHORN_CODE:?}/doc/notes/zrq/20170901-02-test-queries.txt
-    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20170901-02-test-queries.txt &
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20180126-01-test-queries.txt &
 
-# -----------------------------------------------------
-# Exit from our tester.
-#[root@tester]
-
-    exit
 
 # -----------------------------------------------------
 # Take down our tester.
