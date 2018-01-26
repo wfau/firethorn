@@ -295,7 +295,7 @@ EOF
             }
 
 # -----------------------------------------------------
-# Make a HEAD request to check admin username.
+# Make a HEAD request to check admin account works.
 #[root@deployer]
 
         curl \
@@ -482,14 +482,6 @@ EOF
         print-headers
 
 # -----------------------------------------------------
-# Load our configuration.
-#[root@tester]
-
-        cat /etc/tester.properties
-
-        source /etc/tester.properties
-
-# -----------------------------------------------------
 # Try creating a JdbcResource as guest user.
 #[root@deployer]
 
@@ -531,14 +523,10 @@ EOF
             --data   "jdbc.connection.driver=${datadriver:?}" \
             --data   "jdbc.resource.catalog=ATLASDR1" \
             "${endpointurl:?}/jdbc/resource/create" \
-            | split-headers
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-jdbc.json
 
         print-headers
-
-
-
-
-            | jq '.' | tee /tmp/atlas-jdbc.json
 
         atlasjdbc=$(
             jq -r '.self' /tmp/atlas-jdbc.json
@@ -546,10 +534,34 @@ EOF
 
         echo "Atlas JDBC [${atlasjdbc:?}]"
 
+# -----------------------------------------------------
+# Try selecting the JdbcResource as test user.
+#[root@deployer]
+
         curl \
             --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             ${atlasjdbc:?} \
+            | split-headers \
             | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# Try selecting the JdbcResource as guest user.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            ${atlasjdbc:?} \
+            | split-headers \
+            | jq '.'
+
+        print-headers
 
 # -----------------------------------------------------
 # Create an empty AdqlResource to represent the local JDBC database.
@@ -559,11 +571,15 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             --data   "adql.resource.name=${adqlname:?}" \
             "${endpointurl:?}/adql/resource/create" \
+            | split-headers \
             | jq '.' | tee /tmp/atlas-adql.json
+
+        print-headers
 
         atlasadql=$(
             jq -r '.self' /tmp/atlas-adql.json
@@ -571,10 +587,34 @@ EOF
 
         echo "Atlas ADQL [${atlasadql:?}]"
 
+# -----------------------------------------------------
+# Try selecting the AdqlResource as test user.
+#[root@deployer]
+
         curl \
             --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             ${atlasadql:?} \
+            | split-headers \
             | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# Try selecting the AdqlResource as guest user.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            ${atlasadql:?} \
+            | split-headers \
+            | jq '.'
+
+        print-headers
 
 # -----------------------------------------------------
 # Locate the JdbcSchema based on catalog and schema name.

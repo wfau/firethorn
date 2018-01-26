@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -145,7 +146,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      */
     @ResponseBody
     @RequestMapping(value=METADOC_IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MIME)
-    public Iterable<AdqlSchemaBean> inport(
+    public ResponseEntity<Iterable<AdqlSchemaBean>> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=METADOC_IMPORT_BASE, required=true)
@@ -155,7 +156,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         )
     throws XMLParserException, XMLReaderException, IOException, IdentifierFormatException, EntityNotFoundException, ProtectionException
         {
-        return bean(
+        return selected(
             reader.inport(
                 new InputStreamReader(
                     metadoc.getInputStream()

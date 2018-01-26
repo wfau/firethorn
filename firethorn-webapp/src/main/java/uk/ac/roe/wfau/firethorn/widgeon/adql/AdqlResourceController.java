@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -175,11 +176,11 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public AdqlResourceBean select(
+    public ResponseEntity<AdqlResourceBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlResource resource
         ){
-        return bean(
+        return selected(
             resource
             );
         }
@@ -200,7 +201,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public AdqlResourceBean update(
+    public ResponseEntity<AdqlResourceBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=RESOURCE_NAME_PARAM, required=false)
@@ -232,7 +233,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
                 }
             }
 
-        return bean(
+        return selected(
             resource
             );
         }

@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -66,48 +67,62 @@ extends AbstractController
      */
     public ResponseEntity<BeanType> created(final EntityType entity)
         {
-        return created(
-            bean(
-                entity
-                )
+        final BeanType bean = bean(entity);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(
+            bean.getSelf()
             );
-        }
-
-    /**
-     * Generate a 'created' HTTP response.
-     *
-     */
-    private ResponseEntity<BeanType> created(final BeanType bean)
-        {
+        annotate(
+            headers
+            );
         return new ResponseEntity<BeanType>(
             bean,
-            new RedirectHeader(
-                bean
-                ),
+            headers,
             HttpStatus.CREATED
             );
         }
 
     /**
-     * Generate the response header.
-     * 
+     * Generate a 'OK' HTTP response.
+     *
      */
-    protected RedirectHeader headers(final BeanType bean)
+    public ResponseEntity<BeanType> selected(final EntityType entity)
         {
-        final RedirectHeader header = new RedirectHeader(
-            bean
+        final BeanType bean = bean(entity);
+        final HttpHeaders headers = new HttpHeaders();
+        annotate(
+            headers
             );
- 
-        annotate(header);
-        
-        return header ;
+        return new ResponseEntity<BeanType>(
+            bean,
+            headers,
+            HttpStatus.OK
+            );
+        }
+
+    /**
+     * Generate a 'OK' HTTP response.
+     *
+     */
+    public ResponseEntity<Iterable<BeanType>> selected(final Iterable<EntityType> iterable)
+        {
+        final Iterable<BeanType> bean = bean(iterable);
+        final HttpHeaders headers = new HttpHeaders();
+        annotate(
+            headers
+            );
+        return new ResponseEntity<Iterable<BeanType>>(
+            bean,
+            headers,
+            HttpStatus.OK
+            );
         }
     
     /**
-     * Annotate response headers with our user identity.
+     * Annotate response headers with the primary {@link Identity}.
      * 
      */
-    protected void annotate(final RedirectHeader header)
+    protected void annotate(final HttpHeaders headers)
         {
         final Operation operation = factories().operations().entities().current();
         if (operation != null)
@@ -121,14 +136,14 @@ extends AbstractController
                 if (identity != null)
                     {
                     log.debug("Identity  [{}][{}]", identity.ident(), identity.name());
-                    header.add(SimpleHeaderAuthenticator.USERNAME_ATTRIB, identity.name());
+                    headers.add(SimpleHeaderAuthenticator.USERNAME_ATTRIB, identity.name());
 
                     final Community community = identity.community();
                     log.debug("Community [{}][{}]", community.ident(), community.name());
 
                     if (community != null)
                         {
-                        header.add(SimpleHeaderAuthenticator.COMMUNITY_ATTRIB, community.name());
+                        headers.add(SimpleHeaderAuthenticator.COMMUNITY_ATTRIB, community.name());
                         }
                     }
                 }

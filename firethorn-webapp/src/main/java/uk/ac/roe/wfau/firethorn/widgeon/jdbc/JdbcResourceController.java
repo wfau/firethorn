@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceLinkFactory;
@@ -151,11 +151,11 @@ public class JdbcResourceController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public JdbcResourceBean select(
+    public ResponseEntity<JdbcResourceBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity
         ){
-        return bean(
+        return selected(
             entity
             );
         }
@@ -169,7 +169,7 @@ public class JdbcResourceController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public EntityBean<JdbcResource> update(
+    public ResponseEntity<JdbcResourceBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity,
         @RequestParam(value=RESOURCE_NAME_PARAM, required=false) final
@@ -249,7 +249,7 @@ public class JdbcResourceController
                 );
             }
 
-        return new JdbcResourceBean(
+        return selected(
             entity
             );
         }

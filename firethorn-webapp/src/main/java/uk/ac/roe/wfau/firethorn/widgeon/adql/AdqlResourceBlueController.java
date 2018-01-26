@@ -101,13 +101,13 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<BlueQueryBean> select(
+    public ResponseEntity<Iterable<BlueQueryBean>> select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         )
     throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
         {
-        return bean(
+        return selected( 
             factories().adql().resources().entities().select(
                 factories().adql().resources().idents().ident(
                     ident

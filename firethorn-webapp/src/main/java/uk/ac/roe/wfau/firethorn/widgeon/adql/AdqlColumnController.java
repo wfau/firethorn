@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -106,8 +107,9 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     public AdqlColumn entity(
         @PathVariable("ident")
         final String ident
-        ) throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException {
-        log.debug("entity() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().columns().entities().select(
             factories().adql().columns().idents().ident(
                 ident
@@ -125,11 +127,11 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public AdqlColumnBean select(
+    public ResponseEntity<AdqlColumnBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlColumn column
         ){
-        return bean(
+        return selected(
             column
             );
         }
@@ -149,7 +151,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public AdqlColumnBean update(
+    public ResponseEntity<AdqlColumnBean> update(
         @RequestParam(value=COLUMN_NAME_PARAM, required=false)
         final String name,
         @ModelAttribute(TARGET_ENTITY)
@@ -166,7 +168,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
                     );
                 }
             }
-        return bean(
+        return selected(
             column
             );
         }

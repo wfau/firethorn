@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -122,12 +123,13 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<AdqlColumnBean> select(
+    public ResponseEntity<Iterable<AdqlColumnBean>> select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table
-        ) throws ProtectionException{
-        log.debug("select()");
-        return bean(
+        )
+    throws ProtectionException
+        {
+        return selected(
             table.columns().select()
             );
         }
@@ -145,7 +147,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
-    public AdqlColumnBean select(
+    public ResponseEntity<AdqlColumnBean> select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(COLUMN_NAME_PARAM)
@@ -153,7 +155,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         )
     throws NameNotFoundException, ProtectionException
         {
-        return bean(
+        return selected(
             table.columns().select(
                 name
                 )

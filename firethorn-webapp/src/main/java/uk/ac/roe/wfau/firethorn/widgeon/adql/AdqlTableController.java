@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -127,11 +128,11 @@ public class AdqlTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public AdqlTableBean select(
+    public ResponseEntity<AdqlTableBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table
         ){
-        return bean(
+        return selected(
             table
             );
         }
@@ -151,7 +152,7 @@ public class AdqlTableController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public AdqlTableBean update(
+    public ResponseEntity<AdqlTableBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(value=TABLE_NAME_PARAM, required=false)
@@ -168,7 +169,7 @@ public class AdqlTableController
                     );
                 }
             }
-        return bean(
+        return selected(
             table
             );
         }

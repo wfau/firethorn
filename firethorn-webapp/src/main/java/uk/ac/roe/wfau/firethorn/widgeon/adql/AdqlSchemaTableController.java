@@ -131,13 +131,13 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<AdqlTableBean> select(
+    public ResponseEntity<Iterable<AdqlTableBean>> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
         )
     throws ProtectionException
         {
-        return bean(
+        return selected(
             schema.tables().select()
             );
         }
@@ -155,7 +155,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=TABLE_NAME_PARAM, produces=JSON_MIME)
-    public AdqlTableBean select(
+    public ResponseEntity<AdqlTableBean> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(TABLE_NAME_PARAM)
@@ -163,7 +163,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         )
     throws NameNotFoundException, ProtectionException
         {
-        return bean(
+        return selected(
             schema.tables().select(
                 name
                 )

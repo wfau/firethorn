@@ -91,11 +91,11 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<AdqlResourceBean> select(
+    public ResponseEntity<Iterable<AdqlResourceBean>> select(
         )
     throws ProtectionException
         {
-        return bean(
+        return selected(
             factories().adql().resources().entities().select()
             );
         }

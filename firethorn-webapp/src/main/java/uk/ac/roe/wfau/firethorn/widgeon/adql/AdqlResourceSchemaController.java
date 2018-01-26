@@ -114,8 +114,9 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     public AdqlResource entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException {
-        log.debug("entity() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
                 ident
@@ -134,12 +135,13 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<AdqlSchemaBean> select(
+    public ResponseEntity<Iterable<AdqlSchemaBean>> select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource
-        ) throws ProtectionException{
-        log.debug("select()");
-        return bean(
+        )
+    throws ProtectionException
+        {
+        return selected(
             resource.schemas().select()
             );
         }
@@ -157,14 +159,16 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SCHEMA_SELECT_NAME_PARAM, produces=JSON_MIME)
-    public AdqlSchemaBean select(
+    public ResponseEntity<AdqlSchemaBean> select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(SCHEMA_SELECT_NAME_PARAM)
         final String name
-        ) throws NameNotFoundException, ProtectionException {
+        )
+    throws NameNotFoundException, ProtectionException
+        {
         log.debug("select(String) [{}]", name);
-        return bean(
+        return selected(
             resource.schemas().select(
                 name
                 )
@@ -189,8 +193,9 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final AdqlResource resource,
         @RequestParam(value=SCHEMA_CREATE_NAME_PARAM, required=true)
         final String name
-        ) throws ProtectionException{
-        log.debug("create(String) [{}][{}]", name);
+        )
+    throws ProtectionException
+        {
         return created(
             resource.schemas().create(
                 name
@@ -222,8 +227,9 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final TreeComponent.CopyDepth depth,
         @RequestParam(value=SCHEMA_IMPORT_BASE_PARAM, required=true)
         final String base
-        ) throws IdentifierFormatException, EntityNotFoundException, ProtectionException {
-        log.debug("inport(CopyDepth, String) [{}][{}]", depth, base);
+        )
+    throws IdentifierFormatException, EntityNotFoundException, ProtectionException
+        {
         return created(
             resource.schemas().create(
                 ((depth != null) ? depth : TreeComponent.CopyDepth.FULL),
@@ -261,8 +267,9 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final String base,
         @RequestParam(value=SCHEMA_IMPORT_NAME_PARAM, required=true)
         final String name
-        ) throws IdentifierFormatException, EntityNotFoundException, ProtectionException {
-        log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", depth, base, name);
+        )
+    throws IdentifierFormatException, EntityNotFoundException, ProtectionException
+        {
         return created(
             resource.schemas().create(
                 ((depth != null) ? depth : TreeComponent.CopyDepth.THIN),
