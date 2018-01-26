@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -117,13 +118,13 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<JdbcSchemaBean> select(
+    public ResponseEntity<Iterable<JdbcSchemaBean>> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource
         )
     throws ProtectionException
         {
-        return bean(
+        return selected(
             resource.schemas().select()
             );
         }
@@ -135,7 +136,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
-    public JdbcSchemaBean select(
+    public ResponseEntity<JdbcSchemaBean> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SCHEMA_NAME_PARAM)
@@ -143,7 +144,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         )
     throws EntityNotFoundException, ProtectionException
         {
-        return bean(
+        return selected(
             resource.schemas().select(
                 name
                 )
@@ -157,7 +158,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params={CATALOG_NAME_PARAM, SCHEMA_NAME_PARAM}, produces=JSON_MIME)
-    public JdbcSchemaBean select(
+    public ResponseEntity<JdbcSchemaBean> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(CATALOG_NAME_PARAM)
@@ -167,7 +168,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         )
     throws EntityNotFoundException, ProtectionException
         {
-        return bean(
+        return selected(
             resource.schemas().select(
                 catalog,
                 schema

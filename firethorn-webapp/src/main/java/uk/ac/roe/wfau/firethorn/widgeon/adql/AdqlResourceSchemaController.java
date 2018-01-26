@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -46,7 +45,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
  * <br/>Controller path : [{@value AdqlResourceLinkFactory#RESOURCE_SCHEMAS_PATH}]
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_SCHEMAS_PATH)
 public class AdqlResourceSchemaController
@@ -167,7 +165,6 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         )
     throws NameNotFoundException, ProtectionException
         {
-        log.debug("select(String) [{}]", name);
         return selected(
             resource.schemas().select(
                 name

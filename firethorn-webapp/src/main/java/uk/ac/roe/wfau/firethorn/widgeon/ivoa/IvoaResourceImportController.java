@@ -17,22 +17,28 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
+import uk.ac.roe.wfau.firethorn.meta.vosi.VosiTableSetReader;
+import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
+import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -43,16 +49,16 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaResourceLinkFactory;
  *
  */
 @Controller
-@RequestMapping(IvoaResourceLinkFactory.RESOURCE_PATH)
-public class IvoaResourceController
-    extends AbstractEntityController<IvoaResource, IvoaResourceBean>
+@RequestMapping(IvoaResourceLinkFactory.VOSI_IMPORT_PATH)
+public class IvoaResourceImportController
+    extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
     {
 
     @Override
     public Path path()
         {
         return path(
-            IvoaResourceLinkFactory.RESOURCE_PATH
+            IvoaResourceLinkFactory.VOSI_IMPORT_PATH
             );
         }
 
@@ -60,7 +66,7 @@ public class IvoaResourceController
      * Public constructor.
      *
      */
-    public IvoaResourceController()
+    public IvoaResourceImportController()
         {
         super();
         }
@@ -71,30 +77,18 @@ public class IvoaResourceController
      */
     public static final String TARGET_ENTITY = "urn:ivoa.resource.entity" ;
 
-    /**
-     * MVC property for updating the name.
-     *
-     */
-    public static final String RESOURCE_NAME_PARAM = "ivoa.resource.name" ;
-
-    /**
-     * MVC property for updating the status.
-     *
-     */
-    public static final String RESOURCE_STATUS_PARAM = "ivoa.resource.status" ;
-
     @Override
-    public IvoaResourceBean bean(final IvoaResource entity)
+    public IvoaSchemaBean bean(final IvoaSchema entity)
         {
-        return new IvoaResourceBean(
+        return new IvoaSchemaBean(
             entity
             );
         }
 
     @Override
-    public Iterable<IvoaResourceBean> bean(final Iterable<IvoaResource> iter)
+    public Iterable<IvoaSchemaBean> bean(final Iterable<IvoaSchema> iter)
         {
-        return new IvoaResourceBean.Iter(
+        return new IvoaSchemaBean.Iter(
             iter
             );
         }
@@ -121,61 +115,47 @@ public class IvoaResourceController
         }
 
     /**
-     * JSON GET request.
-     *
+     * MVC property for the VOSI file.
+     * 
      */
-    @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public ResponseEntity<IvoaResourceBean> select(
-        @ModelAttribute(TARGET_ENTITY)
-        final IvoaResource entity
-        ){
-        return selected(
-            entity
-            );
-        }
-
+    protected static final String VOSI_IMPORT_FILE = "vosi.tableset" ;
+    
     /**
-     * JSON POST update.
+     * Import a VOSI tableset document.
+     * @throws IOException
+     * @throws XMLReaderException
+     * @throws XMLParserException
+     * @throws EntityNotFoundException 
+     * @throws IdentifierFormatException 
+     * @throws DuplicateEntityException 
      * @throws ProtectionException 
-     * @throws NameFormatException 
      *
      */
     @ResponseBody
-    @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public ResponseEntity<IvoaResourceBean> update(
+    public ResponseEntity<Iterable<IvoaSchemaBean>> inport(
         @ModelAttribute(TARGET_ENTITY)
-        final IvoaResource entity,
-        @RequestParam(value=RESOURCE_NAME_PARAM, required=false) final
-        String name,
-        @RequestParam(value=RESOURCE_STATUS_PARAM, required=false) final
-        String status
+        final IvoaResource resource,
+        @RequestPart(value=VOSI_IMPORT_FILE, required=true)
+        final MultipartFile vosidata
         )
-    throws NameFormatException, ProtectionException
+    throws XMLParserException, XMLReaderException, IOException, IdentifierFormatException, EntityNotFoundException, DuplicateEntityException, ProtectionException
         {
 
-        if (name != null)
-            {
-            if (name.length() > 0)
-                {
-                entity.name(
-                    name
-                    );
-                }
-            }
+        // TODO Support flexible namespaces
+        // TODO Support update (duplicate => update)
+        
+        VosiTableSetReader reader = new VosiTableSetReader();
 
-        if (status != null)
-            {
-            entity.status(
-                BaseComponent.Status.valueOf(
-                    status
-                    )
-                );
-            }
+        reader.inport(
+            new InputStreamReader(
+                vosidata.getInputStream()
+                ),
+            resource
+            );
 
         return selected(
-            entity
+            resource.schemas().select()
             );
         }
     }

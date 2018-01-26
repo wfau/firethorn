@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -111,13 +112,13 @@ extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<IvoaColumnBean> select(
+    public ResponseEntity<Iterable<IvoaColumnBean>> select(
         @ModelAttribute(IvoaTableController.TARGET_ENTITY)
         final IvoaTable table
         )
     throws ProtectionException
         {
-        return bean(
+        return selected(
             table.columns().select()
             );
         }
@@ -129,7 +130,7 @@ extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
-    public IvoaColumnBean select(
+    public ResponseEntity<IvoaColumnBean> select(
         @ModelAttribute(IvoaTableController.TARGET_ENTITY)
         final IvoaTable table,
         @RequestParam(COLUMN_NAME_PARAM)
@@ -137,7 +138,7 @@ extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
         )
     throws EntityNotFoundException, ProtectionException
         {
-        return bean(
+        return selected(
             table.columns().select(
                 name
                 )

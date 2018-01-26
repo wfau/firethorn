@@ -990,7 +990,7 @@ implements JdbcTable
                     case UNKNOWN:
                         this.adqlstatus = next ;
                         break ;
-//ZRQ
+
                     case DELETED:
                         jdbcdelete();
                         break ;

@@ -141,9 +141,9 @@ extends Entity, NamedEntity
          * @return The corresponding {@link Identity}.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
-         */
         public Identity select(final String name)
         throws ProtectionException, NameNotFoundException;
+         */
 
         /**
          * Search for an {@link Identity},from any {@link Community}, based on just the name.
@@ -151,9 +151,9 @@ extends Entity, NamedEntity
          * @return The corresponding {@link Identity}, or null if the {@link Identity} was not found.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
-         */
         public Identity search(final String name)
         throws ProtectionException;
+         */
         
         /**
          * Login to an {@link Identity} using name and password.

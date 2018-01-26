@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -129,13 +130,13 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<JdbcTableBean> select(
+    public ResponseEntity<Iterable<JdbcTableBean>> select(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
         final JdbcSchema schema
         )
     throws ProtectionException
         {
-        return bean(
+        return selected(
             schema.tables().select()
             );
         }
@@ -147,7 +148,7 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
-    public JdbcTableBean select(
+    public ResponseEntity<JdbcTableBean> select(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
         final JdbcSchema schema,
         @RequestParam(SELECT_NAME)
@@ -155,7 +156,7 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
         )
     throws EntityNotFoundException, ProtectionException
         {
-        return bean(
+        return selected(
             schema.tables().select(
                 name
                 )

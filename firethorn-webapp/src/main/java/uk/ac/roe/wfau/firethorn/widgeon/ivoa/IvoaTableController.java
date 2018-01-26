@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -130,11 +131,11 @@ public class IvoaTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public IvoaTableBean select(
+    public ResponseEntity<IvoaTableBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final IvoaTable entity
         ){
-        return bean(
+        return selected(
             entity
             );
         }
@@ -147,7 +148,7 @@ public class IvoaTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, params={TABLE_NAME_PARAM}, produces=JSON_MIME)
-    public IvoaTableBean update(
+    public ResponseEntity<IvoaTableBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final IvoaTable entity,
         @RequestParam(value=TABLE_NAME_PARAM, required=true)
@@ -163,53 +164,8 @@ public class IvoaTableController
                 name
                 );
             }
-        return bean(
+        return selected(
             entity
             );
         }
-
-    /**
-     * POST update request.
-     *
-    @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public IvoaTableBean update(
-        @ModelAttribute(TARGET_ENTITY)
-        final IvoaTable entity,
-        @RequestParam(value=JDBC_STATUS_PARAM, required=false)
-        final IvoaTable.TableStatus jdbcstatus,
-        @RequestParam(value=ADQL_STATUS_PARAM, required=false)
-        final AdqlTable.TableStatus adqlstatus
-        ){
-        log.debug("update(IvoaTable.IvoaStatus)");
-        log.debug(" jdbcstatus [{}]", jdbcstatus);
-        log.debug(" adqlstatus [{}]", adqlstatus);
-
-        factories().spring().transactor().update(
-            new Runnable()
-                {
-                @Override
-                public void run()
-                    {
-                    if (null != jdbcstatus)
-                        {
-                        entity.meta().jdbc().status(
-                            jdbcstatus
-                            );
-                        }
-                    if (null != adqlstatus)
-                        {
-                        entity.meta().adql().status(
-                            adqlstatus
-                            );
-                        }
-                    }
-                }
-            );
-
-        return bean(
-            entity
-            );
-        }
-     */
     }

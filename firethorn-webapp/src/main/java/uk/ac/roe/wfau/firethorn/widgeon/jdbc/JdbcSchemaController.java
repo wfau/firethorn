@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -109,11 +110,11 @@ public class JdbcSchemaController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public JdbcSchemaBean select(
+    public ResponseEntity<JdbcSchemaBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcSchema entity
         ){
-        return bean(
+        return selected(
             entity
             );
         }

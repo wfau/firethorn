@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
@@ -40,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaResourceLinkFactory;
  * Spring MVC controller for <code>IvoaResource</code> schema.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(IvoaResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class IvoaResourceSchemaController
@@ -108,31 +107,28 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
 
     /**
      * JSON GET request to select all.
-     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<IvoaSchemaBean> select(
+    public ResponseEntity<Iterable<IvoaSchemaBean>> select(
         @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
         final IvoaResource resource
         )
     throws ProtectionException
         {
-        log.debug("select()");
-        return bean(
+        return selected(
             resource.schemas().select()
             );
         }
 
     /**
      * JSON request to select by name.
-     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
-    public IvoaSchemaBean select(
+    public ResponseEntity<IvoaSchemaBean> select(
         @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
         final IvoaResource resource,
         @RequestParam(SCHEMA_NAME_PARAM)
@@ -140,7 +136,7 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
         )
     throws EntityNotFoundException, ProtectionException
         {
-        return bean(
+        return selected(
             resource.schemas().select(
                 name
                 )

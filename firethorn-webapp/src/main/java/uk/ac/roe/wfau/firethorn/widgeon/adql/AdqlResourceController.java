@@ -45,7 +45,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
  * <br/>Controller path : [{@value AdqlResourceLinkFactory#ENTITY_PATH}]
  *
  */
-
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_PATH)
 public class AdqlResourceController

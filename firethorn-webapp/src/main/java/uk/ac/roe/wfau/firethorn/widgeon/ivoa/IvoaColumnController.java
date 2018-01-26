@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -108,11 +109,11 @@ public class IvoaColumnController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public IvoaColumnBean select(
+    public ResponseEntity<IvoaColumnBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final IvoaColumn entity
         ){
-        return bean(
+        return selected(
             entity
             ) ;
         }

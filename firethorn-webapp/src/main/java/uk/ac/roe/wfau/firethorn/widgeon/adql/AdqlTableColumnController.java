@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -44,7 +43,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
  * <br/>Controller path : [{@value AdqlTableLinkFactory#TABLE_COLUMN_PATH}]
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlTableLinkFactory.TABLE_COLUMN_PATH)
 public class AdqlTableColumnController
@@ -103,8 +101,9 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     public AdqlTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException {
-        log.debug("entity() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().tables().entities().select(
             factories().adql().tables().idents().ident(
                 ident

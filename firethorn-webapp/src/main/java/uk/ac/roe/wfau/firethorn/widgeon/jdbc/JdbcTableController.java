@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -134,11 +135,11 @@ public class JdbcTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public JdbcTableBean select(
+    public ResponseEntity<JdbcTableBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity
         ){
-        return bean(
+        return selected(
             entity
             );
         }
@@ -151,7 +152,7 @@ public class JdbcTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, params={TABLE_NAME_PARAM}, produces=JSON_MIME)
-    public JdbcTableBean update(
+    public ResponseEntity<JdbcTableBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity,
         @RequestParam(value=TABLE_NAME_PARAM, required=true)
@@ -167,7 +168,7 @@ public class JdbcTableController
                 name
                 );
             }
-        return bean(
+        return selected(
             entity
             );
         }
@@ -178,7 +179,7 @@ public class JdbcTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public JdbcTableBean update(
+    public ResponseEntity<JdbcTableBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity,
         @RequestParam(value=JDBC_STATUS_PARAM, required=false)
@@ -220,7 +221,7 @@ public class JdbcTableController
                 }
             );
 
-        return bean(
+        return selected(
             entity
             );
         }

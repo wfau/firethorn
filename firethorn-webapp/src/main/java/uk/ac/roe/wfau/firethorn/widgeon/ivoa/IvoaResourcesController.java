@@ -94,12 +94,12 @@ extends AbstractEntityController<IvoaResource, IvoaResourceBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<IvoaResourceBean> select(
+    public ResponseEntity<Iterable<IvoaResourceBean>> select(
         final ModelAndView model
         )
     throws ProtectionException
         {
-        return bean(
+        return selected(
             factories().ivoa().resources().entities().select()
             );
         }

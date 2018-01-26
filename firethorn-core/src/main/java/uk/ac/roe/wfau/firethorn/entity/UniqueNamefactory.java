@@ -12,13 +12,20 @@ import com.google.common.io.BaseEncoding;
  * @todo make this into the new NameFactory interface, with different implementations providing different prefixes per class.
  *
  */
-public class UniqueNamefactory extends AbstractComponent
+public class UniqueNamefactory
+extends AbstractComponent
 	{
     /**
      * Our base 32 encoder.
      * 
      */
     protected static final BaseEncoding encoder = BaseEncoding.base32().omitPadding() ;
+
+    /**
+     * The default name prefix, {@value}.
+     * 
+     */
+    protected static final String DEFAULT_NAME_PREFIX = "XX" ;
 
     /**
      * The default glue character, {@value}.
@@ -44,6 +51,10 @@ public class UniqueNamefactory extends AbstractComponent
      */
     public UniqueNamefactory()
     	{
+        this(
+            DEFAULT_NAME_PREFIX,
+            DEFAULT_NAME_GLUE
+            );
     	}
     
     /**
@@ -52,7 +63,10 @@ public class UniqueNamefactory extends AbstractComponent
      */
     public UniqueNamefactory(final String prefix)
     	{
-    	this.prefix = prefix;
+    	this(
+	        prefix,
+	        DEFAULT_NAME_GLUE
+            );
     	}
 
     /**

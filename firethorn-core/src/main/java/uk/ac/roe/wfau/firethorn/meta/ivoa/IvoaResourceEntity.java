@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
@@ -101,7 +102,9 @@ public class IvoaResourceEntity
         @Override
         @SelectMethod
         public Iterable<IvoaResource> select()
+        throws ProtectionException
             {
+            protector().affirm(Action.select);
             return super.iterable(
                 super.query(
                     "IvoaResource-select-all"
@@ -112,7 +115,9 @@ public class IvoaResourceEntity
         @Override
         @CreateMethod
         public IvoaResource create(final String endpoint)
+        throws ProtectionException
             {
+            protector().affirm(Action.create);
             return super.insert(
                 new IvoaResourceEntity(
                     null,
@@ -124,7 +129,9 @@ public class IvoaResourceEntity
         @Override
         @CreateMethod
         public IvoaResource create(final String name, final String endpoint)
+        throws ProtectionException
             {
+            protector().affirm(Action.create);
             return super.insert(
                 new IvoaResourceEntity(
                     name,

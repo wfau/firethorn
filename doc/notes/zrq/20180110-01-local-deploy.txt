@@ -197,6 +197,18 @@ EOF
     compose="${FIRETHORN_CODE:?}/docker/compose"
 
 # -----------------------------------------------------
+# -----------------------------------------------------
+# Edit the source code .....
+#[user@virtual]
+
+
+
+    eclipse &
+
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
 # Shutdown our tester.
 #[user@virtual]
 
@@ -238,6 +250,10 @@ EOF
         run \
             tester
 
+
+
+
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Load our configuration.
 #[root@tester]
@@ -250,16 +266,23 @@ EOF
 # Create our sed functions.
 #[root@tester]
 
+        skip-headers()
+            {
+            sed '
+                /^HTTP\/1.1 100/,/^\r$/ {
+                    d
+                    }
+                '
+            }
+
         split-headers()
             {
-            sed -n '
-                0,/^\r$/ {
+            sed '
+                /^HTTP\/1.1 [0-9]\{3\}/,/^\r$/ {
                     /^\r$/ !{
                         w /tmp/response-headers.txt
+                        d
                         }
-                    }
-                0,/^\r$/ !{
-                    p
                     }
                 '
             }
@@ -278,7 +301,7 @@ EOF
                 ' /tmp/response-headers.txt
             }
 
-        get-commname()
+        get-group()
             {
             sed -n '
                 s/^firethorn.auth.community: \(.*\)\r/\1/p
@@ -289,7 +312,7 @@ EOF
             {
             echo "----"
             echo "HTTP code [$(get-httpcode)]"
-            echo "Community [$(get-commname)]"
+            echo "Community [$(get-group)]"
             echo "Username  [$(get-username)]"
             echo "----"
             }
@@ -301,9 +324,9 @@ EOF
         curl \
             --head \
             --silent \
+            --header "firethorn.auth.community:${admingroup:?}" \
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
-            --header "firethorn.auth.community:${admingroup:?}" \
             "${endpointurl:?}/system/info" \
             | split-headers
 
@@ -319,9 +342,9 @@ EOF
             "${endpointurl:?}/system/info" \
             | split-headers
 
-        print-headers
-
         guestuser=$(get-username)
+
+        print-headers
 
 # -----------------------------------------------------
 # Check no community works.
@@ -357,9 +380,23 @@ EOF
         curl \
             --head \
             --silent \
-            --header "firethorn.auth.password:" \
-            --header "firethorn.auth.username:${guestuser:?}" \
             --header "firethorn.auth.community:${guestgroup:?}" \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            --header "firethorn.auth.password:" \
+            "${endpointurl:?}/system/info" \
+            | split-headers
+
+        print-headers
+
+# -----------------------------------------------------
+# Check wrong community FAILS.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.community:others" \
+            --header "firethorn.auth.username:${guestuser:?}" \
             "${endpointurl:?}/system/info" \
             | split-headers
 
@@ -372,16 +409,16 @@ EOF
         curl \
             --head \
             --silent \
-            --header "firethorn.auth.password:xxxx" \
-            --header "firethorn.auth.username:${guestuser:?}" \
             --header "firethorn.auth.community:${guestgroup:?}" \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            --header "firethorn.auth.password:xxxx" \
             "${endpointurl:?}/system/info" \
             | split-headers
 
         print-headers
 
 # -----------------------------------------------------
-# Make a HEAD request to choose our username.
+# Make a HEAD request to choose our test username.
 #[root@deployer]
 
         testuser=albert.augustus@example.com
@@ -394,6 +431,8 @@ EOF
             --header "firethorn.auth.password:${testpass:?}" \
             "${endpointurl:?}/system/info" \
             | split-headers
+
+        testgroup=$(get-group)
 
         print-headers
 
@@ -453,6 +492,21 @@ EOF
         print-headers
 
 # -----------------------------------------------------
+# Check wrong community fails.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.community:others" \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            "${endpointurl:?}/system/info" \
+            | split-headers
+
+        print-headers
+
+# -----------------------------------------------------
 # Check right passsword works.
 #[root@deployer]
 
@@ -482,11 +536,13 @@ EOF
         print-headers
 
 # -----------------------------------------------------
-# Try creating a JdbcResource as guest user.
+# Try creating a JdbcResource as our test user.
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
-        jdbcurl="jdbc:jtds:sqlserver://${datadata:?}/ATLASDR1"
+        jdbcurl="jdbc:jtds:sqlserver://${datahost:?}/${datadata:?}"
+
+        catalog="ATLASDR1"
 
         curl \
             --silent \
@@ -498,7 +554,7 @@ EOF
             --data   "jdbc.connection.user=${datauser:?}" \
             --data   "jdbc.connection.pass=${datapass:?}" \
             --data   "jdbc.connection.driver=${datadriver:?}" \
-            --data   "jdbc.resource.catalog=ATLASDR1" \
+            --data   "jdbc.resource.catalog=${catalog:?}" \
             "${endpointurl:?}/jdbc/resource/create" \
             | split-headers
 
@@ -509,11 +565,14 @@ EOF
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
-        jdbcurl="jdbc:jtds:sqlserver://${datadata:?}/ATLASDR1"
+        jdbcurl="jdbc:jtds:sqlserver://${datahost:?}/${datadata:?}"
+
+        catalog="ATLASDR1"
 
         curl \
             --silent \
             --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
@@ -521,12 +580,16 @@ EOF
             --data   "jdbc.connection.user=${datauser:?}" \
             --data   "jdbc.connection.pass=${datapass:?}" \
             --data   "jdbc.connection.driver=${datadriver:?}" \
-            --data   "jdbc.resource.catalog=ATLASDR1" \
+            --data   "jdbc.resource.catalog=${catalog:?}" \
             "${endpointurl:?}/jdbc/resource/create" \
             | split-headers \
             | jq '.' | tee /tmp/atlas-jdbc.json
 
         print-headers
+
+# -----------------------------------------------------
+# Extract the JdbcResource URL.
+#[root@deployer]
 
         atlasjdbc=$(
             jq -r '.self' /tmp/atlas-jdbc.json
@@ -535,7 +598,7 @@ EOF
         echo "Atlas JDBC [${atlasjdbc:?}]"
 
 # -----------------------------------------------------
-# Try selecting the JdbcResource as test user.
+# Select the JdbcResource as test user.
 #[root@deployer]
 
         curl \
@@ -550,7 +613,7 @@ EOF
         print-headers
 
 # -----------------------------------------------------
-# Try selecting the JdbcResource as guest user.
+# Select the JdbcResource as guest user.
 #[root@deployer]
 
         curl \
@@ -572,14 +635,19 @@ EOF
         curl \
             --silent \
             --include \
-            --header "firethorn.auth.username:${testuser:?}" \
-            --header "firethorn.auth.password:${testpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
             --data   "adql.resource.name=${adqlname:?}" \
             "${endpointurl:?}/adql/resource/create" \
             | split-headers \
             | jq '.' | tee /tmp/atlas-adql.json
 
         print-headers
+
+# -----------------------------------------------------
+# Extract the AdqlResource URL.
+#[root@deployer]
 
         atlasadql=$(
             jq -r '.self' /tmp/atlas-adql.json
@@ -588,7 +656,7 @@ EOF
         echo "Atlas ADQL [${atlasadql:?}]"
 
 # -----------------------------------------------------
-# Try selecting the AdqlResource as test user.
+# Select the AdqlResource as test user.
 #[root@deployer]
 
         curl \
@@ -603,7 +671,7 @@ EOF
         print-headers
 
 # -----------------------------------------------------
-# Try selecting the AdqlResource as guest user.
+# Select the AdqlResource as guest user.
 #[root@deployer]
 
         curl \
@@ -625,12 +693,21 @@ EOF
         
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
             --data   "jdbc.schema.catalog=${catalog:?}" \
             --data   "jdbc.schema.schema=${schema:?}" \
             "${atlasjdbc:?}/schemas/select" \
+            | split-headers \
             | jq '.' | tee /tmp/jdbc-schema.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the JdbcSchema URL.
+#[root@deployer]
 
         jdbcschema=$(
             jq -r '.self' /tmp/jdbc-schema.json
@@ -638,10 +715,34 @@ EOF
 
         echo "JDBC schema [${jdbcschema:?}]"
 
+# -----------------------------------------------------
+# Select the JdbcSchema as test user.
+#[root@deployer]
+
         curl \
             --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             ${jdbcschema:?} \
+            | split-headers \
             | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# Select the JdbcSchema as guest user.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            ${jdbcschema:?} \
+            | split-headers \
+            | jq '.'
+
+        print-headers
 
 # -----------------------------------------------------
 # Import the mapping between JDBC and ADQL tables.
@@ -651,12 +752,48 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
             --form   "metadoc.base=${jdbcschema:?}" \
             --form   "metadoc.file=@${metadoc:?}" \
             "${atlasadql:?}/metadoc/import" \
+            | skip-headers | split-headers \
             | jq '.' | tee /tmp/adql-schema.json
+
+# -----------------------------------------------------
+# List the AdqlSchema as test user.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            ${atlasadql:?}/schemas/select \
+            | split-headers \
+            | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# List the AdqlSchema as guest user.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            ${atlasadql:?}/schemas/select \
+            | split-headers \
+            | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the AdqlSchema URL.
+#[root@deployer]
 
         adqlschema=$(
             jq -r '.[].self' /tmp/adql-schema.json
@@ -664,13 +801,37 @@ EOF
 
         echo "ADQL schema [${adqlschema:?}]"
 
+# -----------------------------------------------------
+# Select the AdqlSchema as test user.
+#[root@deployer]
+
         curl \
             --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             ${adqlschema:?} \
+            | split-headers \
             | jq '.'
 
+        print-headers
+
+# -----------------------------------------------------
+# Select the AdqlSchema as guest user.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            ${adqlschema:?} \
+            | split-headers \
+            | jq '.'
+
+        print-headers
+
 # --------------------------------------
-# Create an IvoaResource to represent the GAIA TAP resource.
+# Try creating an IvoaResource as our test user.
 #[root@deployer]
 
         tapname="GAIA TAP service"
@@ -678,12 +839,40 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             --data   "ivoa.resource.name=${tapname}" \
             --data   "ivoa.resource.endpoint=${tapurl:?}" \
             "${endpointurl:?}/ivoa/resource/create" \
+            | split-headers
+
+        print-headers
+
+# --------------------------------------
+# Try creating an IvoaResource as our admin user.
+#[root@deployer]
+
+        tapname="GAIA TAP service"
+        tapurl="http://gea.esac.esa.int/tap-server/tap"
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --data   "ivoa.resource.name=${tapname}" \
+            --data   "ivoa.resource.endpoint=${tapurl:?}" \
+            "${endpointurl:?}/ivoa/resource/create" \
+            | split-headers \
             | jq '.' | tee /tmp/gaia-ivoa.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the IvoaResource URL.
+#[root@deployer]
 
         gaiaivoa=$(
             jq -r '.self' /tmp/gaia-ivoa.json
@@ -691,10 +880,34 @@ EOF
 
         echo "Gaia IVOA [${gaiaivoa:?}]"
 
+# -----------------------------------------------------
+# Select the IvoaResource as test user.
+#[root@deployer]
+
         curl \
             --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             ${gaiaivoa:?} \
+            | split-headers \
             | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# Select the IvoaResource as guest user.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            ${gaiaivoa:?} \
+            | split-headers \
+            | jq '.'
+
+        print-headers
 
 # --------------------------------------
 # Import the VOSI metadata.
@@ -704,11 +917,16 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
             --form   "vosi.tableset=@${vosifile:?}" \
             "${gaiaivoa:?}/vosi/import" \
+            | skip-headers | split-headers \
             | jq '.'
+
+        print-headers
 
 # -----------------------------------------------------
 # Create an empty AdqlResource to represent the gaia TAP resource.
@@ -718,11 +936,18 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
             --data   "adql.resource.name=${adqlname:?}" \
             "${endpointurl:?}/adql/resource/create" \
+            | split-headers \
             | jq '.' | tee /tmp/gaia-adql.json
+
+# -----------------------------------------------------
+# Extract the AdqlResource URL.
+#[root@deployer]
 
         gaiaadql=$(
             jq -r '.self' /tmp/gaia-adql.json
@@ -730,10 +955,34 @@ EOF
 
         echo "Gaia ADQL [${gaiaadql:?}]"
 
+# -----------------------------------------------------
+# Select the AdqlResource as test user.
+#[root@deployer]
+
         curl \
             --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             ${gaiaadql:?} \
+            | split-headers \
             | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# Select the AdqlResource as guest user.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            ${gaiaadql:?} \
+            | split-headers \
+            | jq '.'
+
+        print-headers
 
 # --------------------------------------
 # Find the Gaia DR1 schema by name.
@@ -743,11 +992,18 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
             --data   "ivoa.schema.name=${selector:?}" \
             "${gaiaivoa:?}/schemas/select" \
+            | split-headers \
             | jq '.' | tee /tmp/gaia-schema.json
+
+# -----------------------------------------------------
+# Extract the IvoaSchema URL.
+#[root@deployer]
 
         gaiaschema=$(
             jq -r '.self' /tmp/gaia-schema.json
@@ -755,13 +1011,37 @@ EOF
 
         echo "Gaia schema [${gaiaschema:?}]"
 
+# -----------------------------------------------------
+# Select the IvoaSchema as test user.
+#[root@deployer]
+
         curl \
             --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             ${gaiaschema:?} \
+            | split-headers \
             | jq '.'
 
+        print-headers
+
 # -----------------------------------------------------
-# Add the Gaia DR1 schema.
+# Select the IvoaSchema as guest user.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            ${gaiaschema:?} \
+            | split-headers \
+            | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# Import the IvoaSchema into the AdqlResource.
 #[root@deployer]
 
         name=GAIADR1
@@ -769,28 +1049,19 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
             --data   "adql.schema.name=${name:?}" \
             --data   "adql.schema.base=${base:?}" \
             "${gaiaadql:?}/schemas/import" \
+            | split-headers \
             | jq '.'
 
-# -----------------------------------------------------
-# Exit from the deployer
-#[root@deployer]
+        print-headers
 
-    exit
-
-# -----------------------------------------------------
-# Run our tester.
-#[user@virtual]
-
-    docker-compose \
-        --file "deployer.yml" \
-        run \
-            tester
-
+** BUG - unhandled error if this is done twice
 
 # -----------------------------------------------------
 # -----------------------------------------------------
@@ -799,11 +1070,14 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             "${endpointurl:?}/adql/resource/select" \
+            | split-headers \
             | jq '.' | tee /tmp/adql-list.json
 
+        print-headers
 
 # -----------------------------------------------------
 # Find the Atlas ADQL resource.
@@ -825,7 +1099,6 @@ EOF
             .[0].self
             " /tmp/adql-list.json
             )
-
 
 # -----------------------------------------------------
 # Find the Gaia ADQL resource.
@@ -871,13 +1144,17 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${atlasadql:?}/queries/create" \
+            | split-headers \
             | jq '.' | tee /tmp/atlas-query.json
+
+        print-headers
 
 # -----------------------------------------------------
 # Get the results as a VOTable.
@@ -887,11 +1164,12 @@ EOF
             jq -r '.results.formats.votable' "/tmp/atlas-query.json"
             )
 
-        curl --silent ${votableurl:?} \
+        curl \
+            --silent \
+            ${votableurl:?} \
             | xmllint --format - \
             | tee /tmp/atlas-data.xml
 
-# -----------------------------------------------------
 # -----------------------------------------------------
 # Query the gaia database.
 #[root@tester]
@@ -907,13 +1185,17 @@ EOF
 
         curl \
             --silent \
-            --header "firethorn.auth.identity:${identity:?}"   \
-            --header "firethorn.auth.community:${community:?}" \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
             --data-urlencode "adql.query.input@/tmp/gaia-query.adql" \
             --data "adql.query.status.next=COMPLETED" \
             --data "adql.query.wait.time=600000" \
             "${gaiaadql:?}/queries/create" \
+            | split-headers \
             | jq '.' | tee /tmp/gaia-query.json
+
+        print-headers
 
 # -----------------------------------------------------
 # Get the results as a VOTable.
@@ -923,10 +1205,328 @@ EOF
             jq -r '.results.formats.votable' "/tmp/gaia-query.json"
             )
 
-        curl --silent ${votableurl:?} \
+        curl \
+            --silent \
+            ${votableurl:?} \
+            | xmllint --format - \
+            | tee /tmp/gaia-data.xml
+
+# -----------------------------------------------------
+# Create a new AdqlResource to act as a workspace.
+#[root@tester]
+
+        adqlname="Query workspace"
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data   "adql.resource.name=${adqlname:?}" \
+            "${endpointurl:?}/adql/resource/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/query-space.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the AdqlResource URL.
+#[root@deployer]
+
+        queryspace=$(
+            jq -r '.self' /tmp/query-space.json
+            )
+
+        echo "Query space [${queryspace:?}]"
+
+# -----------------------------------------------------
+# Find the Atlas AdqlSchema by name.
+#[root@tester]
+
+        selector=ATLASDR1
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data   "adql.schema.name=${selector:?}" \
+            "${atlasadql:?}/schemas/select" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-schema.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the Atlas AdqlSchema URL.
+#[root@deployer]
+
+        atlasschema=$(
+            jq -r '.self' /tmp/atlas-schema.json
+            )
+
+        echo "Atlas schema [${atlasschema:?}]"
+
+# -----------------------------------------------------
+# Add the Atlas AdqlSchema to our workspace.
+#[root@tester]
+
+        name=ATLASDR1
+        base=${atlasschema}
+        
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data   "adql.schema.name=${name:?}" \
+            --data   "adql.schema.base=${base:?}" \
+            "${queryspace:?}/schemas/import" \
+            | split-headers \
+            | jq '.'
+
+        print-headers
+
+# --------------------------------------
+# Find the Gaia AdqlSchema by name.
+#[root@tester]
+
+        selector=gaiadr1
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data   "ivoa.schema.name=${selector:?}" \
+            "${gaiaivoa:?}/schemas/select" \
+            | split-headers \
+            | jq '.' | tee /tmp/gaia-schema.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the Gaia AdqlSchema URL.
+#[root@deployer]
+
+        gaiaschema=$(
+            jq -r '.self' /tmp/gaia-schema.json
+            )
+
+        echo "Gaia schema [${gaiaschema:?}]"
+
+# -----------------------------------------------------
+# Add the Gaia AdqlSchema to our workspace.
+#[root@tester]
+
+        name=GAIADR1
+        base=${gaiaschema}
+        
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data   "adql.schema.name=${name:?}" \
+            --data   "adql.schema.base=${base:?}" \
+            "${queryspace:?}/schemas/import" \
+            | split-headers \
+            | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# List our workspace schema.
+#[root@tester]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            "${queryspace:?}/schemas/select" \
+            | split-headers \
+            | jq '.'
+
+        print-headers
+
+# -----------------------------------------------------
+# Query the Atlas database.
+#[root@tester]
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        COUNT(sourceID),
+        (ROUND( ra/10, 0) * 10) AS rablock,
+        (ROUND(dec/10, 0) * 10) AS decblock
+    FROM
+        ATLASDR1.atlasSource
+    WHERE
+        sourceID <> 0
+    GROUP BY
+        (ROUND( ra/10, 0) * 10),
+        (ROUND(dec/10, 0) * 10)
+    ORDER BY
+        rablock,
+        decblock
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-query.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl \
+            --silent \
+            $(jq -r '.results.formats.votable' "/tmp/atlas-query.json") \
+            | xmllint --format - \
+            | tee /tmp/atlas-data.xml
+
+# -----------------------------------------------------
+# Query the Gaia TAP service.
+#[root@tester]
+
+cat > /tmp/gaia-query.adql << EOF
+SELECT
+    source_id
+FROM
+    GAIADR1.tgas_source AS tgas
+WHERE
+    tgas.parallax > (10.0 * tgas.parallax_error)
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/gaia-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/gaia-query.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl \
+            --silent \
+            $(jq -r '.results.formats.votable' "/tmp/gaia-query.json") \
             | xmllint --format - \
             | tee /tmp/gaia-data.xml
 
 
+
+
+# -----------------------------------------------------
+# *** This query fails ***
+# -----------------------------------------------------
+# Query the Atlas database (nested query aliased field).
+#[root@tester]
+
+cat > /tmp/atlas-query.adql << EOF
+    SELECT
+        CrossMatch.masterObjID
+    FROM
+        atlasSourceXDR8PhotoObj AS CrossMatch,
+        (
+        SELECT
+            TOP 10000 s.sourceID AS id
+        FROM
+            atlasSource AS s
+        ORDER BY
+            ra
+        ) AS T
+    WHERE
+        T.id = CrossMatch.masterObjID
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-query.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the result table.
+#[root@tester]
+
+    resultlink=$(jq -r '.results.table' /tmp/atlas-query.json)
+
+    curl \
+        --silent \
+        ${resultlink:?} \
+        | jq '.' | tee /tmp/result-table.json
+
+    resultname=$( jq -r '.fullname' /tmp/result-table.json)
+    resultspace=$(jq -r '.resource' /tmp/result-table.json)
+
+    curl \
+        --silent \
+        ${resultspace:?} \
+        | jq '.' | tee /tmp/result-space.json
+
+# -----------------------------------------------------
+# Query the results table.
+#[root@tester]
+
+cat > /tmp/result-query.adql << EOF
+    SELECT
+        TOP 10
+        masterObjID
+    FROM
+        ${resultname}
+    ORDER BY
+        masterObjID
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/result-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${resultspace:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/result-pager.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/result-pager.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/result-data.xml
 
 

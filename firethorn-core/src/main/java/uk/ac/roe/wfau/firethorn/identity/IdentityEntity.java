@@ -136,7 +136,6 @@ implements Identity
         /**
          * Private search method that doesn't check the {@link Protector}.
          * 
-         */
         private Identity find(final String name)
             {
             log.debug("find (String) [{}]", name);
@@ -149,6 +148,7 @@ implements Identity
                     )
                 );
             }
+         */
 
         /**
          * Private search method that doesn't check the {@link Protector}.
@@ -204,17 +204,18 @@ implements Identity
         public synchronized Identity admin()
             {
             log.debug("admin()");
-            final Identity found = this.find(
-                ADMIN_IDENTITY_NAME
-                );
-            if (found != null)
-                {
-                log.debug("  found [{}]", found);
-                return found ;
-                }
-            else {
-                try {
-                    final Community admins = factories().communities().entities().admins();
+            try {
+                final Community admins = factories().communities().entities().admins();
+                final Identity found = this.find(
+                    admins,
+                    ADMIN_IDENTITY_NAME
+                    );
+                if (found != null)
+                    {
+                    log.debug("  found [{}]", found);
+                    return found ;
+                    }
+                else {
                     final Identity  created = make(
                         admins,
                         ADMIN_IDENTITY_NAME,
@@ -223,15 +224,15 @@ implements Identity
                     log.debug("  created [{}]", created);
                     return created ;
                     }
-                // Only needed because finding the admin community may throw an exception. 
-                catch (final ProtectionException ouch)
-                    {
-                    log.error("ProtectionException creating admin identity");
-                    throw new ProtectionError(
-                        "ProtectionException creating admin identity",
-                        ouch
-                        );
-                    }
+                }
+            // Needed because finding the admin community may throw an exception. 
+            catch (final ProtectionException ouch)
+                {
+                log.error("ProtectionException creating admin identity");
+                throw new ProtectionError(
+                    "ProtectionException creating admin identity",
+                    ouch
+                    );
                 }
             }
         
@@ -337,7 +338,8 @@ implements Identity
                 );
             }
 
-        
+/*
+ *         
         @Override
         @SelectMethod
         public Identity select(final String name)
@@ -370,7 +372,8 @@ implements Identity
                 name
                 );
             }
-
+ *
+ */
         @Override
         @CreateMethod
         public Identity search(final Community community, final String name, boolean create)
@@ -379,6 +382,7 @@ implements Identity
             log.debug("select(Community, String, boolean) [{}][{}]", community.name(), name, create);
             //protector().affirm(Action.select);
             final Identity found = find(
+                community,
                 name
                 );
             if (found != null)

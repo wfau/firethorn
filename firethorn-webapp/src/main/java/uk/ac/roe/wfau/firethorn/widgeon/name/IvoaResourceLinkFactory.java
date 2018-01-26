@@ -61,6 +61,13 @@ implements IvoaResource.LinkFactory
      */
     public static final String RESOURCE_SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
 
+    /**
+     * The URI path for vosi import.
+     *
+     */
+    public static final String VOSI_IMPORT_PATH = RESOURCE_PATH + "/vosi/import" ;
+
+    
     @Override
     public String link(final IvoaResource entity)
         {
