@@ -324,9 +324,9 @@ EOF
         curl \
             --head \
             --silent \
-            --header "firethorn.auth.community:${admingroup:?}" \
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
             "${endpointurl:?}/system/info" \
             | split-headers
 
@@ -380,9 +380,9 @@ EOF
         curl \
             --head \
             --silent \
-            --header "firethorn.auth.community:${guestgroup:?}" \
             --header "firethorn.auth.username:${guestuser:?}" \
             --header "firethorn.auth.password:" \
+            --header "firethorn.auth.community:${guestgroup:?}" \
             "${endpointurl:?}/system/info" \
             | split-headers
 
@@ -409,9 +409,9 @@ EOF
         curl \
             --head \
             --silent \
-            --header "firethorn.auth.community:${guestgroup:?}" \
             --header "firethorn.auth.username:${guestuser:?}" \
             --header "firethorn.auth.password:xxxx" \
+            --header "firethorn.auth.community:${guestgroup:?}" \
             "${endpointurl:?}/system/info" \
             | split-headers
 
@@ -470,8 +470,8 @@ EOF
         curl \
             --head \
             --silent \
-            --header "firethorn.auth.password:" \
             --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:" \
             "${endpointurl:?}/system/info" \
             | split-headers
 
@@ -484,8 +484,8 @@ EOF
         curl \
             --head \
             --silent \
-            --header "firethorn.auth.password:xxxx" \
             --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:xxxx" \
             "${endpointurl:?}/system/info" \
             | split-headers
 
@@ -536,7 +536,32 @@ EOF
         print-headers
 
 # -----------------------------------------------------
-# Try creating a JdbcResource as our test user.
+# Try creating the Atlas JdbcResource as our guest user.
+#[root@deployer]
+
+        jdbcname="ATLAS JDBC resource"
+        jdbcurl="jdbc:jtds:sqlserver://${datahost:?}/${datadata:?}"
+
+        catalog="ATLASDR1"
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${guestuser:?}" \
+            --header "firethorn.auth.password:" \
+            --data   "jdbc.resource.name=${jdbcname:?}" \
+            --data   "jdbc.connection.url=${jdbcurl:?}" \
+            --data   "jdbc.connection.user=${datauser:?}" \
+            --data   "jdbc.connection.pass=${datapass:?}" \
+            --data   "jdbc.connection.driver=${datadriver:?}" \
+            --data   "jdbc.resource.catalog=${catalog:?}" \
+            "${endpointurl:?}/jdbc/resource/create" \
+            | split-headers
+
+        print-headers
+
+# -----------------------------------------------------
+# Try creating the Atlas JdbcResource as our test user.
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
@@ -561,7 +586,7 @@ EOF
         print-headers
 
 # -----------------------------------------------------
-# Try creating a JdbcResource as admin user.
+# Create the Atlas JdbcResource as admin user.
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
@@ -572,9 +597,9 @@ EOF
         curl \
             --silent \
             --include \
-            --header "firethorn.auth.community:${admingroup:?}" \
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
             --data   "jdbc.connection.url=${jdbcurl:?}" \
             --data   "jdbc.connection.user=${datauser:?}" \
@@ -831,7 +856,7 @@ EOF
         print-headers
 
 # --------------------------------------
-# Try creating an IvoaResource as our test user.
+# Try creating the Gavo IvoaResource as test user.
 #[root@deployer]
 
         tapname="GAIA TAP service"
@@ -850,7 +875,7 @@ EOF
         print-headers
 
 # --------------------------------------
-# Try creating an IvoaResource as our admin user.
+# Create the Gavo IvoaResource as admin user.
 #[root@deployer]
 
         tapname="GAIA TAP service"
@@ -859,9 +884,9 @@ EOF
         curl \
             --silent \
             --include \
-            --header "firethorn.auth.community:${admingroup:?}" \
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
             --data   "ivoa.resource.name=${tapname}" \
             --data   "ivoa.resource.endpoint=${tapurl:?}" \
             "${endpointurl:?}/ivoa/resource/create" \
@@ -918,9 +943,9 @@ EOF
         curl \
             --silent \
             --include \
-            --header "firethorn.auth.community:${admingroup:?}" \
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
             --form   "vosi.tableset=@${vosifile:?}" \
             "${gaiaivoa:?}/vosi/import" \
             | skip-headers | split-headers \
@@ -937,9 +962,9 @@ EOF
         curl \
             --silent \
             --include \
-            --header "firethorn.auth.community:${admingroup:?}" \
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
             --data   "adql.resource.name=${adqlname:?}" \
             "${endpointurl:?}/adql/resource/create" \
             | split-headers \
@@ -993,9 +1018,9 @@ EOF
         curl \
             --silent \
             --include \
-            --header "firethorn.auth.community:${admingroup:?}" \
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
             --data   "ivoa.schema.name=${selector:?}" \
             "${gaiaivoa:?}/schemas/select" \
             | split-headers \
@@ -1050,9 +1075,9 @@ EOF
         curl \
             --silent \
             --include \
-            --header "firethorn.auth.community:${admingroup:?}" \
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
             --data   "adql.schema.name=${name:?}" \
             --data   "adql.schema.base=${base:?}" \
             "${gaiaadql:?}/schemas/import" \
@@ -1064,6 +1089,9 @@ EOF
 ** BUG - unhandled error if this is done twice
 
 # -----------------------------------------------------
+# Setup done - resources configured.
+# -----------------------------------------------------
+
 # -----------------------------------------------------
 # List the top level ADQL resources.
 #[root@tester]
@@ -1126,20 +1154,22 @@ EOF
 #[root@tester]
 
 cat > /tmp/atlas-query.adql << EOF
-    SELECT
-        COUNT(sourceID),
-        (ROUND( ra/10, 0) * 10) AS rablock,
-        (ROUND(dec/10, 0) * 10) AS decblock
-    FROM
-        ATLASDR1.atlasSource
-    WHERE
-        sourceID <> 0
-    GROUP BY
-        (ROUND( ra/10, 0) * 10),
-        (ROUND(dec/10, 0) * 10)
-    ORDER BY
-        rablock,
-        decblock
+
+        SELECT
+            COUNT(sourceID),
+            (ROUND( ra/10, 0) * 10) AS rablock,
+            (ROUND(dec/10, 0) * 10) AS decblock
+        FROM
+            ATLASDR1.atlasSource
+        WHERE
+            sourceID <> 0
+        GROUP BY
+            (ROUND( ra/10, 0) * 10),
+            (ROUND(dec/10, 0) * 10)
+        ORDER BY
+            rablock,
+            decblock
+
 EOF
 
         curl \
@@ -1175,12 +1205,14 @@ EOF
 #[root@tester]
 
 cat > /tmp/gaia-query.adql << EOF
-SELECT
-    source_id
-FROM
-    GAIADR1.tgas_source AS tgas
-WHERE
-    tgas.parallax > (10.0 * tgas.parallax_error)
+
+        SELECT
+            source_id
+        FROM
+            GAIADR1.tgas_source AS tgas
+        WHERE
+            tgas.parallax > (10.0 * tgas.parallax_error)
+
 EOF
 
         curl \
@@ -1355,20 +1387,22 @@ EOF
 #[root@tester]
 
 cat > /tmp/atlas-query.adql << EOF
-    SELECT
-        COUNT(sourceID),
-        (ROUND( ra/10, 0) * 10) AS rablock,
-        (ROUND(dec/10, 0) * 10) AS decblock
-    FROM
-        ATLASDR1.atlasSource
-    WHERE
-        sourceID <> 0
-    GROUP BY
-        (ROUND( ra/10, 0) * 10),
-        (ROUND(dec/10, 0) * 10)
-    ORDER BY
-        rablock,
-        decblock
+
+        SELECT
+            COUNT(sourceID),
+            (ROUND( ra/10, 0) * 10) AS rablock,
+            (ROUND(dec/10, 0) * 10) AS decblock
+        FROM
+            ATLASDR1.atlasSource
+        WHERE
+            sourceID <> 0
+        GROUP BY
+            (ROUND( ra/10, 0) * 10),
+            (ROUND(dec/10, 0) * 10)
+        ORDER BY
+            rablock,
+            decblock
+
 EOF
 
         curl \
@@ -1393,19 +1427,21 @@ EOF
             --silent \
             $(jq -r '.results.formats.votable' "/tmp/atlas-query.json") \
             | xmllint --format - \
-            | tee /tmp/atlas-data.xml
+            | tee /tmp/atlas-data.vot
 
 # -----------------------------------------------------
 # Query the Gaia TAP service.
 #[root@tester]
 
 cat > /tmp/gaia-query.adql << EOF
-SELECT
-    source_id
-FROM
-    GAIADR1.tgas_source AS tgas
-WHERE
-    tgas.parallax > (10.0 * tgas.parallax_error)
+
+        SELECT
+            source_id
+        FROM
+            GAIADR1.tgas_source AS tgas
+        WHERE
+            tgas.parallax > (10.0 * tgas.parallax_error)
+
 EOF
 
         curl \
@@ -1430,32 +1466,29 @@ EOF
             --silent \
             $(jq -r '.results.formats.votable' "/tmp/gaia-query.json") \
             | xmllint --format - \
-            | tee /tmp/gaia-data.xml
+            | tee /tmp/gaia-data.vot
 
-
-
-
-# -----------------------------------------------------
-# *** This query fails ***
 # -----------------------------------------------------
 # Query the Atlas database (nested query aliased field).
 #[root@tester]
 
 cat > /tmp/atlas-query.adql << EOF
-    SELECT
-        CrossMatch.masterObjID
-    FROM
-        atlasSourceXDR8PhotoObj AS CrossMatch,
-        (
+
         SELECT
-            TOP 10000 s.sourceID AS id
+            CrossMatch.masterObjID
         FROM
-            atlasSource AS s
-        ORDER BY
-            ra
-        ) AS T
-    WHERE
-        T.id = CrossMatch.masterObjID
+            atlasSourceXDR8PhotoObj AS CrossMatch,
+            (
+            SELECT
+                TOP 10000 s.sourceID AS id
+            FROM
+                atlasSource AS s
+            ORDER BY
+                ra
+            ) AS T
+        WHERE
+            T.id = CrossMatch.masterObjID
+
 EOF
 
         curl \
@@ -1476,20 +1509,21 @@ EOF
 # Get the result table.
 #[root@tester]
 
-    resultlink=$(jq -r '.results.table' /tmp/atlas-query.json)
+        resultlink=$(jq -r '.results.table' /tmp/atlas-query.json)
 
-    curl \
-        --silent \
-        ${resultlink:?} \
-        | jq '.' | tee /tmp/result-table.json
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            ${resultlink:?} \
+            | split-headers \
+            | jq '.' | tee /tmp/result-table.json
 
-    resultname=$( jq -r '.fullname' /tmp/result-table.json)
-    resultspace=$(jq -r '.resource' /tmp/result-table.json)
+        resultname=$( jq -r '.fullname' /tmp/result-table.json)
+        resultspace=$(jq -r '.resource' /tmp/result-table.json)
 
-    curl \
-        --silent \
-        ${resultspace:?} \
-        | jq '.' | tee /tmp/result-space.json
+        print-headers
 
 # -----------------------------------------------------
 # Query the results table.
@@ -1527,6 +1561,133 @@ EOF
             jq -r '.results.formats.votable' "/tmp/result-pager.json"
             ) \
             | xmllint --format - \
-            | tee /tmp/result-data.xml
+            | tee /tmp/result-data.vot
+
+# -----------------------------------------------------
+# Query the Atlas and Gaia databases together.
+#[root@tester]
+
+cat > /tmp/join-001.adql << EOF
+
+        SELECT
+            atlas.gAperMag3 - atlas.iAperMag3 AS gmi
+        FROM
+            GAIADR1.tgas_source  AS tgas,
+            ATLASDR1.atlasSource AS atlas,
+            ATLASDR1.atlasSourceXGDR1tgas_source AS neighbour
+        WHERE
+            atlas.gAperMag3 > 1.0
+        AND
+            atlas.iAperMag3 > 1.0
+        AND
+            neighbour.masterObjID = atlas.sourceID
+        AND
+            neighbour.slaveObjId = tgas.source_id
+        AND
+            tgas.parallax > (10.0 * tgas.parallax_error)
+
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/join-001.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/join-001.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl \
+            --silent \
+            $(jq -r '.results.formats.votable' "/tmp/join-001.json") \
+            | xmllint --format - \
+            | tee /tmp/join-001.vot
+
+**
+** No rows ... not sure if that is expected or not ?
+**
+
+
+# -----------------------------------------------------
+# Query the Atlas and Gaia databases together.
+#[root@tester]
+
+cat > /tmp/join-002.adql << EOF
+
+        SELECT
+            atlas.gAperMag3 - atlas.iAperMag3                   AS gmi,
+            atlas.gAperMag3 - (10 + 5.0 * log10(tgas.parallax)) AS Mg
+        FROM
+            GAIADR1.tgas_source  AS tgas,
+            ATLASDR1.atlasSource AS atlas,
+            ATLASDR1.atlasSourceXGDR1tgas_source AS neighbour
+        WHERE
+            atlas.gAperMag3 > -0.9e9
+        AND
+            atlas.iAperMag3 > -0.9e9
+        AND
+            neighbour.masterObjID = atlas.sourceID
+        AND
+            neighbour.slaveObjId = tgas.source_id
+        AND
+            tgas.parallax > (10.0 * tgas.parallax_error)
+
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/join-002.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${queryspace:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/join-002.json
+
+        print-headers
+
+** 
+** Query fails in DQP
+** uk.org.ogsadai.MISMATCHED_TOKEN_EXCEPTION at input '-'
+** 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
