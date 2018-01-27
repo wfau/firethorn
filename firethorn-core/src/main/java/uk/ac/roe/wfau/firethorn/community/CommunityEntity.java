@@ -31,14 +31,21 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.Action;
+import uk.ac.roe.wfau.firethorn.access.ProtectionError;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
@@ -62,8 +69,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
             query = "FROM CommunityEntity ORDER BY ident desc"
             ),
         @NamedQuery(
-            name = "Comunity-select-uri",
-            query = "FROM CommunityEntity WHERE uri = :uri ORDER BY ident desc"
+            name = "Comunity-select-name",
+            query = "FROM CommunityEntity WHERE name = :name ORDER BY ident desc"
             )
         }
     )
@@ -81,9 +88,11 @@ implements Community
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_URI_COL   = "uri" ;
-    protected static final String DB_SPACE_COL = "space" ;
-
+    protected static final String DB_URI_COL    = "uri" ;
+    protected static final String DB_SPACE_COL  = "space" ;
+    protected static final String DB_AUTOCREATE_COL = "autocreate" ;
+    protected static final String DB_USERCREATE_COL = "usercreate" ;
+    
     /**
      * EntityFactory implementation.
      *
@@ -94,6 +103,145 @@ implements Community
     implements Community.EntityFactory
         {
         @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
+        
+        /**
+         * Private search method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Community find(final String name)
+            {
+            log.debug("find (String) [{}]", name);
+            return super.first(
+                super.query(
+                    "Comunity-select-name"
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+        /**
+         * Private create method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Community make(final String name, final JdbcResource space)
+            {
+            return make(
+                name,
+                space,
+                false,
+                false
+                );
+            }
+        /**
+         * Private create method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Community make(final String name, final JdbcResource space, boolean autocreate, boolean usercreate)
+            {
+            return super.insert(
+                new CommunityEntity(
+                    name,
+                    space,
+                    autocreate,
+                    usercreate
+                    )
+                );
+            }
+
+        /**
+         * The 'system' {@link Community) name.
+         * 
+         */
+        @Value("${firethorn.admin.community:admin}")
+        protected String ADMIN_COMMUNITY_NAME ;
+
+        @Override
+        @CreateMethod
+        public synchronized Community admins()
+        throws ProtectionException
+            {
+            log.debug("admin()");
+            final Community found = find(
+                ADMIN_COMMUNITY_NAME
+                );
+            if (found != null)
+                {
+                log.debug("  found [{}]", found);
+                return found;
+                }
+            else {
+                try {
+                    final Community created = make(
+                        ADMIN_COMMUNITY_NAME,
+                        factories().jdbc().resources().entities().userdata(),
+                        false,
+                        false
+                        );
+                    log.debug("  created [{}]", created);
+                    return created ;
+                    }
+                // Only needed because finding the default space may throw an exception. 
+                catch (final ProtectionException ouch)
+                    {
+                    log.error("ProtectionException creating admin community");
+                    throw new ProtectionError(
+                        "ProtectionException creating admin community",
+                        ouch
+                        );
+                    }
+                }
+            }
+
+        /**
+         * The 'guest' {@link Community) name.
+         * 
+         */
+        @Value("${firethorn.guest.community:guests}")
+        protected String GUEST_COMMUNITY_NAME ;
+
+        @Override
+        @CreateMethod
+        public synchronized Community guests()
+        throws ProtectionException
+            {
+            log.debug("guests()");
+            final Community found = find(
+                GUEST_COMMUNITY_NAME
+                );
+            if (found != null)
+                {
+                log.debug("  found [{}]", found);
+                return found;
+                }
+            else {
+                try {
+                    final Community created = make(
+                        GUEST_COMMUNITY_NAME,
+                        factories().jdbc().resources().entities().userdata(),
+                        true,
+                        true
+                        );
+                    log.debug("  created [{}]", created);
+                    return created ;
+                    }
+                // Only needed because finding the default space may throw an exception. 
+                catch (final ProtectionException ouch)
+                    {
+                    log.error("ProtectionException creating guest community");
+                    throw new ProtectionError(
+                        "ProtectionException creating guest community",
+                        ouch
+                        );
+                    }
+                }
+            }
+        
+        @Override
         public Class<?> etype()
             {
             return CommunityEntity.class;
@@ -101,75 +249,117 @@ implements Community
 
         @Override
         @CreateMethod
-        public Community create(final String uri)
+        public Community create(final String name)
+        throws DuplicateEntityException, ProtectionException
             {
-            log.debug("create(String) [{}]", uri);
+            protector().affirm(Action.create);
             return create(
-                uri,
-                uri
+                name,
+                factories().jdbc().resources().entities().userdata()
                 );
             }
 
         @Override
         @CreateMethod
-        public Community create(final String uri, final String name)
+        public Community create(final String name, final JdbcResource space)
+        throws DuplicateEntityException, ProtectionException
             {
-            log.debug("create(String, String) [{}][{}]", name, uri);
-            final Community community = this.select(
-                uri
+            log.debug("create(String, JdbcResource) [{}][{}]", name, space);
+            protector().affirm(Action.create);
+            final Community found = find(
+                name
                 );
-            if (community != null)
+            if (found == null)
                 {
-                log.debug("Found existing community [{}][{}]", uri, community.ident());
-                return community ;
-                }
-            else {
-                log.debug("Creating new community [{}]", uri);
-                return create(
-                    uri,
+                log.debug("Creating new community [{}]", name);
+                return make(
                     name,
-                    factories().jdbc().resources().entities().userdata()
+                    space
                     );
-                }
-            }
-
-        @Override
-        @CreateMethod
-        public Community create(final String uri, final String name, final JdbcResource space)
-            {
-            log.debug("create(String, String, JdbcResource) [{}][{}][{}]", uri, name, space);
-            final Community community = this.select(
-                uri
-                );
-            if (community != null)
-                {
-                log.debug("Found existing community [{}][{}]", uri, community.ident());
-                return community ;
                 }
             else {
-                log.debug("Creating new community [{}]", uri);
-                return super.insert(
-                    new CommunityEntity(
-                        uri,
-                        name,
-                        space
-                        )
-                    );
+                log.debug("Duplicate community [{}][{}]", name, found.ident());
+                throw new DuplicateEntityException(found);
                 }
             }
-
+        
         @Override
         @SelectMethod
-        public Community select(final String uri)
+        public Community select(final String name)
+        throws NameNotFoundException, ProtectionException
             {
-            log.debug("select(String) [{}]", uri);
-            return super.first(
-                super.query(
-                    "Comunity-select-uri"
-                    ).setString(
-                        "uri",
-                        uri
-                    )
+            log.debug("select(String) [{}]", name);
+            protector().affirm(Action.select);
+            final Community found = find(
+                name
+                );
+            if (found != null)
+                {
+                return found;
+                }
+            else {
+                throw new NameNotFoundException(
+                    name
+                    ); 
+                }
+            }
+
+        @SelectMethod
+        public Community search(final String name) throws ProtectionException
+            {
+            log.debug("search (String) [{}]", name);
+            protector().affirm(Action.select);
+            return find(
+                name
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public Identity login(final String comm, final String name, final String pass)
+        throws UnauthorizedException, ProtectionException
+            {
+            log.debug("login(String, String, String)");
+            log.debug("  community [{}]", comm);
+            log.debug("  username  [{}]", name);
+            log.debug("  password  [{}]", pass);
+            //
+            // Load the guest Community for comparison.
+            final Community guests = factories().communities().entities().guests();
+            log.debug("Guest Community [{}][{}]", guests.ident(), guests.name());
+            //
+            // Load the system Identity for comparison.
+            final Identity system = factories().identities().entities().admin();
+            log.debug("System Identity  [{}][{}]", system.ident(), system.name());
+            log.debug("System Community [{}][{}]", system.community().ident(), system.community().name());
+
+            //
+            // Check the Community.
+            Community community;
+            if (comm != null)
+                {
+                community = find(
+                    comm
+                    );
+                }
+            else {
+                community = guests;
+                }
+
+            if (community == null)
+                {
+                log.warn("LOGIN FAIL unknown community [{}]", comm);
+                throw new UnauthorizedException();
+                }
+            if (name == null)
+                {
+                log.warn("FAIL : Null username");
+                throw new UnauthorizedException();
+                }
+
+            return community.login(
+                name,
+                pass
                 );
             }
         }
@@ -300,42 +490,103 @@ implements Community
         }
 
     /**
-     * Create a new Community.
+     * Protected constructor.
      *
      */
-    protected CommunityEntity(final String uri, final String name, final JdbcResource space)
+    protected CommunityEntity(final String name, final JdbcResource space)
+        {
+    	this(
+			name,
+			space,
+			false,
+			false
+            );
+        }
+
+    /**
+     * Protected constructor.
+     *
+     */
+    protected CommunityEntity(final String name, final JdbcResource space, boolean autocreate, boolean usercreate)
         {
         super(
             name
             );
-        log.debug("CommunityEntity(String, String. JdbcResource) [{}][{}]", uri, name, space);
+        log.debug("CommunityEntity(String, JdbcResource, boolean, boolean) [{}][{}][{}][{}]", name, space, autocreate, usercreate);
         this.space = space ;
-        this.uri = uri ;
+        this.autocreate = autocreate;
+        this.usercreate = usercreate;
         }
 
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_URI_COL,
-        unique = true,
+        name = DB_AUTOCREATE_COL,
+        unique = false,
         nullable = false,
-        updatable = false
+        updatable = true
         )
-    private String uri;
+    private Boolean autocreate = false;
     @Override
-    public String uri()
+    public Boolean autocreate()
         {
-        return this.uri;
+        return this.autocreate;
+        }
+    @Override
+    public void autocreate(final Boolean value)
+        {
+        this.autocreate = value;
         }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_USERCREATE_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    private Boolean usercreate = false;
+    @Override
+    public Boolean usercreate()
+        {
+        return this.usercreate;
+        }
+    @Override
+    public void usercreate(final Boolean value)
+        {
+        this.usercreate = value;
+        }
+    
+    @Override
+    public Identity login(final String name, final String pass)
+    throws UnauthorizedException, ProtectionException
+        {
+        log.debug("login(String, String)");
+        log.debug("  name [{}]", name);
+        log.debug("  pass [{}]", pass);
+        return members().login(name, pass);
+        }
+    
     @Override
     public Members members()
         {
         return new Members()
             {
             @Override
+            public Identity create()
+            throws ProtectionException
+                {
+                return services().identities().create(
+                    CommunityEntity.this
+                    );
+                }
+
+            @Override
             public Identity create(final String name)
+            throws ProtectionException, DuplicateEntityException
                 {
                 return services().identities().create(
                     CommunityEntity.this,
@@ -344,11 +595,58 @@ implements Community
                 }
 
             @Override
+            public Identity create(final String name, final String pass)
+            throws ProtectionException, DuplicateEntityException
+                {
+                return services().identities().create(
+                    CommunityEntity.this,
+                    name,
+                    pass
+                    );
+                }
+
+            @Override
             public Identity select(final String name)
+            throws ProtectionException, NameNotFoundException
                 {
                 return services().identities().select(
                     CommunityEntity.this,
                     name
+                    );
+                }
+
+            @Override
+            public Identity search(String name, boolean create)
+            throws ProtectionException
+                {
+                return services().identities().search(
+                    CommunityEntity.this,
+                    name,
+                    create
+                    );
+                }
+
+            @Override
+            public Identity search(String name)
+            throws ProtectionException
+                {
+                return services().identities().search(
+                    CommunityEntity.this,
+                    name
+                    );
+                }
+
+            @Override
+            public Identity login(String name, String pass)
+            throws ProtectionException, UnauthorizedException
+                {
+                log.debug("login(String, String)");
+                log.debug("  name [{}]", name);
+                log.debug("  pass [{}]", pass);
+            	return services().identities().login(
+                    CommunityEntity.this,
+                    name,
+                    pass
                     );
                 }
             };
@@ -372,6 +670,7 @@ implements Community
         }
     @Override
     public JdbcResource space(final boolean create)
+    throws ProtectionException
         {
         log.debug("space(boolean) [{}]", create);
         if ((create) && (this.space == null))

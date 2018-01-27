@@ -35,6 +35,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
@@ -102,6 +105,11 @@ public class OgsaIvoaResourceEntity
     extends OgsaBaseResourceEntity.EntityFactory<OgsaIvoaResource>
     implements OgsaIvoaResource.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()
@@ -112,6 +120,7 @@ public class OgsaIvoaResourceEntity
         @Override
         @SelectMethod
         public Iterable<OgsaIvoaResource> select()
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -123,6 +132,7 @@ public class OgsaIvoaResourceEntity
         @Override
         @SelectMethod
         public Iterable<OgsaIvoaResource> select(final OgsaService service)
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -136,6 +146,7 @@ public class OgsaIvoaResourceEntity
 
         @Override
         public Iterable<OgsaIvoaResource> select(final IvoaResource resource)
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -150,6 +161,7 @@ public class OgsaIvoaResourceEntity
         @Override
         @SelectMethod
         public Iterable<OgsaIvoaResource> select(final OgsaService service, final IvoaResource resource)
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -167,6 +179,7 @@ public class OgsaIvoaResourceEntity
         @Override
         @CreateMethod
         public OgsaIvoaResource create(final OgsaService service, final IvoaResource resource)
+        throws ProtectionException
             {
             return super.insert(
                 new OgsaIvoaResourceEntity(
@@ -179,6 +192,7 @@ public class OgsaIvoaResourceEntity
         @Override
         @CreateMethod
         public OgsaIvoaResource primary(IvoaResource resource)
+        throws ProtectionException
             {
             return this.primary(
                 factories().ogsa().services().entities().primary(),
@@ -189,6 +203,7 @@ public class OgsaIvoaResourceEntity
         @Override
         @CreateMethod
         public OgsaIvoaResource primary(OgsaService service, IvoaResource resource)
+        throws ProtectionException
             {
             // Really really simple - just get the first. 
             OgsaIvoaResource found = super.first(
@@ -379,6 +394,7 @@ public class OgsaIvoaResourceEntity
 
     @Override
     public OgsaStatus init()
+    throws ProtectionException
         {
         log.debug("init()");
         log.debug("  name   [{}]", this.name());

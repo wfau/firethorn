@@ -27,6 +27,7 @@ import javax.persistence.MappedSuperclass;
 import org.hibernate.annotations.Type;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -83,22 +84,7 @@ implements Entity, NamedEntity
         }
 
     /**
-     * Protected constructor, sets the owner, name and create date.
-     *
-     */
-    protected AbstractNamedEntity(final Identity owner)
-        {
-        super(
-            owner
-            );
-        log.debug("AbstractNamedEntity(Identity)");
-        this.init(
-            null
-            );
-        }
-
-    /**
-     * Protected constructor, sets the owner, name and create date.
+     * Protected constructor.
      *
      */
     protected AbstractNamedEntity(final Identity owner, final String name)
@@ -113,6 +99,23 @@ implements Entity, NamedEntity
             );
 		}
 
+    /**
+     * Protected constructor.
+     *
+     */
+    protected AbstractNamedEntity(final Long ident, final Identity owner, final String name)
+        {
+        super(
+            ident,
+            owner
+            );
+        log.debug("AbstractNamedEntity(Identity, String)");
+        log.debug("  Name  [{}]", name);
+        this.init(
+            name
+            );
+        }
+    
     /**
      * Static name factory.
      * 
@@ -159,6 +162,7 @@ implements Entity, NamedEntity
 
     @Override
     public void name(final String name)
+    throws ProtectionException
         {
         if (name != null)
             {
@@ -189,11 +193,13 @@ implements Entity, NamedEntity
     private String text ;
     @Override
     public String text()
+    throws ProtectionException
         {
         return this.text;
         }
     @Override
     public void text(final String value)
+    throws ProtectionException
         {
         this.text = emptystr(
             value

@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
@@ -67,10 +68,12 @@ public class AdqlTapAsyncController extends AbstractController {
 
 	/**
 	 * Get the target workspace based on the ident in the path.
+	 * @throws ProtectionException 
+	 * @throws IdentifierFormatException 
 	 *
 	 */
 	@ModelAttribute("urn:adql.resource.entity")
-	public AdqlResource entity(@PathVariable("ident") final String ident) throws IdentifierNotFoundException {
+	public AdqlResource entity(@PathVariable("ident") final String ident) throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException {
 		log.debug("entity() [{}]", ident);
 
 		return factories().adql().resources().entities().select(factories().adql().resources().idents().ident(ident));
@@ -84,9 +87,10 @@ public class AdqlTapAsyncController extends AbstractController {
 	 * @throws IdentifierFormatException
 	 * @throws IdentifierNotFoundException
 	 * @throws EntityNotFoundException
+	 * @throws ProtectionException 
 	 */
 	public BlueQuery getqueryentity(final String jobid)
-			throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException {
+			throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException, ProtectionException {
 		log.debug("query() [{}]", jobid);
 		return services.entities().select(services.idents().ident(jobid));
 

@@ -26,13 +26,12 @@ import javax.persistence.MappedSuperclass;
 
 import org.springframework.stereotype.Repository;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 
 /**
  * {@link TreeComponent} implementation.
  *
  */
-@Slf4j
 @Access(
     AccessType.FIELD
     )
@@ -94,9 +93,6 @@ implements TreeComponent
             name
             );
         this.depth = depth;
-        //log.debug("TreeComponentEntity(CopyDepth, String)");
-        //log.debug("  Depth [{}]", depth);
-        //log.debug("  Name  [{}]", name);
         }
 
     @Column(
@@ -117,13 +113,8 @@ implements TreeComponent
         }
 
     @Override
-    public void depth(final CopyDepth type)
-        {
-        this.depth = type;
-        }
-
-    @Override
     public String fullname()
+    throws ProtectionException
         {
         return namebuilder().toString();
         }

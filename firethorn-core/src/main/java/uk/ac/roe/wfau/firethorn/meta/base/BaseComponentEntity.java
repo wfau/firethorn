@@ -34,10 +34,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * {@link BaseComponent} implementation.
@@ -442,6 +444,7 @@ implements BaseComponent
      *
      */
     protected void scan()
+    throws ProtectionException
         {
         log.debug("scan for [{}][{}]", this.ident(), this.name());
         if (scantest())
@@ -483,8 +486,9 @@ implements BaseComponent
     
     /**
      * Scan implementation.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    protected abstract void scanimpl();
-
+    protected abstract void scanimpl() throws ProtectionException;
+    
     }

@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.access;
 
-import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 
 /**
  *
@@ -26,10 +26,10 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 public interface AccessMap
     {
 
-    public void insert(Action action, Identity identity);
+    public void insert(final Action action, final Authentication authentication);
 
-    public void remove(Action action, Identity identity);
+    public void remove(final Action action, final Authentication authentication);
 
-    public boolean contains(Action action, Identity identity);
+    public boolean contains(final Action action, final Authentication authentication);
 
     }

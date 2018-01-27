@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -123,20 +124,24 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
 
     /**
      * JSON GET request to select all.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<JdbcResourceBean> select(
+    public ResponseEntity<Iterable<JdbcResourceBean>> select(
         final ModelAndView model
-        ){
-        return bean(
+        )
+    throws ProtectionException
+        {
+        return selected(
             factories().jdbc().resources().entities().select()
             );
         }
 
     /**
      * JSON POST request to create a new resource.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -154,7 +159,9 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
         final String pass,
         @RequestParam(value=CONNECTION_DRIVER_PARAM, required=false)
         final String driver
-        ){
+        )
+    throws ProtectionException
+        {
         return created(
             factories().jdbc().resources().entities().create(
                 catalog,

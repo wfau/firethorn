@@ -21,8 +21,10 @@ import org.joda.time.Period;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Public interface for a metadata component.
@@ -48,12 +50,6 @@ extends NamedEntity
 
         }
 
-    /**
-     * Access to our parent {@link BaseComponent.EntityFactory}.
-     *
-    public BaseComponent.EntityFactory<?> factory();
-     */
-    
     /**
      * Enum representing the status.
      *
@@ -96,16 +92,19 @@ extends NamedEntity
 
     /**
      * The component status.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public Status status();
+    public Status status()
+    throws ProtectionException;
 
     /**
      * Set the component status.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     public void status(final Status status)
-    throws InvalidStatusException ;
+    throws ProtectionException, InvalidStatusException;
 
     /**
      * Exception to describe an invalid status.

@@ -25,11 +25,115 @@ import java.net.URI;
  */
 public interface Action
     {
+    /**
+     * The simple name for this {@link Action}.
+     * 
+     */
+    public String name();
 
     /**
-     * The URI identifier for this action.
+     * The URI identifier for this {@link Action}.
      * 
      */
     public URI uri();
 
+    /**
+     * Core types of {@link Action}.
+     *  
+     */
+    public enum ActionType
+        {
+        SELECT(false, true),
+        UPDATE(true,  true),
+        CREATE(false, false),
+        DELETE(false, false);
+
+        /**
+         * Private constructor. 
+         * @param modify True if this {@link Action} modifies something.
+         * 
+         */
+        private ActionType(boolean modify, boolean select)
+            {
+            this.modify = modify ;
+            this.select = select ;
+            }
+
+        /**
+         * Flag to indicate if this {@link Action} modifies something.
+         * 
+         */
+        private boolean modify;
+
+        /**
+         * Flag to indicate if this {@link Action} modifies something.
+         * 
+         */
+        public boolean modify()
+            {
+            return this.modify;
+            }
+
+        /**
+         * Flag to indicate if this {@link Action} selects something.
+         * 
+         */
+        private boolean select;
+
+        /**
+         * Flag to indicate if this {@link Action} selects something.
+         * 
+         */
+        public boolean select()
+            {
+            return this.select;
+            }
+
+        }
+
+    /**
+     * The type of {@link Action}.
+     *  
+     */
+    public ActionType type();
+
+    /**
+     * Simple create {@link Action}.
+     * 
+     */
+    public static final Action create = new BaseAction(
+        Action.ActionType.CREATE,
+        "core:create",
+        "create"
+        );
+    
+    /**
+     * Simple select (read) {@link Action}.
+     * 
+     */
+    public static final Action select = new BaseAction(
+        Action.ActionType.SELECT,
+        "core:select",
+        "select"
+        );
+
+    /**
+     * Simple update (write) {@link Action}.
+     * 
+     */
+    public static final Action update = new BaseAction(
+        Action.ActionType.UPDATE,
+        "core:update",
+        "update"
+        );
+
+    /**
+     * Simple delete {@link Action}.
+     * 
+     */
+    public static final Action delete = new BaseAction(
+        Action.ActionType.DELETE,
+        "core:delete",
+        "delete"
+        );
     }

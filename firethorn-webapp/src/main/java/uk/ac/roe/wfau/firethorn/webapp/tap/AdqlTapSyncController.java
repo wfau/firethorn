@@ -34,8 +34,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -62,20 +64,22 @@ public class AdqlTapSyncController extends AbstractController {
 
 	/**
 	 * Get the target workspace based on the ident in the path.
+	 * @throws ProtectionException 
+	 * @throws IdentifierFormatException 
 	 *
 	 */
 	@ModelAttribute("urn:adql.resource.entity")
-	public AdqlResource entity(@PathVariable("ident") final String ident) throws IdentifierNotFoundException {
-		log.debug("entity() [{}]", ident);
+	public AdqlResource entity(@PathVariable("ident") final String ident)
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+	    {
 		return factories().adql().resources().entities().select(factories().adql().resources().idents().ident(ident));
-	}
+	    }
 
 	/**
 	 * Web service method Create a Synchronous query job
 	 * 
 	 */
-	@RequestMapping(value = "sync", method = { RequestMethod.POST,
-			RequestMethod.GET })
+	@RequestMapping(value = "sync", method = { RequestMethod.POST, RequestMethod.GET })
 	public void sync(@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
 			final HttpServletResponse response, HttpServletRequest request,
 			@RequestParam(value = "QUERY", required = false) String QUERY,
@@ -85,9 +89,8 @@ public class AdqlTapSyncController extends AbstractController {
 			@RequestParam(value = "VERSION", required = false) String VERSION, 
 			@RequestParam(value = "MAXREC", required = false) String MAXREC
             )
-					throws IdentifierNotFoundException, IOException {
-
-		
+		throws IdentifierNotFoundException, IOException
+	        {
 		response.setContentType(CommonParams.TEXT_XML_MIME);
 		
 		String tap_query = QUERY;

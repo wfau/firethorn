@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,9 +26,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -40,7 +43,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
  * <br/>Controller path : [{@value AdqlTableLinkFactory#ENTITY_PATH}]
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlTableLinkFactory.TABLE_PATH)
 public class AdqlTableController
@@ -98,14 +100,17 @@ public class AdqlTableController
      * @param ident The {@link AdqlTable} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return The target {@link AdqlTable}.
      * @throws IdentifierNotFoundException If the {@link AdqlTable} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public AdqlTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws IdentifierNotFoundException {
-        log.debug("entity() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().tables().entities().select(
             factories().adql().tables().idents().ident(
                 ident
@@ -123,12 +128,11 @@ public class AdqlTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public AdqlTableBean select(
+    public ResponseEntity<AdqlTableBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table
         ){
-        log.debug("select()");
-        return bean(
+        return selected(
             table
             );
         }
@@ -141,18 +145,21 @@ public class AdqlTableController
      * <br/>Optional {@link AdqlTable} params :
      * @param name   The {@link AdqlTable} name, [{@value #TABLE_NAME_PARAM}].
      * @return The updated {@link AdqlTable} wrapped in a {@link AdqlTableBean}.
+     * @throws ProtectionException 
+     * @throws NameFormatException 
      * 
      */
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public AdqlTableBean update(
+    public ResponseEntity<AdqlTableBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(value=TABLE_NAME_PARAM, required=false)
         final String name
-        ){
-        log.debug("update(String)");
+        )
+    throws NameFormatException, ProtectionException
+        {
         if (name != null)
             {
             if (name.length() > 0)
@@ -162,7 +169,7 @@ public class AdqlTableController
                     );
                 }
             }
-        return bean(
+        return selected(
             table
             );
         }

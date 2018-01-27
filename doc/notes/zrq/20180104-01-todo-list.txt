@@ -1,0 +1,89 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Fedora-28 VM image
+
+    Fedora-28 updates
+
+        storage space
+
+            laptop
+
+            proline
+
+            methionine
+                124G Zarquan
+                    0.5G    Notes + Archive
+                    1.1G    Documents
+                    24G	    Music
+                    99G	    Pictures
+                26G projects/
+                    8.4G edinburgh/
+                        7.0G    astrotrop
+                        1.1M    cosmopterix
+                        702M    firethorn
+                        2.5M    forge
+                        70M     GAIA
+                        328K    ivoatex
+                        300K    lasair
+                        228K    lsst:uk
+                        9.1M    lyonetia
+                        456M    ogsa-dai
+                        18M     phymatopus
+                        37M     SQL
+                        536K    sysconfig
+                        62M     timedomain
+                        61M     volute
+                    18G local/
+                        12K     android/
+                        4.0K    banana-pi/
+                        8.0K    cazaril/
+                        23M     house/
+                        741M    ICY/
+                        1.5M    IOT/
+                        17G     mailserver/
+                        224K    network/
+                    7.4M metagrid/
+                        64K     aciagrion/
+                        0       coenagrion/
+                        172K    fraxinella/
+                        6.3M    heliodines/
+                        960K    ischnura/
+
+            asparagine
+
+
+        black boxes
+            md5 based image archive
+
+
+    Update Maven Docker plugin
+
+        SQLServer container
+
+        JUnit tests
+            Test databases
+            Test data
+
+    Case insensitive Hibernate 
+

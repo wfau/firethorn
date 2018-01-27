@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
@@ -296,7 +297,7 @@ public class UWSJob {
 		return "0";
 	}
 	
-	public void setRequest(String request){
+	public void setRequest(String request) throws ProtectionException{
 		this.getQuery().param().map().put("request",request);
 		this.request = request;
 	}
@@ -310,7 +311,7 @@ public class UWSJob {
 		return format;
 	}
 
-	public void setFormat(String format) {
+	public void setFormat(String format) throws ProtectionException {
 		this.getQuery().param().map().put("format",format);
 		this.format = format;
 	}
@@ -319,7 +320,7 @@ public class UWSJob {
 		return version;
 	}
 
-	public void setVersion(String version) {
+	public void setVersion(String version) throws ProtectionException {
 		this.getQuery().param().map().put("version",version);
 		this.version = version;
 	}
@@ -328,7 +329,7 @@ public class UWSJob {
 		return maxrec;
 	}
 
-	public void setMaxrec(String maxrec) {
+	public void setMaxrec(String maxrec) throws ProtectionException {
 		this.getQuery().param().map().put("maxrec",maxrec);	
 		
 		if (maxrec!=null) {
@@ -359,7 +360,7 @@ public class UWSJob {
 		}
 	}
 
-	public void setLang(String lang) {
+	public void setLang(String lang) throws ProtectionException {
 		this.getQuery().param().map().put("lang",lang);
 		this.lang = lang;
 	}
@@ -387,7 +388,7 @@ public class UWSJob {
 	}
 
 	
-	public void setJobStatus(String status) {
+	public void setJobStatus(String status) throws ProtectionException {
 		this.getQuery().param().map().put("jobstatus", status);	
 		this.jobstatus=status;
 	}
@@ -448,8 +449,9 @@ public class UWSJob {
 	/**
 	 * Get the Query results URL (votable as string)
 	 * @return url
+	 * @throws ProtectionException 
 	 */
-	public String getResults() {
+	public String getResults() throws ProtectionException {
 		String url = "";
 		if ( this.query.results().adql()!=null){
 			 url = this.query.results().adql().link() + "/votable";
@@ -524,8 +526,9 @@ public class UWSJob {
 	 * Write UWSJob in XML format
 	 * @param uwsjob
 	 * @param writer
+	 * @throws ProtectionException 
 	 */
-	public String writeUWSJobToXML (){
+	public String writeUWSJobToXML () throws ProtectionException{
 
 			StringBuilder writer = new StringBuilder();
 			

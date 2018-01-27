@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -92,6 +93,7 @@ public class AttribServiceController
 
     /**
      * JSON GET request for a specific column.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -101,7 +103,7 @@ public class AttribServiceController
         final String table,
         @PathVariable(AttribServiceController.COLUMN_NAME_FIELD)
         final String column
-        ) throws EntityNotFoundException {
+        ) throws EntityNotFoundException, ProtectionException {
         log.debug("json get [{}][{}]", table, column);
         return new ColumnBean(
             factories().ogsa().tables().resolve(
@@ -114,15 +116,18 @@ public class AttribServiceController
 
     /**
      * JSON GET request for a list of columns.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
+    @SuppressWarnings("unchecked")
     @RequestMapping(value=COLUMN_LIST_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public ColumnBean.Iter jsonSelect(
         @PathVariable(AttribServiceController.TABLE_ALIAS_FIELD)
         final String alias
-        ) throws EntityNotFoundException {
-        // GENERICS :-(
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
         return new ColumnBean.Iter(
             (Iterable<BaseColumn<?>>) factories().ogsa().tables().resolve(
                 alias
@@ -188,9 +193,11 @@ public class AttribServiceController
          * This is the table alias used in SQL queries passed into OGSA-DAI,
          * before the mapping from table alias to fully qualified resource table name.
          * @return The parent table alias.
+         * @throws ProtectionException 
          *
          */
         public String getSource()
+        throws ProtectionException
             {
             return this.column.table().alias();
             }
@@ -208,10 +215,12 @@ public class AttribServiceController
         /**
          * Get the column type as an OGSA-DAI TupleTypes value.
          * @return The column type.
+         * @throws ProtectionException 
          * @see TupleTypes
          *
          */
         public int getType()
+        throws ProtectionException
             {
             return convert(
                 this.column.meta().adql().type()

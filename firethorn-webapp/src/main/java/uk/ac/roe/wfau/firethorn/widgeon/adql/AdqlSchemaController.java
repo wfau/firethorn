@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,9 +26,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -38,7 +41,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
  * <br/>Controller path : [{@value AdqlSchemaLinkFactory#ENTITY_PATH}]
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_PATH)
 public class AdqlSchemaController
@@ -96,14 +98,17 @@ public class AdqlSchemaController
      * @param ident The {@link AdqlSchema} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return The target {@link AdqlSchema}.
      * @throws IdentifierNotFoundException If the {@link AdqlSchema} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public AdqlSchema entity(
         @PathVariable("ident")
         final String ident
-        ) throws IdentifierNotFoundException {
-        log.debug("entity() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().schemas().entities().select(
             factories().adql().schemas().idents().ident(
                 ident
@@ -121,12 +126,11 @@ public class AdqlSchemaController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public AdqlSchemaBean select(
+    public ResponseEntity<AdqlSchemaBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlSchema entity
         ){
-        log.debug("select(AdqlSchema)");
-        return bean(
+        return selected(
             entity
             );
         }
@@ -139,18 +143,21 @@ public class AdqlSchemaController
      * <br/>Optional {@link AdqlSchema} params :
      * @param name   The {@link AdqlSchema} name, [{@value #SCHEMA_NAME_PARAM}].
      * @return The updated {@link AdqlSchema} wrapped in a {@link AdqlSchemaBean}.
+     * @throws ProtectionException 
+     * @throws NameFormatException 
      * 
      */
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public AdqlSchemaBean update(
+    public ResponseEntity<AdqlSchemaBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlSchema entity,
         @RequestParam(value=SCHEMA_NAME_PARAM, required=false)
         final String name
-        ){
-        log.debug("update(AdqlSchema, String)");
+        )
+    throws NameFormatException, ProtectionException
+        {
         if (name != null)
             {
             if (name.length() > 0)
@@ -160,8 +167,7 @@ public class AdqlSchemaController
                     );
                 }
             }
-
-        return bean(
+        return selected(
             entity
             );
         }

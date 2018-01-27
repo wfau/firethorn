@@ -21,8 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
@@ -78,21 +80,28 @@ extends BaseColumn<AdqlColumn>
         {
         /**
          * Create a new {@link AdqlColumn}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base);
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base)
+        throws ProtectionException;
 
         /**
          * Create a new {@link AdqlColumn}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name);
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name)
+        throws ProtectionException;
         
         /**
          * Create a new {@link AdqlColumn}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final AdqlColumn.Metadata meta);
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final AdqlColumn.Metadata meta)
+        throws ProtectionException;
+        
         }
 
     /**
@@ -117,13 +126,20 @@ extends BaseColumn<AdqlColumn>
         }
     
     @Override
-    public AdqlTable table();
+    public AdqlTable table()
+    throws ProtectionException;
+
     @Override
-    public AdqlSchema schema();
+    public AdqlSchema schema()
+    throws ProtectionException;
+
     @Override
-    public AdqlResource resource();
+    public AdqlResource resource()
+    throws ProtectionException;
+
     @Override
-    public BaseColumn<?> base();
+    public BaseColumn<?> base()
+    throws ProtectionException;
 
     /**
      * An enumeration of the VOTable data types, as defined in section 2.1 of the VOTable-1.2 specification.
@@ -335,52 +351,69 @@ extends BaseColumn<AdqlColumn>
             {
             /**
              * The column name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String name();
+            public String name()
+            throws ProtectionException;
 
             /**
              * The column description.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String text();
+            public String text()
+            throws ProtectionException;
             
             /**
              * The array size (element count).
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public Integer arraysize();
+            public Integer arraysize()
+            throws ProtectionException;
 
             /**
              * The ADQL type.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public AdqlColumn.AdqlType type();
+            public AdqlColumn.AdqlType type()
+            throws ProtectionException;
 
             /**
              * The ADQL units.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String units();
+            public String units()
+            throws ProtectionException;
 
             /**
              * The ADQL utype.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String utype();
+            public String utype()
+            throws ProtectionException;
 
             /**
              * The column UCD.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String ucd();
+            public String ucd()
+            throws ProtectionException;
 
             }
         /**
          * The ADQL metadata.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Adql adql();
+        public Adql adql()
+        throws ProtectionException;
+
         }
 
     /**
@@ -399,55 +432,74 @@ extends BaseColumn<AdqlColumn>
             {
             /**
              * The array size (element count).
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public void arraysize(final Integer size);
+            public void arraysize(final Integer size)
+            throws ProtectionException;
             
             /**
              * Set the ADQL type.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public void type(final AdqlColumn.AdqlType type);
+            public void type(final AdqlColumn.AdqlType type)
+            throws ProtectionException;
 
             /**
              * Set the ADQL type.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public void type(final String dtype);
+            public void type(final String dtype)
+            throws ProtectionException;
 
             /**
              * Set the ADQL utype.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public void utype(final String utype);
+            public void utype(final String utype)
+            throws ProtectionException;
 
             /**
              * Set the ADQL units.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public void units(final String unit);
+            public void units(final String unit)
+            throws ProtectionException;
 
             /**
              * Set the column UCD.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public void ucd(final String value);
+            public void ucd(final String value)
+            throws ProtectionException;
 
             }
+
         /**
          * The ADQL modifier.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Adql adql();
+        public Adql adql()
+        throws ProtectionException;
+
         }
 
     @Override
-    public AdqlColumn.Modifier meta();
+    public AdqlColumn.Modifier meta()
+    throws ProtectionException;
 
     /**
      * Update the {@link AdqlColumn} properties.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void update(final AdqlColumn.Metadata.Adql meta);
+    public void update(final AdqlColumn.Metadata.Adql meta)
+    throws ProtectionException;
 
     }

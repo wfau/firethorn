@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -45,7 +45,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
  * <br/>Controller path : [{@value AdqlSchemaLinkFactory#SCHEMA_TABLE_PATH}]
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class AdqlSchemaTableController
@@ -103,14 +102,17 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * @param ident The {@link AdqlSchema} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return The parent {@link AdqlSchema}.
      * @throws IdentifierNotFoundException If the {@link AdqlSchema} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
     public AdqlSchema entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws IdentifierNotFoundException {
-        log.debug("entity() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().schemas().entities().select(
             factories().adql().schemas().idents().ident(
                 ident
@@ -124,16 +126,18 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param schema The parent {@link AdqlSchema} selected using the {@Identifier} in the request path.
      * @return An {@Iterable} set of {@link AdqlTableBean}.
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<AdqlTableBean> select(
+    public ResponseEntity<Iterable<AdqlTableBean>> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
-        ){
-        log.debug("select()");
-        return bean(
+        )
+    throws ProtectionException
+        {
+        return selected(
             schema.tables().select()
             );
         }
@@ -146,18 +150,20 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * @param name The {@link AdqlTable} name to look for, [{@value #TABLE_NAME_PARAM}].
      * @return The matching {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
      * @throws NameNotFoundException If a matching {@link AdqlTable} could not be found.
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=TABLE_NAME_PARAM, produces=JSON_MIME)
-    public AdqlTableBean select(
+    public ResponseEntity<AdqlTableBean> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(TABLE_NAME_PARAM)
         final String name
-        ) throws NameNotFoundException {
-        log.debug("select(String) [{}]", name);
-        return bean(
+        )
+    throws NameNotFoundException, ProtectionException
+        {
+        return selected(
             schema.tables().select(
                 name
                 )
@@ -174,6 +180,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      * @todo Rejects duplicate names.
      * 
      */
@@ -186,8 +193,9 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         final TreeComponent.CopyDepth type,
         @RequestParam(value=BASE_TABLE_PARAM, required=true)
         final String base
-        ) throws IdentifierFormatException, EntityNotFoundException {
-        log.debug("inport(CopyDepth, String) [{}][{}]", type, base);
+        )
+    throws IdentifierFormatException, EntityNotFoundException, ProtectionException
+        {
         return created(
             schema.tables().create(
                 ((type != null) ? type : TreeComponent.CopyDepth.FULL),
@@ -209,6 +217,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      * @return The new {@link AdqlTable} wrapped in an {@link AdqlTableBean}.
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      * @todo Rejects duplicate names.
      * @todo Make name optional, default to the base name.
      * 
@@ -224,8 +233,9 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         final String base,
         @RequestParam(value=TABLE_NAME_PARAM, required=true)
         final String name
-        ) throws IdentifierFormatException, EntityNotFoundException {
-        log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", type, base, name);
+        )
+    throws IdentifierFormatException, EntityNotFoundException, ProtectionException
+        {
         return created(
             schema.tables().create(
                 type,

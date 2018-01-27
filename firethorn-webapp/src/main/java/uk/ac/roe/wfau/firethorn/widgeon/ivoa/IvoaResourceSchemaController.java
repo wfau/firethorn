@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +26,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -38,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaResourceLinkFactory;
  * Spring MVC controller for <code>IvoaResource</code> schema.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(IvoaResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class IvoaResourceSchemaController
@@ -86,14 +87,17 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
     /**
      * Get the parent resource based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
     public IvoaResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException{
-        log.debug("parent() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().ivoa().resources().entities().select(
             factories().ivoa().resources().idents().ident(
                 ident
@@ -107,12 +111,13 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<IvoaSchemaBean> select(
+    public ResponseEntity<Iterable<IvoaSchemaBean>> select(
         @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
         final IvoaResource resource
-        ){
-        log.debug("select()");
-        return bean(
+        )
+    throws ProtectionException
+        {
+        return selected(
             resource.schemas().select()
             );
         }
@@ -123,14 +128,15 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
-    public IvoaSchemaBean select(
+    public ResponseEntity<IvoaSchemaBean> select(
         @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
         final IvoaResource resource,
         @RequestParam(SCHEMA_NAME_PARAM)
         final String name
-        ) throws EntityNotFoundException {
-        log.debug("select(String) [{}]", name);
-        return bean(
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
             resource.schemas().select(
                 name
                 )

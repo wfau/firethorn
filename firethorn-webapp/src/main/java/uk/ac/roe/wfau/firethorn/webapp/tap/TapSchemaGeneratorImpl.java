@@ -11,6 +11,7 @@ import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Value;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -389,9 +390,12 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	
 	/**
 	 * Create the TAP_SCHEMA 
+	 * @throws ProtectionException 
 	 * 
 	 */
-	public void createTapSchema() {
+	public void createTapSchema()
+    throws ProtectionException
+	    {
 		this.createStructure();
 		this.insertMetadata();
 		AdqlResource resource = this.resource;

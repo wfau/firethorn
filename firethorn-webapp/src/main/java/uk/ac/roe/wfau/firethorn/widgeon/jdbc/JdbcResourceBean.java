@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceBean;
@@ -27,7 +27,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceIdentFactory;
  * Bean wrapper for <code>JdbcResource</code>.
  *
  */
-@Slf4j
 public class JdbcResourceBean
 extends BaseResourceBean<JdbcResource>
     {
@@ -63,9 +62,14 @@ extends BaseResourceBean<JdbcResource>
 
     public interface ConnectionBean
         {
-        public String getUri();
-        public String getUser();
-        public String getPass();
+        public String getUri()
+        throws ProtectionException;
+        
+        public String getUser()
+        throws ProtectionException;
+        
+        public String getPass()
+        throws ProtectionException;
         }
 
     public ConnectionBean getConnection()
@@ -73,14 +77,17 @@ extends BaseResourceBean<JdbcResource>
         return new ConnectionBean()
             {
             public String getUri()
+            throws ProtectionException
                 {
                 return entity().connection().uri();
                 }
             public String getUser()
+            throws ProtectionException
                 {
                 return entity().connection().user();
                 }
             public String getPass()
+            throws ProtectionException
                 {
                 return "########";
                 }

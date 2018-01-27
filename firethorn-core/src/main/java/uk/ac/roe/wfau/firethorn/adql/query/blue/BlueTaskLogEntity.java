@@ -40,12 +40,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * 
@@ -130,6 +133,12 @@ public class BlueTaskLogEntity
     implements BlueTaskLogEntry.EntityFactory
         {
         @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+        
+        @Override
         public Class<?> etype()
             {
             return BlueTaskLogEntity.class ;
@@ -154,6 +163,7 @@ public class BlueTaskLogEntity
         @Override
         @CreateAtomicMethod
         public BlueTaskLogEntry create(final BlueTask<?> task, final Level level, final String message)
+        throws ProtectionException
             {
             return create(
                 Thread.currentThread().getStackTrace()[1].getClassName(),
@@ -167,6 +177,7 @@ public class BlueTaskLogEntity
         @Override
         @CreateAtomicMethod
         public BlueTaskLogEntry create(final BlueTask<?> task, final BlueTask.TaskState state, final Level level, final String message)
+        throws ProtectionException
             {
             return create(
                 Thread.currentThread().getStackTrace()[1].getClassName(),
@@ -180,6 +191,7 @@ public class BlueTaskLogEntity
         @Override
         @CreateAtomicMethod
         public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final Level level, final String message)
+        throws ProtectionException
             {
             return create(
                 identify(
@@ -195,6 +207,7 @@ public class BlueTaskLogEntity
         @Override
         @CreateAtomicMethod
         public BlueTaskLogEntry create(final Object source, final BlueTask<?> task, final BlueTask.TaskState state, final Level level, final String message)
+        throws ProtectionException
             {
             return create(
                 identify(
@@ -208,6 +221,7 @@ public class BlueTaskLogEntity
             }
 
         protected BlueTaskLogEntry create(final String source, final BlueTask<?> task, final BlueTask.TaskState state, final Level level, final String message)
+        throws ProtectionException
             {
             return this.insert(
                 new BlueTaskLogEntity(
@@ -223,6 +237,7 @@ public class BlueTaskLogEntity
         @Override
         @SelectMethod
         public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -236,6 +251,7 @@ public class BlueTaskLogEntity
 
         @Override
         public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -250,6 +266,7 @@ public class BlueTaskLogEntity
         @Override
         @SelectMethod
         public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Level level)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -266,6 +283,7 @@ public class BlueTaskLogEntity
 
         @Override
         public Iterable<BlueTaskLogEntry> select(final BlueTask<?> task, final Integer limit, final Level level)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -388,9 +406,11 @@ public class BlueTaskLogEntity
 
     /**
      * Protected constructor.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
      * 
      */
     protected BlueTaskLogEntity(final String source, final BlueTask<?> task, final TaskState state, final Level level, final String message)
+    throws ProtectionException
         {
         super(true);
         this.task = task;

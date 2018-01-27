@@ -15,17 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tomcat:2.1.12
+FROM firethorn/tomcat:2.1.13
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # ADD our webapp.
 ADD ${project.build.finalName} /var/local/tomcat/webapps/firethorn
 
-#
-# Update the service health check.
-HEALTHCHECK \
-    --interval=30s \
-    --timeout=5s \
-    CMD curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1
 

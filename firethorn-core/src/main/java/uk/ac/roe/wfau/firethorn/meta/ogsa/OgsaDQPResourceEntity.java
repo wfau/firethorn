@@ -23,9 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -35,16 +32,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp.CreateFireThornDQPClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp.CreateFireThornDQPWorkflow;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ivoa.IvoaCreateResourceWorkflow;
 
 /**
  * {@link OgsaDQPResource} implementation.
@@ -94,6 +92,11 @@ public class OgsaDQPResourceEntity
     extends OgsaBaseResourceEntity.EntityFactory<OgsaDQPResource>
     implements OgsaDQPResource.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()
@@ -140,6 +143,7 @@ public class OgsaDQPResourceEntity
         @Override
         @CreateMethod
         public OgsaDQPResource primary(OgsaService service)
+        throws ProtectionException
             {
             // TODO Do something similar for the other resource types.
             // Get the list of active resources from the database.
@@ -180,6 +184,7 @@ public class OgsaDQPResourceEntity
 
         @Override
         public OgsaDQPResource primary()
+        throws ProtectionException
             {
             return primary(
                 services.primary()
@@ -318,6 +323,7 @@ public class OgsaDQPResourceEntity
     
     @Override
     public OgsaStatus init()
+    throws ProtectionException
         {
         log.debug("init()");
         log.debug("  name   [{}]", this.name());

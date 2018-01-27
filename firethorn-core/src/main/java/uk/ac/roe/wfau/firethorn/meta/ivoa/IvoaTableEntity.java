@@ -35,10 +35,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -119,12 +122,14 @@ public class IvoaTableEntity
 
         @Override
         protected String name(IvoaTable.Metadata meta)
+        throws ProtectionException
             {
             return meta.name();
             }
 
         @Override
         protected void update(final IvoaTable table, final IvoaTable.Metadata meta)
+        throws ProtectionException
             {
             table.update(
                 meta
@@ -189,7 +194,7 @@ public class IvoaTableEntity
         
         @Override
         public IvoaTable resolve(String alias)
-            throws EntityNotFoundException
+        throws ProtectionException, EntityNotFoundException
             {
             return entities.select(
                 idents.ident(
@@ -225,6 +230,11 @@ public class IvoaTableEntity
     extends BaseTableEntity.EntityFactory<IvoaSchema, IvoaTable>
     implements IvoaTable.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()
@@ -235,6 +245,7 @@ public class IvoaTableEntity
         @Override
         @CreateMethod
         public IvoaTable create(final IvoaSchema parent, final IvoaTable.Metadata meta)
+        throws ProtectionException
             {
             return this.insert(
                 new IvoaTableEntity(
@@ -247,6 +258,7 @@ public class IvoaTableEntity
         @Override
         @SelectMethod
         public Iterable<IvoaTable> select(final IvoaSchema parent)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -261,7 +273,7 @@ public class IvoaTableEntity
         @Override
         @SelectMethod
         public IvoaTable select(final IvoaSchema parent, final String name)
-        throws NameNotFoundException
+        throws ProtectionException, NameNotFoundException
             {
             try
                 {
@@ -290,6 +302,7 @@ public class IvoaTableEntity
         @Override
         @SelectMethod
         public IvoaTable search(final IvoaSchema parent, final String name)
+        throws ProtectionException
             {
             return super.first(
                 super.query(
@@ -430,6 +443,7 @@ public class IvoaTableEntity
 
     @Override
     public String alias()
+    throws ProtectionException
         {
         return services().aliases().alias(
             this
@@ -450,6 +464,7 @@ public class IvoaTableEntity
      *
      */
     protected IvoaTableEntity(final IvoaSchema schema, final IvoaTable.Metadata meta)
+    throws ProtectionException
         {
         super(
             schema, 
@@ -480,8 +495,9 @@ public class IvoaTableEntity
         }
     @Override
     public IvoaResource resource()
+    throws ProtectionException
         {
-        return this.schema().resource();
+        return this.schema.resource();
         }
 
     @Override
@@ -489,6 +505,7 @@ public class IvoaTableEntity
         {
         return self();
         }
+
     @Override
     public IvoaTable root()
         {
@@ -497,6 +514,7 @@ public class IvoaTableEntity
 
     @Override
     public IvoaTable.Columns columns()
+    throws ProtectionException
         {
         log.debug("columns() for [{}][{}]", ident(), namebuilder());
         scan();
@@ -504,6 +522,7 @@ public class IvoaTableEntity
             {
             @Override
             public Iterable<IvoaColumn> select()
+            throws ProtectionException
                 {
                 return factories().ivoa().columns().entities().select(
                     IvoaTableEntity.this
@@ -512,7 +531,7 @@ public class IvoaTableEntity
 
             @Override
             public IvoaColumn select(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 return factories().ivoa().columns().entities().select(
                     IvoaTableEntity.this,
@@ -522,6 +541,7 @@ public class IvoaTableEntity
 
             @Override
             public IvoaColumn search(final String name)
+            throws ProtectionException
                 {
                 return factories().ivoa().columns().entities().search(
                     IvoaTableEntity.this,
@@ -531,7 +551,7 @@ public class IvoaTableEntity
 
             @Override
             public IvoaColumn select(final Identifier ident)
-            throws IdentifierNotFoundException
+            throws ProtectionException, IdentifierNotFoundException
                 {
                 //TODO Add the parent reference.
                 return factories().ivoa().columns().entities().select(
@@ -541,12 +561,13 @@ public class IvoaTableEntity
 
             @Override
             public IvoaColumn.Builder builder()
+            throws ProtectionException
                 {
                 return new IvoaColumnEntity.Builder(this.select())
                     {
                     @Override
                     protected IvoaColumn create(final IvoaColumn.Metadata meta)
-                        throws DuplicateEntityException
+                    throws ProtectionException, DuplicateEntityException
                         {
                         return factories().ivoa().columns().entities().create(
                             IvoaTableEntity.this,
@@ -560,6 +581,7 @@ public class IvoaTableEntity
 
     @Override
     protected void scanimpl()
+    throws ProtectionException
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
@@ -570,29 +592,34 @@ public class IvoaTableEntity
      * 
      */
     protected IvoaTable.Metadata.Ivoa ivoameta()
+    throws ProtectionException
         {
         return new IvoaTable.Metadata.Ivoa()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return IvoaTableEntity.this.name();
                 }
 
             @Override
             public String title()
+            throws ProtectionException
                 {
                 return IvoaTableEntity.this.name();
                 }
 
             @Override
             public String text()
+            throws ProtectionException
                 {
                 return IvoaTableEntity.this.text();
                 }
 
             @Override
             public String utype()
+            throws ProtectionException
                 {
                 return IvoaTableEntity.this.adqlutype();
                 }
@@ -601,23 +628,27 @@ public class IvoaTableEntity
     
     @Override
     public IvoaTable.Metadata meta()
+    throws ProtectionException
         {
         return new IvoaTable.Metadata()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return IvoaTableEntity.this.name();
                 }
 
             @Override
             public Adql adql()
+            throws ProtectionException
                 {
                 return adqlmeta();
                 }
 
             @Override
             public Ivoa ivoa()
+            throws ProtectionException
                 {
                 return ivoameta();
                 }
@@ -626,6 +657,7 @@ public class IvoaTableEntity
 
     @Override
     public void update(final IvoaTable.Metadata meta)
+    throws ProtectionException
         {
         if (meta.ivoa() != null)
             {
@@ -637,6 +669,7 @@ public class IvoaTableEntity
 
     @Override
     public  void update(final IvoaTable.Metadata.Ivoa ivoa)
+    throws ProtectionException
         {
         if (ivoa.text() != null)
             {
@@ -650,6 +683,7 @@ public class IvoaTableEntity
 
     @Override
     public BlueQuery bluequery()
+    throws ProtectionException
         {
         return null;
         }

@@ -39,6 +39,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.Action;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
@@ -101,7 +104,12 @@ public class JdbcResourceEntity
     extends BaseResourceEntity.EntityFactory<JdbcResource>
     implements JdbcResource.EntityFactory
         {
-
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
+        
         @Override
         public Class<?> etype()
             {
@@ -111,7 +119,9 @@ public class JdbcResourceEntity
         @Override
         @SelectMethod
         public Iterable<JdbcResource> select()
+        throws ProtectionException
             {
+            protector().affirm(Action.select);
             return super.iterable(
                 super.query(
                     "JdbcResource-select-all"
@@ -122,7 +132,9 @@ public class JdbcResourceEntity
         @Override
         @CreateMethod
         public JdbcResource create(final String name, final String url)
+        throws ProtectionException
             {
+            protector().affirm(Action.create);
             return this.create(
                 null,
                 name,
@@ -133,7 +145,9 @@ public class JdbcResourceEntity
         @Override
         @CreateMethod
         public JdbcResource create(final String catalog, final String name, final String url)
+        throws ProtectionException
             {
+            protector().affirm(Action.create);
             return super.insert(
                 new JdbcResourceEntity(
                     catalog,
@@ -146,7 +160,9 @@ public class JdbcResourceEntity
 		@Override
         @CreateMethod
         public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass)
+        throws ProtectionException
 		    {
+            protector().affirm(Action.create);
 		    return super.insert(
                 new JdbcResourceEntity(
                     catalog,
@@ -161,7 +177,9 @@ public class JdbcResourceEntity
 		@Override
 	    @CreateMethod
 	    public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+        throws ProtectionException
 		    {
+            protector().affirm(Action.create);
 		    return super.insert(
 		        new JdbcResourceEntity(
 		            catalog,
@@ -216,7 +234,9 @@ public class JdbcResourceEntity
         @Override
         @CreateMethod
         public JdbcResource userdata()
+        throws ProtectionException
             {
+            // Uses local calls to super.first() and super.insert() to avoid protectors.
             log.debug("userdata()");
             log.debug(" url [{}]", udurl);
             JdbcResource userdata = super.first(
@@ -237,16 +257,19 @@ public class JdbcResourceEntity
                 log.debug(" user [{}]", uduser);
                 log.debug(" pass [{}]", udpass);
                 log.debug(" driver [{}]", uddriver);
-                
-                userdata = this.create(
-                    udcat,
-                    "Userdata resource",
-                    udurl,
-                    uduser,
-                    udpass,
-                    uddriver
+
+                userdata = super.insert(
+                    new JdbcResourceEntity(
+                        udcat,
+                        "Userdata resource",
+                        udurl,
+                        uduser,
+                        udpass,
+                        uddriver
+                        )
                     );
                 }
+
             log.debug("Userdata resource [{}][{}]", userdata.ident(), userdata.name());
             return userdata ;
             }
@@ -435,6 +458,7 @@ public class JdbcResourceEntity
 
     @Override
     public JdbcResource.Schemas schemas()
+    throws ProtectionException
         {
         log.debug("schemas() for [{}][{}]", ident(), namebuilder());
         scan();
@@ -443,7 +467,9 @@ public class JdbcResourceEntity
 
             @Override
             public Iterable<JdbcSchema> select()
+            throws ProtectionException
                 {
+                protector().affirm(Action.select);
                 return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this
                     );
@@ -451,6 +477,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema create(final Identity identity)
+            throws ProtectionException
                 {
                 return factories().jdbc().schemas().entities().build(
                     JdbcResourceEntity.this,
@@ -460,6 +487,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema create(final JdbcSchema.Metadata meta)
+            throws ProtectionException
                 {
                 return factories().jdbc().schemas().entities().create(
                     JdbcResourceEntity.this,
@@ -470,6 +498,7 @@ public class JdbcResourceEntity
             @Override
             @Deprecated
             public JdbcSchema create(final String catalog, final String schema)
+            throws ProtectionException
                 {
                 return factories().jdbc().schemas().entities().create(
                     JdbcResourceEntity.this,
@@ -480,6 +509,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema search(final String name)
+            throws ProtectionException
                 {
                 return factories().jdbc().schemas().entities().search(
                     JdbcResourceEntity.this,
@@ -489,7 +519,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema select(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this,
@@ -499,7 +529,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema select(final String catalog, final String schema)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 return factories().jdbc().schemas().entities().select(
                     JdbcResourceEntity.this,
@@ -510,6 +540,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema search(final String catalog, final String schema)
+            throws ProtectionException
                 {
                 return factories().jdbc().schemas().entities().search(
                     JdbcResourceEntity.this,
@@ -520,7 +551,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema simple()
-            throws EntityNotFoundException
+            throws ProtectionException, EntityNotFoundException
                 {
                 try {
                     return factories().jdbc().schemas().entities().select(
@@ -540,12 +571,13 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema.Builder builder()
+            throws ProtectionException
                 {
                 return new JdbcSchemaEntity.Builder(this.select())
                     {
                     @Override
                     protected JdbcSchema create(final JdbcSchema.Metadata meta)
-                        throws DuplicateEntityException
+                    throws ProtectionException, DuplicateEntityException
                         {
                         return factories().jdbc().schemas().entities().create(
                             JdbcResourceEntity.this,
@@ -600,6 +632,7 @@ public class JdbcResourceEntity
         }
 
     private String keyname(final JdbcSchema schema )
+    throws ProtectionException
         {
         return keyname(
             schema.catalog(),
@@ -628,6 +661,7 @@ public class JdbcResourceEntity
     
     @Override
     protected void scanimpl()
+    throws ProtectionException
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         //
@@ -723,6 +757,7 @@ public class JdbcResourceEntity
         }
     
     protected void scan(final Map<String, JdbcSchema> known, final Map<String, JdbcSchema> matching, final JdbcMetadataScanner.Catalog catalog)
+    throws ProtectionException
         {
         if (catalog == null)
             {
@@ -749,6 +784,7 @@ public class JdbcResourceEntity
         }
 
     protected void scan(final Map<String, JdbcSchema> existing, final Map<String, JdbcSchema> matching, final JdbcMetadataScanner.Schema schema)
+    throws ProtectionException
         {
         final String key = keyname(
             schema
@@ -788,6 +824,7 @@ public class JdbcResourceEntity
      * 
      */
     protected JdbcResource.Metadata.Jdbc jdbcmeta()
+    throws ProtectionException
         {
         return new JdbcResource.Metadata.Jdbc()
             {
@@ -796,11 +833,13 @@ public class JdbcResourceEntity
     
     @Override
     public JdbcResource.Metadata meta()
+    throws ProtectionException
         {
         return new JdbcResource.Metadata()
             {
             @Override
             public JdbcResource.Metadata.Jdbc jdbc()
+            throws ProtectionException
                 {
                 return jdbcmeta();
                 }
@@ -809,11 +848,13 @@ public class JdbcResourceEntity
 
     @Override
     public OgsaJdbcResources ogsa()
+    throws ProtectionException
         {
         return new OgsaJdbcResources()
             {
             @Override
             public OgsaJdbcResource primary()
+            throws ProtectionException
                 {
                 return factories().ogsa().jdbc().entities().primary(
                     JdbcResourceEntity.this
@@ -822,6 +863,7 @@ public class JdbcResourceEntity
 
             @Override
             public Iterable<OgsaJdbcResource> select()
+            throws ProtectionException
                 {
                 return factories().ogsa().jdbc().entities().select(
                     JdbcResourceEntity.this

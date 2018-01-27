@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import uk.ac.roe.wfau.firethorn.access.Action;
-import uk.ac.roe.wfau.firethorn.access.ProtectorException;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  */
 @ResponseStatus(value = HttpStatus.FORBIDDEN)
 public class EntityProtectorException
-extends ProtectorException
+extends ProtectionException
     {
     /**
      * Serial version ID. 

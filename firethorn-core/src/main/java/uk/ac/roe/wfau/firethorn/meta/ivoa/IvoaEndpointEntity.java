@@ -9,13 +9,10 @@ import javax.persistence.FetchType;
 
 import org.hibernate.annotations.Parent;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * {@link IvoaResource.Endpoint} implementation.
  *
  */
-@Slf4j
 @Embeddable
 @Access(
     AccessType.FIELD

@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +26,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -38,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcTableLinkFactory;
  * Spring MVC controller for <code>JdbcTable</code> columns.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(JdbcTableLinkFactory.COLUMN_PATH)
 public class JdbcTableColumnController
@@ -87,14 +88,17 @@ extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
     /**
      * Get the parent table based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(JdbcTableController.TARGET_ENTITY)
     public JdbcTable parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException {
-        log.debug("parent() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().jdbc().tables().entities().select(
             factories().jdbc().tables().idents().ident(
                 ident
@@ -104,34 +108,38 @@ extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
 
     /**
      * JSON GET request to select all.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<JdbcColumnBean> select(
+    public ResponseEntity<Iterable<JdbcColumnBean>> select(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table
-        ){
-        log.debug("select()");
-        return bean(
+        )
+    throws ProtectionException
+        {
+        return selected(
             table.columns().select()
             );
         }
 
     /**
      * JSON request to select by name.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
-    public JdbcColumnBean select(
+    public ResponseEntity<JdbcColumnBean> select(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         @RequestParam(COLUMN_NAME_PARAM)
         final String name
-        ) throws EntityNotFoundException {
-        log.debug("select(String) [{}]", name);
-        return bean(
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
             table.columns().select(
                 name
                 )

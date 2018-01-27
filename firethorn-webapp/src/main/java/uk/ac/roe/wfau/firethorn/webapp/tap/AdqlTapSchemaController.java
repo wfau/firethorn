@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -88,11 +90,13 @@ public class AdqlTapSchemaController extends AbstractController {
 
 	/**
 	 * Get the target workspace based on the ident in the path.
+	 * @throws ProtectionException 
+	 * @throws IdentifierFormatException 
 	 * 
 	 */
 	@ModelAttribute(TARGET_ENTITY)
 	public AdqlResource entity(@PathVariable("ident") final String ident)
-			throws IdentifierNotFoundException {
+			throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException {
 		log.debug("entity() [{}]", ident);
 		return factories().adql().resources().entities()
 				.select(factories().adql().resources().idents().ident(ident));
@@ -107,6 +111,7 @@ public class AdqlTapSchemaController extends AbstractController {
 	 * @throws IOException
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
+	 * @throws ProtectionException 
 	 */
 	@RequestMapping(value = "generateTapSchema", method = {  RequestMethod.POST, RequestMethod.GET })
 	public void generateTapSchema(
@@ -124,7 +129,7 @@ public class AdqlTapSchemaController extends AbstractController {
 			final HttpServletResponse response,
 			HttpServletRequest request)
 			throws IdentifierNotFoundException, IOException, SQLException,
-			ClassNotFoundException {
+			ClassNotFoundException, ProtectionException {
 		JDBCParams params = new JDBCParams(url, user, pass, driver, catalog);
 		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "/WEB-INF/data/sqlserver_tap_schema.sql");
 		generator.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());

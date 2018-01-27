@@ -41,10 +41,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import com.mysql.cj.jdbc.exceptions.OperationNotSupportedException;
-
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -197,12 +198,14 @@ public class JdbcColumnEntity
 
         @Override
         protected String name(JdbcColumn.Metadata meta)
+        throws ProtectionException
             {
             return meta.jdbc().name();
             }
 
         @Override
         protected void update(final JdbcColumn column, final JdbcColumn.Metadata meta)
+        throws ProtectionException
             {
             column.update(
                 meta.jdbc()
@@ -241,7 +244,7 @@ public class JdbcColumnEntity
         
         @Override
         public JdbcColumn resolve(String alias)
-            throws EntityNotFoundException
+        throws ProtectionException, EntityNotFoundException
             {
             return entities.select(
                 idents.ident(
@@ -277,6 +280,11 @@ public class JdbcColumnEntity
     extends BaseColumnEntity.EntityFactory<JdbcTable, JdbcColumn>
     implements JdbcColumn.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()
@@ -287,6 +295,7 @@ public class JdbcColumnEntity
         @Override
         @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final JdbcColumn.Metadata meta)
+        throws ProtectionException
             {
             return create(
                 parent,
@@ -299,6 +308,7 @@ public class JdbcColumnEntity
         @Override
         @CreateMethod
         public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.JdbcType type, final Integer size)
+        throws ProtectionException
             {
             return this.insert(
                 new JdbcColumnEntity(
@@ -313,6 +323,7 @@ public class JdbcColumnEntity
         @Override
         @SelectMethod
         public Iterable<JdbcColumn> select(final JdbcTable parent)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -327,7 +338,7 @@ public class JdbcColumnEntity
         @Override
         @SelectMethod
         public JdbcColumn select(final JdbcTable parent, final String name)
-        throws NameNotFoundException
+        throws ProtectionException, NameNotFoundException
             {
             try {
                 return super.single(
@@ -355,6 +366,7 @@ public class JdbcColumnEntity
         @Override
         @SelectMethod
         public JdbcColumn search(final JdbcTable parent, final String name)
+        throws ProtectionException
             {
             return super.first(
                 super.query(
@@ -487,6 +499,7 @@ public class JdbcColumnEntity
 
     @Override
     public String alias()
+    throws ProtectionException
         {
         return services().aliases().alias(
             this
@@ -507,6 +520,7 @@ public class JdbcColumnEntity
      *
      */
     protected JdbcColumnEntity(final JdbcTable table, final JdbcColumn.Metadata meta)
+    throws ProtectionException
         {
         this(
             table,
@@ -572,13 +586,15 @@ public class JdbcColumnEntity
         }
     @Override
     public JdbcSchema schema()
+    throws ProtectionException
         {
-        return this.table().schema();
+        return this.table.schema();
         }
     @Override
     public JdbcResource resource()
+    throws ProtectionException
         {
-        return this.table().resource();
+        return this.table.resource();
         }
 
     @Basic(
@@ -595,15 +611,18 @@ public class JdbcColumnEntity
         )
     private JdbcColumn.JdbcType jdbctype ;
     protected JdbcColumn.JdbcType jdbctype()
+    throws ProtectionException
         {
         return this.jdbctype;
         }
     protected void jdbctype(final JdbcColumn.JdbcType type)
+    throws ProtectionException
         {
         this.jdbctype = type;
         }
     @Override
     protected AdqlColumn.AdqlType adqltype()
+    throws ProtectionException
         {
         if (super.adqltype() != null)
             {
@@ -629,16 +648,19 @@ public class JdbcColumnEntity
         )
     private Integer jdbcsize;
     protected Integer jdbcsize()
+    throws ProtectionException
         {
         return this.jdbcsize;
         }
     protected void jdbcsize(final Integer size)
+    throws ProtectionException
         {
         this.jdbcsize = size;
         }
 
     @Override
     protected Integer adqlsize()
+    throws ProtectionException
         {
         if (super.adqlsize() != null)
             {
@@ -657,26 +679,31 @@ public class JdbcColumnEntity
 
     @Override
     public void scanimpl()
+    throws ProtectionException
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         }
     
     protected JdbcColumn.Modifier.Jdbc jdbcmeta()
+    throws ProtectionException
         {
         return new JdbcColumn.Modifier.Jdbc()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return JdbcColumnEntity.this.name();
                 }
             @Override
             public Integer arraysize()
+            throws ProtectionException
                 {
                 return JdbcColumnEntity.this.jdbcsize();
                 }
             @Override
             public JdbcColumn.JdbcType jdbctype()
+            throws ProtectionException
                 {
                 return JdbcColumnEntity.this.jdbctype();
                 }
@@ -685,21 +712,25 @@ public class JdbcColumnEntity
 
     @Override
     public JdbcColumn.Modifier meta()
+    throws ProtectionException
         {
         return new JdbcColumn.Modifier()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return JdbcColumnEntity.this.name();
                 }
             @Override
             public AdqlColumn.Modifier.Adql adql()
+            throws ProtectionException
                 {
                 return adqlmeta();
                 }
             @Override
             public JdbcColumn.Modifier.Jdbc jdbc()
+            throws ProtectionException
                 {
                 return jdbcmeta();
                 }
@@ -708,6 +739,7 @@ public class JdbcColumnEntity
 
     @Override
     public void update(final JdbcColumn.Metadata.Jdbc meta)
+    throws ProtectionException
     	{
     	// TODO ...
     	throw new UnsupportedOperationException();

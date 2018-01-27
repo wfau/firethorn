@@ -17,10 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
@@ -44,7 +46,7 @@ extends BaseColumn<IvoaColumn>
          *
          */
         public IvoaColumn build(final IvoaColumn.Metadata meta)
-        throws DuplicateEntityException;
+        throws ProtectionException, DuplicateEntityException;
         }
 
     /**
@@ -92,16 +94,12 @@ extends BaseColumn<IvoaColumn>
         {
         /**
          * Create a new {@link IvoaColumn}.
-         *
-        public IvoaColumn create(final IvoaTable parent, final String name);
-         */
-
-        /**
-         * Create a new {@link IvoaColumn}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public IvoaColumn create(final IvoaTable parent, final IvoaColumn.Metadata meta);
-
+        public IvoaColumn create(final IvoaTable parent, final IvoaColumn.Metadata meta)
+        throws ProtectionException;
+        
         }
 
     /**
@@ -125,11 +123,16 @@ extends BaseColumn<IvoaColumn>
         }
 
     @Override
-    public IvoaTable table();
+    public IvoaTable table()
+    throws ProtectionException;
+
     @Override
-    public IvoaSchema schema();
+    public IvoaSchema schema()
+    throws ProtectionException;
+
     @Override
-    public IvoaResource resource();
+    public IvoaResource resource()
+    throws ProtectionException;
 
     /**
      * The {@link IvoaColumn} metadata interface.
@@ -146,59 +149,78 @@ extends BaseColumn<IvoaColumn>
             {
             /**
              * The column name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String name();
+            public String name()
+            throws ProtectionException;
 
             /**
              * The column {@link AdqlColumn.AdqlType}.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public AdqlColumn.AdqlType type();
+            public AdqlColumn.AdqlType type()
+            throws ProtectionException;
 
             /**
              * The column title.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String title();
+            public String title()
+            throws ProtectionException;
 
             /**
              * The column description.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String text();
+            public String text()
+            throws ProtectionException;
 
             /**
              * The column units.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String unit();
+            public String unit()
+            throws ProtectionException;
 
             /**
              * The column arraysize.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public Integer arraysize();
+            public Integer arraysize()
+            throws ProtectionException;
 
             /**
              * The column UCD.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String ucd();
+            public String ucd()
+            throws ProtectionException;
 
             /**
              * The column uType.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String utype();
+            public String utype()
+            throws ProtectionException;
 
             }
 
         /**
          * The IVOA metadata.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Ivoa ivoa();
+        public Ivoa ivoa()
+        throws ProtectionException;
+
         }
 
     /**
@@ -219,24 +241,24 @@ extends BaseColumn<IvoaColumn>
 
         /**
          * The IVOA modifier.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Ivoa ivoa();
+        public Ivoa ivoa()
+        throws ProtectionException;
         
         }
     
     @Override
-    public IvoaColumn.Modifier meta();
+    public IvoaColumn.Modifier meta()
+    throws ProtectionException;
 
     /**
      * Update the {@link IvoaColumn} properties.
-     * 
-    public void update(final IvoaColumn.Metadata meta);
-     */
-    
-    /**
-     * Update the {@link IvoaColumn} properties.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void update(final IvoaColumn.Metadata.Ivoa meta);
+    public void update(final IvoaColumn.Metadata.Ivoa meta)
+    throws ProtectionException;
+
     }

@@ -32,6 +32,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -79,10 +80,11 @@ public class VosiTableSetReader
 
     /**
      * Read data from a {@link URL} and update an {@link IvoaResource}. 
+     * @throws ProtectionException 
      *
      */
     public void inport(final URL endpoint, final IvoaResource resource)
-    throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException, IOException
+    throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException, IOException, ProtectionException
         {
         this.inport(
             new InputStreamReader(
@@ -94,10 +96,11 @@ public class VosiTableSetReader
 
     /**
      * Read data from a {@link Reader} and update an {@link IvoaResource}. 
+     * @throws ProtectionException 
      *
      */
     public void inport(final Reader reader, final IvoaResource resource)
-    throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException
+    throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException, ProtectionException
         {
         this.inport(
             xmlreader(
@@ -125,10 +128,11 @@ public class VosiTableSetReader
 
     /**
      * Read data from an {@link XMLEventReader} and update an {@link IvoaResource}. 
+     * @throws ProtectionException 
      *
      */
     public void inport(final XMLEventReader events, final IvoaResource resource)
-    throws XMLParserException, XMLReaderException, DuplicateEntityException
+    throws XMLParserException, XMLReaderException, DuplicateEntityException, ProtectionException
         {
         if (vosreader.match(events))
             {
@@ -273,10 +277,11 @@ public class VosiTableSetReader
 
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaResource}. 
+         * @throws ProtectionException 
          *
          */
         public void inport(final XMLEventReader events, final IvoaResource resource)
-        throws XMLParserException, XMLReaderException, DuplicateEntityException
+        throws XMLParserException, XMLReaderException, DuplicateEntityException, ProtectionException
             {
             this.start(
                 events
@@ -411,10 +416,11 @@ public class VosiTableSetReader
 
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaSchema.Builder}. 
+         * @throws ProtectionException 
          *
          */
         public void inport(final XMLEventReader events, final IvoaSchema.Builder schemas)
-        throws XMLParserException, XMLReaderException, DuplicateEntityException
+        throws XMLParserException, XMLReaderException, DuplicateEntityException, ProtectionException
             {
             this.start(
                 events
@@ -617,10 +623,11 @@ public class VosiTableSetReader
 
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaTable.Builder}. 
+         * @throws ProtectionException 
          *
          */
         public void inport(final XMLEventReader events, final IvoaSchema schema, final IvoaTable.Builder tables)
-        throws XMLParserException, XMLReaderException, DuplicateEntityException
+        throws XMLParserException, XMLReaderException, DuplicateEntityException, ProtectionException
             {
             this.start(
                 events
@@ -763,10 +770,11 @@ public class VosiTableSetReader
 
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaColumn.Builder}. 
+         * @throws ProtectionException 
          *
          */
         public void inport(final XMLEventReader events, final IvoaColumn.Builder columns)
-        throws XMLParserException, XMLReaderException, DuplicateEntityException
+        throws XMLParserException, XMLReaderException, DuplicateEntityException, ProtectionException
             {
 
             /**

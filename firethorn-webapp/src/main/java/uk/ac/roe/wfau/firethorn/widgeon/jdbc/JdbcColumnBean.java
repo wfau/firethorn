@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean;
@@ -62,10 +63,12 @@ extends BaseColumnBean<JdbcColumn>
     public class JdbcMetadataBean
         {
         public JdbcColumn.JdbcType getType()
+        throws ProtectionException
             {
             return entity().meta().jdbc().jdbctype();
             }
         public Integer getSize()
+        throws ProtectionException
             {
             return entity().meta().jdbc().arraysize();
             }

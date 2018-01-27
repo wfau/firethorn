@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import adql.db.DBColumn;
 import adql.db.DBTable;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -43,9 +44,11 @@ extends DBTable
         {
         /**
          * Create a new AdqlParserTable.
+         * @throws ProtectionException 
          *
          */
-        public AdqlParserTable create(final AdqlQueryBase.Mode mode, final AdqlTable table);
+        public AdqlParserTable create(final AdqlQueryBase.Mode mode, final AdqlTable table)
+        throws ProtectionException;
 
         }
 
@@ -68,7 +71,7 @@ extends DBTable
     public interface Columns
         {
 
-        public Iterator<AdqlDBColumn> select();
+        public Iterator<AdqlDBColumn> select() throws ProtectionException;
 
         }
 

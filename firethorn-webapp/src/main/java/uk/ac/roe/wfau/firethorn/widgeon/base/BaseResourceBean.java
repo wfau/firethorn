@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.base;
 
 import java.net.URI;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 
@@ -35,17 +36,20 @@ extends NamedEntityBeanImpl<ResourceType>
         }
 
     public String getFullname()
+    throws ProtectionException
         {
         return entity().fullname();
         }
 
     public String getSchemas()
+    throws ProtectionException
         {
         // TODO This should be in a model class. 
         return entity().link().concat("/schemas/select");
         }
 
     public String getQueries()
+    throws ProtectionException
         {
         // TODO This should be in a model class. 
         return entity().link().concat("/queries/select");

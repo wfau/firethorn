@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2018 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,87 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package uk.ac.roe.wfau.firethorn.identity;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
-
 /**
- * Public interface for an Identity authentication.
- *
+ * An authentication, connecting an {@link Identity} and a {@link Method}.  
+ * 
  */
 public interface Authentication
-extends Entity
     {
-
     /**
-     * Link factory interface.
+     * The {@link Method} for this {@link Authentication}.
      *
      */
-    public static interface LinkFactory
-    extends Entity.LinkFactory<Authentication>
-        {
-        }
+    public Method method();
 
     /**
-     * Identifier factory interface.
-     *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory<Authentication>
-        {
-        }
-
-    /**
-     * Factory interface.
-     *
-     */
-    public interface EntityFactory
-    extends Entity.EntityFactory<Authentication>
-        {
-        /**
-         * Get the current active Authentication.
-         *
-         */
-        public Authentication current();
-
-        /**
-         * Create a new Authentication.
-         *
-         */
-        public Authentication create(final Operation oper, final Identity identity, final String method);
-
-        }
-
-    /**
-     * {@link Entity.EntityServices} interface.
-     * 
-     */
-    public static interface EntityServices
-    extends Entity.EntityServices<Authentication>
-        {
-        /**
-         * Our {@link Authentication.EntityFactory} instance.
-         *
-         */
-        public Authentication.EntityFactory entities();
-        }
-
-    /**
-     * The URN for the authentication method.
-     *
-     */
-    public String method();
-
-    /**
-     * The Identity.
+     * The {@link Identity} this {@link Authentication} is for.
      *
      */
     public Identity identity();
-
-    /**
-     * The Operation.
-     *
-     */
-    public Operation operation();
 
     }

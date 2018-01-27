@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.access;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -27,8 +28,8 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  *
  */
 @ResponseStatus(value = HttpStatus.FORBIDDEN)
-public class ProtectorException
-extends Exception
+public class ProtectionException
+extends FirethornCheckedException
     {
     /**
      * Serial version ID. 
@@ -41,13 +42,46 @@ extends Exception
      * Public constructor.
      * 
      */
-    public ProtectorException(final Identity identity, final Action action)
+    public ProtectionException(final Identity identity, final Action action)
         {
-        super();
-        this.identity = identity;
-        this.action = action;
+        this(
+            null,
+            identity,
+            action
+            );
         }
 
+    /**
+     * Public constructor.
+     * 
+     */
+    public ProtectionException(final Protector protector, final Action action)
+        {
+        this(
+            protector,
+            null,
+            action
+            );
+        }
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public ProtectionException(final Protector protector, final Identity identity, final Action action)
+        {
+        super();
+        this.action    = action;
+        this.identity  = identity;
+        this.protector = protector;
+        }
+
+    private Protector protector;
+    public Protector protector()
+        {
+        return this.protector;
+        }
+    
     private Identity identity;
     public Identity identity()
         {

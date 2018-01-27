@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -112,10 +114,12 @@ extends AbstractController
         /**
          * Get a URL for the {@link Community} space.
          * @return A URL for the {@link Community} space, or null if it does not have space allocated.
+         * @throws ProtectionException 
          * @see Community#space()
          *
          */
         public String getSpace()
+        throws ProtectionException
             {
             if (entity().space() != null)
                 {
@@ -133,6 +137,8 @@ extends AbstractController
      * @param ident The {@link Community} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return A {@link CommunityBean} wrapping the {@link Community}.
      * @throws EntityNotFoundException If the {@link Community} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      * 
      */
     @ResponseBody
@@ -140,7 +146,9 @@ extends AbstractController
     public CommunityBean select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException  {
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return new CommunityBean(
             factories().communities().entities().select(
                 factories().communities().idents().ident(

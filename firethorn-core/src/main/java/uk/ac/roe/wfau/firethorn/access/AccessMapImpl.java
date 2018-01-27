@@ -33,7 +33,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Parent;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 
 /**
  *
@@ -55,7 +55,7 @@ implements AccessMap
         }
 
     @Transient        
-    Map<Action, List<Identity>> map ;
+    Map<Action, List<Authentication>> map ;
 
     //
     // Might be more optimal to replace this with an Iterable. 
@@ -71,67 +71,68 @@ implements AccessMap
         {
         if (map == null)
             {
-            map = new HashMap<Action, List<Identity>>();
+            map = new HashMap<Action, List<Authentication>>();
             for (AccessMapField field : fields)
                 {
                 add(
                     field.action(),
-                    field.identity()
+                    field.authentication()
                     );
                 }
             }
         }
 
-    private void add(Action action, Identity identity)
+    private void add(final Action action, final Authentication authentication)
         {
-        List<Identity> list = map.get(action);
+        List<Authentication> list = map.get(action);
         if (list == null)
             {
-            list = new ArrayList<Identity>();
+            list = new ArrayList<Authentication>();
             map.put(
                 action,
                 list
                 );
             }
         list.add(
-            identity
+            authentication
             );
         }
     
     @Override
-    public void insert(Action action, Identity identity)
+    public void insert(final Action action, final Authentication authentication)
         {
         this.load();
         this.add(
             action,
-            identity
+            authentication
             );
         fields.add(
             new AccessMapField(
                 entity,
                 action,
-                identity
+                authentication.identity(),
+                authentication.method()
                 )
             );
         }
 
     @Override
-    public void remove(Action action, Identity identity)
+    public void remove(final Action action, final Authentication authentication)
         {
         this.load();
-        List<Identity> list = map.get(
+        List<Authentication> list = map.get(
             action
             );
         if (list != null)
             {
             list.remove(
-                action
+                authentication
                 );
             }
         }
 
     @Override
-    public boolean contains(Action action, Identity identity)
+    public boolean contains(final Action action, final Authentication authentication)
         {
         this.load();
         return false;

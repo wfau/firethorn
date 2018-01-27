@@ -21,10 +21,12 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
@@ -43,16 +45,22 @@ extends BaseColumn<JdbcColumn>
         {
         /**
          * Create (CREATE) a JDBC column.
+         * @todo Should this be part of JdbcTable.JdbcDriver ?
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public void create(final JdbcColumn column);
+        public void create(final JdbcColumn column)
+        throws ProtectionException;
 
         /**
          * Delete (DROP) this {@link JdbcColumn}.
+         * @todo Should this be part of JdbcTable.JdbcDriver ?
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public void drop(final JdbcColumn column);
-        
+        public void drop(final JdbcColumn column)
+        throws ProtectionException;
+
         }
 
     /**
@@ -64,10 +72,11 @@ extends BaseColumn<JdbcColumn>
         {
         /**
          * Create or update a column.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public JdbcColumn build(final JdbcColumn.Metadata param)
-        throws DuplicateEntityException;
+        throws ProtectionException, DuplicateEntityException;
         }
 
     /**
@@ -116,16 +125,20 @@ extends BaseColumn<JdbcColumn>
         /**
          * Create a new {@link JdbcColumn}.
          * Used by JdbcColumn.Builder
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcColumn create(final JdbcTable parent, final JdbcColumn.Metadata meta);
+        public JdbcColumn create(final JdbcTable parent, final JdbcColumn.Metadata meta)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcColumn}.
          * Used by JdbcTableEntity.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.JdbcType type, final Integer size);
+        public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.JdbcType type, final Integer size)
+        throws ProtectionException;
 
         }
 
@@ -150,11 +163,16 @@ extends BaseColumn<JdbcColumn>
         }
     
     @Override
-    public JdbcTable table();
+    public JdbcTable table()
+    throws ProtectionException;
+
     @Override
-    public JdbcSchema schema();
+    public JdbcSchema schema()
+    throws ProtectionException;
+
     @Override
-    public JdbcResource resource();
+    public JdbcResource resource()
+    throws ProtectionException;
     
     /**
      * An enumeration of the {@link java.sql.Types} constants. 
@@ -349,46 +367,36 @@ extends BaseColumn<JdbcColumn>
             {
             /**
              * The column name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public String name();
+            public String name()
+            throws ProtectionException;
             
             /**
              * The column type.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public JdbcType jdbctype();
+            public JdbcType jdbctype()
+            throws ProtectionException;
 
             /**
              * The column array size (element count).
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public Integer arraysize();
-
-            /**
-             * The corresponding SQL 'CREATE COLUMN' fields.
-             *
-            @Deprecated
-            public interface CreateSql
-                {
-                public String name();
-                public String type();
-                }
-             */
-
-            /**
-             * The corresponding SQL 'CREATE COLUMN' fields.
-             *
-            @Deprecated
-            public CreateSql create();
-             */
+            public Integer arraysize()
+            throws ProtectionException;
 
             }
         /**
          * The JDBC metadata.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Jdbc jdbc();
+        public Jdbc jdbc()
+        throws ProtectionException;
 
         }
     
@@ -410,19 +418,24 @@ extends BaseColumn<JdbcColumn>
 
         /**
          * The JDBC modifier.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Jdbc jdbc();
+        public Jdbc jdbc()
+        throws ProtectionException;
         
         }
     
     @Override
-    public JdbcColumn.Modifier meta();
+    public JdbcColumn.Modifier meta()
+    throws ProtectionException;
 
     /**
      * Update the {@link JdbcColumn} properties.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void update(final JdbcColumn.Metadata.Jdbc meta);
+    public void update(final JdbcColumn.Metadata.Jdbc meta)
+    throws ProtectionException;
     
     }

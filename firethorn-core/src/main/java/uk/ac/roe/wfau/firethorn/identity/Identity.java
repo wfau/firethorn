@@ -16,9 +16,13 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.community.Community;
+import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
@@ -64,19 +68,105 @@ extends Entity, NamedEntity
     public static interface EntityFactory
     extends Entity.EntityFactory<Identity>
         {
+        /**
+         * Access to the system {@link Identity}.
+         * 
+         */
+        public Identity admin();
+
+        /**
+         * Create a new {@link Identity} with a generated name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity create(final Community community)
+        throws ProtectionException;
 
         /**
          * Create a new {@link Identity}.
+         * @param name The {@link Identity} name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Identity create(final Community community, final String name);
+        public Identity create(final Community community, final String name)
+        throws ProtectionException, DuplicateEntityException;
 
         /**
-         * Select a {@link Identity}.
+         * Create a new {@link Identity}.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Identity select(final Community community, final String name);
+        public Identity create(final Community community, final String name, final String pass)
+        throws ProtectionException, DuplicateEntityException;
 
+        /**
+         * Select an {@link Identity}, based on name.
+         * @param community The {@link Community}.
+         * @param name The {@link Identity} name.
+         * @return The corresponding {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity select(final Community community, final String name)
+        throws ProtectionException, NameNotFoundException;
+
+        /**
+         * Search for an {@link Identity} based on name.
+         * @param community The {@link Community}.
+         * @param name The {@link Identity} name.
+         * @return The corresponding {@link Identity}, or null if the {@link Identity} was not found.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity search(final Community community, final String name)
+        throws ProtectionException;
+
+        /**
+         * Select an {@link Identity}, based on name.
+         * @param community The {@link Community}.
+         * @param name The {@link Identity} name.
+         * @param create Create a new {@link Identity} if not found.
+         * @return The corresponding {@link Identity}, or null if the {@link Identity} was not found or created.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity search(final Community community, final String name, boolean create)
+        throws ProtectionException;
+        
+        /**
+         * Select an {@link Identity}, from any {@link Community} based on just the name.
+         * @param name The {@link Identity} name.
+         * @return The corresponding {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+        public Identity select(final String name)
+        throws ProtectionException, NameNotFoundException;
+         */
+
+        /**
+         * Search for an {@link Identity},from any {@link Community}, based on just the name.
+         * @param name The {@link Identity} name.
+         * @return The corresponding {@link Identity}, or null if the {@link Identity} was not found.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+        public Identity search(final String name)
+        throws ProtectionException;
+         */
+        
+        /**
+         * Login to an {@link Identity} using name and password.
+         * @param community The {@link Community}.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
+         * @return The corresponding {@link Identity}.
+         * @throws UnauthorizedException If unable to login.
+         *
+         */
+        public Identity login(final Community community, final String name, final String pass)
+        throws UnauthorizedException;
+        
         }
 
     /**
@@ -107,15 +197,19 @@ extends Entity, NamedEntity
     	{
         /**
          * The {@link AdqlSchema} spaces for this {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Iterable<AdqlSchema> select();
+        public Iterable<AdqlSchema> select()
+        throws ProtectionException;
 
         /**
          * The current {@link AdqlSchema} space for this {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public AdqlSchema current();
+        public AdqlSchema current()
+        throws ProtectionException;
     	
     	}
 
@@ -127,15 +221,19 @@ extends Entity, NamedEntity
     	{
         /**
          * The {@link JdbcSchema} spaces for this {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Iterable<JdbcSchema> select();
+        public Iterable<JdbcSchema> select()
+        throws ProtectionException;
 
         /**
          * The current {@link JdbcSchema} space for this {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public JdbcSchema current();
+        public JdbcSchema current()
+        throws ProtectionException;
     	
     	}
     
@@ -147,23 +245,29 @@ extends Entity, NamedEntity
     	{
         /**
          * The ADQL spaces for this {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public AdqlSpaces adql();
+        public AdqlSpaces adql()
+        throws ProtectionException;
 
         /**
          * The JDBC spaces for this {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public JdbcSpaces jdbc();
+        public JdbcSpaces jdbc()
+        throws ProtectionException;
 
     	}
 
     /**
      * The storage spaces for this {@link Identity}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public Spaces spaces();
+    public Spaces spaces()
+    throws ProtectionException;
 
     /**
      * Get the {@link Entity} instance linked to the current {@link Thread}.
@@ -172,6 +276,16 @@ extends Entity, NamedEntity
      */
     public Identity rebase()
 	throws HibernateConvertException;
-    
+
+    /**
+     * Login to an {@link Identity} using name and password.
+     * @param name The {@link Identity} name (for comparison).
+     * @param pass The {@link Identity} password.
+     * @throws UnauthorizedException If the login failed.
+     *
+     */
+    public void login(final String name, final String pass)
+    throws UnauthorizedException;
+
     }
 

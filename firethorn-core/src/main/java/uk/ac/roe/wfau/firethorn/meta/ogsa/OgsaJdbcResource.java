@@ -17,8 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -65,68 +67,84 @@ extends OgsaBaseResource
         /**
          * Select all the {@link OgsaJdbcResource}(s).
          * @return An {@link Iterable} set of {@link OgsaJdbcResource}(s). 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaJdbcResource> select();
+        public Iterable<OgsaJdbcResource> select()
+        throws ProtectionException;
 
         /**
          * Select the {@link OgsaJdbcResource}(s) for a {@link OgsaService}.
          * @param service The {@link OgsaService} service.
          * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaJdbcResource> select(final OgsaService service);
+        public Iterable<OgsaJdbcResource> select(final OgsaService service)
+        throws ProtectionException;
 
         /**
          * Select all the {@link OgsaJdbcResource}(s) for a {@link JdbcResource}.
          * @param source The {@link JdbcResource} resource.
          * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaJdbcResource> select(final JdbcResource source);
+        public Iterable<OgsaJdbcResource> select(final JdbcResource source)
+        throws ProtectionException;
 
         /**
         * Select the {@link OgsaJdbcResource}(s) for an {@link OgsaService} and {@link JdbcResource}.
         * @param service The {@link OgsaService}.
         * @param source  The {@link JdbcResource}.
         * @return An {@link Iterable} list of {@link OgsaJdbcResource}(s).
+        * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
         *
         */
-       public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source);
+       public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource source)
+       throws ProtectionException;
 
         /**
          * Create a new {@link OgsaJdbcResource} for a {@link JdbcResource}..
          * @param source  The {@link JdbcResource}.
          * @return A new {@link OgsaJdbcResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaJdbcResource create(final JdbcResource source);
+        public OgsaJdbcResource create(final JdbcResource source)
+        throws ProtectionException;
 
         /**
          * Create a new {@link OgsaJdbcResource} for an {@link OgsaService} and {@link JdbcResource}..
          * @param service The {@link OgsaService}.
          * @param source  The {@link JdbcResource}.
          * @return A new {@link OgsaJdbcResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaJdbcResource create(final OgsaService service, final JdbcResource source);
+        public OgsaJdbcResource create(final OgsaService service, final JdbcResource source)
+        throws ProtectionException;
 
         /**
          * Select the primary {@link OgsaJdbcResource} for a {@link JdbcResource}.
          * @param source The {@link JdbcResource} resource.
          * @return The primary {@link OgsaJdbcResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaJdbcResource primary(final JdbcResource source);
+        public OgsaJdbcResource primary(final JdbcResource source)
+        throws ProtectionException;
 
         /**
          * Select the primary {@link OgsaJdbcResource} for an {@link OgsaService} and {@link JdbcResource}.
          * @param service The {@link OgsaService}.
          * @param source  The {@link JdbcResource}.
          * @return The primary {@link OgsaJdbcResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaJdbcResource primary(final OgsaService service, final JdbcResource source);
+        public OgsaJdbcResource primary(final OgsaService service, final JdbcResource source)
+        throws ProtectionException;
         
         }
 
@@ -146,8 +164,10 @@ extends OgsaBaseResource
     
     /**
      * The parent {@link JdbcResource}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *  
      */
-    public JdbcResource resource();
+    public JdbcResource resource()
+    throws ProtectionException;
 
     }

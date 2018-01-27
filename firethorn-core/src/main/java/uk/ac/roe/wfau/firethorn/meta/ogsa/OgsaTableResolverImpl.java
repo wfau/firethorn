@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -58,7 +59,7 @@ public class OgsaTableResolverImpl
     
     @Override
     public BaseTable<?, ?> resolve(String alias)
-    throws EntityNotFoundException
+    throws ProtectionException, EntityNotFoundException
         {
         if (adql.matches(alias))
             {

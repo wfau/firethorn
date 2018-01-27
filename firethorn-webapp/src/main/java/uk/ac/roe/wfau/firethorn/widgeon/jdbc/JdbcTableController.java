@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionError;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -106,14 +111,17 @@ public class JdbcTableController
     /**
      * Get the target table based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(JdbcTableController.TARGET_ENTITY)
     public JdbcTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException {
-        log.debug("table() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().jdbc().tables().entities().select(
             factories().jdbc().tables().idents().ident(
                 ident
@@ -127,30 +135,31 @@ public class JdbcTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public JdbcTableBean select(
+    public ResponseEntity<JdbcTableBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity
         ){
-        log.debug("select()");
-        return bean(
+        return selected(
             entity
             );
         }
 
     /**
      * POST update name request.
+     * @throws ProtectionException 
+     * @throws NameFormatException 
      *
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, params={TABLE_NAME_PARAM}, produces=JSON_MIME)
-    public JdbcTableBean update(
+    public ResponseEntity<JdbcTableBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity,
         @RequestParam(value=TABLE_NAME_PARAM, required=true)
         final String name
-        ){
-        log.debug("update(String)");
-        log.debug(" name [{}]", name);
+        )
+    throws NameFormatException, ProtectionException
+        {
         //
         // Needs a transaction ..
         if (null != name)
@@ -159,7 +168,7 @@ public class JdbcTableController
                 name
                 );
             }
-        return bean(
+        return selected(
             entity
             );
         }
@@ -170,7 +179,7 @@ public class JdbcTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public JdbcTableBean update(
+    public ResponseEntity<JdbcTableBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity,
         @RequestParam(value=JDBC_STATUS_PARAM, required=false)
@@ -188,23 +197,31 @@ public class JdbcTableController
                 @Override
                 public void run()
                     {
-                    if (null != jdbcstatus)
-                        {
-                        entity.meta().jdbc().status(
-                            jdbcstatus
-                            );
+                    try {
+                        if (null != jdbcstatus)
+                            {
+                            entity.meta().jdbc().status(
+                                jdbcstatus
+                                );
+                            }
+                        if (null != adqlstatus)
+                            {
+                            entity.meta().adql().status(
+                                adqlstatus
+                                );
+                            }
                         }
-                    if (null != adqlstatus)
+                    catch (ProtectionException ouch)
                         {
-                        entity.meta().adql().status(
-                            adqlstatus
+                        throw new ProtectionError(
+                            ouch
                             );
                         }
                     }
                 }
             );
 
-        return bean(
+        return selected(
             entity
             );
         }

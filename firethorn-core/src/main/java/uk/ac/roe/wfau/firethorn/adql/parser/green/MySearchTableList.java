@@ -24,6 +24,8 @@ import adql.db.DBTable;
 import adql.db.SearchTableApi;
 import adql.query.from.ADQLTable;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionError;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Mode;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
@@ -103,59 +105,67 @@ implements SearchTableApi
         log.debug("search(ADQLTable)");
         log.debug("  target [{}][{}][{}]", target.getCatalogName(), target.getSchemaName(), target.getTableName());
 
-        List<DBTable> tables = new ArrayList<DBTable>();
-
-        if (target.getCatalogName() != null)
-            {
-            log.debug("search catalog [{}]", target.getCatalogName());
-            throw new NotImplementedException();
-            // Check the resource name ?
-            }
-            
-        if (target.getSchemaName() != null)
-            {
-            log.debug("search schema [{}]", target.getSchemaName());
-            AdqlSchema schema = resource.schemas().search(
-                target.getSchemaName()
-                ) ;
-            if (schema != null)
+        try {
+            List<DBTable> tables = new ArrayList<DBTable>();
+    
+            if (target.getCatalogName() != null)
                 {
-                log.debug("  schema [{}]", schema.namebuilder().toString());
-                AdqlTable table = schema.tables().search(
-                    target.getTableName()
-                    ); 
-                if (table != null)
+                log.debug("search catalog [{}]", target.getCatalogName());
+                throw new NotImplementedException();
+                // Check the resource name ?
+                }
+                
+            if (target.getSchemaName() != null)
+                {
+                log.debug("search schema [{}]", target.getSchemaName());
+                AdqlSchema schema = resource.schemas().search(
+                    target.getSchemaName()
+                    ) ;
+                if (schema != null)
                     {
-                    log.debug("  table [{}]", table.namebuilder().toString());
-                    tables.add(
-                        factory.create(
-                            mode,
-                            table
-                            )
-                        );
+                    log.debug("  schema [{}]", schema.namebuilder().toString());
+                    AdqlTable table = schema.tables().search(
+                        target.getTableName()
+                        ); 
+                    if (table != null)
+                        {
+                        log.debug("  table [{}]", table.namebuilder().toString());
+                        tables.add(
+                            factory.create(
+                                mode,
+                                table
+                                )
+                            );
+                        }
                     }
                 }
-            }
-        else {
-    		log.debug("null search schema");
-            for (AdqlSchema schema : resource.schemas().select())
-                {
-            	log.debug("schema [{}]", schema.name());
-                AdqlTable found = schema.tables().search(
-                    target.getTableName()
-                    ); 
-                if (found != null)
+            else {
+        		log.debug("null search schema");
+                for (AdqlSchema schema : resource.schemas().select())
                     {
-                    log.debug("  found [{}]", found.namebuilder().toString());
-                    tables.add(
-                        factory.create(
-                            mode,
-                            found
-                            )
-                        );
+                	log.debug("schema [{}]", schema.name());
+                    AdqlTable found = schema.tables().search(
+                        target.getTableName()
+                        ); 
+                    if (found != null)
+                        {
+                        log.debug("  found [{}]", found.namebuilder().toString());
+                        tables.add(
+                            factory.create(
+                                mode,
+                                found
+                                )
+                            );
+                        }
                     }
                 }
+            return tables ;
             }
-        return tables ;
+        catch (final ProtectionException ouch)
+            {
+            throw new ProtectionError(
+                ouch
+                );
+            }
         }
     }

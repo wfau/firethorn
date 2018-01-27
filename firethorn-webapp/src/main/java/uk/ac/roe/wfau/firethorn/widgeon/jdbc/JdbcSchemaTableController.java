@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +26,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -38,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcSchemaLinkFactory;
  * Spring MVC controller for <code>JdbcSchema</code> tables.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(JdbcSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class JdbcSchemaTableController
@@ -104,14 +105,17 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
 
     /**
      * Get the parent schema based on the identifier in the request.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
     public JdbcSchema parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException {
-        log.debug("parent() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().jdbc().schemas().entities().select(
             factories().jdbc().schemas().idents().ident(
                 ident
@@ -121,34 +125,38 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
 
     /**
      * JSON GET request to select all.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<JdbcTableBean> select(
+    public ResponseEntity<Iterable<JdbcTableBean>> select(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
         final JdbcSchema schema
-        ){
-        log.debug("select()");
-        return bean(
+        )
+    throws ProtectionException
+        {
+        return selected(
             schema.tables().select()
             );
         }
 
     /**
      * JSON request to select by name.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
-    public JdbcTableBean select(
+    public ResponseEntity<JdbcTableBean> select(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
         final JdbcSchema schema,
         @RequestParam(SELECT_NAME)
         final String name
-        ) throws EntityNotFoundException {
-        log.debug("select(String) [{}]", name);
-        return bean(
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
             schema.tables().select(
                 name
                 )

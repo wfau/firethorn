@@ -31,6 +31,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -134,10 +135,11 @@ public class VizierTableSetReader
 
     /**
      * Read data from a {@link URL} to update an {@link IvoaResource}. 
+     * @throws ProtectionException 
      *
      */
     public void inport(final URL endpoint, final IvoaResource resource)
-    throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException, IOException
+    throws XMLParserException, XMLReaderException, NameNotFoundException, DuplicateEntityException, IOException, ProtectionException
         {
         this.inport(
             new ReaderParams(
@@ -165,10 +167,11 @@ public class VizierTableSetReader
 
     /**
      * Read data from an {@link XMLEventReader} and update an {@link IvoaResource}. 
+     * @throws ProtectionException 
      *
      */
     public void inport(final ReaderParams params)
-    throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException
+    throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException, ProtectionException
         {
         log.debug("Inport [{}]", params.endpoint());
         if (vosreader.match(params.events()))
@@ -313,10 +316,11 @@ public class VizierTableSetReader
 
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaResource}. 
+         * @throws ProtectionException 
          *
          */
         public void inport(final ReaderParams params)
-        throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException
+        throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException, ProtectionException
             {
             this.start(
                 params.events()
@@ -451,10 +455,11 @@ public class VizierTableSetReader
 
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaSchema.Builder}. 
+         * @throws ProtectionException 
          *
          */
         public void inport(final ReaderParams params, final IvoaSchema.Builder schemas)
-        throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException
+        throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException, ProtectionException
             {
             this.start(
                 params.events()
@@ -653,10 +658,11 @@ public class VizierTableSetReader
 
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaTable.Builder}. 
+         * @throws ProtectionException 
          *
          */
         public void inport(final ReaderParams params, final IvoaSchema schema, final IvoaTable.Builder tables)
-        throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException
+        throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException, ProtectionException
             {
             this.start(
                 params.events()
@@ -909,10 +915,11 @@ public class VizierTableSetReader
 
         /**
          * Read data from an {@link XMLEventReader} and update an {@link IvoaColumn.Builder}. 
+         * @throws ProtectionException 
          *
          */
         public void inport(final ReaderParams params, final IvoaColumn.Builder columns)
-        throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException
+        throws XMLParserException, XMLReaderException, DuplicateEntityException, IOException, ProtectionException
             {
             StartElement start = this.start(
                 params.events()

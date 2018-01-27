@@ -3,7 +3,9 @@
  */
 package uk.ac.roe.wfau.firethorn.entity;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  *
@@ -52,27 +54,34 @@ extends Entity
 
     /**
      * Get the Entity name.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     public String name();
+    //throws ProtectionException;
 
     /**
      * Set the Entity name.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     public void name(final String name)
-    throws NameFormatException;
+    throws ProtectionException, NameFormatException;
 
     /**
      * Get the Entity description.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public String text();
+    public String text()
+    throws ProtectionException;
 
     /**
      * Set the Entity description.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public void text(final String text);
+    public void text(final String text)
+    throws ProtectionException;
 
 	}

@@ -17,9 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -78,22 +80,27 @@ extends TreeComponent
         {
         /**
          * Select all the columns from a table.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<ColumnType> select(final TableType parent);
+        public Iterable<ColumnType> select(final TableType parent)
+        throws ProtectionException;
 
         /**
          * Select a column by name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public ColumnType select(final TableType parent, final String name)
-        throws NameNotFoundException;
+        throws NameNotFoundException, ProtectionException;
 
         /**
          * Search for a column by name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public ColumnType search(final TableType parent, final String name);
+        public ColumnType search(final TableType parent, final String name)
+        throws ProtectionException;
 
         }
 
@@ -109,44 +116,57 @@ extends TreeComponent
          *
          */
         public BaseColumn.AliasFactory<ColumnType> aliases();
+
         }
     
     /**
      * The {@link BaseColumn} this column is derived from.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseColumn<?>   base();
+    public BaseColumn<?> base()
+    throws ProtectionException;
 
     /**
      * The root of the chain this column is derived from.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseColumn<?>   root();
+    public BaseColumn<?> root()
+    throws ProtectionException;
 
     /**
      * Our parent {@link BaseTable table}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseTable<?,?>  table();
+    public BaseTable<?,?> table()
+    throws ProtectionException;
 
     /**
      * Our parent {@link BaseSchema schema}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseSchema<?,?> schema();
+    public BaseSchema<?,?> schema()
+    throws ProtectionException;
 
     /**
      * Our parent {@link BaseResource resource}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public BaseResource<?> resource();
+    public BaseResource<?> resource()
+    throws ProtectionException;
 
     /**
      * The unique name.
      * TODO Rename this to uniquename ?
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public String alias();
+    public String alias()
+    throws ProtectionException;
 
     /**
      * The {@link BaseColumn} metadata interface.
@@ -156,23 +176,29 @@ extends TreeComponent
         {
         /**
          * The column name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
         @Deprecated
-        public String name();
+        public String name()
+        throws ProtectionException;
 
         }
 
     /**
      * The {@link AdqlColumn} metadata.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public AdqlColumn.Modifier meta();
+    public AdqlColumn.Modifier meta()
+    throws ProtectionException;
 
     /**
      * Update the {@link AdqlColumn} properties.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void update(final AdqlColumn.Metadata.Adql meta);
+    public void update(final AdqlColumn.Metadata.Adql meta)
+    throws ProtectionException;
     
     }

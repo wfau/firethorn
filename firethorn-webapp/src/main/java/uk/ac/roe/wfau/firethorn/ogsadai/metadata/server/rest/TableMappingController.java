@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -68,6 +69,7 @@ public class TableMappingController
 
     /**
      * JSON GET request.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
@@ -75,7 +77,7 @@ public class TableMappingController
     public TableMappingBean select(
         @PathVariable(TableMappingController.TABLE_ALIAS_FIELD)
         final String alias
-        ) throws EntityNotFoundException {
+        ) throws EntityNotFoundException, ProtectionException {
         return new TableMappingBean(
             factories().ogsa().tables().resolve(
                 alias
@@ -111,9 +113,11 @@ public class TableMappingController
          * This is the table alias used in SQL queries passed into OGSA-DAI,
          * before the mapping from table alias to fully qualified resource table name.
          * @return The table alias.
+         * @throws ProtectionException 
          *
          */
         public String getAlias()
+        throws ProtectionException
             {
             return this.table.alias();
             }
@@ -124,6 +128,7 @@ public class TableMappingController
          *
          */
         public String getName()
+        throws ProtectionException
             {
             return this.table.namebuilder().toString();
             }
@@ -135,6 +140,7 @@ public class TableMappingController
          *
          */
         public String getResource()
+        throws ProtectionException
             {
             return this.table.resource().ogsa().primary().ogsaid();
             }

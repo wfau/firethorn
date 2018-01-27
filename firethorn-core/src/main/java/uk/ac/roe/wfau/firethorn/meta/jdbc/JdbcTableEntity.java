@@ -45,11 +45,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -161,12 +164,14 @@ implements JdbcTable
 
         @Override
         protected String name(JdbcTable.Metadata meta)
+        throws ProtectionException
             {
             return meta.jdbc().name();
             }
 
         @Override
         protected void update(final JdbcTable table, final JdbcTable.Metadata meta)
+        throws ProtectionException
             {
             table.update(
                 meta
@@ -231,7 +236,7 @@ implements JdbcTable
 
         @Override
         public JdbcTable resolve(String alias)
-            throws EntityNotFoundException
+        throws ProtectionException, EntityNotFoundException
             {
             return entities.select(
                 idents.ident(
@@ -267,6 +272,11 @@ implements JdbcTable
     extends BaseTableEntity.EntityFactory<JdbcSchema, JdbcTable>
     implements JdbcTable.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()
@@ -277,6 +287,7 @@ implements JdbcTable
         @Override
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema)
+        throws ProtectionException
             {
             return this.insert(
                 new JdbcTableEntity(
@@ -288,6 +299,7 @@ implements JdbcTable
         @Override
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final JdbcTable.Metadata meta)
+        throws ProtectionException
             {
             return this.insert(
                 new JdbcTableEntity(
@@ -301,6 +313,7 @@ implements JdbcTable
         @Deprecated
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final String name)
+        throws ProtectionException
             {
             return this.insert(
                 new JdbcTableEntity(
@@ -313,6 +326,7 @@ implements JdbcTable
         @Override
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final String name, final JdbcType type)
+        throws ProtectionException
             {
             return this.insert(
                 new JdbcTableEntity(
@@ -327,6 +341,7 @@ implements JdbcTable
         @Override
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final BlueQuery query)
+        throws ProtectionException
             {
             return this.insert(
                 new JdbcTableEntity(
@@ -340,6 +355,7 @@ implements JdbcTable
         @Override
         @SelectMethod
         public Iterable<JdbcTable> select(final JdbcSchema parent)
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -354,7 +370,7 @@ implements JdbcTable
         @Override
         @SelectMethod
         public JdbcTable select(final JdbcSchema parent, final String name)
-        throws NameNotFoundException
+        throws ProtectionException, NameNotFoundException
             {
             try {
                 return super.single(
@@ -382,6 +398,7 @@ implements JdbcTable
         @Override
         @SelectMethod
         public JdbcTable search(final JdbcSchema parent, final String name)
+        throws ProtectionException
             {
             return super.first(
                 super.query(
@@ -399,6 +416,7 @@ implements JdbcTable
         @Override
         @SelectMethod
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page)
+        throws ProtectionException
             {
             log.debug("pending(JdbcSchema, DateTime)");
             return super.iterable(
@@ -530,19 +548,6 @@ implements JdbcTable
             {
             return this.columns;
             }
-
-        /**
-         * The physical JDBC factory implementation.
-         * @todo This should depend on the local database dialect.
-         *
-        @Autowired
-        private JdbcTable.JdbcDriver jdbc;
-        @Override
-        public JdbcTable.JdbcDriver driver()
-            {
-            return this.jdbc;
-            }
-         */
         }
 
     @Override
@@ -569,6 +574,7 @@ implements JdbcTable
 
     @Override
     public String alias()
+    throws ProtectionException
         {
         return services().aliases().alias(
             this
@@ -589,6 +595,7 @@ implements JdbcTable
      *
      */
     protected JdbcTableEntity(final JdbcSchema schema, final JdbcTable.Metadata meta)
+    throws ProtectionException
         {
         this(
             schema,
@@ -629,21 +636,6 @@ implements JdbcTable
             JdbcType.TABLE
             );
         }
-
-    /**
-     * Protected constructor.
-     *
-    @Deprecated
-    public JdbcTableEntity(final JdbcSchema schema, final String name, final JdbcType type)
-        {
-        this(
-            schema,
-            null,
-            name,
-            type
-            );
-        }
-     */
 
     /**
      * Protected constructor.
@@ -715,6 +707,7 @@ implements JdbcTable
 
     @Override
     public JdbcTable.Columns columns()
+    throws ProtectionException
         {
         log.debug("columns() for [{}][{}]", ident(), namebuilder());
         scan();
@@ -722,6 +715,7 @@ implements JdbcTable
             {
             @Override
             public Iterable<JdbcColumn> select()
+            throws ProtectionException
                 {
                 return factories().jdbc().columns().entities().select(
                     JdbcTableEntity.this
@@ -730,6 +724,7 @@ implements JdbcTable
 
             @Override
             public JdbcColumn search(final String name)
+            throws ProtectionException
                 {
                 return factories().jdbc().columns().entities().search(
                     JdbcTableEntity.this,
@@ -739,7 +734,7 @@ implements JdbcTable
 
             @Override
             public JdbcColumn select(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 return factories().jdbc().columns().entities().select(
                     JdbcTableEntity.this,
@@ -749,6 +744,7 @@ implements JdbcTable
 
             @Override
             public JdbcColumn create(final JdbcColumn.Metadata meta)
+            throws ProtectionException
                 {
                 return factories().jdbc().columns().entities().create(
                     JdbcTableEntity.this,
@@ -758,6 +754,7 @@ implements JdbcTable
 
             @Override
             public JdbcColumn create(final String name, final JdbcColumn.JdbcType type, final Integer size)
+            throws ProtectionException
                 {
                 return factories().jdbc().columns().entities().create(
                     JdbcTableEntity.this,
@@ -769,7 +766,7 @@ implements JdbcTable
 
             @Override
             public JdbcColumn select(final Identifier ident)
-            throws IdentifierNotFoundException
+            throws ProtectionException, IdentifierNotFoundException
                 {
                 // TODO Add parent constraint.
                 return factories().jdbc().columns().entities().select(
@@ -779,12 +776,13 @@ implements JdbcTable
 
             @Override
             public JdbcColumn.Builder builder()
+            throws ProtectionException
                 {
                 return new JdbcColumnEntity.Builder(this.select())
                     {
                     @Override
                     protected JdbcColumn create(final JdbcColumn.Metadata meta)
-                        throws DuplicateEntityException
+                    throws ProtectionException, DuplicateEntityException
                         {
                         return factories().jdbc().columns().entities().create(
                             JdbcTableEntity.this,
@@ -835,6 +833,7 @@ implements JdbcTable
             }
         }
     protected void jdbcstatus(final JdbcTable.TableStatus next)
+    throws ProtectionException
         {
         JdbcTable.TableStatus prev = this.jdbcstatus; 
         log.debug("status(JdbcTable.TableStatus)");
@@ -969,6 +968,7 @@ implements JdbcTable
 
     @Override
     protected void adqlstatus(final AdqlTable.TableStatus next)
+    throws ProtectionException
         {
         AdqlTable.TableStatus prev = this.adqlstatus; 
         log.debug("status(AdqlTable.TableStatus)");
@@ -990,7 +990,7 @@ implements JdbcTable
                     case UNKNOWN:
                         this.adqlstatus = next ;
                         break ;
-//ZRQ
+
                     case DELETED:
                         jdbcdelete();
                         break ;
@@ -1096,6 +1096,7 @@ implements JdbcTable
         }
     
     protected void jdbcdelete()
+    throws ProtectionException
         {
         this.resource().jdbcdriver().delete(
             JdbcTableEntity.this
@@ -1106,6 +1107,7 @@ implements JdbcTable
         }
 
     protected void jdbcdrop()
+    throws ProtectionException
         {
         this.resource().jdbcdriver().drop(
             JdbcTableEntity.this
@@ -1117,6 +1119,7 @@ implements JdbcTable
 
     @Override
     protected void scanimpl()
+    throws ProtectionException
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         //
@@ -1167,6 +1170,7 @@ implements JdbcTable
         }
 
     protected void scan(final Map<String, JdbcColumn> known, final Map<String, JdbcColumn> matching, final JdbcMetadataScanner.Table table)
+    throws ProtectionException
         {
         log.debug("scanning table [{}]", (table != null) ? table.name() : null);
         if (table == null)
@@ -1193,6 +1197,7 @@ implements JdbcTable
         }
 
     protected void scan(final Map<String, JdbcColumn> existing, final Map<String, JdbcColumn> matching, final JdbcMetadataScanner.Column column)
+    throws ProtectionException
         {
         String name = column.name();
         log.debug("Scanning for column [{}]", name);
@@ -1247,24 +1252,28 @@ implements JdbcTable
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return JdbcTableEntity.this.name();
                 }
 
             @Override
             public Long count()
+            throws ProtectionException
                 {
                 return adqlcount();
                 }
             
             @Override
             public JdbcType type()
+            throws ProtectionException
                 {
                 return jdbctype() ;
                 }
 
             @Override
             public void type(final JdbcType type)
+            throws ProtectionException
                 {
                 jdbctype(
                     type
@@ -1273,12 +1282,14 @@ implements JdbcTable
 
             @Override
             public JdbcTable.TableStatus status()
+            throws ProtectionException
                 {
                 return jdbcstatus();
                 }
 
             @Override
             public void status(final JdbcTable.TableStatus next)
+            throws ProtectionException
                 {
                 jdbcstatus(
                     next
@@ -1289,23 +1300,27 @@ implements JdbcTable
 
     @Override
     public JdbcTable.Metadata meta()
+    throws ProtectionException
         {
         return new JdbcTable.Metadata()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return JdbcTableEntity.this.name();
                 }
 
             @Override
             public Jdbc jdbc()
+            throws ProtectionException
                 {
                 return jdbcmeta();
                 }
 
             @Override
             public Adql adql()
+            throws ProtectionException
                 {
                 return adqlmeta();
                 }
@@ -1314,6 +1329,7 @@ implements JdbcTable
     
     @Override
     public void update(final JdbcTable.Metadata meta)
+    throws ProtectionException
         {
         // TODO Auto-generated method stub
         }

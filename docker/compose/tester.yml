@@ -11,8 +11,10 @@ networks:
 services:
 
     bethany:
+        hostname:
+            "bethany"
         image:
-           "firethorn/postgres:${buildtag}"
+           "firethorn/postgres:${buildtag:-latest}"
         read_only:
             true
         tmpfs:
@@ -25,8 +27,10 @@ services:
             - miriam
 
     patricia:
+        hostname:
+            "patricia"
         image:
-           "firethorn/sql-proxy:${buildtag}"
+           "firethorn/sql-proxy:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -44,8 +48,10 @@ services:
             - miriam
 
     elayne:
+        hostname:
+            "elayne"
         image:
-           "firethorn/sql-proxy:${buildtag}"
+           "firethorn/sql-proxy:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -63,8 +69,10 @@ services:
             - miriam
 
     jarmila:
+        hostname:
+            "jarmila"
         image:
-           "firethorn/ogsadai:${buildtag}"
+           "firethorn/ogsadai:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -89,8 +97,10 @@ services:
             retries: 5
 
     gillian:
+        hostname:
+            "gillian"
         image:
-           "firethorn/firethorn:${buildtag}"
+           "firethorn/firethorn:${buildtag:-latest}"
         read_only:
             true
         tmpfs:
@@ -103,6 +113,8 @@ services:
             - miriam
             - rosana
         environment:
+            firethorn.meta.url:    'jdbc:postgresql://bethany/postgres'
+            firethorn.meta.driver: 'org.postgresql.Driver'
             firethorn.ogsadai.endpoint: 'http://jarmila:8080/ogsadai/services'
         depends_on:
             bethany:
@@ -113,14 +125,6 @@ services:
                 condition: service_started            
             jarmila:
                 condition: service_healthy            
-        healthcheck:
-            test: [
-                "CMD-SHELL",
-                "curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1"
-                ]
-            interval: 30s
-            timeout: 5s
-            retries: 5
 
     tester:
         hostname:
@@ -141,6 +145,8 @@ services:
             - ${HOME}/tester.properties:/etc/tester.properties
         networks:
             - miriam
+        environment:
+            endpointurl: 'http://gillian:8080/firethorn'
         depends_on:
             gillian:
                 condition: service_healthy            

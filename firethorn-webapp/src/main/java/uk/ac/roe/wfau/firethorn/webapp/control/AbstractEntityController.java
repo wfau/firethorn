@@ -17,16 +17,24 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
+import uk.ac.roe.wfau.firethorn.webapp.auth.SimpleHeaderAuthenticator;
 
 /**
  * Abstract base class for Spring MVC controllers.
  *
  */
+@Slf4j
 @Controller
 public abstract class AbstractEntityController<EntityType extends Entity, BeanType extends EntityBean<EntityType>>
 extends AbstractController
@@ -57,28 +65,89 @@ extends AbstractController
      * Generate a 'created' HTTP response.
      *
      */
-    private ResponseEntity<BeanType> created(final BeanType bean)
+    public ResponseEntity<BeanType> created(final EntityType entity)
         {
+        final BeanType bean = bean(entity);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(
+            bean.getSelf()
+            );
+        annotate(
+            headers
+            );
         return new ResponseEntity<BeanType>(
             bean,
-            new RedirectHeader(
-                bean
-                ),
+            headers,
             HttpStatus.CREATED
             );
         }
 
     /**
-     * Generate a 'created' HTTP response.
+     * Generate a 'OK' HTTP response.
      *
      */
-    public ResponseEntity<BeanType> created(final EntityType entity)
+    public ResponseEntity<BeanType> selected(final EntityType entity)
         {
-        return created(
-            bean(
-                entity
-                )
+        final BeanType bean = bean(entity);
+        final HttpHeaders headers = new HttpHeaders();
+        annotate(
+            headers
             );
+        return new ResponseEntity<BeanType>(
+            bean,
+            headers,
+            HttpStatus.OK
+            );
+        }
+
+    /**
+     * Generate a 'OK' HTTP response.
+     *
+     */
+    public ResponseEntity<Iterable<BeanType>> selected(final Iterable<EntityType> iterable)
+        {
+        final Iterable<BeanType> bean = bean(iterable);
+        final HttpHeaders headers = new HttpHeaders();
+        annotate(
+            headers
+            );
+        return new ResponseEntity<Iterable<BeanType>>(
+            bean,
+            headers,
+            HttpStatus.OK
+            );
+        }
+    
+    /**
+     * Annotate response headers with the primary {@link Identity}.
+     * 
+     */
+    protected void annotate(final HttpHeaders headers)
+        {
+        final Operation operation = factories().operations().entities().current();
+        if (operation != null)
+            {
+            log.debug("Operation [{}]", operation.ident());
+            final Authentication authentication = operation.authentications().primary();
+            if (authentication != null)
+                {
+                log.debug("Authentication [{}]", authentication);
+                final Identity identity = authentication.identity();
+                if (identity != null)
+                    {
+                    log.debug("Identity  [{}][{}]", identity.ident(), identity.name());
+                    headers.add(SimpleHeaderAuthenticator.USERNAME_ATTRIB, identity.name());
+
+                    final Community community = identity.community();
+                    log.debug("Community [{}][{}]", community.ident(), community.name());
+
+                    if (community != null)
+                        {
+                        headers.add(SimpleHeaderAuthenticator.COMMUNITY_ATTRIB, community.name());
+                        }
+                    }
+                }
+            }
         }
     }
 

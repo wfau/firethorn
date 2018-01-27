@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Access;
@@ -35,8 +36,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
@@ -109,18 +114,12 @@ implements OgsaJdbcResource
     extends OgsaBaseResourceEntity.EntityFactory<OgsaJdbcResource>
     implements OgsaJdbcResource.EntityFactory
         {
-/*
         @Override
-        @Value("${firethorn.ogsa.jdbc.resource.scan:PT1M}")
-        public void scanperiod(final String value)
+        public Protector protector()
             {
-            log.debug("scanperiod(String)");
-            log.debug("  value      [{}]", value);
-            super.scanperiod(
-                value
-                );
+            return new FactoryAdminCreateProtector();
             }
- */
+
         @Override
         public Class<?> etype()
             {
@@ -130,6 +129,7 @@ implements OgsaJdbcResource
         @Override
         @SelectMethod
         public Iterable<OgsaJdbcResource> select()
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -141,6 +141,7 @@ implements OgsaJdbcResource
         @Override
         @SelectMethod
         public Iterable<OgsaJdbcResource> select(final OgsaService service)
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -155,6 +156,7 @@ implements OgsaJdbcResource
         @Override
         @SelectMethod
         public Iterable<OgsaJdbcResource> select(final JdbcResource resource)
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -169,6 +171,7 @@ implements OgsaJdbcResource
         @Override
         @SelectMethod
         public Iterable<OgsaJdbcResource> select(final OgsaService service, final JdbcResource resource)
+        throws ProtectionException
             {
             return super.iterable(
                 super.query(
@@ -186,6 +189,7 @@ implements OgsaJdbcResource
         @Override
         @CreateMethod
         public OgsaJdbcResource create(final JdbcResource resource)
+        throws ProtectionException
             {
             log.debug("create(JdbcResource) [{}]", resource.ident());
             return create(
@@ -197,6 +201,7 @@ implements OgsaJdbcResource
         @Override
         @CreateMethod
         public OgsaJdbcResource create(final OgsaService service, final JdbcResource resource)
+        throws ProtectionException
             {
             log.debug("create(OgsaService, JdbcResource) [{}][{}]", service.ident(), resource.ident());
             return super.insert(
@@ -210,6 +215,7 @@ implements OgsaJdbcResource
         @Override
         @CreateMethod
         public OgsaJdbcResource primary(final JdbcResource resource)
+        throws ProtectionException
             {
             log.debug("primary(JdbcResource) [{}]", resource.ident());
             return primary(
@@ -221,6 +227,7 @@ implements OgsaJdbcResource
         @Override
         @CreateMethod
         public OgsaJdbcResource primary(OgsaService service, JdbcResource resource)
+        throws ProtectionException
             {
             log.debug("primary(OgsaService, JdbcResource) [{}][{}]", service.ident(), resource.ident());
             // Really really simple - just get the first. 
@@ -423,16 +430,16 @@ implements OgsaJdbcResource
 
     @Override
     protected OgsaStatus init()
+    throws ProtectionException
         {
         log.debug("init()");
         log.debug("  name   [{}]", this.name());
         log.debug("  ident  [{}]", this.ident());
         log.debug("  ogsaid [{}]", this.ogsaid);
-        JdbcCreateResourceWorkflow workflow = null;
+
+        final URL endpointurl ;
         try {
-            workflow = new JdbcCreateResourceWorkflow(
-                service().endpoint()
-                );
+            endpointurl = new URL(service().endpoint());
             }
         catch (MalformedURLException ouch)
             {
@@ -441,31 +448,36 @@ implements OgsaJdbcResource
                 );
             }
 
+        final JdbcCreateResourceWorkflow workflow = new JdbcCreateResourceWorkflow(
+            endpointurl
+            );
+        final JdbcConnector connector = resource.connection();
+
         log.debug("Creating OGSA-DAI JDBC resource");
         log.debug("Executing JdbcCreateResourceWorkflow");
-
+                
         final ResourceWorkflowResult response = workflow.execute(
             new JdbcCreateResourceWorkflow.Param()
                 {
                 @Override
                 public String jdbcurl()
                     {
-                    return resource.connection().uri();
+                    return connector.uri();
                     }
                 @Override
                 public String username()
                     {
-                    return resource.connection().user();
+                    return connector.user();
                     }
                 @Override
                 public String password()
                     {
-                    return resource.connection().pass();
+                    return connector.pass();
                     }
                 @Override
                 public String driver()
                     {
-                    return resource.connection().driver();
+                    return connector.driver();
                     }
                 @Override
                 public boolean writable()

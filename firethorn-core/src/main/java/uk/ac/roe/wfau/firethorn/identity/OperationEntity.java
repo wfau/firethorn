@@ -39,11 +39,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
  *
@@ -90,6 +94,12 @@ implements Operation
     implements Operation.EntityFactory
         {
         @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+        
+        @Override
         public Class<?> etype()
             {
             return OperationEntity.class ;
@@ -111,7 +121,7 @@ implements Operation
             }
 
         /*
-         * ThreadLocal Operation.
+         * ThreadLocal store for the current {@link Operation}.
          *
          */
         private final ThreadLocal<Operation> local = new ThreadLocal<Operation>();
@@ -248,7 +258,9 @@ implements Operation
         {
         super(true);
 	    // Question - how can Operation get an owner, when we haven't handled the authentication yet. 
-        // Because the ThreadLocal Operation does not get cleared when a Thread from a ThreadPool is re-used ? 
+        // Because the ThreadLocal Operation does not get cleared when a Thread from a ThreadPool is re-used ?
+        log.debug("OperationEntity()");
+        log.debug("  Owner [{}]", this.owner());
         this.target = target ;
         this.method = method ;
         this.source = source ;
@@ -308,7 +320,7 @@ implements Operation
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = AuthenticationEntity.class
+        targetEntity = AuthenticationImplEntity.class
         )
     @JoinColumn(
         name = DB_AUTH_COL,
@@ -316,14 +328,14 @@ implements Operation
         nullable = true,
         updatable = true
         )
-    private Authentication primary ;
+    private AuthenticationImpl primary ;
 
-    private Authentication primary()
+    private AuthenticationImpl primary()
         {
         return this.primary;
         }
 
-    private void primary(final Authentication auth)
+    private void primary(final AuthenticationImpl auth)
         {
         log.debug("primary(Authentication)");
         log.debug("  Authentication [{}]", auth);
@@ -341,20 +353,20 @@ implements Operation
     @OneToMany(
         fetch   = FetchType.LAZY,
         mappedBy = "operation",
-        targetEntity = AuthenticationEntity.class
+        targetEntity = AuthenticationImplEntity.class
         )
-    private final List<Authentication> authentications = new ArrayList<Authentication>();
+    private final List<AuthenticationImpl> authentications = new ArrayList<AuthenticationImpl>();
 
     /**
      * Create a new Authentication for this Operation.
      *
      */
-    private Authentication create(final Identity identity, final String method)
+    private AuthenticationImpl create(final Identity identity, final String method)
         {
         log.debug("create(Identity, String)");
         log.debug("  Identity [{}]", identity.name());
         log.debug("  Method   [{}]", method);
-        final Authentication auth = factories().authentication().entities().create(
+        final AuthenticationImpl auth = factories().authentication().entities().create(
             this,
             identity,
             method
@@ -374,7 +386,7 @@ implements Operation
         return new Authentications()
             {
             @Override
-            public Authentication primary()
+            public AuthenticationImpl primary()
                 {
                 return OperationEntity.this.primary();
                 }
@@ -382,11 +394,13 @@ implements Operation
             @Override
             public Iterable<Authentication> select()
                 {
-                return authentications;
+                return new GenericIterable<Authentication, AuthenticationImpl>(
+                    OperationEntity.this.authentications
+                    );
                 }
 
             @Override
-            public Authentication create(final Identity identity, final String method)
+            public AuthenticationImpl create(final Identity identity, final String method)
                 {
                 return OperationEntity.this.create(
                     identity,
@@ -404,7 +418,7 @@ implements Operation
 			@Override
 			public Identity primary()
 				{
-				final Authentication auth = OperationEntity.this.primary();
+				final AuthenticationImpl auth = OperationEntity.this.primary();
 				if (auth != null)
 					{
 					return auth.identity();
@@ -419,6 +433,7 @@ implements Operation
     /**
      * Get the corresponding Hibernate entity for the current thread.
      * @throws HibernateConvertException 
+     * @throws ProtectionException 
      * @todo Move to a generic base class. 
      *
      */
@@ -440,5 +455,13 @@ implements Operation
     			ouch
     			);
         	}
+        catch (final ProtectionException ouch)
+            {
+            log.error("ProtectionException [{}][{}]", this.getClass().getName(), ident());
+            throw new HibernateConvertException(
+                ident(),
+                ouch
+                );
+            }
         }
     }

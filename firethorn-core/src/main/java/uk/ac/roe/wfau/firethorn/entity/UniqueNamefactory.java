@@ -12,7 +12,8 @@ import com.google.common.io.BaseEncoding;
  * @todo make this into the new NameFactory interface, with different implementations providing different prefixes per class.
  *
  */
-public class UniqueNamefactory extends AbstractComponent
+public class UniqueNamefactory
+extends AbstractComponent
 	{
     /**
      * Our base 32 encoder.
@@ -21,16 +22,62 @@ public class UniqueNamefactory extends AbstractComponent
     protected static final BaseEncoding encoder = BaseEncoding.base32().omitPadding() ;
 
     /**
-     * Our name glue character, {@value}.
+     * The default name prefix, {@value}.
      * 
      */
-    protected static final String NAME_GLUE = "_" ;
+    protected static final String DEFAULT_NAME_PREFIX = "XX" ;
 
     /**
-     * Our default name prefix, {@value}.
+     * The default glue character, {@value}.
      * 
      */
-    protected static final String NAME_PREFIX = "XX" ;
+    protected static final String DEFAULT_NAME_GLUE = "_" ;
+
+    /**
+     * Our name glue.
+     * 
+     */
+    private String glue = DEFAULT_NAME_GLUE;
+
+    /**
+     * Our name prefix.
+     * 
+     */
+    private String prefix = null;
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public UniqueNamefactory()
+    	{
+        this(
+            DEFAULT_NAME_PREFIX,
+            DEFAULT_NAME_GLUE
+            );
+    	}
+    
+    /**
+     * Public constructor.
+     * 
+     */
+    public UniqueNamefactory(final String prefix)
+    	{
+    	this(
+	        prefix,
+	        DEFAULT_NAME_GLUE
+            );
+    	}
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public UniqueNamefactory(final String prefix, final String glue)
+    	{
+    	this.glue   = glue;
+    	this.prefix = prefix;
+    	}
 
 	protected String base(final AbstractEntity entity)
 		{
@@ -49,7 +96,7 @@ public class UniqueNamefactory extends AbstractComponent
 	public String name(final AbstractEntity entity)
 		{
 		return name(
-			NAME_PREFIX,
+			this.prefix,
 			entity
 			);
 		}
@@ -63,7 +110,7 @@ public class UniqueNamefactory extends AbstractComponent
 				prefix
 				);
 			builder.append(
-				NAME_GLUE
+				this.glue
 				);
 			}
 		builder.append(

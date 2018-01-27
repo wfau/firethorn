@@ -159,7 +159,7 @@ public interface JdbcConnector
     public JdbcResource.JdbcDriver jdbcdriver();
 
     /**
-     * Get the {@link JdbcResource.JdbcDriver} for this database.
+     * Get the {@link BaseTranslator} for this database.
      * 
      */
     public BaseTranslator jdbctranslator();

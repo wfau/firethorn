@@ -17,8 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.community;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -31,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 public interface Community
 extends NamedEntity
     {
+        
     /**
      * Public interface for a {@link Community} {@link NamedEntity.NameFactory}.
      * @see NamedEntity.LinkFactory
@@ -70,44 +73,73 @@ extends NamedEntity
     extends Entity.EntityFactory<Community>
         {
         /**
-         * Create a new {@link Community}.
-         * @param uri The {@link Community} URI.
-         *
+         * Access to the system community.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         * 
          */
-        public Community create(final String uri);
+        public Community admins()
+        throws ProtectionException;
 
         /**
-         * Select or create a {@link Community}.
-         * @param uri  The {@link Community} URI.
+         * Access to the guest community.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         * 
+         */
+        public Community guests()
+        throws ProtectionException;
+        
+        /**
+         * Select or create a new {@link Community}.
          * @param name The {@link Community} name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Community create(final String uri, final String name);
+        public Community create(final String name)
+        throws ProtectionException, DuplicateEntityException;
 
         /**
-         * Select or create a {@link Community}.
-         * @param uri   The {@link Community} URI.
-         * @param space The {@link JdbcResource} to use for storing {@link Community} member's data.  
+         * Select or create a new {@link Community}.
          * @param name  The {@link Community} name.
+         * @param space The {@link JdbcResource} to use for storing {@link Community} member's data.  
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Community create(final String uri, final String name, final JdbcResource space);
+        public Community create(final String name, final JdbcResource space)
+        throws ProtectionException, DuplicateEntityException;
 
         /**
-         * Select a Community based on URI.
-         * @param uri The {@link Community} URI.
+         * Select a Community based on name.
+         * @param name The {@link Community} name.
          * @return The corresponding {@link Community}.
          * @throws EntityNotFoundException If no matching {@link Community} was found.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Community select(final String uri)
-        throws EntityNotFoundException;
+        public Community select(final String name)
+        throws ProtectionException, EntityNotFoundException;
 
         /**
-         * Our local Identity member factory.
-         * 
-        public Identity.EntityFactory members();
+         * Search for a Community based on name.
+         * @param name The {@link Community} name.
+         * @return The corresponding {@link Community}, or null if no match found.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
          */
+        public Community search(final String name)
+        throws ProtectionException;
+
+        /**
+         * Login to a {@link Community} using name and password.
+         * @param comm The {@link Community} name.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
+         * @return The corresponding {@link Identity}.
+         * @throws UnauthorizedException If unable to login.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity login(final String comm, final String name, final String pass)
+        throws ProtectionException, UnauthorizedException;
         
         }
 
@@ -118,10 +150,7 @@ extends NamedEntity
     public static interface EntityServices
     extends NamedEntity.EntityServices<Community>
         {
-        /**
-         * Our {@link Community.EntityFactory} instance.
-         *
-         */
+        @Override
         public Community.EntityFactory entities();
 
         /**
@@ -129,7 +158,7 @@ extends NamedEntity
          * 
          */
         public Identity.EntityFactory identities();
-        
+
         }
 
     /**
@@ -139,22 +168,78 @@ extends NamedEntity
     public interface Members
         {
         /**
+         * Create a new {@link Identity} with a generated name.
+         * @return The new {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity create()
+        throws ProtectionException;
+
+        /**
          * Create a new {@link Identity}.
          * @param name The {@link Identity} name.
          * @return The new {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Identity create(final String name);
+        public Identity create(final String name)
+        throws ProtectionException, DuplicateEntityException;
+        
+        /**
+         * Create a new {@link Identity}.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
+         * @return The new {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity create(final String name, final String pass)
+        throws ProtectionException, DuplicateEntityException;
 
         /**
          * Select an existing {@link Identity} by name.
-         * @param name The {@link Identity} name to look for.
+         * @param name The name of the {@link Identity}.
          * @return The corresponding {@link Identity}.
          * @throws NameNotFoundException If no matching {@link Identity} was found.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public Identity select(final String name)
-        throws NameNotFoundException;
+        throws ProtectionException, NameNotFoundException;
+
+        /**
+         * Select an {@link Identity} by name.
+         * @param name The name of the {@link Identity}.
+         * @param create If true, then the {@link Identity} is created if needed.
+         * @return The corresponding {@link Identity}, or null if not selected or created.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity search(final String name, boolean create)
+        throws ProtectionException;
+        
+        /**
+         * Search for an existing {@link Identity} by name.
+         * @param name The name of the {@link Identity}.
+         * @return The corresponding {@link Identity}, or null if not found.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity search(final String name)
+        throws ProtectionException;
+
+        /**
+         * Login to an {@link Identity} using name and password.
+         * @param name The {@link Identity} name.
+         * @param pass The {@link Identity} password.
+         * @return The corresponding {@link Identity}.
+         * @throws UnauthorizedException If unable to login.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity login(final String name, final String pass)
+        throws ProtectionException, UnauthorizedException;
 
         }
 
@@ -166,25 +251,66 @@ extends NamedEntity
     public Members members();
 
     /**
-     * The unique identifier (URI) for this {@link Community}.
-     * @return The {@link Community} URI.
-     *
-     */
-    public String uri();
-
-    /**
      * The {@link JdbcResource} to use as storage space for this {@link Community}.
      * @return The {@link JdbcResource} storage space, or null if no space is allocated.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public JdbcResource space();
+    public JdbcResource space()
+    throws ProtectionException;
 
     /**
      * The {@link JdbcResource} to use as storage space for this {@link Community}.
      * @param  create A flag to indicate if the storage space should be created automatically. 
      * @return The {@link JdbcResource} storage space, or null if no space is allocated.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public JdbcResource space(final boolean create);
+    public JdbcResource space(final boolean create)
+    throws ProtectionException;
+
+    /**
+     * Login to this {@link Community} using name and password.
+     * @param name The {@link Identity} name.
+     * @param pass The {@link Identity} password.
+     * @return The corresponding {@link Identity}.
+     * @throws UnauthorizedException If unable to login.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+     *
+     */
+    public Identity login(final String name, final String pass)
+    throws UnauthorizedException, ProtectionException;
+
+    /**
+     * Flag to allow accounts to be created automatically on login.
+     * @return The autocreate flag.
+     * 
+     */
+    public Boolean autocreate();
+
+    /**
+     * Flag to allow accounts to be created automatically on login.
+     * @param value The flag value.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+     * 
+     */
+    public void autocreate(final Boolean value)
+    throws ProtectionException;
+
+    /**
+     * Flag to allow users to create their own accounts.
+     * @return The usercreate flag.
+     * 
+     */
+    public Boolean usercreate();
+
+    /**
+     * Flag to allow users to create their own accounts.
+     * @param value The flag value.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+     * 
+     */
+    public void usercreate(final Boolean value)
+    throws ProtectionException;
 
     }

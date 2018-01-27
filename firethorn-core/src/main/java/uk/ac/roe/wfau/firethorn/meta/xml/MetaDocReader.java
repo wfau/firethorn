@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -69,7 +70,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
     private static SchemaReader schemareader = new SchemaReader();
 
     public Iterable<AdqlSchema> inport(final Reader source, final BaseSchema<?,?> base, final AdqlResource workspace)
-    throws XMLParserException, XMLReaderException, NameNotFoundException
+    throws ProtectionException, XMLParserException, XMLReaderException, NameNotFoundException
         {
         return inport(
             xmlreader(
@@ -81,7 +82,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
         }
 
     public Iterable<AdqlSchema> inport(final XMLEventReader source, final BaseSchema<?,?> base, final AdqlResource workspace)
-        throws XMLParserException, XMLReaderException, NameNotFoundException
+    throws ProtectionException, XMLParserException, XMLReaderException, NameNotFoundException
         {
         log.debug("inport(XMLEventReader, BaseSchema, AdqlResource)");
 
@@ -136,7 +137,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
         private static TableReader tablereader = new TableReader();
 
         public AdqlSchema inport(final XMLEventReader source, final BaseSchema<?,?> base, final AdqlResource workspace)
-        throws XMLParserException, XMLReaderException, NameNotFoundException
+        throws ProtectionException, XMLParserException, XMLReaderException, NameNotFoundException
             {
             log.debug("inport(XMLEventReader, BaseSchema, AdqlResource)");
             parser.start(
@@ -196,7 +197,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
             );
 
         public void inport(final XMLEventReader source, final AdqlTableImporter tables)
-        throws XMLParserException, XMLReaderException, NameNotFoundException
+        throws ProtectionException, XMLParserException, XMLReaderException, NameNotFoundException
             {
             log.debug("inport(XMLEventReader, AdqlSchema)");
             parser.start(
@@ -272,7 +273,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
             );
 
         public void config(final AdqlTable table, final XMLEventReader source)
-        throws XMLParserException, XMLReaderException, NameNotFoundException
+        throws ProtectionException, XMLParserException, XMLReaderException, NameNotFoundException
             {
             table.text(
                 textreader.read(
@@ -316,7 +317,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
             );
 
         public void inport(final XMLEventReader source, final AdqlColumnImporter columns)
-        throws XMLParserException, XMLReaderException, NameNotFoundException
+        throws ProtectionException, XMLParserException, XMLReaderException, NameNotFoundException
             {
             log.debug("inport(XMLEventReader, AdqlTable)");
             parser.start(
@@ -369,7 +370,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
                 }
 
             public void read(final AdqlColumn column, final XMLEventReader reader)
-            throws XMLParserException, XMLReaderException
+            throws ProtectionException, XMLParserException, XMLReaderException
                 {
                 log.debug("read(AdqlColumn, XMLEventReader)");
 
@@ -390,7 +391,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
         private static UCDReader ucdreader = new UCDReader();
 
         public void config(final AdqlColumn column, final XMLEventReader source)
-        throws XMLParserException, XMLReaderException
+        throws ProtectionException, XMLParserException, XMLReaderException
             {
             //
             // Skip the column type.

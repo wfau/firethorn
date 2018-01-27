@@ -9,6 +9,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionError;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateRequestException;
@@ -134,6 +136,12 @@ class UWSJobFactory extends AbstractComponent {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
+                                    catch (ProtectionException ouch)
+                                        {
+                                        throw new ProtectionError(
+                                            ouch
+                                            );
+                                        }
 			                      
 			                        }
 			                    }
@@ -180,6 +188,12 @@ class UWSJobFactory extends AbstractComponent {
  										// TODO Auto-generated catch block
  										e.printStackTrace();
  									}
+                                    catch (ProtectionException ouch)
+                                        {
+                                        throw new ProtectionError(
+                                            ouch
+                                            );
+                                        }
  			                      
  			                        }
  			                    }
@@ -286,6 +300,12 @@ class UWSJobFactory extends AbstractComponent {
 											// TODO Auto-generated catch block
 											e.printStackTrace();
 										}
+                                        catch (ProtectionException ouch)
+                                            {
+                                            throw new ProtectionError(
+                                                ouch
+                                                );
+                                            }
 			                            }
 			                        }
 			                    }

@@ -25,9 +25,14 @@ import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.BaseProtector;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Action;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -56,6 +61,7 @@ implements Entity.EntityFactory<EntityType>
     @SelectMethod
     @SuppressWarnings("unchecked")
     public EntityType search(final Identifier ident)
+    throws ProtectionException
         {
         //log.debug("search() [{}]", (ident != null) ? ident.value() : null);
         return (EntityType) factories().hibernate().select(
@@ -67,7 +73,7 @@ implements Entity.EntityFactory<EntityType>
     @Override
     @SelectMethod
     public EntityType select(final Identifier ident)
-    throws IdentifierNotFoundException
+    throws IdentifierNotFoundException, ProtectionException
         {
         //log.debug("select() [{}]", (ident != null) ? ident.value() : null);
         final EntityType result = search(
@@ -317,6 +323,69 @@ implements Entity.EntityFactory<EntityType>
         return new StringBuilder(text).append("%").toString();
         }
 
+    /**
+     * Base class for an {@link EntityFactory} {@link Protector}.
+     *
+     */
+    public abstract class FactoryProtector
+    extends BaseProtector
+    implements Protector
+        {
+        public FactoryProtector()
+            {
+            super(AbstractEntityFactory.this);
+            }
+        }
+
+    public class FactoryAdminCreateProtector
+    extends FactoryProtector
+    implements Protector
+        {
+        @Override
+        public boolean check(Identity identity, Action action)
+            {
+            log.debug("check(Identity, Action)");
+            log.debug("  Identity [{}]", identity);
+            log.debug("  Action   [{}]", action);
+            switch (action.type())
+                {
+                case CREATE:
+                case UPDATE:
+                    return isAdmin(
+                        identity
+                        );
+
+                case SELECT:
+                    return true ;
+                    
+                default :
+                    return false ;
+                }
+            }
+        }
+
+    public class FactoryAllowCreateProtector
+    extends FactoryProtector
+    implements Protector
+        {
+        @Override
+        public boolean check(Identity identity, Action action)
+            {
+            log.debug("check(Identity, Action)");
+            log.debug("  Identity [{}]", identity);
+            log.debug("  Action   [{}]", action);
+            switch (action.type())
+                {
+                case CREATE:
+                case UPDATE:
+                case SELECT:
+                    return true ;
+                    
+                default :
+                    return false ;
+                }
+            }
+        }
     }
 
 

@@ -26,6 +26,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.MigrationFailedException;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -35,7 +36,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 @Slf4j
 public class JdbcBuilderBase
     {
-
     protected String unique()
         {
         return String.valueOf(
@@ -62,6 +62,7 @@ public class JdbcBuilderBase
         }
 
     protected Database database(final JdbcResource resource)
+    throws ProtectionException
         {
         final DatabaseFactory factory = DatabaseFactory.getInstance();
         try {
@@ -80,6 +81,7 @@ public class JdbcBuilderBase
         }
 
     protected void execute(final JdbcResource resource, final ChangeSet changeset)
+    throws ProtectionException
         {
         log.debug("Executing ChangeSet [{}]", changeset.getId());
 

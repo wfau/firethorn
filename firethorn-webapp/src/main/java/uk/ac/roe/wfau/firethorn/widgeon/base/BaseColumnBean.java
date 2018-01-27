@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.base;
 
 import java.net.URI;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
@@ -41,21 +42,25 @@ extends NamedEntityBeanImpl<ColumnType>
 
     @Deprecated
     public String getParent()
+    throws ProtectionException
         {
         return entity().table().link();
         }
 
     public String getTable()
+    throws ProtectionException
         {
         return entity().table().link();
         }
 
     public String getBase()
+    throws ProtectionException
         {
         return entity().base().link();
         }
 
     public String getRoot()
+    throws ProtectionException
         {
         return entity().root().link();
         }
@@ -70,11 +75,13 @@ extends NamedEntityBeanImpl<ColumnType>
      */
 
     public String getFullname()
+    throws ProtectionException
         {
         return entity().fullname();
         }
 
     public String getDepth()
+    throws ProtectionException
         {
         return entity().depth().toString();
         }
@@ -82,22 +89,27 @@ extends NamedEntityBeanImpl<ColumnType>
     public class AdqlMetadataBean
         {
         public AdqlColumn.AdqlType getType()
+        throws ProtectionException
             {
             return entity().meta().adql().type();
             }
         public Integer getArraySize()
+        throws ProtectionException
             {
             return entity().meta().adql().arraysize();
             }
         public String getUnits()
+        throws ProtectionException
             {
             return entity().meta().adql().units();
             }
         public String getUtype()
+        throws ProtectionException
             {
             return entity().meta().adql().utype();
             }
         public String getUCD()
+        throws ProtectionException
             {
             return entity().meta().adql().ucd();
             }

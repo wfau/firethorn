@@ -35,9 +35,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -111,6 +113,12 @@ implements AdqlSchema
     implements AdqlSchema.EntityFactory
         {
         @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+        
+        @Override
         public Class<?> etype()
             {
             return AdqlSchemaEntity.class ;
@@ -119,6 +127,7 @@ implements AdqlSchema
         @Override
         @CreateMethod
         public AdqlSchema create(final AdqlResource parent, final String name)
+        throws ProtectionException
             {
             return this.insert(
                 new AdqlSchemaEntity(
@@ -131,6 +140,7 @@ implements AdqlSchema
         @Override
         @CreateMethod
         public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> base)
+        throws ProtectionException
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
@@ -147,6 +157,7 @@ implements AdqlSchema
         @Override
         @CreateMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?, ?> base)
+        throws ProtectionException
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 depth,
@@ -164,6 +175,7 @@ implements AdqlSchema
         @Override
         @CreateMethod
 		public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
+        throws ProtectionException
 			{
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
@@ -180,6 +192,7 @@ implements AdqlSchema
         @Override
         @CreateMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
+        throws ProtectionException
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 depth,
@@ -197,6 +210,7 @@ implements AdqlSchema
         @Override
         @CreateMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseTable<?, ?> base)
+        throws ProtectionException
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
@@ -215,6 +229,7 @@ implements AdqlSchema
         @Override
         @CreateMethod
         public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?, ?> base)
+        throws ProtectionException
             {
             final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
@@ -232,6 +247,7 @@ implements AdqlSchema
         @Override
         @SelectMethod
         public Iterable<AdqlSchema> select(final AdqlResource parent)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -246,7 +262,7 @@ implements AdqlSchema
         @Override
         @SelectMethod
         public AdqlSchema select(final AdqlResource parent, final String name)
-        throws NameNotFoundException
+        throws ProtectionException, NameNotFoundException 
             {
             try {
                 return super.single(
@@ -274,6 +290,7 @@ implements AdqlSchema
         @Override
         @SelectMethod
         public AdqlSchema search(final AdqlResource parent, final String name)
+        throws ProtectionException
             {
             return super.first(
                 super.query(
@@ -459,9 +476,11 @@ implements AdqlSchema
 
     /**
      * Create a copy of a base table, with CopyDepth set to FULL. 
+     * @throws ProtectionException 
      *
      */
     protected void realize(final BaseTable<?, ?> base)
+    throws ProtectionException
         {
         realize(
             CopyDepth.FULL,
@@ -471,10 +490,12 @@ implements AdqlSchema
 
     /**
      * Create a copy of a base table.
+     * @throws ProtectionException 
      * @todo Delay the full scan until the data is actually requested.
      *
      */
     protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
+        throws ProtectionException
         {
         log.debug("realize(CopyDepth, BaseTable) [{}][{}][{}][{}][{}]", ident(), name(), depth, base.ident(), base.name());
         factories().adql().tables().entities().create(
@@ -486,6 +507,7 @@ implements AdqlSchema
 
     /**
      * Convert this into a full copy.
+     * @throws ProtectionException 
      * @todo Nested full .. or thin ?
      * @todo Prevent this happening twice.
      * @todo Delay the full scan until the data is actually requested.
@@ -493,6 +515,7 @@ implements AdqlSchema
      *
      */
     protected void realize()
+    throws ProtectionException
         {
         log.debug("realize() [{}][{}]", ident(), name());
         if (this.depth == CopyDepth.FULL)
@@ -541,6 +564,7 @@ implements AdqlSchema
 
     @Override
     public BaseSchema<?, ?> root()
+    throws ProtectionException
         {
         if (this.base != null)
             {
@@ -570,6 +594,7 @@ implements AdqlSchema
 
     @Override
     public AdqlSchema.Tables tables()
+    throws ProtectionException
         {
         log.debug("tables() for [{}][{}]", ident(), namebuilder());
         scan();
@@ -578,6 +603,7 @@ implements AdqlSchema
             @Override
             @SuppressWarnings("unchecked")
             public Iterable<AdqlTable> select()
+            throws ProtectionException
                 {
                 log.debug("tables().select() [{}][{}][{}][{}]", ident(), name(), depth(), base());
                 if (depth() == CopyDepth.THIN)
@@ -596,6 +622,7 @@ implements AdqlSchema
 
             @Override
             public AdqlTable search(final String name)
+            throws ProtectionException
                 {
                 if (depth() == CopyDepth.THIN)
                     {
@@ -623,7 +650,7 @@ implements AdqlSchema
 
             @Override
             public AdqlTable select(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 if (depth() == CopyDepth.THIN)
                     {
@@ -644,6 +671,7 @@ implements AdqlSchema
 
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base)
+            throws ProtectionException
                 {
                 return factories().adql().tables().entities().create(
                     depth,
@@ -654,6 +682,7 @@ implements AdqlSchema
 
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
+            throws ProtectionException
                 {
                 return factories().adql().tables().entities().create(
                     AdqlSchemaEntity.this,
@@ -663,6 +692,7 @@ implements AdqlSchema
 
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final String name)
+            throws ProtectionException
                 {
                 return factories().adql().tables().entities().create(
                     depth,
@@ -674,6 +704,7 @@ implements AdqlSchema
 
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
+            throws ProtectionException
                 {
                 return factories().adql().tables().entities().create(
                     AdqlSchemaEntity.this,
@@ -684,7 +715,7 @@ implements AdqlSchema
 
             @Override
             public AdqlTable select(final Identifier ident)
-            throws IdentifierNotFoundException
+            throws ProtectionException, IdentifierNotFoundException
                 {
                 log.debug("tables().select(Identifier) [{}] from [{}]", ident, ident());
                 log.debug(" Schema depth [{}]", depth());
@@ -730,7 +761,7 @@ implements AdqlSchema
 
             @Override
             public AdqlTable inport(final String name)
-            throws NameNotFoundException
+            throws ProtectionException, NameNotFoundException
                 {
                 log.debug("tables().inport(String)");
                 log.debug("  name [{}]", name);
@@ -765,6 +796,7 @@ implements AdqlSchema
 
     @Override
     protected void scanimpl()
+    throws ProtectionException
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub

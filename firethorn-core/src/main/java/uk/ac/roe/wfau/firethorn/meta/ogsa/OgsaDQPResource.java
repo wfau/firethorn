@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  *
@@ -54,39 +56,49 @@ public interface OgsaDQPResource
         /**
          * Select all the {@link OgsaDQPResource}(s).
          * @return An {@link Iterable} set of {@link OgsaDQPResource}(s). 
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaDQPResource> select();
+        public Iterable<OgsaDQPResource> select()
+        throws ProtectionException;
 
         /**
          * Select the {@link OgsaDQPResource}(s) for a {@link OgsaService}.
          * @param service The {@link OgsaService} service.
          * @return An {@link Iterable} list of {@link OgsaDQPResource}(s).
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<OgsaDQPResource> select(final OgsaService service);
+        public Iterable<OgsaDQPResource> select(final OgsaService service)
+        throws ProtectionException;
 
         /**
          * Create a new {@link OgsaDQPResource} for an {@link OgsaService}.
          * @param service The parent {@link OgsaService}.
          * @return A new {@link OgsaDQPResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaDQPResource create(final OgsaService service);
+        public OgsaDQPResource create(final OgsaService service)
+        throws ProtectionException;
 
         /**
          * Select the primary {@link OgsaDQPResource} for an {@link OgsaService}.
          * @param service The {@link OgsaService}.
          * @return The primary {@link OgsaDQPResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public OgsaDQPResource primary(final OgsaService service);
+        public OgsaDQPResource primary(final OgsaService service)
+        throws ProtectionException;
 
         /**
          * Our primary {@link OgsaDQPResource).
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public OgsaDQPResource primary();
+        public OgsaDQPResource primary()
+        throws ProtectionException;
 
         }
 
@@ -108,8 +120,10 @@ public interface OgsaDQPResource
     /**
      * Initialize the OGSA-DAI resource, creating a new one if needed.
      * @return The resource status.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *  
      */
-    public OgsaStatus init();
+    public OgsaStatus init()
+    throws ProtectionException;
 
     }

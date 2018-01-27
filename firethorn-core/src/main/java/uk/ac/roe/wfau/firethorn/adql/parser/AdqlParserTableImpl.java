@@ -25,6 +25,8 @@ import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.db.DBType;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionError;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -52,6 +54,7 @@ implements AdqlParserTable
         {
         @Override
         public AdqlParserTableImpl create(final AdqlQueryBase.Mode mode, final AdqlTable table)
+        throws ProtectionException
             {
             return new AdqlParserTableImpl(
                 mode,
@@ -92,9 +95,10 @@ implements AdqlParserTable
 
     /**
      * Protected constructor.
+     * @throws ProtectionException 
      *
      */
-    private AdqlParserTableImpl(final AdqlQueryBase.Mode mode, final AdqlTable table)
+    private AdqlParserTableImpl(final AdqlQueryBase.Mode mode, final AdqlTable table) throws ProtectionException
         {
         this(
             mode,
@@ -106,9 +110,10 @@ implements AdqlParserTable
 
     /**
      * Protected constructor, used by the copy method.
+     * @throws ProtectionException 
      *
      */
-    private AdqlParserTableImpl(final AdqlQueryBase.Mode mode, final AdqlTable table, final String baseName, final String adqlName)
+    private AdqlParserTableImpl(final AdqlQueryBase.Mode mode, final AdqlTable table, final String baseName, final String adqlName) throws ProtectionException
         {
         log.debug("AdqlParserTableImpl(AdqlQuery.Mode mode, AdqlTable, String, String)");
         log.debug("real name [{}]", table.name());
@@ -146,26 +151,35 @@ implements AdqlParserTable
      * Make a copy of the AdqlParserTable, changing the ADQL and BASE names.
      * @param baseName - The new BASE name (optional). If this is null, then the new AdqlParserTable inherits its BASE name, schema and catalog from the original.
      * @param adqlName - The new ADQL name (required). This can't be null or empty.
+     * @throws ProtectionException 
      *
      */
     @Override
     public AdqlParserTable copy(final String baseName, final String adqlName)
         {
-        log.debug("copy(String, String)");
-        log.debug("BASE name [{}]", baseName);
-        log.debug("ADQL name [{}]", adqlName);
-        if ((adqlName == null) || (adqlName.length() == 0))
-            {
-            throw new IllegalArgumentException(
-                "AdqlName is required"
+        try {
+            log.debug("copy(String, String)");
+            log.debug("BASE name [{}]", baseName);
+            log.debug("ADQL name [{}]", adqlName);
+            if ((adqlName == null) || (adqlName.length() == 0))
+                {
+                throw new IllegalArgumentException(
+                    "AdqlName is required"
+                    );
+                }
+            return new AdqlParserTableImpl(
+                this.mode,
+                this.table,
+                baseName,
+                adqlName
                 );
             }
-        return new AdqlParserTableImpl(
-            this.mode,
-            this.table,
-            baseName,
-            adqlName
-            );
+        catch (final ProtectionException ouch)
+            {
+            throw new ProtectionError(
+                ouch
+                );
+            }
         }
 
     /**
@@ -214,23 +228,32 @@ implements AdqlParserTable
 
     /**
      * Get the BASE table name.
+     * @throws ProtectionException 
      *
      */
     @Override
     public String getDBName()
         {
-        if (this.baseName != null)
-            {
-            return this.baseName ;
-            }
-        else {
-            if (this.mode() == AdqlQueryBase.Mode.DISTRIBUTED)
+        try {
+            if (this.baseName != null)
                 {
-                return this.table.root().alias();
+                return this.baseName ;
                 }
             else {
-                return this.table.root().name();
+                if (this.mode() == AdqlQueryBase.Mode.DISTRIBUTED)
+                    {
+                    return this.table.root().alias();
+                    }
+                else {
+                    return this.table.root().name();
+                    }
                 }
+            }
+        catch (final ProtectionException ouch)
+            {
+            throw new ProtectionError(
+                ouch
+                );
             }
         }
 
@@ -242,24 +265,32 @@ implements AdqlParserTable
     @Override
     public String getDBSchemaName()
         {
-        if (this.baseName != null)
-            {
-            return null ;
-            }
-        else {
-            if (this.mode() == AdqlQueryBase.Mode.DISTRIBUTED)
+        try {
+            if (this.baseName != null)
                 {
                 return null ;
                 }
             else {
-                if (this.table.root() instanceof JdbcTable)
+                if (this.mode() == AdqlQueryBase.Mode.DISTRIBUTED)
                     {
-                    return ((JdbcTable)this.table.root()).schema().schema();
+                    return null ;
                     }
                 else {
-                    return this.table.root().schema().name();
+                    if (this.table.root() instanceof JdbcTable)
+                        {
+                        return ((JdbcTable)this.table.root()).schema().schema();
+                        }
+                    else {
+                        return this.table.root().schema().name();
+                        }
                     }
                 }
+            }
+        catch (final ProtectionException ouch)
+            {
+            throw new ProtectionError(
+                ouch
+                );
             }
         }
 
@@ -271,24 +302,32 @@ implements AdqlParserTable
     @Override
     public String getDBCatalogName()
         {
-        if (this.baseName != null)
-            {
-            return null ;
-            }
-        else {
-            if (this.mode() == AdqlQueryBase.Mode.DISTRIBUTED)
+        try {
+            if (this.baseName != null)
                 {
                 return null ;
                 }
             else {
-                if (this.table.root() instanceof JdbcTable)
+                if (this.mode() == AdqlQueryBase.Mode.DISTRIBUTED)
                     {
-                    return ((JdbcTable)this.table.root()).schema().catalog();
-                    }
-                else {
                     return null ;
                     }
+                else {
+                    if (this.table.root() instanceof JdbcTable)
+                        {
+                        return ((JdbcTable)this.table.root()).schema().catalog();
+                        }
+                    else {
+                        return null ;
+                        }
+                    }
                 }
+            }
+        catch (final ProtectionException ouch)
+            {
+            throw new ProtectionError(
+                ouch
+                );
             }
         }
 
@@ -308,6 +347,12 @@ implements AdqlParserTable
             catch (final EntityNotFoundException ouch)
                 {
                 adqlColumn = null ;
+                }
+            catch (final ProtectionException ouch)
+                {
+                throw new ProtectionError(
+                    ouch
+                    );
                 }
             }
         //
@@ -339,31 +384,38 @@ implements AdqlParserTable
     public Iterator<DBColumn> iterator()
         {
         log.debug("Iterator<DBColumn> iterator()");
-        return new Iterator<DBColumn>()
+        try {
+            return new Iterator<DBColumn>()
+                {
+                private final Iterator<AdqlColumn> iter = table().columns().select().iterator();
+
+                @Override
+                public DBColumn next()
+                    {
+                    return wrap(
+                        this.iter.next()
+                        );
+                    }
+
+                @Override
+                public boolean hasNext()
+                    {
+                    return this.iter.hasNext();
+                    }
+
+                @Override
+                public void remove()
+                    {
+                    this.iter.remove();
+                    }
+                };
+            }
+        catch (ProtectionException ouch)
             {
-
-            private final Iterator<AdqlColumn> iter = table().columns().select().iterator();
-
-            @Override
-            public DBColumn next()
-                {
-                return wrap(
-                    this.iter.next()
-                    );
-                }
-
-            @Override
-            public boolean hasNext()
-                {
-                return this.iter.hasNext();
-                }
-
-            @Override
-            public void remove()
-                {
-                this.iter.remove();
-                }
-            };
+            throw new ProtectionError(
+                ouch
+                );
+            }
         }
 
     /**
@@ -378,6 +430,7 @@ implements AdqlParserTable
             {
             @Override
             public Iterator<AdqlDBColumn> select()
+            throws ProtectionException
                 {
                 return new Iterator<AdqlDBColumn>()
                     {
@@ -532,14 +585,22 @@ implements AdqlParserTable
         @Override
         public String getDBName()
             {
-            log.trace("getDBName() [{}][{}]", this.baseName, this.column.root().name());
-            String result = this.baseName ;
-            if (result == null)
-                {
-                //result = this.column.root().alias();
-                result = this.column.root().name();
+            try {
+                log.trace("getDBName() [{}][{}]", this.baseName, this.column.root().name());
+                String result = this.baseName ;
+                if (result == null)
+                    {
+                    //result = this.column.root().alias();
+                    result = this.column.root().name();
+                    }
+                return result ;
                 }
-            return result ;
+            catch (final ProtectionException ouch)
+                {
+                throw new ProtectionError(
+                    ouch
+                    );
+                }
             }
 
         @Override

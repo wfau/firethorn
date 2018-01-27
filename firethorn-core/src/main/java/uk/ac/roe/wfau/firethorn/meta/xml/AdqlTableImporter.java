@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -40,6 +41,7 @@ public class AdqlTableImporter
      *
      */
     public AdqlTableImporter(final AdqlSchema schema)
+    throws ProtectionException
         {
         this.schema = schema;
         this.tables = schema.tables();
@@ -121,7 +123,7 @@ public class AdqlTableImporter
     public AdqlTable inport(final String name)
      */
     public AdqlTable inport(final String name)
-    throws NameNotFoundException
+    throws ProtectionException, NameNotFoundException
         {
         log.debug("Importing table [{}][{}]", schema.base().fullname(), name);
         //

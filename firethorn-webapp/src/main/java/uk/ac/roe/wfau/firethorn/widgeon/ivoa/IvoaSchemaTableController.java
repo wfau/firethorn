@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +26,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -38,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaSchemaLinkFactory;
  * Spring MVC controller for <code>IvoaSchema</code> tables.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(IvoaSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class IvoaSchemaTableController
@@ -85,14 +86,17 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
 
     /**
      * Get the parent schema based on the identifier in the request.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(IvoaSchemaController.TARGET_ENTITY)
     public IvoaSchema parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException {
-        log.debug("parent() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().ivoa().schemas().entities().select(
             factories().ivoa().schemas().idents().ident(
                 ident
@@ -102,34 +106,38 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
 
     /**
      * JSON GET request to select all.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<IvoaTableBean> select(
+    public ResponseEntity<Iterable<IvoaTableBean>> select(
         @ModelAttribute(IvoaSchemaController.TARGET_ENTITY)
         final IvoaSchema schema
-        ){
-        log.debug("select()");
-        return bean(
+        )
+    throws ProtectionException
+        {
+        return selected(
             schema.tables().select()
             );
         }
 
     /**
      * JSON request to select by name.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=TABLE_NAME_PARAM, produces=JSON_MIME)
-    public IvoaTableBean select(
+    public ResponseEntity<IvoaTableBean> select(
         @ModelAttribute(IvoaSchemaController.TARGET_ENTITY)
         final IvoaSchema schema,
         @RequestParam(TABLE_NAME_PARAM)
         final String name
-        ) throws EntityNotFoundException {
-        log.debug("select(String) [{}]", name);
-        return bean(
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
             schema.tables().select(
                 name
                 )

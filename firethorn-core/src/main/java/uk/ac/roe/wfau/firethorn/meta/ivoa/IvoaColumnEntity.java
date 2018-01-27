@@ -38,12 +38,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 
@@ -141,12 +145,14 @@ public class IvoaColumnEntity
         
         @Override
         protected String name(IvoaColumn.Metadata meta)
+        throws ProtectionException
             {
             return meta.ivoa().name();
             }
 
         @Override
         protected void update(final IvoaColumn column, final IvoaColumn.Metadata meta)
+        throws ProtectionException
             {
             column.update(
                 meta.ivoa()
@@ -180,7 +186,7 @@ public class IvoaColumnEntity
         
         @Override
         public IvoaColumn resolve(String alias)
-            throws EntityNotFoundException
+        throws ProtectionException, EntityNotFoundException
             {
             return entities.select(
                 idents.ident(
@@ -216,6 +222,11 @@ public class IvoaColumnEntity
     extends BaseColumnEntity.EntityFactory<IvoaTable, IvoaColumn>
     implements IvoaColumn.EntityFactory
         {
+        @Override
+        public Protector protector()
+            {
+            return new FactoryAdminCreateProtector();
+            }
 
         @Override
         public Class<?> etype()
@@ -226,6 +237,7 @@ public class IvoaColumnEntity
         @Override
         @CreateMethod
         public IvoaColumn create(final IvoaTable parent, final IvoaColumn.Metadata meta)
+        throws ProtectionException
             {
             return this.insert(
                 new IvoaColumnEntity(
@@ -238,6 +250,7 @@ public class IvoaColumnEntity
         @Override
         @SelectMethod
         public Iterable<IvoaColumn> select(final IvoaTable parent)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -252,10 +265,9 @@ public class IvoaColumnEntity
         @Override
         @SelectMethod
         public IvoaColumn select(final IvoaTable parent, final String name)
-        throws NameNotFoundException
+        throws ProtectionException, NameNotFoundException
             {
-            try
-                {
+            try {
                 return super.single(
                     super.query(
                         "IvoaColumn-select-parent.name"
@@ -281,6 +293,7 @@ public class IvoaColumnEntity
         @Override
         @SelectMethod
         public IvoaColumn search(final IvoaTable parent, final String name)
+        throws ProtectionException
             {
             return super.first(
                 super.query(
@@ -413,6 +426,7 @@ public class IvoaColumnEntity
     
     @Override
     public String alias()
+    throws ProtectionException
         {
         return services().aliases().alias(
             this
@@ -429,9 +443,11 @@ public class IvoaColumnEntity
 
     /**
      * Protected constructor.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
     protected IvoaColumnEntity(final IvoaTable table, final IvoaColumn.Metadata meta)
+    throws ProtectionException
         {
         super(
             table,
@@ -470,15 +486,19 @@ public class IvoaColumnEntity
         {
         return this.table;
         }
+
     @Override
     public IvoaSchema schema()
+    throws ProtectionException
         {
-        return this.table().schema();
+        return this.table.schema();
         }
+
     @Override
     public IvoaResource resource()
+    throws ProtectionException
         {
-        return this.table().resource();
+        return this.table.resource();
         }
 
     @Basic(
@@ -495,15 +515,18 @@ public class IvoaColumnEntity
         )
     private AdqlColumn.AdqlType ivoatype ;
     protected AdqlColumn.AdqlType ivoatype()
+    throws ProtectionException
         {
         return this.ivoatype;
         }
     protected void ivoatype(final AdqlColumn.AdqlType type)
+    throws ProtectionException
         {
         this.ivoatype = type;
         }
     @Override
     protected AdqlColumn.AdqlType adqltype()
+    throws ProtectionException
         {
         if (super.adqltype() != null)
             {
@@ -525,15 +548,18 @@ public class IvoaColumnEntity
         )
     private Integer ivoasize;
     protected Integer ivoasize()
+    throws ProtectionException
         {
         return this.ivoasize;
         }
     protected void ivoasize(final Integer size)
+    throws ProtectionException
         {
         this.ivoasize = size;
         }
     @Override
     protected Integer adqlsize()
+    throws ProtectionException
         {
         if (super.adqlsize() != null)
             {
@@ -546,6 +572,7 @@ public class IvoaColumnEntity
 
     @Override
     protected void scanimpl()
+    throws ProtectionException
         {
         log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         // TODO Auto-generated method stub
@@ -561,48 +588,56 @@ public class IvoaColumnEntity
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return IvoaColumnEntity.this.name();
                 }
 
             @Override
             public AdqlColumn.AdqlType type()
+            throws ProtectionException
                 {
                 return IvoaColumnEntity.this.ivoatype();
                 }
 
             @Override
             public String title()
+            throws ProtectionException
                 {
                 return IvoaColumnEntity.this.name();
                 }
 
             @Override
             public String text()
+            throws ProtectionException
                 {
                 return IvoaColumnEntity.this.text();
                 }
 
             @Override
             public String utype()
+            throws ProtectionException
                 {
                 return IvoaColumnEntity.this.adqlutype();
                 }
 
             @Override
             public String unit()
+            throws ProtectionException
                 {
                 return IvoaColumnEntity.this.adqlunit();
                 }
 
             @Override
             public Integer arraysize()
+            throws ProtectionException
                 {
                 return IvoaColumnEntity.this.adqlsize();
                 }
 
             @Override
             public String ucd()
+            throws ProtectionException
                 {
                 return IvoaColumnEntity.this.adqlucd();
                 }
@@ -611,23 +646,27 @@ public class IvoaColumnEntity
     
     @Override
     public IvoaColumn.Modifier meta()
+    throws ProtectionException
         {
         return new IvoaColumn.Modifier()
             {
             @Override
             public String name()
+            throws ProtectionException
                 {
                 return IvoaColumnEntity.this.name();
                 }
 
             @Override
             public IvoaColumn.Modifier.Ivoa ivoa()
+            throws ProtectionException
                 {
                 return ivoameta();
                 }
 
             @Override
             public IvoaColumn.Modifier.Adql adql()
+            throws ProtectionException
                 {
                 return adqlmeta();
                 }
@@ -636,6 +675,7 @@ public class IvoaColumnEntity
 
     @Override
     public void update(IvoaColumn.Metadata.Ivoa meta)
+    throws ProtectionException
         {
         if (meta.type() != null)
         	{

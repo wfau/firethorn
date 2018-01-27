@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.base;
 
 import java.net.URI;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 
@@ -39,26 +40,31 @@ extends NamedEntityBeanImpl<TableType>
         }
 
     public String getParent()
+    throws ProtectionException
         {
         return entity().schema().link();
         }
 
     public String getSchema()
+    throws ProtectionException
         {
         return entity().schema().link();
         }
 
     public String getResource()
+    throws ProtectionException
         {
         return entity().resource().link();
         }
 
     public String getBase()
+    throws ProtectionException
         {
         return entity().base().link();
         }
 
     public String getRoot()
+    throws ProtectionException
         {
         return entity().root().link();
         }
@@ -73,11 +79,13 @@ extends NamedEntityBeanImpl<TableType>
      */
 
     public String getFullname()
+    throws ProtectionException
         {
         return entity().fullname();
         }
 
     public String getDepth()
+    throws ProtectionException
         {
         return entity().depth().toString();
         }

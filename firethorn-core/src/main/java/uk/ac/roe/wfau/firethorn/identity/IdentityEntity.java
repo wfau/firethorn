@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.identity;
 import javax.annotation.PostConstruct;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -29,18 +31,28 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.Action;
+import uk.ac.roe.wfau.firethorn.access.ProtectionError;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
+import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.UniqueNamefactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
@@ -76,6 +88,10 @@ import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
         @NamedQuery(
             name = "Identity-select-community.name",
             query = "FROM IdentityEntity WHERE community = :community AND name = :name ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name = "Identity-select-name",
+            query = "FROM IdentityEntity WHERE name = :name ORDER BY ident desc"
             )
         }
     )
@@ -100,6 +116,8 @@ implements Identity
     protected static final String DB_ADQL_SCHEMA_COL = "adqlschema" ;
     protected static final String DB_ADQL_RESOURCE_COL = "adqlresource" ;
 
+    protected static final String DB_PASSHASH_COL = "passhash" ;
+
     /**
      * Factory implementation.
      *
@@ -110,38 +128,35 @@ implements Identity
     implements Identity.EntityFactory
         {
         @Override
-        public Class<?> etype()
+        public Protector protector()
             {
-            return IdentityEntity.class;
+            return new FactoryAllowCreateProtector();
             }
 
-        @Override
-        @CreateMethod
-        public Identity create(final Community community, final String name)
+        /**
+         * Private search method that doesn't check the {@link Protector}.
+         * 
+        private Identity find(final String name)
             {
-            log.debug("create(Community, String) [{}][{}]", community.uri(), name);
-            final Identity member = this.select(
-                community,
-                name
-                );
-            if (member != null)
-                {
-                return member ;
-                }
-            else {
-                return super.insert(
-                    new IdentityEntity(
-                        community,
+            log.debug("find (String) [{}]", name);
+            return super.first(
+                super.query(
+                    "Identity-select-name"
+                    ).setString(
+                        "name",
                         name
-                        )
-                    );
-                }
+                    )
+                );
             }
+         */
 
-        @Override
-        @SelectMethod
-        public Identity select(final Community community, final String name)
+        /**
+         * Private search method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Identity find(final Community community, final String name)
             {
+            log.debug("find (Community, String) [{}]", name);
             return super.first(
                 super.query(
                     "Identity-select-community.name"
@@ -153,6 +168,290 @@ implements Identity
                         name
                         )
                 );
+            }
+
+        /**
+         * Private create method that doesn't check the {@link Protector}.
+         * 
+         */
+        private Identity make(final Community community, final String name, final String pass)
+            {
+            return super.insert(
+                new IdentityEntity(
+                    community,
+                    name,
+                    pass
+                    )
+                );
+            }
+
+        /**
+         * The 'system' {@link Identity) name.
+         * 
+         */
+        @Value("${firethorn.admin.user.name:admin}")
+        protected String ADMIN_IDENTITY_NAME ;
+
+        /**
+         * The 'system' {@link Identity) password.
+         * 
+         */
+        @Value("${firethorn.admin.user.pass:admin}")
+        protected String ADMIN_IDENTITY_PASS ;
+
+        @Override
+        @CreateMethod
+        public synchronized Identity admin()
+            {
+            log.debug("admin()");
+            try {
+                final Community admins = factories().communities().entities().admins();
+                final Identity found = this.find(
+                    admins,
+                    ADMIN_IDENTITY_NAME
+                    );
+                if (found != null)
+                    {
+                    log.debug("  found [{}]", found);
+                    return found ;
+                    }
+                else {
+                    final Identity  created = make(
+                        admins,
+                        ADMIN_IDENTITY_NAME,
+                        ADMIN_IDENTITY_PASS
+                        );
+                    log.debug("  created [{}]", created);
+                    return created ;
+                    }
+                }
+            // Needed because finding the admin community may throw an exception. 
+            catch (final ProtectionException ouch)
+                {
+                log.error("ProtectionException creating admin identity");
+                throw new ProtectionError(
+                    "ProtectionException creating admin identity",
+                    ouch
+                    );
+                }
+            }
+        
+        @Override
+        public Class<?> etype()
+            {
+            return IdentityEntity.class;
+            }
+
+        @Override
+        @CreateMethod
+        public Identity create(final Community community)
+        throws ProtectionException
+            {
+            log.debug("create(Community) [{}]", community.name());
+            //protector().affirm(Action.create);
+            return make(
+                community,
+                null,
+                null
+                );
+            }
+        
+        @Override
+        @CreateMethod
+        public Identity create(final Community community, final String name)
+        throws DuplicateEntityException, ProtectionException
+            {
+            log.debug("create(Community, String) [{}][{}]", community.name(), name);
+            //protector().affirm(Action.create);
+            return create(
+                community,
+                name,
+                null
+                );
+            }
+
+        @Override
+        @CreateMethod
+        public Identity create(final Community community, final String name, final String pass)
+        throws DuplicateEntityException, ProtectionException
+            {
+            log.debug("create(Community, String, String) [{}][{}]", community.name(), name);
+            //protector().affirm(Action.create);
+            final Identity found = find(
+                community,
+                name
+                );
+            if (found == null)
+                {
+                return make(
+                    community,
+                    name,
+                    pass
+                    );
+                }
+            else {
+                log.error("Duplicate Identity [{}][{}]", community.name(), name);
+                throw new DuplicateEntityException(
+                    found
+                    );
+                }
+            }
+
+        @Override
+        @SelectMethod
+        public Identity select(final Community community, final String name)
+        throws NameNotFoundException, ProtectionException
+            {
+            log.debug("select(Community, String) [{}][{}]", community.name(), name);
+            //protector().affirm(Action.select);
+            final Identity found = search(
+                community,
+                name
+                );
+            if (found != null)
+                {
+                return found;
+                }
+            else {
+                throw new NameNotFoundException(
+                    name
+                    );
+                }
+            }
+
+        @Override
+        public Identity search(Community community, String name)
+        throws ProtectionException
+            {
+            log.debug("search(Community, String) [{}][{}]", community.name(), name);
+            //protector().affirm(Action.select);
+            return super.first(
+                super.query(
+                    "Identity-select-community.name"
+                    ).setEntity(
+                        "community",
+                        community
+                    ).setString(
+                        "name",
+                        name
+                        )
+                );
+            }
+
+/*
+ *         
+        @Override
+        @SelectMethod
+        public Identity select(final String name)
+        throws NameNotFoundException, ProtectionException
+            {
+            log.debug("select(String) [{}][{}]", name);
+            //protector().affirm(Action.select);
+            final Identity found = search(
+                name
+                );
+            if (found != null)
+                {
+                return found;
+                }
+            else {
+                throw new NameNotFoundException(
+                    name
+                    );
+                }
+            }
+
+        @Override
+        @SelectMethod
+        public Identity search(String name)
+        throws ProtectionException
+            {
+            log.debug("search(String) [{}][{}]", name);
+            //protector().affirm(Action.select);
+            return find(
+                name
+                );
+            }
+ *
+ */
+        @Override
+        @CreateMethod
+        public Identity search(final Community community, final String name, boolean create)
+        throws ProtectionException
+            {
+            log.debug("select(Community, String, boolean) [{}][{}]", community.name(), name, create);
+            //protector().affirm(Action.select);
+            final Identity found = find(
+                community,
+                name
+                );
+            if (found != null)
+                {
+                log.debug("Found matching Identity [{}][{}]", found.ident(), found.name());
+                return found;
+                }
+            else {
+                log.debug("Identity not found [{}]", name);
+                if (create)
+                    {
+                    //protector().affirm(Action.create);
+                    log.debug("Creating new Identity [{}]", name);
+                    return make(
+                        community,
+                        name,
+                        null
+                        );
+                    }
+                else {
+                    log.debug("Null Identity");
+                    return null ;
+                    }
+                }
+            }
+
+        @Override
+        @CreateMethod
+        public Identity login(final Community community, String name, String pass)
+		throws UnauthorizedException
+            {
+            log.debug("login(Community, String, String) [{}][{}]", community.name(), name);
+
+            log.debug("Checking for identity [{}][{}]", community.name(), name);
+            final Identity found = find(
+                community,
+                name
+                );
+
+            if (found != null)
+            	{
+                log.debug("Identity found [{}][{}]", community.name(), name);
+            	found.login(
+        	        name,
+        	        pass
+        	        );
+            	return found;
+                }
+            else {
+                log.debug("Identity not found [{}][{}]", community.name(), name);
+            	if (community.autocreate())
+	            	{
+	                log.debug("Auto-create new identity [{}][{}]", community.name(), name);
+	            	final Identity created = make(
+                        community,
+                        name,
+                        pass
+	                    );
+	            	created.login(
+            	        name,
+            	        pass
+            	        );
+	            	return created;
+	            	}
+            	else {
+                    log.warn("FAIL : Identity not found [{}][{}]", community.name(), name);
+            		throw new UnauthorizedException();
+            		}
+                }
             }
         }
 
@@ -266,14 +565,39 @@ implements Identity
         }
 
     /**
-     * Create a new IdentityEntity, setting the owner to null.
+     * Protected constructor.
      *
      */
-    protected IdentityEntity(final Community community, final String name)
+    protected IdentityEntity(final Community community, final String name, final String pass)
         {
         super(name);
+        this.owner(this) ;
+    	this.passhash  = this.hashpass(pass);
         this.community = community;
         }
+
+    /**
+     * Static name factory.
+     * 
+     */
+    static final UniqueNamefactory names = new UniqueNamefactory(
+		"anon",
+		"-"
+		);
+
+    @Override
+    protected void init(final String name)
+    	{
+        if (name != null)
+            {
+            this.name = name;
+            }
+        else {
+            this.name = names.name(
+        		this
+        		);
+        	}
+    	}
 
     @Override
     public String link()
@@ -290,14 +614,7 @@ implements Identity
     @Override
     public Identity owner()
         {
-        if (super.owner() != null)
-            {
-            return super.owner();
-            }
-        else
-            {
-            return this;
-            }
+        return this;
         }
 
     @ManyToOne(
@@ -342,6 +659,7 @@ implements Identity
     private AdqlSchema adqlschema ;
 
     protected AdqlSchema adqlschema()
+    throws ProtectionException
         {
         log.debug("adqlschema()");
         if (this.adqlschema == null)
@@ -374,6 +692,7 @@ implements Identity
     private JdbcSchema jdbcschema ;
 
     protected JdbcSchema jdbcschema()
+    throws ProtectionException
         {
         log.debug("jdbcschema()");
         if (this.jdbcschema == null)
@@ -405,22 +724,26 @@ implements Identity
 
 	@Override
 	public Spaces spaces()
+    throws ProtectionException
 		{
 		return new Spaces()
 			{
 			@Override
 			public AdqlSpaces adql()
+	        throws ProtectionException
 				{
 				return new AdqlSpaces()
 					{
 					@Override
 					public Iterable<AdqlSchema> select()
+                    throws ProtectionException
 						{
 						// TODO .. 
 						return new EmptyIterable<AdqlSchema>();
 						}
 					@Override
 					public AdqlSchema current()
+                    throws ProtectionException
 						{
 						return adqlschema();
 						}
@@ -429,11 +752,13 @@ implements Identity
 
 			@Override
 			public JdbcSpaces jdbc()
+	        throws ProtectionException
 				{
 				return new JdbcSpaces()
 					{
 					@Override
 					public Iterable<JdbcSchema> select()
+                    throws ProtectionException
 						{
 						// TODO .. 
 						return new EmptyIterable<JdbcSchema>();
@@ -441,6 +766,7 @@ implements Identity
 
 					@Override
 					public JdbcSchema current()
+			        throws ProtectionException
 						{
 						return jdbcschema();
 						}
@@ -473,6 +799,143 @@ implements Identity
     			ouch
     			);
         	}
+        catch (final ProtectionException ouch)
+            {
+            log.error("ProtectionException selecting instance [{}][{}]", this.getClass().getName(), ident());
+            throw new HibernateConvertException(
+                ident(),
+                ouch
+                );
+            }
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_PASSHASH_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String passhash = null ;
+
+    /*
+     * 
+            
+    https://crackstation.net/hashing-security.htm
+    https://github.com/defuse/password-hashing
+    https://github.com/jedisct1/libsodium
+    https://download.libsodium.org/doc/
+    https://www.gitbook.com/book/jedisct1/libsodium/details
+    https://download.libsodium.org/doc/bindings_for_other_languages/
+    https://github.com/joshjdevl/libsodium-jni/blob/master/example/Sodium/app/src/main/java/android/alex/com/sodium/MainActivity.java
+    https://github.com/naphaso/jsodium/tree/master/native
+    https://download.libsodium.org/doc/bindings_for_other_languages/index.html
+
+    https://github.com/abstractj/kalium/blob/master/src/main/java/org/abstractj/kalium/crypto/Password.java
+    https://github.com/abstractj/kalium/blob/master/src/test/java/org/abstractj/kalium/crypto/PasswordTest.java
+
+     * 
+     */
+    
+    protected void passhash(final String oldpass, final String newpass)
+    throws UnauthorizedException
+	    {
+    	log.debug("passhash(String, String)");
+    	log.debug("  Identity [{}][{}]", this.ident(), this.name());
+    	log.debug("  Password [{}][{}]", oldpass, newpass);
+
+    	if (this.passhash != null)
+    		{
+	    	if (passtest(oldpass))
+			    {
+		    	this.passhash = hashpass(newpass);
+			    }
+		    else {
+	    		throw new UnauthorizedException();
+			    }
+		    }
+	    }
+
+    private boolean nametest(final String name)
+    throws UnauthorizedException
+        {
+        log.debug("nametest(String)");
+        log.debug("  Identity [{}][{}]", this.ident(), this.name());
+        log.debug("  Username [{}]", name);
+
+        if (name != null)
+            {
+            if (this.name().equals(name))
+                {
+                return true ;
+                }
+            else {
+                log.debug("FAIL - wrong username");;
+                throw new UnauthorizedException();
+                }
+            }
+        else {
+            log.debug("FAIL - null username");;
+            throw new UnauthorizedException();
+            }
+        }
+
+    private boolean passtest(final String pass)
+    throws UnauthorizedException
+    	{
+    	log.debug("passtest(String)");
+    	log.debug("  Identity [{}][{}]", this.ident(), this.name());
+        log.debug("  Password [{}]", pass);
+        log.debug("  Passhash [{}]", this.passhash);
+    	if ((null == this.passhash) && (null == pass))
+    		{
+    		log.debug("PASS - no password");
+    		return true ;
+    		}
+    	else if (null == pass)
+    		{
+    		log.debug("FAIL - null password");;
+    		throw new UnauthorizedException();
+    		}
+        else if (null == this.passhash)
+            {
+            log.debug("FAIL - null passhash");;
+            throw new UnauthorizedException();
+            }
+    	else if (this.passhash.equals(hashpass(pass)))	
+			{
+       		log.debug("PASS - password match");;
+    		return true ;
+			}
+		else {
+    		log.debug("FAIL - wrong password");;
+    		throw new UnauthorizedException();
+			}
+    	}
+
+    protected String hashpass(final String pass)
+    	{
+    	if (pass == null)
+    	    {
+    	    return null ;
+    	    }
+    	else {
+    	    return "abc-" + pass + "-xyz";
+    	    }
+    	}
+
+    @Override
+    public void login(final String name, final String pass)
+	throws UnauthorizedException
+        {
+        log.debug("login(String, String)");
+        log.debug("  Identity [{}][{}]", this.ident(), this.name());
+
+        nametest(name);
+        passtest(pass);
+
         }
     }
 

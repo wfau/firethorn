@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Public interface for a metadata tree component.
@@ -49,26 +51,26 @@ extends BaseComponent
 
     /**
      * The copy depth.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public CopyDepth depth();
-
-    /**
-     * The copy depth.
-     *
-     */
-    public void depth(final CopyDepth depth);
+    public CopyDepth depth()
+    throws ProtectionException;
 
     /**
      * The fully qualified name builder.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public StringBuilder namebuilder();
+    public StringBuilder namebuilder()
+    throws ProtectionException;
 
     /**
      * The fully qualified name.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */
-    public String fullname();
+    public String fullname()
+    throws ProtectionException;
 
     }

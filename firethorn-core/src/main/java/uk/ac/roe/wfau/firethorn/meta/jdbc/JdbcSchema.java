@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
@@ -45,16 +46,22 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         {
         /**
          * Create (CREATE) a JDBC schema.
+         * @todo Should this be part of JdbcResource.JdbcDriver ?
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public void create(final JdbcSchema schema);
+        public void create(final JdbcSchema schema)
+        throws ProtectionException;
 
         /**
          * Delete (DROP) a JDBC schema.
+         * @todo Should this be part of JdbcResource.JdbcDriver ?
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public void drop(final JdbcSchema schema);
-        
+        public void drop(final JdbcSchema schema)
+        throws ProtectionException;
+
         }
 
     /**
@@ -66,10 +73,11 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         {
         /**
          * Create or update a {@link JdbcSchema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public JdbcSchema build(final JdbcSchema.Metadata meta)
-        throws DuplicateEntityException;
+        throws ProtectionException, DuplicateEntityException;
         }
 
     /**
@@ -114,51 +122,55 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         {
         /**
          * Create a new {@link JdbcSchema}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcSchema create(final JdbcResource parent, final JdbcSchema.Metadata meta);
+        public JdbcSchema create(final JdbcResource parent, final JdbcSchema.Metadata meta)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcSchema}.
          * Used by {@link JdbcResourceEntity#scanimpl()}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema);
+        public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcSchema} for an identity.
          * This should create a new schema in the user data database.
          * @todo Move this to data space interface.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcSchema build(final JdbcResource parent, final Identity identity);
+        public JdbcSchema build(final JdbcResource parent, final Identity identity)
+        throws ProtectionException;
 
         /**
          * Select a {@link JdbcSchema} based on (owner) Identity.
          * @todo Move this to data space interface.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<JdbcSchema> select(final JdbcResource parent, final Identity identity);
+        public Iterable<JdbcSchema> select(final JdbcResource parent, final Identity identity)
+        throws ProtectionException;
 
         /**
-         * Our local {@link JdbcSchema.OldBuilder} implementation.
-         * @todo Move this to data space interface.
-         *
-        public JdbcSchema.OldBuilder oldbuilder();
-         */
-        
-        /**
          * Select a {@link JdbcSchema} based on catalog and schema name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
-        throws NameNotFoundException;
+        throws ProtectionException, NameNotFoundException;
 
         /**
          * Search for a {@link JdbcSchema} based on catalog and schema name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema);
+        public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema)
+        throws ProtectionException;
 
         }
 
@@ -191,15 +203,18 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         {
         /**
          * Create a {@link JdbcSchema}.
+         * @throws ProtectionException 
          *
          */
-        public JdbcSchema create(final JdbcSchema schema);
+        public JdbcSchema create(final JdbcSchema schema)
+        throws ProtectionException;
 
         /**
          * Delete a {@link JdbcSchema}.
          *
          */
-        public void delete(final JdbcSchema schema);
+        public void delete(final JdbcSchema schema)
+        throws ProtectionException;
 
         }
 
@@ -213,62 +228,71 @@ extends BaseSchema<JdbcSchema, JdbcTable>
     public interface Tables extends BaseSchema.Tables<JdbcTable>
         {
         /**
-         *  Create a new {@link JdbcTable} with a generated name.
+         * Create a new {@link JdbcTable} with a generated name.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create();
+        public JdbcTable create()
+        throws ProtectionException;
 
         /**
-         *  Create a new {@link JdbcTable table}.
+         * Create a new {@link JdbcTable table}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         @Deprecated
-        public JdbcTable create(final String name);
+        public JdbcTable create(final String name, final JdbcTable.JdbcType type)
+        throws ProtectionException;
 
         /**
-         *  Create a new {@link JdbcTable table}.
+         * Create a new {@link JdbcTable table}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        @Deprecated
-        public JdbcTable create(final String name, final JdbcTable.JdbcType type);
+        public JdbcTable create(final JdbcTable.Metadata meta)
+        throws ProtectionException;
 
         /**
-         *  Create a new {@link JdbcTable table}.
+         * Create a new {@link JdbcTable} for a {@link BlueQuery} results.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create(final JdbcTable.Metadata meta);
-
-        /**
-         *  Create a new {@link JdbcTable} for a {@link BlueQuery} results.
-         *
-         */
-        public JdbcTable create(final BlueQuery query);
+        public JdbcTable create(final BlueQuery query)
+        throws ProtectionException;
 
         /**
          * Get the next set of tables for garbage collection ..
          * @Move this to the data space interface.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<JdbcTable> pending(final DateTime date, final int page);
+        public Iterable<JdbcTable> pending(final DateTime date, final int page)
+        throws ProtectionException;
 
         /**
          * Create a {@link JdbcTable.Builder}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable.Builder builder();  
+        public JdbcTable.Builder builder()  
+        throws ProtectionException;
         
         }
+
     @Override
-    public Tables tables();
+    public Tables tables()
+    throws ProtectionException;
 
     /**
      * The catalog name.
+     * @todo Not protected by ProtectionException due to Liquibase plugin.
      *
      */
     public String catalog();
-
+    
     /**
      * The schema name.
+     * @todo Not protected by ProtectionException due to Liquibase plugin.
      *
      */
     public String schema();
@@ -288,39 +312,50 @@ extends BaseSchema<JdbcSchema, JdbcTable>
             {
             /**
              * The fully qualified name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String fullname() ;
+            public String fullname()
+            throws ProtectionException;
 
             /**
              * The schema name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String schema() ;
+            public String schema()
+            throws ProtectionException;
 
             /**
              * The catalog name.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              * 
              */
-            public String catalog() ;
+            public String catalog()
+            throws ProtectionException;
 
             }
 
         /**
          * The JDBC metadata.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public Jdbc jdbc();
+        public Jdbc jdbc()
+        throws ProtectionException;
         
         }
 
     @Override
-    public JdbcSchema.Metadata meta();
+    public JdbcSchema.Metadata meta()
+    throws ProtectionException;
 
     /**
      * Update the schema properties.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
-    public void update(final JdbcSchema.Metadata meta);
-    
+    public void update(final JdbcSchema.Metadata meta)
+    throws ProtectionException;
+
     }

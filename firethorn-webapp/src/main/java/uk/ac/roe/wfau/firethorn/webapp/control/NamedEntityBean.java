@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
@@ -35,8 +36,10 @@ extends EntityBean<EntityType>
 
     /**
      * The Entity description.
+     * @throws ProtectionException 
      *
      */
-    public String getText();
+    public String getText()
+    throws ProtectionException;
 
     }

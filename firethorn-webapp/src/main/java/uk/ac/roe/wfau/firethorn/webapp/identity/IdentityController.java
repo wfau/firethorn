@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -153,6 +155,8 @@ extends AbstractController
      * @param ident The {@link Identity} {@Identifier} from the URL path, [{@value WebappLinkFactory.IDENT_FIELD}].
      * @return An {@link IdentityBean} wrapping the {@link Identity}.
      * @throws EntityNotFoundException If the {@link Identity} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      * 
      */
     @ResponseBody
@@ -160,7 +164,9 @@ extends AbstractController
     public IdentityBean select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException  {
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return new IdentityBean(
             factories().identities().entities().select(
                 factories().identities().idents().ident(

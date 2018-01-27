@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +26,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -38,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceLinkFactory;
  * Spring MVC controller for <code>JdbcResource</code> schema.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class JdbcResourceSchemaController
@@ -92,14 +93,17 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
     /**
      * Get the parent resource based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
     public JdbcResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException{
-        log.debug("parent() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().jdbc().resources().entities().select(
             factories().jdbc().resources().idents().ident(
                 ident
@@ -109,34 +113,38 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
 
     /**
      * JSON GET request to select all.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<JdbcSchemaBean> select(
+    public ResponseEntity<Iterable<JdbcSchemaBean>> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource
-        ){
-        log.debug("select()");
-        return bean(
+        )
+    throws ProtectionException
+        {
+        return selected(
             resource.schemas().select()
             );
         }
 
     /**
      * JSON request to select by name.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
-    public JdbcSchemaBean select(
+    public ResponseEntity<JdbcSchemaBean> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SCHEMA_NAME_PARAM)
         final String name
-        ) throws EntityNotFoundException {
-        log.debug("select(String) [{}]", name);
-        return bean(
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
             resource.schemas().select(
                 name
                 )
@@ -145,20 +153,22 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
 
     /**
      * JSON request to select by schema and catalog name.
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params={CATALOG_NAME_PARAM, SCHEMA_NAME_PARAM}, produces=JSON_MIME)
-    public JdbcSchemaBean select(
+    public ResponseEntity<JdbcSchemaBean> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(CATALOG_NAME_PARAM)
         final String catalog,
         @RequestParam(SCHEMA_NAME_PARAM)
         final String schema
-        ) throws EntityNotFoundException {
-        log.debug("select(String, String) [{}][{}]", catalog, schema);
-        return bean(
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
             resource.schemas().select(
                 catalog,
                 schema

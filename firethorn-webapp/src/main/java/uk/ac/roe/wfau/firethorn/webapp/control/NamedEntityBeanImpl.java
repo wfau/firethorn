@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.net.URI;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
@@ -45,6 +46,7 @@ implements NamedEntityBean<EntityType>
 
     @Override
     public String getText()
+    throws ProtectionException
         {
         return entity().text();
         }

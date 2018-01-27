@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -48,7 +49,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
  *
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_METADOC_PATH)
 public class AdqlResourceMetadocController
@@ -109,6 +109,8 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
 
     /**
      * Get the parent {@link AdqlResource} based on the ident in the request.
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      * @throws EntityNotFoundException
      *
      */
@@ -116,8 +118,9 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     public AdqlResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws IdentifierNotFoundException {
-        log.debug("parent() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
                 ident
@@ -138,20 +141,22 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @throws XMLParserException
      * @throws EntityNotFoundException 
      * @throws IdentifierFormatException 
+     * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=METADOC_IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MIME)
-    public Iterable<AdqlSchemaBean> inport(
+    public ResponseEntity<Iterable<AdqlSchemaBean>> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=METADOC_IMPORT_BASE, required=true)
         final String base,
         @RequestPart(value=METADOC_IMPORT_FILE, required=true)
         final MultipartFile metadoc
-        ) throws XMLParserException, XMLReaderException, IOException, IdentifierFormatException, EntityNotFoundException {
-        log.debug("inport(BaseSchema, File) [{}]", base);
-        return bean(
+        )
+    throws XMLParserException, XMLReaderException, IOException, IdentifierFormatException, EntityNotFoundException, ProtectionException
+        {
+        return selected(
             reader.inport(
                 new InputStreamReader(
                     metadoc.getInputStream()

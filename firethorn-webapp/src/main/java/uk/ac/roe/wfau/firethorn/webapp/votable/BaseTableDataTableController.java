@@ -28,7 +28,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -40,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
  * http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
  *
  */
-@Slf4j
 public abstract class BaseTableDataTableController
 extends AbstractTableController
     {
@@ -155,29 +154,29 @@ extends AbstractTableController
 
     /**
      * Generate the table header.
+     * @throws ProtectionException 
      * 
      */
     @Override
     public void head(final PrintWriter writer, final BaseTable<?,?> table)
+    throws ProtectionException
         {
-    	
-    		writer.append("[[");
-    		AdqlColumn column;
-			Iterator<?> itemIterator = table.columns().select().iterator();
-			while (itemIterator.hasNext()) {
-		
-				  column = (AdqlColumn) itemIterator.next();
-				  field(
-		             writer,
-		             column
-		             );
-				  if (itemIterator.hasNext()) {
-					   writer.append(",");
-		
-				  }
-			}
-
-	       	 writer.append("],[");
+        writer.append("[[");
+        AdqlColumn column;
+        Iterator<?> itemIterator = table.columns().select().iterator();
+        while (itemIterator.hasNext())
+            {
+            column = (AdqlColumn) itemIterator.next();
+            field(
+                writer,
+		        column
+		        );
+            if (itemIterator.hasNext())
+                {
+                writer.append(",");
+                }
+            }
+        writer.append("],[");
         }            
         
     /**
@@ -186,7 +185,7 @@ extends AbstractTableController
      */
     public void field(final PrintWriter writer, final BaseColumn<?> column)
         {
-    	 writer.append('"' + column.name() + '"');
+        writer.append('"' + column.name() + '"');
         }
 
     /**
@@ -197,17 +196,13 @@ extends AbstractTableController
     public void row(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
     throws SQLException
         {
-    	
         writer.append("{");
         cells(
             formatters,
             writer,
             results
             );
-    
         writer.append("}");
-       
-    
         }
     
     
@@ -287,10 +282,12 @@ extends AbstractTableController
 
     /**
      * Select a formatter for a field.
+     * @throws ProtectionException 
      * 
      */
     @Override
     public FieldFormatter formatter(final BaseColumn<?> column)
+    throws ProtectionException
         {
         switch(column.meta().adql().type())
             {

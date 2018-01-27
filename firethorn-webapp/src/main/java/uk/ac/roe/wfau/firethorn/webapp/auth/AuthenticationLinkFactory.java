@@ -20,10 +20,11 @@ package uk.ac.roe.wfau.firethorn.webapp.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.AuthenticationImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -33,8 +34,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class AuthenticationLinkFactory
-extends WebappLinkFactory<Authentication>
-implements Authentication.LinkFactory
+extends WebappLinkFactory<AuthenticationImpl>
+implements AuthenticationImpl.LinkFactory
     {
     protected AuthenticationLinkFactory()
         {
@@ -56,7 +57,7 @@ implements Authentication.LinkFactory
     public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final Authentication entity)
+    public String link(final AuthenticationImpl entity)
         {
         return link(
             ENTITY_PATH,
@@ -65,10 +66,10 @@ implements Authentication.LinkFactory
         }
 
     @Autowired
-    private Authentication.EntityFactory factory ;
+    private AuthenticationImpl.EntityFactory factory ;
     @Override
-    public Authentication resolve(String link)
-    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException
+    public AuthenticationImpl resolve(String link)
+    throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException, ProtectionException
         {
         if (this.matches(link))
             {

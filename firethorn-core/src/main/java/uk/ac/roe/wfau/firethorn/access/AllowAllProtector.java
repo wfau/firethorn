@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2018 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,27 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta.base;
 
+package uk.ac.roe.wfau.firethorn.access;
 
 /**
- *
- *
+ * A simple Protector that allows everything. 
+ * 
  */
-@Deprecated
-public class BaseObject
+public class AllowAllProtector
+extends BooleanProtector
+implements Protector
     {
-    protected BaseObject()
-        {
-        super();
-        }
-
     /**
-     * Access to our ComponentFactories singleton instance.
-     *
-    public ComponentFactories factories()
-        {
-        return ComponentFactoriesImpl.instance();
-        }
+     * Public constructor. 
      */
+    public AllowAllProtector(final Protected target)
+        {
+        super(
+            target,
+            true
+            );
+        }
     }

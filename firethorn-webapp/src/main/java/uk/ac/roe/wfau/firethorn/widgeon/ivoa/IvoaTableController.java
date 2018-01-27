@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -37,7 +40,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaTableLinkFactory;
  * Spring MVC controller for <code>IvoaTables</code>.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(IvoaTableLinkFactory.TABLE_PATH)
 public class IvoaTableController
@@ -105,14 +107,17 @@ public class IvoaTableController
     /**
      * Get the target table based on the identifier in the request.
      * @throws EntityNotFoundException
+     * @throws ProtectionException 
+     * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(IvoaTableController.TARGET_ENTITY)
     public IvoaTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws EntityNotFoundException {
-        log.debug("table() [{}]", ident);
+        )
+    throws EntityNotFoundException, IdentifierFormatException, ProtectionException 
+        {
         return factories().ivoa().tables().entities().select(
             factories().ivoa().tables().idents().ident(
                 ident
@@ -126,30 +131,31 @@ public class IvoaTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
-    public IvoaTableBean select(
+    public ResponseEntity<IvoaTableBean> select(
         @ModelAttribute(TARGET_ENTITY)
         final IvoaTable entity
         ){
-        log.debug("select()");
-        return bean(
+        return selected(
             entity
             );
         }
 
     /**
      * POST update name request.
+     * @throws ProtectionException 
+     * @throws NameFormatException 
      *
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, params={TABLE_NAME_PARAM}, produces=JSON_MIME)
-    public IvoaTableBean update(
+    public ResponseEntity<IvoaTableBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final IvoaTable entity,
         @RequestParam(value=TABLE_NAME_PARAM, required=true)
         final String name
-        ){
-        log.debug("update(String)");
-        log.debug(" name [{}]", name);
+        )
+    throws NameFormatException, ProtectionException
+        {
         //
         // Needs a transaction ..
         if (null != name)
@@ -158,53 +164,8 @@ public class IvoaTableController
                 name
                 );
             }
-        return bean(
+        return selected(
             entity
             );
         }
-
-    /**
-     * POST update request.
-     *
-    @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
-    public IvoaTableBean update(
-        @ModelAttribute(TARGET_ENTITY)
-        final IvoaTable entity,
-        @RequestParam(value=JDBC_STATUS_PARAM, required=false)
-        final IvoaTable.TableStatus jdbcstatus,
-        @RequestParam(value=ADQL_STATUS_PARAM, required=false)
-        final AdqlTable.TableStatus adqlstatus
-        ){
-        log.debug("update(IvoaTable.IvoaStatus)");
-        log.debug(" jdbcstatus [{}]", jdbcstatus);
-        log.debug(" adqlstatus [{}]", adqlstatus);
-
-        factories().spring().transactor().update(
-            new Runnable()
-                {
-                @Override
-                public void run()
-                    {
-                    if (null != jdbcstatus)
-                        {
-                        entity.meta().jdbc().status(
-                            jdbcstatus
-                            );
-                        }
-                    if (null != adqlstatus)
-                        {
-                        entity.meta().adql().status(
-                            adqlstatus
-                            );
-                        }
-                    }
-                }
-            );
-
-        return bean(
-            entity
-            );
-        }
-     */
     }

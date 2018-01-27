@@ -105,6 +105,14 @@
         | http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
         +-->
     <mvc:interceptors>
+
+        <!--+
+            | Add our own custom interceptors.
+            +-->
+        <bean id="request-debug-interceptor"
+            class="uk.ac.roe.wfau.firethorn.webapp.debug.HttpRequestDebug">
+        </bean>
+
         <!--+
             | Hibernate Session interceptor.
             +-->
@@ -119,16 +127,11 @@
         <bean id="operation-interceptor"
             class="uk.ac.roe.wfau.firethorn.webapp.oper.OperationInterceptor">
         </bean>
-        <bean id="atlas-authentication"
-            class="uk.ac.roe.wfau.firethorn.webapp.auth.HttpHeaderAuthenticator">
-            <!--+
-                | Default configuration ..
-            <property name="defaultIdentity"  value="guest.identity"/>
-            <property name="defaultCommunity" value="guest.community"/>
-            <property name="identityAttrib"   value="firethorn.auth.identity"/>
-            <property name="communityAttrib"  value="firethorn.auth.community"/>
-                +-->
+
+        <bean id="simple-authentication"
+            class="uk.ac.roe.wfau.firethorn.webapp.auth.SimpleHeaderAuthenticator">
         </bean>
+
         <bean id="anon-authentication"
             class="uk.ac.roe.wfau.firethorn.webapp.auth.AnonymousAuthenticator">
         </bean>

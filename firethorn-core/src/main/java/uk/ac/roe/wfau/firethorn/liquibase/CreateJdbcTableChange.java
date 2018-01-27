@@ -5,6 +5,7 @@ import liquibase.change.ColumnConfig;
 import liquibase.change.DatabaseChange;
 import liquibase.change.core.CreateTableChange;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -15,6 +16,7 @@ public class CreateJdbcTableChange
 extends CreateTableChange
     {
     public CreateJdbcTableChange(final JdbcTable table)
+    throws ProtectionException
         {
         log.debug("CreateJdbcTableChange(JdbcTable)");
         log.debug("  Table [{}][{}][{}][{}]", table.ident(), table.schema().catalog(), table.schema().schema(), table.name());
@@ -57,9 +59,11 @@ extends CreateTableChange
     /**
      * SQLServer specific code imported from JdbcColumnEntity.CreateSql.
      * TODO This is just a temp fix until we get rid of Liquibase.
+     * @throws ProtectionException 
      *   
      */
     private String sqltype(final JdbcColumn.Metadata.Jdbc meta)
+    throws ProtectionException
     	{
     	final StringBuilder builder = new StringBuilder();
     	switch(meta.jdbctype())

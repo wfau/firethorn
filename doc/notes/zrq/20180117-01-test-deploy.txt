@@ -1,0 +1,249 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+        INFO : Node name [Lothigometh]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [Lothigometh.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login as normal user.
+#[user@trop]
+
+    ssh Araybwyn
+
+    ssh Lothigometh
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    vi "${HOME:?}/secret.sh"
+
+        ....
+        ....
+        ....
+
+    source "${HOME:?}/secret.sh"
+    secret 'frog'
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.12-zrq-basic-auth
+
+# -----------------------------------------------------
+# Download our builder compose file
+#[user@virtual]
+     
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch=${branch:?}
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        00.00-build.sh
+
+    # -----------------------------------------------------
+    # Exit the builder.
+    #[root@builder]
+
+        exit
+
+# -----------------------------------------------------
+# Download our deployer compose file
+#[user@virtual]
+     
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/deployer.yml
+    
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/b431332a5df0/docker/compose/deployer.yml
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+metadata=postgres
+metauser=$(pwgen 20 1)
+metapass=$(pwgen 20 1)
+
+userhost=$(secret 'firethorn.user.host')
+userdata=$(secret 'firethorn.user.data')
+useruser=$(secret 'firethorn.user.user')
+userpass=$(secret 'firethorn.user.pass')
+
+datahost=$(secret 'firethorn.data.host')
+datadata=$(secret 'firethorn.data.data')
+datauser=$(secret 'firethorn.data.user')
+datapass=$(secret 'firethorn.data.pass')
+
+tunneluser=$(secret 'ssh.tunnel.user')
+tunnelhost=$(secret 'ssh.tunnel.host')
+
+systemuser=$(pwgen 20 1)
+systempass=$(pwgen 20 1)
+systemcomm=system
+
+EOF
+
+# -----------------------------------------------------
+# Create our Firethorn properties.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+        firethorn.meta.type=pgsql
+        firethorn.meta.driver=org.postgresql.Driver
+        firethorn.meta.host=bethany
+        firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
+        firethorn.meta.data=postgres
+
+        firethorn.meta.user=${metauser:?}
+        firethorn.meta.pass=${metapass:?}
+
+        firethorn.user.type=mssql
+        firethorn.user.url=jdbc:jtds:sqlserver://patricia/${userdata}
+        firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+
+        firethorn.user.host=patricia
+        firethorn.user.data=${userdata:?}
+        firethorn.user.user=${useruser:?}
+        firethorn.user.pass=${userpass:?}
+
+        firethorn.system.user=${systemuser:?}
+        firethorn.system.pass=${systempass:?}
+        firethorn.system.comm=${systemcomm:?}
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties"
+
+# -----------------------------------------------------
+# Create our deployer properties.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/deployer.properties" << EOF
+
+        datahost=elayne
+        datadata=${datadata:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=net.sourceforge.jtds.jdbc.Driver
+
+EOF
+
+    chmod a+r "${HOME:?}/deployer.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/deployer.properties"
+
+# -----------------------------------------------------
+# Create our compose env file.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/.env" << EOF
+
+buildtag=${branch:?}
+
+metadata=postgres
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+userhost=${userhost:?}
+
+datahost=${datahost:?}
+
+#tunneluser=${tunneluser:?}
+#tunnelhost=${tunnelhost:?}
+
+EOF
+
+# -----------------------------------------------------
+# Run our deployer.
+#[user@virtual]
+
+    docker-compose \
+        --file "deployer.yml" \
+        run \
+            deployer
+
+# -----------------------------------------------------
+# Load our configuration.
+#[root@tester]
+
+        source /etc/deployer.properties
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@deployer]
+
+        curl \
+            --silent \
+            "${endpointurl:?}/system/info" \
+            | jq '.' | tee /tmp/system-info.json
+
+# -----------------------------------------------------
+# Check the system info.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --header "firethorn.auth.community:system" \
+            --header "firethorn.auth.username:admin" \
+            --header "firethorn.auth.password:pass" \
+            "${endpointurl:?}/system/info" \
+            | jq '.' | tee /tmp/system-info.json
+
+

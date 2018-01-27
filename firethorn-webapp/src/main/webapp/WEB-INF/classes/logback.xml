@@ -101,10 +101,10 @@
         | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
 	    +-->
 	<logger name="org.springframework.transaction">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.transaction.interceptor">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 
 	<!--+

@@ -23,7 +23,9 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Method;
 
 /**
  *
@@ -41,13 +43,14 @@ public class AccessMapField
      */
     public static final String DB_ENTITY_COL   = "entity"   ;
     public static final String DB_ACTION_COL   = "action"   ;
+    public static final String DB_METHOD_COL   = "method"   ;
     public static final String DB_IDENTITY_COL = "identity" ;
 
     /**
      * Public constructor.
      *
      */
-    public AccessMapField(Entity entity, Action action, Identity identity)
+    public AccessMapField(final Entity entity, final Action action, final Identity identity, final Method method)
         {
         this.entity = entity;
         this.action = action;
@@ -88,5 +91,43 @@ public class AccessMapField
     public Identity identity()
         {
         return identity ;
+        }
+
+    @Column(
+        name = DB_METHOD_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private String method;
+    public Method method()
+        {
+        return new Method()
+            {
+            @Override
+            public String urn()
+                {
+                return AccessMapField.this.method;
+                }
+            };
+        }
+
+    
+    public Authentication authentication()
+        {
+        return new Authentication()
+            {
+            @Override
+            public Method method()
+                {
+                return AccessMapField.this.method();
+                }
+
+            @Override
+            public Identity identity()
+                {
+                return AccessMapField.this.identity();
+                }
+            };
         }
     }

@@ -22,11 +22,11 @@ import java.util.Iterator;
 import org.joda.time.DateTime;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Metadata.Adql;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -147,56 +147,59 @@ implements AdqlColumn
     private final BaseColumn<?> base ;
     @Override
     public BaseColumn<?> base()
+    throws ProtectionException
         {
-        return base;
+        return this.base;
         }
 
     @Override
     public BaseColumn<?> root()
+    throws ProtectionException
         {
-        return base().root();
+        return this.base.root();
         }
 
     private Identifier ident ;
     @Override
     public Identifier ident()
         {
-        if (ident == null)
+        if (this.ident == null)
             {
-            ident = new ProxyIdentifier(
-                table().ident(),
-                base().ident()
+            this.ident = new ProxyIdentifier(
+                this.table.ident(),
+                this.base.ident()
                 );
             }
-        return ident ;
+        return this.ident ;
         }
 
     @Override
     public Identity owner()
         {
-        return table().owner();
+        return this.table.owner();
         }
 
     @Override
     public DateTime created()
         {
-        return table().created();
+        return this.table.created();
         }
 
     @Override
     public DateTime modified()
         {
-        return table().modified();
+        return this.table.modified();
         }
 
     @Override
     public String name()
         {
-        return base().name();
+        return this.base.name();
         }
 
     @Override
-    public void name(final String name) throws NameFormatException
+    public void name(final String name)
+    throws ProtectionException, NameFormatException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
@@ -205,12 +208,14 @@ implements AdqlColumn
 
     @Override
     public String text()
+    throws ProtectionException
         {
-        return base().text();
+        return this.base.text();
         }
 
     @Override
     public void text(final String text)
+    throws ProtectionException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
@@ -219,30 +224,35 @@ implements AdqlColumn
 
     @Override
     public String alias()
+    throws ProtectionException
         {
-        return base().alias();
+        return this.base.alias();
         }
 
     @Override
     public StringBuilder namebuilder()
+    throws ProtectionException
         {
-        return this.table().namebuilder().append(".").append(this.name());
+        return this.table.namebuilder().append(".").append(this.name());
         }
 
     @Override
     public String fullname()
+    throws ProtectionException
         {
         return namebuilder().toString();
         }
 
     @Override
     public Status status()
+    throws ProtectionException
         {
-        return base().status();
+        return this.base.status();
         }
 
     @Override
-    public void status(final Status status) throws InvalidStatusException
+    public void status(final Status status)
+    throws ProtectionException, InvalidStatusException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
@@ -251,50 +261,48 @@ implements AdqlColumn
 
     @Override
     public CopyDepth depth()
+    throws ProtectionException
         {
         return CopyDepth.PROXY;
         }
 
     @Override
-    public void depth(final CopyDepth copytype)
-        {
-        throw new UnsupportedOperationException(
-            "Can't change a read only copy"
-            );
-        }
-
-    @Override
     public AdqlColumn.Modifier meta()
+    throws ProtectionException
         {
-        return base().meta();
+        return this.base.meta();
         }
 
     @Override
     public AdqlTable table()
+    throws ProtectionException
         {
         return this.table;
         }
 
     @Override
     public AdqlSchema schema()
+    throws ProtectionException
         {
-        return table().schema();
+        return this.table.schema();
         }
 
     @Override
     public AdqlResource resource()
+    throws ProtectionException
         {
-        return table().resource();
+        return this.table.resource();
         }
 
     @Override
     public EntityProtector protector()
         {
-        throw new NotImplementedException(); 
+        return this.table.protector();
         }
 
 	@Override
 	public void update(Adql meta)
+    throws ProtectionException
 		{
         throw new UnsupportedOperationException(
             "Can't change a read only copy"

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
@@ -160,9 +161,10 @@ extends AbstractController
      * @param table The {@link BaseTable} to query.
      * @param type The {@link JdbcProductType} of the database.
      * @return A {@link String} representation of the SQL {@link Statement}
+     * @throws ProtectionException 
      *
      */
-    public String select(final BaseTable<?,?> table, final JdbcProductType type)
+    public String select(final BaseTable<?,?> table, final JdbcProductType type) throws ProtectionException
         {
         final StringBuilder builder = new StringBuilder();
 
@@ -208,9 +210,11 @@ extends AbstractController
      * @param builder The {@link StringBuilder} to add the column name to.
      * @param column The {@link BaseColumn} to query.
      * @param type The {@link JdbcProductType} of the database.
+     * @throws ProtectionException 
      * 
      */
     public void select(final StringBuilder builder, final BaseColumn<?> column, final JdbcProductType type)
+    throws ProtectionException
         {
     	log.trace("select(StringBuilder, AdqlColumn, JdbcProductType)");
         //
@@ -251,9 +255,11 @@ extends AbstractController
      * Write the header for a {@link BaseTable} to a {@link PrintWriter}.
      * @param writer The {@link PrintWriter} to write the data to.
      * @param table  The {@link BaseTable}.
+     * @throws ProtectionException 
      *
      */
-    public abstract void head(final PrintWriter writer, final BaseTable<?,?> table);
+    public abstract void head(final PrintWriter writer, final BaseTable<?,?> table)
+    throws ProtectionException;
         
     /**
      * Write all the rows from a {@link ResultSet} to a {@link PrintWriter} using a {@link List} of {@link FieldFormatter}s.
@@ -320,25 +326,30 @@ extends AbstractController
      * Write the footer for a {@link BaseTable} to a {@link PrintWriter}.
      * @param writer The {@link PrintWriter} to write the data to.
      * @param table  The {@link BaseTable}.
+     * @throws ProtectionException 
      *
      */
-    public abstract void foot(final PrintWriter writer, final BaseTable<?,?> table);
+    public abstract void foot(final PrintWriter writer, final BaseTable<?,?> table) throws ProtectionException;
 
     /**
      * Select a matching {@link FieldFormatter} for a {@link BaseColumn}.
      * @param column The {@link BaseColumn} to check for.
      * @return The corresponding {@link FieldFormatter}.
+     * @throws ProtectionException 
      * 
      */
-    public abstract FieldFormatter formatter(final BaseColumn<?> column);
+    public abstract FieldFormatter formatter(final BaseColumn<?> column)
+    throws ProtectionException;
 
     /**
      * Write the body for a {@link BaseTable} to a {@link PrintWriter}.
      * @param writer The {@link PrintWriter} to write the data to.
      * @param table  The {@link BaseTable}.
+     * @throws ProtectionException 
      *
      */
     public void body(final PrintWriter writer, final BaseTable<?,?> table)
+    throws ProtectionException
         {
         //
         // If the root table is a JDBC table.
@@ -434,9 +445,11 @@ extends AbstractController
      * Write the contents of a {@link BaseTable} to a {@link PrintWriter}.
      * @param writer The {@link PrintWriter} to write the data to.
      * @param table  The {@link BaseTable}.
+     * @throws ProtectionException 
      *
      */
-    public void write(final PrintWriter writer, final BaseTable<?,?> table) 
+    public void write(final PrintWriter writer, final BaseTable<?,?> table)
+    throws ProtectionException 
         {
         head(writer, table);
         body(writer, table);

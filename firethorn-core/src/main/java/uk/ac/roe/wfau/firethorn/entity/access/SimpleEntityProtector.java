@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.entity.access;
 import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
 
 /**
  * Simple implementation of the EntityProtector interface.
@@ -29,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
  *
  */
 public class SimpleEntityProtector
-    extends AbstractEntityProtector
+    extends BaseEntityProtector
     implements EntityProtector
     {
     /**
@@ -38,39 +37,25 @@ public class SimpleEntityProtector
      */
     public SimpleEntityProtector(final Entity entity)
         {
-        this.entity = entity ;
-        }
-
-    /**
-     * The entity being protected. 
-     * 
-     */
-    protected Entity entity ;
-
-    /**
-     * The entity being protected. 
-     * 
-     */
-    public Entity entity()
-        {
-        return this.entity;
-        }
-    
-    @Override
-    public Iterable<Action> actions()
-        {
-        return new EmptyIterable<Action>();
+        super(entity);
         }
 
     @Override
-    public boolean allow(Identity identity, Action action)
+    public boolean check(final Identity identity, final Action action)
         {
-        if (identity.equals(entity.owner()))
+        // Allow anyone to read.
+        if (action.type().select())
             {
-            return true ;
+            return (identity != null);
             }
+        // Require owner to modify.
+        if (action.type().modify())
+            {
+            return isOwner(identity);
+            }
+        // Allow admin anything else.
         else {
-            return false ;
+            return isAdmin(identity);
             }
         }
     }

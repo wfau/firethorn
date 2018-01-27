@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -45,14 +47,17 @@ public class AdqlTapTablesController extends AbstractController {
 	}
 	 /**
      * Get the target workspace based on the ident in the path. 
+	 * @throws ProtectionException 
+	 * @throws IdentifierFormatException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public AdqlResource entity(
         @PathVariable("ident")
         final String ident
-        ) throws IdentifierNotFoundException  {
-        log.debug("entity() [{}]", ident);
+        )
+    throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
+        {
         return factories().adql().resources().entities().select(
             factories().adql().resources().idents().ident(
                 ident
@@ -72,10 +77,6 @@ public class AdqlTapTablesController extends AbstractController {
         @ModelAttribute(TARGET_ENTITY)
         AdqlResource resource
         ){
-			return CommonParams.VOSI_XML_VIEW ;
-		 }
-
-
-
-	 
-}
+		return CommonParams.VOSI_XML_VIEW ;
+		}
+    }

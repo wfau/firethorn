@@ -47,10 +47,10 @@ public class EntityServiceException
         }
 
     /**
-     * Protected constructor.
+     * Public constructor.
      *
      */
-    protected EntityServiceException(final String message)
+    public EntityServiceException(final String message)
         {
         super(
             message
@@ -58,10 +58,10 @@ public class EntityServiceException
         }
 
     /**
-     * Protected constructor.
+     * Public constructor.
      *
      */
-    protected EntityServiceException(final Throwable cause)
+    public EntityServiceException(final Throwable cause)
         {
         super(
             cause
@@ -69,10 +69,10 @@ public class EntityServiceException
         }
 
     /**
-     * Protected constructor.
+     * Public constructor.
      *
      */
-    protected EntityServiceException(final String message, final Throwable cause)
+    public EntityServiceException(final String message, final Throwable cause)
         {
         super(
             message,

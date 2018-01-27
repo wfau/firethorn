@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -36,7 +36,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
  * @todo Better exception handling.
  *
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.SERVICE_PATH)
 public class AdqlResourcesController
@@ -87,13 +86,16 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * <br/>Request path : [{@value #SELECT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @return An {@Iterable} set of {@link AdqlResourceBean}.
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
-    public Iterable<AdqlResourceBean> select(
-        ){
-        return bean(
+    public ResponseEntity<Iterable<AdqlResourceBean>> select(
+        )
+    throws ProtectionException
+        {
+        return selected(
             factories().adql().resources().entities().select()
             );
         }
@@ -103,13 +105,14 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * <br/>Request path : [{@value #CREATE_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @return A new {@link AdqlResource} wrapped in an {@link AdqlResourceBean}.
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, params={}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlResourceBean> create()
+    throws ProtectionException
         {
-        log.debug("create()");
         return created(
             factories().adql().resources().entities().create()
             );
@@ -121,6 +124,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param name The {@link AdqlResource} name, [{@value #RESOURCE_NAME_PARAM}]
      * @return A new {@link AdqlResource} wrapped in an {@link AdqlResourceBean}.
+     * @throws ProtectionException 
      * 
      */
     @ResponseBody
@@ -128,8 +132,9 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
     public ResponseEntity<AdqlResourceBean> create(
         @RequestParam(value=RESOURCE_NAME_PARAM, required=true)
         final String name
-        ){
-        log.debug("create(String)");
+        )
+    throws ProtectionException
+        {
         return created(
             factories().adql().resources().entities().create(
                 name

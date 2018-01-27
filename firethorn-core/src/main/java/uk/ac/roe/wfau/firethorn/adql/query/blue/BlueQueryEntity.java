@@ -53,6 +53,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
@@ -245,6 +247,12 @@ implements BlueQuery
     implements BlueQuery.EntityFactory
         {
         @Override
+        public Protector protector()
+            {
+            return new FactoryAllowCreateProtector();
+            }
+        
+        @Override
         public Class<?> etype()
             {
             return BlueQueryEntity.class;
@@ -253,7 +261,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource source, final String input)
-        throws InvalidRequestException, InternalServerErrorException
+        throws ProtectionException, InvalidRequestException, InternalServerErrorException
             {
             log.debug("create(AdqlResource, String)");
             return create(
@@ -271,7 +279,7 @@ implements BlueQuery
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException
+        throws ProtectionException, InvalidRequestException, InternalServerErrorException
             {
             log.debug("create(AdqlResource, String, Mode, Syntax, Limits, Delays, TaskState, Long)");
             log.debug("  state [{}]", next);
@@ -339,7 +347,7 @@ implements BlueQuery
         @Override
         @SelectMethod
         public BlueQuery select(final Identifier ident, final TaskState prev, final TaskState next, final Long wait)
-        throws IdentifierNotFoundException
+        throws ProtectionException, IdentifierNotFoundException
             {
             log.debug("select(Identifier , TaskStatus, TaskStatus, Long)");
             log.debug("  ident [{}]", ident);
@@ -366,7 +374,7 @@ implements BlueQuery
         @Override
         @UpdateMethod
         public BlueQuery update(final Identifier ident, final String input, final TaskState prev, final TaskState next, final Long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException
             {
             return update(
                 ident,
@@ -382,7 +390,7 @@ implements BlueQuery
         @Override
         @UpdateMethod
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final TaskState prev, final TaskState next, final Long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException
             {
             return update(
                 ident,
@@ -398,7 +406,7 @@ implements BlueQuery
         @Override
         @UpdateMethod
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState prev, final TaskState next, final Long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException
             {
             log.debug("update(Identifier , String, TaskStatus, TaskStatus, Long)");
             log.debug("  ident [{}]", ident);
@@ -444,7 +452,7 @@ implements BlueQuery
         @Override
         @UpdateMethod
         public BlueQuery callback(final Identifier ident, final BlueQuery.CallbackEvent message)
-        throws IdentifierNotFoundException, InvalidStateRequestException
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException
             {
             log.debug("callback(Identifier, CallbackEvent)");
             log.debug("  ident [{}]", ident);
@@ -463,6 +471,7 @@ implements BlueQuery
         @Override
         @SelectMethod
         public Iterable<BlueQuery> select()
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -474,6 +483,7 @@ implements BlueQuery
         @Override
         @SelectMethod
         public Iterable<BlueQuery> select(final AdqlResource source)
+        throws ProtectionException
             {
             return super.list(
                 super.query(
@@ -1087,6 +1097,7 @@ implements BlueQuery
 
             @Override
             public void add(AdqlColumn column)
+            throws ProtectionException
                 {
                 log.debug("add(AdqlColumn)");
                 log.debug("  Name [{}]", column.name());
@@ -1100,6 +1111,7 @@ implements BlueQuery
 
             @Override
             public void add(AdqlTable table)
+            throws ProtectionException
                 {
                 log.debug("add(AdqlTable)");
                 log.debug("  Name [{}]", table.name());
@@ -1123,6 +1135,7 @@ implements BlueQuery
             
             @Override
             public void add(SelectField field)
+            throws ProtectionException
                 {
                 log.debug("add(SelectField)");
                 log.debug("  Name [{}]", field.name());
@@ -1358,7 +1371,7 @@ implements BlueQuery
 
     @Override
     public void update(final String input)
-    throws InvalidStateRequestException
+    throws InvalidStateRequestException, ProtectionException
         {
         update(
             input,
@@ -1369,7 +1382,7 @@ implements BlueQuery
 
     @Override
     public void update(final String input, final AdqlQueryBase.Limits limits)
-    throws InvalidStateRequestException
+    throws InvalidStateRequestException, ProtectionException
         {
         update(
             input,
@@ -1381,11 +1394,12 @@ implements BlueQuery
     /**
      * Update our input query and {@link AdqlQueryBase.Limits}.
      * This performs the update in a new {@link Thread}, forcing the creation of a new Hibernate {@link Session}.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */
     @Override
     public void update(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
-    throws InvalidStateRequestException
+    throws InvalidStateRequestException, ProtectionException
         {
         log.debug("Starting update(String, Limits)");
         log.debug("  ident [{}]", ident());
@@ -1398,6 +1412,7 @@ implements BlueQuery
                     {
                     @Override
                     public TaskState execute()
+                    throws ProtectionException
                         {
                         try {
 // Need to initialise current context.                        
@@ -1591,7 +1606,7 @@ implements BlueQuery
 
     @Override
     protected void execute()
-    throws InvalidStateTransitionException
+    throws ProtectionException, InvalidStateTransitionException 
         {
         log.debug("execute()");
         log.debug("  ident [{}]", ident());
@@ -1674,13 +1689,19 @@ implements BlueQuery
 			service.exec().primary().ogsaid()
     		);
 
+        //
+        // Fix for permission issues.
+        final String source = from.ogsaid();
+        final String sink   = dest.ogsaid();
+        final String table  = this.jdbctable.fullname();
+        
         final BlueWorkflow.Result result = workflow.execute(
 			new BlueWorkflow.Param()
 				{
 				@Override
 				public String source()
 					{
-					return from.ogsaid();
+					return source;
 					}
 					
 				@Override
@@ -1697,13 +1718,13 @@ implements BlueQuery
 						@Override
 						public String resource()
 							{
-							return dest.ogsaid();
+							return sink;
 							}
 
 						@Override
 						public String table()
 							{
-							return BlueQueryEntity.this.jdbctable.fullname();
+							return table;
 							}
 
 						@Override
@@ -1824,9 +1845,11 @@ implements BlueQuery
         {
         /**
          * Protected constructor.
+         * @throws ProtectionException 
          * 
          */
         protected Handle(final BlueQuery query)
+        throws ProtectionException
             {
             super(query);
             }
@@ -1834,6 +1857,7 @@ implements BlueQuery
 
     @Override
     protected Handle newhandle()
+    throws ProtectionException
         {
         return new Handle(
             this
@@ -1842,7 +1866,7 @@ implements BlueQuery
     
     @Override
     public void callback(final BlueQuery.CallbackEvent message)
-    throws InvalidStateRequestException
+    throws InvalidStateRequestException, ProtectionException
         {
         log.debug("callback(Callback)");
         log.debug("  ident  [{}]", this.ident());
@@ -1855,6 +1879,7 @@ implements BlueQuery
                 {
                 @Override
                 public TaskState execute()
+                throws ProtectionException
                     {
                     try {
                         //
@@ -1909,9 +1934,11 @@ implements BlueQuery
     
     /**
      * Build our result tables.
+     * @throws ProtectionException 
      * 
      */
     protected void build()
+    throws ProtectionException
     	{
         log.debug("build()");
         //
@@ -1981,11 +2008,13 @@ implements BlueQuery
                             }
                         @Override
                         public Integer arraysize()
+                        throws ProtectionException
                             {
                             return field.arraysize();
                             }
                         @Override
                         public AdqlType type()
+                        throws ProtectionException
                             {
                             return field.type();
                             }
@@ -2018,11 +2047,13 @@ implements BlueQuery
                             }
                         @Override
                         public JdbcType jdbctype()
+                        throws ProtectionException
                             {
                             return field.type().jdbctype();
                             }
                         @Override
                         public Integer arraysize()
+                        throws ProtectionException
                             {
                             return field.arraysize();
                             }
@@ -2061,6 +2092,7 @@ implements BlueQuery
     /**
      * Get the corresponding Hibernate entity for the current thread.
      * @throws HibernateConvertException 
+     * @throws ProtectionException 
      * @todo Move to a generic base class. 
      * @todo Is this the same as BaseComponentEntity.self()
      *
@@ -2083,5 +2115,13 @@ implements BlueQuery
     			ouch
     			);
         	}
-        }
+        catch (final ProtectionException ouch)
+            {
+            log.error("ProtectionException [{}][{}]", this.getClass().getName(), ident());
+            throw new HibernateConvertException(
+                ident(),
+                ouch
+                );
+            }
+    	}
     }
