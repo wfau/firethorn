@@ -147,30 +147,16 @@
 # -----------------------------------------------------
 # Run our test queries.
 #[user@desktop]
-
-    # BUG tester needs the new buildtag
-    buildtag=2.1.11
-    buildtag=2.1.12
-    buildtag=2.1.13
-    
+   
     source "${HOME:?}/firethorn.settings"
     gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20180126-01-test-queries.txt &
-
-
-# -----------------------------------------------------
-# Take down our tester.
-#[user@desktop]
-#[user@virtual]
-
-    docker-compose \
-        --file "${composit:?}/tester.yml" \
-        down
 
 # -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
 
-    export branch=${branch:?}
+    export branch=2.1.13
+
     docker-compose \
         --file "builder.yml" \
         run \
@@ -185,6 +171,12 @@ cat > "${HOME}/merge.settings" << EOF
 devbranch=2.1.11-zrq-update-depends
 oldversion=2.1.11
 newversion=2.1.12
+EOF
+
+cat > "${HOME}/merge.settings" << EOF
+devbranch=2.1.12-zrq-basic-auth
+oldversion=2.1.12
+newversion=2.1.13
 EOF
 
     # -----------------------------------------------------
@@ -227,7 +219,6 @@ EOF
     #[root@builder]
 
         07.03-merge-commit.sh
-
 
     # -----------------------------------------------------
     # Tag our new images
