@@ -195,7 +195,7 @@ EOF
     # Update our Mercurial config.
     #[root@builder]
 
-        hgport=22
+        # TODO Move to secrets.
         hguser=Zarquan
         hghost=data.metagrid.co.uk
         hgpath=/var/local/wfau/projects/firethorn/code
@@ -207,7 +207,7 @@ EOF
 
                 [paths]
                 default   = http://wfau.metagrid.co.uk/code/firethorn
-            +   push-repo = ssh://${hguser:?}@${hghost:?}/${hgpath:?}
+            +   push-repo = ssh://Zarquan@data.metagrid.co.uk//var/local/wfau/projects/firethorn/code
 
                 [ui]
             +   username = Dave Morris <dmr@roe.ac.uk>
@@ -236,7 +236,6 @@ EOF
     # Push images to Docker.
     #[root@builder]
 
-        # BUG needs access to secrets
         source 08.02-docker-push.sh
 
     # -----------------------------------------------------

@@ -245,28 +245,16 @@
         08.02-docker-push.sh
 
     # -----------------------------------------------------
+    # Push our source code.
+    #[root@builder]
+
+        08.03-mercurial-push.sh
+
+    # -----------------------------------------------------
     # Push our new libraries.
     #[root@builder]
 
-        mvnport=22
-        mvnuser=Zarquan
-        mvnhost=data.metagrid.co.uk
-        mvnpath=/var/local/websites/data/wfau/maven
-        mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
-
-        mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
-
-        source "${HOME:?}/firethorn.settings"
-        pushd "${FIRETHORN_CODE:?}"
-
-            export mvnrepo
-            export mvnlocal
-            ./bin/rsync-repo.sh
-
-        popd
-
-
-
+        08.04-maven-push.sh
 
 
 

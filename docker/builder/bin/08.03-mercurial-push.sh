@@ -36,7 +36,7 @@
             exit 0
         fi
 
-        hg push
+        hg push 'push-repo'
 
     popd
 
