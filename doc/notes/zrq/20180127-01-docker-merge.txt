@@ -1,0 +1,249 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Much of this gets replaced by Docker multi-stage build
+    # https://codefresh.io/blog/node_docker_multistage/
+    #
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh Araybwyn
+    ssh Lothigometh
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    vi "${HOME:?}/secret.sh"
+
+        ....
+        ....
+        ....
+
+    source "${HOME:?}/secret.sh"
+    secret 'frog'
+
+# -----------------------------------------------------
+# Download our compose file
+#[user@virtual]
+     
+    wget -O builder.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.8-zrq-fedora-image
+    branch=2.1.9-zrq-bug-fixes
+    branch=2.1.10-zrq-junit-clean
+    branch=2.1.11-zrq-update-depends
+    branch=2.1.12-zrq-basic-auth
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch=${branch:?}
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder 
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        01.01-init.sh
+        
+    # -----------------------------------------------------
+    # Checkout a copy of our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+    # -----------------------------------------------------
+    # Merge our branch into main.
+    #[root@builder]
+
+        07.01-merge-start.sh
+
+    # -----------------------------------------------------
+    # Update our version number.
+    #[root@builder]
+
+        07.02-version-step.sh
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
+
+        05.01-javamaven.sh
+
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
+
+        05.02-javadocker.sh
+
+    # -----------------------------------------------------
+    # Display the merge versions.
+    #[root@builder]
+
+        cat "${HOME}/merge.settings"
+
+    # -----------------------------------------------------
+    # Exit our builder.
+    #[root@builder]
+
+        exit
+
+# -----------------------------------------------------
+# Run our test queries.
+#[user@desktop]
+   
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20180126-01-test-queries.txt &
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch=2.1.13
+
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder 
+
+    # -----------------------------------------------------
+    # Restore our settings.
+    # BUG - this should be in a volume
+    #[root@builder]
+
+cat > "${HOME}/merge.settings" << EOF
+devbranch=2.1.11-zrq-update-depends
+oldversion=2.1.11
+newversion=2.1.12
+EOF
+
+cat > "${HOME}/merge.settings" << EOF
+devbranch=2.1.12-zrq-basic-auth
+oldversion=2.1.12
+newversion=2.1.13
+EOF
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        01.01-init.sh
+        
+    # -----------------------------------------------------
+    # Update our Mercurial config.
+    #[root@builder]
+
+        # TODO Move to secrets.
+        hguser=Zarquan
+        hghost=data.metagrid.co.uk
+        hgpath=/var/local/wfau/projects/firethorn/code
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+    
+            vi .hg/hgrc
+
+                [paths]
+                default   = http://wfau.metagrid.co.uk/code/firethorn
+            +   push-repo = ssh://Zarquan@data.metagrid.co.uk//var/local/wfau/projects/firethorn/code
+
+                [ui]
+            +   username = Dave Morris <dmr@roe.ac.uk>
+
+        popd
+
+    # -----------------------------------------------------
+    # Commit our merged code.
+    #[root@builder]
+
+        07.03-merge-commit.sh
+
+    # -----------------------------------------------------
+    # Tag our new images
+    #[root@builder]
+
+        08.01-docker-latest.sh
+
+    # -----------------------------------------------------
+    # Push changes to Mercurial 
+    #[root@builder]
+
+        source 08.03-mercurial-push.sh
+
+    # -----------------------------------------------------
+    # Push images to Docker.
+    #[root@builder]
+
+        source 08.02-docker-push.sh
+
+    # -----------------------------------------------------
+    # Push binaries to Maven repo.
+    #[root@builder]
+
+        source 08.04-maven-push.sh
+
+
+
+
