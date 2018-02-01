@@ -222,6 +222,8 @@ class UWSJobFactory extends AbstractComponent {
 			
 			try {
 				query = resource.blues().create(
+                    null, // JddcSchema
+                    null, // AdqlSchema
 			        "",
 			        null, // Default mode
 			        null, // Default syntax
@@ -252,6 +254,8 @@ class UWSJobFactory extends AbstractComponent {
 			try {
 				
 				query = resource.blues().create(
+                    null, // JddcSchema
+                    null, // AdqlSchema
 			        querystring,
                     null, // Default mode
                     null, // Default syntax

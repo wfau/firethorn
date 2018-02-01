@@ -46,6 +46,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  * {@link AdqlResource} implementation.
@@ -443,6 +444,8 @@ implements AdqlResource
                     );
                 }
 
+/*
+ * 
             @Override
             public BlueQuery create(final String input)
             throws ProtectionException, InvalidRequestException, InternalServerErrorException
@@ -452,13 +455,17 @@ implements AdqlResource
                     input
                     );
                 }
+ *             
+ */
 
             @Override
-            public BlueQuery create(String input, AdqlQueryBase.Mode mode, AdqlQueryBase.Syntax.Level syntax, AdqlQueryBase.Limits limits, AdqlQueryBase.Delays delays, BlueTask.TaskState next, Long wait)
+            public BlueQuery create(final JdbcSchema jdbcschema, final AdqlSchema adqlschema, String input, AdqlQueryBase.Mode mode, AdqlQueryBase.Syntax.Level syntax, AdqlQueryBase.Limits limits, AdqlQueryBase.Delays delays, BlueTask.TaskState next, Long wait)
             throws ProtectionException, InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
                     AdqlResourceEntity.this,
+                    jdbcschema,
+                    adqlschema,
                     input,
                     mode,
                     syntax,    

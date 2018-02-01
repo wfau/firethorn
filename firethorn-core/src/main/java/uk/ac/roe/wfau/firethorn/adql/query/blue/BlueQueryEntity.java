@@ -76,6 +76,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.AdqlType;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -84,6 +85,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent.CopyDepth;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
@@ -160,6 +162,12 @@ implements BlueQuery
      * Hibernate column mapping, {@value}.
      *
      */
+    protected static final String DB_JDBC_SCHEMA_COL  = "jdbcschema";
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
 
     /**
@@ -167,7 +175,17 @@ implements BlueQuery
      *
      */
     protected static final String DB_ADQL_TABLE_COL    = "adqltable";
+    
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_SCHEMA_COL   = "adqlschema";
+    
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_ADQL_RESOURCE_COL = "adqlresource";
 
     /**
@@ -175,7 +193,17 @@ implements BlueQuery
      *
      */
     protected static final String DB_SYNTAX_STATE_COL   = "syntaxstate";
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_SYNTAX_LEVEL_COL   = "syntaxlevel";
+
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
     protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
 
     /**
@@ -258,6 +286,8 @@ implements BlueQuery
             return BlueQueryEntity.class;
             }
 
+/*
+ * 
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource source, final String input)
@@ -266,6 +296,8 @@ implements BlueQuery
             log.debug("create(AdqlResource, String)");
             return create(
                 source,
+                null,
+                null,
                 input,
                 AdqlQueryBase.Mode.AUTO,
                 AdqlQueryBase.Syntax.Level.STRICT,
@@ -275,13 +307,39 @@ implements BlueQuery
                 null
                 );
             }
-        
+ * 
+ */
+
+/*
+ * 
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
         throws ProtectionException, InvalidRequestException, InternalServerErrorException
             {
             log.debug("create(AdqlResource, String, Mode, Syntax, Limits, Delays, TaskState, Long)");
+            return create(
+                    source,
+                    null,
+                    null,
+                    input,
+                    AdqlQueryBase.Mode.AUTO,
+                    AdqlQueryBase.Syntax.Level.STRICT,
+                    null,
+                    null,
+                    null,
+                    null
+                    );
+            }
+ *         
+ */
+        
+        @Override
+        @CreateMethod
+        public BlueQuery create(final AdqlResource source, final JdbcSchema jdbcschema, final AdqlSchema adqlschema, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
+        throws ProtectionException, InvalidRequestException, InternalServerErrorException
+            {
+            log.debug("create(AdqlResource, JdbcSchema, AdqlSchema, String, Mode, Syntax, Limits, Delays, TaskState, Long)");
             log.debug("  state [{}]", next);
             log.debug("  wait  [{}]", wait);
 
@@ -294,7 +352,6 @@ implements BlueQuery
  * Solution - modify thread() to pass in Operation context.
  *             
  */
-
             final Identity outer = services().contexts().current().oper().identities().primary();
             log.debug("Outer    [{}][{}]", outer.ident(), outer.name());
             
@@ -315,6 +372,8 @@ implements BlueQuery
                         return insert(
                     		new BlueQueryEntity(
                 				inner,
+                                jdbcschema,
+                                adqlschema,
                 				source,
                 				input,
                 				mode,
@@ -644,13 +703,15 @@ implements BlueQuery
      * Protected constructor.
      * 
      */
-    protected BlueQueryEntity(final Identity owner, final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
+    protected BlueQueryEntity(final Identity owner, final JdbcSchema jdbcschema, final AdqlSchema adqlschema, final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
     throws InvalidStateTransitionException
         {
         super(
     		owner
             );
-        this.source = source;
+        this.source    = source;
+        this.jdbcspace = jdbcschema;
+        this.adqlspace = adqlschema;
         if (mode != null)
             {
             this.mode = mode;
@@ -767,12 +828,29 @@ implements BlueQuery
         {
         return this.mode;
         }
+
     
     /**
-     * Our JDBC table.
+     * The JdbcSchema for the results.
      *
      */
-    @OneToOne(
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = JdbcSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_JDBC_SCHEMA_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private JdbcSchema jdbcspace ;
+
+    /**
+     * The JdbcTable for the results.
+     *
+     */
+    @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = JdbcTableEntity.class
         )
@@ -785,10 +863,26 @@ implements BlueQuery
     private JdbcTable jdbctable;
 
     /**
-     * Our ADQL table.
+     * The AdqlSchema for the results.
      *
      */
-    @OneToOne(
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = AdqlSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_ADQL_SCHEMA_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private AdqlSchema adqlspace ; 
+    
+    /**
+     * The AdqlTable for the results.
+     *
+     */
+    @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = AdqlTableEntity.class
         )
@@ -1964,10 +2058,18 @@ implements BlueQuery
         log.debug(" Identity [{}]", identity);
         log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
-        final JdbcSchema jdbcspace = identity.spaces().jdbc().current();
+        log.debug(" JDBC space [{}]", jdbcspace);
+        if (this.jdbcspace == null)
+            {
+            this.jdbcspace = identity.spaces().jdbc().current();
+            }
         log.debug(" JDBC space [{}][{}]", jdbcspace.ident(), jdbcspace.name());
 
-        final AdqlSchema adqlspace = identity.spaces().adql().current();
+        log.debug(" ADQL space [{}]", adqlspace);
+        if (this.adqlspace== null)
+            {
+            this.adqlspace = identity.spaces().adql().current();
+            }
         log.debug(" ADQL space [{}][{}]", adqlspace.ident(), adqlspace.name());
 
         this.jdbctable = jdbcspace.tables().create(

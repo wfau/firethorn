@@ -175,4 +175,31 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
                 )
             );
         }
+
+    
+    /**
+     * JSON request to create a new schema.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=CREATE_PATH, params={CATALOG_NAME_PARAM, SCHEMA_NAME_PARAM}, produces=JSON_MIME)
+    public ResponseEntity<JdbcSchemaBean> create(
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
+        final JdbcResource resource,
+        @RequestParam(CATALOG_NAME_PARAM)
+        final String catalog,
+        @RequestParam(SCHEMA_NAME_PARAM)
+        final String schema
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return created(
+            resource.schemas().create(
+                catalog,
+                schema
+                )
+            );
+        }
+
     }

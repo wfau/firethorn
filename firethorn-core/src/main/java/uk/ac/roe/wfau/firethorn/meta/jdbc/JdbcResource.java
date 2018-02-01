@@ -173,7 +173,6 @@ extends BaseResource<JdbcSchema>
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        @Deprecated
         public JdbcSchema create(final String catalog, final String schema)
         throws ProtectionException;
 

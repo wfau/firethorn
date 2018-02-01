@@ -56,15 +56,15 @@ public class HibernateInterceptor
     @Override
     public boolean onLoad(final Object object, final Serializable ident, final Object[] state, final String[] names, final Type[] types)
         {
-        log.debug("onLoad(....)");
-        log.debug("  factories [{}]", factories);
+        //log.debug("onLoad(....)");
+        //log.debug("  factories [{}]", factories);
         if (object instanceof AbstractEntity)
             {
             AbstractEntity entity = (AbstractEntity) object ;
-            log.debug("  entity [{}]", entity.getClass().getName());
+            //log.debug("  entity [{}]", entity.getClass().getName());
             }
         else {
-            log.debug("  object [{}]", object.getClass().getName());
+            //log.debug("  object [{}]", object.getClass().getName());
             }
         return false ;
         }

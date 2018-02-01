@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
- * SQLServer JdbcTable factory implementation.
+ * SQLServer database driver implementation.
  *
  */
 @Slf4j
@@ -43,6 +43,14 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public class SQLServerDriver
 implements JdbcResource.JdbcDriver 
     {
+    /**
+     * Public constructor.
+     * 
+     */
+    public SQLServerDriver()
+        {
+        super();
+        }
 
     /**
      * Maximum size for a string, {@value}.
@@ -194,91 +202,6 @@ implements JdbcResource.JdbcDriver
 		{
 		throw new NotImplementedException();		
 		}
-
-/*
- * 
-    protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
-    	{
-
-    	switch(meta.jdbctype())
-	        {
-	        case BOOLEAN:
-	            builder.append(
-	                "BIT"
-	                );
-	            break ;
-	            
-	        case DATE :
-	        case TIME :
-	        case TIMESTAMP :
-	            builder.append(
-	                "DATETIME"
-	                );
-	            break ;
-	            
-	        case REAL:
-	        	builder.append(
-	                "REAL"
-	                );
-	            break ;
-	            
-	        case DOUBLE:
-	        	builder.append(
-	                "FLOAT"
-	                );
-	            break ;
-	            
-	        case CHAR:
-	        case NCHAR:	 
-	        case VARCHAR:	 
-	        case NVARCHAR: 
-
-	        	if ((meta.arraysize()!=null) && (meta.arraysize() > 0) && (meta.arraysize() < MAX_CHAR_SIZE)){
-		        	builder.append(meta.jdbctype().name());
-		        	builder.append("(");
-		        	builder.append(meta.arraysize());
-		        	builder.append(")");
-	        	} else {
-	        		builder.append("VARCHAR");
-	    	    	builder.append("(MAX)");
-	        	}
-	       
-	        	break;
-	        	
-	        default :
-	        	builder.append(
-        			meta.jdbctype().name()
-	        	);
-	            break ;
-	        }
-
-	    // Handle Cases that have not be visited by the switch statement
-    	// TODO This should check for char() rather than array()
-    	if (meta.jdbctype().isarray()  
-    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.CHAR)
-    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.VARCHAR)
-    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.NCHAR)
-    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.NVARCHAR))
-    	    {
-    	    if (meta.arraysize() == AdqlColumn.VAR_ARRAY_SIZE)
-    	        {
-    	        builder.append("(*)");
-    	        }
-    	    else {
-    	    	if (meta.arraysize()==null){
-    	    		 builder.append("(*)");
-    	    	} else {
-	    	        builder.append("(");
-	    	        builder.append(
-	    	            meta.arraysize()
-	    	            );
-	    	        builder.append(")");
-	    	        }
-    	    	}
-    	    }
-    	}
- * 
- */
 
     protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
     throws ProtectionException

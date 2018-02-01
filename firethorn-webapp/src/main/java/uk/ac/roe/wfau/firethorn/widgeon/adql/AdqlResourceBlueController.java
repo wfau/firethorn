@@ -37,6 +37,8 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.blue.BlueQueryBean;
 import uk.ac.roe.wfau.firethorn.webapp.blue.BlueQueryController;
 import uk.ac.roe.wfau.firethorn.webapp.blue.BlueQueryModel;
@@ -136,6 +138,11 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
 
+        @RequestParam(value=BlueQueryModel.QUERY_ADQL_SCHEMA, required=false)
+        final String adqlschemaident,
+        @RequestParam(value=BlueQueryModel.QUERY_JDBC_SCHEMA, required=false)
+        final String jdbcschemaident,
+        
         @RequestParam(value=BlueQueryModel.QUERY_INPUT_PARAM, required=false)
         final String input,
 
@@ -162,21 +169,45 @@ extends AbstractEntityController<BlueQuery, BlueQueryBean>
         final TaskState next,
         @RequestParam(value=BlueQueryModel.STATUS_WAIT_PARAM, required=false)
         final Long wait
-
         )
     throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
         log.debug("create(String, String)");
         log.debug("  ident [{}]", ident);
+        log.debug("  jdbc  [{}]", jdbcschemaident);
+        log.debug("  adql  [{}]", adqlschemaident);
         log.debug("  input [{}]", input);
         log.debug("  next  [{}]", next);
         log.debug("  wait  [{}]", wait);
+
+        JdbcSchema jdbcschema = null ;
+        if (null != jdbcschemaident)
+            {
+            jdbcschema = factories().jdbc().schemas().entities().select(
+                factories().jdbc().schemas().idents().ident(
+                    jdbcschemaident
+                    )
+                );
+            }
+
+        AdqlSchema adqlschema = null ;
+        if (null != adqlschemaident)
+            {
+            adqlschema = factories().adql().schemas().entities().select(
+                factories().adql().schemas().idents().ident(
+                    adqlschemaident
+                    )
+                );
+            }
+        
         return created(
             factories().adql().resources().entities().select(
                 factories().adql().resources().idents().ident(
                     ident
                     )
                 ).blues().create(
+                    jdbcschema,
+                    adqlschema,
                     input,
                     mode,
                     syntax,

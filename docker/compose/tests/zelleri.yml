@@ -12,21 +12,21 @@ services:
 
     bethany:
         image:
-           "firethorn/postgres:${buildtag}"
+           "firethorn/postgres:${buildtag:-latest}"
         read_only:
             true
         tmpfs:
             - '/run'
             - '/tmp'
+        networks:
+            - miriam
         environment:
             POSTGRES_USER: "${metauser}"
             POSTGRES_PASSWORD: "${metapass}"
-        networks:
-            - miriam
 
     patricia:
         image:
-           "firethorn/sql-proxy:${buildtag}"
+           "firethorn/sql-proxy:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -34,18 +34,18 @@ services:
             - /tmp
         stdin_open:
             true
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
         environment:
             targethost: "${userhost}"
             tunneluser: "${tunneluser}"
             tunnelhost: "${tunnelhost}"
-        volumes:
-            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
-        networks:
-            - miriam
 
     elayne:
         image:
-           "firethorn/sql-proxy:${buildtag}"
+           "firethorn/sql-proxy:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -53,18 +53,18 @@ services:
             - /tmp
         stdin_open:
             true
-        environment:
-            targethost: "${datahost}"
-            tunneluser: "${tunneluser}"
-            tunnelhost: "${tunnelhost}"
         volumes:
             - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
         networks:
             - miriam
+        environment:
+            targethost: "${datahost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
 
     jarmila:
         image:
-           "firethorn/ogsadai:${buildtag}"
+           "firethorn/ogsadai:${buildtag:-latest}"
         read_only:
             false
         tmpfs:
@@ -90,7 +90,7 @@ services:
 
     gillian:
         image:
-           "firethorn/firethorn:${testtag}"
+           "firethorn/firethorn:${buildtag:-latest}"
         read_only:
             true
         tmpfs:
@@ -103,7 +103,11 @@ services:
             - miriam
             - rosana
         environment:
-            firethorn.ogsadai.endpoint: 'http://jarmila:8080/ogsadai/services'
+            firethorn.meta.url:    "jdbc:postgresql://bethany/postgres"
+            firethorn.meta.driver: "org.postgresql.Driver"
+            firethorn.user.url:    "jdbc:jtds:sqlserver://patricia/${userdata}"
+            firethorn.user.driver: "net.sourceforge.jtds.jdbc.Driver"
+            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
         depends_on:
             bethany:
                 condition: service_started            
@@ -113,20 +117,12 @@ services:
                 condition: service_started            
             jarmila:
                 condition: service_healthy            
-        healthcheck:
-            test: [
-                "CMD-SHELL",
-                "curl --silent --head --fail http://localhost:8080/firethorn/system/info || exit 1"
-                ]
-            interval: 30s
-            timeout: 5s
-            retries: 5
 
     tester:
         image:
            "firethorn/tester:${buildtag}"
         read_only:
-            true
+            false
         stdin_open:
             true
         tty:
@@ -137,13 +133,36 @@ services:
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - ${HOME}/tester.properties:/etc/tester.properties
-            - ${HOME}/test.sh:/test.sh
         networks:
             - miriam
+        environment:
+            datahost:    "patricia"
+            endpointurl: "http://gillian:8080/firethorn"
+
+            zelldata: "${zelldata}"
+            zelluser: "${zelluser}"
+            zellpass: "${zellpass}"
+
         depends_on:
             gillian:
+                condition: service_healthy            
+            zelleri:
                 condition: service_healthy            
         command:
             [bash]
 
+
+    zelleri:
+        image:
+           "firethorn/postgres:${buildtag:-latest}"
+        read_only:
+            true
+        tmpfs:
+            - '/run'
+            - '/tmp'
+        networks:
+            - miriam
+        environment:
+            POSTGRES_USER:     "${zelluser}"
+            POSTGRES_PASSWORD: "${zellpass}"
 

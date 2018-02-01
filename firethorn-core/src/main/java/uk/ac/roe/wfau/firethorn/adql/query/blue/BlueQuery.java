@@ -28,8 +28,10 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
@@ -120,17 +122,32 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
     extends BlueTask.EntityFactory<BlueQuery>
         {
 
-        /*
-         *
-        public BlueQuery create(final AdqlResource source, final String input, final BlueTask.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
+        /**
+         * Create a new {@link BlueQuery} for an {@link AdqlResource}.
+         * 
+         * @param source The {@link AdqlResource} to query.
+         * @param input  The ADQL query.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+        public BlueQuery create(final AdqlResource source, final String input)
+        throws ProtectionException, InvalidRequestException, InternalServerErrorException;
+         * 
+         */
 
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final BlueTask.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
-
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
-        throws InvalidRequestException, InternalServerErrorException;
-         *
+        /**
+         * Create a new {@link BlueQuery} for an {@link AdqlResource}.
+         * 
+         * @param source The {@link AdqlResource} to query.
+         * @param input  The ADQL query.
+         * @param mode   The {@link AdqlQueryBase.Mode}.
+         * @param syntax The {@link AdqlQueryBase.Syntax.Level}.
+         * @param limits The {@link AdqlQueryBase.Limits}.
+         * @param delays The {@link AdqlQueryBase.Delays}.
+         * @param next   The next {@link BlueTask.TaskState} to wait for. 
+         * @param wait   How long to wait for the next {@link BlueTask.TaskState}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
+        throws ProtectionException, InvalidRequestException, InternalServerErrorException;
+         *  
          */
 
         /**
@@ -147,18 +164,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *  
          */
-        public BlueQuery create(final AdqlResource source, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
-        throws ProtectionException, InvalidRequestException, InternalServerErrorException;
-
-        /**
-         * Create a new {@link BlueQuery} for an {@link AdqlResource}.
-         * 
-         * @param source The {@link AdqlResource} to query.
-         * @param input  The ADQL query.
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-         * 
-         */
-        public BlueQuery create(final AdqlResource source, final String input)
+        public BlueQuery create(final AdqlResource source, final JdbcSchema jdbcschema, final AdqlSchema adqlschema, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState next, final Long wait)
         throws ProtectionException, InvalidRequestException, InternalServerErrorException;
 
         /**
