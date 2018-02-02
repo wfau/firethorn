@@ -36,15 +36,18 @@ import uk.ac.roe.wfau.firethorn.util.ResultSetFilterator;
 import uk.ac.roe.wfau.firethorn.util.ResultSetIterator;
 
 /**
- *
+ * Database metadata scanner for SQLServer.
  *
  */
 @Slf4j
-public class MSSQLMetadataScanner
+public class SQLServerScanner
     implements JdbcMetadataScanner
     {
-
-    public MSSQLMetadataScanner(final JdbcConnector connector)
+    /**
+     * Public constructor.
+     * 
+     */
+    public SQLServerScanner(final JdbcConnector connector)
         {
         this.connector = connector ;
         }
@@ -57,7 +60,7 @@ public class MSSQLMetadataScanner
         }
 
     protected Connection connection ;
-    public Connection connection()
+    protected Connection connection()
         {
         if (connection == null)
             {
@@ -65,31 +68,6 @@ public class MSSQLMetadataScanner
             connection = connector.open();
             }
         return connection;
-        }
-
-    protected JdbcMetadataScanner _scanner()
-        {
-        return this;
-        }
-
-    @Override
-    public void handle(SQLException ouch)
-        {
-        log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
-        if ((ouch.getErrorCode() == 0) || (ouch.getErrorCode() == 21))
-            {
-            log.warn("Fatal error code, resetting connection");
-            try {
-                connector().reset();
-                }
-            catch (Exception eeek)
-                {
-                log.warn("Exception while resetting connection following SQLException [{}]", eeek.getMessage());
-                }
-            finally {
-                connection = null ;
-                }
-            }
         }
 
     @Override
@@ -153,7 +131,7 @@ public class MSSQLMetadataScanner
             @Override
             public JdbcMetadataScanner scanner()
                 {
-                return MSSQLMetadataScanner.this; 
+                return SQLServerScanner.this; 
                 }
             protected Catalog catalog()
                 {
@@ -514,7 +492,7 @@ public class MSSQLMetadataScanner
                                 {
                                 final String  name = results.getString("COLUMN_NAME");
                                 final Integer strlen = results.getInt("CHARACTER_MAXIMUM_LENGTH");
-                                final JdbcColumn.JdbcType type = MSSQLMetadataScanner.type(
+                                final JdbcColumn.JdbcType type = SQLServerScanner.type(
                                     results.getInt(
                                         "NUMERIC_PRECISION"
                                         ),
@@ -556,15 +534,54 @@ public class MSSQLMetadataScanner
                                         {
                                         return type;
                                         }
+                                    @Override
+                                    public void handle(SQLException ouch)
+                                        {
+                                        SQLServerScanner.this.handle(ouch);
+                                        }
                                     };
+                                }
+                            @Override
+                            public void handle(SQLException ouch)
+                                {
+                                SQLServerScanner.this.handle(ouch);
                                 }
                             };
                         }
+                    @Override
+                    public void handle(SQLException ouch)
+                        {
+                        SQLServerScanner.this.handle(ouch);
+                        }
                     };
+                }
+            @Override
+            public void handle(SQLException ouch)
+                {
+                SQLServerScanner.this.handle(ouch);
                 }
             };
         }
 
+    @Override
+    public void handle(SQLException ouch)
+        {
+        log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
+        if ((ouch.getErrorCode() == 0) || (ouch.getErrorCode() == 21))
+            {
+            log.warn("Fatal error code, resetting connection");
+            try {
+                connector().reset();
+                }
+            catch (Exception eeek)
+                {
+                log.warn("Exception while resetting connection following SQLException [{}]", eeek.getMessage());
+                }
+            finally {
+                connection = null ;
+                }
+            }
+        }
     
     protected static Map<String, JdbcColumn.JdbcType> typemap = new HashMap<String, JdbcColumn.JdbcType>();
     static {
@@ -599,6 +616,7 @@ public class MSSQLMetadataScanner
         typemap.put("uniqueidentifier", JdbcColumn.JdbcType.UNKNOWN); 
 
         };
+
     protected static JdbcColumn.JdbcType type(final Integer numlen, final String name)
         {
         log.trace("type [{}][{}]", numlen, name);

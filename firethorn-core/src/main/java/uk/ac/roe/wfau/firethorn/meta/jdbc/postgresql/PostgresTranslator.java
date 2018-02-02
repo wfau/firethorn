@@ -16,18 +16,22 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.adql.parser;
+package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
 
 import adql.translator.PostgreSQLTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 
 /**
- * Local extension of the taplib translator class.
+ * ADQL translator for Postgres.
  * 
  */
-public class PostgresTranslator extends PostgreSQLTranslator
+public class PostgresTranslator
+extends PostgreSQLTranslator
+implements BaseTranslator
     {
 
     /**
+     * Public constructor.
      * 
      */
     public PostgresTranslator()
@@ -36,8 +40,8 @@ public class PostgresTranslator extends PostgreSQLTranslator
         }
 
     /**
+     * Public constructor.
      * 
-     * @param allCaseSensitive
      */
     public PostgresTranslator(boolean allCaseSensitive)
         {
@@ -45,11 +49,8 @@ public class PostgresTranslator extends PostgreSQLTranslator
         }
 
     /**
+     * Public constructor.
      * 
-     * @param catalog
-     * @param schema
-     * @param table
-     * @param column
      */
     public PostgresTranslator(boolean catalog, boolean schema, boolean table, boolean column)
         {

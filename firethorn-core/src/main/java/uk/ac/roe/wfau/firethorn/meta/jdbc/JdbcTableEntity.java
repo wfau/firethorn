@@ -1191,7 +1191,7 @@ implements JdbcTable
             catch (SQLException ouch)
                 {
                 log.warn("Exception while fetching table columns [{}][{}][{}]", this.ident(), table.name(), ouch.getMessage());
-                table.schema().catalog().scanner().handle(ouch);
+                table.handle(ouch);
                 }
             }
         }

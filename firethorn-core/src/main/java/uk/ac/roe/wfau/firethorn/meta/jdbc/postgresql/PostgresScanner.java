@@ -34,35 +34,45 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 
 /**
- *
+ * Database metadata scanner for Postgres.
  *
  */
 @Slf4j
-public class PGSQLMetadataScanner
-    implements JdbcMetadataScanner
+public class PostgresScanner
+implements JdbcMetadataScanner
     {
-    interface PgSchema extends Schema
+    public interface PostgresObject
         {
         public Long oid();
         }
-    interface PgTable extends Table
-        {
-        public Long oid();
-        }
-    interface PgColumn extends Column
+
+    interface PostgresSchema
+    extends JdbcMetadataScanner.Schema, PostgresObject 
         {
         }
-    interface PgType
+    
+    interface PostgresTable
+    extends JdbcMetadataScanner.Table, PostgresObject
         {
-        public Long oid();
+        }
+    
+    interface PostgresColumn
+    extends JdbcMetadataScanner.Column, PostgresObject
+        {
+        }
+    
+    interface PostgresType
+    extends PostgresObject
+        {
         public String name();
         }
 
-    public PGSQLMetadataScanner(final JdbcConnector connector)
+    public PostgresScanner(final JdbcConnector connector)
         {
         this.connector = connector ;
         }
 
+    
     protected JdbcConnector connector ;
     @Override
     public JdbcConnector connector()
@@ -71,7 +81,7 @@ public class PGSQLMetadataScanner
         }
 
     protected Connection connection ;
-    public Connection connection()
+    protected Connection connection()
         {
         if (connection == null)
             {
@@ -79,17 +89,6 @@ public class PGSQLMetadataScanner
             connection = connector.open();
             }
         return connection;
-        }
-
-    protected JdbcMetadataScanner _scanner()
-        {
-        return this;
-        }
-
-    @Override
-    public void handle(SQLException ouch)
-        {
-        log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
         }
 
     @Override
@@ -137,7 +136,7 @@ public class PGSQLMetadataScanner
             @Override
             public JdbcMetadataScanner scanner()
                 {
-                return PGSQLMetadataScanner.this; 
+                return PostgresScanner.this; 
                 }
             protected Catalog catalog()
                 {
@@ -191,7 +190,7 @@ public class PGSQLMetadataScanner
                         }
 
                     @Override
-                    public PgSchema select(String name) throws SQLException
+                    public PostgresSchema select(String name) throws SQLException
                         {
                         log.debug("Selecting schema [{}] for [{}]", name, catalog().name());
                         final PreparedStatement statement = connection().prepareStatement(
@@ -224,26 +223,25 @@ public class PGSQLMetadataScanner
                     };
                 }
 
-            protected PgSchema schema(final Catalog catalog, final Long oid, final String name)
+            protected PostgresSchema schema(final Catalog catalog, final Long oid, final String name)
             throws SQLException
                 {
                 log.debug("schema() [{}][{}][{}]", catalog, oid, name);
-                return new PgSchema()
+                return new PostgresSchema()
                     {
+                    @Override
+                    public Long oid()
+                        {
+                        return oid;
+                        }
                     @Override
                     public Catalog catalog()
                         {
                         return catalog ;
                         }
-                    protected PgSchema schema()
+                    protected PostgresSchema schema()
                         {
                         return this ;
-                        }
-
-                    @Override
-                    public Long oid()
-                        {
-                        return oid;
                         }
                     @Override
                     public String name()
@@ -294,7 +292,7 @@ public class PGSQLMetadataScanner
                                 }
 
                             @Override
-                            public PgTable select(String name)
+                            public PostgresTable select(String name)
                                 throws SQLException
                                 {
                                 final PreparedStatement statement = connection().prepareStatement(
@@ -338,33 +336,31 @@ public class PGSQLMetadataScanner
                             };
                         }
 
-                    protected PgTable table(final Schema schema, final Long oid, final String name)
+                    protected PostgresTable table(final Schema schema, final Long oid, final String name)
                     throws SQLException
                         {
                         log.debug("table() [{}][{}][{}]", schema.name(), oid, name);
-                        return new PgTable()
+                        return new PostgresTable()
                             {
-                            @Override
-                            public Schema schema()
-                                {
-                                return schema;
-                                }
-                            protected PgTable table()
-                                {
-                                return this ;
-                                }
-
-                            @Override
-                            public String name()
-                                {
-                                return name ;
-                                }
                             @Override
                             public Long oid()
                                 {
                                 return oid;
                                 }
-
+                            @Override
+                            public Schema schema()
+                                {
+                                return schema;
+                                }
+                            protected PostgresTable table()
+                                {
+                                return this ;
+                                }
+                            @Override
+                            public String name()
+                                {
+                                return name ;
+                                }
                             @Override
                             public Columns columns()
                                 {
@@ -422,7 +418,6 @@ public class PGSQLMetadataScanner
                                             }
                                         return list ;
                                         }
-
                                     @Override
                                     public Column select(String name)
                                         throws SQLException
@@ -483,16 +478,21 @@ public class PGSQLMetadataScanner
                                     };
                                 }
 
-                            protected PgColumn column(final PgTable table, final JdbcColumn.JdbcType type, final String name, final Integer len)
+                            protected PostgresColumn column(final PostgresTable table, final JdbcColumn.JdbcType type, final String name, final Integer len)
                             throws SQLException
                                 {
                                 log.debug("column() [{}][{}][{}]", name, type, len);
-                                return new PgColumn()
+                                return new PostgresColumn()
                                     {
                                     @Override
-                                    public PgTable table()
+                                    public PostgresTable table()
                                         {
                                         return table ;
+                                        }
+                                    @Override
+                                    public Long oid()
+                                        {
+                                        return null;
                                         }
                                     @Override
                                     public String name()
@@ -509,13 +509,39 @@ public class PGSQLMetadataScanner
                                         {
                                         return type;
                                         }
+                                    @Override
+                                    public void handle(SQLException ouch)
+                                        {
+                                        PostgresScanner.this.handle(ouch);
+                                        }
                                     };
+                                }
+                            @Override
+                            public void handle(SQLException ouch)
+                                {
+                                PostgresScanner.this.handle(ouch);
                                 }
                             };
                         }
+                    @Override
+                    public void handle(SQLException ouch)
+                        {
+                        PostgresScanner.this.handle(ouch);
+                        }
                     };
                 }
+            @Override
+            public void handle(SQLException ouch)
+                {
+                PostgresScanner.this.handle(ouch);
+                }
             };
+        }
+
+    @Override
+    public void handle(SQLException ouch)
+        {
+        log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
         }
 
     protected static Map<String, JdbcColumn.JdbcType> typemap = new HashMap<String, JdbcColumn.JdbcType>();

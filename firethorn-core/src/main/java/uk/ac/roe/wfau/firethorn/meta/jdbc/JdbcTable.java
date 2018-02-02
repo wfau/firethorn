@@ -38,39 +38,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 public interface JdbcTable
 extends BaseTable<JdbcTable, JdbcColumn>
     {
-    /**
-     * Physical JDBC driver interface.
-     *
-     */
-    public static interface JdbcDriver
-    extends JdbcColumn.JdbcDriver
-        {
-        /**
-         * Create (CREATE) a JDBC table.
-         * @todo Should this be part of JdbcSchema.JdbcDriver ?
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-         *
-         */
-        public void create(final JdbcTable table)
-        throws ProtectionException;
-
-        /**
-         * Delete (DELETE) the contents of JDBC data.
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-         *
-         */
-        public void delete(final JdbcTable table)
-        throws ProtectionException;
-
-        /**
-         * Delete (DROP) a JDBC table.
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-         *
-         */
-        public void drop(final JdbcTable table)
-        throws ProtectionException;
-
-        }
 
     /**
      * {@link EntityBuilder} interface.

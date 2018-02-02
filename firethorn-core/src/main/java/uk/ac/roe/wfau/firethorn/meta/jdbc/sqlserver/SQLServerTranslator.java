@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.parser;
+package uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver;
 
 import adql.db.DBColumn;
 import adql.db.DBTable;
@@ -49,6 +49,7 @@ import adql.query.operand.function.geometry.RegionFunction;
 import adql.translator.JDBCTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
 
 /*
  * This file was part of ADQLLibrary.
@@ -67,10 +68,11 @@ import lombok.extern.slf4j.Slf4j;
  * along with ADQLLibrary.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2014 - Astronomisches Rechen Institut (ARI)
+ * 
  */
 
 /**
- * SQLServer SQL translator.
+ * ADQL translator for SQLServer.
  *
  */
 @Slf4j
@@ -81,7 +83,7 @@ implements BaseTranslator
 	private final String schemaName = "dbo";
 
 	/**
-	 *
+	 * Public constructor.
 	 *
 	 */
     public SQLServerTranslator()
@@ -117,7 +119,7 @@ implements BaseTranslator
 	                query.getWhere()
 	                )
 		        );
-		}
+		    }
 
 		if (!query.getGroupBy().isEmpty())
 		    {
@@ -126,7 +128,7 @@ implements BaseTranslator
 	                query.getGroupBy()
 	                )
 		        );
-		}
+		    }
 
 		if (!query.getHaving().isEmpty())
 		    {
@@ -135,7 +137,7 @@ implements BaseTranslator
 	                query.getHaving()
 	                )
 		        );
-		}
+		    }
 
 		if (!query.getOrderBy().isEmpty())
 		    {
@@ -144,7 +146,7 @@ implements BaseTranslator
 	                query.getOrderBy()
 	                )
 		        );
-		}
+		    }
 
 		log.debug("Translated --------");
         log.debug(builder.toString());
@@ -221,12 +223,12 @@ implements BaseTranslator
 			if (param > 0)
 			    {
 				builder.append(", ");
-			}
+			    }
 			builder.append(translate(function.getParameter(param)));
-		}
+		    }
 		builder.append(")");
 		return builder.toString();
-	}
+	    }
 
     /**
      * Override the {@link JDBCTranslator} method to add support for CAST. 
@@ -385,51 +387,51 @@ implements BaseTranslator
 	    {
 		switch (funct.getType())
 		    {
-		case LOG:
-			return "log(" + translate(funct.getParameter(0)) + ")";
-
-		case LOG10:
-			return "log10(" + translate(funct.getParameter(0)) + ")";
-
-		case RAND:
-			    if (funct.getNbParameters() > 0)
-			        {
-				    return "rand(" + translate(funct.getParameter(0)) + ")";
-			        }
-		        else {
-				    return "rand()";
-			        }
-
-			// Extra param to choose the rounding method.
-			// http://technet.microsoft.com/en-us/library/ms175003.aspx
-		case ROUND:
-            // TODO what if zero ?
-			if (funct.getNbParameters() == 1)
-                {
-				return "round(" + translate(funct.getParameter(0)) + ", 0)";
-			    }
-            else if (funct.getNbParameters() > 1)
-                {
-				return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 0)";
-			    }
+    		case LOG:
+    			return "log(" + translate(funct.getParameter(0)) + ")";
+    
+    		case LOG10:
+    			return "log10(" + translate(funct.getParameter(0)) + ")";
+    
+    		case RAND:
+    			    if (funct.getNbParameters() > 0)
+    			        {
+    				    return "rand(" + translate(funct.getParameter(0)) + ")";
+    			        }
+    		        else {
+    				    return "rand()";
+    			        }
 
 			// Extra param to choose the rounding method.
 			// http://technet.microsoft.com/en-us/library/ms175003.aspx
-		case TRUNCATE:
-            // TODO what if zero ?
-			if (funct.getNbParameters() == 1)
-                {
-				return "round(" + translate(funct.getParameter(0)) + ", 1)";
-			    }
-            else if (funct.getNbParameters() > 1)
-                {
-				return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 1)";
-			    }
+    		case ROUND:
+                // TODO what if zero ?
+    			if (funct.getNbParameters() == 1)
+                    {
+    				return "round(" + translate(funct.getParameter(0)) + ", 0)";
+    			    }
+                else if (funct.getNbParameters() > 1)
+                    {
+    				return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 0)";
+    			    }
 
-		default:
-			return getDefaultADQLFunction(funct);
-		}
-	}
+			// Extra param to choose the rounding method.
+			// http://technet.microsoft.com/en-us/library/ms175003.aspx
+    		case TRUNCATE:
+                // TODO what if zero ?
+    			if (funct.getNbParameters() == 1)
+                    {
+    				return "round(" + translate(funct.getParameter(0)) + ", 1)";
+    			    }
+                else if (funct.getNbParameters() > 1)
+                    {
+    				return "round(" + translate(funct.getParameter(0)) + ", " + translate(funct.getParameter(1)) + ", 1)";
+    			    }
+    
+    		default:
+    			return getDefaultADQLFunction(funct);
+    		}
+    	}
 
 	/**
 	 * Override the PostgreSQLTranslator method to add '()' brackets for a ConstraintsGroup.
@@ -438,24 +440,24 @@ implements BaseTranslator
 	 * 
 	 */
 	@Override
-	protected String getDefaultADQLList(ADQLList<? extends ADQLObject> list) throws TranslationException {
+	protected String getDefaultADQLList(ADQLList<? extends ADQLObject> list) throws TranslationException
+	    {
 		StringBuilder builder = new StringBuilder();
-
 		log.debug("translate(ADQLList<>)");
 		log.debug("  list [{}][{}]", list.getName(), list.getClass().getName());
 
-		if (list instanceof ConstraintsGroup) {
-
+		if (list instanceof ConstraintsGroup)
+		    {
 			builder.append(super.getDefaultADQLList(list));
-
-		} else {
-			builder.append(super.getDefaultADQLList(list));
-		}
+		    }
+		else {
+		    builder.append(super.getDefaultADQLList(list));
+		    }
 
 		String result = builder.toString();
 		log.debug("  result [{}]", result);
 		return result;
-	}
+	    }
 
     /**
      * Override the {@link JDBCTranslator} method to add the catalog name.
@@ -622,34 +624,46 @@ implements BaseTranslator
 	 */
 
 	@Override
-	public String translate(ExtractCoord extractCoord) throws TranslationException {
+	public String translate(ExtractCoord extractCoord)
+    throws TranslationException
+	    {
 		return getDefaultADQLFunction(extractCoord);
-	}
+	    }
 
 	@Override
-	public String translate(ExtractCoordSys extractCoordSys) throws TranslationException {
+	public String translate(ExtractCoordSys extractCoordSys)
+    throws TranslationException
+	    {
 		return getDefaultADQLFunction(extractCoordSys);
-	}
+	    }
 
 	@Override
-	public String translate(AreaFunction areaFunction) throws TranslationException {
+	public String translate(AreaFunction areaFunction)
+    throws TranslationException
+	    {
 		return getDefaultADQLFunction(areaFunction);
-	}
+	    }
 
 	@Override
-	public String translate(CentroidFunction centroidFunction) throws TranslationException {
+	public String translate(CentroidFunction centroidFunction)
+    throws TranslationException
+        {
 		return getDefaultADQLFunction(centroidFunction);
-	}
+        }
 
 	@Override
-	public String translate(DistanceFunction fct) throws TranslationException {
+	public String translate(DistanceFunction fct)
+    throws TranslationException
+	    {
 		return getDefaultADQLFunction(fct);
-	}
+	    }
 
 	@Override
-	public String translate(ContainsFunction fct) throws TranslationException {
+	public String translate(ContainsFunction fct)
+    throws TranslationException
+	    {
 		return getDefaultADQLFunction(fct);
-	}
+	    }
 
 	@Override
 	public String translate(IntersectsFunction fct) throws TranslationException {
@@ -657,39 +671,53 @@ implements BaseTranslator
 	}
 
 	@Override
-	public String translate(BoxFunction box) throws TranslationException {
+	public String translate(BoxFunction box)
+    throws TranslationException
+	    {
 		return getDefaultADQLFunction(box);
-	}
+	    }
 
 	@Override
-	public String translate(CircleFunction circle) throws TranslationException {
+	public String translate(CircleFunction circle)
+    throws TranslationException
+        {
 		return getDefaultADQLFunction(circle);
-	}
+        }
 
 	@Override
-	public String translate(PointFunction point) throws TranslationException {
+	public String translate(PointFunction point)
+    throws TranslationException
+        {
 		return getDefaultADQLFunction(point);
-	}
+        }
 
 	@Override
-	public String translate(PolygonFunction polygon) throws TranslationException {
+	public String translate(PolygonFunction polygon)
+    throws TranslationException
+	    {
 		return getDefaultADQLFunction(polygon);
-	}
+	    }
 
 	@Override
-	public String translate(RegionFunction region) throws TranslationException {
+	public String translate(RegionFunction region)
+    throws TranslationException
+	    {
 		return getDefaultADQLFunction(region);
-	}
+	    }
 	
 	@Override
-	public Region translateGeometryFromDB(final Object jdbcColValue) throws ParseException{
+	public Region translateGeometryFromDB(final Object jdbcColValue)
+    throws ParseException
+	    {
 		throw new ParseException("Unsupported geometrical value! The value \"" + jdbcColValue + "\" can not be parsed as a region.");
-	}
+	    }
 
 	@Override
-	public Object translateGeometryToDB(final Region region) throws ParseException{
+	public Object translateGeometryToDB(final Region region)
+    throws ParseException
+	    {
 		throw new ParseException("Geometries can not be uploaded in the database in this implementation!");
-	}
+	    }
 
 	
     /**
@@ -698,7 +726,8 @@ implements BaseTranslator
      *
      */
 	@Override
-	public DBType convertTypeFromDB(final int dbmsType, final String rawDbmsTypeName, String dbmsTypeName, final String[] params){
+	public DBType convertTypeFromDB(final int dbmsType, final String rawDbmsTypeName, String dbmsTypeName, final String[] params)
+	    {
 		// If no type is provided return VARCHAR:
 		if (dbmsTypeName == null || dbmsTypeName.trim().length() == 0)
 			return null;
@@ -753,7 +782,7 @@ implements BaseTranslator
 		// Default:
 		else
 			return null;
-	}
+	    }
 
     /**
      * Overrides the JDBCTranslator method.
@@ -799,8 +828,8 @@ implements BaseTranslator
 			case REGION:
 			default:
 				return "varchar";
-		}
-	}
+    		}
+    	}
 
     /**
      * Overrides the JDBCTranslator method to always delimit identifiers.

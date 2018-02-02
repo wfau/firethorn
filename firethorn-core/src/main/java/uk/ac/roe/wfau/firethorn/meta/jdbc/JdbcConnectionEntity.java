@@ -48,12 +48,14 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
-import uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource.JdbcDriver;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PGSQLMetadataScanner;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresDriver;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresScanner;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresTranslator;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.SQLServerScanner;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.SQLServerTranslator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.SQLServerDriver;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
@@ -874,14 +876,14 @@ public class JdbcConnectionEntity
         switch (this.type())
             {
             case MSSQL :
-                return new MSSQLMetadataScanner(
+                return new SQLServerScanner(
                     this
                     );
 
             case PGSQL :
-            return new PGSQLMetadataScanner(
-                this
-                );
+                return new PostgresScanner(
+                    this
+                    );
             
             default : throw new RuntimeException(
                 "Unable to load scanner for type [" + this.type + "]"
@@ -898,6 +900,9 @@ public class JdbcConnectionEntity
         log.debug("jdbcdriver() for [{}]", this.type().name());
         switch (this.type())
             {
+            case PGSQL :
+                return new PostgresDriver();
+
             case MSSQL :
                 return new SQLServerDriver();
 
@@ -913,6 +918,9 @@ public class JdbcConnectionEntity
         log.debug("jdbctranslator() for [{}]", this.type().name());
         switch (this.type())
             {
+            case PGSQL :
+                return new PostgresTranslator();
+            
             case MSSQL :
                 return new SQLServerTranslator();
 

@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -28,15 +29,15 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
  * 
  * 
  */
-public class PostgreSQLDriver
-implements JdbcSchema.JdbcDriver
+public class PostgresDriver
+implements JdbcResource.JdbcDriver
     {
 
     /**
      * Public constructor.
      * 
      */
-    public PostgreSQLDriver()
+    public PostgresDriver()
         {
         super();
         }
