@@ -212,7 +212,7 @@ public class JdbcResourceEntity
             log.debug("userdata()");
             JdbcResource userdata = super.first(
                 super.query(
-                    "JdbcResource-select-userdata"
+                    "JdbcResource-select-uid"
                     ).setString(
                         "uid",
                         uduid

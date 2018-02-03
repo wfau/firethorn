@@ -50,7 +50,6 @@
     
     cat > "${HOME:?}/chain.properties" << EOF
 
-        metadata=postgres
         metauser=$(pwgen 20 1)
         metapass=$(pwgen 20 1)
 
@@ -73,54 +72,13 @@
 
         guestgroup=friends
 
-EOF
-
-# -----------------------------------------------------
-# Create our Firethorn properties.
-#[user@virtual]
-
-    source "${HOME:?}/chain.properties"
-    cat > "${HOME:?}/firethorn.properties" << EOF
-
-        firethorn.meta.user=${metauser:?}
-        firethorn.meta.pass=${metapass:?}
-
-        firethorn.user.data=${userdata:?}
-        firethorn.user.user=${useruser:?}
-        firethorn.user.pass=${userpass:?}
-
-        firethorn.admin.community=${admingroup:?}
-        firethorn.admin.user.name=${adminuser:?}
-        firethorn.admin.user.pass=${adminpass:?}
-
-        firethorn.guest.community=${guestgroup:?}
+        zelltype=pgsql
+        zellhost=zelleri
+        zelldata=postgres
+        zelluser=$(pwgen 20 1)
+        zellpass=$(pwgen 20 1)
 
 EOF
-
-    chmod a+r "${HOME:?}/firethorn.properties"
-    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties"
-
-# -----------------------------------------------------
-# Create our tester properties.
-#[user@virtual]
-
-    source "${HOME:?}/chain.properties"
-    cat > "${HOME:?}/tester.properties" << EOF
-
-        datadata=${datadata:?}
-        datauser=${datauser:?}
-        datapass=${datapass:?}
-
-        admingroup=${admingroup:?}
-        adminuser=${adminuser:?}
-        adminpass=${adminpass:?}
-
-        guestgroup=${guestgroup:?}
-
-EOF
-
-    chmod a+r "${HOME:?}/tester.properties"
-    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties"
 
 # -----------------------------------------------------
 # Create our compose env file.
@@ -131,40 +89,30 @@ EOF
 
         buildtag=${buildtag:?}
 
-        metadata=${metadata:?}
         metauser=${metauser:?}
         metapass=${metapass:?}
 
         userhost=${userhost:?}
         userdata=${userdata:?}
+        useruser=${useruser:?}
+        userpass=${userpass:?}
 
         datahost=${datahost:?}
-        datadata=${datahost:?}
+        datadata=${datadata:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
 
         tunneluser=${tunneluser:?}
         tunnelhost=${tunnelhost:?}
 
-EOF
+        admingroup=${admingroup:?}
+        adminuser=${adminuser:?}
+        adminpass=${adminpass:?}
 
-# -----------------------------------------------------
-# Create the new database config.
-#[user@virtual]
+        guestgroup=${guestgroup:?}
 
-    cat > "${HOME:?}/zelleri.properties" << EOF
-
-        zelldata=postgres
-        zelluser=$(pwgen 20 1)
-        zellpass=$(pwgen 20 1)
-
-EOF
-
-# -----------------------------------------------------
-# Add to our compose env file.
-#[user@virtual]
-
-    source "${HOME:?}/zelleri.properties"
-    cat >> "${HOME:?}/.env" << EOF
-
+        zelltype=${zelltype:?}
+        zellhost=${zellhost:?}
         zelldata=${zelldata:?}
         zelluser=${zelluser:?}
         zellpass=${zellpass:?}
@@ -229,9 +177,8 @@ EOF
 # Load our configuration.
 #[root@tester]
 
-        cat /etc/tester.properties
-
-        source /etc/tester.properties
+#        cat /etc/tester.properties
+#        source /etc/tester.properties
 
 # -----------------------------------------------------
 # Create our sed functions.
@@ -356,8 +303,6 @@ EOF
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
-        jdbcurl="jdbc:jtds:sqlserver://${datahost:?}/${datadata:?}"
-        jdbcdriver="net.sourceforge.jtds.jdbc.Driver"
 
         catalog="ATLASDR1"
 
@@ -368,11 +313,12 @@ EOF
             --header "firethorn.auth.password:${adminpass:?}" \
             --header "firethorn.auth.community:${admingroup:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
-            --data   "jdbc.connection.url=${jdbcurl:?}" \
-            --data   "jdbc.connection.user=${datauser:?}" \
-            --data   "jdbc.connection.pass=${datapass:?}" \
-            --data   "jdbc.connection.driver=${jdbcdriver:?}" \
-            --data   "jdbc.resource.catalog=${catalog:?}" \
+            --data   "jdbc.resource.connection.database=${datadata:?}" \
+            --data   "jdbc.resource.connection.catalog=${catalog:?}" \
+            --data   "jdbc.resource.connection.type=${datatype:?}" \
+            --data   "jdbc.resource.connection.host=${datahost:?}" \
+            --data   "jdbc.resource.connection.user=${datauser:?}" \
+            --data   "jdbc.resource.connection.pass=${datapass:?}" \
             "${endpointurl:?}/jdbc/resource/create" \
             | split-headers \
             | jq '.' | tee /tmp/atlas-jdbc.json
@@ -595,11 +541,12 @@ EOF
             --header "firethorn.auth.password:${adminpass:?}" \
             --header "firethorn.auth.community:${admingroup:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
-            --data   "jdbc.connection.url=${jdbcurl:?}" \
-            --data   "jdbc.connection.user=${zelluser:?}" \
-            --data   "jdbc.connection.pass=${zellpass:?}" \
-            --data   "jdbc.connection.driver=${jdbcdriver:?}" \
-            --data   "jdbc.resource.catalog=${catalog:?}" \
+            --data   "jdbc.resource.connection.database=postgres" \
+            --data   "jdbc.resource.connection.catalog=postgres" \
+            --data   "jdbc.resource.connection.type=${zelltype:?}" \
+            --data   "jdbc.resource.connection.host=${zellhost:?}" \
+            --data   "jdbc.resource.connection.user=${zelluser:?}" \
+            --data   "jdbc.resource.connection.pass=${zellpass:?}" \
             "${endpointurl:?}/jdbc/resource/create" \
             | split-headers \
             | jq '.' | tee /tmp/jdbc-zelleri-resource.json

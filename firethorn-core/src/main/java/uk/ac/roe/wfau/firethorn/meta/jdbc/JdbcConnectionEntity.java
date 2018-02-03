@@ -34,6 +34,7 @@ import javax.sql.DataSource;
 
 import org.hibernate.annotations.Parent;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
@@ -187,6 +188,20 @@ implements JdbcConnection
         return this.resource;
         }
     protected void resource(final JdbcResourceEntity resource)
+        {
+        this.resource = resource;
+        }
+
+    /**
+     * Get/Set methods for Hibernate.
+     * 
+     * @return
+     */
+    protected JdbcResourceEntity getResource()
+        {
+        return this.resource;
+        }
+    protected void setResource(final JdbcResourceEntity resource)
         {
         this.resource = resource;
         }
@@ -397,13 +412,32 @@ implements JdbcConnection
 
         if (this.state == State.EMPTY)
             {
+            // Use a pooled connection
             log.debug("State is EMPTY, initialising DataSource");
-            this.source = new DriverManagerDataSource(
-                this.operator().url()
-                );
+            this.source = new SimpleDriverDataSource(
+                this.operator().driver(),
+                this.operator().url(),
+                this.user,
+                this.pass
+                );            
             this.state = State.READY;
             }
 
+       /*
+        * http://www.mchange.com/projects/c3p0/#using_datasources_factory
+        * Need to have a Map<uuid,ComboPooledDataSource> for this to make sense. 
+        ComboPooledDataSource cpds = new ComboPooledDataSource();
+        cpds.setDriverClass( "org.postgresql.Driver" );
+        cpds.setJdbcUrl( "jdbc:postgresql://localhost/testdb" );
+        cpds.setUser("swaldman");
+        cpds.setPassword("test-password");
+        
+        cpds.setMinPoolSize(5);
+        cpds.setAcquireIncrement(5);
+        cpds.setMaxPoolSize(20);        
+        * 
+        */
+        
         if (this.state == State.READY)
             {
             log.debug("State is READY, initialising Connection");

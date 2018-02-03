@@ -18,11 +18,9 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver;
 
 import java.sql.SQLException;
-import net.sourceforge.jtds.jdbc.Driver;
-
-import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sourceforge.jtds.jdbc.Driver;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
@@ -36,14 +34,16 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
- * SQLServer database driver implementation.
+ * Operations for a SQLServer database.
  *
  */
 @Slf4j
-@Component
 public class SQLServerOperator
 implements JdbcOperator 
     {
+    /*
+     * 
+     */
     @Override
     public Driver driver()
         {
@@ -66,7 +66,7 @@ implements JdbcOperator
         builder.append(this.connection.database());
         return builder.toString();
         }
-    
+
     /**
      * Public constructor.
      * 
@@ -207,6 +207,18 @@ implements JdbcOperator
 			);
         }
 
+	@Override
+	public void create(JdbcColumn column)
+		{
+		throw new NotImplementedException();		
+		}
+
+	@Override
+	public void drop(JdbcColumn column)
+		{
+		throw new NotImplementedException();		
+		}
+
     protected void execute(final String statement)
     throws ProtectionException
         {
@@ -226,18 +238,6 @@ implements JdbcOperator
             connection.close();
             }
         }
-
-	@Override
-	public void create(JdbcColumn column)
-		{
-		throw new NotImplementedException();		
-		}
-
-	@Override
-	public void drop(JdbcColumn column)
-		{
-		throw new NotImplementedException();		
-		}
 
     protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
     throws ProtectionException

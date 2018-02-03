@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +37,8 @@ public enum JdbcProductType
     {
     unknown(
         "unknown",
-        "unknown"
+        "unknown",
+        null
         ),
     pgsql(
         "PostgreSQL",
@@ -97,7 +99,7 @@ public enum JdbcProductType
     private JdbcProductType(final String mname, final String schema, final String[] ignores)
         {
         this.mname  = mname;
-        this.schema = schema ;
+        this.schema = schema;
         if (ignores != null)
             {
             for (final String ignore : ignores)
