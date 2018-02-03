@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver;
 
 import java.sql.SQLException;
+import net.sourceforge.jtds.jdbc.Driver;
 
 import org.springframework.stereotype.Component;
 
@@ -29,8 +30,8 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcOperator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -40,16 +41,55 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
  */
 @Slf4j
 @Component
-public class SQLServerDriver
-implements JdbcResource.JdbcDriver 
+public class SQLServerOperator
+implements JdbcOperator 
     {
+    @Override
+    public Driver driver()
+        {
+        return new net.sourceforge.jtds.jdbc.Driver();
+        }
+
+    @Override
+    public String url()
+        {
+        //jdbc:jtds:sqlserver://{host}:{port}/${database}
+        final StringBuilder builder = new StringBuilder();
+        builder.append("jdbc:jtds:sqlserver://");
+        builder.append(this.connection.host());
+        if (this.connection.port() != null)
+            {
+            builder.append(":");
+            builder.append(this.connection.port());
+            }
+        builder.append("/");
+        builder.append(this.connection.database());
+        return builder.toString();
+        }
+    
     /**
      * Public constructor.
      * 
      */
-    public SQLServerDriver()
+    public SQLServerOperator(final JdbcConnection connection)
         {
         super();
+        this.connection = connection ;
+        }
+
+    /**
+     * Our parent {@link JdbcConnection}.
+     *  
+     */
+    private JdbcConnection connection;
+
+    /**
+     * Our parent {@link JdbcConnection}.
+     *  
+     */
+    public JdbcConnection connection()
+        {
+        return this.connection;
         }
 
     /**
@@ -110,7 +150,6 @@ implements JdbcResource.JdbcDriver
         statement.append(" )");
 
 		execute(
-			table.resource().connection(),
 			statement.toString()
 			);
         }
@@ -129,7 +168,6 @@ implements JdbcResource.JdbcDriver
 			table
 			);
 		execute(
-			table.resource().connection(),
 			statement.toString()
 			);
         }
@@ -148,7 +186,6 @@ implements JdbcResource.JdbcDriver
 			table
 			);
 		execute(
-			table.resource().connection(),
 			statement.toString()
 			);
         }
@@ -166,17 +203,16 @@ implements JdbcResource.JdbcDriver
 			table
 			);
 		execute(
-			table.resource().connection(),
 			statement.toString()
 			);
         }
 
-    protected void execute(final JdbcConnector connection, final String statement)
+    protected void execute(final String statement)
     throws ProtectionException
         {
         try {
             log.debug("SQL statement [{}]", statement);
-            final int result = connection.open().createStatement().executeUpdate(
+            final int result = this.connection.open().createStatement().executeUpdate(
                 statement.toString()
                 );
             log.debug("SQL result [{}]", result);

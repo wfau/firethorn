@@ -21,10 +21,11 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 import adql.translator.ADQLTranslator;
 
 /**
- * Base class for ADQLQuery translators.
+ * Public interface for ADQLQuery translators.
  * 
  */
-public interface BaseTranslator extends ADQLTranslator
+public interface AdqlTranslator
+extends ADQLTranslator
     {
 
     }

@@ -30,7 +30,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 
 /**
@@ -67,15 +67,15 @@ implements JdbcMetadataScanner
         public String name();
         }
 
-    public PostgresScanner(final JdbcConnector connector)
+    public PostgresScanner(final JdbcConnection connector)
         {
         this.connector = connector ;
         }
 
     
-    protected JdbcConnector connector ;
+    protected JdbcConnection connector ;
     @Override
-    public JdbcConnector connector()
+    public JdbcConnection connector()
         {
         return this.connector;
         }
@@ -544,6 +544,10 @@ implements JdbcMetadataScanner
         log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
         }
 
+    /**
+     * Internal map of database types to {@link JdbcColumn.JdbcType}.
+     * 
+     */
     protected static Map<String, JdbcColumn.JdbcType> typemap = new HashMap<String, JdbcColumn.JdbcType>();
     static {
     

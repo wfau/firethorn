@@ -1098,7 +1098,7 @@ implements JdbcTable
     protected void jdbcdelete()
     throws ProtectionException
         {
-        this.resource().jdbcdriver().delete(
+        this.resource().connection().operator().delete(
             JdbcTableEntity.this
             );
         this.adqlcount  = EMPTY_COUNT_VALUE;
@@ -1109,7 +1109,7 @@ implements JdbcTable
     protected void jdbcdrop()
     throws ProtectionException
         {
-        this.resource().jdbcdriver().drop(
+        this.resource().connection().operator().drop(
             JdbcTableEntity.this
             );
         this.adqlcount  = EMPTY_COUNT_VALUE;

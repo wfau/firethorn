@@ -32,7 +32,7 @@ import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
-import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
@@ -479,7 +479,7 @@ implements AdqlResource
         }
 
     @Override
-    public BaseTranslator translator()
+    public AdqlTranslator translator()
         {
         throw new UnsupportedOperationException(
             "Unable to load a translator for AdqlResource"

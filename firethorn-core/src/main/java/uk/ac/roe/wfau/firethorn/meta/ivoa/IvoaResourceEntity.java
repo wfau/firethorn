@@ -34,14 +34,14 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
-import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
-import uk.ac.roe.wfau.firethorn.adql.parser.TAPServiceTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.tap.TAPServiceTranslator;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
 
 /**
@@ -398,7 +398,7 @@ public class IvoaResourceEntity
         }
 
     @Override
-    public BaseTranslator translator()
+    public AdqlTranslator translator()
         {
         return new TAPServiceTranslator();
         }

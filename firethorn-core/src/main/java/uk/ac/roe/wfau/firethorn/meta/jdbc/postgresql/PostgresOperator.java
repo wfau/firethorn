@@ -18,10 +18,13 @@
 
 package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
 
+import org.postgresql.Driver;
+
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcOperator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -29,17 +32,55 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
  * 
  * 
  */
-public class PostgresDriver
-implements JdbcResource.JdbcDriver
+public class PostgresOperator
+implements JdbcOperator
     {
+    @Override
+    public Driver driver()
+        {
+        return new org.postgresql.Driver();
+        }
+
+    @Override
+    public String url()
+        {
+        //jdbc:postgresql://{host}:{port}/${database}
+        final StringBuilder builder = new StringBuilder();
+        builder.append("jdbc:postgresql://");
+        builder.append(this.connection.host());
+        if (this.connection.port() != null)
+            {
+            builder.append(":");
+            builder.append(this.connection.port());
+            }
+        builder.append("/");
+        builder.append(this.connection.database());
+        return builder.toString();
+        }
 
     /**
      * Public constructor.
      * 
      */
-    public PostgresDriver()
+    public PostgresOperator(final JdbcConnection connection)
         {
         super();
+        this.connection = connection ;
+        }
+
+    /**
+     * Our parent {@link JdbcConnection}.
+     *  
+     */
+    private JdbcConnection connection;
+
+    /**
+     * Our parent {@link JdbcConnection}.
+     *  
+     */
+    public JdbcConnection connection()
+        {
+        return this.connection;
         }
 
     @Override

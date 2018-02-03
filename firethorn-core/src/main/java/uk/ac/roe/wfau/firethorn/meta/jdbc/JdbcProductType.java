@@ -34,21 +34,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public enum JdbcProductType
     {
-    UNKNOWN(
+    unknown(
         "unknown",
         "unknown"
         ),
-    PGSQL(
+    pgsql(
         "PostgreSQL",
         "public",
         new String[]{}
         ),
-    MYSQL(
+    mysql(
         "MySQL",
         "public",
         new String[]{}
         ),
-    MSSQL(
+    mssql(
         "Microsoft SQL Server",
         "dbo",
         new String[]{
@@ -66,7 +66,7 @@ public enum JdbcProductType
             "db_securityadmin"
             }
         ),
-    HSQLDB(
+    hsqldb(
         "HSQL Database Engine",
         "PUBLIC.PUBLIC",
         new String[]{}
@@ -140,7 +140,6 @@ public enum JdbcProductType
         return this.schema ;
         }
 
-
     /**
      * A list of 'system' schema to ignore.
      *
@@ -174,7 +173,7 @@ public enum JdbcProductType
     /**
      * Search the shared {@link Map} for a {@link JdbcProductType} based on its name. 
      * @param mname The name of the {@link JdbcProductType} to look for.
-     * @return The matching {@link JdbcProductType}, or {@link JdbcProductType#UNKNOWN} if no match was found. 
+     * @return The matching {@link JdbcProductType}, or {@link JdbcProductType#unknown} if no match was found. 
      *
      */
     static public JdbcProductType match(final String mname)
@@ -186,14 +185,14 @@ public enum JdbcProductType
                 );
             }
         else {
-            return UNKNOWN;
+            return unknown;
             }
         }
 
     /**
      * Search the shared {@link Map} for a {@link JdbcProductType} based on the name given by {@link DatabaseMetaData#getDatabaseProductName}. 
      * @param metadata The {@link DatabaseMetaData} to match the {@link JdbcProductType} name with.
-     * @return The matching {@link JdbcProductType}, or {@link JdbcProductType#UNKNOWN} if no match was found. 
+     * @return The matching {@link JdbcProductType}, or {@link JdbcProductType#unknown} if no match was found. 
      *
      */
     static public JdbcProductType match(final DatabaseMetaData metadata)
@@ -208,12 +207,11 @@ public enum JdbcProductType
             catch (final SQLException ouch)
                 {
                 log.error("SQLException reading database metadata [{}]", ouch.getMessage());
-                return UNKNOWN;
+                return unknown;
                 }
             }
         else {
-            return UNKNOWN;
+            return unknown;
             }
         }
-
     }

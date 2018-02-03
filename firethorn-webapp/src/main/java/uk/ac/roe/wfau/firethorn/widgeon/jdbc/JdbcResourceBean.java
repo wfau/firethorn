@@ -79,7 +79,7 @@ extends BaseResourceBean<JdbcResource>
             public String getUri()
             throws ProtectionException
                 {
-                return entity().connection().uri();
+                return entity().connection().operator().url();
                 }
             public String getUser()
             throws ProtectionException

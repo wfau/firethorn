@@ -219,7 +219,7 @@ extends AbstractController
     	log.trace("select(StringBuilder, AdqlColumn, JdbcProductType)");
         //
         // Postgresql dialect
-        if (type == JdbcProductType.PGSQL)
+        if (type == JdbcProductType.pgsql)
             {
             builder.append('"');
             builder.append(
@@ -230,7 +230,7 @@ extends AbstractController
         //
         // SQLServer dialect
         // http://technet.microsoft.com/en-us/library/ms174450.aspx
-        else if (type == JdbcProductType.MSSQL)
+        else if (type == JdbcProductType.mssql)
             {
             builder.append(
                 column.root().name()

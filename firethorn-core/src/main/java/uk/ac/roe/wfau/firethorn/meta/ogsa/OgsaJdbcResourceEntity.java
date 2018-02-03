@@ -41,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
@@ -451,7 +451,7 @@ implements OgsaJdbcResource
         final JdbcCreateResourceWorkflow workflow = new JdbcCreateResourceWorkflow(
             endpointurl
             );
-        final JdbcConnector connector = resource.connection();
+        final JdbcConnection connection = resource.connection();
 
         log.debug("Creating OGSA-DAI JDBC resource");
         log.debug("Executing JdbcCreateResourceWorkflow");
@@ -462,22 +462,22 @@ implements OgsaJdbcResource
                 @Override
                 public String jdbcurl()
                     {
-                    return connector.uri();
+                    return connection.url();
                     }
                 @Override
                 public String username()
                     {
-                    return connector.user();
+                    return connection.user();
                     }
                 @Override
                 public String password()
                     {
-                    return connector.pass();
+                    return connection.pass();
                     }
                 @Override
                 public String driver()
                     {
-                    return connector.driver();
+                    return connection.operator().driver().getClass().getName();
                     }
                 @Override
                 public boolean writable()

@@ -30,16 +30,10 @@ extends JdbcExceptionHandler
     {
     
     /**
-     * Access to our {@link JdbcConnector}. 
+     * Access to our {@link JdbcConnection}. 
      * 
      */
-    public JdbcConnector connector();
-
-    /**
-     * Access to the current JDBC {@link Connection}. 
-     * 
-    public Connection connection();
-     */
+    public JdbcConnection connector();
 
     /**
      * Public interface for the database catalogs.

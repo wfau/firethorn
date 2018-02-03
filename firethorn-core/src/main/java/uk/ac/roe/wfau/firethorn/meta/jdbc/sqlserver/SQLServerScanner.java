@@ -30,7 +30,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcType;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 import uk.ac.roe.wfau.firethorn.util.ResultSetFilterator;
 import uk.ac.roe.wfau.firethorn.util.ResultSetIterator;
@@ -47,14 +47,14 @@ public class SQLServerScanner
      * Public constructor.
      * 
      */
-    public SQLServerScanner(final JdbcConnector connector)
+    public SQLServerScanner(final JdbcConnection connector)
         {
         this.connector = connector ;
         }
 
-    protected JdbcConnector connector ;
+    protected JdbcConnection connector ;
     @Override
-    public JdbcConnector connector()
+    public JdbcConnection connector()
         {
         return this.connector;
         }

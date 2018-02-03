@@ -49,7 +49,7 @@ import adql.query.operand.function.geometry.RegionFunction;
 import adql.translator.JDBCTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 
 /*
  * This file was part of ADQLLibrary.
@@ -77,7 +77,7 @@ import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
  */
 @Slf4j
 public class SQLServerTranslator extends JDBCTranslator
-implements BaseTranslator
+implements AdqlTranslator
     {
 
 	private final String schemaName = "dbo";

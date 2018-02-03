@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
-import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -152,6 +152,6 @@ extends TreeComponent
      * Access to the ADQLTranslator for this resource.
      * 
      */
-    public BaseTranslator translator();
+    public AdqlTranslator translator();
     
     }

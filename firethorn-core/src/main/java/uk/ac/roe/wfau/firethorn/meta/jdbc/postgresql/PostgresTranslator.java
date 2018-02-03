@@ -19,7 +19,7 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
 
 import adql.translator.PostgreSQLTranslator;
-import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 
 /**
  * ADQL translator for Postgres.
@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
  */
 public class PostgresTranslator
 extends PostgreSQLTranslator
-implements BaseTranslator
+implements AdqlTranslator
     {
 
     /**

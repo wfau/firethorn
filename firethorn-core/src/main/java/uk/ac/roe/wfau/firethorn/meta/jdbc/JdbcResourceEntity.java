@@ -42,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
-import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -73,8 +73,8 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
             query = "FROM JdbcResourceEntity ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "JdbcResource-select-userdata",
-            query = "FROM JdbcResourceEntity WHERE (connection.url= :url) ORDER BY ident desc"
+            name  = "JdbcResource-select-uid",
+            query = "FROM JdbcResourceEntity WHERE (uid = :uid) ORDER BY ident desc"
             )
         }
     )
@@ -92,7 +92,7 @@ public class JdbcResourceEntity
      * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
+    protected static final String DB_JDBC_UID_COL = "jdbcuid";
 
     /**
      * {@link JdbcResource.EntityFactory} implementation.
@@ -129,103 +129,75 @@ public class JdbcResourceEntity
                 );
             }
 
-        @Override
-        @CreateMethod
-        public JdbcResource create(final String name, final String url)
-        throws ProtectionException
-            {
-            protector().affirm(Action.create);
-            return this.create(
-                null,
-                name,
-                url
-                );
-            }
-
-        @Override
-        @CreateMethod
-        public JdbcResource create(final String catalog, final String name, final String url)
-        throws ProtectionException
-            {
-            protector().affirm(Action.create);
-            return super.insert(
-                new JdbcResourceEntity(
-                    catalog,
-                    name,
-                    url
-                    )
-                );
-            }
-
-		@Override
-        @CreateMethod
-        public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass)
-        throws ProtectionException
-		    {
-            protector().affirm(Action.create);
-		    return super.insert(
-                new JdbcResourceEntity(
-                    catalog,
-                    name,
-                    url,
-                    user,
-                    pass
-                    )
-                );
-			}
-
 		@Override
 	    @CreateMethod
-	    public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+	    public JdbcResource create(final String name, final JdbcProductType type, final String database, final String catalog, final String host, final Integer port, final String user, final String pass)
         throws ProtectionException
 		    {
             protector().affirm(Action.create);
 		    return super.insert(
 		        new JdbcResourceEntity(
-		            catalog,
+	                null,
 		            name,
-		            url,
+		            type,
+		            database,
+                    catalog,
+		            host,
+		            port,
 		            user,
-		            pass,
-		            driver
+		            pass
 		            )
                 );
             }
 
         /**
-         * The default 'userdata' JDBC URL.
+         * The 'userdata' database identifier).
          *
          */
-        @Value("${firethorn.user.url:#{null}}")
-        public String udurl ;
+        @Value("${firethorn.user.uid:userdata}")
+        public String uduid;
 
         /**
-         * The default 'userdata' JDBC catalog.
+         * The 'userdata' JDBC type (pgsql|mysql|mssql etc).
          *
          */
-        @Value("${firethorn.user.cat:#{null}}")
-        public String udcat = null;
+        @Value("${firethorn.user.type:#{null}}")
+        public String udtype ;
 
         /**
-         * The default 'userdata' JDBC username.
+         * The 'userdata' JDBC database name.
+         *
+         */
+        @Value("${firethorn.user.data:#{null}}")
+        public String uddata;
+
+        /**
+         * The 'userdata' JDBC host name.
+         *
+         */
+        @Value("${firethorn.user.host:#{null}}")
+        public String udhost;
+
+        /**
+         * The 'userdata' JDBC port number.
+         *
+         */
+        @Value("${firethorn.user.port:#{null}}")
+        public String udport;
+        
+        /**
+         * The 'userdata' JDBC user name.
          *
          */
         @Value("${firethorn.user.user:#{null}}")
         public String uduser ;
 
         /**
-         * The default 'userdata' JDBC password.
+         * The 'userdata' JDBC password.
          *
          */
         @Value("${firethorn.user.pass:#{null}}")
         public String udpass ;
-
-        /**
-         * The default 'userdata' JDBC driver.
-         *
-         */
-        @Value("${firethorn.user.driver:#{null}}")
-        public String uddriver ;
 
         /**
          * Select (or create) the default 'userdata' JdbcResource.
@@ -238,13 +210,12 @@ public class JdbcResourceEntity
             {
             // Uses local calls to super.first() and super.insert() to avoid protectors.
             log.debug("userdata()");
-            log.debug(" url [{}]", udurl);
             JdbcResource userdata = super.first(
                 super.query(
                     "JdbcResource-select-userdata"
                     ).setString(
-                        "url",
-                        udurl
+                        "uid",
+                        uduid
                         )
                 );
             
@@ -252,20 +223,25 @@ public class JdbcResourceEntity
                 {
                 log.debug("Userdata resource is null, creating a new one");
 
-                log.debug(" cat [{}]", udcat);
-                log.debug(" url [{}]", udurl);
+                log.debug(" host [{}]", udhost);
+                log.debug(" port [{}]", udport);
+                log.debug(" data [{}]", uddata);
                 log.debug(" user [{}]", uduser);
                 log.debug(" pass [{}]", udpass);
-                log.debug(" driver [{}]", uddriver);
-
+                
                 userdata = super.insert(
                     new JdbcResourceEntity(
-                        udcat,
+                        uduid,
                         "Userdata resource",
-                        udurl,
+                        JdbcProductType.valueOf(
+                            udtype
+                            ),
+                        uddata,
+                        uddata,
+                        udhost,
+                        udport,
                         uduser,
-                        udpass,
-                        uddriver
+                        udpass
                         )
                     );
                 }
@@ -403,59 +379,59 @@ public class JdbcResourceEntity
      * Protected constructor. 
      *
      */
-    protected JdbcResourceEntity(final String catalog, final String name, final  String url)
+    protected JdbcResourceEntity(final String uid, final String name, final JdbcProductType type, final String database, final String catalog, final String host, final String port, final String user, final String pass)
         {
-        super(
-            name
-            );
-        log.debug("JdbcResourceEntity(String, String, String)");
-        log.debug("    Catalog [{}]", catalog);
-        log.debug("    Name    [{}]", name);
-        log.debug("    URL     [{}]", url);
-        this.catalog = catalog ;
-        this.connection = new JdbcConnectionEntity(
-            this,
-            url
+        this(
+            uid,
+            name,
+            type,
+            database,
+            catalog,
+            host,
+            ((port != null) ? new Integer(port) : null),
+            user,
+            pass
             );
         }
-
+    
+    
     /**
      * Protected constructor. 
      *
      */
-    protected JdbcResourceEntity(final String catalog, final String name, final String url, final String user, final String pass)
+    protected JdbcResourceEntity(final String uid, final String name, final JdbcProductType type, final String database, final String catalog, final String host, final Integer port, final String user, final String pass)
 	    {
 	    super(
 	        name
 	        );
-        this.catalog = catalog ;
+        this.uid = uid;
 	    this.connection = new JdbcConnectionEntity(
 	        this,
-	        url,
+	        type,
+	        database,
+	        catalog,
+            host,
+	        port,
 	        user,
 	        pass
 	        );
 	    }
-
-    /**
-     * Protected constructor. 
-     *
-     */
-    protected JdbcResourceEntity(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
+    
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_JDBC_UID_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String uid ;
+    public String uid()
         {
-        super(
-            name
-            );
-        this.catalog = catalog ;
-        this.connection = new JdbcConnectionEntity(
-            this,
-            url,
-            user,
-            pass,
-            driver
-            );
+        return this.uid;
         }
-
+    
     @Override
     public JdbcResource.Schemas schemas()
     throws ProtectionException
@@ -553,20 +529,11 @@ public class JdbcResourceEntity
             public JdbcSchema simple()
             throws ProtectionException, EntityNotFoundException
                 {
-                try {
-                    return factories().jdbc().schemas().entities().select(
-                        JdbcResourceEntity.this,
-                        connection().catalog(),
-                        connection().type().schema()
-                        );
-                    }
-                catch (final MetadataException ouch)
-                    {
-                    throw new EntityNotFoundException(
-                        "Unable to load JDBC metadata",
-                        ouch
-                        );
-                    }
+                return factories().jdbc().schemas().entities().select(
+                    JdbcResourceEntity.this,
+                    connection().catalog(),
+                    connection().type().schema()
+                    );
                 }
 
             @Override
@@ -602,33 +569,9 @@ public class JdbcResourceEntity
         }
 
     @Override
-    public JdbcConnector connection()
+    public JdbcConnection connection()
         {
         return this.connection;
-        }
-
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_JDBC_CATALOG_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String catalog ;
-    @Override
-    public String catalog()
-        {
-        return this.catalog ;
-        }
-    @Override
-    public void catalog(final String catalog)
-        {
-        this.catalog = catalog ;
-        this.scandate(
-            null
-            );
         }
 
     private String keyname(final JdbcSchema schema )
@@ -686,25 +629,31 @@ public class JdbcResourceEntity
         // Try/finally to close our connection. 
         try {
             //
-            // Default to our Connection catalog name.
-            log.debug("catalog [{}] for [{}]", this.catalog, this.namebuilder());
-            if (this.catalog == null)
+            // Scan a specific catalog.
+            if (connection().catalog() != null)
                 {
                 try {
-                    log.debug("Null catalog for [{}][{}]", this.ident(), this.namebuilder());
-                    log.debug("Fetching default from connection");
-                    this.catalog = connection().catalog();
-                    log.debug("Default catalog from connection [{}]", this.catalog);
+                    scan(
+                        known,
+                        matching,
+                        scanner.catalogs().select(
+                            connection().catalog()
+                            )
+                        );
+                    }
+                catch (SQLException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
+                    scanner.handle(ouch);
                     }
                 catch (MetadataException ouch)
                     {
-                    log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
+                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
                     }
                 }
             //
             // Scan all the catalogs.
-            if (ALL_CATALOGS.equals(this.catalog))
-                {
+            else {
                 try {
                     for (JdbcMetadataScanner.Catalog catalog : scanner.catalogs().select())
                         {
@@ -718,28 +667,6 @@ public class JdbcResourceEntity
                 catch (SQLException ouch)
                     {
                     log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
-                    scanner.handle(ouch);
-                    }
-                catch (MetadataException ouch)
-                    {
-                    log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
-                    }
-                }
-            //
-            // Scan a specific catalog.
-            else {
-                try {
-                    scan(
-                        known,
-                        matching,
-                        scanner.catalogs().select(
-                            this.catalog
-                            )
-                        );
-                    }
-                catch (SQLException ouch)
-                    {
-                    log.warn("Exception while fetching JDBC catalog [{}][{}]", this.ident(), ouch.getMessage());
                     scanner.handle(ouch);
                     }
                 catch (MetadataException ouch)
@@ -871,18 +798,17 @@ public class JdbcResourceEntity
                 }
             };
         }
-
+/*
 	@Override
-	public JdbcResource.JdbcDriver jdbcdriver()
+	public JdbcOperator operator()
 		{
-        log.debug("jdbcdriver() for [{}]", this.name());
-		return this.connection.jdbcdriver();
+		return this.connection.operator();
 		}
-
+ */
+    
     @Override
-    public BaseTranslator translator()
+    public AdqlTranslator translator()
         {
-        log.debug("translator() for [{}]", this.name());
-        return this.connection.jdbctranslator();
+        return this.connection.translator();
         }
     }

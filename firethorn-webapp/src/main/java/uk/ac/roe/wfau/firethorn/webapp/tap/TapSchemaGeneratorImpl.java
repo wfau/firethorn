@@ -17,6 +17,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -400,7 +401,17 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		this.insertMetadata();
 		AdqlResource resource = this.resource;
 		
-		JdbcResource tap_schema_resource = this.factories.jdbc().resources().entities().create(params.getCatalogue(), this.tapSchemaResourceJDBCName, params.getConnectionURL(), params.getUsername(), params.getPassword(),params.getDriver());
+		JdbcResource tap_schema_resource = this.factories.jdbc().resources().entities().create(
+            this.tapSchemaResourceJDBCName,
+            JdbcProductType.mssql,
+            params.getCatalogue(),
+            params.getCatalogue(),
+            "tapschemahost",
+            (Integer) null,
+	        params.getUsername(),
+	        params.getPassword()
+	        );
+
 		JdbcSchema tap_schema;
 		try {
 			tap_schema = tap_schema_resource.schemas().select(params.getCatalogue()  + "." + this.tapSchemaJDBCName);

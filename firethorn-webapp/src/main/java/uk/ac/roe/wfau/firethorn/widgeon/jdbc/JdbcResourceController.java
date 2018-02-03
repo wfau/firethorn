@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -46,7 +46,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceLinkFactory;
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.RESOURCE_PATH)
 public class JdbcResourceController
-    extends AbstractEntityController<JdbcResource, JdbcResourceBean>
+extends AbstractEntityController<JdbcResource, JdbcResourceBean>
+implements JdbcResourceModel
     {
 
     @Override
@@ -72,41 +73,6 @@ public class JdbcResourceController
      */
     public static final String TARGET_ENTITY = "urn:jdbc.resource.entity" ;
 
-    /**
-     * MVC property for the {@link JdbcResource} name.
-     *
-     */
-    public static final String RESOURCE_NAME_PARAM = "jdbc.resource.update.name" ;
-
-    /**
-     * MVC property for the {@link JdbcResource} status.
-     *
-     */
-    public static final String RESOURCE_STATUS_PARAM = "jdbc.resource.update.status" ;
-
-    /**
-     * MVC property for the {@link JdbcConnector} URL.
-     *
-     */
-    public static final String CONNECTION_URL_PARAM = "jdbc.resource.connection.url" ;
-
-    /**
-     * MVC property for the {@link JdbcConnector} user name.
-     *
-     */
-    public static final String CONNECTION_USER_PARAM = "jdbc.resource.connection.user" ;
-
-    /**
-     * MVC property for the {@link JdbcConnector} password.
-     *
-     */
-    public static final String CONNECTION_PASS_PARAM = "jdbc.resource.connection.pass" ;
-
-    /**
-     * MVC property for the {@link JdbcConnector} JDBC driver.
-     *
-     */
-    public static final String CONNECTION_DRIVER_PARAM = "jdbc.resource.driver" ;
     
     @Override
     public JdbcResourceBean bean(final JdbcResource entity)
@@ -172,16 +138,29 @@ public class JdbcResourceController
     public ResponseEntity<JdbcResourceBean> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity,
-        @RequestParam(value=RESOURCE_NAME_PARAM, required=false) final
-        String name,
-        @RequestParam(value=RESOURCE_STATUS_PARAM, required=false) final
-        String status,
-        @RequestParam(value=CONNECTION_URL_PARAM, required=false) final
-        String url,
-        @RequestParam(value=CONNECTION_USER_PARAM, required=false) final
-        String user,
-        @RequestParam(value=CONNECTION_PASS_PARAM, required=false) final
-        String pass
+
+        @RequestParam(value=RESOURCE_NAME_PARAM, required=false)
+        final String name,
+        @RequestParam(value=RESOURCE_STATUS_PARAM, required=false)
+        final BaseComponent.Status status,
+
+        @RequestParam(value=CONNECTION_TYPE_PARAM, required=false)
+        final JdbcProductType type,
+        
+        @RequestParam(value=CONNECTION_HOST_PARAM, required=false)
+        final String host,
+        @RequestParam(value=CONNECTION_PORT_PARAM, required=false)
+        final Integer port,
+
+        @RequestParam(value=CONNECTION_DATABASE_PARAM, required=false)
+        final String database,
+        @RequestParam(value=CONNECTION_CATALOG_PARAM, required=false)
+        final String catalog,
+
+        @RequestParam(value=CONNECTION_USER_PARAM, required=false)
+        final String user,
+        @RequestParam(value=CONNECTION_PASS_PARAM, required=false)
+        final String pass
         )
     throws NameFormatException, ProtectionException
         {
@@ -195,32 +174,76 @@ public class JdbcResourceController
                 }
             }
 
-        if (url != null)
+        if (status != null)
             {
-            if (url.length() > 0)
+            entity.status(
+                status
+                );
+            }
+        
+        if (type != null)
+            {
+            entity.connection().type(
+                type
+                );
+            }
+        
+        if (host != null)
+            {
+            if (host.length() > 0)
                 {
-                entity.connection().url(
-                    url
+                entity.connection().host(
+                    host
+                    );
+                }
+            }
+
+        if (port != null)
+            {
+            if (port != 0)
+                {
+                entity.connection().port(
+                    port
                     );
                 }
             else {
-                entity.connection().url(
+                entity.connection().port(
                     null
                     );
                 }
             }
 
+        if (database != null)
+            {
+            if (database.length() > 0)
+                {
+                entity.connection().database(
+                    database 
+                    );
+                }
+            }
+
+        if (catalog != null)
+            {
+            if (catalog.length() > 0)
+                {
+                entity.connection().catalog(
+                    catalog
+                    );
+                }
+            else {
+                entity.connection().catalog(
+                    null
+                    );
+                }
+            }
+        
         if (user != null)
             {
             if (user.length() > 0)
                 {
                 entity.connection().user(
                     user
-                    );
-                }
-            else {
-                entity.connection().user(
-                    null
                     );
                 }
             }
@@ -233,20 +256,6 @@ public class JdbcResourceController
                     pass
                     );
                 }
-            else {
-                entity.connection().pass(
-                    null
-                    );
-                }
-            }
-
-        if (status != null)
-            {
-            entity.status(
-                BaseComponent.Status.valueOf(
-                    status
-                    )
-                );
             }
 
         return selected(

@@ -57,7 +57,7 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
-import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
@@ -1260,7 +1260,7 @@ implements BlueQuery
                 }
 
             @Override
-            public BaseTranslator translator()
+            public AdqlTranslator translator()
                 {
                 return BlueQueryEntity.this.resources().primary().translator();
                 }
@@ -2177,7 +2177,7 @@ implements BlueQuery
         //
         // Should this be part of the table ?
         log.debug("Creating JDBC table");
-        jdbctable.resource().jdbcdriver().create(
+        jdbctable.resource().connection().operator().create(
     		jdbctable
     		);
         log.debug("JDBC table created");
