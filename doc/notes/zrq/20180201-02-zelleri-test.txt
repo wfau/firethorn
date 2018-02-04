@@ -85,7 +85,7 @@ EOF
 #[user@virtual]
 
     source "${HOME:?}/chain.properties"
-    cat > "${HOME:?}/.env" << EOF
+    cat > "$(pwd)/.env" << EOF
 
         buildtag=${buildtag:?}
 
@@ -123,6 +123,7 @@ EOF
 # Set the compose file path.
 #[user@virtual]
 
+    source "${HOME:?}/firethorn.settings"
     compose="${FIRETHORN_CODE:?}/docker/compose"
 
 # -----------------------------------------------------
@@ -527,12 +528,7 @@ EOF
 # Create a new JdbcResource for our test results.
 #[root@deployer]
 
-
         jdbcname="Test results"
-        jdbcurl="jdbc:postgresql://zelleri/postgres"
-        jdbcdriver="org.postgresql.Driver"
-
-        catalog="postgres"
 
         curl \
             --silent \
@@ -569,9 +565,8 @@ Zelleri JdbcResource [${jdbczelleriresource:?}]
 # Create a JdbcSchema for the test results.
 #[root@deployer]
 
-        catalogname=postgres
+        catalog=postgres
         schema=public
-        schema=results
 
         curl \
             --silent \
@@ -599,7 +594,7 @@ Zelleri JdbcResource [${jdbczelleriresource:?}]
 # Select our JdbcSchema by name.
 #[root@deployer]
 
-        catalogname=postgres
+        catalog=postgres
         schema=public
 
         curl \
@@ -671,20 +666,6 @@ EOF
 
         print-headers
 
-
-2018-02-01 21:01:38,163 DEBUG [FireThornTaskExecutor-9] [JdbcResourceEntity] jdbcdriver() for [Test results] 
-2018-02-01 21:01:38,163 DEBUG [FireThornTaskExecutor-9] [JdbcConnectionEntity] jdbcdriver() for [PGSQL] 
-
-java.lang.RuntimeException: Unable to load driver for type [PGSQL]
-	at uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.jdbcdriver(JdbcConnectionEntity.java:904)
-	at uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity.jdbcdriver(JdbcResourceEntity.java:879)
-
-
-
-
-
-
-
 # -----------------------------------------------------
 # Get the results as a VOTable.
 #[root@tester]
@@ -697,5 +678,51 @@ java.lang.RuntimeException: Unable to load driver for type [PGSQL]
             --silent \
             ${votableurl:?} \
             | xmllint --format - \
-            | tee /tmp/atlas-data.xml
+            | tee /tmp/atlas-query.vot
+
+
+# -----------------------------------------------------
+# Query the Atlas database, and push the results to our new JdbcSchema.
+#[root@tester]
+
+cat > /tmp/atlas-source-query.adql << EOF
+        SELECT
+            sourceID,
+            htmID,
+            ra,
+            dec
+        FROM
+            ATLASDR1.atlasSource
+        WHERE
+            sourceID > 0
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-source-query.adql" \
+            --data "jdbc.schema.ident=${jdbczellerischemaident:?}" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${atlasadql:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-source-query.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        votableurl=$(
+            jq -r '.results.formats.votable' "/tmp/atlas-source-query.json"
+            )
+
+        curl \
+            --silent \
+            ${votableurl:?} \
+            | xmllint --format - \
+            | tee /tmp/atlas-source-query.vot
 

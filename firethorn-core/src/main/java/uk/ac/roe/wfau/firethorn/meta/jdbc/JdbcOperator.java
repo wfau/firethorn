@@ -97,5 +97,26 @@ public interface JdbcOperator
      * 
      */
     public Driver driver();
+
+    /**
+     * 
+     * 
+     */
+    public String fullname(final JdbcSchema schema)
+    throws ProtectionException;
     
+    /**
+     *
+     * 
+     */
+    public String fullname(final JdbcTable table)
+    throws ProtectionException;
+
+    /**
+     *
+     * 
+     */
+    public String fullname(final JdbcColumn column)
+    throws ProtectionException;
+
     }

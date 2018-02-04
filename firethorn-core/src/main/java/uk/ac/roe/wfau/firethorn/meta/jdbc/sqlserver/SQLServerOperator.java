@@ -323,8 +323,35 @@ implements JdbcOperator
         log.debug("  temp [{}]", tempbuilder.toString());
         builder.append(tempbuilder);
         }
-	
-    protected void fullname(final StringBuilder builder, final JdbcSchema schema)
+
+    @Override
+    public String fullname(final JdbcSchema schema)
+    throws ProtectionException
+        {
+        final StringBuilder builder = new StringBuilder();
+        fullname(builder, schema);
+        return builder.toString();
+        }
+
+    @Override
+    public String fullname(final JdbcTable table)
+    throws ProtectionException
+        {
+        final StringBuilder builder = new StringBuilder();
+        fullname(builder, table);
+        return builder.toString();
+        }
+
+    @Override
+    public String fullname(final JdbcColumn column)
+    throws ProtectionException
+        {
+        final StringBuilder builder = new StringBuilder();
+        sqlname(builder, column);
+        return builder.toString();
+        }
+    
+    public StringBuilder fullname(final StringBuilder builder, final JdbcSchema schema)
     throws ProtectionException
     	{
 		sqlname(
@@ -336,9 +363,10 @@ implements JdbcOperator
 			builder,
 			schema.schema()
 			);
+		return builder;
     	}
 
-    protected void fullname(final StringBuilder builder, final JdbcTable table)
+    public StringBuilder fullname(final StringBuilder builder, final JdbcTable table)
     throws ProtectionException
     	{
 		fullname(
@@ -350,39 +378,41 @@ implements JdbcOperator
 			builder,
 			table
 			);
+        return builder;
     	}
     
-    protected void sqlname(final StringBuilder builder, final JdbcSchema schema)
+    protected StringBuilder sqlname(final StringBuilder builder, final JdbcSchema schema)
     	{
-    	sqlname(
+        return sqlname(
 			builder,
 			schema.name()
 			);
     	}
 
-    protected void sqlname(final StringBuilder builder, final JdbcTable table)
+    protected StringBuilder sqlname(final StringBuilder builder, final JdbcTable table)
     	{
-    	sqlname(
+        return sqlname(
 			builder,
 			table.name()
 			);
     	}
 
-    protected void sqlname(final StringBuilder builder, final JdbcColumn column)
+    protected StringBuilder sqlname(final StringBuilder builder, final JdbcColumn column)
     	{
-    	sqlname(
+    	return sqlname(
 			builder,
 			column.name()
 			);
     	}
 
-    protected void sqlname(final StringBuilder builder, final String name)
+    protected StringBuilder sqlname(final StringBuilder builder, final String name)
     	{
     	builder.append("[");
     	builder.append(
 			name.replace("]", "]]")
 			);
     	builder.append("]");
+        return builder;
     	}
     
     protected void sqlchar()

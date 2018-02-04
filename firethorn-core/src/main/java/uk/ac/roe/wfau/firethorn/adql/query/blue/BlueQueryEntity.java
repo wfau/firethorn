@@ -1765,7 +1765,9 @@ implements BlueQuery
         log.debug("Found source OgsaService [{}]", service.name());
 
         log.debug("Getting target table");
-        final String into = this.jdbctable.fullname() ; 
+        final String into = this.jdbctable.resource().connection().operator().fullname(
+                this.jdbctable
+                ); 
         log.debug("Found target table [{}]", into);
         
         log.debug("Getting target OgsaBaseResource");
@@ -1787,7 +1789,7 @@ implements BlueQuery
         // Fix for permission issues.
         final String source = from.ogsaid();
         final String sink   = dest.ogsaid();
-        final String table  = this.jdbctable.fullname();
+        //final String table  = this.jdbctable.fullname();
         
         final BlueWorkflow.Result result = workflow.execute(
 			new BlueWorkflow.Param()
@@ -1818,7 +1820,7 @@ implements BlueQuery
 						@Override
 						public String table()
 							{
-							return table;
+							return into;
 							}
 
 						@Override

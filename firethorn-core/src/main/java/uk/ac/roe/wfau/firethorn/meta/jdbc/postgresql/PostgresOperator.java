@@ -18,6 +18,7 @@
 
 package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.postgresql.Driver;
@@ -174,14 +175,14 @@ implements JdbcOperator
         {
         try {
             log.debug("SQL statement [{}]", statement);
-            final int result = this.connection.open().createStatement().executeUpdate(
+            Connection conn = connection.open();
+            final int result = conn.createStatement().executeUpdate(
                 statement.toString()
                 );
+            log.debug("Execute done");
             log.debug("SQL result [{}]", result);
-
 // BUG
 // Failed create can just return zero and no exception.            
-        
             }
         catch (final SQLException ouch)
             {
@@ -189,7 +190,9 @@ implements JdbcOperator
             log.warn("SQL Statement [{}]", statement);
             }
         finally {
+            log.debug("Closing connection");
             connection.close();
+            log.debug(" status [{}]", connection.state());
             }
         }
 
@@ -274,23 +277,43 @@ implements JdbcOperator
         builder.append(tempbuilder);
         }
     
-    protected void fullname(final StringBuilder builder, final JdbcSchema schema)
+    @Override
+    public String fullname(final JdbcSchema schema)
     throws ProtectionException
         {
-        /*
-        sqlname(
-            builder,
-            schema.catalog()
-            );  
-        builder.append(".");
-        */
-        sqlname(
+        final StringBuilder builder = new StringBuilder();
+        fullname(builder, schema);
+        return builder.toString();
+        }
+
+    @Override
+    public String fullname(final JdbcTable table)
+    throws ProtectionException
+        {
+        final StringBuilder builder = new StringBuilder();
+        fullname(builder, table);
+        return builder.toString();
+        }
+
+    @Override
+    public String fullname(final JdbcColumn column)
+    throws ProtectionException
+        {
+        final StringBuilder builder = new StringBuilder();
+        sqlname(builder, column);
+        return builder.toString();
+        }
+    
+    public StringBuilder fullname(final StringBuilder builder, final JdbcSchema schema)
+    throws ProtectionException
+        {
+        return sqlname(
             builder,
             schema.schema()
             );
         }
-    
-    protected void fullname(final StringBuilder builder, final JdbcTable table)
+
+    public StringBuilder fullname(final StringBuilder builder, final JdbcTable table)
     throws ProtectionException
         {
         fullname(
@@ -302,43 +325,40 @@ implements JdbcOperator
             builder,
             table
             );
+        return builder;
         }
     
-    protected void sqlname(final StringBuilder builder, final JdbcSchema schema)
+    protected StringBuilder sqlname(final StringBuilder builder, final JdbcSchema schema)
         {
-        sqlname(
+        return sqlname(
             builder,
             schema.name()
             );
         }
 
-    protected void sqlname(final StringBuilder builder, final JdbcTable table)
+    protected StringBuilder sqlname(final StringBuilder builder, final JdbcTable table)
         {
-        sqlname(
+        return sqlname(
             builder,
             table.name()
             );
         }
 
-    protected void sqlname(final StringBuilder builder, final JdbcColumn column)
+    protected StringBuilder sqlname(final StringBuilder builder, final JdbcColumn column)
         {
-        sqlname(
+        return sqlname(
             builder,
             column.name()
             );
         }
 
-    protected void sqlname(final StringBuilder builder, final String name)
+    protected StringBuilder sqlname(final StringBuilder builder, final String name)
         {
-        /*
-         * 
         builder.append("\"");
         builder.append(
             name.replace("\"", "\\\"")
             );
         builder.append("\"");
-         * 
-         */
-        builder.append(name);
+        return builder;
         }
     }

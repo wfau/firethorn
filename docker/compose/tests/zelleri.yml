@@ -145,6 +145,8 @@ services:
             - /tmp
         volumes:
             - /etc/localtime:/etc/localtime:ro
+            - /home/Zarquan/zelleri/testup.sh:/testup.sh
+            - /home/Zarquan/zelleri/testdo.sh:/testdo.sh
         networks:
             - miriam
         environment:
@@ -191,4 +193,8 @@ services:
         environment:
             POSTGRES_USER:     "${zelluser}"
             POSTGRES_PASSWORD: "${zellpass}"
+
+
+
+
 

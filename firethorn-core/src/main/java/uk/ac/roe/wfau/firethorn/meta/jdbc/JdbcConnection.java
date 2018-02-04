@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.State;
 
 /**
  * JDBC resource connection details.
@@ -139,8 +140,8 @@ public interface JdbcConnection
     /**
      * Get the JDBC {@link Driver} for this database.
      *
-     */
     public Driver driver();
+     */
     
     /**
      * Get the {@link JdbcMetadataScanner} for this database.
@@ -159,5 +160,11 @@ public interface JdbcConnection
      * 
      */
     public AdqlTranslator translator();
+
+    /**
+     * Get the current state of the connection.
+     *  
+     */
+    public State state();
 
     }

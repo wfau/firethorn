@@ -384,12 +384,14 @@ implements JdbcConnection
     /**
      * Our JDBC {@link Driver}.
      * 
-     */
     public Driver driver()
         {
         return null ;
         }
+     */
 
+    
+    
     /**
      * Initialise our JDBC DataSource and create a Connection.
      *
@@ -639,11 +641,7 @@ implements JdbcConnection
      */
     @Transient
     private State state = State.EMPTY ;
-
-    /**
-     * The connection state.
-     *
-     */
+    @Override
     public State state()
         {
         return this.state;
