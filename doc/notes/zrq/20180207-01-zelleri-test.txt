@@ -130,9 +130,7 @@
 
         guestgroup=friends
 
-        zelltype=hsqldb
-        zellhost=zelleri
-        zelldata=PUBLIC
+        zelldata=augustus
         zelluser=$(pwgen 20 1)
         zellpass=$(pwgen 20 1)
 
@@ -147,6 +145,8 @@ EOF
 # -----------------------------------------------------
 # Run our test.
 #[user@virtual]
+
+    docker rm -f $(docker ps -aq)
 
     docker-compose \
         --file "zelleri.yml" \

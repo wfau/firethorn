@@ -130,6 +130,8 @@ services:
                 condition: service_started            
             jarmila:
                 condition: service_healthy            
+            zelleri:
+                condition: service_healthy            
 
     tester:
         image:
