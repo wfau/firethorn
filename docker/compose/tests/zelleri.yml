@@ -190,7 +190,7 @@ services:
         image:
            "cosmopterix/hsqldb:latest"
         read_only:
-            false
+            true
         tmpfs:
             - '/run'
             - '/tmp'

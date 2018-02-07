@@ -33,11 +33,26 @@
         INFO : Disc name [Acilamwen.qcow]
         INFO : Disc size [16GiB]
 
+
+    #
+    # Manually increase VM memory to 65536 MiB
+    #
+
 # -----------------------------------------------------
 # Login as normal user.
 #[user@trop]
 
     ssh Acilamwen
+
+# -----------------------------------------------------
+# Check available memory.
+#[user@trop]
+
+    free -h
+
+                      total        used        free      shared  buff/cache   available
+        Mem:            62G        215M         62G        544K        352M         62G
+        Swap:          1.0G          0B        1.0G
 
 # -----------------------------------------------------
 # Add our secret function.
