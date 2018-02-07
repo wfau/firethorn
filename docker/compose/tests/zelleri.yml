@@ -131,7 +131,7 @@ services:
             jarmila:
                 condition: service_healthy            
             zelleri:
-                condition: service_healthy            
+                condition: service_started            
 
     tester:
         image:
