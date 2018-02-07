@@ -8,9 +8,10 @@ networks:
     # Internal network
     miriam:
 
-#volumes:
-#    hsqldb:
+volumes:
 
+    # HSQLDB database data
+    hsqldb:
 
 services:
 
