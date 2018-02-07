@@ -88,7 +88,7 @@
         PATH=${PATH}:/builder/bin
 
     # -----------------------------------------------------
-    # Initialise our paths.
+    # Build everything.
     #[root@builder]
 
         00.00-build.sh
