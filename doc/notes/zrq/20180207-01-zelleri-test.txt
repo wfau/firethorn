@@ -37,7 +37,7 @@
 # Login as normal user.
 #[user@trop]
 
-    ssh Lothigometh
+    ssh Acilamwen
 
 # -----------------------------------------------------
 # Add our secret function.
@@ -53,7 +53,7 @@
     secret 'frog'
 
 # -----------------------------------------------------
-# Set the target branch.
+# Set our target branch.
 #[user@virtual]
 
     branch=2.1.13-zrq-lsst-events
@@ -103,11 +103,10 @@
 #[user@virtual]
 
     source "${HOME:?}/secret.sh"
-    secret frog
     
     cat > "${HOME:?}/chain.properties" << EOF
 
-        buildtag=${buildtag:?}
+        buildtag=${branch:?}
 
         metauser=$(pwgen 20 1)
         metapass=$(pwgen 20 1)
@@ -212,7 +211,7 @@ EOF
         print-link()
             {
             local link=${1:?}
-            local test=${2:?}
+            local text=${2:?}
             echo
             echo "----"
             echo "${text} [${link}]"
@@ -537,35 +536,6 @@ EOF
         print-link "${jdbcresource:?}" 'JDBC resource'
 
 # -----------------------------------------------------
-# Create a JdbcSchema for the test results.
-#[root@deployer]
-
-        catalog=postgres
-        schema=public
-
-        curl \
-            --silent \
-            --include \
-            --header "firethorn.auth.username:${adminuser:?}" \
-            --header "firethorn.auth.password:${adminpass:?}" \
-            --header "firethorn.auth.community:${admingroup:?}" \
-            --data   "jdbc.schema.catalog=${catalog:?}" \
-            --data   "jdbc.schema.schema=${schema:?}" \
-            "${jdbcresource:?}/schemas/create" \
-            | split-headers \
-            | jq '.' | tee /tmp/jdbc-zelleri-schema.json
-
-        print-headers
-
-
-# Creating a duplicate throws a low level Exception.
-# 500 error, but not human message
-
-#
-# Creating a new one creates the metadata entry
-# 200 OK, but not created the physical schema yet 
-
-# -----------------------------------------------------
 # Select our JdbcSchema by name.
 #[root@deployer]
 
@@ -600,7 +570,6 @@ EOF
 
         print-link "${jdbcschema:?}" 'JDBC schema'
         print-link "${jdbcschemaident:?}" 'JDBC schema ident'
-
 
 # -----------------------------------------------------
 # Query the Atlas database, and push the results to our new JdbcSchema.
@@ -654,7 +623,6 @@ EOF
             | xmllint --format - \
             | tee /tmp/atlas-query.vot
 
-
 # -----------------------------------------------------
 # Query the Atlas database, and push the results to our new database.
 #[root@tester]
@@ -668,7 +636,7 @@ cat > /tmp/atlas-sources-query.adql << EOF
         FROM
             ATLASDR1.atlasSource
         WHERE
-            sourceID > 0
+            htmID > 0
 EOF
 
         curl \

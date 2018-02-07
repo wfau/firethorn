@@ -16,7 +16,7 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
+package uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -34,11 +34,11 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
- * Operations for a Postgres database.
+ * Operations for a HSQLDB database.
  * 
  */
 @Slf4j
-public class PostgresOperator
+public class HsqldbOperator
 implements JdbcOperator
     {
     /*
@@ -53,9 +53,9 @@ implements JdbcOperator
     @Override
     public String url()
         {
-        //jdbc:postgresql://{host}:{port}/${database}
+        //jdbc:hsqldb:hsql://{host}:{port}/${database}
         final StringBuilder builder = new StringBuilder();
-        builder.append("jdbc:postgresql://");
+        builder.append("jdbc:hsqldb:hsql://");
         builder.append(this.connection.host());
         if (this.connection.port() != null)
             {
@@ -71,7 +71,7 @@ implements JdbcOperator
      * Public constructor.
      * 
      */
-    public PostgresOperator(final JdbcConnection connection)
+    public HsqldbOperator(final JdbcConnection connection)
         {
         super();
         this.connection = connection ;

@@ -36,7 +36,7 @@ import uk.ac.roe.wfau.firethorn.util.ResultSetFilterator;
 import uk.ac.roe.wfau.firethorn.util.ResultSetIterator;
 
 /**
- * Database metadata scanner for SQLServer.
+ * Metadata scanner for a SQLServer database.
  *
  */
 @Slf4j

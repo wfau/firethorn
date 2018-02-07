@@ -40,6 +40,8 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb.HsqldbOperator;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb.HsqldbTranslator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresOperator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresScanner;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresTranslator;
@@ -710,12 +712,17 @@ implements JdbcConnection
         log.debug("jdbcdriver() for [{}]", this.type().name());
         switch (this.type())
             {
-            case pgsql :
+            case hsqldb:
+                return new HsqldbOperator(
+                    this
+                    );
+            
+            case pgsql:
                 return new PostgresOperator(
                     this
                     );
 
-            case mssql :
+            case mssql:
                 return new SQLServerOperator(
                     this
                     );
@@ -732,10 +739,13 @@ implements JdbcConnection
         log.debug("jdbctranslator() for [{}]", this.type().name());
         switch (this.type())
             {
-            case pgsql :
+            case hsqldb:
+                return new HsqldbTranslator();
+            
+            case pgsql:
                 return new PostgresTranslator();
             
-            case mssql :
+            case mssql:
                 return new SQLServerTranslator();
 
             default : throw new RuntimeException(

@@ -16,7 +16,7 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
+package uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb;
 
 import adql.query.ADQLQuery;
 import adql.translator.PostgreSQLTranslator;
@@ -25,11 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 
 /**
- * ADQL translator for a Postgres database.
+ * ADQL translator for a HSQLDB database.
  * 
  */
 @Slf4j
-public class PostgresTranslator
+public class HsqldbTranslator
 extends PostgreSQLTranslator
 implements AdqlTranslator
     {
@@ -38,7 +38,7 @@ implements AdqlTranslator
      * Public constructor.
      * 
      */
-    public PostgresTranslator()
+    public HsqldbTranslator()
         {
         super();
         }
@@ -47,7 +47,7 @@ implements AdqlTranslator
      * Public constructor.
      * 
      */
-    public PostgresTranslator(boolean allCaseSensitive)
+    public HsqldbTranslator(boolean allCaseSensitive)
         {
         super(allCaseSensitive);
         }
@@ -56,7 +56,7 @@ implements AdqlTranslator
      * Public constructor.
      * 
      */
-    public PostgresTranslator(boolean catalog, boolean schema, boolean table, boolean column)
+    public HsqldbTranslator(boolean catalog, boolean schema, boolean table, boolean column)
         {
         super(catalog, schema, table, column);
         }

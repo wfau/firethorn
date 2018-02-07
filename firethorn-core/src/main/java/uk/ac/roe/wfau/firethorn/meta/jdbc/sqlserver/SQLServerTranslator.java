@@ -72,7 +72,7 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
  */
 
 /**
- * ADQL translator for SQLServer.
+ * ADQL translator for a SQLServer database.
  *
  */
 @Slf4j

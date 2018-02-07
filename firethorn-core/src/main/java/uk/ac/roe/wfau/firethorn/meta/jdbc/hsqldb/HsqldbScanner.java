@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
+package uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,40 +34,14 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 
 /**
- * Metadata scanner for a Postgres database.
+ * Metadata scanner for a HSQLDB database.
  *
  */
 @Slf4j
-public class PostgresScanner
+public class HsqldbScanner
 implements JdbcMetadataScanner
     {
-    public interface PostgresObject
-        {
-        public Long oid();
-        }
-
-    interface PostgresSchema
-    extends JdbcMetadataScanner.Schema, PostgresObject 
-        {
-        }
-    
-    interface PostgresTable
-    extends JdbcMetadataScanner.Table, PostgresObject
-        {
-        }
-    
-    interface PostgresColumn
-    extends JdbcMetadataScanner.Column, PostgresObject
-        {
-        }
-    
-    interface PostgresType
-    extends PostgresObject
-        {
-        public String name();
-        }
-
-    public PostgresScanner(final JdbcConnection connector)
+    public HsqldbScanner(final JdbcConnection connector)
         {
         this.connector = connector ;
         }
@@ -136,7 +110,7 @@ implements JdbcMetadataScanner
             @Override
             public JdbcMetadataScanner scanner()
                 {
-                return PostgresScanner.this; 
+                return HsqldbScanner.this; 
                 }
             protected Catalog catalog()
                 {
@@ -159,29 +133,28 @@ implements JdbcMetadataScanner
                     public Iterable<Schema> select() throws SQLException
                         {
                         log.debug("Selecting schema for [{}]", catalog().name());
-                        final Statement statement = connection().createStatement();
-                        final ResultSet results = statement.executeQuery(
+                        final PreparedStatement statement = connection().prepareStatement(
                             " SELECT" +
-                            "    oid," +
-                            "    nspname" +
+                            "    CATALOG_NAME," +
+                            "    SCHEMA_NAME" +
                             " FROM" +
-                            "    pg_namespace" +
+                            "    INFORMATION_SCHEMA.SCHEMATA" +
                             " WHERE" +
-                            "    nspname NOT LIKE 'pg_%'" +
-                            " AND" +
-                            "    nspname <> 'information_schema'"
+                            "    CATALOG_NAME = ?"
                             );
+                        statement.setString(
+                            1,
+                            catalog().name()
+                            );
+                        final ResultSet results = statement.executeQuery();
                         final List<Schema> list = new ArrayList<Schema>();
                         while (results.next())
                             {
                             list.add(
                                 schema(
                                     catalog(),
-                                    results.getLong(
-                                        "oid"
-                                        ),
                                     results.getString(
-                                        "nspname"
+                                        "SCHEMA_NAME"
                                         )
                                     )
                                 );
@@ -190,29 +163,35 @@ implements JdbcMetadataScanner
                         }
 
                     @Override
-                    public PostgresSchema select(String name) throws SQLException
+                    public Schema select(String name) throws SQLException
                         {
                         log.debug("Selecting schema [{}] for [{}]", name, catalog().name());
                         final PreparedStatement statement = connection().prepareStatement(
                             " SELECT" +
-                            "    oid," +
-                            "    nspname" +
+                            "    CATALOG_NAME," +
+                            "    SCHEMA_NAME" +
                             " FROM" +
-                            "    pg_namespace" +
+                            "    INFORMATION_SCHEMA.SCHEMATA" +
                             " WHERE" +
-                            "    nspname = ?"
+                            "    CATALOG_NAME = ?" +
+                            " AND" +
+                            "    SCHEMA_NAME = ?"
                             );
-                        statement.setString(1, name);
+                        statement.setString(
+                            1,
+                            catalog().name()
+                            );
+                        statement.setString(
+                            2,
+                            name
+                            );
                         final ResultSet results = statement.executeQuery();
                         if (results.next())
                             {
                             return schema(
                                 catalog(),
-                                results.getLong(
-                                    "oid"
-                                    ),
                                 results.getString(
-                                    "nspname"
+                                    "SCHEMA_NAME"
                                     )
                                 );
                             }
@@ -223,23 +202,18 @@ implements JdbcMetadataScanner
                     };
                 }
 
-            protected PostgresSchema schema(final Catalog catalog, final Long oid, final String name)
+            protected Schema schema(final Catalog catalog, final String name)
             throws SQLException
                 {
-                log.debug("schema() [{}][{}][{}]", catalog, oid, name);
-                return new PostgresSchema()
+                log.debug("schema() [{}][{}][{}]", catalog, name);
+                return new Schema()
                     {
-                    @Override
-                    public Long oid()
-                        {
-                        return oid;
-                        }
                     @Override
                     public Catalog catalog()
                         {
                         return catalog ;
                         }
-                    protected PostgresSchema schema()
+                    protected Schema schema()
                         {
                         return this ;
                         }
@@ -259,18 +233,24 @@ implements JdbcMetadataScanner
                                 {
                                 final PreparedStatement statement = connection().prepareStatement(
                                     " SELECT" +
-                                    "    oid," +
-                                    "    relname" +
+                                    "    TABLE_CATALOG," +
+                                    "    TABLE_SCHEMA," +
+                                    "    TABLE_NAME," +
+                                    "    TABLE_TYPE" +
                                     " FROM" +
-                                    "    pg_class" +
+                                    "    INFORMATION_SCHEMA.TABLES" +
                                     " WHERE" +
-                                    "    relkind IN ('r','v')" +
-                                    "AND" +
-                                    "    relnamespace = ?"
+                                    "    TABLE_CATALOG = ?" +
+                                    " AND" +
+                                    "    TABLE_SCHEMA = ?"
                                     );
-                                statement.setLong(
+                                statement.setString(
                                     1,
-                                    schema().oid()
+                                    catalog().name()
+                                    );
+                                statement.setString(
+                                    2,
+                                    schema().name()
                                     );
                                 final ResultSet results = statement.executeQuery();
                                 final List<Table> list = new ArrayList<Table>();
@@ -279,11 +259,8 @@ implements JdbcMetadataScanner
                                     list.add(
                                         table(
                                             schema(),
-                                            results.getLong(
-                                                "oid"
-                                                ),
                                             results.getString(
-                                                "relname"
+                                                "TABLE_NAME"
                                                 )
                                             )
                                         );
@@ -292,28 +269,34 @@ implements JdbcMetadataScanner
                                 }
 
                             @Override
-                            public PostgresTable select(String name)
+                            public Table select(String name)
                                 throws SQLException
                                 {
                                 final PreparedStatement statement = connection().prepareStatement(
                                     " SELECT" +
-                                    "    oid," +
-                                    "    relname" +
+                                    "    TABLE_CATALOG," +
+                                    "    TABLE_SCHEMA," +
+                                    "    TABLE_NAME," +
+                                    "    TABLE_TYPE" +
                                     " FROM" +
-                                    "    pg_class" +
+                                    "    INFORMATION_SCHEMA.TABLES" +
                                     " WHERE" +
-                                    "    relkind IN ('r','v')" +
-                                    "AND" +
-                                    "    relnamespace = ?" +
-                                    "AND" +
-                                    "    relname = ?"
+                                    "    TABLE_CATALOG = ?" +
+                                    " AND" +
+                                    "    TABLE_SCHEMA = ?" +
+                                    " AND" +
+                                    "    TABLE_NAME = ?"
                                     );
-                                statement.setLong(
+                                statement.setString(
                                     1,
-                                    schema().oid()
+                                    catalog().name()
                                     );
                                 statement.setString(
                                     2,
+                                    schema().name()
+                                    );
+                                statement.setString(
+                                    3,
                                     name
                                     );
                                 final ResultSet results = statement.executeQuery();
@@ -321,11 +304,8 @@ implements JdbcMetadataScanner
                                     {
                                     return table(
                                         schema(),
-                                        results.getLong(
-                                            "oid"
-                                            ),
                                         results.getString(
-                                            "relname"
+                                            "TABLE_NAME"
                                             )
                                         );
                                     }
@@ -336,23 +316,18 @@ implements JdbcMetadataScanner
                             };
                         }
 
-                    protected PostgresTable table(final Schema schema, final Long oid, final String name)
+                    protected Table table(final Schema schema, final String name)
                     throws SQLException
                         {
-                        log.debug("table() [{}][{}][{}]", schema.name(), oid, name);
-                        return new PostgresTable()
+                        log.debug("table() [{}][{}][{}]", schema.name(), name);
+                        return new Table()
                             {
-                            @Override
-                            public Long oid()
-                                {
-                                return oid;
-                                }
                             @Override
                             public Schema schema()
                                 {
                                 return schema;
                                 }
-                            protected PostgresTable table()
+                            protected Table table()
                                 {
                                 return this ;
                                 }
@@ -371,26 +346,33 @@ implements JdbcMetadataScanner
                                         throws SQLException
                                         {
                                         final PreparedStatement statement = connection().prepareStatement(
-                                            " SELECT" + 
-                                            "    attname," + 
-                                            "    atttypmod," + 
-                                            "    atttypid," + 
-                                            "    typname" +
-                                            " FROM" + 
-                                            "    pg_attribute" + 
-                                            " JOIN" + 
-                                            "    pg_type" + 
-                                            " ON" + 
-                                            "    pg_attribute.atttypid = pg_type.oid" + 
-                                            " WHERE" + 
-                                            "    atttypid != 0" + 
-                                            " AND" + 
-                                            "    attrelid = ?" + 
-                                            ""
+                                            " SELECT" +
+                                            "    TABLE_CATALOG," +
+                                            "    TABLE_SCHEMA," +
+                                            "    TABLE_NAME," +
+                                            "    DATA_TYPE," +
+                                            "    COLUMN_NAME," +
+                                            "    CHARACTER_MAXIMUM_LENGTH" +
+                                            " FROM" +
+                                            "    INFORMATION_SCHEMA.COLUMNS" +
+                                            " WHERE" +
+                                            "    TABLE_CATALOG = ?" +
+                                            " AND" +
+                                            "    TABLE_SCHEMA = ?" +
+                                            " AND" +
+                                            "    TABLE_NAME = ?"   
                                             );
-                                        statement.setLong(
+                                        statement.setString(
                                             1,
-                                            table().oid()
+                                            catalog.name()
+                                            );
+                                        statement.setString(
+                                            2,
+                                            schema().name()
+                                            );
+                                        statement.setString(
+                                            3,
+                                            table().name()
                                             );
                                         final ResultSet results = statement.executeQuery();
                                         final List<Column> list = new ArrayList<Column>();
@@ -399,19 +381,16 @@ implements JdbcMetadataScanner
                                             list.add(
                                                 column(
                                                     table(),
-                                                    pgtype(
-                                                        results.getLong(
-                                                            "atttypid"
-                                                            ),
+                                                    hstype(
                                                         results.getString(
-                                                            "typname"
+                                                            "DATA_TYPE"
                                                             )
                                                         ),
                                                     results.getString(
-                                                        "attname"
+                                                        "COLUMN_NAME"
                                                         ),
                                                     results.getInt(
-                                                        "atttypmod"
+                                                        "CHARACTER_MAXIMUM_LENGTH"
                                                         )
                                                     )
                                                 );
@@ -423,51 +402,55 @@ implements JdbcMetadataScanner
                                         throws SQLException
                                         {
                                         final PreparedStatement statement = connection().prepareStatement(
-                                            " SELECT" + 
-                                            "    attname," + 
-                                            "    atttypmod," + 
-                                            "    atttypid," + 
-                                            "    typname" + 
-                                            " FROM" + 
-                                            "    pg_attribute" + 
-                                            " JOIN" + 
-                                            "    pg_type" + 
-                                            " ON" + 
-                                            "    pg_attribute.atttypid = pg_type.oid" + 
-                                            " WHERE" + 
-                                            "    atttypid != 0" + 
-                                            " AND" + 
-                                            "    attrelid = ?" + 
-                                            " AND" + 
-                                            "    attname = ?" + 
-                                            ""
+                                            " SELECT" +
+                                            "    TABLE_CATALOG," +
+                                            "    TABLE_SCHEMA," +
+                                            "    TABLE_NAME," +
+                                            "    DATA_TYPE," +
+                                            "    COLUMN_NAME," +
+                                            "    CHARACTER_MAXIMUM_LENGTH" +
+                                            " FROM" +
+                                            "    INFORMATION_SCHEMA.COLUMNS" +
+                                            " WHERE" +
+                                            "    TABLE_CATALOG = ?" +
+                                            " AND" +
+                                            "    TABLE_SCHEMA = ?" +
+                                            " AND" +
+                                            "    TABLE_NAME = ?" +   
+                                            " AND" +
+                                            "    COLUMN_NAME = ?"   
                                             );
-                                        statement.setLong(
+                                        statement.setString(
                                             1,
-                                            table().oid()
+                                            catalog.name()
                                             );
                                         statement.setString(
                                             2,
-                                            name
+                                            schema().name()
+                                            );
+                                        statement.setString(
+                                            3,
+                                            table().name()
+                                            );
+                                        statement.setString(
+                                            4,
+                                            table().name()
                                             );
                                         final ResultSet results = statement.executeQuery();
                                         if (results.next())
                                             {
                                             return column(
                                                 table(),
-                                                pgtype(
-                                                    results.getLong(
-                                                        "atttypid"
-                                                        ),
+                                                hstype(
                                                     results.getString(
-                                                        "typname"
+                                                        "DATA_TYPE"
                                                         )
                                                     ),
                                                 results.getString(
-                                                    "attname"
+                                                    "COLUMN_NAME"
                                                     ),
                                                 results.getInt(
-                                                    "atttypmod"
+                                                    "CHARACTER_MAXIMUM_LENGTH"
                                                     )
                                                 );
                                             }
@@ -478,21 +461,16 @@ implements JdbcMetadataScanner
                                     };
                                 }
 
-                            protected PostgresColumn column(final PostgresTable table, final JdbcColumn.JdbcType type, final String name, final Integer len)
+                            protected Column column(final Table table, final JdbcColumn.JdbcType type, final String name, final Integer len)
                             throws SQLException
                                 {
                                 log.debug("column() [{}][{}][{}]", name, type, len);
-                                return new PostgresColumn()
+                                return new Column()
                                     {
                                     @Override
-                                    public PostgresTable table()
+                                    public Table table()
                                         {
                                         return table ;
-                                        }
-                                    @Override
-                                    public Long oid()
-                                        {
-                                        return null;
                                         }
                                     @Override
                                     public String name()
@@ -512,28 +490,28 @@ implements JdbcMetadataScanner
                                     @Override
                                     public void handle(SQLException ouch)
                                         {
-                                        PostgresScanner.this.handle(ouch);
+                                        HsqldbScanner.this.handle(ouch);
                                         }
                                     };
                                 }
                             @Override
                             public void handle(SQLException ouch)
                                 {
-                                PostgresScanner.this.handle(ouch);
+                                HsqldbScanner.this.handle(ouch);
                                 }
                             };
                         }
                     @Override
                     public void handle(SQLException ouch)
                         {
-                        PostgresScanner.this.handle(ouch);
+                        HsqldbScanner.this.handle(ouch);
                         }
                     };
                 }
             @Override
             public void handle(SQLException ouch)
                 {
-                PostgresScanner.this.handle(ouch);
+                HsqldbScanner.this.handle(ouch);
                 }
             };
         }
@@ -550,41 +528,48 @@ implements JdbcMetadataScanner
      */
     protected static Map<String, JdbcColumn.JdbcType> typemap = new HashMap<String, JdbcColumn.JdbcType>();
     static {
-    
-        typemap.put("bit",       JdbcColumn.JdbcType.BIT); 
-        typemap.put("int",       JdbcColumn.JdbcType.INTEGER); 
-        typemap.put("bigint",    JdbcColumn.JdbcType.BIGINT); 
-        typemap.put("smallint",  JdbcColumn.JdbcType.SMALLINT); 
-        typemap.put("tinyint",   JdbcColumn.JdbcType.TINYINT); 
-        typemap.put("real",      JdbcColumn.JdbcType.REAL); 
-        typemap.put("float",     JdbcColumn.JdbcType.FLOAT); 
-        typemap.put("datetime",  JdbcColumn.JdbcType.DATETIME); 
 
-        typemap.put("char",      JdbcColumn.JdbcType.CHAR); 
-        typemap.put("nchar",     JdbcColumn.JdbcType.NCHAR); 
-        typemap.put("varchar",   JdbcColumn.JdbcType.VARCHAR); 
-        typemap.put("nvarchar",  JdbcColumn.JdbcType.NVARCHAR); 
+        typemap.put("BOOLEAN",                  JdbcColumn.JdbcType.BOOLEAN); 
 
-        typemap.put("binary",    JdbcColumn.JdbcType.BINARY); 
-        typemap.put("varbinary", JdbcColumn.JdbcType.VARBINARY); 
+        typemap.put("BIT",                      JdbcColumn.JdbcType.BIT); 
+        typemap.put("BIT VARYING",              JdbcColumn.JdbcType.BIT); 
 
-        //http://msdn.microsoft.com/en-GB/library/ms187993.aspx
-        typemap.put("image",     JdbcColumn.JdbcType.VARBINARY); 
-        typemap.put("text",      JdbcColumn.JdbcType.VARCHAR);
-        typemap.put("ntext",     JdbcColumn.JdbcType.NVARCHAR); 
+        typemap.put("BIGINT",                   JdbcColumn.JdbcType.BIGINT); 
+        typemap.put("SMALLINT",                 JdbcColumn.JdbcType.SMALLINT); 
+        typemap.put("TINYINT",                  JdbcColumn.JdbcType.TINYINT); 
+        typemap.put("INTEGER",                  JdbcColumn.JdbcType.INTEGER); 
+        typemap.put("REAL",                     JdbcColumn.JdbcType.REAL); 
+        typemap.put("FLOAT",                    JdbcColumn.JdbcType.DOUBLE); 
+        typemap.put("DOUBLE",                   JdbcColumn.JdbcType.DOUBLE); 
+        typemap.put("DOUBLE PRECISION",         JdbcColumn.JdbcType.DOUBLE); 
 
-        //http://msdn.microsoft.com/en-us/library/ms187746.aspx
-        typemap.put("numeric",          JdbcColumn.JdbcType.UNKNOWN); 
-        //http://msdn.microsoft.com/en-us/library/ms173829.aspx
-        typemap.put("sql_variant",      JdbcColumn.JdbcType.UNKNOWN); 
-        //http://msdn.microsoft.com/en-us/library/ms187942.aspx
-        typemap.put("uniqueidentifier", JdbcColumn.JdbcType.UNKNOWN); 
+        typemap.put("NUMERIC",                  JdbcColumn.JdbcType.NUMERIC); 
+        typemap.put("DECIMAL",                  JdbcColumn.JdbcType.DECIMAL); 
+
+        typemap.put("DATE",                     JdbcColumn.JdbcType.DATE); 
+        typemap.put("TIME",                     JdbcColumn.JdbcType.TIME); 
+        typemap.put("DATETIME",                 JdbcColumn.JdbcType.DATETIME); 
+        typemap.put("TIMESTAMP",                JdbcColumn.JdbcType.TIMESTAMP); 
+        
+        typemap.put("CHAR",                     JdbcColumn.JdbcType.CHAR); 
+        typemap.put("CHARACTER",                JdbcColumn.JdbcType.CHAR); 
+        typemap.put("VARCHAR",                  JdbcColumn.JdbcType.VARCHAR); 
+        typemap.put("LONGVARCHAR",              JdbcColumn.JdbcType.VARCHAR); 
+        typemap.put("CHARACTER VARYING",        JdbcColumn.JdbcType.VARCHAR); 
+                
+        typemap.put("CLOB",                     JdbcColumn.JdbcType.CLOB); 
+        typemap.put("CHARACTER LARGE OBJECT",   JdbcColumn.JdbcType.CLOB); 
+
+        typemap.put("BLOB",                     JdbcColumn.JdbcType.BLOB); 
+        typemap.put("BINARY",                   JdbcColumn.JdbcType.BLOB); 
+        typemap.put("VARBINARY",                JdbcColumn.JdbcType.BLOB); 
+        typemap.put("BINARY VARYING",           JdbcColumn.JdbcType.BLOB); 
 
         };
 
-    protected static JdbcColumn.JdbcType pgtype(final Long oid, final String name)
+    protected static JdbcColumn.JdbcType hstype(final String name)
         {
-        log.debug("type [{}][{}]", oid, name);
+        log.debug("type [{}][{}]", name);
         JdbcColumn.JdbcType type = typemap.get(
             name
             );
