@@ -158,6 +158,8 @@ docker exec -it stevedore_gillian_1 tail -f logs/firethorn.log
 
 docker exec -it stevedore_jarmila_1 tail -f logs/ogsadai.log
 
+docker exec -it stevedore_zelleri_1 hsqldb-client
+
 # -----------------------------------------------------
 # Create our sed functions.
 #[root@tester]

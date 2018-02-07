@@ -21,7 +21,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +28,8 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 
 /**
@@ -74,7 +73,7 @@ implements JdbcMetadataScanner
             public Iterable<Catalog> select()
             throws SQLException, MetadataException
                 {
-                final String match = connector().catalog().toLowerCase();
+                final String match = connector().catalog();
                 final List<Catalog> list = new ArrayList<Catalog>();
                 list.add(
                     catalog(
@@ -88,8 +87,8 @@ implements JdbcMetadataScanner
             public Catalog select(final String name)
             throws SQLException, MetadataException
                 {
-                final String match = connector().catalog().toLowerCase();
-                if (name.toLowerCase().trim().equals(match))
+                final String match = connector().catalog();
+                if (name.trim().equals(match))
                     {
                     return catalog(
                         match
