@@ -108,12 +108,6 @@
         exit
 
 # -----------------------------------------------------
-# Download our test compose file
-#[user@virtual]
-     
-    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/zelleri.yml    
-
-# -----------------------------------------------------
 # Create our chain properties.
 #[user@virtual]
 
@@ -158,22 +152,26 @@ EOF
     ln -s "${HOME:?}/chain.properties" "${HOME:?}/.env"
 
 # -----------------------------------------------------
-# Run our test.
+# Download our test compose file
 #[user@virtual]
 
-    docker rm -f $(docker ps -aq)
+    rm zelleri.yml
+         
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/zelleri.yml
+
+# -----------------------------------------------------
+# Run our test.
+#[user@virtual]
 
     docker-compose \
         --file "zelleri.yml" \
         run \
             tester
 
-
-docker exec -it stevedore_gillian_1 tail -f logs/firethorn.log
-
-docker exec -it stevedore_jarmila_1 tail -f logs/ogsadai.log
-
-docker exec -it stevedore_zelleri_1 hsqldb-client
+# docker rm -f $(docker ps -aq)
+# docker exec -it stevedore_gillian_1 tail -f logs/firethorn.log
+# docker exec -it stevedore_jarmila_1 tail -f logs/ogsadai.log
+# docker exec -it stevedore_zelleri_1 hsqldb-client
 
 # -----------------------------------------------------
 # Create our sed functions.
