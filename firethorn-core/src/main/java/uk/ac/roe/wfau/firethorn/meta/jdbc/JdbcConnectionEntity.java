@@ -41,6 +41,7 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb.HsqldbOperator;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb.HsqldbScanner;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb.HsqldbTranslator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresOperator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresScanner;
@@ -690,6 +691,11 @@ implements JdbcConnection
         {
         switch (this.type())
             {
+            case hsqldb :
+                return new HsqldbScanner(
+                    this
+                    );
+
             case mssql :
                 return new SQLServerScanner(
                     this

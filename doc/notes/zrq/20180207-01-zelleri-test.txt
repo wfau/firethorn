@@ -130,9 +130,9 @@
 
         guestgroup=friends
 
-        zelltype=pgsql
+        zelltype=hsqldb
         zellhost=zelleri
-        zelldata=postgres
+        zelldata=PUBLIC
         zelluser=$(pwgen 20 1)
         zellpass=$(pwgen 20 1)
 
@@ -152,6 +152,11 @@ EOF
         --file "zelleri.yml" \
         run \
             tester
+
+
+docker exec -it stevedore_gillian_1 tail -f logs/firethorn.log
+
+docker exec -it stevedore_jarmila_1 tail -f logs/ogsadai.log
 
 # -----------------------------------------------------
 # Create our sed functions.
@@ -513,8 +518,8 @@ EOF
             --header "firethorn.auth.password:${adminpass:?}" \
             --header "firethorn.auth.community:${admingroup:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
-            --data   "jdbc.resource.connection.database=postgres" \
-            --data   "jdbc.resource.connection.catalog=postgres" \
+            --data   "jdbc.resource.connection.database=${zelldata:?}" \
+            --data   "jdbc.resource.connection.catalog=PUBLIC" \
             --data   "jdbc.resource.connection.type=${zelltype:?}" \
             --data   "jdbc.resource.connection.host=${zellhost:?}" \
             --data   "jdbc.resource.connection.user=${zelluser:?}" \
@@ -539,8 +544,8 @@ EOF
 # Select our JdbcSchema by name.
 #[root@deployer]
 
-        catalog=postgres
-        schema=public
+        catalog=PUBLIC
+        schema=PUBLIC
 
         curl \
             --silent \
