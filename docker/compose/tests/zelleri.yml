@@ -159,8 +159,8 @@ services:
             datauser: "${datauser}"
             datapass: "${datapass}"
 
-            zelltype: "${zelltype}"
-            zellhost: "${zellhost}"
+            zelltype: "hsqldb"
+            zellhost: "zelleri"
             zelldata: "${zelldata}"
             zelluser: "${zelluser}"
             zellpass: "${zellpass}"
@@ -182,7 +182,7 @@ services:
 
     zelleri:
         image:
-           "firethorn/postgres:${buildtag:-latest}"
+           "cosmopterix/hsqldb:latest"
         read_only:
             true
         tmpfs:
@@ -191,8 +191,9 @@ services:
         networks:
             - miriam
         environment:
-            POSTGRES_USER:     "${zelluser}"
-            POSTGRES_PASSWORD: "${zellpass}"
+            databasename: "${zelldata}"
+            databaseuser: "${zelluser}"
+            databasepass: "${zellpass}"
 
 
 
