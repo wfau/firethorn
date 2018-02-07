@@ -636,6 +636,7 @@ EOF
 
 cat > /tmp/atlas-sources-query.adql << EOF
         SELECT
+            TOP 1000000
             sourceID,
             htmID,
             ra,
