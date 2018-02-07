@@ -21,7 +21,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.postgresql.Driver;
+import org.hsqldb.jdbc.JDBCDriver;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
@@ -45,9 +45,9 @@ implements JdbcOperator
      * 
      */
     @Override
-    public Driver driver()
+    public JDBCDriver driver()
         {
-        return new org.postgresql.Driver();
+        return new org.hsqldb.jdbc.JDBCDriver();
         }
 
     @Override
