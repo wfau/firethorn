@@ -8,6 +8,10 @@ networks:
     # Internal network
     miriam:
 
+#volumes:
+#    hsqldb:
+
+
 services:
 
     bethany:
@@ -190,9 +194,12 @@ services:
         tmpfs:
             - '/run'
             - '/tmp'
+        volumes:
+            - hsqldb:/var/lib/hsqldb
         networks:
             - miriam
         environment:
+            servertype: 'mem'
             databasename: "${zelldata}"
             databaseuser: "${zelluser}"
             databasepass: "${zellpass}"
