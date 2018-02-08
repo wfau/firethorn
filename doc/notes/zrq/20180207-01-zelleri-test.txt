@@ -733,10 +733,6 @@ EOF
 
 
 
-
-
-
-
 # -----------------------------------------------------
 # Check available memory in the VM.
 #[user@virtual]
@@ -759,8 +755,6 @@ EOF
 
         Mem:            62G         23G         37G         36M        2.0G         38G
         Swap:          1.0G          0B        1.0G
-
-
 
     # Data stream pauses and hsqldb hits 100% on all four cpus at several points during the injest. 
     # pause @ 44695551

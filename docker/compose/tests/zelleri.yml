@@ -200,6 +200,7 @@ services:
         networks:
             - miriam
         environment:
+            javaxmx: '50G'
             servertype: 'mem'
             databasename: "${zelldata}"
             databaseuser: "${zelluser}"
