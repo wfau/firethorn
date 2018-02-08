@@ -189,7 +189,7 @@ services:
 
     zelleri:
         image:
-           "cosmopterix/hsqldb:latest"
+           "cosmopterix/hsqldb:20180208"
         read_only:
             false
         tmpfs:
