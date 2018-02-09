@@ -169,6 +169,7 @@ EOF
             tester
 
 # docker rm -f $(docker ps -aq)
+# ssh Acilamwen
 # docker exec -it stevedore_gillian_1 tail -f logs/firethorn.log
 # docker exec -it stevedore_jarmila_1 tail -f logs/ogsadai.log
 # docker exec -it stevedore_zelleri_1 hsqldb-client
