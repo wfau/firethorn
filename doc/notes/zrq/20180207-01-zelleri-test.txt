@@ -35,7 +35,8 @@
 
 
     #
-    # Manually increase VM memory to 65536 MiB
+    # Manually increase VM memory to 65536 MiB.
+    # Manually shutdown and restart.
     #
 
 # -----------------------------------------------------
