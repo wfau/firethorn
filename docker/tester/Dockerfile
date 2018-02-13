@@ -22,7 +22,6 @@ RUN dnf install -y jq
 RUN dnf install -y xmlstarlet
 
 COPY bin/  /tester/bin 
-COPY meta/ /tester/meta 
 COPY vosi/ /tester/vosi 
 
 WORKDIR /tester
