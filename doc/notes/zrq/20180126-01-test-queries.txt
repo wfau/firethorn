@@ -81,9 +81,6 @@ EOF
         firethorn.meta.pass=${metapass:?}
 
         firethorn.user.type=mssql
-        firethorn.user.url=jdbc:jtds:sqlserver://patricia/${userdata}
-        firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
-
         firethorn.user.host=patricia
         firethorn.user.data=${userdata:?}
         firethorn.user.user=${useruser:?}
@@ -107,6 +104,7 @@ EOF
     source "${HOME:?}/chain.properties"
     cat > "${HOME:?}/tester.properties" << EOF
 
+        datatype=mssql
         datahost=elayne
         datadata=${datadata:?}
         datauser=${datauser:?}
@@ -478,7 +476,6 @@ EOF
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
-        jdbcurl="jdbc:jtds:sqlserver://${datahost:?}/${datadata:?}"
 
         catalog="ATLASDR1"
 
@@ -488,11 +485,12 @@ EOF
             --header "firethorn.auth.username:${testuser:?}" \
             --header "firethorn.auth.password:${testpass:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
-            --data   "jdbc.connection.url=${jdbcurl:?}" \
+            --data   "jdbc.resource.catalog=${catalog:?}" \
+            --data   "jdbc.connection.type=${datatype:?}" \
+            --data   "jdbc.connection.host=${datahost:?}" \
+            --data   "jdbc.connection.data=${datadata:?}" \
             --data   "jdbc.connection.user=${datauser:?}" \
             --data   "jdbc.connection.pass=${datapass:?}" \
-            --data   "jdbc.connection.driver=${datadriver:?}" \
-            --data   "jdbc.resource.catalog=${catalog:?}" \
             "${endpointurl:?}/jdbc/resource/create" \
             | split-headers
 
