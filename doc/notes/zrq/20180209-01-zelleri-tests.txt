@@ -20,3 +20,20 @@
 #
 #
 
+
+
+    #
+    # Target crossmatch tables
+    
+    vvv
+        ~ billion rows
+    
+    ukids gps
+        ~ billion rows
+        
+    super cosmos
+        ~ billion rows
+        
+    osa vpha
+        ~ billion rows
+
