@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>2.1.13</version>
+    <version project='firethorn'>2.1.14</version>
 
     <prerequisites>
         <maven>3.3.1</maven>

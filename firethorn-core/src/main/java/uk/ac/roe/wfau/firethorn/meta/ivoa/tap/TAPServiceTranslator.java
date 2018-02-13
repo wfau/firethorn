@@ -16,7 +16,7 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.adql.parser;
+package uk.ac.roe.wfau.firethorn.meta.ivoa.tap;
 
 import adql.db.DBColumn;
 import adql.db.DBType;
@@ -46,6 +46,7 @@ import adql.query.operand.function.geometry.RegionFunction;
 import adql.translator.JDBCTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 
 /**
  * Extends {@link JDBCTranslator} to implement TAPService grammar. 
@@ -54,7 +55,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class TAPServiceTranslator extends JDBCTranslator
-implements BaseTranslator
+implements AdqlTranslator
     {
 
     /**

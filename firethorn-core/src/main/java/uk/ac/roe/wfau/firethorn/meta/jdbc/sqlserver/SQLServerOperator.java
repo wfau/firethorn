@@ -19,9 +19,8 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver;
 
 import java.sql.SQLException;
 
-import org.springframework.stereotype.Component;
-
 import lombok.extern.slf4j.Slf4j;
+import net.sourceforge.jtds.jdbc.Driver;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteMethod;
@@ -29,20 +28,69 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcOperator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
- * SQLServer JdbcTable factory implementation.
+ * Operations for a SQLServer database.
  *
  */
 @Slf4j
-@Component
-public class SQLServerDriver
-implements JdbcResource.JdbcDriver 
+public class SQLServerOperator
+implements JdbcOperator 
     {
+    /*
+     * 
+     */
+    @Override
+    public Driver driver()
+        {
+        return new net.sourceforge.jtds.jdbc.Driver();
+        }
+
+    @Override
+    public String url()
+        {
+        //jdbc:jtds:sqlserver://{host}:{port}/${database}
+        final StringBuilder builder = new StringBuilder();
+        builder.append("jdbc:jtds:sqlserver://");
+        builder.append(this.connection.host());
+        if (this.connection.port() != null)
+            {
+            builder.append(":");
+            builder.append(this.connection.port());
+            }
+        builder.append("/");
+        builder.append(this.connection.database());
+        return builder.toString();
+        }
+
+    /**
+     * Public constructor.
+     * 
+     */
+    public SQLServerOperator(final JdbcConnection connection)
+        {
+        super();
+        this.connection = connection ;
+        }
+
+    /**
+     * Our parent {@link JdbcConnection}.
+     *  
+     */
+    private JdbcConnection connection;
+
+    /**
+     * Our parent {@link JdbcConnection}.
+     *  
+     */
+    public JdbcConnection connection()
+        {
+        return this.connection;
+        }
 
     /**
      * Maximum size for a string, {@value}.
@@ -102,7 +150,6 @@ implements JdbcResource.JdbcDriver
         statement.append(" )");
 
 		execute(
-			table.resource().connection(),
 			statement.toString()
 			);
         }
@@ -121,7 +168,6 @@ implements JdbcResource.JdbcDriver
 			table
 			);
 		execute(
-			table.resource().connection(),
 			statement.toString()
 			);
         }
@@ -140,7 +186,6 @@ implements JdbcResource.JdbcDriver
 			table
 			);
 		execute(
-			table.resource().connection(),
 			statement.toString()
 			);
         }
@@ -158,29 +203,8 @@ implements JdbcResource.JdbcDriver
 			table
 			);
 		execute(
-			table.resource().connection(),
 			statement.toString()
 			);
-        }
-
-    protected void execute(final JdbcConnector connection, final String statement)
-    throws ProtectionException
-        {
-        try {
-            log.debug("SQL statement [{}]", statement);
-            final int result = connection.open().createStatement().executeUpdate(
-                statement.toString()
-                );
-            log.debug("SQL result [{}]", result);
-            }
-        catch (final SQLException ouch)
-            {
-            log.warn("SQL Exception [{}]", ouch.getMessage());
-            log.warn("SQL Statement [{}]", statement);
-            }
-        finally {
-            connection.close();
-            }
         }
 
 	@Override
@@ -195,90 +219,25 @@ implements JdbcResource.JdbcDriver
 		throw new NotImplementedException();		
 		}
 
-/*
- * 
-    protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
-    	{
-
-    	switch(meta.jdbctype())
-	        {
-	        case BOOLEAN:
-	            builder.append(
-	                "BIT"
-	                );
-	            break ;
-	            
-	        case DATE :
-	        case TIME :
-	        case TIMESTAMP :
-	            builder.append(
-	                "DATETIME"
-	                );
-	            break ;
-	            
-	        case REAL:
-	        	builder.append(
-	                "REAL"
-	                );
-	            break ;
-	            
-	        case DOUBLE:
-	        	builder.append(
-	                "FLOAT"
-	                );
-	            break ;
-	            
-	        case CHAR:
-	        case NCHAR:	 
-	        case VARCHAR:	 
-	        case NVARCHAR: 
-
-	        	if ((meta.arraysize()!=null) && (meta.arraysize() > 0) && (meta.arraysize() < MAX_CHAR_SIZE)){
-		        	builder.append(meta.jdbctype().name());
-		        	builder.append("(");
-		        	builder.append(meta.arraysize());
-		        	builder.append(")");
-	        	} else {
-	        		builder.append("VARCHAR");
-	    	    	builder.append("(MAX)");
-	        	}
-	       
-	        	break;
-	        	
-	        default :
-	        	builder.append(
-        			meta.jdbctype().name()
-	        	);
-	            break ;
-	        }
-
-	    // Handle Cases that have not be visited by the switch statement
-    	// TODO This should check for char() rather than array()
-    	if (meta.jdbctype().isarray()  
-    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.CHAR)
-    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.VARCHAR)
-    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.NCHAR)
-    			&& !meta.jdbctype().equals(JdbcColumn.JdbcType.NVARCHAR))
-    	    {
-    	    if (meta.arraysize() == AdqlColumn.VAR_ARRAY_SIZE)
-    	        {
-    	        builder.append("(*)");
-    	        }
-    	    else {
-    	    	if (meta.arraysize()==null){
-    	    		 builder.append("(*)");
-    	    	} else {
-	    	        builder.append("(");
-	    	        builder.append(
-	    	            meta.arraysize()
-	    	            );
-	    	        builder.append(")");
-	    	        }
-    	    	}
-    	    }
-    	}
- * 
- */
+    protected void execute(final String statement)
+    throws ProtectionException
+        {
+        try {
+            log.debug("SQL statement [{}]", statement);
+            final int result = this.connection.open().createStatement().executeUpdate(
+                statement.toString()
+                );
+            log.debug("SQL result [{}]", result);
+            }
+        catch (final SQLException ouch)
+            {
+            log.warn("SQL Exception [{}]", ouch.getMessage());
+            log.warn("SQL Statement [{}]", statement);
+            }
+        finally {
+            connection.close();
+            }
+        }
 
     protected void sqltype(final StringBuilder builder, final JdbcColumn.Metadata.Jdbc meta)
     throws ProtectionException
@@ -364,8 +323,35 @@ implements JdbcResource.JdbcDriver
         log.debug("  temp [{}]", tempbuilder.toString());
         builder.append(tempbuilder);
         }
-	
-    protected void fullname(final StringBuilder builder, final JdbcSchema schema)
+
+    @Override
+    public String fullname(final JdbcSchema schema)
+    throws ProtectionException
+        {
+        final StringBuilder builder = new StringBuilder();
+        fullname(builder, schema);
+        return builder.toString();
+        }
+
+    @Override
+    public String fullname(final JdbcTable table)
+    throws ProtectionException
+        {
+        final StringBuilder builder = new StringBuilder();
+        fullname(builder, table);
+        return builder.toString();
+        }
+
+    @Override
+    public String fullname(final JdbcColumn column)
+    throws ProtectionException
+        {
+        final StringBuilder builder = new StringBuilder();
+        sqlname(builder, column);
+        return builder.toString();
+        }
+    
+    public StringBuilder fullname(final StringBuilder builder, final JdbcSchema schema)
     throws ProtectionException
     	{
 		sqlname(
@@ -377,9 +363,10 @@ implements JdbcResource.JdbcDriver
 			builder,
 			schema.schema()
 			);
+		return builder;
     	}
 
-    protected void fullname(final StringBuilder builder, final JdbcTable table)
+    public StringBuilder fullname(final StringBuilder builder, final JdbcTable table)
     throws ProtectionException
     	{
 		fullname(
@@ -391,39 +378,41 @@ implements JdbcResource.JdbcDriver
 			builder,
 			table
 			);
+        return builder;
     	}
     
-    protected void sqlname(final StringBuilder builder, final JdbcSchema schema)
+    protected StringBuilder sqlname(final StringBuilder builder, final JdbcSchema schema)
     	{
-    	sqlname(
+        return sqlname(
 			builder,
 			schema.name()
 			);
     	}
 
-    protected void sqlname(final StringBuilder builder, final JdbcTable table)
+    protected StringBuilder sqlname(final StringBuilder builder, final JdbcTable table)
     	{
-    	sqlname(
+        return sqlname(
 			builder,
 			table.name()
 			);
     	}
 
-    protected void sqlname(final StringBuilder builder, final JdbcColumn column)
+    protected StringBuilder sqlname(final StringBuilder builder, final JdbcColumn column)
     	{
-    	sqlname(
+    	return sqlname(
 			builder,
 			column.name()
 			);
     	}
 
-    protected void sqlname(final StringBuilder builder, final String name)
+    protected StringBuilder sqlname(final StringBuilder builder, final String name)
     	{
     	builder.append("[");
     	builder.append(
 			name.replace("]", "]]")
 			);
     	builder.append("]");
+        return builder;
     	}
     
     protected void sqlchar()

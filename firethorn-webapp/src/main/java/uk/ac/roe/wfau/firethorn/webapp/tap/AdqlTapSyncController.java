@@ -159,7 +159,9 @@ public class AdqlTapSyncController extends AbstractController {
 					BlueQuery query;
 					if (MAXREC!=null){
 						query = resource.blues().create(
-						        QUERY, 
+			                    null, // JddcSchema
+			                    null, // AdqlSchema
+						        QUERY,
                                 null, // Mode.AUTO
                                 null, // Syntax.AUTO
 								factories().blues().limits().create(
@@ -174,6 +176,8 @@ public class AdqlTapSyncController extends AbstractController {
 						;
 					} else {
 						query = resource.blues().create(
+			                    null, // JddcSchema
+			                    null, // AdqlSchema
 						        QUERY,
 						        null, // Mode.AUTO
 						        null, // Syntax.AUTO

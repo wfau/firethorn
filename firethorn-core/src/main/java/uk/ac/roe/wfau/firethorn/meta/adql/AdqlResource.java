@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.TreeComponent;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 
 /**
@@ -222,6 +223,8 @@ extends BaseResource<AdqlSchema>
 
         /**
          * Create a new {@link BlueQuery} for this {@link AdqlResource}.
+         * @param jdbcschema The target JdbcSchema to store the results.  
+         * @param adqlschema The target AdqlSchema to store the results.  
          * @param input  The ADQL query.
          * @param mode   The {@link AdqlQueryBase.Mode}.
          * @param syntax The {@link AdqlQueryBase.Syntax.Level}.
@@ -232,17 +235,17 @@ extends BaseResource<AdqlSchema>
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
-        public BlueQuery create(final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState next, final Long wait)
+        public BlueQuery create(final JdbcSchema jdbcschema, final AdqlSchema adqlschema, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState next, final Long wait)
         throws ProtectionException, InvalidRequestException, InternalServerErrorException;
 
         /**
          * Create a new {@link BlueQuery} for this {@link AdqlResource}.
          * @param input  The ADQL query.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
-         *  
-         */
         public BlueQuery create(String string)
         throws ProtectionException, InvalidRequestException, InternalServerErrorException;
+         *  
+         */
 
         }
 

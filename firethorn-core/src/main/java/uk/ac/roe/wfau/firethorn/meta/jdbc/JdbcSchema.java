@@ -37,32 +37,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 public interface JdbcSchema
 extends BaseSchema<JdbcSchema, JdbcTable>
     {
-    /**
-     * Physical JDBC driver interface.
-     *
-     */
-    public static interface JdbcDriver
-    extends JdbcTable.JdbcDriver
-        {
-        /**
-         * Create (CREATE) a JDBC schema.
-         * @todo Should this be part of JdbcResource.JdbcDriver ?
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-         *
-         */
-        public void create(final JdbcSchema schema)
-        throws ProtectionException;
-
-        /**
-         * Delete (DROP) a JDBC schema.
-         * @todo Should this be part of JdbcResource.JdbcDriver ?
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-         *
-         */
-        public void drop(final JdbcSchema schema)
-        throws ProtectionException;
-
-        }
 
     /**
      * {@link EntityBuilder} interface.

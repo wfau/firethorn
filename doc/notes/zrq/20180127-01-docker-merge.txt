@@ -43,6 +43,7 @@
 
     ssh Araybwyn
     ssh Lothigometh
+    ssh Acilamwen
 
 # -----------------------------------------------------
 # Add our secret function.
@@ -73,6 +74,7 @@
     branch=2.1.10-zrq-junit-clean
     branch=2.1.11-zrq-update-depends
     branch=2.1.12-zrq-basic-auth
+    branch=2.1.13-zrq-lsst-events
 
 # -----------------------------------------------------
 # Run our builder.

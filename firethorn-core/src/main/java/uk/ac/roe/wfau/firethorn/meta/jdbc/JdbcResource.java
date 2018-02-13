@@ -34,25 +34,10 @@ public interface JdbcResource
 extends BaseResource<JdbcSchema>
     {
     /**
-     * JDBC driver interface.
+     * The {@link JdbcOperator} for this {@link JdbcResource}.
      *
+    public JdbcOperator operator();
      */
-    public static interface JdbcDriver
-    extends JdbcSchema.JdbcDriver
-        {
-
-        /*
-         * Modify (this) resource ?
-         *  
-         */
-        
-        }
-
-    /**
-     * The {@link JdbcDriver} for this {@link JdbcResource}.
-     *
-     */
-    public JdbcDriver jdbcdriver();
 
     /**
      * {@link BaseResource.IdentFactory} interface.
@@ -88,38 +73,45 @@ extends BaseResource<JdbcSchema>
     public static interface EntityFactory
     extends BaseResource.EntityFactory<JdbcResource>
         {
+        /**
+         * Create a new {@link JdbcResource}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         * 
+         */
+        public JdbcResource create(final String name, final JdbcProductType type, final String database, final String catalog, final String host, final Integer port, final String user, final String pass)
+        throws ProtectionException;
 
         /**
          * Create a new {@link JdbcResource}.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
-         */
         public JdbcResource create(final String name, final String url)
         throws ProtectionException;
+         */
 
         /**
          * Create a new {@link JdbcResource}.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
-         */
         public JdbcResource create(final String catalog, final String name, final String url)
         throws ProtectionException;
+         */
 
         /**
          * Create a new {@link JdbcResource}.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
-         */
         public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass)
         throws ProtectionException;
+         */
 
         /**
          * Create a new {@link JdbcResource}.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
-         */
         public JdbcResource create(final String catalog, final String name, final String url, final String user, final String pass, final String driver)
         throws ProtectionException;
+         */
 
         /**
          * Select the default 'userdata' Resource.
@@ -173,7 +165,6 @@ extends BaseResource<JdbcSchema>
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        @Deprecated
         public JdbcSchema create(final String catalog, final String schema)
         throws ProtectionException;
 
@@ -230,29 +221,7 @@ extends BaseResource<JdbcSchema>
      * Access to our JDBC connection.
      *
      */
-    public JdbcConnector connection()
-    throws ProtectionException;
-
-    /**
-     * The 'wildcard' catalog name.
-     *
-     */
-    public static final String ALL_CATALOGS = "*" ;
-
-    /**
-     * The primary catalog name.
-     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-     *
-     */
-    public String catalog()
-    throws ProtectionException;
-
-    /**
-     * The primary catalog name.
-     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-     *
-     */
-    public void catalog(final String catalog)
+    public JdbcConnection connection()
     throws ProtectionException;
 
     /**

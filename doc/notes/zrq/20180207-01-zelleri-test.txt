@@ -1,0 +1,800 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Acilamwen]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Disc name [Acilamwen.qcow]
+        INFO : Disc size [16GiB]
+
+
+    #
+    # Manually increase VM memory to 65536 MiB.
+    # Manually shutdown and restart.
+    #
+
+# -----------------------------------------------------
+# Login as normal user.
+#[user@trop]
+
+    ssh Acilamwen
+
+# -----------------------------------------------------
+# Check available memory.
+#[user@virtual]
+
+    free -h
+
+                      total        used        free      shared  buff/cache   available
+        Mem:            62G        207M         62G        540K        341M         62G
+        Swap:          1.0G          0B        1.0G
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    vi "${HOME:?}/secret.sh"
+
+        ....
+        ....
+        ....
+
+    source "${HOME:?}/secret.sh"
+    secret 'frog'
+
+# -----------------------------------------------------
+# Set our target branch.
+#[user@virtual]
+
+    branch=2.1.13-zrq-lsst-events
+
+# -----------------------------------------------------
+# Download our builder compose file.
+#[user@virtual]
+     
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch=${branch:?}
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Build everything.
+    #[root@builder]
+
+        00.00-build.sh
+
+    # -----------------------------------------------------
+    # Exit the builder.
+    #[root@builder]
+
+        exit
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    source "${HOME:?}/secret.sh"
+    
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${branch:?}
+
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        tunneluser=$(secret 'ssh.tunnel.user')
+        tunnelhost=$(secret 'ssh.tunnel.host')
+
+        admingroup=wombles
+        adminuser=orinoco
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=friends
+
+        zelldata=augustus
+        zelluser=$(pwgen 20 1)
+        zellpass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Link our chain properties as our compose env file.
+#[user@virtual]
+
+    ln -s "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Download our test compose file
+#[user@virtual]
+
+    rm zelleri.yml
+         
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/zelleri.yml
+
+# -----------------------------------------------------
+# Run our test.
+#[user@virtual]
+
+    docker-compose \
+        --file "zelleri.yml" \
+        run \
+            tester
+
+# docker rm -f $(docker ps -aq)
+# ssh Acilamwen
+# docker exec -it stevedore_gillian_1 tail -f logs/firethorn.log
+# docker exec -it stevedore_jarmila_1 tail -f logs/ogsadai.log
+# docker exec -it stevedore_zelleri_1 hsqldb-client
+
+# -----------------------------------------------------
+# Create our sed functions.
+#[root@tester]
+
+        skip-headers()
+            {
+            sed '
+                /^HTTP\/1.1 100/,/^\r$/ {
+                    d
+                    }
+                '
+            }
+
+        split-headers()
+            {
+            sed '
+                /^HTTP\/1.1 [0-9]\{3\}/,/^\r$/ {
+                    /^\r$/ !{
+                        w /tmp/response-headers.txt
+                        d
+                        }
+                    }
+                '
+            }
+
+        get-httpcode()
+            {
+            sed -n '
+                s/\(^HTTP.*\) \r/\1/p
+                ' /tmp/response-headers.txt
+            }
+
+        get-username()
+            {
+            sed -n '
+                s/^firethorn.auth.username: \(.*\)\r/\1/p
+                ' /tmp/response-headers.txt
+            }
+
+        get-group()
+            {
+            sed -n '
+                s/^firethorn.auth.community: \(.*\)\r/\1/p
+                ' /tmp/response-headers.txt
+            }
+
+        print-headers()
+            {
+            echo "----"
+            echo "HTTP code [$(get-httpcode)]"
+            echo "Community [$(get-group)]"
+            echo "Username  [$(get-username)]"
+            echo "----"
+            }
+
+        print-link()
+            {
+            local link=${1:?}
+            local text=${2:?}
+            echo
+            echo "----"
+            echo "${text} [${link}]"
+            echo "----"
+            echo
+            }
+
+# -----------------------------------------------------
+# Make a HEAD request to check admin account works.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            "${endpointurl:?}/system/info" \
+            | split-headers
+
+        print-headers
+
+# -----------------------------------------------------
+# Make a HEAD request to get a guest username.
+#[root@deployer]
+
+        curl \
+            --head \
+            --silent \
+            "${endpointurl:?}/system/info" \
+            | split-headers
+
+        guestuser=$(get-username)
+
+        print-headers
+
+# -----------------------------------------------------
+# Make a HEAD request to choose our test username.
+#[root@deployer]
+
+        testuser=albert.augustus@example.com
+        testpass=$(pwgen 20 1)
+
+        curl \
+            --head \
+            --silent \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            "${endpointurl:?}/system/info" \
+            | split-headers
+
+        testgroup=$(get-group)
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the system status.
+#[root@deployer]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            "${endpointurl:?}/system/info" \
+            | split-headers \
+            | jq '.' | tee /tmp/system-info.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Create the Atlas JdbcResource as admin user.
+#[root@deployer]
+
+        jdbcname="ATLAS JDBC resource"
+
+        catalog="ATLASDR1"
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --data   "jdbc.resource.name=${jdbcname:?}" \
+            --data   "jdbc.resource.connection.database=${datadata:?}" \
+            --data   "jdbc.resource.connection.catalog=${catalog:?}" \
+            --data   "jdbc.resource.connection.type=${datatype:?}" \
+            --data   "jdbc.resource.connection.host=${datahost:?}" \
+            --data   "jdbc.resource.connection.user=${datauser:?}" \
+            --data   "jdbc.resource.connection.pass=${datapass:?}" \
+            "${endpointurl:?}/jdbc/resource/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-jdbc.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the JdbcResource URL.
+#[root@deployer]
+
+        atlasjdbc=$(
+            jq -r '.self' /tmp/atlas-jdbc.json
+            )
+
+        print-link "${atlasjdbc:?}" 'Atlas JDBC'
+
+
+# -----------------------------------------------------
+# Create an empty AdqlResource to represent the local JDBC database.
+#[root@deployer]
+
+        adqlname="ATLAS ADQL resource"
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --data   "adql.resource.name=${adqlname:?}" \
+            "${endpointurl:?}/adql/resource/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-adql.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the AdqlResource URL.
+#[root@deployer]
+
+        atlasadql=$(
+            jq -r '.self' /tmp/atlas-adql.json
+            )
+
+        print-link "${atlasadql:?}" 'Atlas ADQL'
+
+# -----------------------------------------------------
+# Locate the JdbcSchema based on catalog and schema name.
+#[root@deployer]
+
+        catalog="ATLASDR1"
+        schema="dbo"
+        
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --data   "jdbc.schema.catalog=${catalog:?}" \
+            --data   "jdbc.schema.schema=${schema:?}" \
+            "${atlasjdbc:?}/schemas/select" \
+            | split-headers \
+            | jq '.' | tee /tmp/jdbc-schema.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the JdbcSchema URL.
+#[root@deployer]
+
+        jdbcschema=$(
+            jq -r '.self' /tmp/jdbc-schema.json
+            )
+
+        print-link "${jdbcschema:?}" 'JDBC schema'
+
+# -----------------------------------------------------
+# Import the mapping between JDBC and ADQL tables.
+#[root@deployer]
+
+        metadoc="meta/ATLASDR1_TablesSchema.xml"
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --form   "metadoc.base=${jdbcschema:?}" \
+            --form   "metadoc.file=@${metadoc:?}" \
+            "${atlasadql:?}/metadoc/import" \
+            | skip-headers | split-headers \
+            | jq '.' | tee /tmp/adql-schema.json
+
+# -----------------------------------------------------
+# Extract the AdqlSchema URL.
+#[root@deployer]
+
+        adqlschema=$(
+            jq -r '.[].self' /tmp/adql-schema.json
+            )
+
+        print-link "${adqlschema:?}" 'ADQL schema'
+
+# -----------------------------------------------------
+# Setup done - resources configured.
+# -----------------------------------------------------
+
+# -----------------------------------------------------
+# List the top level ADQL resources.
+#[root@tester]
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            "${endpointurl:?}/adql/resource/select" \
+            | split-headers \
+            | jq '.' | tee /tmp/adql-list.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Find the Atlas ADQL resource.
+#[root@tester]
+
+    match='^ATLAS ADQL'
+
+    atlasadql=$(
+        jq -r "
+            [
+            .[] |
+            if (.name | test(\"${match:?}\"))
+            then
+                .
+            else
+                empty
+            end
+            ] |
+            .[0].self
+            " /tmp/adql-list.json
+            )
+
+# -----------------------------------------------------
+# Query the Atlas database.
+#[root@tester]
+
+cat > /tmp/atlas-query.adql << EOF
+
+        SELECT
+            COUNT(sourceID),
+            (ROUND( ra/10, 0) * 10) AS rablock,
+            (ROUND(dec/10, 0) * 10) AS decblock
+        FROM
+            ATLASDR1.atlasSource
+        WHERE
+            sourceID <> 0
+        GROUP BY
+            (ROUND( ra/10, 0) * 10),
+            (ROUND(dec/10, 0) * 10)
+        ORDER BY
+            rablock,
+            decblock
+
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${atlasadql:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-query.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        votableurl=$(
+            jq -r '.results.formats.votable' "/tmp/atlas-query.json"
+            )
+
+        curl \
+            --silent \
+            ${votableurl:?} \
+            | xmllint --format - \
+            | tee /tmp/atlas-query.vot
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create a new JdbcResource for our test results.
+#[root@deployer]
+
+        jdbcname="Test results"
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --data   "jdbc.resource.name=${jdbcname:?}" \
+            --data   "jdbc.resource.connection.database=${zelldata:?}" \
+            --data   "jdbc.resource.connection.catalog=PUBLIC" \
+            --data   "jdbc.resource.connection.type=${zelltype:?}" \
+            --data   "jdbc.resource.connection.host=${zellhost:?}" \
+            --data   "jdbc.resource.connection.user=${zelluser:?}" \
+            --data   "jdbc.resource.connection.pass=${zellpass:?}" \
+            "${endpointurl:?}/jdbc/resource/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/zelleri-jdbc-resource.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the JdbcResource URL.
+#[root@deployer]
+
+        jdbcresource=$(
+            jq -r '.self' /tmp/zelleri-jdbc-resource.json
+            )
+
+        print-link "${jdbcresource:?}" 'JDBC resource'
+
+# -----------------------------------------------------
+# Select our JdbcSchema by name.
+#[root@deployer]
+
+        catalog=PUBLIC
+        schema=PUBLIC
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --data   "jdbc.schema.catalog=${catalog:?}" \
+            --data   "jdbc.schema.schema=${schema:?}" \
+            "${jdbcresource:?}/schemas/select" \
+            | split-headers \
+            | jq '.' | tee /tmp/zelleri-jdbc-schema.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Extract the JdbcSchema identifier.
+#[root@deployer]
+
+        jdbcschema=$(
+            jq -r '.self' /tmp/zelleri-jdbc-schema.json
+            )
+
+        jdbcschemaident=$(
+            echo $jdbcschema | sed -n 's|.*\/\([^/]*\)|\1|p'
+            )
+
+        print-link "${jdbcschema:?}" 'JDBC schema'
+        print-link "${jdbcschemaident:?}" 'JDBC schema ident'
+
+# -----------------------------------------------------
+# Query the Atlas database, and push the results to our new JdbcSchema.
+#[root@tester]
+
+cat > /tmp/atlas-query.adql << EOF
+
+        SELECT
+            COUNT(sourceID),
+            (ROUND( ra/10, 0) * 10) AS rablock,
+            (ROUND(dec/10, 0) * 10) AS decblock
+        FROM
+            ATLASDR1.atlasSource
+        WHERE
+            sourceID <> 0
+        GROUP BY
+            (ROUND( ra/10, 0) * 10),
+            (ROUND(dec/10, 0) * 10)
+        ORDER BY
+            rablock,
+            decblock
+
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "jdbc.schema.ident=${jdbcschemaident:?}" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${atlasadql:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-query.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        votableurl=$(
+            jq -r '.results.formats.votable' "/tmp/atlas-query.json"
+            )
+
+        curl \
+            --silent \
+            ${votableurl:?} \
+            | xmllint --format - \
+            | tee /tmp/atlas-query.vot
+
+# -----------------------------------------------------
+# Query the Atlas database, and push the results to our new database.
+#[root@tester]
+
+cat > /tmp/atlas-sources-query.adql << EOF
+        SELECT
+            sourceID,
+            htmID,
+            ra,
+            dec
+        FROM
+            ATLASDR1.atlasSource
+        WHERE
+            htmID > 0
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-sources-query.adql" \
+            --data "jdbc.schema.ident=${jdbcschemaident:?}" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${atlasadql:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-sources-query.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the result table.
+#[root@tester]
+
+        tablelink=$(jq -r '.results.table' /tmp/atlas-sources-query.json)
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            ${tablelink:?} \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-sources-table.json
+
+        resultname=$( jq -r '.fullname' /tmp/atlas-sources-table.json)
+        resultspace=$(jq -r '.resource' /tmp/atlas-sources-table.json)
+
+        print-headers
+
+# -----------------------------------------------------
+# Query the results table.
+#[root@tester]
+
+cat > /tmp/atlas-results-query.adql << EOF
+    SELECT
+        TOP 10
+        *
+    FROM
+        ${resultname}
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${testuser:?}" \
+            --header "firethorn.auth.password:${testpass:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-results-query.adql" \
+            --data "jdbc.schema.ident=${jdbcschemaident:?}" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${resultspace:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-results-query.json
+
+        print-headers
+
+# -----------------------------------------------------
+# Get the results as a VOTable.
+#[root@tester]
+
+        curl --silent $(
+            jq -r '.results.formats.votable' "/tmp/atlas-results-query.json"
+            ) \
+            | xmllint --format - \
+            | tee /tmp/atlas-results-query.vot
+
+
+
+# -----------------------------------------------------
+# Check available memory in the VM.
+#[user@virtual]
+
+    # Initial value at boot
+    free -h
+                      total        used        free      shared  buff/cache   available
+        Mem:            62G        215M         62G        544K        352M         62G
+        Swap:          1.0G          0B        1.0G
+
+    # After request for TOP 1x10^6
+
+        Mem:            62G        3.0G         58G         34M        1.8G         59G
+        Swap:          1.0G          0B        1.0G
+
+    # During request for all
+
+        Mem:            62G         18G         42G         35M        1.9G         43G
+        Swap:          1.0G          0B        1.0G
+
+        Mem:            62G         23G         37G         36M        2.0G         38G
+        Swap:          1.0G          0B        1.0G
+
+    # Data stream pauses and hsqldb hits 100% on all four cpus at several points during the injest. 
+    # pause @ 44695551
+
+    # 100%cpu and the VM totally locked up for several minuites
+    
+        Mem:            62G        7.2G         53G         36M        2.1G         55G
+        Swap:          1.0G          0B        1.0G
+
+# -----------------------------------------------------
+# HSQLDB server shut itself down.
+#[user@virtual]
+    
+    docker logs stevedore_zelleri_1
+
+        Checking system user [hsqldb]
+        Creating system user [hsqldb]
+        Checking database type [mem]
+        In memory database [mem:augustus]
+
+        Starting database service
+        OKGO
+        [Server@24d46ca6]: Startup sequence initiated from main() method
+        [Server@24d46ca6]: Loaded properties from [/var/lib/hsqldb/server.properties]
+        [Server@24d46ca6]: Initiating startup sequence...
+        [Server@24d46ca6]: Server socket opened successfully in 23 ms.
+        [Server@24d46ca6]: Database [index=0, id=0, db=mem:augustus, alias=augustus] opened successfully in 702 ms.
+        [Server@24d46ca6]: Startup sequence completed in 727 ms.
+        [Server@24d46ca6]: 2018-02-07 14:07:38.455 HSQLDB server 2.4.0 is online on port 9001
+        [Server@24d46ca6]: To close normally, connect and execute SHUTDOWN SQL
+        [Server@24d46ca6]: From command line, use [Ctrl]+[C] to abort abruptly
+        org.hsqldb.server.ServerConnection$CleanExit
+	        at org.hsqldb.server.ServerConnection.<init>(Unknown Source)
+	        at org.hsqldb.server.Server.handleConnection(Unknown Source)
+	        at org.hsqldb.server.Server.run(Unknown Source)
+	        at org.hsqldb.server.Server.access$000(Unknown Source)
+	        at org.hsqldb.server.Server$ServerThread.run(Unknown Source)
+        [Server@24d46ca6]: Initiating shutdown sequence...
+        [Server@24d46ca6]: Shutdown sequence completed in 200851 ms.
+        [Server@24d46ca6]: 2018-02-07 15:10:21.736 SHUTDOWN : System.exit() is called next
+    

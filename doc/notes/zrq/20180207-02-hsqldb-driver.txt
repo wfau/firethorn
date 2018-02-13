@@ -1,0 +1,225 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -------------------------------------------------------------------------------------------
+# Test our HSQLDB container.
+#[user@virtual]
+
+    docker run \
+        --detach \
+        --name 'hsqldb' \
+       'cosmopterix/hsqldb-test:20180206'
+
+    waitlog 'hsqldb' 'OKGO'
+
+    docker exec \
+        --tty \
+        --interactive \
+        'hsqldb' \
+        'hsqldb-client'
+
+
+    SELECT * FROM INFORMATION_SCHEMA.SCHEMATA ;
+
+        CATALOG_NAME  SCHEMA_NAME         SCHEMA_OWNER  DEFAULT_CHARACTER_SET_CATALOG  DEFAULT_CHARACTER_SET_SCHEMA  DEFAULT_CHARACTER_SET_NAME  SQL_PATH
+        ------------  ------------------  ------------  -----------------------------  ----------------------------  --------------------------  --------
+        PUBLIC        INFORMATION_SCHEMA  _SYSTEM       PUBLIC                         INFORMATION_SCHEMA            SQL_TEXT                    [null]
+        PUBLIC        PUBLIC              DBA           PUBLIC                         INFORMATION_SCHEMA            SQL_TEXT                    [null]
+        PUBLIC        SYSTEM_LOBS         _SYSTEM       PUBLIC                         INFORMATION_SCHEMA            SQL_TEXT                    [null]
+
+
+    SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' ;
+
+
+        TABLE_CATALOG  TABLE_SCHEMA  TABLE_NAME    TABLE_TYPE  SELF_REFERENCING_COLUMN_NAME  REFERENCE_GENERATION  USER_DEFINED_TYPE_CATALOG  USER_DEFINED_TYPE_SCHEMA  USER_DEFINED_TYPE_NAME  IS_INSERTABLE_INTO  IS_TYPED  COMMIT_ACTION
+        -------------  ------------  ------------  ----------  ----------------------------  --------------------  -------------------------  ------------------------  ----------------------  ------------------  --------  -------------
+        PUBLIC         SYSTEM_LOBS   BLOCKS        BASE TABLE  [null]                        [null]                [null]                     [null]                    [null]                  YES                 NO        [null]
+        PUBLIC         SYSTEM_LOBS   LOBS          BASE TABLE  [null]                        [null]                [null]                     [null]                    [null]                  YES                 NO        [null]
+        PUBLIC         SYSTEM_LOBS   PARTS         BASE TABLE  [null]                        [null]                [null]                     [null]                    [null]                  YES                 NO        [null]
+        PUBLIC         SYSTEM_LOBS   LOB_IDS       BASE TABLE  [null]                        [null]                [null]                     [null]                    [null]                  YES                 NO        [null]
+        PUBLIC         PUBLIC        ALPHA_SOURCE  BASE TABLE  [null]                        [null]                [null]                     [null]                    [null]                  YES                 NO        [null]
+
+
+    SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'COLUMNS' ;
+
+        TABLE_CATALOG
+        TABLE_SCHEMA
+        TABLE_NAME
+        COLUMN_NAME
+        ORDINAL_POSITION
+        COLUMN_DEFAULT
+        IS_NULLABLE
+        DATA_TYPE
+        CHARACTER_MAXIMUM_LENGTH
+        CHARACTER_OCTET_LENGTH
+        NUMERIC_PRECISION
+        NUMERIC_PRECISION_RADIX
+        NUMERIC_SCALE
+        DATETIME_PRECISION
+        INTERVAL_TYPE
+        INTERVAL_PRECISION
+        CHARACTER_SET_CATALOG
+        CHARACTER_SET_SCHEMA
+        CHARACTER_SET_NAME
+        COLLATION_CATALOG
+        COLLATION_SCHEMA
+        COLLATION_NAME
+        DOMAIN_CATALOG
+        DOMAIN_SCHEMA
+        DOMAIN_NAME
+        UDT_CATALOG
+        UDT_SCHEMA
+        UDT_NAME
+        SCOPE_CATALOG
+        SCOPE_SCHEMA
+        SCOPE_NAME
+        MAXIMUM_CARDINALITY
+        DTD_IDENTIFIER
+        IS_SELF_REFERENCING
+        IS_IDENTITY
+        IDENTITY_GENERATION
+        IDENTITY_START
+        IDENTITY_INCREMENT
+        IDENTITY_MAXIMUM
+        IDENTITY_MINIMUM
+        IDENTITY_CYCLE
+        IS_GENERATED
+        GENERATION_EXPRESSION
+        IS_UPDATABLE
+        DECLARED_DATA_TYPE
+        DECLARED_NUMERIC_PRECISION
+        DECLARED_NUMERIC_SCALE
+
+
+
+
+    SELECT
+        CATALOG_NAME,
+        SCHEMA_NAME
+    FROM
+        INFORMATION_SCHEMA.SCHEMATA
+    WHERE
+        CATALOG_NAME = 'PUBLIC'
+        ;
+
+        ------------  ------------------
+        PUBLIC        INFORMATION_SCHEMA
+        PUBLIC        PUBLIC
+        PUBLIC        SYSTEM_LOBS
+
+
+    SELECT
+        TABLE_CATALOG,
+        TABLE_SCHEMA,
+        TABLE_NAME,
+        TABLE_TYPE
+    FROM
+        INFORMATION_SCHEMA.TABLES
+    WHERE
+        TABLE_CATALOG = 'PUBLIC'
+    AND
+        TABLE_SCHEMA = 'PUBLIC'
+        ;
+
+        -------------  ------------  ------------  ----------
+        PUBLIC         PUBLIC        ALPHA_SOURCE  BASE TABLE
+
+
+    SELECT
+        TABLE_CATALOG,
+        TABLE_SCHEMA,
+        TABLE_NAME,
+        DATA_TYPE,
+        COLUMN_NAME,
+        CHARACTER_MAXIMUM_LENGTH
+    FROM
+        INFORMATION_SCHEMA.COLUMNS
+    WHERE
+        TABLE_CATALOG = 'PUBLIC'
+    AND
+        TABLE_SCHEMA = 'PUBLIC'
+    AND
+        TABLE_NAME = 'ALPHA_SOURCE'
+        ;
+
+
+        TABLE_CATALOG  TABLE_SCHEMA  TABLE_NAME    DATA_TYPE         COLUMN_NAME  CHARACTER_MAXIMUM_LENGTH
+        -------------  ------------  ------------  ----------------  -----------  ------------------------
+        PUBLIC         PUBLIC        ALPHA_SOURCE  INTEGER           ID                                   
+        PUBLIC         PUBLIC        ALPHA_SOURCE  DOUBLE PRECISION  RA                                   
+        PUBLIC         PUBLIC        ALPHA_SOURCE  DOUBLE PRECISION  DECL                                 
+
+
+
+
+
+
+
+
+
+
+    " SELECT" +
+    "    CATALOG_NAME," +
+    "    SCHEMA_NAME" +
+    " FROM" +
+    "    INFORMATION_SCHEMA.SCHEMATA" +
+    " WHERE" +
+    "    CATALOG_NAME = 'PUBLIC'" +
+    " AND" +
+    "    SCHEMA_NAME = 'PUBLIC'"
+
+
+
+
+    " SELECT" +
+    "    TABLE_CATALOG," +
+    "    TABLE_SCHEMA," +
+    "    TABLE_NAME," +
+    "    TABLE_TYPE" +
+    " FROM" +
+    "    INFORMATION_SCHEMA.TABLES" +
+    " WHERE" +
+    "    TABLE_CATALOG = ?" +
+    " AND" +
+    "    TABLE_SCHEMA = ?"
+
+
+
+
+    " SELECT" +
+    "    TABLE_CATALOG," +
+    "    TABLE_SCHEMA," +
+    "    TABLE_NAME," +
+    "    DATA_TYPE," +
+    "    COLUMN_NAME," +
+    "    CHARACTER_MAXIMUM_LENGTH" +
+    " FROM" +
+    "    INFORMATION_SCHEMA.COLUMNS" +
+    " WHERE" +
+    "    TABLE_CATALOG = ?" +
+    " AND" +
+    "    TABLE_SCHEMA = ?" +
+    " AND" +
+    "    TABLE_NAME = ?"   
+
+

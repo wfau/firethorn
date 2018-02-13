@@ -11,8 +11,6 @@ networks:
 services:
 
     bethany:
-        hostname:
-            "bethany"
         image:
            "firethorn/postgres:${buildtag:-latest}"
         read_only:
@@ -20,15 +18,13 @@ services:
         tmpfs:
             - '/run'
             - '/tmp'
+        networks:
+            - miriam
         environment:
             POSTGRES_USER: "${metauser}"
             POSTGRES_PASSWORD: "${metapass}"
-        networks:
-            - miriam
 
     patricia:
-        hostname:
-            "patricia"
         image:
            "firethorn/sql-proxy:${buildtag:-latest}"
         read_only:
@@ -38,18 +34,16 @@ services:
             - /tmp
         stdin_open:
             true
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
         environment:
             targethost: "${userhost}"
             tunneluser: "${tunneluser}"
             tunnelhost: "${tunnelhost}"
-        volumes:
-            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
-        networks:
-            - miriam
 
     elayne:
-        hostname:
-            "elayne"
         image:
            "firethorn/sql-proxy:${buildtag:-latest}"
         read_only:
@@ -59,18 +53,16 @@ services:
             - /tmp
         stdin_open:
             true
-        environment:
-            targethost: "${datahost}"
-            tunneluser: "${tunneluser}"
-            tunnelhost: "${tunnelhost}"
         volumes:
             - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
         networks:
             - miriam
+        environment:
+            targethost: "${datahost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
 
     jarmila:
-        hostname:
-            "jarmila"
         image:
            "firethorn/ogsadai:${buildtag:-latest}"
         read_only:
@@ -97,8 +89,6 @@ services:
             retries: 5
 
     gillian:
-        hostname:
-            "gillian"
         image:
            "firethorn/firethorn:${buildtag:-latest}"
         read_only:
@@ -113,9 +103,27 @@ services:
             - miriam
             - rosana
         environment:
-            firethorn.meta.url:    'jdbc:postgresql://bethany/postgres'
-            firethorn.meta.driver: 'org.postgresql.Driver'
-            firethorn.ogsadai.endpoint: 'http://jarmila:8080/ogsadai/services'
+            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
+            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
+
+            firethorn.meta.url: "jdbc:postgresql://bethany/postgres"
+            firethorn.meta.user: "${metauser}"
+            firethorn.meta.pass: "${metapass}"
+            firethorn.meta.driver: "org.postgresql.Driver"
+
+            firethorn.user.type: "mssql"
+            firethorn.user.host: "patricia"
+            firethorn.user.data: "${userdata}"
+            firethorn.user.user: "${useruser}"
+            firethorn.user.pass: "${userpass}"
+
+            firethorn.admin.community: "${admingroup}"
+            firethorn.guest.community: "${guestgroup}"
+
+            firethorn.admin.user.name: "${adminuser}"
+            firethorn.admin.user.pass: "${adminpass}"
+
+
         depends_on:
             bethany:
                 condition: service_started            
@@ -127,12 +135,10 @@ services:
                 condition: service_healthy            
 
     tester:
-        hostname:
-            "tester"
         image:
            "firethorn/tester:${buildtag}"
         read_only:
-            true
+            false
         stdin_open:
             true
         tty:
@@ -146,7 +152,9 @@ services:
         networks:
             - miriam
         environment:
-            endpointurl: 'http://gillian:8080/firethorn'
+            datahost:    "patricia"
+            datadriver:  "net.sourceforge.jtds.jdbc.Driver"
+            endpointurl: "http://gillian:8080/firethorn"
         depends_on:
             gillian:
                 condition: service_healthy            

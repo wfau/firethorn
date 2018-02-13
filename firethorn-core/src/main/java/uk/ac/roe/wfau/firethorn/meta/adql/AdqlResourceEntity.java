@@ -32,7 +32,7 @@ import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
-import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
@@ -46,6 +46,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  * {@link AdqlResource} implementation.
@@ -443,6 +444,8 @@ implements AdqlResource
                     );
                 }
 
+/*
+ * 
             @Override
             public BlueQuery create(final String input)
             throws ProtectionException, InvalidRequestException, InternalServerErrorException
@@ -452,13 +455,17 @@ implements AdqlResource
                     input
                     );
                 }
+ *             
+ */
 
             @Override
-            public BlueQuery create(String input, AdqlQueryBase.Mode mode, AdqlQueryBase.Syntax.Level syntax, AdqlQueryBase.Limits limits, AdqlQueryBase.Delays delays, BlueTask.TaskState next, Long wait)
+            public BlueQuery create(final JdbcSchema jdbcschema, final AdqlSchema adqlschema, String input, AdqlQueryBase.Mode mode, AdqlQueryBase.Syntax.Level syntax, AdqlQueryBase.Limits limits, AdqlQueryBase.Delays delays, BlueTask.TaskState next, Long wait)
             throws ProtectionException, InvalidRequestException, InternalServerErrorException
                 {
                 return services().blues().create(
                     AdqlResourceEntity.this,
+                    jdbcschema,
+                    adqlschema,
                     input,
                     mode,
                     syntax,    
@@ -472,7 +479,7 @@ implements AdqlResource
         }
 
     @Override
-    public BaseTranslator translator()
+    public AdqlTranslator translator()
         {
         throw new UnsupportedOperationException(
             "Unable to load a translator for AdqlResource"

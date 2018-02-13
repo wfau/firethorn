@@ -40,6 +40,8 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.exception.FirethornUncheckedException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  * {@link BaseComponent} implementation.

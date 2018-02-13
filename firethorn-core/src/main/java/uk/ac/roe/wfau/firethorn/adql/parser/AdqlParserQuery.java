@@ -125,6 +125,6 @@ public interface AdqlParserQuery
      * The BaseTranslator for the primary resource.
      *
      */
-    public BaseTranslator translator();
+    public AdqlTranslator translator();
     
     }

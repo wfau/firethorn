@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -18,13 +18,12 @@
 # FROM fedora:27
 # https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedora27
 FROM fedora@sha256:25f7dac76b2c88d8b7e0b1d6213d3406e77c7f230bfa1e66bd1cbb81a944eaaf
-
 MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
 
 #
-# Mount the DNF cache as a volume.
+# Mount the system cache as a volume.
 # TODO - check for side effects ? 
-# VOLUME /var/cache/dnf
+# VOLUME /var/cache
 
 #
 # Update the repo data.
@@ -44,9 +43,8 @@ RUN dnf install -y gnupg
 RUN dnf install -y which
 
 #
-# Set the terminal type for exec.
-# https://github.com/docker/docker/issues/9299
-ENV TERM xterm
+# Install dnf admin tools.
+RUN dnf install -y dnf-plugins-core
 
 #
 # Add our install scripts. 
@@ -56,4 +54,5 @@ RUN chmod a+x /usr/local/bin/*.sh
 #
 # Run our install scripts.
 RUN /usr/local/bin/install-locale.sh
+
 

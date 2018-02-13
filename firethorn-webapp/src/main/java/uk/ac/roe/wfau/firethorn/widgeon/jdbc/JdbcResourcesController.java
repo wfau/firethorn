@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -42,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceLinkFactory;
 @RequestMapping(JdbcResourceLinkFactory.SERVICE_PATH)
 public class JdbcResourcesController
 extends AbstractEntityController<JdbcResource, JdbcResourceBean>
+implements JdbcResourceModel
     {
 
     @Override
@@ -83,28 +86,28 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
      * MVC property for the JDBC driver name.
      * TODO Use value from JdbcResourceController 
      *
-     */
     public static final String CONNECTION_DRIVER_PARAM = "jdbc.connection.driver" ;
+     */
 
     /**
      * MVC property for the initial connection URL.
      * TODO Use value from JdbcResourceController 
      *
-     */
     public static final String CONNECTION_URL_PARAM = "jdbc.connection.url" ;
+     */
 
     /**
      * MVC property for the initial connection user name.
      * TODO Use value from JdbcResourceController 
      *
-     */
     public static final String CONNECTION_USER_PARAM = "jdbc.connection.user" ;
+     */
 
     /**
      * MVC property for the initial connection password.
      *
-     */
     public static final String CONNECTION_PASS_PARAM = "jdbc.connection.pass" ;
+     */
 
     @Override
     public JdbcResourceBean bean(final JdbcResource entity)
@@ -147,29 +150,43 @@ extends AbstractEntityController<JdbcResource, JdbcResourceBean>
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<JdbcResourceBean> create(
-        @RequestParam(value=CATALOG_NAME_PARAM, required=false)
-        final String catalog,
-        @RequestParam(value=RESOURCE_NAME_PARAM, required=true)
+
+        @RequestParam(value=RESOURCE_NAME_PARAM, required=false)
         final String name,
-        @RequestParam(value=CONNECTION_URL_PARAM, required=false)
-        final String url,
+        @RequestParam(value=RESOURCE_STATUS_PARAM, required=false)
+        final BaseComponent.Status status,
+
+        @RequestParam(value=CONNECTION_TYPE_PARAM, required=false)
+        final JdbcProductType type,
+        
+        @RequestParam(value=CONNECTION_HOST_PARAM, required=false)
+        final String host,
+        @RequestParam(value=CONNECTION_PORT_PARAM, required=false)
+        final Integer port,
+
+        @RequestParam(value=CONNECTION_DATABASE_PARAM, required=false)
+        final String database,
+        @RequestParam(value=CONNECTION_CATALOG_PARAM, required=false)
+        final String catalog,
+
         @RequestParam(value=CONNECTION_USER_PARAM, required=false)
         final String user,
         @RequestParam(value=CONNECTION_PASS_PARAM, required=false)
-        final String pass,
-        @RequestParam(value=CONNECTION_DRIVER_PARAM, required=false)
-        final String driver
+        final String pass
+            
         )
     throws ProtectionException
         {
         return created(
             factories().jdbc().resources().entities().create(
-                catalog,
                 name,
-                url,
+                type,
+                database,
+                catalog,
+                host,
+                port,
                 user,
-                pass,
-                driver
+                pass
                 )
             );
         }

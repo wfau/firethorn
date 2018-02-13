@@ -79,6 +79,18 @@ public abstract class BlueQueryModel
     public static final String QUERY_NAME_PARAM = "adql.query.name" ;
 
     /**
+     * Request param name for the target AdqlSchema identifier, [{@value}].
+     *
+     */
+    public static final String QUERY_ADQL_SCHEMA = "adql.schema.ident" ;
+
+    /**
+     * Request param name for the target JdbcSchema identifier, [{@value}].
+     *
+     */
+    public static final String QUERY_JDBC_SCHEMA = "jdbc.schema.ident" ;
+
+    /**
      * Request param name for the {@link BlueQuery} input, [{@value}].
      *
      */
@@ -184,22 +196,6 @@ public abstract class BlueQueryModel
     implements BlueQuery.IdentFactory
         {
         }
-
-    /**
-     * Our{@link BlueQuery.NameFactory} implementation.
-     *
-    @Component
-    public static class NameFactory
-    extends DateNameFactory<BlueQuery>
-    implements BlueQuery.NameFactory
-        {
-        @Override
-        public String name()
-            {
-            return datename();
-            }
-        }
-     */
 
     /**
      * Our{@link BlueQuery.LinkFactory} implementation.

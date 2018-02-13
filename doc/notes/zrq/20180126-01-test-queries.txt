@@ -65,53 +65,17 @@ guestgroup=friends
 EOF
 
 # -----------------------------------------------------
-# Create our Firethorn properties.
-#[user@virtual]
-
-    source "${HOME:?}/chain.properties"
-    cat > "${HOME:?}/firethorn.properties" << EOF
-
-        firethorn.meta.type=pgsql
-        firethorn.meta.driver=org.postgresql.Driver
-        firethorn.meta.host=bethany
-        firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
-        firethorn.meta.data=postgres
-
-        firethorn.meta.user=${metauser:?}
-        firethorn.meta.pass=${metapass:?}
-
-        firethorn.user.type=mssql
-        firethorn.user.url=jdbc:jtds:sqlserver://patricia/${userdata}
-        firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
-
-        firethorn.user.host=patricia
-        firethorn.user.data=${userdata:?}
-        firethorn.user.user=${useruser:?}
-        firethorn.user.pass=${userpass:?}
-
-        firethorn.admin.community=${admingroup:?}
-        firethorn.admin.user.name=${adminuser:?}
-        firethorn.admin.user.pass=${adminpass:?}
-
-        firethorn.guest.community=${guestgroup:?}
-
-EOF
-
-    chmod a+r "${HOME:?}/firethorn.properties"
-    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties"
-
-# -----------------------------------------------------
 # Create our tester properties.
 #[user@virtual]
 
     source "${HOME:?}/chain.properties"
     cat > "${HOME:?}/tester.properties" << EOF
 
+        datatype=mssql
         datahost=elayne
         datadata=${datadata:?}
         datauser=${datauser:?}
         datapass=${datapass:?}
-        datadriver=net.sourceforge.jtds.jdbc.Driver
 
         admingroup=${admingroup:?}
         adminuser=${adminuser:?}
@@ -125,24 +89,10 @@ EOF
     chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties"
 
 # -----------------------------------------------------
-# Create our compose env file.
+# Link our chain properties as our compose env file.
 #[user@virtual]
 
-    source "${HOME:?}/chain.properties"
-    cat > "${HOME:?}/.env" << EOF
-
-metadata=postgres
-metauser=${metauser:?}
-metapass=${metapass:?}
-
-userhost=${userhost:?}
-
-datahost=${datahost:?}
-
-tunneluser=${tunneluser:?}
-tunnelhost=${tunnelhost:?}
-
-EOF
+    ln -s "${HOME:?}/chain.properties" "${HOME:?}/.env"
 
 # -----------------------------------------------------
 # Download our compose file
@@ -478,7 +428,6 @@ EOF
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
-        jdbcurl="jdbc:jtds:sqlserver://${datahost:?}/${datadata:?}"
 
         catalog="ATLASDR1"
 
@@ -488,11 +437,12 @@ EOF
             --header "firethorn.auth.username:${testuser:?}" \
             --header "firethorn.auth.password:${testpass:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
-            --data   "jdbc.connection.url=${jdbcurl:?}" \
+            --data   "jdbc.resource.catalog=${catalog:?}" \
+            --data   "jdbc.connection.type=${datatype:?}" \
+            --data   "jdbc.connection.host=${datahost:?}" \
+            --data   "jdbc.connection.data=${datadata:?}" \
             --data   "jdbc.connection.user=${datauser:?}" \
             --data   "jdbc.connection.pass=${datapass:?}" \
-            --data   "jdbc.connection.driver=${datadriver:?}" \
-            --data   "jdbc.resource.catalog=${catalog:?}" \
             "${endpointurl:?}/jdbc/resource/create" \
             | split-headers
 

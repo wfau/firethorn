@@ -29,6 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcOperator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -158,16 +160,14 @@ extends AbstractController
      * @todo Refactor this to use our AdqlParser.
      * @todo Remove the {@link JdbcProductType} param.
      * 
-     * @param table The {@link BaseTable} to query.
-     * @param type The {@link JdbcProductType} of the database.
-     * @return A {@link String} representation of the SQL {@link Statement}
-     * @throws ProtectionException 
      *
      */
-    public String select(final BaseTable<?,?> table, final JdbcProductType type) throws ProtectionException
+    public String select(final BaseTable<?,?> table) throws ProtectionException
         {
-        final StringBuilder builder = new StringBuilder();
+        final JdbcTable jdbc = (JdbcTable) table.root();
+        final JdbcOperator oper = jdbc.resource().connection().operator();
 
+        final StringBuilder builder = new StringBuilder();
         builder.append(
             "SELECT"
             );
@@ -183,14 +183,17 @@ extends AbstractController
             select(
                 builder,
                 column,
-                type
+                oper
                 );
             }
         builder.append(
             " FROM "
             );
+
         builder.append(
-            table.root().namebuilder()
+            oper.fullname(
+                jdbc
+                )
             );
         /*
          * Only if we have added a rownum column.
@@ -213,36 +216,15 @@ extends AbstractController
      * @throws ProtectionException 
      * 
      */
-    public void select(final StringBuilder builder, final BaseColumn<?> column, final JdbcProductType type)
+    public void select(final StringBuilder builder, final BaseColumn<?> column, final JdbcOperator oper)
     throws ProtectionException
         {
-    	log.trace("select(StringBuilder, AdqlColumn, JdbcProductType)");
-        //
-        // Postgresql dialect
-        if (type == JdbcProductType.PGSQL)
-            {
-            builder.append('"');
-            builder.append(
-                column.root().name()
-                );
-            builder.append('"');
-            }
-        //
-        // SQLServer dialect
-        // http://technet.microsoft.com/en-us/library/ms174450.aspx
-        else if (type == JdbcProductType.MSSQL)
-            {
-            builder.append(
-                column.root().name()
-                );
-            }
-        //
-        // Generic SQL dialect
-        else {
-            builder.append(
-                column.root().name()
-                );
-            }
+    	log.trace("select(StringBuilder, BaseColumn, JdbcOperator)");
+    	builder.append(
+	        oper.fullname(
+                (JdbcColumn) column.root()
+                )
+	        );
         builder.append(
             " AS "
             );
@@ -355,10 +337,9 @@ extends AbstractController
         // If the root table is a JDBC table.
         if (table.root() instanceof JdbcTable)
             {
-            final JdbcTable jdbc = (JdbcTable) table.root();
-
-            final JdbcProductType type  = jdbc.resource().connection().type();
+            final JdbcTable  jdbc = (JdbcTable) table.root();
             final Connection connection = jdbc.resource().connection().open();
+            final JdbcOperator operator = jdbc.resource().connection().operator();
 
             // int isolation = Connection.TRANSACTION_NONE;
 
@@ -383,8 +364,7 @@ extends AbstractController
                     );
                 final ResultSet results = statement.executeQuery(
                     select(
-                        table,
-                        type
+                        table
                         )
                     );
 

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.adql.parser;
+package uk.ac.roe.wfau.firethorn.meta.ogsa.dqp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +43,7 @@ import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 
 /**
  * OGSA-DAI DQP ADQL Translator.
@@ -53,7 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OgsaDQPTranslator
     extends PostgreSQLTranslator
-    implements BaseTranslator
+    implements AdqlTranslator
     {
 
     /**

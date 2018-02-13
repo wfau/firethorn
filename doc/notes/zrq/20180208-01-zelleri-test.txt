@@ -1,0 +1,160 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # HSQLDB in-memory database fails
+    # suspect it runs out of available memory
+    #
+    
+    #
+    # Added Java opts to increase the available memory.
+    # Works, whole table transferred.
+    #
+
+
+    SELECT
+        sourceID,
+        htmID,
+        ra,
+        dec
+    FROM
+        ATLASDR1.atlasSource
+    WHERE
+        htmID > 0
+
+
+    #
+    # 2018-02-09 03:39:59,834 Query started
+    # 2018-02-09 03:54:44,604 Query finished (notify failed)
+    # 15min to load the data
+    # 41.14G of memory used
+    #
+
+    #
+    # Network error makes VM unreachable.
+    # No problems with other VMs on the same host.
+    # VM appears to be healthy, just nor responding to network.
+    # After 5min .. Vm re-appears on the network.
+    # Docker containers still running.
+
+    # In tester, the first callback log entry is
+
+        "state": "READY",
+        "self": "http://gillian:8080/firethorn/blue/log/entry/2756",
+        "created": "2018-02-09T03:40:00.093",
+
+    # In tester, the last callback log entry is
+
+        "state": "RUNNING",
+        "self": "http://gillian:8080/firethorn/blue/log/entry/5669",
+        "created": "2018-02-09T03:49:59.671",
+    
+    # In tester, the last result count is 43057151 and the results table status is still PARTIAL.
+
+        "results": {
+          "count": 43057151,
+          "formats": {
+            "votable": "http://gillian:8080/firethorn/adql/table/2971/votable",
+            "datatable": "http://gillian:8080/firethorn/adql/table/2971/datatable"
+          },
+          "state": "PARTIAL",
+          "table": "http://gillian:8080/firethorn/adql/table/2971"
+        },
+
+    # In tester, the query status is still RUNNING.
+    
+        "status": "RUNNING",
+    
+    #
+    # Suggests that callbacks stopped arriving, and the query request eventually timed out.
+    # 
+
+    #
+    # OGSA-DAI logs shows final callback being made.
+
+        2018-02-09 03:54:44,417 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:157] callback(String, Long)
+        2018-02-09 03:54:44,418 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:158]   task    [COMPLETED]
+        2018-02-09 03:54:44,418 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:159]   results [COMPLETED]
+        2018-02-09 03:54:44,418 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:160]   count   [57488641]
+        2018-02-09 03:54:44,418 DEBUG context.RequestContextFactory [pool-1-thread-4,endpoint:128] endpoint [http://172.20.0.7:8080/firethorn]
+        2018-02-09 03:54:44,418 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:178] Before callback
+        2018-02-09 03:54:44,418 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:179]   Ident    [2704]
+        2018-02-09 03:54:44,419 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:180]   Endpoint [http://172.20.0.7:8080/firethorn/blue/query/callback/2704]
+        2018-02-09 03:54:44,604 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:215] Response bean
+        2018-02-09 03:54:44,605 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:216]   Ident [null]
+        2018-02-09 03:54:44,605 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:217]   Name  [XX_USDCFTAJCPUFYAAAAFQXRJP6DI]
+        2018-02-09 03:54:44,605 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:218]   State [COMPLETED]
+        2018-02-09 03:54:44,605 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:219]   Self  [http://172.20.0.7:8080/firethorn/blue/query/2704]
+        2018-02-09 03:54:44,605 DEBUG blue.CallbackHandler [pool-1-thread-4,callback:226] After callback
+ 
+
+    #
+    # Timings !!
+    # The query timeout was set to 600,000 = 10min
+
+        --data "adql.query.wait.time=600000" \
+        
+    #
+    # The query lasted for 15min.
+    # So the query request would have timed out around 03:50.
+    # So nothing to notify when the results actually completed.
+    #
+ 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity] wait done 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity] done() 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   prev  [null] 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   state [RUNNING] 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   next  [COMPLETED] 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity] done() 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   elapsed [600000] 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   timeout [600000] 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity] done (elapsed >= timeout) 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity] After listener.waitfor() 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   ident [2704] 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   ident [2704] 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   prev  [null] 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   state [RUNNING] 
+        2018-02-09 03:50:00,712 DEBUG [http-nio-8080-exec-3] [BlueTaskEntity]   next  [COMPLETED] 
+
+    #
+    # So callbacks got through from OGSA-DAI to Firethorn with no problem.
+    # tester client had stopped listening by the time the query CMPLETED
+    # Network error meant ssh terminal had already died by the time the query timed out.
+    #
+
+    #
+    # tester terminal was quiet, so without a keepalive it might fail.
+    # Firethorn and OGSA-DAI terminals were very active, so not lack of traffic.
+    #
+
+    #
+    # Internal networking continued to work as planned.
+    # External networking failed ... and then recovered after some time.
+    #
+
+    #
+    # Both Stelios and I have seen similar symptoms on other VMs.
+    # Not specific to this VM or this test.
+    #
+
+
+

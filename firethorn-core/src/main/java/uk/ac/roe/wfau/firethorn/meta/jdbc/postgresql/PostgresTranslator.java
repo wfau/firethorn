@@ -16,18 +16,26 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.adql.parser;
+package uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql;
 
+import adql.query.ADQLQuery;
 import adql.translator.PostgreSQLTranslator;
+import adql.translator.TranslationException;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 
 /**
- * Local extension of the taplib translator class.
+ * ADQL translator for a Postgres database.
  * 
  */
-public class PostgresTranslator extends PostgreSQLTranslator
+@Slf4j
+public class PostgresTranslator
+extends PostgreSQLTranslator
+implements AdqlTranslator
     {
 
     /**
+     * Public constructor.
      * 
      */
     public PostgresTranslator()
@@ -36,8 +44,8 @@ public class PostgresTranslator extends PostgreSQLTranslator
         }
 
     /**
+     * Public constructor.
      * 
-     * @param allCaseSensitive
      */
     public PostgresTranslator(boolean allCaseSensitive)
         {
@@ -45,14 +53,18 @@ public class PostgresTranslator extends PostgreSQLTranslator
         }
 
     /**
+     * Public constructor.
      * 
-     * @param catalog
-     * @param schema
-     * @param table
-     * @param column
      */
     public PostgresTranslator(boolean catalog, boolean schema, boolean table, boolean column)
         {
         super(catalog, schema, table, column);
+        }
+
+    @Override
+    public String translate(final ADQLQuery query) throws TranslationException
+        {
+        log.debug("translate(ADQLQuery)");
+        return super.translate(query);
         }
     }

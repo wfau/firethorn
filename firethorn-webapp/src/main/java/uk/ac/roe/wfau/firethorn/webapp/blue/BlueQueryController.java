@@ -379,7 +379,10 @@ public class BlueQueryController
         log.debug("  ident [{}]", ident);
         log.debug("  next  [{}]", bean.getState());
         return bean(
-            services().entities().callback(
+//
+// TODO return a smaller CallbackBean - without the history
+//
+                services().entities().callback(
                 services().idents().ident(
                     ident
                     ),

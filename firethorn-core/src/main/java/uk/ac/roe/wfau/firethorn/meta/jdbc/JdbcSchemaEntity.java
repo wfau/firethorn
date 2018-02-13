@@ -212,8 +212,7 @@ public class JdbcSchemaEntity
                     "At least one of [catalog][schema] is required"
                     );
                 }
-// SQLServer specific '*' catalog.
-            else if ((catalog == null) || (JdbcResource.ALL_CATALOGS.equals(catalog)))
+            else if (catalog == null)
                 {
                 return safe(
                     schema
@@ -256,19 +255,18 @@ public class JdbcSchemaEntity
 
         @Override
         @CreateMethod
-        public JdbcSchema build(final JdbcResource parent, final Identity identity)
+        public JdbcSchema build(final JdbcResource resource, final Identity identity)
         throws ProtectionException
             {
 // TODO Need the resource catalog name ?
 // NameFactory - Generate a unique name from JdbcResource and Identity.
-// TODO Liquibase SchemaBuilder ?
             log.debug("JdbcSchema build(JdbcResource ,Identity)");
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
            
             return oldbuilder.create(
                 this.create(
-                    parent,
-                    parent.catalog(),
+                    resource,
+                    resource.connection().catalog(),
                     names.name()
                     )
                 );

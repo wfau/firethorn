@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2018 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,15 +16,21 @@
  *
  */
 
-package uk.ac.roe.wfau.firethorn.adql.parser;
+package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import adql.translator.ADQLTranslator;
+import java.sql.SQLException;
 
 /**
- * Base class for ADQLQuery translators.
+ * Interface for handling {@link SQLException}s.
  * 
  */
-public interface BaseTranslator extends ADQLTranslator
+public interface JdbcExceptionHandler
     {
+    /**
+     * Handle a {@link SQLException}, generating the appropriate log messages.
+     * This MAY throw a new {@link RuntimeException}. 
+     * 
+     */
+    public void handle(SQLException ouch);
 
     }

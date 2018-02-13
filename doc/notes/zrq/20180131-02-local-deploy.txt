@@ -66,13 +66,12 @@
     popd
 
 # -----------------------------------------------------
-# Fetch the current builldtag.
+# Fetch the current branch name.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        export hgbranch=$(hg branch)
         export buildtag=$(hg branch)
 
     popd
@@ -81,7 +80,12 @@
 # Create our chain properties.
 #[user@virtual]
 
+    source "${HOME:?}/"
     cat > "${HOME:?}/chain.properties" << EOF
+
+metacont=betty
+usercont=carole
+datacont=hilary
 
 metadata=postgres
 metauser=$(pwgen 20 1)
@@ -102,7 +106,7 @@ tunnelhost=$(secret 'ssh.tunnel.host')
 
 admingroup=wombles
 adminuser=orinoco
-adminpass=wombleden
+adminpass=$(pwgen 20 1)
 
 guestgroup=friends
 
@@ -115,20 +119,9 @@ EOF
     source "${HOME:?}/chain.properties"
     cat > "${HOME:?}/firethorn.properties" << EOF
 
-        firethorn.meta.type=pgsql
-        firethorn.meta.driver=org.postgresql.Driver
-        firethorn.meta.host=bethany
-        firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
-        firethorn.meta.data=postgres
-
         firethorn.meta.user=${metauser:?}
         firethorn.meta.pass=${metapass:?}
 
-        firethorn.user.type=mssql
-        firethorn.user.url=jdbc:jtds:sqlserver://patricia/${userdata}
-        firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
-
-        firethorn.user.host=patricia
         firethorn.user.data=${userdata:?}
         firethorn.user.user=${useruser:?}
         firethorn.user.pass=${userpass:?}
@@ -151,11 +144,9 @@ EOF
     source "${HOME:?}/chain.properties"
     cat > "${HOME:?}/tester.properties" << EOF
 
-        datahost=elayne
         datadata=${datadata:?}
         datauser=${datauser:?}
         datapass=${datapass:?}
-        datadriver=net.sourceforge.jtds.jdbc.Driver
 
         admingroup=${admingroup:?}
         adminuser=${adminuser:?}
@@ -175,15 +166,17 @@ EOF
     source "${HOME:?}/chain.properties"
     cat > "${HOME:?}/.env" << EOF
 
-buildtag=${hgbranch:?}
+buildtag=${buildtag:?}
 
-metadata=postgres
+metadata=${metadata:?}
 metauser=${metauser:?}
 metapass=${metapass:?}
 
 userhost=${userhost:?}
+userdata=${userdata:?}
 
 datahost=${datahost:?}
+datadata=${datahost:?}
 
 tunneluser=${tunneluser:?}
 tunnelhost=${tunnelhost:?}
@@ -197,51 +190,6 @@ EOF
     compose="${FIRETHORN_CODE:?}/docker/compose"
 
 # -----------------------------------------------------
-# -----------------------------------------------------
-# Edit the source code .....
-#[user@virtual]
-
-
-
-    eclipse &
-
-
-
-# -----------------------------------------------------
-# -----------------------------------------------------
-# Shutdown our tester.
-#[user@virtual]
-
-    docker-compose \
-        --file "${compose:?}/tester.yml" \
-        down
-
-#---------------------------------------------------------------------
-# Compile our Java code.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        mvn clean install
-
-    popd
-
-# -----------------------------------------------------
-# Build our container.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        export buildtag=$(hg branch)
-        pushd firethorn-webapp
-            mvn docker:package
-        popd
-
-    popd
-
-# -----------------------------------------------------
 # Run our tester.
 #[user@virtual]
 
@@ -249,9 +197,6 @@ EOF
         --file "${compose:?}/tester.yml" \
         run \
             tester
-
-
-
 
 # -----------------------------------------------------
 # -----------------------------------------------------

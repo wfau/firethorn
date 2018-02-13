@@ -37,31 +37,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 public interface JdbcColumn
 extends BaseColumn<JdbcColumn>
     {
-    /**
-     * Physical JDBC driver interface.
-     *
-     */
-    public static interface JdbcDriver
-        {
-        /**
-         * Create (CREATE) a JDBC column.
-         * @todo Should this be part of JdbcTable.JdbcDriver ?
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-         *
-         */
-        public void create(final JdbcColumn column)
-        throws ProtectionException;
-
-        /**
-         * Delete (DROP) this {@link JdbcColumn}.
-         * @todo Should this be part of JdbcTable.JdbcDriver ?
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-         *
-         */
-        public void drop(final JdbcColumn column)
-        throws ProtectionException;
-
-        }
 
     /**
      * {@link EntityBuilder} interface.

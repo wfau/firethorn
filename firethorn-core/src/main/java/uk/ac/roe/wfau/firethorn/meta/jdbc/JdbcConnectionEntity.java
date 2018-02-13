@@ -18,11 +18,8 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
+import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -36,29 +33,26 @@ import javax.persistence.Transient;
 import javax.sql.DataSource;
 
 import org.hibernate.annotations.Parent;
-import org.hibernate.exception.internal.StandardSQLExceptionConverter;
-import org.hibernate.exception.spi.SQLExceptionConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.lookup.BeanFactoryDataSourceLookup;
-import org.springframework.jdbc.datasource.lookup.DataSourceLookup;
-import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
-import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
-import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
-import org.springframework.jdbc.support.SQLExceptionTranslator;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.parser.BaseTranslator;
-import uk.ac.roe.wfau.firethorn.adql.parser.SQLServerTranslator;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.exception.FirethornCheckedException;
 import uk.ac.roe.wfau.firethorn.exception.JdbcConnectionException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource.JdbcDriver;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PGSQLMetadataScanner;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.MSSQLMetadataScanner;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.SQLServerDriver;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb.HsqldbOperator;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb.HsqldbScanner;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.hsqldb.HsqldbTranslator;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresOperator;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresScanner;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresTranslator;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.SQLServerOperator;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.SQLServerScanner;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.SQLServerTranslator;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
- * {@link JdbcConnector} implementation.
+ * {@link JdbcConnection} implementation.
  * @todo This is not thread safe at all.
  * Miss-match, JDBC connections are held in a ThreadLocal, but the count of open/close is per entity, not per thread.
  *
@@ -69,42 +63,53 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
     AccessType.FIELD
     )
 public class JdbcConnectionEntity
-    implements JdbcConnector
+implements JdbcConnection
     {
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, {@value}.
      *
      */
-    protected static final String DB_JDBC_URL_COL     = "jdbcurl";
-    protected static final String DB_JDBC_USER_COL    = "jdbcuser";
-    protected static final String DB_JDBC_PASS_COL    = "jdbcpass";
-    protected static final String DB_JDBC_STATUS_COL  = "jdbcstatus";
-    protected static final String DB_JDBC_DRIVER_COL  = "jdbcdriver";
-    protected static final String DB_JDBC_PRODUCT_COL = "jdbcproduct";
-
+    protected static final String DB_JDBC_DATABASE_COL = "jdbcdatabase";
     /**
-     * Our Spring SQLException translator.
+     * Hibernate column mapping, {@value}.
      *
      */
-    protected static final SQLExceptionTranslator translator = new SQLExceptionSubclassTranslator();
-
-    @Override
-    public SQLExceptionTranslator translator()
-        {
-        return translator ;
-        }
-
+    protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
     /**
-     * Our Hibernate SQLException converter.
+     * Hibernate column mapping, {@value}.
      *
      */
-    protected static final SQLExceptionConverter converter = new StandardSQLExceptionConverter();
-
-    @Override
-    public SQLExceptionConverter converter()
-        {
-        return converter ;
-        }
+    protected static final String DB_JDBC_TYPE_COL = "jdbctype";
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_JDBC_PROTO_COL = "jdbcproto";
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_JDBC_HOST_COL = "jdbchost";
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_JDBC_PORT_COL = "jdbcport";
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_JDBC_USER_COL = "jdbcuser";
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_JDBC_PASS_COL = "jdbcpass";
+    /**
+     * Hibernate column mapping, {@value}.
+     *
+     */
+    protected static final String DB_JDBC_STATUS_COL = "jdbcstatus";
 
     /**
      * An Exception to indicate a problem accessing the JDBC metadata.
@@ -154,57 +159,20 @@ public class JdbcConnectionEntity
         {
         }
 
-    /*
-    public JdbcConnectionEntity(final String url)
-        {
-        this(
-            null,
-            url
-            );
-        }
-
-    public JdbcConnectionEntity(final JdbcResourceEntity parent)
-        {
-        this(
-            parent,
-            null
-            );
-        }
-     */
-
     /**
      * Protected constructor.
      *
      */
-    protected JdbcConnectionEntity(final JdbcResourceEntity parent, final String url)
+    protected JdbcConnectionEntity(final JdbcResourceEntity resource, final JdbcProductType type, final String database, final String catalog, final String host, final Integer port, final String user, final String pass)
         {
-        this.url    = url ;
-        this.parent = parent;
-        }
-
-    /**
-     * Protected constructor.
-     *
-     */
-    protected JdbcConnectionEntity(final JdbcResourceEntity parent, final String url, final String user, final String pass)
-	    {
-	    this.url    = url ;
-	    this.user   = user;
-	    this.pass   = pass;
-	    this.parent = parent;
-	    }
-
-    /**
-     * Protected constructor.
-     *
-     */
-    protected JdbcConnectionEntity(final JdbcResourceEntity parent, final String url, final String user, final String pass, final String driver)
-        {
-        this.url    = url ;
-        this.user   = user;
-        this.pass   = pass;
-        this.driver = driver;
-        this.parent = parent;
+        this.resource = resource;
+        this.database = database;
+        this.catalog = catalog;
+        this.type = type;
+        this.host = host;
+        this.port = port;
+        this.user = user;
+        this.pass = pass;
         }
     
     /**
@@ -213,40 +181,117 @@ public class JdbcConnectionEntity
      */
     protected ComponentFactories factories()
         {
-        return parent.factories();
+        return resource.factories();
         }
     
     @Parent
-    protected JdbcResourceEntity parent;
-    protected JdbcResourceEntity getParent()
+    protected JdbcResourceEntity resource;
+    protected JdbcResourceEntity resource()
         {
-        return this.parent;
+        return this.resource;
         }
-    protected void setParent(final JdbcResourceEntity parent)
+    protected void resource(final JdbcResourceEntity resource)
         {
-        this.parent = parent;
+        this.resource = resource;
+        }
+
+    /**
+     * Get/Set methods for Hibernate.
+     * 
+     * @return
+     */
+    protected JdbcResourceEntity getResource()
+        {
+        return this.resource;
+        }
+    protected void setResource(final JdbcResourceEntity resource)
+        {
+        this.resource = resource;
         }
 
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_JDBC_URL_COL,
+        name = DB_JDBC_DATABASE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private String url = "";
+    private String database ;
     @Override
-    public String uri()
+    public String database()
         {
-        return this.url;
+        return this.database;
         }
     @Override
-    public synchronized void url(final String url)
+    public void database(final String database)
         {
-        this.url = url;
+        this.database = database;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_JDBC_CATALOG_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String catalog ;
+    @Override
+    public String catalog()
+        {
+        return this.catalog ;
+        }
+    @Override
+    public void catalog(final String catalog)
+        {
+        this.catalog = catalog ;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_JDBC_HOST_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String host;
+    @Override
+    public String host()
+        {
+        return this.host;
+        }
+    @Override
+    public void host(final String host)
+        {
+        this.host = host;
         this.reset();
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_JDBC_PORT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Integer port;
+    @Override
+    public Integer port()
+        {
+        return this.port;
+        }
+    @Override
+    public void port(Integer port)
+        {
+        this.port = port ;
         }
 
     @Basic(
@@ -293,26 +338,20 @@ public class JdbcConnectionEntity
         this.reset();
         }
 
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_JDBC_DRIVER_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String driver;
-    @Override
-    public String driver()
+    /**
+     * Our JDBC DataSource.
+     *
+     */
+    @Transient
+    private DataSource source ;
+
+    /**
+     * Our JDBC DataSource.
+     *
+     */
+    public DataSource source()
         {
-        return this.driver;
-        }
-    @Override
-    public synchronized void driver(final String driver)
-        {
-        this.driver = driver;
-        this.reset();
+        return this.source;
         }
 
     /**
@@ -339,29 +378,30 @@ public class JdbcConnectionEntity
      */
     public static final String TEST_URL_PREFIX = "test:" ;
 
-    /**
-     * Our JDBC DataSource.
-     *
-     */
-    @Transient
-    private DataSource source ;
-
-    /**
-     * Our JDBC DataSource.
-     *
-     */
-    public DataSource source()
+    @Override
+    public String url()
         {
-        return this.source;
+        return this.operator().url();
         }
 
+    /**
+     * Our JDBC {@link Driver}.
+     * 
+    public Driver driver()
+        {
+        return null ;
+        }
+     */
+
+    
+    
     /**
      * Initialise our JDBC DataSource and create a Connection.
      *
      */
     private synchronized Connection connect()
         {
-        log.debug("connect [{}]", this.url);
+        log.debug("connect [{}]", this.url());
 
         if (this.state == State.CLOSED)
             {
@@ -377,118 +417,32 @@ public class JdbcConnectionEntity
 
         if (this.state == State.EMPTY)
             {
+            // Use a pooled connection
             log.debug("State is EMPTY, initialising DataSource");
-            if (this.url == null)
-                {
-                this.state = State.INVALID;
-                throw new IllegalArgumentException(
-                    "JDBC connection URL required"
-                    );
-                }
-
-            else if (this.url.equals(""))
-                {
-                this.state = State.INVALID;
-                throw new IllegalArgumentException(
-                    "JDBC connection URL required"
-                    );
-                }
-
-            else if (this.url.startsWith(JDBC_URL_PREFIX))
-                {
-                if (this.driver != null)
-                    {
-                    try {
-                        Class.forName(
-                            this.driver
-                            );
-                        }
-                    catch (final Exception ouch)
-                        {
-                        this.state = State.FAILED;
-                        log.error("Unable to load JDBC driver [{}]", this.driver);
-                        throw new RuntimeException(
-                            ouch
-                            );
-                        }
-                    }
-                this.source = new DriverManagerDataSource(
-                    this.url
-                    );
-                this.state = State.READY;
-                }
-
-            else if (this.url.startsWith(JNDI_URL_PREFIX))
-                {
-                try {
-                    final DataSourceLookup resolver = new JndiDataSourceLookup();
-                    this.source = resolver.getDataSource(
-                        this.url.substring(
-                            JNDI_URL_PREFIX.length()
-                            )
-                        );
-                    this.state = State.READY;
-                    }
-                catch (final DataSourceLookupFailureException ouch)
-                    {
-                    this.state = State.FAILED;
-                    log.error("Unable to resolve DataSource [{}]", this.url);
-                    throw ouch;
-                    }
-                catch (final Exception ouch)
-                    {
-                    this.state = State.FAILED;
-                    log.error("Unable to resolve DataSource [{}]", this.url);
-                    throw new RuntimeException(
-                        ouch
-                        );
-                    }
-                }
-
-            else if (this.url.startsWith(SPRING_URL_PREFIX))
-                {
-                try {
-                    final DataSourceLookup resolver = new BeanFactoryDataSourceLookup(
-                        this.factories().spring().context()
-                        );
-                    this.source = resolver.getDataSource(
-                        this.url.substring(
-                            SPRING_URL_PREFIX.length()
-                            )
-                        );
-                    this.state = State.READY;
-                    }
-                catch (final DataSourceLookupFailureException ouch)
-                    {
-                    this.state = State.FAILED;
-                    log.error("Unable to resolve DataSource [{}]", this.url);
-                    throw ouch;
-                    }
-                catch (final Exception ouch)
-                    {
-                    this.state = State.FAILED;
-                    log.error("Unable to resolve DataSource [{}]", this.url);
-                    throw new RuntimeException(
-                        ouch
-                        );
-                    }
-                }
-
-            else if (this.url.startsWith(TEST_URL_PREFIX))
-                {
-                this.source = null ;
-                this.state  = State.READY;
-                }
-
-            else {
-                this.state = State.INVALID;
-                log.error("Unexpected prefix for JDBC connection URL [{}]", this.url);
-                throw new IllegalArgumentException(
-                    "Unexpected prefix for JDBC connection URL [" + this.url + "]"
-                    );
-                }
+            this.source = new SimpleDriverDataSource(
+                this.operator().driver(),
+                this.operator().url(),
+                this.user,
+                this.pass
+                );            
+            this.state = State.READY;
             }
 
+       /*
+        * http://www.mchange.com/projects/c3p0/#using_datasources_factory
+        * Need to have a Map<uuid,ComboPooledDataSource> for this to make sense. 
+        ComboPooledDataSource cpds = new ComboPooledDataSource();
+        cpds.setDriverClass( "org.postgresql.Driver" );
+        cpds.setJdbcUrl( "jdbc:postgresql://localhost/testdb" );
+        cpds.setUser("swaldman");
+        cpds.setPassword("test-password");
+        
+        cpds.setMinPoolSize(5);
+        cpds.setAcquireIncrement(5);
+        cpds.setMaxPoolSize(20);        
+        * 
+        */
+        
         if (this.state == State.READY)
             {
             log.debug("State is READY, initialising Connection");
@@ -552,14 +506,14 @@ public class JdbcConnectionEntity
         @Override
         public Connection get()
             {
-            log.debug("get() [{}]", url);
+            log.debug("get() [{}]", url());
             return super.get();
             }
 
         @Override
         public void set(final Connection connection)
             {
-            log.debug("set() [{}]", url);
+            log.debug("set() [{}]", url());
             super.set(
                 connection
                 );
@@ -568,7 +522,7 @@ public class JdbcConnectionEntity
         @Override
         protected Connection initialValue()
             {
-            log.debug("initialValue() [{}]", url);
+            log.debug("initialValue() [{}]", url());
             return connect();
             }
         };
@@ -580,7 +534,7 @@ public class JdbcConnectionEntity
     @Override
     public synchronized void reset()
         {
-        log.debug("reset [{}]", this.url);
+        log.debug("reset [{}]", url());
         try {
             final Connection connection = this.local.get();
             if (connection != null)
@@ -611,7 +565,7 @@ public class JdbcConnectionEntity
         synchronized (this.local)
             {
             opens++;
-            log.debug("open [{}][{}]", this.url, opens);
+            log.debug("open [{}][{}]", url(), opens);
             if (opens > 1)
                 {
                 if (DEBUG_NESTED_CONNECTS)
@@ -631,7 +585,7 @@ public class JdbcConnectionEntity
         {
         synchronized (this.local)
             {
-            log.debug("close [{}][{}]", this.url, opens);
+            log.debug("close [{}][{}]", url(), opens);
             opens--;
             if (opens < 0)
                 {
@@ -668,125 +622,6 @@ public class JdbcConnectionEntity
             }
         }
 
-    @Override
-    public DatabaseMetaData metadata()
-    throws MetadataException
-        {
-        log.debug("metadata()");
-        final Connection connection = open();
-        if (connection != null)
-            {
-            try {
-                return connection.getMetaData();
-                }
-            catch (final SQLException ouch)
-                {
-                log.warn("Exception fetching JDBC metadata [{}]", ouch.getMessage());
-                throw new MetadataException(
-                    ouch
-                    );
-                }
-            }
-        return null ;
-        }
-
-    @Override
-    public String catalog()
-    throws MetadataException
-        {
-        final Connection connection = open();
-        if (connection != null)
-            {
-            try {
-                return connection.getCatalog();
-                }
-            catch (final SQLException ouch)
-                {
-                log.warn("Exception fetching JDBC catalog name [{}]", ouch.getMessage());
-                throw new MetadataException(
-                    ouch
-                    );
-                }
-            }
-        return null ;
-        }
-
-    @Override
-    public Iterable<String> catalogs()
-    throws MetadataException
-        {
-        final List<String> catalogs = new ArrayList<String>();
-        try {
-            final DatabaseMetaData metadata = this.metadata();
-            final ResultSet results = metadata.getCatalogs();
-            while (results.next())
-                {
-                catalogs.add(
-                    results.getString(
-                        JdbcTypes.JDBC_META_TABLE_CAT
-                        )
-                    );
-                }
-            }
-        catch(final SQLException ouch)
-            {
-            log.warn("Exception fetching JDBC catalog list [{}]", ouch.getMessage());
-            throw new MetadataException(
-                ouch
-                );
-            }
-        return catalogs;
-        }
-
-    /**
-     * The component status.
-     *
-    @Column(
-        name = DB_JDBC_STATUS_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private Status status = Status.CREATED;
-    @Override
-    public Status status()
-        {
-        return this.status;
-        }
-
-    @Override
-    public void status(final Status value)
-        {
-        switch(value)
-            {
-            case ENABLED:
-                this.status = Status.ENABLED;
-                if (this.parent != null)
-                    {
-                    try {
-                        this.parent.scansync();
-                        }
-                    catch (final RuntimeException ouch)
-                        {
-                        this.status = Status.FAILED;
-                        throw ouch;
-                        }
-                    }
-                break;
-            case DISABLED:
-                this.status = Status.DISABLED;
-                break ;
-            default :
-                throw new IllegalArgumentException(
-                    "Invalid status update [" + value.name() + "]"
-                    );
-            }
-        }
-     */
-
     /**
      * This connection state.
      *
@@ -809,11 +644,7 @@ public class JdbcConnectionEntity
      */
     @Transient
     private State state = State.EMPTY ;
-
-    /**
-     * The connection state.
-     *
-     */
+    @Override
     public State state()
         {
         return this.state;
@@ -835,7 +666,7 @@ public class JdbcConnectionEntity
         EnumType.STRING
         )
     @Column(
-        name = DB_JDBC_PRODUCT_COL,
+        name = DB_JDBC_TYPE_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -844,19 +675,6 @@ public class JdbcConnectionEntity
     @Override
     public JdbcProductType type()
         {
-        if (this.type == null)
-            {
-            try {
-                this.type = JdbcProductType.match(
-                    this.metadata()
-                    );
-                }
-            catch (final MetadataException ouch)
-                {
-                log.error("Error loading JDBC metadata");
-                this.type = JdbcProductType.UNKNOWN;
-                }
-            }
         return this.type;
         }
     @Override
@@ -873,15 +691,20 @@ public class JdbcConnectionEntity
         {
         switch (this.type())
             {
-            case MSSQL :
-                return new MSSQLMetadataScanner(
+            case hsqldb :
+                return new HsqldbScanner(
                     this
                     );
 
-            case PGSQL :
-            return new PGSQLMetadataScanner(
-                this
-                );
+            case mssql :
+                return new SQLServerScanner(
+                    this
+                    );
+
+            case pgsql :
+                return new PostgresScanner(
+                    this
+                    );
             
             default : throw new RuntimeException(
                 "Unable to load scanner for type [" + this.type + "]"
@@ -889,31 +712,46 @@ public class JdbcConnectionEntity
             }
         }
 
-    /**
-     * The {@link JdbcDriver} for this {@link JdbcResource}.
-     *
-     */
-    public JdbcResource.JdbcDriver jdbcdriver()
+    @Override
+    public JdbcOperator operator()
         {
         log.debug("jdbcdriver() for [{}]", this.type().name());
         switch (this.type())
             {
-            case MSSQL :
-                return new SQLServerDriver();
+            case hsqldb:
+                return new HsqldbOperator(
+                    this
+                    );
+            
+            case pgsql:
+                return new PostgresOperator(
+                    this
+                    );
+
+            case mssql:
+                return new SQLServerOperator(
+                    this
+                    );
 
             default : throw new RuntimeException(
-                "Unable to load driver for type [" + this.type + "]"
+                "Unable to load operator for type [" + this.type + "]"
                 );
             }
         }
 
     @Override
-    public BaseTranslator jdbctranslator()
+    public AdqlTranslator translator()
         {
         log.debug("jdbctranslator() for [{}]", this.type().name());
         switch (this.type())
             {
-            case MSSQL :
+            case hsqldb:
+                return new HsqldbTranslator();
+            
+            case pgsql:
+                return new PostgresTranslator();
+            
+            case mssql:
                 return new SQLServerTranslator();
 
             default : throw new RuntimeException(
