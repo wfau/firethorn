@@ -39,6 +39,8 @@
 
     cat > "${HOME:?}/chain.properties" << EOF
 
+buildtag=2.1.14
+
 metadata=postgres
 metauser=$(pwgen 20 1)
 metapass=$(pwgen 20 1)
@@ -104,8 +106,6 @@ EOF
 # -----------------------------------------------------
 # Run our tester.
 #[user@virtual]
-
-    export buildtag=2.1.13
 
     docker-compose \
         --file "tester.yml" \
@@ -403,8 +403,6 @@ EOF
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
-        jdbcurl="jdbc:jtds:sqlserver://${datahost:?}/${datadata:?}"
-
         catalog="ATLASDR1"
 
         curl \
@@ -413,11 +411,12 @@ EOF
             --header "firethorn.auth.username:${guestuser:?}" \
             --header "firethorn.auth.password:" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
-            --data   "jdbc.connection.url=${jdbcurl:?}" \
-            --data   "jdbc.connection.user=${datauser:?}" \
-            --data   "jdbc.connection.pass=${datapass:?}" \
-            --data   "jdbc.connection.driver=${datadriver:?}" \
-            --data   "jdbc.resource.catalog=${catalog:?}" \
+            --data   "jdbc.resource.connection.database=${datadata:?}" \
+            --data   "jdbc.resource.connection.catalog=${catalog:?}" \
+            --data   "jdbc.resource.connection.type=${datatype:?}" \
+            --data   "jdbc.resource.connection.host=${datahost:?}" \
+            --data   "jdbc.resource.connection.user=${datauser:?}" \
+            --data   "jdbc.resource.connection.pass=${datapass:?}" \
             "${endpointurl:?}/jdbc/resource/create" \
             | split-headers
 
@@ -428,7 +427,6 @@ EOF
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
-
         catalog="ATLASDR1"
 
         curl \
@@ -437,12 +435,12 @@ EOF
             --header "firethorn.auth.username:${testuser:?}" \
             --header "firethorn.auth.password:${testpass:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
-            --data   "jdbc.resource.catalog=${catalog:?}" \
-            --data   "jdbc.connection.type=${datatype:?}" \
-            --data   "jdbc.connection.host=${datahost:?}" \
-            --data   "jdbc.connection.data=${datadata:?}" \
-            --data   "jdbc.connection.user=${datauser:?}" \
-            --data   "jdbc.connection.pass=${datapass:?}" \
+            --data   "jdbc.resource.connection.database=${datadata:?}" \
+            --data   "jdbc.resource.connection.catalog=${catalog:?}" \
+            --data   "jdbc.resource.connection.type=${datatype:?}" \
+            --data   "jdbc.resource.connection.host=${datahost:?}" \
+            --data   "jdbc.resource.connection.user=${datauser:?}" \
+            --data   "jdbc.resource.connection.pass=${datapass:?}" \
             "${endpointurl:?}/jdbc/resource/create" \
             | split-headers
 
@@ -453,8 +451,6 @@ EOF
 #[root@deployer]
 
         jdbcname="ATLAS JDBC resource"
-        jdbcurl="jdbc:jtds:sqlserver://${datahost:?}/${datadata:?}"
-
         catalog="ATLASDR1"
 
         curl \
@@ -464,11 +460,12 @@ EOF
             --header "firethorn.auth.password:${adminpass:?}" \
             --header "firethorn.auth.community:${admingroup:?}" \
             --data   "jdbc.resource.name=${jdbcname:?}" \
-            --data   "jdbc.connection.url=${jdbcurl:?}" \
-            --data   "jdbc.connection.user=${datauser:?}" \
-            --data   "jdbc.connection.pass=${datapass:?}" \
-            --data   "jdbc.connection.driver=${datadriver:?}" \
-            --data   "jdbc.resource.catalog=${catalog:?}" \
+            --data   "jdbc.resource.connection.database=${datadata:?}" \
+            --data   "jdbc.resource.connection.catalog=${catalog:?}" \
+            --data   "jdbc.resource.connection.type=${datatype:?}" \
+            --data   "jdbc.resource.connection.host=${datahost:?}" \
+            --data   "jdbc.resource.connection.user=${datauser:?}" \
+            --data   "jdbc.resource.connection.pass=${datapass:?}" \
             "${endpointurl:?}/jdbc/resource/create" \
             | split-headers \
             | jq '.' | tee /tmp/atlas-jdbc.json
@@ -636,7 +633,9 @@ EOF
 # Import the mapping between JDBC and ADQL tables.
 #[root@deployer]
 
-        metadoc="meta/ATLASDR1_TablesSchema.xml"
+        metadoc=ATLASDR1_TablesSchema.xml
+
+        wget "https://raw.githubusercontent.com/wfau/metadata/master/metadocs/${metadoc:?}"
 
         curl \
             --silent \

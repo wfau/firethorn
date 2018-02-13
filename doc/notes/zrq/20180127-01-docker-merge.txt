@@ -69,18 +69,18 @@
 # Set the target branch
 #[user@virtual]
 
-    branch=2.1.8-zrq-fedora-image
-    branch=2.1.9-zrq-bug-fixes
-    branch=2.1.10-zrq-junit-clean
-    branch=2.1.11-zrq-update-depends
-    branch=2.1.12-zrq-basic-auth
+    #branch=2.1.8-zrq-fedora-image
+    #branch=2.1.9-zrq-bug-fixes
+    #branch=2.1.10-zrq-junit-clean
+    #branch=2.1.11-zrq-update-depends
+    #branch=2.1.12-zrq-basic-auth
     branch=2.1.13-zrq-lsst-events
 
 # -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
 
-    export branch=${branch:?}
+    export branch
     docker-compose \
         --file "builder.yml" \
         run \
@@ -157,7 +157,7 @@
 # Run our builder.
 #[user@virtual]
 
-    export branch=2.1.13
+    export branch=2.1.14
 
     docker-compose \
         --file "builder.yml" \
@@ -181,6 +181,25 @@ oldversion=2.1.12
 newversion=2.1.13
 EOF
 
+cat > "${HOME}/merge.settings" << EOF
+devbranch=2.1.13-zrq-lsst-events
+oldversion=2.1.13
+newversion=2.1.14
+EOF
+
+    # -----------------------------------------------------
+    # Add our secret function.
+    #[user@virtual]
+
+        vi "${HOME:?}/secret.sh"
+
+            ....
+            ....
+            ....
+
+        source "${HOME:?}/secret.sh"
+        secret 'frog'
+
     # -----------------------------------------------------
     # Initialise our path.
     #[root@builder]
@@ -198,9 +217,6 @@ EOF
     #[root@builder]
 
         # TODO Move to secrets.
-        hguser=Zarquan
-        hghost=data.metagrid.co.uk
-        hgpath=/var/local/wfau/projects/firethorn/code
 
         source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"
@@ -223,28 +239,30 @@ EOF
         07.03-merge-commit.sh
 
     # -----------------------------------------------------
+    # Push changes to Mercurial 
+    #[root@builder]
+
+        08.03-mercurial-push.sh
+#
+# Uses default repo ?
+
+    # -----------------------------------------------------
     # Tag our new images
     #[root@builder]
 
         08.01-docker-latest.sh
 
     # -----------------------------------------------------
-    # Push changes to Mercurial 
-    #[root@builder]
-
-        source 08.03-mercurial-push.sh
-
-    # -----------------------------------------------------
     # Push images to Docker.
     #[root@builder]
 
-        source 08.02-docker-push.sh
+        08.02-docker-push.sh
 
     # -----------------------------------------------------
     # Push binaries to Maven repo.
     #[root@builder]
 
-        source 08.04-maven-push.sh
+        08.04-maven-push.sh
 
 
 
