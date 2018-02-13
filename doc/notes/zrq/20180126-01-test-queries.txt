@@ -65,39 +65,6 @@ guestgroup=friends
 EOF
 
 # -----------------------------------------------------
-# Create our Firethorn properties.
-#[user@virtual]
-
-    source "${HOME:?}/chain.properties"
-    cat > "${HOME:?}/firethorn.properties" << EOF
-
-        firethorn.meta.type=pgsql
-        firethorn.meta.driver=org.postgresql.Driver
-        firethorn.meta.host=bethany
-        firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
-        firethorn.meta.data=postgres
-
-        firethorn.meta.user=${metauser:?}
-        firethorn.meta.pass=${metapass:?}
-
-        firethorn.user.type=mssql
-        firethorn.user.host=patricia
-        firethorn.user.data=${userdata:?}
-        firethorn.user.user=${useruser:?}
-        firethorn.user.pass=${userpass:?}
-
-        firethorn.admin.community=${admingroup:?}
-        firethorn.admin.user.name=${adminuser:?}
-        firethorn.admin.user.pass=${adminpass:?}
-
-        firethorn.guest.community=${guestgroup:?}
-
-EOF
-
-    chmod a+r "${HOME:?}/firethorn.properties"
-    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties"
-
-# -----------------------------------------------------
 # Create our tester properties.
 #[user@virtual]
 
@@ -109,7 +76,6 @@ EOF
         datadata=${datadata:?}
         datauser=${datauser:?}
         datapass=${datapass:?}
-        datadriver=net.sourceforge.jtds.jdbc.Driver
 
         admingroup=${admingroup:?}
         adminuser=${adminuser:?}
@@ -123,24 +89,10 @@ EOF
     chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties"
 
 # -----------------------------------------------------
-# Create our compose env file.
+# Link our chain properties as our compose env file.
 #[user@virtual]
 
-    source "${HOME:?}/chain.properties"
-    cat > "${HOME:?}/.env" << EOF
-
-metadata=postgres
-metauser=${metauser:?}
-metapass=${metapass:?}
-
-userhost=${userhost:?}
-
-datahost=${datahost:?}
-
-tunneluser=${tunneluser:?}
-tunnelhost=${tunnelhost:?}
-
-EOF
+    ln -s "${HOME:?}/chain.properties" "${HOME:?}/.env"
 
 # -----------------------------------------------------
 # Download our compose file
