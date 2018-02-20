@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.14
+FROM firethorn/ubuntu:2.1.14-zrq-python-notes
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
