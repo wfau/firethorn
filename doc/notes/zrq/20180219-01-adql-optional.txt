@@ -1,0 +1,71 @@
+:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+> This is mainly because it was felt we cannot
+> introduce mandatory new features in a minor version.
+
+
+This was not the criteria we used for deciding if something was mandatory or optional.
+
+The primary criteria for accepting a feature or operator as mandatory is that it must be demonstrated, with working code examples, that it is possible to implement the new feature in an interoperable manner on all of the main platforms that are currently in use or in development for science data archives.
+
+Interoperable in this case means that the same query run on the same data must produce the same results on all the target platforms.
+
+The current list of main database platforms includes:
+
+    PostgreSQL
+    MySQL
+    MariaDB
+    Apache Derby
+    HYSQLDB
+    SQLite
+    Microsoft SQLServer
+    Oracle
+    Sybase
+    qserv
+
+In addition, where possible, we should check that making the new feature mandatory would not exclude the less conventional database platforms, such as Hadoop etc. However, this secondary criteria may be waived if there is a strong science case for making the feature mandatory.
+
+This deliberately sets the bar high for making a feature mandatory, because the cost of getting it wrong is high.
+
+We specifically wanted to avoid being in the position of discovering in two or three years time that it is no longer possible to implement ADQL on a key database platform because we did not do
+the required due diligence checks before we made it mandatory.
+
+We have done some initial experiments for each of the new features proposed in version 2.1 
+and the results indicated that all of them had some kind of implementation issues on one or more of the main database platforms. As a result, so far none of the proposed features have met the criteria
+for being accepted as mandatory.
+
+We would be happy to accept proposals to make any of the currently optional features mandatory.
+However, it is up to the proposer to do the work required to demonstrate, with working code, that the feature meets the minimum requirements for being considered as a mandatory feature.
+
+In contrast, the bar for accepting new optional features was deliberately set fairly low. This was because compared to adding a mandatory feature, the cost of getting it wrong with an optional feature is fairly low. The primary benefit of having optional features is that it provides a way to include new features to meet specific science use cases without having to meet the high bar required for a mandatory feature.
+
+If we accept something as optional in 2.1, then if it becomes widely adopted, and we can demonstrate it meets the criteria for a mandatory feature, then it is easy enough to make it mandatory in the next version of the specification.
+
+However, if we make something mandatory without doing enough checks, and we don't discover the implementation issues until after wards, then removing a mandatory feature from a future version of the specification is much more problematic.
+
+So, erring on the side of caution, new features are accepted as optional, unless and until they are demonstrated to be safe and side effect free.
+
+The fact that this debate about the merits of and criteria for optional vs mandatory features has come up on the mailing list again, I propose to add some text to the specification clarifying the acceptance criteria that were used and reasons behind it.
+
+
+
+

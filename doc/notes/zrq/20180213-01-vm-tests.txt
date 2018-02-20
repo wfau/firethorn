@@ -1,0 +1,137 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    INFO : Node name [Acilamwen]
+    INFO : Base name [fedora-27-docker-base-20180129.qcow]
+    INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+
+    ssh Acilamwen
+
+    INFO : Node name [Siamond]
+    INFO : Base name [fedora-27-docker-base-20180129.qcow]
+    INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+
+    ssh Siamond
+        sudo dnf update -y
+        
+    INFO : Node name [Eterathiel]
+    INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+    INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+
+    ssh Eterathiel
+
+
+    #
+    # Both fedora-27 machines have network issues.
+    
+
+    #
+    # -----------------------------------------
+    #
+
+    [Stevedore@Acilamwen ~]$ sudo systemctl status NetworkManager
+    ● NetworkManager.service - Network Manager
+       Loaded: loaded (/usr/lib/systemd/system/NetworkManager.service; enabled; vend
+       Active: active (running) since Tue 2018-02-13 15:20:37 GMT; 21min left
+         Docs: man:NetworkManager(8)
+     Main PID: 467 (NetworkManager)
+        Tasks: 4 (limit: 4915)
+       Memory: 11.2M
+          CPU: 442ms
+       CGroup: /system.slice/NetworkManager.service
+               ├─467 /usr/sbin/NetworkManager --no-daemon
+               └─685 /sbin/dhclient -d -q -sf /usr/libexec/nm-dhcp-helper -pf /var/r
+
+    Feb 13 14:30:18 Acilamwen NetworkManager[467]: <info>  [1518532218.4187] manager
+    Feb 13 14:30:18 Acilamwen NetworkManager[467]: <info>  [1518532218.4213] manager
+    Feb 13 14:30:18 Acilamwen NetworkManager[467]: <info>  [1518532218.9601] device 
+    Feb 13 14:30:18 Acilamwen NetworkManager[467]: <info>  [1518532218.9914] device 
+    Feb 13 14:30:18 Acilamwen NetworkManager[467]: <info>  [1518532218.9918] device 
+    Feb 13 14:30:25 Acilamwen NetworkManager[467]: <info>  [1518532225.1638] manager
+    Feb 13 14:30:25 Acilamwen NetworkManager[467]: <info>  [1518532225.1651] manager
+    Feb 13 14:30:25 Acilamwen NetworkManager[467]: <info>  [1518532225.6807] device 
+    Feb 13 14:55:40 Acilamwen NetworkManager[467]: <info>  [1518533740.0049] manager
+    Feb 13 14:55:40 Acilamwen NetworkManager[467]: <info>  [1518533740.0339] device 
+
+    #
+    # -----------------------------------------
+    #
+
+    [Stevedore@Siamond ~]$ sudo systemctl status NetworkManager
+    ● NetworkManager.service - Network Manager
+       Loaded: loaded (/usr/lib/systemd/system/NetworkManager.service; enabled; vend
+       Active: active (running) since Tue 2018-02-13 15:21:33 GMT; 21min left
+         Docs: man:NetworkManager(8)
+     Main PID: 474 (NetworkManager)
+        Tasks: 4 (limit: 4915)
+       Memory: 11.3M
+          CPU: 445ms
+       CGroup: /system.slice/NetworkManager.service
+               ├─474 /usr/sbin/NetworkManager --no-daemon
+               └─681 /sbin/dhclient -d -q -sf /usr/libexec/nm-dhcp-helper -pf /var/r
+
+    Feb 13 14:30:17 Siamond NetworkManager[474]: <info>  [1518532217.5512] manager: 
+    Feb 13 14:30:17 Siamond NetworkManager[474]: <info>  [1518532217.5540] manager: 
+    Feb 13 14:30:18 Siamond NetworkManager[474]: <info>  [1518532218.1074] device (v
+    Feb 13 14:30:18 Siamond NetworkManager[474]: <info>  [1518532218.1411] device (v
+    Feb 13 14:30:18 Siamond NetworkManager[474]: <info>  [1518532218.1427] device (b
+    Feb 13 14:30:25 Siamond NetworkManager[474]: <info>  [1518532225.2440] manager: 
+    Feb 13 14:30:25 Siamond NetworkManager[474]: <info>  [1518532225.2469] manager: 
+    Feb 13 14:30:25 Siamond NetworkManager[474]: <info>  [1518532225.8019] device (v
+    Feb 13 14:55:43 Siamond NetworkManager[474]: <info>  [1518533743.1825] manager: 
+    Feb 13 14:55:43 Siamond NetworkManager[474]: <info>  [1518533743.2171] device (v
+    lines 1-22/22 (END)
+
+    #
+    # -----------------------------------------
+    #
+
+    [root@Eterathiel ~]# sudo systemctl status NetworkManager
+    ● NetworkManager.service - Network Manager
+       Loaded: loaded (/usr/lib/systemd/system/NetworkManager.service; enabled; vend
+       Active: active (running) since Tue 2018-02-13 15:21:57 GMT; 36min ago
+         Docs: man:NetworkManager(8)
+     Main PID: 504 (NetworkManager)
+        Tasks: 4 (limit: 4915)
+       Memory: 10.7M
+          CPU: 351ms
+       CGroup: /system.slice/NetworkManager.service
+               ├─504 /usr/sbin/NetworkManager --no-daemon
+               └─668 /sbin/dhclient -d -q -sf /usr/libexec/nm-dhcp-helper -pf /var/r
+
+    Feb 13 15:44:31 Eterathiel NetworkManager[504]: <info>  [1518536671.5612] dhcp4 
+    Feb 13 15:44:31 Eterathiel NetworkManager[504]: <info>  [1518536671.5615] dhcp4 
+    Feb 13 15:44:31 Eterathiel NetworkManager[504]: <info>  [1518536671.5619] dhcp4 
+    Feb 13 15:44:31 Eterathiel NetworkManager[504]: <info>  [1518536671.5624] dhcp4 
+    Feb 13 15:44:31 Eterathiel NetworkManager[504]: <info>  [1518536671.5628] dhcp4 
+    Feb 13 15:44:31 Eterathiel NetworkManager[504]: <info>  [1518536671.5631] dhcp4 
+    Feb 13 15:44:31 Eterathiel dhclient[668]: bound to 192.168.202.13 -- renewal in 
+    Feb 13 15:54:19 Eterathiel NetworkManager[504]: <info>  [1518537259.4293] manage
+    Feb 13 15:54:19 Eterathiel NetworkManager[504]: <info>  [1518537259.4613] device
+    Feb 13 15:54:19 Eterathiel NetworkManager[504]: <info>  [1518537259.4622] device
+    lines 1-22/22 (END)
+
+
+
+
+
