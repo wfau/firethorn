@@ -55,4 +55,8 @@ RUN chmod a+x /usr/local/bin/*.sh
 # Run our install scripts.
 RUN /usr/local/bin/install-locale.sh
 
+#
+# Set the terminal type for exec.
+# https://github.com/docker/docker/issues/9299
+ENV TERM xterm
 
