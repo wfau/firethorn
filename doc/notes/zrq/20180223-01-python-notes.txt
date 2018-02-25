@@ -1,4 +1,4 @@
-#
+    #
 # <meta:header>
 #   <meta:licence>
 #     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
@@ -20,15 +20,13 @@
 #
 #
 
-# -----------------------------------------------------
-# Create a new branch.
-#[user@desktop]
 
-    export devname=zrq-python-notes
+    source "${HOME}/projects.settings"
+    FIRETHORN_PY_BASE="${EDINBURGH_PROJECTS:?}/ftpy/github.zrq-002"
+    FIRETHORN_PY_BASE="${EDINBURGH_PROJECTS:?}/ftpy/github.stv"
+    FIRETHORN_PY_CODE="${FIRETHORN_PY_BASE:?}/firethorn"
 
-    source "${HOME:?}/firethorn.settings"
-    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt &
-
+    DISTICTELLA_BASE=${FIRETHORN_CODE}/docker/compose/tests/distictella/
 
 # -----------------------------------------------------
 # Fetch our branch name.
@@ -134,14 +132,20 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Build our Python client container.
+# Take down our Python client container.
 #[user@desktop]
 
-    source "${HOME}/projects.settings"
-    FIRETHORN_PY_BASE="${EDINBURGH_PROJECTS:?}/ftpy/github.zrq"
-    FIRETHORN_PY_CODE="${FIRETHORN_PY_BASE:?}/firethorn"
+    export buildtag
+    export FIRETHORN_PY_BASE
+    export DISTICTELLA_BASE
 
-    DISTICTELLA_BASE=${FIRETHORN_CODE}/docker/compose/tests/distictella/
+    docker-compose \
+        --file "${DISTICTELLA_BASE:?}/distictella.yml" \
+        down
+
+# -----------------------------------------------------
+# Build our Python client container.
+#[user@desktop]
 
     export buildtag
     export FIRETHORN_PY_BASE
@@ -171,7 +175,9 @@ import firethorn as ftpy
 #
 # Create our firethorn client.
 firethorn = ftpy.Firethorn(
-    os.environ.get('endpoint'),
+    os.environ.get(
+        'endpoint'
+        ),
     )
 
 #
@@ -246,20 +252,44 @@ for json_item in json_list:
             json_item
             )
         )
-
-# Future ref - weak references.
-# Implement a cache of known objects.
-# https://stackoverflow.com/a/6272503
-# https://docs.python.org/3/library/weakref.html
+#
+# Iterate the objects
+for obj_item in obj_list:
+    print(
+        obj_item
+        )
 
 #
 # List the Atlas schemas (raw JSON).
-atlas_adql.select_schemas()
+json_list = atlas_adql.select_schemas()
+#
+# Iterate the JSON items and create objects.
+obj_list = []
+for json_item in json_list:
+    obj_list.append(
+        AdqlSchema(
+            firethorn.firethorn_engine,
+            json_item
+            )
+        )
+#
+# Iterate the objects
+for obj_item in obj_list:
+    print(
+        obj_item
+        )
+
+
+
+
+
+
 
 #
 # Select the Atlas schema by name (object).
-atlas_adql.select_schema_by_name("ATLASDR1")
-
+print(
+    atlas_adql.select_schema_by_name("ATLASDR1")
+    )
 
 #
 # Admin user
@@ -297,173 +327,4 @@ workspace.import_schema(
         "ATLASDR1"
         )
     )
-
-# -------- -------- -------- --------
-
-class Workspace(object):
-
-        def query(self, query=""):
-
-            query = Query(querystring=query, adql_resource=self.adql_resource, firethorn_engine = self.firethorn_engine)
-            query.run() # This method isn't there ?
-            return query
-
-class AdqlResource(BaseResource):
-
-        def create_query(self, adql_query_input, adql_query_status_next="COMPLETED", jdbc_schema_ident=None, adql_query_wait_time=600000):
-            qry_engine = QueryEngine()
-            return qry_engine.create_query(
-                adql_query_input=adql_query_input,
-                adql_query_status_next=adql_query_status_next,
-                adql_resource=self,
-                firethorn_engine=self.firethorn_engine,
-                adql_query_wait_time=adql_query_wait_time,
-                jdbc_schema_ident=jdbc_schema_ident
-                )
-
-
-# User level wrapper for adql_query 
-class Query(object):
-
-    def __init__(self, querystring=None, adql_resource=None, adql_query=None, firethorn_engine=None):
-        self.table = Table()
-        self.error = None
-        self.querystring = querystring
-        self.adql_resource = adql_resource
-        self.firethorn_engine = firethorn_engine
-        self.firethorn_query_engine = QueryEngine(firethorn_engine)
-        self.adql_query = adql_query
-    
-# Engine level class 
-class AdqlQuery(BaseObject):
-
-        def run_query(self, query=None, query_name="", query_space="", query_mode="AUTO", test_email="", mode="SYNC", **kwargs):
-
-        def create_query(self, adql_query_input, adql_query_status_next, adql_resource, firethorn_engine, adql_query_wait_time=600000, jdbc_schema_ident=None):
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# -------- -------- -------- --------
-# Different options
-
-firethorn = ftpy.Firethorn()
-
-firethorn = ftpy.Firethorn(
-    os.environ.get('endpoint'),
-    )
-
-firethorn = ftpy.Firethorn(
-    endpoint=ftpy.config.default_endpoint
-    )
-
-# -------- -------- -------- --------
-# BUG in BaseObject ?
-# url, _url and __url
-# Should url and __url should both be _url ?
-
-BaseObject
-    __init__
-        self.url = url
-
-    @property
-    def url(self):
-        return self.__url
-
-# BUG __url is not set ?
-
-    def url(self, url):
-        self.__url= url 
-        ...
-
-    def name(self):
-        if (self.json_object==None):
-            if (self.url!=None):
-            ...
-
-# -------- -------- -------- --------
-# Inconsistent object wrapping
-# owner() just returns a url.
-
-print(obj_item.owner())
-
-# -------- -------- -------- --------
-# Unknown fail for Firethorn constructor.
-
-''' FAIL
-firethorn = ftpy.Firethorn(
-    os.environ.get('adminuser'),
-    os.environ.get('adminpass'),
-    os.environ.get('endpoint'),
-    os.environ.get('admingroup')
-    )
-'''
-
-# -------- -------- -------- --------
-# Old method in engine ?
-
-ft.firethorn_engine.select_jdbc_schema_by_name(atlas_jdbc.url, catalog, schema)
-
-# -------- -------- -------- --------
-# BUG In `Workspace.import_schema()`, the schema shouldn't be optional.
-# https://github.com/stvoutsin/firethorn.py/blob/master/firethorn/models/workspace.py#L63
-
-If the schema is `None`, the current code searches self.adql_resource to find an existing schema and then tries to import it again.
-
-Fix is to remove the `None` test and make the schema a required parameter.
-
-# -------- -------- -------- --------
-
-"""
-# How do we get at the top level resources ?
-osa = firethorn.get_workspace(
-    "OSA"
-    )
-wspace = firethorn.new_workspace(
-    "ATLAS"
-    )
-wspace.import_schema(
-    osa.get_schema(
-        "ATLASDR1"
-        )
-    )
-print(
-    wspace.get_schemas()
-    )
-"""
-
 

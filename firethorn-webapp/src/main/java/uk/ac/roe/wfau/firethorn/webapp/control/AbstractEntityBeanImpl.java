@@ -72,7 +72,13 @@ implements EntityBean<EntityType>
         }
 
     @Override
-    public URI getSelf()
+    public String getIdent()
+        {
+        return this.entity.ident().toString();
+        }
+    
+    @Override
+    public URI getUrl()
         {
         try {
             return new URI(
@@ -87,6 +93,12 @@ implements EntityBean<EntityType>
             }
         }
 
+    @Override
+    public URI getSelf()
+        {
+        return this.getUrl();
+        }
+    
     @Override
     public URI getType()
         {

@@ -183,7 +183,7 @@ services:
            "firethorn/firethorn-py:${buildtag}"
         build:
             context:    "${FIRETHORN_PY_BASE}"
-            dockerfile: "${DISTICTELLA_BASE}/Fedorafile"
+            dockerfile: "${DISTICTELLA_BASE}/Dockerfile"
         read_only:
             false
         stdin_open:
@@ -195,11 +195,10 @@ services:
             - /tmp
         networks:
             - miriam
-
         environment:
 
             endpointurl: "http://gillian:8080/firethorn"
-            default_endpoint: "http://gillian:8080/firethorn"
+            default_endpoint: "http://gillian:8080"
 
             datatype: "mssql"
             datahost: "elayne"

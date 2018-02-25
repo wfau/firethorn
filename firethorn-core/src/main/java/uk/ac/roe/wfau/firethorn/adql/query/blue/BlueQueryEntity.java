@@ -40,7 +40,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -2065,6 +2064,8 @@ implements BlueQuery
             {
             this.jdbcspace = identity.spaces().jdbc().current();
             }
+// BUG fail the query if the jdbcspace is null.  
+        
         log.debug(" JDBC space [{}][{}]", jdbcspace.ident(), jdbcspace.name());
 
         log.debug(" ADQL space [{}]", adqlspace);
