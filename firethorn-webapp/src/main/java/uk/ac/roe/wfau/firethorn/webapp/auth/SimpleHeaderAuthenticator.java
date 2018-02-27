@@ -49,6 +49,7 @@ implements HandlerInterceptor
     public static final String COMMUNITY_ATTRIB = "firethorn.auth.community" ;
     public static final String USERNAME_ATTRIB  = "firethorn.auth.username"  ;
     public static final String PASSWORD_ATTRIB  = "firethorn.auth.password"  ;
+    public static final String IDENTITY_ATTRIB  = "firethorn.auth.identity"  ;
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
@@ -113,6 +114,7 @@ implements HandlerInterceptor
                 if (identity != null)
                     {
                     log.debug("Identity  [{}][{}]", identity.ident(), identity.name());
+                    response.addHeader(IDENTITY_ATTRIB, identity.link());
                     response.addHeader(USERNAME_ATTRIB, identity.name());
 
                     final Community community = identity.community();

@@ -197,8 +197,8 @@ services:
             - miriam
         environment:
 
-            endpointurl: "http://gillian:8080/firethorn"
-            default_endpoint: "http://gillian:8080"
+            endpoint: "http://gillian:8080/firethorn"
+            default_endpoint: "http://gillian:8080/firethorn"
 
             datatype: "mssql"
             datahost: "elayne"

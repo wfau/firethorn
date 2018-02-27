@@ -629,34 +629,14 @@ public class JdbcResourceEntity
         // Try/finally to close our connection. 
         try {
             //
-            // Scan a specific catalog.
-            if (connection().catalog() != null)
-                {
-                try {
-                    scan(
-                        known,
-                        matching,
-                        scanner.catalogs().select(
-                            connection().catalog()
-                            )
-                        );
-                    }
-                catch (SQLException ouch)
-                    {
-                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
-                    scanner.handle(ouch);
-                    }
-                catch (MetadataException ouch)
-                    {
-                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
-                    }
-                }
-            //
             // Scan all the catalogs.
-            else {
+            if ((connection().catalog() == null) || ("*".equals(connection().catalog())))
+                {
+                log.debug("connection().catalog() [{}]", connection().catalog());
                 try {
                     for (JdbcMetadataScanner.Catalog catalog : scanner.catalogs().select())
                         {
+                        log.debug("catalog [{}]", catalog);
                         scan(
                             known,
                             matching,
@@ -672,6 +652,31 @@ public class JdbcResourceEntity
                 catch (MetadataException ouch)
                     {
                     log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
+                    }
+                }
+            //
+            // Scan a specific catalog.
+            else {
+            	log.debug("connection().catalog() [{}]", connection().catalog());
+                try {
+                	final JdbcMetadataScanner.Catalog catalog = scanner.catalogs().select(
+            			connection().catalog()
+                        );
+                    log.debug("catalog [{}]", catalog);
+            		scan(
+                        known,
+                        matching,
+                        catalog
+                        );
+                    }
+                catch (SQLException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
+                    scanner.handle(ouch);
+                    }
+                catch (MetadataException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
                     }
                 }
             }

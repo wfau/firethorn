@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.SQLException;
 
 import javax.persistence.Access;
@@ -33,7 +32,6 @@ import javax.persistence.Transient;
 import javax.sql.DataSource;
 
 import org.hibernate.annotations.Parent;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import lombok.extern.slf4j.Slf4j;

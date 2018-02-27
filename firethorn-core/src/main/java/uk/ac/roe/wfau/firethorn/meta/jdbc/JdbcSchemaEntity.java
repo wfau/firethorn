@@ -291,12 +291,6 @@ public class JdbcSchemaEntity
             log.debug("  Parent  [{}]", parent.ident());
             log.debug("  Catalog [{}]", catalog);
             log.debug("  Schema  [{}]", schema);
-
-            if ("FIRETHORN_TEST_DATA".equals(catalog))
-                {
-                log.debug("FIRETHORN_TEST_DATA");
-                }
-            
             return this.insert(
                 new JdbcSchemaEntity(
                     parent,

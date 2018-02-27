@@ -1,7 +1,7 @@
-    #
+#
 # <meta:header>
 #   <meta:licence>
-#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
 #
 #     This information is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
-#  
+#
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #   </meta:licence>
@@ -85,6 +85,7 @@ EOF
 # Create our compose config.
 #[user@virtual]
 
+    rm "${HOME:?}/.env"
     ln -s "${HOME:?}/chain.properties" "${HOME:?}/.env"
 
 # -----------------------------------------------------
@@ -194,7 +195,7 @@ firethorn.login(
 atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
     "ATLAS JDBC resource",
     os.environ.get('datadata'),
-    os.environ.get('datadata'),
+    '*',
     os.environ.get('datatype'),
     os.environ.get('datahost'),
     os.environ.get('datauser'),
@@ -203,17 +204,6 @@ atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
 
 print(
     atlas_jdbc
-    )
-
-#
-# Select the ATLASDR1 JbdcSchema by catalog and schema name.
-atlas_jdbc_schema = atlas_jdbc.select_schema_by_name(
-    "ATLASDR1",
-    "dbo"
-    )
-
-print(
-    atlas_jdbc_schema
     )
 
 #
@@ -227,105 +217,88 @@ print(
     )
 
 #
-# Import the mapping between the JdbcSchema and AdqlSchema tables.
-atlas_adql_schema = atlas_adql.import_jdbc_schema(
-    atlas_jdbc_schema,
+# List the top level AdqlResources.
+resources = firethorn.firethorn_engine.select_adql_resources()
+
+#
+# Iterate the AdqlResources.
+for resource in resources:
+    print(
+        resource
+        )
+
+#
+# Import the Jdbc to Adql mappings.
+mappings = [
     "ATLASDR1",
-    metadoc="https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/meta/ATLASDR1_TablesSchema.xml"
-    )
+    "DENIS",
+    "FIRST",
+    "GLIMPSE",
+    "IRAS",
+    "ROSAT",
+    "TWOMASS",
+    "VHSDR1",
+    "VIKINGDR3",
+    "WISE"
+    ]
 
-print(
-    atlas_adql_schema
-    )
-
-#
-# List the top level AdqlResources
-# BUG - not an array of objects, just the JSON.
-json_list = firethorn.firethorn_engine.select_adql_resources()
-
-#
-# Iterate the JSON items and create objects.
-obj_list = []
-for json_item in json_list:
-    obj_list.append(
-        AdqlResource(
-            firethorn.firethorn_engine,
-            json_item
+for mapping in mappings:
+    print(mapping)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        mapping,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + mapping + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            mapping,
+            metadoc=metadoc
             )
-        )
+
 #
-# Iterate the objects
-for obj_item in obj_list:
+# List the Atlas schemas.
+schemas = atlas_adql.select_schemas()
+#
+# Iterate the Atlas schemas.
+for schema in schemas:
     print(
-        obj_item
+        schema
         )
 
 #
-# List the Atlas schemas (raw JSON).
-json_list = atlas_adql.select_schemas()
-#
-# Iterate the JSON items and create objects.
-obj_list = []
-for json_item in json_list:
-    obj_list.append(
-        AdqlSchema(
-            firethorn.firethorn_engine,
-            json_item
-            )
-        )
-#
-# Iterate the objects
-for obj_item in obj_list:
-    print(
-        obj_item
-        )
-
-
-
-
-
-
-
-#
-# Select the Atlas schema by name (object).
+# Select the TWOMASS schema.
+twomass = atlas_adql.select_schema_by_name(
+    'TWOMASS'
+    )
 print(
-    atlas_adql.select_schema_by_name("ATLASDR1")
+    twomass
     )
 
 #
-# Admin user
-# -------- -------- -------- --------
-# Normal user
-#
-
-#
-# Create a new AdqlResource to act as our workspace.
-resource = firethorn.firethorn_engine.create_adql_resource(
-    "Query resource"
-    )
-
-#
-# Wrap the resource as a workspace.
-from models.workspace import Workspace 
-workspace = Workspace(
-    resource,
-    None,
-    None,
-    firethorn.firethorn_engine
-    )
-
-#
-# Import the ATLAS AdqlSchema into our AdqlResource
-resource.import_adql_schema(
-    atlas_adql_schema
-    )
-
-#
-# Import the ATLAS AdqlSchema into our Workspace
-# Should this be add_schema ?
-workspace.import_schema(
-    atlas_adql.select_schema_by_name(
-        "ATLASDR1"
+# Select the schema tables.
+tables = twomass.select_tables()
+for table in tables:
+    print(
+        table
         )
+
+#
+# Select the psc table.
+table = twomass.select_table_by_name(
+    'twomass_psc'
     )
+print(
+    table
+    )
+
+#
+# Select the table columns.
+columns = table.select_columns()
+for column in columns:
+    print(
+        column
+        )
+
+
 
