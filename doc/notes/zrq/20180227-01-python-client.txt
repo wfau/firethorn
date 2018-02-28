@@ -42,24 +42,18 @@
     get table column by ident
 
 
+    #get identity_by_name
+    #get identity_by_ident
+    #get identity_by_ivoid
 
-
-
-
-
-
-    get identity_by_name
-    get identity_by_ident
-    get identity_by_ivoid
-    
-    get queries for identity
-    get queries for identity by name
-    get queries for identity by ident
+    #get queries for identity
+    #get queries for identity by name
+    #get queries for identity by ident
 
     adql, jdbc, ivoa
-    get resources for identity
-    get resources for identity by name
-    get resources for identity by ident
+    #get resources for identity
+    #get resources for identity by name
+    #get resources for identity by ident
 
 
     BUG
