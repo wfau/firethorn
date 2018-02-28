@@ -52,7 +52,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -96,15 +95,15 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
             query = "FROM JdbcTableEntity WHERE parent = :parent ORDER BY name asc"
             ),
         @NamedQuery(
-            name  = "JdbcTable-select-parent.name",
+            name  = "JdbcTable-select-parent-ident",
+            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY name asc"
+            ),
+        @NamedQuery(
+            name  = "JdbcTable-select-parent-name",
             query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc"
             ),
         @NamedQuery(
-            name  = "JdbcTable-search-parent.name",
-            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc"
-            ),
-        @NamedQuery(
-            name  = "JdbcTable-pending-parent.created",
+            name  = "JdbcTable-pending-parent-created",
             query = " FROM" +
                     "    JdbcTableEntity" +
                     " WHERE" +
@@ -369,13 +368,41 @@ implements JdbcTable
 
         @Override
         @SelectMethod
+        public JdbcTable select(final JdbcSchema parent, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "JdbcTable-select-parent-ident"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setSerializable(
+                            "ident",
+                            ident.value()
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), ident);
+                throw new IdentifierNotFoundException(
+                    ident,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
+        @SelectMethod
         public JdbcTable select(final JdbcSchema parent, final String name)
         throws ProtectionException, NameNotFoundException
             {
             try {
                 return super.single(
                     super.query(
-                        "JdbcTable-select-parent.name"
+                        "JdbcTable-select-parent-name"
                         ).setEntity(
                             "parent",
                             parent
@@ -402,7 +429,7 @@ implements JdbcTable
             {
             return super.first(
                 super.query(
-                    "JdbcTable-select-parent.name"
+                    "JdbcTable-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent
@@ -422,7 +449,7 @@ implements JdbcTable
             return super.iterable(
                 page,
                 super.query(
-                    "JdbcTable-pending-parent.created"
+                    "JdbcTable-pending-parent-created"
                     ).setEntity(
                         "parent",
                         parent
@@ -770,6 +797,7 @@ implements JdbcTable
                 {
                 // TODO Add parent constraint.
                 return factories().jdbc().columns().entities().select(
+                    JdbcTableEntity.this,
                     ident
                     );
                 }

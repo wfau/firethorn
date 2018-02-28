@@ -42,10 +42,12 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityBuilder;
 import uk.ac.roe.wfau.firethorn.entity.EntityBuilder;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -83,10 +85,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
         @NamedQuery(
             name  = "IvoaColumn-select-parent.name",
             query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
-            ),
-        @NamedQuery(
-            name  = "IvoaColumn-search-parent.name",
-            query = "FROM IvoaColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
     )
@@ -264,6 +262,34 @@ public class IvoaColumnEntity
         
         @Override
         @SelectMethod
+        public IvoaColumn select(final IvoaTable parent, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "IvoaColumn-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setSerializable(
+                            "ident",
+                            ident.value()
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate column [{}][{}]", parent.namebuilder().toString(), ident);
+                throw new IdentifierNotFoundException(
+                        ident,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
+        @SelectMethod
         public IvoaColumn select(final IvoaTable parent, final String name)
         throws ProtectionException, NameNotFoundException
             {
@@ -289,7 +315,7 @@ public class IvoaColumnEntity
                     );
                 }
             }
-
+        
         @Override
         @SelectMethod
         public IvoaColumn search(final IvoaTable parent, final String name)

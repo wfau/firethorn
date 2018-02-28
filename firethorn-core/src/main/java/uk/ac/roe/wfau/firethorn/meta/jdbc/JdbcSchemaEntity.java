@@ -92,34 +92,32 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException
             query = "FROM JdbcSchemaEntity WHERE parent = :parent ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
-            name  = "JdbcSchema-select-parent.catalog.schema",
+            name  = "JdbcSchema-select-parent-catalog-schema",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog = :catalog) AND (schema = :schema)) ORDER BY name asc, ident asc"
             ),
 
         @NamedQuery(
-            name  = "JdbcSchema-select-parent.null-catalog.null-schema",
+            name  = "JdbcSchema-select-parent-null-catalog-null-schema",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog IS NULL) AND (schema IS NULL)) ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
-            name  = "JdbcSchema-select-parent.catalog.null-schema",
+            name  = "JdbcSchema-select-parent-catalog-null-schema",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog = :catalog) AND (schema IS NULL)) ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
-            name  = "JdbcSchema-select-parent.null-catalog.schema",
+            name  = "JdbcSchema-select-parent-null-catalog-schema",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog IS NULL) AND (schema = :schema)) ORDER BY name asc, ident asc"
             ),
-
         @NamedQuery(
-            name  = "JdbcSchema-select-parent.name",
+            name  = "JdbcSchema-select-parent-ident",
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY name asc, ident asc"
+            ),
+        @NamedQuery(
+            name  = "JdbcSchema-select-parent-name",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
-            name  = "JdbcSchema-search-parent.text",
-            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident asc"
-            ),
-
-        @NamedQuery(
-            name  = "JdbcSchema-search-parent.owner",
+            name  = "JdbcSchema-search-parent-owner",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (owner = :owner)) ORDER BY name asc, ident asc"
             )
         }
@@ -261,7 +259,6 @@ public class JdbcSchemaEntity
 // NameFactory - Generate a unique name from JdbcResource and Identity.
             log.debug("JdbcSchema build(JdbcResource ,Identity)");
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
-           
             return oldbuilder.create(
                 this.create(
                     resource,
@@ -366,7 +363,7 @@ public class JdbcSchemaEntity
                 {
                 return super.first(
                     super.query(
-                        "JdbcSchema-select-parent.null-catalog.null-schema"
+                        "JdbcSchema-select-parent-null-catalog-null-schema"
                         ).setEntity(
                             "parent",
                             parent
@@ -377,7 +374,7 @@ public class JdbcSchemaEntity
                 {
                 return super.first(
                     super.query(
-                        "JdbcSchema-select-parent.null-catalog.schema"
+                        "JdbcSchema-select-parent-null-catalog-schema"
                         ).setEntity(
                             "parent",
                             parent
@@ -391,7 +388,7 @@ public class JdbcSchemaEntity
                 {
                 return super.first(
                     super.query(
-                        "JdbcSchema-select-parent.catalog.null-schema"
+                        "JdbcSchema-select-parent-catalog-null-schema"
                         ).setEntity(
                             "parent",
                             parent
@@ -404,7 +401,7 @@ public class JdbcSchemaEntity
             else {
                 return super.first(
                     super.query(
-                        "JdbcSchema-select-parent.catalog.schema"
+                        "JdbcSchema-select-parent-catalog-schema"
                         ).setEntity(
                             "parent",
                             parent
@@ -430,7 +427,7 @@ public class JdbcSchemaEntity
             try {
                 return super.single(
                     super.query(
-                        "JdbcSchema-select-parent.name"
+                        "JdbcSchema-select-parent-name"
                         ).setEntity(
                             "parent",
                             parent
@@ -457,7 +454,7 @@ public class JdbcSchemaEntity
             {
             return super.first(
                 super.query(
-                    "JdbcSchema-select-parent.name"
+                    "JdbcSchema-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent
@@ -469,13 +466,40 @@ public class JdbcSchemaEntity
             }
 
         @Override
+        public JdbcSchema select(final JdbcResource parent, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "JdbcSchema-select-parent-ident"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setSerializable(
+                            "ident",
+                            ident.value()
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), ident);
+                throw new IdentifierNotFoundException(
+                    ident,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
         @SelectMethod
         public Iterable<JdbcSchema> select(final JdbcResource parent, final Identity owner)
         throws ProtectionException
             {
             return super.iterable(
                 super.query(
-                    "JdbcSchema-search-parent.owner"
+                    "JdbcSchema-search-parent-owner"
                     ).setEntity(
                         "parent",
                         parent
@@ -782,6 +806,7 @@ public class JdbcSchemaEntity
             throws ProtectionException, IdentifierNotFoundException
                 {
                 return factories().jdbc().tables().entities().select(
+                    JdbcSchemaEntity.this,
                     ident
                     );
                 }

@@ -39,7 +39,6 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -84,12 +83,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
             query = "FROM AdqlSchemaEntity WHERE parent = :parent ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
-            name  = "AdqlSchema-select-parent.name",
-            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident asc"
+            name  = "AdqlSchema-select-parent-ident",
+            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
-            name  = "AdqlSchema-search-parent.text",
-            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident asc"
+            name  = "AdqlSchema-select-parent-name",
+            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident asc"
             )
         }
     )
@@ -267,7 +266,7 @@ implements AdqlSchema
             try {
                 return super.single(
                     super.query(
-                        "AdqlSchema-select-parent.name"
+                        "AdqlSchema-select-parent-name"
                         ).setEntity(
                             "parent",
                             parent
@@ -294,7 +293,7 @@ implements AdqlSchema
             {
             return super.first(
                 super.query(
-                    "AdqlSchema-select-parent.name"
+                    "AdqlSchema-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent
@@ -303,6 +302,34 @@ implements AdqlSchema
                         name
                     )
                 );
+            }
+
+        @Override
+        @SelectMethod
+        public AdqlSchema select(AdqlResource parent, Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "AdqlSchema-select-parent-ident"
+                        ).setEntity(
+                            "parent",
+                            parent
+                            ).setSerializable(
+                                "ident",
+                                ident.value()
+                                )
+                            );
+	            }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), ident);
+                throw new IdentifierNotFoundException(
+                    ident,
+                    ouch
+                    );
+                }
             }
         }
 

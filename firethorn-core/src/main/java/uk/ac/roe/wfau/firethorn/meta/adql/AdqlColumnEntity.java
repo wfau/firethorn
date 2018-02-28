@@ -87,12 +87,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
             query = "FROM AdqlColumnEntity WHERE parent = :parent ORDER BY ident asc"
             ),
         @NamedQuery(
-            name  = "AdqlColumn-select-parent.name",
-            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
+            name  = "AdqlColumn-select-parent-ident",
+            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY ident asc"
             ),
         @NamedQuery(
-            name  = "AdqlColumn-search-parent.text",
-            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
+            name  = "AdqlColumn-select-parent-name",
+            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
             )
         }
     )
@@ -295,13 +295,41 @@ public class AdqlColumnEntity
 
         @Override
         @SelectMethod
+        public AdqlColumn select(final AdqlTable parent, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "AdqlColumn-select-parent-ident"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setSerializable(
+                            "ident",
+                            ident.value()
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate column [{}][{}]", parent.namebuilder().toString(), ident);
+                throw new IdentifierNotFoundException(
+                        ident,
+                    ouch
+                    );
+                }
+            }
+        
+        @Override
+        @SelectMethod
         public AdqlColumn select(final AdqlTable parent, final String name)
         throws ProtectionException, NameNotFoundException
             {
             try {
                 return super.single(
                     super.query(
-                        "AdqlColumn-select-parent.name"
+                        "AdqlColumn-select-parent-name"
                         ).setEntity(
                             "parent",
                             parent
@@ -328,7 +356,7 @@ public class AdqlColumnEntity
             {
             return super.first(
                 super.query(
-                    "AdqlColumn-select-parent.name"
+                    "AdqlColumn-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent

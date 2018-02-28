@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -44,6 +45,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaSchemaLinkFactory;
 @RequestMapping(IvoaSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class IvoaSchemaTableController
 extends AbstractEntityController<IvoaTable, IvoaTableBean>
+implements IvoaSchemaModel, IvoaTableModel
     {
     @Override
     public Path path()
@@ -61,12 +63,6 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
         {
         super();
         }
-
-    /**
-     * MVC property for the {@link IvoaTable} name.
-     *
-     */
-    public static final String TABLE_NAME_PARAM = "urn:ivoa.table.name" ;
 
     @Override
     public IvoaTableBean bean(final IvoaTable entity)
@@ -90,7 +86,7 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
      * @throws IdentifierFormatException 
      *
      */
-    @ModelAttribute(IvoaSchemaController.TARGET_ENTITY)
+    @ModelAttribute(IvoaSchemaModel.TARGET_ENTITY)
     public IvoaSchema parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -112,7 +108,7 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public ResponseEntity<Iterable<IvoaTableBean>> select(
-        @ModelAttribute(IvoaSchemaController.TARGET_ENTITY)
+        @ModelAttribute(IvoaSchemaModel.TARGET_ENTITY)
         final IvoaSchema schema
         )
     throws ProtectionException
@@ -123,14 +119,38 @@ extends AbstractEntityController<IvoaTable, IvoaTableBean>
         }
 
     /**
-     * JSON request to select by name.
+     * POST request to select an {@link IvoaTable} by {@link Identifier}.
      * @throws ProtectionException 
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=TABLE_NAME_PARAM, produces=JSON_MIME)
-    public ResponseEntity<IvoaTableBean> select(
-        @ModelAttribute(IvoaSchemaController.TARGET_ENTITY)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=TABLE_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<IvoaTableBean> select_by_ident(
+        @ModelAttribute(IvoaSchemaModel.TARGET_ENTITY)
+        final IvoaSchema schema,
+        @RequestParam(TABLE_IDENT_PARAM)
+        final String ident
+        )
+    throws IdentifierNotFoundException, ProtectionException
+        {
+        return selected(
+            schema.tables().select(
+                factories().ivoa().tables().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+
+    /**
+     * POST request to select an {@link IvoaTable} by name.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=TABLE_NAME_PARAM, produces=JSON_MIME)
+    public ResponseEntity<IvoaTableBean> select_by_name(
+        @ModelAttribute(IvoaSchemaModel.TARGET_ENTITY)
         final IvoaSchema schema,
         @RequestParam(TABLE_NAME_PARAM)
         final String name

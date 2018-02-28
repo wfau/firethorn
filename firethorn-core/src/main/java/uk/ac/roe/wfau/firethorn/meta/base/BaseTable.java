@@ -82,7 +82,7 @@ extends TreeComponent
     extends TreeComponent.EntityFactory<TableType>
         {
         /**
-         * Select all the tables.
+         * Select all the tables for a schema.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
@@ -90,7 +90,7 @@ extends TreeComponent
         throws ProtectionException;
 
         /**
-         * Search for a table by name
+         * Search for a schema table by name
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
@@ -98,13 +98,21 @@ extends TreeComponent
         throws ProtectionException;
 
         /**
-         * Select a table by name.
+         * Select a schema table by name.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public TableType select(final SchemaType parent, final String name)
         throws ProtectionException, NameNotFoundException;
 
+        /**
+         * Select a schema table by identifier.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public TableType select(final SchemaType parent, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException;
+        
         }
 
     /**
@@ -163,7 +171,7 @@ extends TreeComponent
     public interface Columns<ColumnType>
         {
         /**
-         * Select all of the {@link BaseColumn columns} in this table.
+         * Select all the columns for this table.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
@@ -171,7 +179,7 @@ extends TreeComponent
         throws ProtectionException;
 
         /**
-         * Search for a {@link BaseColumn column} by name.
+         * Search a column by name.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
@@ -179,7 +187,7 @@ extends TreeComponent
         throws ProtectionException;
 
         /**
-         * Select a {@link BaseColumn column} by name.
+         * Select a column by name.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
@@ -187,7 +195,7 @@ extends TreeComponent
         throws ProtectionException, NameNotFoundException;
 
         /**
-         * Select a {@link BaseColumn column} by ident.
+         * Select a column by {@link Identifier}.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */

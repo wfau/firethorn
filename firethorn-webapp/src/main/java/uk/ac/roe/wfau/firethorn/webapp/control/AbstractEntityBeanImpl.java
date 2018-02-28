@@ -94,6 +94,7 @@ implements EntityBean<EntityType>
         }
 
     @Override
+    @Deprecated
     public URI getSelf()
         {
         return this.getUrl();

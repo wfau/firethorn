@@ -41,7 +41,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcSchemaLinkFactory;
 @Controller
 @RequestMapping(JdbcSchemaLinkFactory.SCHEMA_PATH)
 public class JdbcSchemaController
-    extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
+extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
+implements JdbcSchemaModel
     {
 
     @Override
@@ -61,11 +62,6 @@ public class JdbcSchemaController
         super();
         }
 
-    /**
-     * MVC property for the target entity.
-     *
-     */
-    public static final String TARGET_ENTITY = "urn:jdbc.schema.entity" ;
 
     @Override
     public Iterable<JdbcSchemaBean> bean(final Iterable<JdbcSchema> iter)
@@ -90,7 +86,7 @@ public class JdbcSchemaController
      * @throws IdentifierFormatException 
      *
      */
-    @ModelAttribute(TARGET_ENTITY)
+    @ModelAttribute(JdbcSchemaModel.TARGET_ENTITY)
     public JdbcSchema entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -105,13 +101,13 @@ public class JdbcSchemaController
         }
 
     /**
-     * JSON GET request.
+     * GET request to select a {@link JdbcSchema}.
      *
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public ResponseEntity<JdbcSchemaBean> select(
-        @ModelAttribute(TARGET_ENTITY)
+        @ModelAttribute(JdbcSchemaModel.TARGET_ENTITY)
         final JdbcSchema entity
         ){
         return selected(

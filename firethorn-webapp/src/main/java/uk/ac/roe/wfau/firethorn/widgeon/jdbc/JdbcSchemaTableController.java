@@ -44,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcSchemaLinkFactory;
 @RequestMapping(JdbcSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class JdbcSchemaTableController
 extends AbstractEntityController<JdbcTable, JdbcTableBean>
+implements JdbcSchemaModel, JdbcTableModel
     {
     @Override
     public Path path()
@@ -61,31 +62,6 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
         {
         super();
         }
-
-    /**
-     * MVC property for the Resource name.
-     *
-     */
-    public static final String SELECT_NAME = "jdbc.schema.table.select.name" ;
-
-    /**
-     * MVC property for the select results.
-     *
-     */
-    public static final String SELECT_RESULT = "jdbc.schema.table.select.result" ;
-
-    /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "jdbc.schema.table.search.text" ;
-
-    /**
-     * MVC property for the search results.
-     *
-     */
-    public static final String SEARCH_RESULT = "jdbc.schema.table.search.result" ;
-
 
     @Override
     public JdbcTableBean bean(final JdbcTable entity)
@@ -109,7 +85,7 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
      * @throws IdentifierFormatException 
      *
      */
-    @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
+    @ModelAttribute(JdbcSchemaModel.TARGET_ENTITY)
     public JdbcSchema parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -124,14 +100,14 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
         }
 
     /**
-     * JSON GET request to select all.
+     * GET request to select all.
      * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public ResponseEntity<Iterable<JdbcTableBean>> select(
-        @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
+        @ModelAttribute(JdbcSchemaModel.TARGET_ENTITY)
         final JdbcSchema schema
         )
     throws ProtectionException
@@ -142,16 +118,40 @@ extends AbstractEntityController<JdbcTable, JdbcTableBean>
         }
 
     /**
-     * JSON request to select by name.
+     * POST request to select a {@link JdbcTable} by {@link Identifier}.
      * @throws ProtectionException 
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MIME)
-    public ResponseEntity<JdbcTableBean> select(
-        @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=TABLE_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<JdbcTableBean> select_by_ident(
+        @ModelAttribute(JdbcSchemaModel.TARGET_ENTITY)
         final JdbcSchema schema,
-        @RequestParam(SELECT_NAME)
+        @RequestParam(TABLE_IDENT_PARAM)
+        final String ident
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
+            schema.tables().select(
+                factories().jdbc().tables().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+
+    /**
+     * POST request to select a {@link JdbcTable} by name.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=TABLE_NAME_PARAM, produces=JSON_MIME)
+    public ResponseEntity<JdbcTableBean> select_by_name(
+        @ModelAttribute(JdbcSchemaModel.TARGET_ENTITY)
+        final JdbcSchema schema,
+        @RequestParam(TABLE_NAME_PARAM)
         final String name
         )
     throws EntityNotFoundException, ProtectionException

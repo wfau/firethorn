@@ -47,7 +47,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcTableLinkFactory;
 @Controller
 @RequestMapping(JdbcTableLinkFactory.ENTITY_PATH)
 public class JdbcTableController
-    extends AbstractEntityController<JdbcTable, JdbcTableBean>
+extends AbstractEntityController<JdbcTable, JdbcTableBean>
+implements JdbcTableModel
     {
 
     @Override
@@ -66,31 +67,6 @@ public class JdbcTableController
         {
         super();
         }
-
-    /**
-     * MVC property for the target entity.
-     *
-     */
-    public static final String TARGET_ENTITY = "urn:jdbc.table.entity" ;
-
-    /**
-     * POST param for the {@link JdbcTable} name.
-     *
-     */
-    public static final String TABLE_NAME_PARAM = "urn:jdbc.table.name" ;
-
-    /**
-     * POST param for the {@link JdbcTable} status.
-     *
-     */
-    public static final String JDBC_STATUS_PARAM = "urn:jdbc.table.jdbc.status" ;
-
-    /**
-     * POST param for the {@link AdqlTable} status.
-     *
-     */
-    public static final String ADQL_STATUS_PARAM = "urn:jdbc.table.adql.status" ;
-
 
     @Override
     public Iterable<JdbcTableBean> bean(final Iterable<JdbcTable> iter)

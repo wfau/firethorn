@@ -44,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcResourceLinkFactory;
 @RequestMapping(JdbcResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class JdbcResourceSchemaController
 extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
+implements JdbcResourceModel, JdbcSchemaModel
     {
     @Override
     public Path path()
@@ -62,17 +63,6 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         super();
         }
 
-    /**
-     * MVC property for the {@link JdbcSchema} name.
-     *
-     */
-    public static final String SCHEMA_NAME_PARAM = "jdbc.schema.schema" ;
-
-    /**
-     * MVC property for the catalog name.
-     *
-     */
-    public static final String CATALOG_NAME_PARAM = "jdbc.schema.catalog" ;
 
     @Override
     public JdbcSchemaBean bean(final JdbcSchema entity)
@@ -112,7 +102,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         }
 
     /**
-     * JSON GET request to select all.
+     * GET request to select all the {@link JdbcSchema}.
      * @throws ProtectionException 
      *
      */
@@ -130,13 +120,37 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
         }
 
     /**
-     * JSON request to select by name.
+     * POST request to select a {@link JdbcSchema} by {@link Identifier}.
      * @throws ProtectionException 
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
-    public ResponseEntity<JdbcSchemaBean> select(
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=SCHEMA_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<JdbcSchemaBean> select_by_ident(
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
+        final JdbcResource resource,
+        @RequestParam(SCHEMA_IDENT_PARAM)
+        final String ident
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
+            resource.schemas().select(
+                factories().jdbc().schemas().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+
+    /**
+     * POST request to select a {@link JdbcSchema} by name.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
+    public ResponseEntity<JdbcSchemaBean> select_by_name(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SCHEMA_NAME_PARAM)
@@ -201,5 +215,4 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
                 )
             );
         }
-
     }

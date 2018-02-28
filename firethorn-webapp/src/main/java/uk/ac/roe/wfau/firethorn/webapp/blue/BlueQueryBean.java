@@ -87,7 +87,17 @@ public class BlueQueryBean
      * Get the {@link BlueQuery} {@link AdqlResource} workspace.
      *
      */
+    @Deprecated
     public String getWorkspace()
+        {
+        return getResource() ;
+        }
+
+    /**
+     * Get the {@link BlueQuery} {@link AdqlResource} workspace.
+     *
+     */
+    public String getResource()
         {
         if (entity().source() != null)
             {

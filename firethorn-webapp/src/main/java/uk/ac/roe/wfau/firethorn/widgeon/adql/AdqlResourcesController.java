@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -40,6 +43,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
 @RequestMapping(AdqlResourceLinkFactory.SERVICE_PATH)
 public class AdqlResourcesController
 extends AbstractEntityController<AdqlResource, AdqlResourceBean>
+implements AdqlResourceModel
     {
 
     @Override
@@ -59,12 +63,6 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         super();
         }
 
-    /**
-     * MVC property for the {@link AdqlResource} name, [{@value}].
-     *
-     */
-    public static final String RESOURCE_NAME_PARAM = "adql.resource.name" ;
-
     @Override
     public AdqlResourceBean bean(final AdqlResource entity)
         {
@@ -82,10 +80,8 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         }
 
     /**
-     * {@link RequestMethod#GET} request to select all the available {@link AdqlResource}.
-     * <br/>Request path : [{@value #SELECT_PATH}]
-     * <br/>Content type : [{@value #JSON_MIME}]
-     * @return An {@Iterable} set of {@link AdqlResourceBean}.
+     * GET request to select all the {@link AdqlResource}s.
+     * @return An {@Iterable} set of {@link AdqlResourceBean}s.
      * @throws ProtectionException 
      * 
      */
@@ -101,9 +97,49 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
         }
 
     /**
-     * {@link RequestMethod#POST} request to create a new {@link AdqlResource}.
-     * <br/>Request path : [{@value #CREATE_PATH}]
-     * <br/>Content type : [{@value #JSON_MIME}]
+     * POST request to select an {@link AdqlResource} by {@link Identifier}.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=RESOURCE_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<AdqlResourceBean> select_by_ident(
+        @RequestParam(RESOURCE_IDENT_PARAM)
+        final String ident
+        )
+    throws IdentifierNotFoundException, ProtectionException
+        {
+        return selected(
+            factories().adql().resources().entities().select(
+                factories().adql().resources().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+    
+    /**
+     * POST request to select an {@link AdqlResource} by name.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=RESOURCE_NAME_PARAM, produces=JSON_MIME)
+    public ResponseEntity<AdqlResourceBean> select_by_name(
+        @RequestParam(RESOURCE_NAME_PARAM)
+        final String name
+        )
+    throws NameNotFoundException, ProtectionException
+        {
+        return selected(
+            factories().adql().resources().entities().select(
+                name
+                )
+            );
+        }
+
+    /**
+     * POST request to create a new {@link AdqlResource}.
      * @return A new {@link AdqlResource} wrapped in an {@link AdqlResourceBean}.
      * @throws ProtectionException 
      * 

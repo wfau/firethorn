@@ -82,12 +82,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
             query = "FROM IvoaTableEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "IvoaTable-select-parent.name",
-            query = "FROM IvoaTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            name  = "IvoaTable-select-parent-ident",
+            query = "FROM IvoaTableEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "IvoaTable-search-parent.text",
-            query = "FROM IvoaTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
+            name  = "IvoaTable-select-parent-name",
+            query = "FROM IvoaTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             )
         }
     )
@@ -279,7 +279,7 @@ public class IvoaTableEntity
                 {
                 return super.single(
                     super.query(
-                        "IvoaTable-select-parent.name"
+                        "IvoaTable-select-parent-name"
                         ).setEntity(
                             "parent",
                             parent
@@ -294,6 +294,35 @@ public class IvoaTableEntity
                 log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
                     name,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
+        @SelectMethod
+        public IvoaTable select(final IvoaSchema parent, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException
+            {
+            try
+                {
+                return super.single(
+                    super.query(
+                        "IvoaTable-select-parent-ident"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setSerializable(
+                            "ident",
+                            ident.value()
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), ident);
+                throw new IdentifierNotFoundException(
+                    ident,
                     ouch
                     );
                 }
@@ -553,8 +582,8 @@ public class IvoaTableEntity
             public IvoaColumn select(final Identifier ident)
             throws ProtectionException, IdentifierNotFoundException
                 {
-                //TODO Add the parent reference.
                 return factories().ivoa().columns().entities().select(
+                    IvoaTableEntity.this,
                     ident
                     );
                 }

@@ -81,12 +81,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
             query = "FROM IvoaSchemaEntity WHERE parent = :parent ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "IvoaSchema-select-parent.name",
-            query = "FROM IvoaSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident desc"
+            name  = "IvoaSchema-select-parent-ident",
+            query = "FROM IvoaSchemaEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "IvoaSchema-search-parent.text",
-            query = "FROM IvoaSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            name  = "IvoaSchema-select-parent-name",
+            query = "FROM IvoaSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident desc"
             )
         }
     )
@@ -187,13 +187,41 @@ public class IvoaSchemaEntity
 
         @Override
         @SelectMethod
+        public IvoaSchema select(final IvoaResource parent, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "IvoaSchema-select-parent-ident"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setSerializable(
+                            "ident",
+                            ident.value()
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), ident);
+                throw new IdentifierNotFoundException(
+                    ident,
+                    ouch
+                    );
+                }
+            }
+        
+        @Override
+        @SelectMethod
         public IvoaSchema select(final IvoaResource parent, final String name)
         throws ProtectionException, NameNotFoundException
             {
             try {
                 return super.single(
                     super.query(
-                        "IvoaSchema-select-parent.name"
+                        "IvoaSchema-select-parent-name"
                         ).setEntity(
                             "parent",
                             parent
@@ -220,7 +248,7 @@ public class IvoaSchemaEntity
             {
             return super.first(
                 super.query(
-                    "IvoaSchema-select-parent.name"
+                    "IvoaSchema-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent

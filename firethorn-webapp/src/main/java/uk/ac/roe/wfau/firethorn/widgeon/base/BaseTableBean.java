@@ -39,10 +39,11 @@ extends NamedEntityBeanImpl<TableType>
             );
         }
 
+    @Deprecated
     public String getParent()
     throws ProtectionException
         {
-        return entity().schema().link();
+        return getSchema();
         }
 
     public String getSchema()

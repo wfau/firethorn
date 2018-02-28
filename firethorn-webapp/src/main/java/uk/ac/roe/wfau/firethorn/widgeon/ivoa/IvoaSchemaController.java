@@ -41,7 +41,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaSchemaLinkFactory;
 @Controller
 @RequestMapping(IvoaSchemaLinkFactory.SCHEMA_PATH)
 public class IvoaSchemaController
-    extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
+extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
+implements IvoaSchemaModel
     {
 
     @Override
@@ -60,18 +61,6 @@ public class IvoaSchemaController
         {
         super();
         }
-
-    /**
-     * MVC property for the target entity.
-     *
-     */
-    public static final String TARGET_ENTITY = "urn:ivoa.schema.entity" ;
-
-    /**
-     * MVC property for updating the name.
-     *
-     */
-    public static final String SCHEMA_NAME_PARAM = "ivoa.schema.name" ;
 
     @Override
     public Iterable<IvoaSchemaBean> bean(final Iterable<IvoaSchema> iter)

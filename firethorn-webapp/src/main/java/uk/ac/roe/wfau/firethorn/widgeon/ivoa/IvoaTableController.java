@@ -43,7 +43,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaTableLinkFactory;
 @Controller
 @RequestMapping(IvoaTableLinkFactory.TABLE_PATH)
 public class IvoaTableController
-    extends AbstractEntityController<IvoaTable, IvoaTableBean>
+extends AbstractEntityController<IvoaTable, IvoaTableBean>
+implements IvoaTableModel, IvoaColumnModel 
     {
 
     @Override
@@ -62,31 +63,6 @@ public class IvoaTableController
         {
         super();
         }
-
-    /**
-     * MVC property for the target entity.
-     *
-     */
-    public static final String TARGET_ENTITY = "urn:ivoa.table.entity" ;
-
-    /**
-     * POST param for the table name.
-     *
-     */
-    public static final String TABLE_NAME_PARAM = "urn:ivoa.table.name" ;
-
-    /**
-     * POST param for the JDBC status.
-     *
-     */
-    public static final String JDBC_STATUS_PARAM = "urn:ivoa.table.jdbc.status" ;
-
-    /**
-     * POST param for the ADQL status.
-     *
-     */
-    public static final String ADQL_STATUS_PARAM = "urn:ivoa.table.adql.status" ;
-
 
     @Override
     public Iterable<IvoaTableBean> bean(final Iterable<IvoaTable> iter)
@@ -111,7 +87,7 @@ public class IvoaTableController
      * @throws IdentifierFormatException 
      *
      */
-    @ModelAttribute(IvoaTableController.TARGET_ENTITY)
+    @ModelAttribute(IvoaTableModel.TARGET_ENTITY)
     public IvoaTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -126,13 +102,13 @@ public class IvoaTableController
         }
 
     /**
-     * JSON GET request.
+     * GET request to select all the {@link IvoaTable}s.
      *
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public ResponseEntity<IvoaTableBean> select(
-        @ModelAttribute(TARGET_ENTITY)
+        @ModelAttribute(IvoaTableModel.TARGET_ENTITY)
         final IvoaTable entity
         ){
         return selected(
@@ -149,7 +125,7 @@ public class IvoaTableController
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, params={TABLE_NAME_PARAM}, produces=JSON_MIME)
     public ResponseEntity<IvoaTableBean> update(
-        @ModelAttribute(TARGET_ENTITY)
+        @ModelAttribute(IvoaTableModel.TARGET_ENTITY)
         final IvoaTable entity,
         @RequestParam(value=TABLE_NAME_PARAM, required=true)
         final String name

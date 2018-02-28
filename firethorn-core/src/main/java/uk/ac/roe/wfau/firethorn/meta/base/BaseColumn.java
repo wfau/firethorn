@@ -19,7 +19,9 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -79,7 +81,7 @@ extends TreeComponent
     extends TreeComponent.EntityFactory<ColumnType>
         {
         /**
-         * Select all the columns from a table.
+         * Select all the columns for a table.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
@@ -87,7 +89,7 @@ extends TreeComponent
         throws ProtectionException;
 
         /**
-         * Select a column by name.
+         * Select a table column by name.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
@@ -95,13 +97,21 @@ extends TreeComponent
         throws NameNotFoundException, ProtectionException;
 
         /**
-         * Search for a column by name.
+         * Search for a table column by name.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public ColumnType search(final TableType parent, final String name)
         throws ProtectionException;
 
+        /**
+         * Select a table column by identifier.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public ColumnType select(final TableType parent, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException;
+        
         }
 
     /**

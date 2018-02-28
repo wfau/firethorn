@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
@@ -65,6 +67,13 @@ extends TreeComponent
         public Iterable<ResourceType> select()
         throws ProtectionException;
 
+        /**
+         * Select a resource by name.
+         * 
+         */
+        public ResourceType select(final String name)
+        throws ProtectionException, NameNotFoundException;
+        
         }
 
     /**
@@ -74,7 +83,7 @@ extends TreeComponent
     public interface Schemas<SchemaType>
         {
         /**
-         * Select all the {@link BaseSchema schema} for this resource.
+         * Select all the schemas for this resource.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
@@ -82,7 +91,7 @@ extends TreeComponent
         throws ProtectionException;
 
         /**
-         * Select a {@link BaseSchema schema} by name.
+         * Select a schema by name.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
@@ -90,13 +99,21 @@ extends TreeComponent
         throws ProtectionException, NameNotFoundException;
 
         /**
-         * Search for a {@link BaseSchema schema} by name.
+         * Search for a schema by name.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
         public SchemaType search(final String name)
         throws ProtectionException;
 
+        /**
+         * Select a schema by {@link Identifier}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public SchemaType select(final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException;
+        
         }
 
     /**

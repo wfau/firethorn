@@ -49,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlResourceLinkFactory;
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_SCHEMAS_PATH)
 public class AdqlResourceSchemaController
 extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
+implements AdqlResourceModel, AdqlSchemaModel
     {
     @Override
     public Path path()
@@ -66,22 +67,6 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         {
         super();
         }
-
-    /**
-     * MVC property for the {@link AdqlSchema} name, [{@value}].
-     * TODO Move these to a ResourceModel.
-     *
-     */
-    public static final String SCHEMA_CREATE_NAME_PARAM = "adql.schema.name" ;
-    public static final String SCHEMA_SELECT_NAME_PARAM = "adql.schema.name" ;
-    public static final String SCHEMA_IMPORT_NAME_PARAM = "adql.schema.name" ;
-
-    /**
-     * MVC property of the {@Identifier} for the {@link BaseSchema} to copy, [{@value}].
-     * TODO Move these to a ResourceModel.
-     * 
-     */
-    public static final String SCHEMA_IMPORT_BASE_PARAM = "adql.schema.base" ;
 
     @Override
     public AdqlSchemaBean bean(final AdqlSchema entity)
@@ -123,9 +108,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * {@link RequestMethod#GET} request to select all the {@link AdqlSchema} in this {@link AdqlResource}.
-     * <br/>Request path : [{@value #SELECT_PATH}]
-     * <br/>Content type : [{@value #JSON_MIME}]
+     * GET request to select all the {@link AdqlSchema}.
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
      * @return An {@Iterable} set of {@link AdqlSchemaBean}.
      * @throws ProtectionException 
@@ -145,9 +128,37 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         }
 
     /**
-     * {@link RequestMethod#GET} request to select a specific {@link AdqlSchema} by name.
-     * <br/>Request path : [{@value #SELECT_PATH}]
-     * <br/>Content type : [{@value #JSON_MIME}]
+     * POST request to select an {@link AdqlSchema} by {@Identifier}.
+     * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
+     * @param ident The {@link AdqlSchema} name to look for, [{@value #SCHEMA_SELECT_NAME_PARAM}].
+     * @return The matching {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
+     * @throws NameNotFoundException If a matching {@link AdqlSchema} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierNotFoundException 
+     * @throws IdentifierFormatException 
+     * 
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=SCHEMA_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<AdqlSchemaBean> select_by_ident(
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
+        final AdqlResource resource,
+        @RequestParam(SCHEMA_IDENT_PARAM)
+        final String ident
+        )
+    throws NameNotFoundException, ProtectionException, IdentifierFormatException, IdentifierNotFoundException
+        {
+        return selected(
+            resource.schemas().select(
+                factories().adql().schemas().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+
+    /**
+     * POST request to select an {@link AdqlSchema} by name.
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
      * @param name The {@link AdqlSchema} name to look for, [{@value #SCHEMA_SELECT_NAME_PARAM}].
      * @return The matching {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
@@ -156,11 +167,11 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SCHEMA_SELECT_NAME_PARAM, produces=JSON_MIME)
-    public ResponseEntity<AdqlSchemaBean> select(
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
+    public ResponseEntity<AdqlSchemaBean> select_by_name(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(SCHEMA_SELECT_NAME_PARAM)
+        @RequestParam(SCHEMA_NAME_PARAM)
         final String name
         )
     throws NameNotFoundException, ProtectionException
@@ -174,8 +185,6 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
 
     /**
      * {@link RequestMethod#POST} request to create a new {@link AdqlSchema}.
-     * <br/>Request path : [{@value #CREATE_PATH}]
-     * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
      * @param name The {@link AdqlSchema} name, [{@value #SCHEMA_SELECT_NAME_PARAM}].
      * @return The new {@link AdqlSchema} wrapped in an {@link AdqlSchemaBean}.
@@ -184,11 +193,11 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={SCHEMA_CREATE_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=CREATE_PATH, params={SCHEMA_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> create(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(value=SCHEMA_CREATE_NAME_PARAM, required=true)
+        @RequestParam(value=SCHEMA_NAME_PARAM, required=true)
         final String name
         )
     throws ProtectionException
@@ -202,8 +211,6 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
 
     /**
      * {@link RequestMethod#POST} request to create a new {@link AdqlSchema} copying the name and tables from a {@link BaseSchema}.
-     * <br/>Request path : [{@value #IMPORT_PATH}]
-     * <br/>Content type : [{@value #JSON_MIME}]
      * @param resource The parent {@link AdqlResource} selected using the {@Identifier} in the request path.
      * @param base     The {@Identifier} of the {@link BaseSchema} to copy, [{@value #SCHEMA_IMPORT_BASE_PARAM}].
      * @param depth    The {@link TreeComponent.CopyDepth} of the new {@link AdqlSchema}, [{@value #COPY_DEPTH_PARAM}].
@@ -254,7 +261,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_IMPORT_BASE_PARAM, SCHEMA_IMPORT_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
+    @RequestMapping(value=IMPORT_PATH, params={SCHEMA_IMPORT_BASE_PARAM, SCHEMA_NAME_PARAM}, method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
@@ -262,7 +269,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final TreeComponent.CopyDepth depth,
         @RequestParam(value=SCHEMA_IMPORT_BASE_PARAM, required=true)
         final String base,
-        @RequestParam(value=SCHEMA_IMPORT_NAME_PARAM, required=true)
+        @RequestParam(value=SCHEMA_NAME_PARAM, required=true)
         final String name
         )
     throws IdentifierFormatException, EntityNotFoundException, ProtectionException

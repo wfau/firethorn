@@ -40,7 +40,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.JdbcColumnLinkFactory;
 @Controller
 @RequestMapping(JdbcColumnLinkFactory.COLUMN_PATH)
 public class JdbcColumnController
-    extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
+extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
+implements JdbcColumnModel
     {
 
     @Override
@@ -59,18 +60,6 @@ public class JdbcColumnController
         {
         super();
         }
-
-    /**
-     * MVC property for the target entity.
-     *
-     */
-    public static final String TARGET_ENTITY = "urn:jdbc.column.entity" ;
-
-    /**
-     * MVC property for the {@link JdbcColumn} name.
-     *
-     */
-    public static final String COLUMN_NAME_PARAM = "jdbc.column.update.name" ;
 
     @Override
     public Iterable<JdbcColumnBean> bean(final Iterable<JdbcColumn> iter)

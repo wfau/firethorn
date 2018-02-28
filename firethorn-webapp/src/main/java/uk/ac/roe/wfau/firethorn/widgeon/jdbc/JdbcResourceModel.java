@@ -28,10 +28,22 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 public interface JdbcResourceModel
     {
     /**
+     * MVC property for the target resource.
+     *
+     */
+    public static final String TARGET_ENTITY = "jdbc.resource.entity" ;
+    
+    /**
      * MVC property for the {@link JdbcResource} name.
      *
      */
     public static final String RESOURCE_NAME_PARAM = "jdbc.resource.name" ;
+
+    /**
+     * MVC property for the {@link JdbcResource} {@link Identifier}.
+     *
+     */
+    public static final String RESOURCE_IDENT_PARAM = "jdbc.resource.ident" ;
 
     /**
      * MVC property for the {@link JdbcResource} status.
