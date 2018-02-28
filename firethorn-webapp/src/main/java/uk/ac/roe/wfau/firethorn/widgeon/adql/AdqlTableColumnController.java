@@ -141,7 +141,7 @@ implements AdqlTableModel, AdqlColumnModel
      * 
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=COLUMN_IDENT_PARAM, produces=JSON_MIME)
     public ResponseEntity<AdqlColumnBean> select_by_ident(
         @ModelAttribute(AdqlTableModel.TARGET_ENTITY)
         final AdqlTable table,

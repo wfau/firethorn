@@ -1998,6 +1998,27 @@ implements BlueQuery
                         entity.transition(
                             message.state()
                             );
+                        //
+                        // Update the results table.
+                        final AdqlTable results = entity.results().adql();
+                        results.meta().adql().count(
+                            message.results().count()
+                            );
+                        switch (message.results().state())
+                            {
+                            case PARTIAL:
+                                results.meta().adql().status(
+                                    AdqlTable.TableStatus.PARTIAL
+                                    );
+                                break;
+                            case COMPLETED:
+                                results.meta().adql().status(
+                                    AdqlTable.TableStatus.COMPLETED
+                                    );
+                                break;
+                            default:
+                                break;
+                            }
                         return entity.state();
                         }
                     catch (InvalidStateTransitionException ouch)

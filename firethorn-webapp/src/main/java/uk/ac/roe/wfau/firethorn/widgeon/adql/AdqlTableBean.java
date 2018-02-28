@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable.TableStatus;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -86,7 +87,7 @@ extends BaseTableBean<AdqlTable>
             return null ;
             }
         }
-
+    
     public interface MetadataBean
     extends BaseTableBean.MetadataBean
         {

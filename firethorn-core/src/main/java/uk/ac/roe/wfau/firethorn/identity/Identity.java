@@ -20,8 +20,10 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -102,6 +104,17 @@ extends Entity, NamedEntity
         throws ProtectionException, DuplicateEntityException;
 
         /**
+         * Select an {@link Identity} by {Identifier}.
+         * @param community The {@link Community}.
+         * @param name The {@link Identity} name.
+         * @return The corresponding {@link Identity}.
+         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         *
+         */
+        public Identity select(final Community community, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException;
+
+        /**
          * Select an {@link Identity}, based on name.
          * @param community The {@link Community}.
          * @param name The {@link Identity} name.
@@ -111,7 +124,7 @@ extends Entity, NamedEntity
          */
         public Identity select(final Community community, final String name)
         throws ProtectionException, NameNotFoundException;
-
+        
         /**
          * Search for an {@link Identity} based on name.
          * @param community The {@link Community}.

@@ -42,7 +42,7 @@
     get table column by ident
 
 
-    #get identity_by_name
+    get identity_by_name
     #get identity_by_ident
     #get identity_by_ivoid
 

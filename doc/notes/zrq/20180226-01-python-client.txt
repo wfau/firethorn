@@ -103,6 +103,18 @@ EOF
 
     popd
 
+# -----------------------------------------------------
+# Take down our Python client container.
+#[user@desktop]
+
+    export buildtag
+    export FIRETHORN_PY_BASE
+    export DISTICTELLA_BASE
+
+    docker-compose \
+        --file "${DISTICTELLA_BASE:?}/distictella.yml" \
+        down
+
 #---------------------------------------------------------------------
 # Compile our Java code.
 #[user@desktop]
@@ -134,16 +146,14 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Take down our Python client container.
+# Fetch the latest Python client.
 #[user@desktop]
 
-    export buildtag
-    export FIRETHORN_PY_BASE
-    export DISTICTELLA_BASE
+    pushd ${FIRETHORN_PY_BASE:?}
 
-    docker-compose \
-        --file "${DISTICTELLA_BASE:?}/distictella.yml" \
-        down
+        git pull
+        
+    popd    
 
 # -----------------------------------------------------
 # Build our Python client container.
@@ -199,7 +209,7 @@ atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
     os.environ.get('datatype'),
     os.environ.get('datahost'),
     os.environ.get('datauser'),
-    os.environ.get('datapass'),
+    os.environ.get('datapass')
     )
 
 print(
@@ -259,8 +269,6 @@ for mapping in mappings:
 #
 # List the Atlas schemas.
 schemas = atlas_adql.select_schemas()
-#
-# Iterate the Atlas schemas.
 for schema in schemas:
     print(
         schema
@@ -299,6 +307,89 @@ for column in columns:
     print(
         column
         )
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using a guest account.
+firethorn.login(
+    'tester@roe.ac.uk',
+    'tester@roe.ac.uk',
+    os.environ.get(
+        'guestgroup'
+        )
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# List our workspace schemas.
+for schema in workspace.select_schemas():
+    print(
+        schema
+        )
+
+#
+# Create and run a query on our workspace.
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(query)
+
+#
+# Get the query results.
+print(
+    query.table()
+    )
+print(
+    query.table().state()
+    )
+print(
+    query.table().count()
+    )
+
+#
+# Convert the query results into an astropy table.
+from astropy.table import Table as ApTable
+def wrap_as_pytable(adql_table, limit=100):
+    if ((limit) and (query.table().count() > limit)):
+        print("Row count [" + str(query.table().count()) + "] exceeds limit [" + str(limit) + "]")
+        return None
+    else:
+        return ApTable.read(
+            adql_table.json_object.get("formats").get("votable"),
+            format="votable"
+            )    
+
+pytable = wrap_as_pytable(
+    query.table()
+    )
+
+pytable = wrap_as_pytable(
+    query.table(),
+    10000
+    )
+
+pytable.pprint()
+
+
 
 
 

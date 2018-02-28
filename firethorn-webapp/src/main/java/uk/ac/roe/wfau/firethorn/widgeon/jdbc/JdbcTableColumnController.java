@@ -127,7 +127,7 @@ implements JdbcTableModel, JdbcColumnModel
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=COLUMN_IDENT_PARAM, produces=JSON_MIME)
     public ResponseEntity<JdbcColumnBean> select_by_ident(
         @ModelAttribute(JdbcTableModel.TARGET_ENTITY)
         final JdbcTable table,
