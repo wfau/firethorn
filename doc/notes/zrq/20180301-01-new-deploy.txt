@@ -1,0 +1,115 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+    EasyDNS records
+    
+        shujiao.metagrid.xyz.    > tropfloat1.metagrid.xyz.
+        tropfloat1.metagrid.xyz. = 129.215.175.100
+    
+
+[user@laptop]
+
+    ssh trop01
+
+        ssh Astoalith
+
+            docker ps -a
+
+                CONTAINER ID    IMAGE                    COMMAND                  CREATED       STATUS        PORTS                NAMES
+                a050cbd6960d    firethorn/apache:2.1.3   "/bin/sh -c '/usr/sbi"   11 weeks ago  Up 11 weeks   0.0.0.0:80->80/tcp   firepache
+
+            docker exec -it firepache bash
+
+
+                ls -al /etc/apache2/sites-enabled/
+
+                    000-default.conf -> ../sites-available/000-default.conf
+
+                ls -al /etc/apache2/sites-available/
+
+                    000-default.conf
+                    default-ssl.conf
+
+                #
+                # Edit the Apache config
+                vi /etc/apache2/sites-available/000-default.conf
+    
+
+                    <VirtualHost *:80>
+                        ServerName erennon.metagrid.xyz
+
+                        ProxyRequests Off
+                        ProxyPreserveHost On
+
+                        <Proxy *>
+                            Order deny,allow
+                            Allow from all
+                        </Proxy>
+
+                        ProxyPass ^/(.*)$          http://192.168.201.14/
+                        ProxyPassMatch ^/(.*)$     http://192.168.201.14/  retry=0 connectiontimeout=14400 timeout=14400
+                        ProxyPassReverse  ^/(.*)$  http://192.168.201.14/
+
+                    </VirtualHost>
+
+
+                    <VirtualHost *:80>
+                        ServerName gworewia.metagrid.xyz
+
+                        ProxyRequests Off
+                        ProxyPreserveHost On
+
+                        <Proxy *>
+                            Order deny,allow
+                            Allow from all
+                        </Proxy>
+
+                        ProxyPass ^/(.*)$          http://192.168.201.15/
+                        ProxyPassMatch ^/(.*)$     http://192.168.201.15/  retry=0 connectiontimeout=14400 timeout=14400
+                        ProxyPassReverse  ^/(.*)$  http://192.168.201.15/
+
+                    </VirtualHost>
+
+
+                #
+                # Reload the Apache config
+                # https://stackoverflow.com/a/41084437
+                apachectl -k graceful
+
+                exit
+            exit
+        exit
+
+
+[user@laptop]
+
+    curl --head 'http://genius.roe.ac.uk/'
+
+    curl --head 'http://tap.roe.ac.uk/osa/availability'
+
+    curl --head 'http://erennon.metagrid.xyz/'
+
+    curl --head 'http://gworewia.metagrid.xyz/'
+
+
