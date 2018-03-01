@@ -44,11 +44,24 @@ public interface EntityBean<EntityType extends Entity>
     public EntityType entity();
 
     /**
+     * The Entity identifier.
+     *
+     */
+    public String getIdent();
+
+    /**
+     * The Entity URL.
+     *
+     */
+    public URI getUrl();
+
+    /**
      * The Entity URI.
      *
      */
+    @Deprecated
     public URI getSelf();
-
+    
     /**
      * The Entity type.
      *

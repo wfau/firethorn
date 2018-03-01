@@ -22,15 +22,15 @@
 # Use the Windows GUI to check.
 #[user@laptop]
 
-    ssh -X fenrir 'rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35'
+    ssh -X shep 'rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35'
  
-    ssh -X fenrir 'rdesktop -ken-gb -g1024x768 -x l -u dave ramses9'
+    ssh -X shep 'rdesktop -ken-gb -g1024x768 -x l -u dave ramses9'
 
-    ssh -X fenrir 'rdesktop -ken-gb -g1024x768 -x l -u dave ramses2'
+    ssh -X shep 'rdesktop -ken-gb -g1024x768 -x l -u dave ramses2'
 
 
-    ssh -X fenrir 'rdesktop -ken-gb -g1000x700 -x l -u dave ramses9'
+    ssh -X shep 'rdesktop -ken-gb -g1000x700 -x l -u dave ramses9'
 
-    ssh -X fenrir 'rdesktop -ken-gb -g1000x700 -x l -u dave ramses2'
+    ssh -X shep 'rdesktop -ken-gb -g1000x700 -x l -u dave ramses2'
 
 

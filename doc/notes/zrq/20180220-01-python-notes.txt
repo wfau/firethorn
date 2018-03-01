@@ -29,10 +29,441 @@
     source "${HOME:?}/firethorn.settings"
     gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt &
 
+
 # -----------------------------------------------------
-# Local deploy on desktop.
+# Fetch our branch name.
+#[user@virtual]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        buildtag=$(hg branch)
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    source "${HOME:?}/secret.sh"
+    secret frog
+    
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${buildtag:?}
+        
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        tunneluser=$(secret 'ssh.tunnel.user')
+        tunnelhost=$(secret 'ssh.tunnel.host')
+
+        admingroup=wombles
+        adminuser=orinoco
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=friends
+
+        zelltype=pgsql
+        zellhost=zelleri
+        zelldata=postgres
+        zelluser=$(pwgen 20 1)
+        zellpass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our compose config.
+#[user@virtual]
+
+    ln -s "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Build our Docker images.
 #[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
-    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20180110-01-local-deploy.txt &
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag=$(hg branch)
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our Python client container.
+#[user@desktop]
+
+    source "${HOME}/projects.settings"
+    FIRETHORN_PY_BASE="${EDINBURGH_PROJECTS:?}/ftpy/github.zrq"
+    FIRETHORN_PY_CODE="${FIRETHORN_PY_BASE:?}/firethorn"
+
+    DISTICTELLA_BASE=${FIRETHORN_CODE}/docker/compose/tests/distictella/
+
+    export buildtag
+    export FIRETHORN_PY_BASE
+    export DISTICTELLA_BASE
+
+    docker-compose \
+        --file "${DISTICTELLA_BASE:?}/distictella.yml" \
+        build \
+            distictella
+
+# -----------------------------------------------------
+# Run our Python client container.
+#[user@desktop]
+
+    docker-compose \
+        --file "${DISTICTELLA_BASE:?}/distictella.yml" \
+        run \
+            distictella
+
+# -----------------------------------------------------
+# Run our Python client.
+#[user@pyclient]
+
+import os
+import firethorn as ftpy
+
+#
+# Create our firethorn client.
+firethorn = ftpy.Firethorn(
+    os.environ.get('endpoint'),
+    )
+
+#
+# Login using the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    os.environ.get('datadata'),
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass'),
+    )
+
+print(
+    atlas_jdbc
+    )
+
+#
+# Select the ATLASDR1 JbdcSchema by catalog and schema name.
+atlas_jdbc_schema = atlas_jdbc.select_schema_by_name(
+    "ATLASDR1",
+    "dbo"
+    )
+
+print(
+    atlas_jdbc_schema
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+
+print(
+    atlas_adql
+    )
+
+#
+# Import the mapping between the JdbcSchema and AdqlSchema tables.
+atlas_adql_schema = atlas_adql.import_jdbc_schema(
+    atlas_jdbc_schema,
+    "ATLASDR1",
+    metadoc="https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/meta/ATLASDR1_TablesSchema.xml"
+    )
+
+print(
+    atlas_adql_schema
+    )
+
+#
+# List the top level AdqlResources
+# BUG - not an array of objects, just the JSON.
+json_list = firethorn.firethorn_engine.select_adql_resources()
+
+#
+# Iterate the JSON items and create objects.
+obj_list = []
+for json_item in json_list:
+    obj_list.append(
+        AdqlResource(
+            firethorn.firethorn_engine,
+            json_item
+            )
+        )
+
+# Future ref - weak references.
+# Implement a cache of known objects.
+# https://stackoverflow.com/a/6272503
+# https://docs.python.org/3/library/weakref.html
+
+#
+# List the Atlas schemas (raw JSON).
+atlas_adql.select_schemas()
+
+#
+# Select the Atlas schema by name (object).
+atlas_adql.select_schema_by_name("ATLASDR1")
+
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Create a new AdqlResource to act as our workspace.
+resource = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Wrap the resource as a workspace.
+from models.workspace import Workspace 
+workspace = Workspace(
+    resource,
+    None,
+    None,
+    firethorn.firethorn_engine
+    )
+
+#
+# Import the ATLAS AdqlSchema into our AdqlResource
+resource.import_adql_schema(
+    atlas_adql_schema
+    )
+
+#
+# Import the ATLAS AdqlSchema into our Workspace
+# Should this be add_schema ?
+workspace.import_schema(
+    atlas_adql.select_schema_by_name(
+        "ATLASDR1"
+        )
+    )
+
+# -------- -------- -------- --------
+
+class Workspace(object):
+
+        def query(self, query=""):
+
+            query = Query(querystring=query, adql_resource=self.adql_resource, firethorn_engine = self.firethorn_engine)
+            query.run() # This method isn't there ?
+            return query
+
+class AdqlResource(BaseResource):
+
+        def create_query(self, adql_query_input, adql_query_status_next="COMPLETED", jdbc_schema_ident=None, adql_query_wait_time=600000):
+            qry_engine = QueryEngine()
+            return qry_engine.create_query(
+                adql_query_input=adql_query_input,
+                adql_query_status_next=adql_query_status_next,
+                adql_resource=self,
+                firethorn_engine=self.firethorn_engine,
+                adql_query_wait_time=adql_query_wait_time,
+                jdbc_schema_ident=jdbc_schema_ident
+                )
+
+
+# User level wrapper for adql_query 
+class Query(object):
+
+    def __init__(self, querystring=None, adql_resource=None, adql_query=None, firethorn_engine=None):
+        self.table = Table()
+        self.error = None
+        self.querystring = querystring
+        self.adql_resource = adql_resource
+        self.firethorn_engine = firethorn_engine
+        self.firethorn_query_engine = QueryEngine(firethorn_engine)
+        self.adql_query = adql_query
+    
+# Engine level class 
+class AdqlQuery(BaseObject):
+
+        def run_query(self, query=None, query_name="", query_space="", query_mode="AUTO", test_email="", mode="SYNC", **kwargs):
+
+        def create_query(self, adql_query_input, adql_query_status_next, adql_resource, firethorn_engine, adql_query_wait_time=600000, jdbc_schema_ident=None):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -------- -------- -------- --------
+# Different options
+
+firethorn = ftpy.Firethorn()
+
+firethorn = ftpy.Firethorn(
+    os.environ.get('endpoint'),
+    )
+
+firethorn = ftpy.Firethorn(
+    endpoint=ftpy.config.default_endpoint
+    )
+
+# -------- -------- -------- --------
+# BUG in BaseObject ?
+# url, _url and __url
+# Should url and __url should both be _url ?
+
+BaseObject
+    __init__
+        self.url = url
+
+    @property
+    def url(self):
+        return self.__url
+
+# BUG __url is not set ?
+
+    def url(self, url):
+        self.__url= url 
+        ...
+
+    def name(self):
+        if (self.json_object==None):
+            if (self.url!=None):
+            ...
+
+# -------- -------- -------- --------
+# Inconsistent object wrapping
+# owner() just returns a url.
+
+print(obj_item.owner())
+
+# -------- -------- -------- --------
+# Unknown fail for Firethorn constructor.
+
+''' FAIL
+firethorn = ftpy.Firethorn(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('endpoint'),
+    os.environ.get('admingroup')
+    )
+'''
+
+# -------- -------- -------- --------
+# Old method in engine ?
+
+ft.firethorn_engine.select_jdbc_schema_by_name(atlas_jdbc.url, catalog, schema)
+
+# -------- -------- -------- --------
+# BUG In `Workspace.import_schema()`, the schema shouldn't be optional.
+# https://github.com/stvoutsin/firethorn.py/blob/master/firethorn/models/workspace.py#L63
+
+If the schema is `None`, the current code searches self.adql_resource to find an existing schema and then tries to import it again.
+
+Fix is to remove the `None` test and make the schema a required parameter.
+
+# -------- -------- -------- --------
+
+"""
+# How do we get at the top level resources ?
+osa = firethorn.get_workspace(
+    "OSA"
+    )
+wspace = firethorn.new_workspace(
+    "ATLAS"
+    )
+wspace.import_schema(
+    osa.get_schema(
+        "ATLASDR1"
+        )
+    )
+print(
+    wspace.get_schemas()
+    )
+"""
+
 

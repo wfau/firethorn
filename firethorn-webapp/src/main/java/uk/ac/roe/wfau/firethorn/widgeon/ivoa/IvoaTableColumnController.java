@@ -44,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaTableLinkFactory;
 @RequestMapping(IvoaTableLinkFactory.TABLE_COLUMN_PATH)
 public class IvoaTableColumnController
 extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
+implements IvoaTableModel, IvoaColumnModel 
     {
     @Override
     public Path path()
@@ -61,12 +62,6 @@ extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
         {
         super();
         }
-
-    /**
-     * MVC property for the Resource name.
-     *
-     */
-    public static final String COLUMN_NAME_PARAM = "urn:ivoa.column.name" ;
 
     @Override
     public IvoaColumnBean bean(final IvoaColumn entity)
@@ -91,7 +86,7 @@ extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
      * @throws IdentifierFormatException 
      *
      */
-    @ModelAttribute(IvoaTableController.TARGET_ENTITY)
+    @ModelAttribute(IvoaTableModel.TARGET_ENTITY)
     public IvoaTable parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -106,14 +101,14 @@ extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
         }
 
     /**
-     * JSON GET request to select all.
+     * GET request to select all the {@link IvoaColumn}s.
      * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public ResponseEntity<Iterable<IvoaColumnBean>> select(
-        @ModelAttribute(IvoaTableController.TARGET_ENTITY)
+        @ModelAttribute(IvoaTableModel.TARGET_ENTITY)
         final IvoaTable table
         )
     throws ProtectionException
@@ -124,14 +119,38 @@ extends AbstractEntityController<IvoaColumn, IvoaColumnBean>
         }
 
     /**
-     * JSON request to select by name.
+     * POST request to select an {@link IvoaColumn} by {@link Identifier}.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, params=COLUMN_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<IvoaColumnBean> select_by_ident(
+        @ModelAttribute(IvoaTableModel.TARGET_ENTITY)
+        final IvoaTable table,
+        @RequestParam(COLUMN_IDENT_PARAM)
+        final String ident
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
+            table.columns().select(
+                factories().ivoa().columns().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+    
+    /**
+     * POST request to select an {@link IvoaColumn} by name.
      * @throws ProtectionException 
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
-    public ResponseEntity<IvoaColumnBean> select(
-        @ModelAttribute(IvoaTableController.TARGET_ENTITY)
+    public ResponseEntity<IvoaColumnBean> select_by_name(
+        @ModelAttribute(IvoaTableModel.TARGET_ENTITY)
         final IvoaTable table,
         @RequestParam(COLUMN_NAME_PARAM)
         final String name

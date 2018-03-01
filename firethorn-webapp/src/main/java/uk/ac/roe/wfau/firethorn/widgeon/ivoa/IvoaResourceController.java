@@ -45,7 +45,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaResourceLinkFactory;
 @Controller
 @RequestMapping(IvoaResourceLinkFactory.RESOURCE_PATH)
 public class IvoaResourceController
-    extends AbstractEntityController<IvoaResource, IvoaResourceBean>
+extends AbstractEntityController<IvoaResource, IvoaResourceBean>
+implements IvoaResourceModel
     {
 
     @Override
@@ -64,24 +65,6 @@ public class IvoaResourceController
         {
         super();
         }
-
-    /**
-     * MVC property for the target resource.
-     *
-     */
-    public static final String TARGET_ENTITY = "urn:ivoa.resource.entity" ;
-
-    /**
-     * MVC property for updating the name.
-     *
-     */
-    public static final String RESOURCE_NAME_PARAM = "ivoa.resource.name" ;
-
-    /**
-     * MVC property for updating the status.
-     *
-     */
-    public static final String RESOURCE_STATUS_PARAM = "ivoa.resource.status" ;
 
     @Override
     public IvoaResourceBean bean(final IvoaResource entity)
@@ -105,7 +88,7 @@ public class IvoaResourceController
      * @throws IdentifierFormatException 
      *
      */
-    @ModelAttribute(TARGET_ENTITY)
+    @ModelAttribute(IvoaResourceModel.TARGET_ENTITY)
     public IvoaResource entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -127,7 +110,7 @@ public class IvoaResourceController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public ResponseEntity<IvoaResourceBean> select(
-        @ModelAttribute(TARGET_ENTITY)
+        @ModelAttribute(IvoaResourceModel.TARGET_ENTITY)
         final IvoaResource entity
         ){
         return selected(
@@ -145,7 +128,7 @@ public class IvoaResourceController
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<IvoaResourceBean> update(
-        @ModelAttribute(TARGET_ENTITY)
+        @ModelAttribute(IvoaResourceModel.TARGET_ENTITY)
         final IvoaResource entity,
         @RequestParam(value=RESOURCE_NAME_PARAM, required=false) final
         String name,

@@ -44,7 +44,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlSchemaLinkFactory;
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_PATH)
 public class AdqlSchemaController
-    extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
+extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
+implements AdqlSchemaModel
     {
 
     @Override
@@ -63,19 +64,6 @@ public class AdqlSchemaController
         {
         super();
         }
-
-    /**
-     * MVC property for the {@link AdqlSchema}, [{@value}].
-     *
-     */
-    public static final String TARGET_ENTITY = "urn:adql.schema.entity" ;
-
-    /**
-     * MVC property for the {@link AdqlSchema} name, [{@value}].
-     * @todo Merge create, select and update.
-     *
-     */
-    public static final String SCHEMA_NAME_PARAM = "adql.schema.update.name" ;
 
     @Override
     public Iterable<AdqlSchemaBean> bean(final Iterable<AdqlSchema> iter)
@@ -102,7 +90,7 @@ public class AdqlSchemaController
      * @throws IdentifierFormatException 
      *
      */
-    @ModelAttribute(TARGET_ENTITY)
+    @ModelAttribute(AdqlSchemaModel.TARGET_ENTITY)
     public AdqlSchema entity(
         @PathVariable("ident")
         final String ident
@@ -127,7 +115,7 @@ public class AdqlSchemaController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> select(
-        @ModelAttribute(TARGET_ENTITY)
+        @ModelAttribute(AdqlSchemaModel.TARGET_ENTITY)
         final AdqlSchema entity
         ){
         return selected(
@@ -151,7 +139,7 @@ public class AdqlSchemaController
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MIME)
     public ResponseEntity<AdqlSchemaBean> update(
-        @ModelAttribute(TARGET_ENTITY)
+        @ModelAttribute(AdqlSchemaModel.TARGET_ENTITY)
         final AdqlSchema entity,
         @RequestParam(value=SCHEMA_NAME_PARAM, required=false)
         final String name

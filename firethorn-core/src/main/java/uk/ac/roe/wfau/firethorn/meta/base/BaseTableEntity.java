@@ -317,6 +317,13 @@ implements BaseTable<TableType, ColumnType>
                 }
 
             @Override
+            public void count(Long count)
+            throws ProtectionException
+                {
+                adqlcount(count);
+                }
+
+            @Override
             public TableStatus status()
             throws ProtectionException
                 {

@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -47,6 +47,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
 @RequestMapping(AdqlTableLinkFactory.TABLE_COLUMN_PATH)
 public class AdqlTableColumnController
 extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
+implements AdqlTableModel, AdqlColumnModel 
     {
     @Override
     public Path path()
@@ -64,13 +65,6 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         {
         super();
         }
-
-    /**
-     * MVC property for the {@link AdqlColumn} name, [{@value}].
-     * TODO Move this to a Model class.
-     *
-     */
-    public static final String COLUMN_NAME_PARAM = "adql.table.column.select.name" ;
 
     @Override
     public AdqlColumnBean bean(final AdqlColumn entity)
@@ -97,7 +91,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * @throws IdentifierFormatException 
      *
      */
-    @ModelAttribute(AdqlTableController.TARGET_ENTITY)
+    @ModelAttribute(AdqlTableModel.TARGET_ENTITY)
     public AdqlTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -112,7 +106,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * {@link RequestMethod#GET} request to select all the {@link AdqlColumn}s in this {@link AdqlSchema}.
+     * {@link RequestMethod#GET} request to select all the {@link AdqlColumn}s.
      * <br/>Request path : [{@value #SELECT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param table The parent {@link AdqlTable} selected using the {@Identifier} in the request path.
@@ -123,7 +117,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public ResponseEntity<Iterable<AdqlColumnBean>> select(
-        @ModelAttribute(AdqlTableController.TARGET_ENTITY)
+        @ModelAttribute(AdqlTableModel.TARGET_ENTITY)
         final AdqlTable table
         )
     throws ProtectionException
@@ -134,7 +128,39 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         }
 
     /**
-     * {@link RequestMethod#GET} request to select a specific {@link AdqlColumn} by name.
+     * {@link RequestMethod#GET} request to select an{@link AdqlColumn} by {@link Identifier}.
+     * <br/>Request path : [{@value #SELECT_PATH}]
+     * <br/>Content type : [{@value #JSON_MIME}]
+     * @param table The parent {@link AdqlTable} selected using the {@Identifier} in the request path.
+     * @param ident The {@link AdqlColumn} name to look for, [{@value #COLUMN_NAME_PARAM}].
+     * @return The matching {@link AdqlColumn} wrapped in an {@link AdqlColumnBean}.
+     * @throws NameNotFoundException If a matching {@link AdqlColumn} could not be found.
+     * @throws ProtectionException 
+     * @throws IdentifierNotFoundException 
+     * @throws IdentifierFormatException 
+     * 
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=COLUMN_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<AdqlColumnBean> select_by_ident(
+        @ModelAttribute(AdqlTableModel.TARGET_ENTITY)
+        final AdqlTable table,
+        @RequestParam(COLUMN_IDENT_PARAM)
+        final String ident
+        )
+    throws ProtectionException, IdentifierFormatException, IdentifierNotFoundException
+        {
+        return selected(
+            table.columns().select(
+                factories().adql().columns().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+
+    /**
+     * {@link RequestMethod#GET} request to select an {@link AdqlColumn} by name.
      * <br/>Request path : [{@value #SELECT_PATH}]
      * <br/>Content type : [{@value #JSON_MIME}]
      * @param table The parent {@link AdqlTable} selected using the {@Identifier} in the request path.
@@ -145,9 +171,9 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      * 
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
-    public ResponseEntity<AdqlColumnBean> select(
-        @ModelAttribute(AdqlTableController.TARGET_ENTITY)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=COLUMN_NAME_PARAM, produces=JSON_MIME)
+    public ResponseEntity<AdqlColumnBean> select_by_name(
+        @ModelAttribute(AdqlTableModel.TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(COLUMN_NAME_PARAM)
         final String name

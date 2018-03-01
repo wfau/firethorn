@@ -66,13 +66,6 @@ implements JdbcResourceModel
         {
         super();
         }
-
-    /**
-     * MVC property for the target resource.
-     *
-     */
-    public static final String TARGET_ENTITY = "urn:jdbc.resource.entity" ;
-
     
     @Override
     public JdbcResourceBean bean(final JdbcResource entity)

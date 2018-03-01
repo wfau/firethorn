@@ -36,7 +36,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.ProtectionError;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
@@ -45,8 +44,8 @@ import uk.ac.roe.wfau.firethorn.community.CommunityEntity;
 import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.UniqueNamefactory;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
@@ -86,12 +85,16 @@ import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
             query = "FROM IdentityEntity ORDER BY ident desc"
             ),
         @NamedQuery(
-            name = "Identity-select-community.name",
+            name = "Identity-select-name",
+            query = "FROM IdentityEntity WHERE name = :name ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name = "Identity-select-community-name",
             query = "FROM IdentityEntity WHERE community = :community AND name = :name ORDER BY ident desc"
             ),
         @NamedQuery(
-            name = "Identity-select-name",
-            query = "FROM IdentityEntity WHERE name = :name ORDER BY ident desc"
+            name = "Identity-select-community-ident",
+            query = "FROM IdentityEntity WHERE community = :community AND ident = :ident ORDER BY ident desc"
             )
         }
     )
@@ -107,15 +110,33 @@ implements Identity
     public static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IdentityEntity";
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping, [{@value}].
      *
      */
     protected static final String DB_COMMUNITY_COL = "community" ;
+
+    /**
+     * Hibernate column mapping, [{@value}].
+     *
+     */
     protected static final String DB_JDBC_SCHEMA_COL = "jdbcschema" ;
 
+    /**
+     * Hibernate column mapping, [{@value}].
+     *
+     */
     protected static final String DB_ADQL_SCHEMA_COL = "adqlschema" ;
+
+    /**
+     * Hibernate column mapping, [{@value}].
+     *
+     */
     protected static final String DB_ADQL_RESOURCE_COL = "adqlresource" ;
 
+    /**
+     * Hibernate column mapping, [{@value}].
+     *
+     */
     protected static final String DB_PASSHASH_COL = "passhash" ;
 
     /**
@@ -136,30 +157,13 @@ implements Identity
         /**
          * Private search method that doesn't check the {@link Protector}.
          * 
-        private Identity find(final String name)
-            {
-            log.debug("find (String) [{}]", name);
-            return super.first(
-                super.query(
-                    "Identity-select-name"
-                    ).setString(
-                        "name",
-                        name
-                    )
-                );
-            }
-         */
-
-        /**
-         * Private search method that doesn't check the {@link Protector}.
-         * 
          */
         private Identity find(final Community community, final String name)
             {
             log.debug("find (Community, String) [{}]", name);
             return super.first(
                 super.query(
-                    "Identity-select-community.name"
+                    "Identity-select-community-name"
                     ).setEntity(
                         "community",
                         community
@@ -302,25 +306,59 @@ implements Identity
         public Identity select(final Community community, final String name)
         throws NameNotFoundException, ProtectionException
             {
-            log.debug("select(Community, String) [{}][{}]", community.name(), name);
             //protector().affirm(Action.select);
-            final Identity found = search(
-                community,
-                name
-                );
-            if (found != null)
-                {
-                return found;
+            try {
+                return super.single(
+                    super.query(
+                        "Identity-select-community-name"
+                        ).setEntity(
+                            "community",
+                            community
+                        ).setString(
+                            "name",
+                            name
+                            )
+                    );
                 }
-            else {
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate identity [{}][{}]", community.name(), name);
                 throw new NameNotFoundException(
-                    name
+                    name,
+                    ouch
                     );
                 }
             }
 
         @Override
-        public Identity search(Community community, String name)
+        public Identity select(final Community community, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "Identity-select-community-ident"
+                        ).setEntity(
+                            "community",
+                            community
+                        ).setSerializable(
+                            "ident",
+                            ident.value()
+                            )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate identity [{}][{}]", community.name(), ident);
+                throw new IdentifierNotFoundException(
+                    ident,
+                    ouch
+                    );
+                }
+            }
+        
+        @Override
+        public Identity search(final Community community, final String name)
         throws ProtectionException
             {
             log.debug("search(Community, String) [{}][{}]", community.name(), name);
@@ -338,42 +376,6 @@ implements Identity
                 );
             }
 
-/*
- *         
-        @Override
-        @SelectMethod
-        public Identity select(final String name)
-        throws NameNotFoundException, ProtectionException
-            {
-            log.debug("select(String) [{}][{}]", name);
-            //protector().affirm(Action.select);
-            final Identity found = search(
-                name
-                );
-            if (found != null)
-                {
-                return found;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectMethod
-        public Identity search(String name)
-        throws ProtectionException
-            {
-            log.debug("search(String) [{}][{}]", name);
-            //protector().affirm(Action.select);
-            return find(
-                name
-                );
-            }
- *
- */
         @Override
         @CreateMethod
         public Identity search(final Community community, final String name, boolean create)
@@ -714,7 +716,7 @@ implements Identity
                         }
                     catch (final EntityNotFoundException ouch)
                         {
-                        log.error("Failed to find user space []", ouch.getMessage());
+                        log.error("Failed to find user space [{}]", ouch.getMessage());
                         }
                     }
                 }

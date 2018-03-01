@@ -43,10 +43,12 @@ import uk.ac.roe.wfau.firethorn.access.Action;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
@@ -71,6 +73,10 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
         @NamedQuery(
             name  = "JdbcResource-select-all",
             query = "FROM JdbcResourceEntity ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "JdbcResource-select-name",
+            query = "FROM JdbcResourceEntity WHERE (name = :name) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "JdbcResource-select-uid",
@@ -127,6 +133,31 @@ public class JdbcResourceEntity
                     "JdbcResource-select-all"
                     )
                 );
+            }
+
+        @Override
+        @SelectMethod
+        public JdbcResource select(final String name)
+        throws ProtectionException, NameNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "JdbcResource-select-name"
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate resource [{}]", name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
             }
 
 		@Override
@@ -493,6 +524,17 @@ public class JdbcResourceEntity
                     );
                 }
 
+
+            @Override
+            public JdbcSchema select(Identifier ident)
+            throws ProtectionException, IdentifierNotFoundException
+                {
+                return factories().jdbc().schemas().entities().select(
+                    JdbcResourceEntity.this,
+                    ident
+                    );
+                }
+
             @Override
             public JdbcSchema select(final String name)
             throws ProtectionException, NameNotFoundException
@@ -629,34 +671,14 @@ public class JdbcResourceEntity
         // Try/finally to close our connection. 
         try {
             //
-            // Scan a specific catalog.
-            if (connection().catalog() != null)
-                {
-                try {
-                    scan(
-                        known,
-                        matching,
-                        scanner.catalogs().select(
-                            connection().catalog()
-                            )
-                        );
-                    }
-                catch (SQLException ouch)
-                    {
-                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
-                    scanner.handle(ouch);
-                    }
-                catch (MetadataException ouch)
-                    {
-                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
-                    }
-                }
-            //
             // Scan all the catalogs.
-            else {
+            if ((connection().catalog() == null) || ("*".equals(connection().catalog())))
+                {
+                log.debug("connection().catalog() [{}]", connection().catalog());
                 try {
                     for (JdbcMetadataScanner.Catalog catalog : scanner.catalogs().select())
                         {
+                        log.debug("catalog [{}]", catalog);
                         scan(
                             known,
                             matching,
@@ -672,6 +694,31 @@ public class JdbcResourceEntity
                 catch (MetadataException ouch)
                     {
                     log.warn("Exception while fetching JDBC catalogs [{}][{}]", this.ident(), ouch.getMessage());
+                    }
+                }
+            //
+            // Scan a specific catalog.
+            else {
+            	log.debug("connection().catalog() [{}]", connection().catalog());
+                try {
+                	final JdbcMetadataScanner.Catalog catalog = scanner.catalogs().select(
+            			connection().catalog()
+                        );
+                    log.debug("catalog [{}]", catalog);
+            		scan(
+                        known,
+                        matching,
+                        catalog
+                        );
+                    }
+                catch (SQLException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
+                    scanner.handle(ouch);
+                    }
+                catch (MetadataException ouch)
+                    {
+                    log.warn("Exception while fetching JDBC catalog [{}][{}][{}]", this.ident(), connection().catalog(), ouch.getMessage());
                     }
                 }
             }

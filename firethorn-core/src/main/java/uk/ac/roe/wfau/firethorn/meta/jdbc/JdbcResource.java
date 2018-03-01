@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
@@ -150,7 +151,8 @@ extends BaseResource<JdbcSchema>
      * Our resource {@link JdbcSchema schema}.
      *
      */
-    public interface Schemas extends BaseResource.Schemas<JdbcSchema>
+    public interface Schemas
+    extends BaseResource.Schemas<JdbcSchema>
         {
         /**
          * Create a new {@link JdbcSchema}.

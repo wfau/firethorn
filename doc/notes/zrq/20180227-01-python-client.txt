@@ -1,0 +1,67 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Missing methods ...
+
+
+
+    jdbc, adql, ivoa
+    get resource by name
+    get resource by ident
+
+    jdbc, adql, ivoa
+    get resource schema by name
+    get resource schema by ident
+
+    jdbc, adql, ivoa
+    get schema table by name
+    get schema table by ident
+
+    adql, jdbc, ivoa
+    get table column by name
+    get table column by ident
+
+
+    get identity_by_name
+    #get identity_by_ident
+    #get identity_by_ivoid
+
+    #get queries for identity
+    #get queries for identity by name
+    #get queries for identity by ident
+
+    adql, jdbc, ivoa
+    #get resources for identity
+    #get resources for identity by name
+    #get resources for identity by ident
+
+
+    BUG
+    query rowcount is correct
+    table.adql.meta rowcount is wrong
+    
+    table row count
+    https://blog.sqlauthority.com/2017/05/24/sql-server-find-row-count-every-table-database-efficiently/    
+
+
+    https://blogs.msdn.microsoft.com/martijnh/2010/07/15/sql-serverhow-to-quickly-retrieve-accurate-row-count-for-table/

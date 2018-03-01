@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
@@ -44,6 +45,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaResourceLinkFactory;
 @RequestMapping(IvoaResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class IvoaResourceSchemaController
 extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
+implements IvoaResourceModel, IvoaSchemaModel
     {
     @Override
     public Path path()
@@ -61,12 +63,6 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
         {
         super();
         }
-
-    /**
-     * MVC property for the schema name.
-     *
-     */
-    public static final String SCHEMA_NAME_PARAM = "ivoa.schema.name" ;
 
     @Override
     public IvoaSchemaBean bean(final IvoaSchema entity)
@@ -91,7 +87,7 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
      * @throws IdentifierFormatException 
      *
      */
-    @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
+    @ModelAttribute(IvoaResourceModel.TARGET_ENTITY)
     public IvoaResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -106,13 +102,13 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
         }
 
     /**
-     * JSON GET request to select all.
+     * GET request to select all the {@link IvoaSchema}.
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MIME)
     public ResponseEntity<Iterable<IvoaSchemaBean>> select(
-        @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
+        @ModelAttribute(IvoaResourceModel.TARGET_ENTITY)
         final IvoaResource resource
         )
     throws ProtectionException
@@ -123,13 +119,36 @@ extends AbstractEntityController<IvoaSchema, IvoaSchemaBean>
         }
 
     /**
-     * JSON request to select by name.
+     * POST request to select an {@link IvoaSchema} by {@link Identifier}.
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
-    public ResponseEntity<IvoaSchemaBean> select(
-        @ModelAttribute(IvoaResourceController.TARGET_ENTITY)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=SCHEMA_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<IvoaSchemaBean> ident(
+        @ModelAttribute(IvoaResourceModel.TARGET_ENTITY)
+        final IvoaResource resource,
+        @RequestParam(SCHEMA_IDENT_PARAM)
+        final String ident
+        )
+    throws EntityNotFoundException, ProtectionException
+        {
+        return selected(
+            resource.schemas().select(
+                factories().ivoa().schemas().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+    
+    /**
+     * POST request to select an {@link IvoaSchema} by name.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=SCHEMA_NAME_PARAM, produces=JSON_MIME)
+    public ResponseEntity<IvoaSchemaBean> select_by_name(
+        @ModelAttribute(IvoaResourceModel.TARGET_ENTITY)
         final IvoaResource resource,
         @RequestParam(SCHEMA_NAME_PARAM)
         final String name

@@ -36,9 +36,12 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateEntityException;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.tap.TAPServiceTranslator;
@@ -63,8 +66,8 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaIvoaResource;
             query = "FROM IvoaResourceEntity ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "IvoaResource-select-ivoaid",
-            query = "FROM IvoaResourceEntity WHERE ivoaid = :ivoaid ORDER BY name asc, ident desc"
+            name  = "IvoaResource-select-name",
+            query = "FROM IvoaResourceEntity WHERE name = :name ORDER BY name asc, ident desc"
             )
         }
     )
@@ -138,6 +141,31 @@ public class IvoaResourceEntity
                     endpoint
                     )
                 );
+            }
+
+        @Override
+        @SelectMethod
+        public IvoaResource select(final String name)
+        throws ProtectionException, NameNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "IvoaResource-select-name"
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate resource [{}]", name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
             }
         }
 
@@ -301,7 +329,17 @@ public class IvoaResourceEntity
                 }
 
             @Override
-            public IvoaSchema select(String name)
+            public IvoaSchema select(final Identifier ident)
+            throws ProtectionException, IdentifierNotFoundException
+                {
+                return factories().ivoa().schemas().entities().select(
+                    IvoaResourceEntity.this,
+                    ident
+                    );
+                }
+
+            @Override
+            public IvoaSchema select(final String name)
             throws ProtectionException, NameNotFoundException
                 {
                 return factories().ivoa().schemas().entities().select(

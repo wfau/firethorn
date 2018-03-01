@@ -38,9 +38,11 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InternalServerErrorException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidRequestException;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
@@ -65,6 +67,10 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
         @NamedQuery(
             name  = "AdqlResource-select-all",
             query = "FROM AdqlResourceEntity ORDER BY name asc, ident desc"
+                ),
+        @NamedQuery(
+            name  = "AdqlResource-select-name",
+            query = "FROM AdqlResourceEntity WHERE name = :name ORDER BY name asc, ident desc"
             )
         }
     )
@@ -110,6 +116,31 @@ implements AdqlResource
                 );
             }
 
+        @Override
+        @SelectMethod
+        public AdqlResource select(final String name)
+        throws ProtectionException, NameNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "AdqlResource-select-name"
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate resource [{}]", name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
+            }
+        
         @Override
         @CreateMethod
         public AdqlResource create(final String name)
@@ -306,6 +337,16 @@ implements AdqlResource
                 return factories().adql().schemas().entities().select(
                     AdqlResourceEntity.this,
                     name
+                    );
+                }
+
+            @Override
+            public AdqlSchema select(final Identifier ident)
+            throws ProtectionException, IdentifierNotFoundException
+                {
+                return factories().adql().schemas().entities().select(
+                    AdqlResourceEntity.this,
+                    ident
                     );
                 }
 

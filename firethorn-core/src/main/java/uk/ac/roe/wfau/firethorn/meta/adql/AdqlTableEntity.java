@@ -41,7 +41,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.DateNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
@@ -87,12 +86,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
             query = "FROM AdqlTableEntity WHERE parent = :parent ORDER BY ident asc"
             ),
         @NamedQuery(
-            name  = "AdqlTable-select-parent.name",
-            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
+            name  = "AdqlTable-select-parent-ident",
+            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (ident = :ident)) ORDER BY ident asc"
             ),
         @NamedQuery(
-            name  = "AdqlTable-search-parent.text",
-            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
+            name  = "AdqlTable-select-parent-name",
+            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
             )
         }
     )
@@ -322,13 +321,41 @@ public class AdqlTableEntity
 
         @Override
         @SelectMethod
+        public AdqlTable select(final AdqlSchema parent, final Identifier ident)
+        throws ProtectionException, IdentifierNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "AdqlTable-select-parent-ident"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setSerializable(
+                            "ident",
+                            ident.value()
+                        )
+                    );
+                }
+            catch (final EntityNotFoundException ouch)
+                {
+                log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), ident);
+                throw new IdentifierNotFoundException(
+                    ident,
+                    ouch
+                    );
+                }
+            }
+        
+        @Override
+        @SelectMethod
         public AdqlTable select(final AdqlSchema parent, final String name)
         throws ProtectionException, NameNotFoundException
             {
             try {
                 return super.single(
                     super.query(
-                        "AdqlTable-select-parent.name"
+                        "AdqlTable-select-parent-name"
                         ).setEntity(
                             "parent",
                             parent
@@ -355,7 +382,7 @@ public class AdqlTableEntity
             {
             return super.first(
                 super.query(
-                    "AdqlTable-select-parent.name"
+                    "AdqlTable-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent
@@ -773,8 +800,8 @@ public class AdqlTableEntity
                         }
                     }
                 else {
-                    // TODO pass parent reference.
                     return factories().adql().columns().entities().select(
+                        AdqlTableEntity.this,
                         ident
                         );
                     }

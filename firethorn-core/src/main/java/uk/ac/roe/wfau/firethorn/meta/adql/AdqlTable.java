@@ -189,6 +189,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
     public static enum TableStatus
         {
         CREATED(),
+        PARTIAL(),
         COMPLETED(),
         TRUNCATED(),
         DELETED(),
@@ -230,6 +231,14 @@ extends BaseTable<AdqlTable, AdqlColumn>
              *
              */
             public Long count()
+            throws ProtectionException;
+
+            /**
+             * Set the table row count.
+             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+             *
+             */
+            public void count(Long count)
             throws ProtectionException;
 
             /**

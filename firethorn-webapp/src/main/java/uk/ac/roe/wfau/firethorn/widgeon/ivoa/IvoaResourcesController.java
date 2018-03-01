@@ -27,6 +27,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -40,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.IvoaResourceLinkFactory;
 @RequestMapping(IvoaResourceLinkFactory.SERVICE_PATH)
 public class IvoaResourcesController
 extends AbstractEntityController<IvoaResource, IvoaResourceBean>
+implements IvoaResourceModel
     {
 
     @Override
@@ -58,18 +63,6 @@ extends AbstractEntityController<IvoaResource, IvoaResourceBean>
         {
         super();
         }
-
-    /**
-     * MVC property for the resource name.
-     *
-     */
-    public static final String RESOURCE_NAME_PARAM = "ivoa.resource.name" ;
-
-    /**
-     * MVC property for the resource endpoint.
-     *
-     */
-    public static final String RESOURCE_ENDPOINT_PARAM = "ivoa.resource.endpoint" ;
 
     @Override
     public IvoaResourceBean bean(final IvoaResource entity)
@@ -101,6 +94,48 @@ extends AbstractEntityController<IvoaResource, IvoaResourceBean>
         {
         return selected(
             factories().ivoa().resources().entities().select()
+            );
+        }
+
+    /**
+     * POST request to select an {@link AdqlResource} by {@link Identifier}.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=RESOURCE_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<IvoaResourceBean> select_by_ident(
+        @RequestParam(RESOURCE_IDENT_PARAM)
+        final String ident
+        )
+    throws IdentifierNotFoundException, ProtectionException
+        {
+        return selected(
+            factories().ivoa().resources().entities().select(
+                factories().ivoa().resources().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+    
+    /**
+     * POST request to select an {@link AdqlResource} by name.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=RESOURCE_NAME_PARAM, produces=JSON_MIME)
+    public ResponseEntity<IvoaResourceBean> select_by_name(
+        @RequestParam(RESOURCE_NAME_PARAM)
+        final String name
+        )
+    throws NameNotFoundException, ProtectionException
+        {
+        return selected(
+            factories().ivoa().resources().entities().select(
+                name
+                )
             );
         }
 

@@ -1,0 +1,182 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    ssh -X shep 'rdesktop -ken-gb -g1000x700 -x l -u dave ramses2'
+
+
+    AuthEngine isn't really an 'engine', it is an instance for the current authentication.
+    Suggest better name would be Authentication or even PasswordAuthentication.
+
+    Passing AuthEngine instead of FirethornEngine is not the right direction.
+    FirethornEngine can keep a reference to current Authentication/PasswordAuthentication.
+        Owner isn't a class, it is a role.
+        The owner of an Object _is_ an Identity.
+            server side - can we get details of an Identity ?
+            server side - can we get lists of things owned by an Identity .. e.g. resources or queries.
+            
+    
+    Main classes should use FirethornEngine to access urllib code.
+    Small set of urllib methods in FirethornEngine.
+    BaseObject contains reference to FirethornEngine.
+        Main classes use
+            BaseObject.get_json()
+        BaseObject calls
+            engine.get_json_from_url_path()
+
+    # Some cases already moving this way....
+    json_list = self.get_json(self.url + "/columns/select")
+
+    # Other cases, still got lots of urllib code in the main classes.
+    # self.get_json() needs to accept data dict.
+
+    # Ok, getting there ...
+
+    Constructor hierarchy
+        All of the XyzResource class constructors have engine as the first param.
+        All of the other classes have parent as the first param.
+        Calls to super constructor uses engine from the parent.
+        Avoid creating new instances of parent class.
+
+    Main constructors have json or url params, passed down to BaseObject.
+    Main classes use
+        BaseObject.get_json()
+    
+
+    Table constructor build an astropy by getting the full votable.
+    This will fail with a 35Gbyte result.
+    
+    
+    
+
+----
+
+def table(self):
+    if (self.json_object!=None):
+        return adql.AdqlTable(auth_engine=self.auth_engine, url=self.json_object.get("parent",""))
+    else:
+        return None
+
+AdqlTable has this
+def schema(self):
+    if (self.json_object!=None):
+        return adql.AdqlSchema(auth_engine=self.auth_engine, url=self.json_object.get("schema",""))
+    else:
+        return None 
+
+and AdqlSchema has this
+def resource(self):
+    if (self.json_object!=None):
+        return adql.AdqlResource(auth_engine=self.auth_engine, url=self.json_object.get("parent",""))
+    else:
+        return None 
+
+----
+
+Consider this sequence ..
+
+    adql_resource_1 = engine.select_adql_resource_by_name("OSA")
+    adql_schema_1   = adql_resource_1.select_schema_by_name("ATLASDR1")
+    adql_table_1    = adql_schema_1.select_table_by_name("atlasSource")
+    adql_column_1   = adql_table_1.select_column_by_name("ra")
+
+    adql_table_2    = adql_column_1.table()
+    adql_schema_2   = adql_table_2.schema()
+    adql_resource_2 = adql_schema_2.resource()
+
+    adql_schema_3   = adql_resource_2.select_schema_by_name("ATLASDR1")
+    adql_table_3    = adql_schema_3.select_table_by_name("atlasSource")
+    adql_column_3   = adql_table_3.select_column_by_name("ra")
+
+    ... etc.
+
+----
+
+So the AdqlSchema constructor changes from
+    def __init__(self, auth_engine, json_object=None, url=None):
+        super().__init__(auth_engine, json_object, url) 
+
+to become
+    def __init__(self, adql_resource, json_object=None, url=None):
+        super().__init__(adql_resource, json_object, url) 
+
+BaseSchema constructor changes from
+    def __init__(self, auth_engine, json_object=None, url=None):
+
+to become
+    def __init__(self, base_resource, json_object=None, url=None):
+
+BaseSchema constructor can get the engine from the parent resource to initialise the BaseObject
+    def __init__(self, base_resource, json_object=None, url=None):
+        super().__init__(base_resource.engine(), json_object, url) 
+    
+BaseSchema keeps a reference to the parent resource
+    def __init__(self, base_resource, json_object=None, url=None):
+        ....
+        self.base_resource = base_resource
+
+and BaseSchema can implement the parent resource method
+    def resource(self):
+        return self.base_resource
+
+JdbcTable constructor
+    def __init__(self, jdbc_schema, json_object=None, url=None):
+        super().__init__(jdbc_schema, json_object, url) 
+
+BaseTable constructor passes base_schema.engine() to the baseObject constructor
+    def __init__(self, base_schema, json_object=None, url=None):
+        super().__init__(base_schema.engine(), json_object, url) 
+
+----
+
+JdbcResource
+    BaseResource
+        BaseObject
+            engine() return self.engine
+            
+JdbcSchema
+    BaseSchema
+        resource() return self.resource
+        BaseObject
+            engine() return self.engine
+            
+JdbcTable
+    BaseTable
+        schema() return self.schema
+        BaseObject
+            engine() return self.engine
+
+JdbcColumn
+    BaseColumn
+        table() return self.table
+        BaseObject
+            engine() return self.engine
+
+----
+
+    adql_resource_1 = engine.select_adql_resource_by_name("OSA")
+    adql_schema_1   = adql_resource_1.select_schema_by_name("ATLASDR1")
+    adql_resource_2 = adql_schema_1.resource()
+
+
+
+
+

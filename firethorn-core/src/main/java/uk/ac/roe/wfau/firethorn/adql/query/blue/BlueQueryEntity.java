@@ -40,7 +40,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -1999,6 +1998,27 @@ implements BlueQuery
                         entity.transition(
                             message.state()
                             );
+                        //
+                        // Update the results table.
+                        final AdqlTable results = entity.results().adql();
+                        results.meta().adql().count(
+                            message.results().count()
+                            );
+                        switch (message.results().state())
+                            {
+                            case PARTIAL:
+                                results.meta().adql().status(
+                                    AdqlTable.TableStatus.PARTIAL
+                                    );
+                                break;
+                            case COMPLETED:
+                                results.meta().adql().status(
+                                    AdqlTable.TableStatus.COMPLETED
+                                    );
+                                break;
+                            default:
+                                break;
+                            }
                         return entity.state();
                         }
                     catch (InvalidStateTransitionException ouch)
@@ -2065,6 +2085,8 @@ implements BlueQuery
             {
             this.jdbcspace = identity.spaces().jdbc().current();
             }
+// BUG fail the query if the jdbcspace is null.  
+        
         log.debug(" JDBC space [{}][{}]", jdbcspace.ident(), jdbcspace.name());
 
         log.debug(" ADQL space [{}]", adqlspace);

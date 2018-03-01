@@ -46,7 +46,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.name.AdqlTableLinkFactory;
 @Controller
 @RequestMapping(AdqlTableLinkFactory.TABLE_PATH)
 public class AdqlTableController
-    extends AbstractEntityController<AdqlTable, AdqlTableBean>
+extends AbstractEntityController<AdqlTable, AdqlTableBean>
+implements AdqlTableModel
     {
 
     @Override
@@ -65,19 +66,6 @@ public class AdqlTableController
         {
         super();
         }
-
-    /**
-     * MVC property for the {@link AdqlTable}, [{@value}].
-     *
-     */
-    public static final String TARGET_ENTITY = "urn:adql.table.entity" ;
-
-    /**
-     * MVC property for the {@link AdqlTable} name, [{@value}].
-     * @todo Merge create, select and update.
-     *
-     */
-    public static final String TABLE_NAME_PARAM = "adql.table.update.name" ;
 
     @Override
     public Iterable<AdqlTableBean> bean(final Iterable<AdqlTable> iter)

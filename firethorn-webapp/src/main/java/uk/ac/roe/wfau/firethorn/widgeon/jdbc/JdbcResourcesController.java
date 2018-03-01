@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
@@ -64,51 +67,6 @@ implements JdbcResourceModel
         super();
         }
 
-    /**
-     * MVC property for the select name.
-     *
-     */
-    public static final String RESOURCE_NAME_PARAM = "jdbc.resource.name" ;
-
-    /**
-     * MVC property for the initial name.
-     *
-    public static final String CREATE_NAME = "jdbc.resource.name" ;
-     */
-
-    /**
-     * MVC property for the initial catalog name.
-     *
-     */
-    public static final String CATALOG_NAME_PARAM = "jdbc.resource.catalog" ;
-
-    /**
-     * MVC property for the JDBC driver name.
-     * TODO Use value from JdbcResourceController 
-     *
-    public static final String CONNECTION_DRIVER_PARAM = "jdbc.connection.driver" ;
-     */
-
-    /**
-     * MVC property for the initial connection URL.
-     * TODO Use value from JdbcResourceController 
-     *
-    public static final String CONNECTION_URL_PARAM = "jdbc.connection.url" ;
-     */
-
-    /**
-     * MVC property for the initial connection user name.
-     * TODO Use value from JdbcResourceController 
-     *
-    public static final String CONNECTION_USER_PARAM = "jdbc.connection.user" ;
-     */
-
-    /**
-     * MVC property for the initial connection password.
-     *
-    public static final String CONNECTION_PASS_PARAM = "jdbc.connection.pass" ;
-     */
-
     @Override
     public JdbcResourceBean bean(final JdbcResource entity)
         {
@@ -126,7 +84,8 @@ implements JdbcResourceModel
         }
 
     /**
-     * JSON GET request to select all.
+     * GET request to select all the {@link JdbcResource}s.
+     * @return An {@Iterable} set of {@link JdbcResourceBean}s.
      * @throws ProtectionException 
      *
      */
@@ -143,7 +102,49 @@ implements JdbcResourceModel
         }
 
     /**
-     * JSON POST request to create a new resource.
+     * POST request to select a {@link JdbcResource} by {@link Identifier}.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=RESOURCE_IDENT_PARAM, produces=JSON_MIME)
+    public ResponseEntity<JdbcResourceBean> select_by_ident(
+        @RequestParam(RESOURCE_IDENT_PARAM)
+        final String ident
+        )
+    throws IdentifierNotFoundException, ProtectionException
+        {
+        return selected(
+            factories().jdbc().resources().entities().select(
+                factories().jdbc().resources().idents().ident(
+                    ident
+                    )
+                )
+            );
+        }
+    
+    /**
+     * POST request to select a {@link JdbcResource} by name.
+     * @throws ProtectionException 
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.POST, params=RESOURCE_NAME_PARAM, produces=JSON_MIME)
+    public ResponseEntity<JdbcResourceBean> select_by_name(
+        @RequestParam(RESOURCE_NAME_PARAM)
+        final String name
+        )
+    throws NameNotFoundException, ProtectionException
+        {
+        return selected(
+            factories().jdbc().resources().entities().select(
+                name
+                )
+            );
+        }
+    
+    /**
+     * POST request to create a new resource.
      * @throws ProtectionException 
      *
      */
