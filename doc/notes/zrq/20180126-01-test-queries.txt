@@ -39,7 +39,7 @@
 
     cat > "${HOME:?}/chain.properties" << EOF
 
-buildtag=2.1.14
+buildtag=2.1.15
 
 metadata=postgres
 metauser=$(pwgen 20 1)

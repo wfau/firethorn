@@ -74,7 +74,9 @@
     #branch=2.1.10-zrq-junit-clean
     #branch=2.1.11-zrq-update-depends
     #branch=2.1.12-zrq-basic-auth
-    branch=2.1.13-zrq-lsst-events
+    #branch=2.1.13-zrq-lsst-events
+    branch=2.1.14-zrq-python-notes
+    branch=2.1.15
 
 # -----------------------------------------------------
 # Run our builder.
@@ -158,6 +160,7 @@
 #[user@virtual]
 
     export branch=2.1.14
+    export branch=2.1.15
 
     docker-compose \
         --file "builder.yml" \
@@ -185,6 +188,12 @@ cat > "${HOME}/merge.settings" << EOF
 devbranch=2.1.13-zrq-lsst-events
 oldversion=2.1.13
 newversion=2.1.14
+EOF
+
+cat > "${HOME}/merge.settings" << EOF
+devbranch=2.1.14-zrq-python-notes
+oldversion=2.1.14
+newversion=2.1.15
 EOF
 
     # -----------------------------------------------------
