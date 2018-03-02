@@ -1,0 +1,301 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+        INFO : Node name [Lothigometh]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [Lothigometh.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login as normal user.
+#[user@trop]
+
+    ssh Araybwyn
+
+    ssh Lothigometh
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    vi "${HOME:?}/secret.sh"
+
+        ....
+        ....
+        ....
+
+    source "${HOME:?}/secret.sh"
+    secret 'frog'
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+
+export buildtag=2.1.16
+export branch=default
+
+# -----------------------------------------------------
+# Download our deployer compose file
+#[user@virtual]
+     
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/deployer.yml
+    
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/b431332a5df0/docker/compose/deployer.yml
+
+
+
+cat > "${HOME:?}/chain.properties" << EOF
+
+metadata=postgres
+metauser=$(pwgen 20 1)
+metapass=$(pwgen 20 1)
+
+userhost=$(secret 'firethorn.user.host')
+userdata=$(secret 'firethorn.user.data')
+useruser=$(secret 'firethorn.user.user')
+userpass=$(secret 'firethorn.user.pass')
+
+datahost=$(secret 'firethorn.data.host')
+datadata=$(secret 'firethorn.data.data')
+datacatalog=$(secret 'firethorn.data.data')
+datatype=mssql
+datauser=$(secret 'firethorn.data.user')
+datapass=$(secret 'firethorn.data.pass')
+
+tunneluser=$(secret 'ssh.tunnel.user')
+tunnelhost=$(secret 'ssh.tunnel.host')
+
+admingroup=
+adminuser=
+adminpass=
+
+guestgroup=friends
+endpoint=http://gworewia.metagrid.xyz/firethorn
+
+EOF
+
+# -----------------------------------------------------
+# Create our Firethorn properties.
+#[user@virtual]
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.meta.type=pgsql
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.host=bethany
+firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
+firethorn.meta.data=postgres
+
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+
+firethorn.user.type=mssql
+firethorn.user.url=jdbc:jtds:sqlserver://${userhost:?}/${userdata:?}
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+
+firethorn.user.host=${userhost:?}
+firethorn.user.data=${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+
+firethorn.admin.community=${admingroup:?}
+firethorn.admin.user.name=${adminuser:?}
+firethorn.admin.user.pass=${adminpass:?}
+
+firethorn.guest.community=${guestgroup:?}
+
+EOF
+
+
+# -----------------------------------------------------
+# Create our deployer properties.
+#[user@virtual]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/deployer.properties" << EOF
+
+        datahost=${datahost:?}
+        datadata=${datadata:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=net.sourceforge.jtds.jdbc.Driver
+
+EOF
+
+    chmod a+r "${HOME:?}/deployer.properties"
+    chcon -t svirt_sandbox_file_t "${HOME:?}/deployer.properties"
+
+# -----------------------------------------------------
+# Create our compose env file.
+#[user@virtual]
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/.env" << EOF
+
+	buildtag=${branch:?}
+
+	metadata=postgres
+	metauser=${metauser:?}
+	metapass=${metapass:?}
+
+	userhost=${userhost:?}
+
+	datahost=${datahost:?}
+
+	#tunneluser=${tunneluser:?}
+	#tunnelhost=${tunnelhost:?}
+
+EOF
+
+# -----------------------------------------------------
+# Run our deployer.
+#[user@virtual]
+
+    docker-compose \
+        --file "deployer.yml" \
+        run \
+            deployer
+
+# Exit deployer
+exit 
+
+
+
+
+# Run firethorn.py client
+
+# -----------------------------------------------------
+# Clone the firethorn.py project
+#[user@virtual]
+
+pushd "${HOME:?}"
+
+    git clone https://github.com/stvoutsin/firethorn.py.git
+
+popd
+
+
+# -----------------------------------------------------
+# Build our python client image
+#[user@virtual]
+
+pushd  "${HOME:?}/firethorn.py/docker"
+
+   docker build --tag "firethorn-py" firethorn-py
+
+popd
+
+# -----------------------------------------------------
+# Run our python client container
+#[user@virtual]
+
+pushd  "${HOME}/"
+    cp firethorn.py/docker/firethorn-py.yml ${HOME}/firethorn-py.yml
+    docker-compose --file "firethorn-py.yml" run firethorn-py
+
+
+
+# -----------------------------------------------------
+# Run python3
+#[user@virtual]
+
+
+import firethorn
+import time
+
+ft = firethorn.Firethorn(endpoint=firethorn.config.endpoint)
+ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
+
+
+#  Create a JdbcResource to represent the local JDBC database.
+jdbc_name="ATLAS JDBC resource"
+atlas_jdbc = ft.firethorn_engine.create_jdbc_resource(jdbc_name ,firethorn.config.datadata, firethorn.config.datacatalog, firethorn.config.datatype, firethorn.config.datahost, firethorn.config.datauser, firethorn.config.datapass)
+
+
+
+# Create an empty AdqlResource to represent the local JDBC database.
+adqlname="OSA resource"
+atlas_adql = ft.firethorn_engine.create_adql_resource(adqlname)
+
+#
+# Import the Jdbc to Adql mappings.
+mappings = [
+    "ATLASDR1",
+    "DENIS",
+    "FIRST",
+    "GLIMPSE",
+    "IRAS",
+    "ROSAT",
+    "TWOMASS",
+    "VHSDR1",
+    "VIKINGDR3",
+    "WISE"
+    ]
+
+for mapping in mappings:
+    print(mapping)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        mapping,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + mapping + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            mapping,
+            metadoc=metadoc
+            )
+
+
+
+print (atlas_adql)
+{
+  "modified": "2018-03-01T18:51:44.981",
+  "ident": "503",
+  "created": "2018-03-01T18:51:44.981",
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json",
+  "name": "OSA resource",
+  "queries": "http://gworewia.metagrid.xyz/firethorn/adql/resource/503/queries/select",
+  "vosi": "http://gworewia.metagrid.xyz/firethorn/adql/resource/503/vosi",
+  "owner": "http://gworewia.metagrid.xyz/firethorn/community-member/152",
+  "self": "http://gworewia.metagrid.xyz/firethorn/adql/resource/503",
+  "text": null,
+  "schemas": "http://gworewia.metagrid.xyz/firethorn/adql/resource/503/schemas/select",
+  "fullname": "OSA resource",
+  "url": "http://gworewia.metagrid.xyz/firethorn/adql/resource/503"
+}
+
