@@ -1,0 +1,116 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#----------------------------------------------------------------
+# LSST
+
+    YouTube video on LSST events
+    https://simons.berkeley.edu/talks/eric-bellm-2-26-18
+    
+    Paper on Life Beyond PTF
+    https://arxiv.org/pdf/1802.10218.pdf
+
+
+    Time series plans (2017)
+    http://wiki.ivoa.net/twiki/bin/view/IVOA/DALFuture
+
+#----------------------------------------------------------------
+# LSST/WFAU
+
+    Use case from Andy :
+
+        event from atlas
+            might be an interesting quasar ?
+                turns out it might be a combination of two objects
+                requires manual analysis to look for clues
+        
+            xray with an error elipse
+                go and look at what is in that elipse
+
+            start with data from a catalog 
+                find the images that match that data
+                    human analysis
+
+#----------------------------------------------------------------
+# VOEvent
+
+    Email time-domain group
+
+        FRB - can we develop an event type field to replace the name pattern ?
+        FRB - can we develop the FRB schema as an extension of the voevent schema ? 
+
+        COORDSYS - what os preventing us from accepting the proposed changes into voevent-2.1 ?
+
+#----------------------------------------------------------------
+# ADQL
+    
+    GitHub issues
+    
+        PR comments 
+        Markus's private email
+
+    Email Gregory with proposal for Translator throwing the OperationNotSupported Exceptions.        
+
+    Email list to get list of platforms in use
+    Email list to drop Oracle
+
+#----------------------------------------------------------------
+# Phymatopus
+
+    unit vector cx, cy, cz
+    range indexes in memory
+    
+    create test stream as inout
+    - Firethorn query, Kafka topic as the destination 
+
+    'store' flag
+        store the stream in real time, updating the index
+        process the stream in real time, index is unchanged
+    
+#----------------------------------------------------------------
+# Firethorn
+
+    concurrent bug
+        case control for postgresql
+        new maven docker plugin
+        docker databases for maven tests
+        drop liquibase
+        use our own database tools
+        setup junit tests to veify case control
+        use postgresql for metadata in production
+        use postgresql to resolve concurrency issues
+
+        setup a test - use Python client to reproduce the bug
+
+        login user/pass service
+        group service
+        logging service - database or Kafka to elsewhere
+        core metadata CRID service
+
+        sync/async query service
+
+
+
+
+
+#----------------------------------------------------------------
+
