@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-firethorn</artifactId>
-        <version project='firethorn'>2.1.16</version>
+        <version project='firethorn'>2.1.16-zrq-race-bug</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-firethorn-client</artifactId>

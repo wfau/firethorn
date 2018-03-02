@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.16
+FROM firethorn/ubuntu:2.1.16-zrq-race-bug
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
