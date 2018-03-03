@@ -28,7 +28,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity.MetadataException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 
@@ -40,15 +40,15 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 public class HsqldbScanner
 implements JdbcMetadataScanner
     {
-    public HsqldbScanner(final JdbcConnection connector)
+    public HsqldbScanner(final JdbcConnector connector)
         {
         this.connector = connector ;
         }
 
     
-    protected JdbcConnection connector ;
+    protected JdbcConnector connector ;
     @Override
-    public JdbcConnection connector()
+    public JdbcConnector connector()
         {
         return this.connector;
         }

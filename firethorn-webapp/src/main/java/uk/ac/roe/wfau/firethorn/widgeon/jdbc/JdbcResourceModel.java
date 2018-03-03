@@ -18,7 +18,7 @@
 
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -52,43 +52,43 @@ public interface JdbcResourceModel
     public static final String RESOURCE_STATUS_PARAM = "jdbc.resource.status" ;
 
     /**
-     * MVC property for the {@link JdbcConnection} type, {@value}.
+     * MVC property for the {@link JdbcConnector} type, {@value}.
      *
      */
     public static final String CONNECTION_TYPE_PARAM = "jdbc.resource.connection.type" ;
 
     /**
-     * MVC property for the {@link JdbcConnection} host name, {@value}.
+     * MVC property for the {@link JdbcConnector} host name, {@value}.
      *
      */
     public static final String CONNECTION_HOST_PARAM = "jdbc.resource.connection.host" ;
 
     /**
-     * MVC property for the {@link JdbcConnection} port, {@value}.
+     * MVC property for the {@link JdbcConnector} port, {@value}.
      *
      */
     public static final String CONNECTION_PORT_PARAM = "jdbc.resource.connection.port" ;
 
     /**
-     * MVC property for the {@link JdbcConnection} database, {@value}.
+     * MVC property for the {@link JdbcConnector} database, {@value}.
      *
      */
     public static final String CONNECTION_DATABASE_PARAM = "jdbc.resource.connection.database" ;
 
     /**
-     * MVC property for the {@link JdbcConnection} catalog, {@value}.
+     * MVC property for the {@link JdbcConnector} catalog, {@value}.
      *
      */
     public static final String CONNECTION_CATALOG_PARAM = "jdbc.resource.connection.catalog" ;
     
     /**
-     * MVC property for the {@link JdbcConnection} user name, {@value}.
+     * MVC property for the {@link JdbcConnector} user name, {@value}.
      *
      */
     public static final String CONNECTION_USER_PARAM = "jdbc.resource.connection.user" ;
 
     /**
-     * MVC property for the {@link JdbcConnection} password, {@value}.
+     * MVC property for the {@link JdbcConnector} password, {@value}.
      *
      */
     public static final String CONNECTION_PASS_PARAM = "jdbc.resource.connection.pass" ;

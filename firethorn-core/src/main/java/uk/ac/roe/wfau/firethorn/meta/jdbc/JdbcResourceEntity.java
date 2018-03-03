@@ -611,7 +611,7 @@ public class JdbcResourceEntity
         }
 
     @Override
-    public JdbcConnection connection()
+    public JdbcConnector connection()
         {
         return this.connection;
         }

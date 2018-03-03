@@ -688,7 +688,7 @@ implements JdbcTable
             schema,
             name
             );
-        log.debug("ZRQ JdbcTableEntity [{}][{}][{}]", schema.name(), name, type);
+        log.debug("JdbcTableEntity [{}][{}][{}]", schema.name(), this.name(), type);
         
         this.bluequery = query;
         this.schema = schema;
