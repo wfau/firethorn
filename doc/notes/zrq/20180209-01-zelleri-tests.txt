@@ -37,3 +37,10 @@
     osa vpha
         ~ billion rows
 
+
+    #
+    # From Stephen
+    gaia dr1/2
+    pannstars - galaxies
+    desdr1
+
