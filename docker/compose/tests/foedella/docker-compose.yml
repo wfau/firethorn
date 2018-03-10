@@ -1,0 +1,20 @@
+version: '2.1'
+# https://en.wikipedia.org/wiki/Aphomia_foedella
+
+networks:
+
+    # External network
+    rosana:
+
+    # Internal network
+    miriam:
+
+volumes:
+
+    kafkadata:
+
+services:
+
+    bethany:
+
+

@@ -1,0 +1,22 @@
+version: '2.1'
+
+services:
+
+    firethorn-py:
+        image:
+           "firethorn/firethorn-py:${buildtag}"
+        build:
+            context:    "${FIRETHORNPY_BASE}"
+            dockerfile: "${FIRETHORN_CODE}//docker/compose/firethorn-py/Dockerfile"
+        read_only:
+            false
+        stdin_open:
+            true
+        tty:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        command:
+            [python3]
+

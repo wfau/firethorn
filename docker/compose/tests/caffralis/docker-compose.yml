@@ -1,5 +1,5 @@
 version: '2.1'
-# https://en.wikipedia.org/wiki/Aphomia_distictella
+# https://en.wikipedia.org/wiki/Aphomia_caffralis
 
 networks:
 
@@ -11,7 +11,7 @@ networks:
 
 volumes:
 
-    # HSQLDB database
+    # HSQLDB database data
     hsqldb:
 
 services:
@@ -136,6 +136,8 @@ services:
                 condition: service_started            
             jarmila:
                 condition: service_healthy            
+            zelleri:
+                condition: service_started            
 
     tester:
         image:
@@ -155,7 +157,6 @@ services:
             - /home/Zarquan/zelleri/testdo.sh:/testdo.sh
         networks:
             - miriam
-
         environment:
 
             endpointurl: "http://gillian:8080/firethorn"
@@ -166,6 +167,12 @@ services:
             datauser: "${datauser}"
             datapass: "${datapass}"
 
+            zelltype: "hsqldb"
+            zellhost: "zelleri"
+            zelldata: "${zelldata}"
+            zelluser: "${zelluser}"
+            zellpass: "${zellpass}"
+
             admingroup: "${admingroup}"
             guestgroup: "${guestgroup}"
 
@@ -174,49 +181,15 @@ services:
 
         depends_on:
             gillian:
+                condition: service_healthy            
+            zelleri:
                 condition: service_healthy            
         command:
             [bash]
 
-    distictella:
-        image:
-           "firethorn/firethorn-py:${buildtag}"
-        build:
-            context:    "${FIRETHORN_PY_BASE}"
-            dockerfile: "${DISTICTELLA_BASE}/Dockerfile"
-        read_only:
-            false
-        stdin_open:
-            true
-        tty:
-            true
-        tmpfs:
-            - /run
-            - /tmp
-        networks:
-            - miriam
-        environment:
 
-            endpoint: "http://gillian:8080/firethorn"
-            default_endpoint: "http://gillian:8080/firethorn"
+    caffralis:
 
-            datatype: "mssql"
-            datahost: "elayne"
-            datadata: "${datadata}"
-            datauser: "${datauser}"
-            datapass: "${datapass}"
-
-            admingroup: "${admingroup}"
-            guestgroup: "${guestgroup}"
-
-            adminuser: "${adminuser}"
-            adminpass: "${adminpass}"
-
-        depends_on:
-            gillian:
-                condition: service_healthy            
-        command:
-            [python3]
 
 
 
