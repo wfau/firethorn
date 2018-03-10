@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.16
+FROM firethorn/python:2.1.16-stv-tapschema-fix
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs

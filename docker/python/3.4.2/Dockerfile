@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.16
+FROM firethorn/ubuntu:2.1.16-stv-tapschema-fix
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
