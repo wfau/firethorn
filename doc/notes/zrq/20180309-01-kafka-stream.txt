@@ -155,7 +155,7 @@ EOF
         export buildtag=$(hg branch)
 
         docker-compose \
-            --file docker/compose/firethorn-py/firethorn-py.yml \
+            --file docker/compose/firethorn-py/docker-compose.yml \
             build
 
     popd
