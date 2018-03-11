@@ -161,21 +161,49 @@ EOF
     popd
 
 # -----------------------------------------------------
+# Configure our Kafka build.
+#[user@desktop]
+
+    source "${HOME}/phymatopus.settings"
+    pushd "${PHYMATOPUS_CODE:?}"
+
+        source bin/util.sh
+        setversion "$(date '+%Y.%m.%d')"
+
+    popd
+
+# -----------------------------------------------------
 # Build our Kafka containers.
 #[user@desktop]
 
     source "${HOME}/phymatopus.settings"
     pushd "${PHYMATOPUS_CODE:?}"
 
-        export buildtag=$(date '+%Y%m%d')
-
+        source config
         docker-compose \
-            --file docker/compose/images.yml \
-            build \
-                kafka
+            --file docker/compose/docker-images.yml \
+            build
 
     popd
 
+# -----------------------------------------------------
+# Run our Kafka services.
+#[user@desktop]
+
+    source "${HOME}/phymatopus.settings"
+    pushd "${PHYMATOPUS_CODE:?}"
+
+        source config
+        docker-compose \
+            --project phymatopus \
+            --file docker/compose/docker-compose.yml \
+            up -d
+
+    popd
+
+# -----------------------------------------------------
+# Test our Java writer.
+#[user@desktop]
 
 
 
@@ -190,8 +218,6 @@ EOF
 
 
 
-    #
-    # Run kafka server ..
 
     #
     # Run firethorn server ..
