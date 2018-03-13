@@ -39,9 +39,6 @@
 
 
 
-    Confluent Kafka Connect JDBC Connector
-    https://github.com/confluentinc/kafka-connect-jdbc
-
     
     Kafka Streams Examples
     https://github.com/confluentinc/kafka-streams-examples
@@ -65,5 +62,29 @@
 
     Configuring Log4j Loggers Programmatically
     https://stackoverflow.com/questions/8965946/configuring-log4j-loggers-programmatically
+
+
+
+    Confluent Kafka Connect JDBC Connector
+    https://github.com/confluentinc/kafka-connect-jdbc
+
+    https://github.com/confluentinc/kafka-connect-jdbc/blob/master/src/main/java/io/confluent/connect/jdbc/source/DataConverter.java
+
+        public static Schema convertSchema(
+            String tableName,
+            ResultSetMetaData metadata,
+            boolean mapNumerics
+            )
+        throws SQLException
+            {
+            SchemaBuilder builder = SchemaBuilder.struct().name(tableName);
+            for (int col = 1; col <= metadata.getColumnCount(); col++)
+                {
+                addFieldSchema(metadata, col, builder, mapNumerics);
+                }
+            return builder.build();
+            }
+
+
 
 
