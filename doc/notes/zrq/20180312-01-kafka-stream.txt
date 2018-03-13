@@ -1,0 +1,69 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Kafka streams API
+    https://docs.confluent.io/current/streams/index.html
+    https://www.youtube.com/watch?v=Z3JKCLG3VP4
+
+    Kafka 1.0 JavaDoc    
+    https://kafka.apache.org/10/javadoc/index.html
+
+    Confluent GitHub 
+    https://github.com/confluentinc/schema-registry/blob/master/avro-serializer/src/main/java/io/confluent/kafka/serializers/KafkaAvroDeserializer.java
+
+    Avro JavaDoc 
+    https://avro.apache.org/docs/1.7.6/api/java/org/apache/avro/Schema.html
+    https://avro.apache.org/docs/1.7.6/api/java/org/apache/avro/SchemaBuilder.html
+    https://avro.apache.org/docs/1.7.6/api/java/org/apache/avro/generic/GenericRecord.html
+    https://avro.apache.org/docs/1.7.6/api/java/org/apache/avro/generic/GenericRecordBuilder.html
+
+
+
+    Confluent Kafka Connect JDBC Connector
+    https://github.com/confluentinc/kafka-connect-jdbc
+
+    
+    Kafka Streams Examples
+    https://github.com/confluentinc/kafka-streams-examples
+
+
+
+
+
+    Kafka logback appender
+    https://stackoverflow.com/questions/36955913/apachekafka-appender-logback
+
+    Logback Kafka appender
+    https://github.com/danielwegener/logback-kafka-appender
+
+    Logback Kafka    
+    https://github.com/johnmpage/logback-kafka
+
+
+    Setting logging level at runtime using JMX
+    https://stackoverflow.com/questions/6833687/changing-hibernate-sql-logging-level-in-logback-at-runtime-through-jmx
+
+    Configuring Log4j Loggers Programmatically
+    https://stackoverflow.com/questions/8965946/configuring-log4j-loggers-programmatically
+
+

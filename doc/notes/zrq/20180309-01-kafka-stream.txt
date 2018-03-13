@@ -197,24 +197,36 @@ EOF
         docker-compose \
             --project phymatopus \
             --file docker/compose/docker-compose.yml \
+            down
+
+        source config
+        docker-compose \
+            --project phymatopus \
+            --file docker/compose/docker-compose.yml \
             up -d
 
     popd
 
 # -----------------------------------------------------
-# Test our Java writer.
+# Build and test our Java writer.
 #[user@desktop]
 
+    source "${HOME}/phymatopus.settings"
+    pushd "${PHYMATOPUS_CODE:?}"
+
+        source config
+        pushd 'htm-sql-indexer'
+
+            mvn eclipse:eclipse
+            mvn clean install
+
+        popd
+    popd
 
 
-
-
-
-
-
-
-
-
+#
+# Confluent images use Zulu.
+# https://www.azul.com/products/zulu-and-zulu-enterprise/
 
 
 
@@ -231,6 +243,44 @@ EOF
 
 
 
+
+Using Kafka from the command line
+http://cloudurable.com/blog/kafka-tutorial-kafka-from-command-line/index.html
+
+Creating a Kafka Consumer in Java
+http://cloudurable.com/blog/kafka-tutorial-kafka-consumer/index.html
+
+Kafka JavaDoc
+https://kafka.apache.org/10/javadoc/index.html
+
+Replication factor defaults to 3
+https://github.com/linkedin/Burrow/issues/50
+
+Kafka REST Proxy
+https://docs.confluent.io/current/kafka-rest/docs/intro.html
+
+
+
+KSQL streaming SQL engine for Apache Kafka
+https://docs.confluent.io/current/ksql.html
+    
+Kafka Streams API
+https://docs.confluent.io/current/streams/index.html
+
+
+
+10 year survey, 10 million events per night
+https://youtu.be/vIPunU2YTBQ?t=972
+
+    (10*10^6)*365*10 = 3.65*10^10
+
+https://en.wikipedia.org/wiki/Metric_prefix
+
+    kilo = 10^3
+    mega = 10^6
+    giga = 10^9
+    tera = 10^12
+    peta = 10^15
 
 
 
