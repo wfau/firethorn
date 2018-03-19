@@ -18,7 +18,6 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateDQPParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.SingleActivityOutput;
