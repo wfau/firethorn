@@ -98,7 +98,6 @@
 
         <!--+
             | Our FireThorn extenstions.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
@@ -109,6 +108,7 @@
             <artifactId>firethorn-ogsadai-firethorn-server</artifactId>
             <version>${project.version}</version>
         </dependency>
+            +-->
 
         <!--+
             | FireThorn JDBC drivers.
