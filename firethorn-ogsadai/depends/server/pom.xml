@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+    >
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--+
+        | Maven parent/child inheritance.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <parent>
+        <groupId>uk.ac.roe.wfau</groupId>
+        <artifactId>firethorn-ogsadai</artifactId>
+        <version project='firethorn'>2.1.16-zrq-kafka-stream</version>
+    </parent>
+
+    <artifactId>firethorn-ogsadai-depends-server</artifactId>
+    <packaging>pom</packaging>
+
+    <name>OGSA-DAI dependencies (server)</name>
+    <description>
+        <![CDATA[
+        Common dependencies for OGSA-DAI server side components. 
+        ]]>
+    </description>
+
+    <properties>
+        <commons.version>1.0.4</commons.version>
+        <org.log4j.version>1.2.8</org.log4j.version>
+        <org.slf4j.version>1.5.6</org.slf4j.version>
+    </properties>
+
+    <dependencies>
+
+        <!--+
+            | The OGSA-DAI components used by our activities.
+            | http://data.metagrid.co.uk/wfau/maven/external/uk/org/ogsadai/
+            +-->
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-common</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-clientserver</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-jersey-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-relational-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-relational-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+
+        <!--+
+            | Spring framework HTTP tools.
+            +-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${ogsadai.spring.version}</version>
+        </dependency>
+
+        <!--+
+            | Jackson JSON tools.
+            +-->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${ogsadai.jackson.version}</version>
+        </dependency>
+
+        <!--+
+            | The 3rd party logging libraries.
+            +-->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons.version}</version>
+        </dependency>
+    	<dependency>
+    		<groupId>log4j</groupId>
+    		<artifactId>log4j</artifactId>
+            <version>${org.log4j.version}</version>
+    	</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${org.slf4j.version}</version>
+        </dependency>
+
+        <!--+
+	        | The Apache HttpComponent libraries, used by our TAP client. 
+            +-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+
+        <!--+
+            | The StarLink VOTable libraries, used by our TAP client. 
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-stil</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+
+        <!--+
+            | The Java Servlet API.
+            | (*) scope provided in a POM project means this isn't passed on to child projects.
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+            +-->
+
+        <!--+
+            | JUnit test framework.
+            | http://www.junit.org/
+            | (*) scope test in a POM project means this isn't passed on to child projects.
+    	<dependency>
+    		<groupId>junit</groupId>
+    		<artifactId>junit</artifactId>
+    		<scope>test</scope>
+    	</dependency>
+            +-->
+
+    </dependencies>
+
+</project>
+
+

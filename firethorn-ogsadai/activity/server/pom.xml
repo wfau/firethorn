@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-activity-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI activity (server)</name>
+    <name>Firethorn OGSA-DAI activities (server)</name>
     <description>
         <![CDATA[
-        Server (OGSA-DAI) components for the FireThorn OGSA-DAI activities.
+        Server side components for the Firethorn OGSA-DAI activities.
         ]]>
     </description>
 
@@ -51,24 +51,18 @@
     <dependencies>
 
         <!--+
-            | The OGSA-DAI components used by our activity.
-            | http://data.metagrid.co.uk/wfau/maven/external/uk/org/ogsadai/
+            | The OGSA-DAI server side dependencies.
             +-->
         <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-common</artifactId>
-            <version>${ogsadai.version}</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-depends-server</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-server</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-clientserver</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
+
+        <!--+
+            | The OGSA-DAI components used by our activities.
+            | http://data.metagrid.co.uk/wfau/maven/external/uk/org/ogsadai/
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-relational-client</artifactId>
@@ -79,14 +73,10 @@
             <artifactId>ogsadai-relational-server</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-jersey-server</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency>
+            +-->
 
         <!--+
-            | Our copy of the OGSA-DAI Astronomy extensions.
+            | Our local copy of the OGSA-DAI Astronomy extensions.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -95,7 +85,7 @@
         </dependency>
 
         <!--+
-            | Our copy of the OGSA-DAI DQP components.
+            | Our local copy of the OGSA-DAI DQP components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -111,17 +101,13 @@
         </dependency>
 
         <!--+
-            | Our common activity classes.
+            | The Firethorn activity classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-activity-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!--+
-            | Our activity context classes.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-activity-context</artifactId>
@@ -139,51 +125,51 @@
 
         <!--+
             | Spring framework HTTP tools.
-            +-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${ogsadai.spring.version}</version>
         </dependency>
+            +-->
 
         <!--+
             | Jackson JSON tools.
-            +-->
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
             <version>${ogsadai.jackson.version}</version>
         </dependency>
+            +-->
 
         <!--+
-            | The StarLink VOTAble libraries, used by our TAP client. 
-            +-->
+            | The StarLink VOTable libraries, used by our TAP client. 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-stil</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
+            +-->
 
         <!--+
 	        | The Apache HttpComponent libraries, used by our TAP client. 
-            +-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.0.1</version>
         </dependency>
+            +-->
 
 	    <!--+
 	        | Servlet libraries.
             | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
-	        +-->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
+	        +-->
 
     </dependencies>
 

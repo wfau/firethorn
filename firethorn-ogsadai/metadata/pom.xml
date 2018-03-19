@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-metadata</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI metadata</name>
+    <name>Firethorn/OGSA-DAI metadata</name>
     <description>
         <![CDATA[
-        FireThorn OGSA-DAI metadata service.
+        The Firethorn/OGSA-DAI metadata service components.
         ]]>
     </description>
 

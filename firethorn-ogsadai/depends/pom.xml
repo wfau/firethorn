@@ -38,46 +38,24 @@
     <artifactId>firethorn-ogsadai-depends</artifactId>
     <packaging>pom</packaging>
 
-    <name>Firethorn OGSA-DAI dependencies</name>
+    <name>OGSA-DAI dependencies</name>
     <description>
         <![CDATA[
-        3rd party dependencies for FireThorn OGSA-DAI components.
+        OGSA-DAI client and server side dependencies.
         ]]>
     </description>
 
+    <!--+
+        | Maven parent/child projects.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <modules>
+        <module>client</module>
+        <module>server</module>
+    </modules>
+    
     <properties>
-        <commons.version>1.0.4</commons.version>
-        <org.log4j.version>1.2.8</org.log4j.version>
-        <org.slf4j.version>1.5.6</org.slf4j.version>
     </properties>
-
-    <dependencies>
-
-        <!--+
-            | OGSA-DAI logging components.
-            +-->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons.version}</version>
-        </dependency>
-    	<dependency>
-    		<groupId>log4j</groupId>
-    		<artifactId>log4j</artifactId>
-            <version>${org.log4j.version}</version>
-    	</dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${org.slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${org.slf4j.version}</version>
-        </dependency>
-
-    </dependencies>
 
 </project>
 

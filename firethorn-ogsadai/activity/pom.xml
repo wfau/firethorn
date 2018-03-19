@@ -43,10 +43,10 @@
     <artifactId>firethorn-ogsadai-activity</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI activity</name>
+    <name>Firethorn OGSA-DAI activities</name>
     <description>
         <![CDATA[
-        FireThorn OGSA-DAI pipeline activity.
+        Firethorn OGSA-DAI activities.
         ]]>
     </description>
 
@@ -55,8 +55,8 @@
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <modules>
-        <module>common</module>
         <module>client</module>
+        <module>common</module>
         <module>server</module>
         <module>context</module>
     </modules>

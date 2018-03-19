@@ -43,10 +43,10 @@
     <artifactId>firethorn-ogsadai</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI</name>
+    <name>Firethorn OGSA-DAI</name>
     <description>
         <![CDATA[
-        FireThorn OGSA-DAI components.
+        Firethorn OGSA-DAI components.
         ]]>
     </description>
 
@@ -55,10 +55,9 @@
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <modules>
-        <module>astro</module>
-        <module>activity</module>
         <module>depends</module>
-        <module>distributed</module>
+        <module>ogsadai</module>
+        <module>activity</module>
         <module>metadata</module>
         <module>webapp</module>
     </modules>

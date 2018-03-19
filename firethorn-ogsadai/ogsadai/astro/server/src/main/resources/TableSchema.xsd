@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:ogsadai="http://ogsadai.org.uk/namespaces/2005/10/properties"
+           targetNamespace="http://ogsadai.org.uk/namespaces/2005/10/properties"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+<xs:element name="databaseSchema">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="logicalSchema" type="ogsadai:LogicalSchemaType"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:complexType name="LogicalSchemaType">
+  <xs:sequence>
+    <xs:element name="table" type="ogsadai:TableSchemaType" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="TableSchemaType">
+  <xs:sequence>
+    <xs:element name="column" type="ogsadai:ColumnSchemaType" maxOccurs="unbounded"/>
+  </xs:sequence>
+  <xs:attribute name="name" type="xs:string" use="required" />
+  <xs:attribute name="schema" type="xs:string" />
+  <xs:attribute name="catalog" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="ColumnSchemaType">
+  <xs:sequence>
+    <xs:element name="sqlJavaTypeID" type="xs:integer"/>
+    <xs:element name="tupleTypeID" type="xs:integer"/>
+    <xs:element name="sqlTypeName" type="xs:string"/>
+  </xs:sequence>
+  <xs:attribute name="name" type="xs:string" use="required" />
+  <xs:attribute name="fullName" type="xs:string" use="required" />
+  <xs:attribute name="length" type="xs:integer" use="required" />
+  <xs:attribute name="nullable" type="xs:boolean" use="required" />
+  <xs:attribute name="default" type="xs:string" use="required" />
+  <xs:attribute name="position" type="xs:integer" use="required" />
+</xs:complexType>
+
+</xs:schema>

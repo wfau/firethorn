@@ -1,0 +1,50 @@
+<VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.2' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.2 http://www.ivoa.net/xml/VOTable/v1.2' version='1.2'>
+  <RESOURCE>
+<TABLE>
+<FIELD name='sourceID' ID='sourceID'  ucd='ID_MAIN' datatype='char' arraysize='*'>
+ <DESCRIPTION>
+ UID (unique over entire WSA via programme ID prefix) of this merged detection as assigned by merge algorithm
+ </DESCRIPTION>
+</FIELD>
+<FIELD name='cuEventID' ID='cuEventID'  ucd='REFER_CODE' datatype='int'>
+ <DESCRIPTION>
+ UID of curation event giving rise to this record
+ </DESCRIPTION>
+</FIELD>
+<FIELD name='frameSetID' ID='frameSetID'  ucd='REFER_CODE' datatype='long'>
+ <DESCRIPTION>
+ UID of the set of frames that this merged source comes from
+ </DESCRIPTION>
+</FIELD>
+<FIELD name='ra' ID='ra'  ucd='POS_EQ_RA_MAIN' datatype='double' unit='deg' >
+ <DESCRIPTION>
+ Celestial Right Ascension
+ </DESCRIPTION>
+</FIELD>
+<FIELD name='sigRa' ID='sigRa'  ucd='ERROR' datatype='float' unit='Degrees' >
+ <DESCRIPTION>
+ Uncertainty in RA
+ </DESCRIPTION>
+</FIELD>
+<FIELD name='nFrames' ID='nFrames'  ucd='NUMBER' datatype='short'>
+ <DESCRIPTION>
+ No. of frames used for this proper motion measurement
+ </DESCRIPTION>
+</FIELD>
+<DATA>
+<TABLEDATA>
+<TR><TD>433798010807</TD><TD>3730</TD><TD>433791703589</TD><TD>214.4555763787756</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+<TR><TD>433798010808</TD><TD>3730</TD><TD>433791703589</TD><TD>214.51416535726955</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+<TR><TD>433798010809</TD><TD>3730</TD><TD>433791703589</TD><TD>214.4409301686369</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+<TR><TD>433798010810</TD><TD>3730</TD><TD>433791703589</TD><TD>214.48470689246707</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+<TR><TD>433798010811</TD><TD>3730</TD><TD>433791703589</TD><TD>214.41765470778287</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+<TR><TD>433798010812</TD><TD>3730</TD><TD>433791703589</TD><TD>214.43898613486644</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+<TR><TD>433798010813</TD><TD>3730</TD><TD>433791703589</TD><TD>214.4263265101666</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+<TR><TD>433798010814</TD><TD>3730</TD><TD>433791703589</TD><TD>214.42578543976222</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+<TR><TD>433798010815</TD><TD>3730</TD><TD>433791703589</TD><TD>214.41598145666438</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+<TR><TD>433798010816</TD><TD>3730</TD><TD>433791703589</TD><TD>214.32991769788015</TD><TD>-9.9999949E8</TD><TD>0</TD></TR>
+</TABLEDATA>
+</DATA>
+</TABLE>
+</RESOURCE>
+</VOTABLE>
