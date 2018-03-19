@@ -32,6 +32,8 @@ import uk.org.ogsadai.client.toolkit.exception.UnexpectedDataValueException;
 import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.dqp.CreateDQPParam;
+
 /**
  * Activity client to create a DQP resource.
  * 
