@@ -26,75 +26,35 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | IMPORTANT - importing external jars .. 
-        | http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them/764684#764684
-        +-->
-
-    <!--+
         | Maven parent/child inheritance.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn</artifactId>
+        <artifactId>firethorn-ogsadai</artifactId>
         <version project='firethorn'>2.1.16-zrq-kafka-stream</version>
     </parent>
 
-    <artifactId>firethorn-ogsadai</artifactId>
+    <artifactId>firethorn-ogsadai-firethorn</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI</name>
+    <name>OGSA-DAI FireThorn components</name>
     <description>
         <![CDATA[
-        FireThorn OGSA-DAI components.
+        OGSA-DAI FireThorn components.
         ]]>
     </description>
 
     <!--+
         | Maven parent/child projects.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
-        +-->
     <modules>
-        <module>astro</module>
-        <module>activity</module>
-        <module>depends</module>
-        <module>distributed</module>
-        <module>metadata</module>
-        <module>webapp</module>
+        <module>client</module>
+        <module>common</module>
+        <module>server</module>
     </modules>
+        +-->
     
-    <properties>
-
-		<ogsadai.spring.version>3.0.1.RELEASE</ogsadai.spring.version>
-        <ogsadai.logging.version>1.0.4</ogsadai.logging.version>
-        <ogsadai.jersey.version>1.10</ogsadai.jersey.version>
-        <ogsadai.jackson.version>1.9.9</ogsadai.jackson.version>
-        <ogsadai.version>4.2.2198</ogsadai.version>
-
-    </properties>
-
-    <repositories>
-
-        <!--+
-            | Local repository for our OGSA-DAI libraries.
-            +-->
-        <repository>
-            <id>firethorn-ogsadai</id>
-            <name>Local repository for our OGSA-DAI libraries</name>
-            <url>http://data.metagrid.co.uk/wfau/maven/ogsadai</url>
-            <layout>default</layout>
-            <!--+
-                | SNAPSHOT cacheing policy.
-                | http://stackoverflow.com/questions/5901378/what-exactly-is-a-maven-snapshot-and-why-do-we-need-it
-                +-->
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-
-    </repositories>
-
 </project>
 
 

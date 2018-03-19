@@ -11,7 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import uk.org.ogsadai.service.rest.authorisation.SecurityContextFactory;
 
 /**
- *
+ * Factory for populating a {@link RequestContext} from information in a {@link HttpServletRequest}.
+ * 
  */
 public class RequestContextFactory
 implements SecurityContextFactory 

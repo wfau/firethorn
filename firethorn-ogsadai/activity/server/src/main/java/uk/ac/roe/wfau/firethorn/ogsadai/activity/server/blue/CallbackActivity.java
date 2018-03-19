@@ -308,6 +308,10 @@ implements SecureActivity
             }
         }
 
+    /*
+     *
+     * 
+     */
 	@Override
 	public void setSecurityContext(SecurityContext context)
 		{

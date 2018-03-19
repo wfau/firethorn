@@ -34,15 +34,14 @@ import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.access.Protector;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp.CreateFireThornDQPClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp.CreateFireThornDQPWorkflow;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp.CreateDQPClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.dqp.CreateDQPWorkflow;
 
 /**
  * {@link OgsaDQPResource} implementation.
@@ -342,9 +341,9 @@ public class OgsaDQPResourceEntity
 
             //
             // Create our OGSA-DAI resource.
-            CreateFireThornDQPWorkflow workflow = null;
+            CreateDQPWorkflow workflow = null;
             try {
-                workflow = new CreateFireThornDQPWorkflow(
+                workflow = new CreateDQPWorkflow(
                     service().endpoint()
                     );
                 }
@@ -356,7 +355,7 @@ public class OgsaDQPResourceEntity
                 }
     
             final ResourceWorkflowResult response = workflow.execute(
-                new CreateFireThornDQPClient.Param()
+                new CreateDQPClient.Param()
                     {
                     @Override
                     public String target()

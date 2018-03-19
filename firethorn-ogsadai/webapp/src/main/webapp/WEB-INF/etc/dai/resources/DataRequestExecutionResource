@@ -97,10 +97,9 @@ uk.ac.roe.wfau.firethorn.JdbcSelectData=uk.ac.roe.wfau.firethorn.JdbcSelectData
 uk.ac.roe.wfau.firethorn.JdbcCreateResource=uk.ac.roe.wfau.firethorn.JdbcCreateResource
 uk.ac.roe.wfau.firethorn.IvoaSelectData=uk.ac.roe.wfau.firethorn.IvoaSelectData
 uk.ac.roe.wfau.firethorn.IvoaCreateResource=uk.ac.roe.wfau.firethorn.IvoaCreateResource
-uk.org.ogsadai.CreateOriginalDQP=uk.org.ogsadai.CreateOriginalDQP
-uk.ac.roe.wfau.firethorn.CreateFireThornDQP=uk.ac.roe.wfau.firethorn.CreateFireThornDQP
 uk.ac.roe.wfau.firethorn.Callback=uk.ac.roe.wfau.firethorn.Callback
 uk.ac.roe.wfau.firethorn.Context=uk.ac.roe.wfau.firethorn.Context
+uk.ac.roe.wfau.firethorn.CreateDQP=uk.ac.roe.wfau.firethorn.CreateDQP
 uk.ac.roe.wfau.firethorn.InListBuilder=uk.ac.roe.wfau.firethorn.InListBuilder
 END
 acceptRequests=true
