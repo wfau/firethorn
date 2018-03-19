@@ -51,7 +51,7 @@
         +-->
     <modules>
         <module>astro</module>
-        <module>distributed</module>
+        <module>dqp</module>
     </modules>
 
 </project>
