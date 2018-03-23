@@ -21,20 +21,201 @@
 #
 
     #
-    # Can we generate an Avro Schema from AdqlTable metadata.
+    # Indexer options ..
+
+        HTM index + sql on disc
+        HTM index + sql in memory
+        HTM index + data in memory
+
+        unit vector + sql on disc
+        unit vector + sql in memory
+        unit vector + data in memory
 
 
-    AdqlResource
-        AdqlSchema
-            AdqlTable
-                AdqlColumn
+    #
+    # Kafka streams ..
+
+        #
+        # Generate an Avro Schema from AdqlTable metadata.
+
+        AdqlResource
+            AdqlSchema
+                AdqlTable
+                    AdqlColumn
 
 
-    KafkaService
-        KafkaTopic
-            AvroSchema
-                AvroField
+        KafkaService
+            KafkaTopic
+                AvroSchema
+                    AvroField
 
 
+        #
+        # Generic stream with no schema.
+
+
+
+
+    #
+    # Kafka JavaDoc
+    
+    https://kafka.apache.org/0110/javadoc/org/apache/kafka/connect/data/Struct.html
+    https://kafka.apache.org/0110/javadoc/org/apache/kafka/connect/data/Field.html
+    https://kafka.apache.org/0110/javadoc/org/apache/kafka/connect/data/Schema.html
+    https://kafka.apache.org/0110/javadoc/org/apache/kafka/connect/data/SchemaBuilder.html    
+    
+    https://kafka.apache.org/0110/javadoc/org/apache/kafka/common/serialization/Serde.html
+    https://kafka.apache.org/0110/javadoc/org/apache/kafka/common/serialization/Serializer.html
+
+    https://kafka.apache.org/0110/javadoc/org/apache/kafka/connect/source/SourceRecord.html
+    https://kafka.apache.org/0110/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html
+    https://kafka.apache.org/0110/javadoc/org/apache/kafka/clients/producer/ProducerRecord.html    
+
+
+    Kafka Streams examples
+    https://github.com/confluentinc/examples
+    https://github.com/confluentinc/kafka-streams-examples
+
+
+    Kafka Streams microservice examples
+    https://www.confluent.io/blog/building-a-microservices-ecosystem-with-kafka-streams-and-ksql/
+    https://github.com/confluentinc/kafka-streams-examples/tree/4.0.0-post/src/main/java/io/confluent/examples/streams/microservices
+    https://github.com/confluentinc/kafka-streams-examples/blob/4.0.0-post/src/main/java/io/confluent/examples/streams/microservices/domain/Schemas.java
+    https://github.com/confluentinc/kafka-streams-examples/blob/4.0.0-post/src/main/java/io/confluent/examples/streams/microservices/OrdersService.java
+    https://github.com/confluentinc/kafka-streams-examples/blob/4.0.0-post/src/main/java/io/confluent/examples/streams/microservices/OrderDetailsService.java
+
+
+    Asynchronous HTTP Request Processing
+    https://docs.jboss.org/resteasy/docs/3.0-beta-3/userguide/html/Asynchronous_HTTP_Request_Processing.html
+
+
+
+    https://github.com/confluentinc/examples/blob/4.0.x/kafka-clients/specific-avro-producer/src/main/java/io/confluent/examples/producer/AvroClicksProducer.java
+
+
+    Schema Registry
+    https://github.com/confluentinc/schema-registry/blob/master/avro-serializer/src/main/java/io/confluent/kafka/serializers/KafkaAvroSerializer.java
+
+
+    Schema.Parser parser = new Schema.Parser();
+    Schema schema = parser.parse(InputStream in)
+
+
+    SchemaBuilder.TypeBuilder<Schema> builder =
+    SchemaBuilder.builder().record(String name)
+        .namespace("x.y.z").fields()
+            .name("ra").type().doubleType().noDefault()
+            .name("dec").type().doubleType().noDefault()
+            .requiredDouble("cx")
+            .requiredDouble("cy")
+            .requiredDouble("cz")
+            .endRecord()
+
+    Schema schema = 
+
+    GenericRecordBuilder builder = GenericRecordBuilder(Schema schema)
+    builder.set(int pos, Object value)
+    builder.set(String fieldName, Object value)
+    builder.set(Schema.Field field, Object value)
+
+    GenericData.Record record = builder.build()
+
+
+
+
+# -----------------------------------------------------
+# Configure our Kafka build.
+#[user@desktop]
+
+    source "${HOME}/phymatopus.settings"
+    pushd "${PHYMATOPUS_CODE:?}"
+
+        source bin/util.sh
+        setversion "$(date '+%Y.%m.%d')"
+
+    popd
+
+# -----------------------------------------------------
+# Build our Kafka containers.
+#[user@desktop]
+
+    source "${HOME}/phymatopus.settings"
+    pushd "${PHYMATOPUS_CODE:?}"
+
+        source config
+        docker-compose \
+            --file docker/compose/docker-images.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Build our copy of the JHU HTMID libary.
+#[user@desktop]
+
+    source "${HOME}/phymatopus.settings"
+    pushd "${PHYMATOPUS_BASE:?}"
+
+        pushd external/htmid/jhu-htmid
+
+            mvn clean install
+            mvn eclipse:eclipse
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build and test our HTM-SQL indexer.
+#[user@desktop]
+
+    source "${HOME}/phymatopus.settings"
+    pushd "${PHYMATOPUS_CODE:?}"
+
+        source config
+        pushd 'htm-sql'
+
+            mvn clean install
+            mvn eclipse:eclipse
+            mvn docker:package
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our Kafka tools.
+#[user@desktop]
+
+    source "${HOME}/phymatopus.settings"
+    pushd "${PHYMATOPUS_CODE:?}"
+
+        source config
+        pushd 'kafka-tools'
+
+            mvn clean install -DskipTests
+            mvn eclipse:eclipse
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Run our Kafka services.
+#[user@desktop]
+
+    source "${HOME}/phymatopus.settings"
+    pushd "${PHYMATOPUS_CODE:?}"
+
+        source config
+        docker-compose \
+            --project phymatopus \
+            --file docker/compose/docker-compose.yml \
+            down
+
+        source config
+        docker-compose \
+            --project phymatopus \
+            --file docker/compose/docker-compose.yml \
+            up
+
+    popd
 
 
