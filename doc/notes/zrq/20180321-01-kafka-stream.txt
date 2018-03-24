@@ -1,0 +1,157 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Apache Kafka 0.10.0 Overview
+    http://moi.vonos.net/bigdata/kafka/
+
+        producer controls the partition allocation
+        messages are spread across partitions based on key
+        client controls which partitions a message is sent to based on key
+            default algorithm is (hash(message-key) % npartitions)
+
+        producer needs direct access to all the partition nodes
+        consumer needs direct access to all the partition nodes
+            
+        partitions are allocated to clients dynamically
+        if (clients > partitions) then some clients will be idle ?
+        if (clients < partitions) then some clients will process several partitions
+
+        message order is preserved within a partition
+        message order is not preserved between partitions
+
+        message transfers are batched for both producer and consumer
+
+        topic               resource
+            key                 schema/table
+                message             row
+                message             row
+                message             row
+
+
+    Kafka Connect
+    http://moi.vonos.net/bigdata/kafka-connect/
+
+        Connect implement a set of workers that
+            monitor inputs (sources) and import into Kafka topics
+            monitor Kafka topics and send to outputs (sinks)
+
+        Data format is either JSON or Avro (configured globally)
+
+
+    Kafka Serialization and the Schema Registry
+    http://moi.vonos.net/bigdata/kafka-serialize/
+
+        Good explanation of how/why the serialization components work.
+
+    How to use Avro GenericRecord
+    https://docs.confluent.io/current/schema-registry/docs/serializer-formatter.html
+
+        Define our schema as  JSON in a String (get from Firethorn?).
+        Parse the JSON to create the schema.
+        Producer will register the schema automatically. 
+
+
+    Introduction to Schemas in Apache Kafka ..
+    https://medium.com/@stephane.maarek/introduction-to-schemas-in-apache-kafka-with-the-confluent-schema-registry-3bf55e401321
+
+        Interesting general introduction.
+
+
+
+
+    Avro
+
+        https://avro.apache.org/docs/1.8.0/api/java/org/apache/avro/Schema.html    
+
+        org.apache.avro.Schema
+        org.apache.avro.Schema.Field 
+
+        org.apache.avro.Schema.Parser
+        org.apache.avro.SchemaBuilder
+
+        org.apache.avro.generic.GenericData 
+        org.apache.avro.generic.GenericRecordBuilder 
+
+    Kafka
+
+        https://kafka.apache.org/0110/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html
+
+
+        org.apache.kafka.clients.producer.KafkaProducer<K,V> 
+        org.apache.kafka.clients.producer.ProducerRecord<K,V> 
+        org.apache.kafka.clients.producer.RecordMetadata 
+
+
+    Confluent Kafka Connect
+    Connecting Kafka to other things ....
+    https://docs.confluent.io/current/connect/index.html
+
+        Core classes in main Kafka source code.
+        https://docs.confluent.io/current/connect/javadocs/index.html
+
+            org.apache.kafka.connect.data.Field
+            org.apache.kafka.connect.data.Struct
+            org.apache.kafka.connect.data.Schema
+            org.apache.kafka.connect.data.SchemaBuilder
+
+            org.apache.kafka.connect.runtime.Worker
+            org.apache.kafka.connect.runtime.WorkerSourceTask
+
+        Confluent implementations
+        https://docs.confluent.io/current/connect/connect-jdbc/docs/index.html
+        https://github.com/confluentinc/kafka-connect-jdbc
+
+            io.confluent.connect.jdbc.JdbcSourceConnector
+            io.confluent.connect.jdbc.source.BulkTableQuerier
+
+
+    Confluent Kafka Streams
+    Processing streams of data ....
+    https://docs.confluent.io/current/streams/index.html
+
+
+    Kafka/Avro
+
+        Schema.Parser parser = new Schema.Parser();
+        Schema schema = parser.parse(userSchema);
+        GenericRecord data = new GenericData.Record(schema);
+        data.put("f1", "value1");
+        data.put("f2", "value1");
+
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(
+            "topic1",
+            key,
+            data
+            );
+        try {
+            producer.send(
+                record
+                );
+            }
+        catch(SerializationException ouch)
+            {
+            //..
+            }            
+            
+            
+            

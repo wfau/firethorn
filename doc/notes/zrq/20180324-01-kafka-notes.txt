@@ -1,0 +1,135 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Is Kafka suitable for running a public API?
+    https://stackoverflow.com/questions/37600237/is-kafka-suitable-for-running-a-public-api
+
+        "Personally, I would use another system to front-end it. In fact, I do. I use NodeJS
+        to handle the communications with the clients, and kafka-node to handle communications
+        between Kafka and Node."
+
+
+    Kafka Producers/Consumers over WAN?
+    https://stackoverflow.com/questions/28158441/kafka-producers-consumers-over-wan
+
+
+        "It is generally not advisable to run a single Kafka cluster that spans multiple
+        datacenters as this will incur very high replication latency both for Kafka writes
+        and Zookeeper writes and neither Kafka nor Zookeeper will remain available if the
+        network partitions."
+
+
+        "High level consumers are trickier since, as you note, require a connection to
+        zookeeper. Here when disconnects occur, there will be rebalancing and a higher
+        chance messages will get duplicated."
+
+        "Keep in mind, the producer will need to be able to get to every Kafka broker
+        and the consumer will need to be able to get to all zookeeper nodes and Kafka
+        brokers, a load balancer won't work."
+
+
+    http://kafka.apache.org/documentation.html#datacenters
+
+        Some deployments will need to manage a data pipeline that spans multiple datacenters.
+        Our recommended approach to this is to deploy a local Kafka cluster in each datacenter
+        with application instances in each datacenter interacting only with their local cluster
+        and mirroring between clusters (see the documentation on the mirror maker tool for how
+        to do this).
+
+        Kafka naturally batches data in both the producer and consumer so it can achieve
+        high-throughput even over a high-latency connection. To allow this though it may be
+        necessary to increase the TCP socket buffer sizes for the producer, consumer, and broker
+        using the socket.send.buffer.bytes and socket.receive.buffer.bytes configurations.
+        The appropriate way to set this is documented here.
+
+        It is generally not advisable to run a single Kafka cluster that spans multiple datacenters
+        over a high-latency link. This will incur very high replication latency both for Kafka writes
+        and ZooKeeper writes, and neither Kafka nor ZooKeeper will remain available in all locations
+        if the network between locations is unavailable. 
+
+
+    http://kafka.apache.org/documentation.html#basic_ops_mirror_maker
+
+        We refer to the process of replicating data between Kafka clusters "mirroring" to avoid
+        confusion with the replication that happens amongst the nodes in a single cluster. Kafka
+        comes with a tool for mirroring data between Kafka clusters. The tool consumes from a source
+        cluster and produces to a destination cluster. A common use case for this kind of mirroring
+        is to provide a replica in another datacenter. This scenario will be discussed in more detail
+        in the next section. 
+
+        Data will be read from topics in the source cluster and written to a topic with the same
+        name in the destination cluster. In fact the mirror maker is little more than a Kafka consumer
+        and producer hooked together. 
+
+
+    MirrorMaker
+    https://cwiki.apache.org/confluence/display/KAFKA/Kafka+mirroring+%28MirrorMaker%29
+
+        Downstream consumer needs access to upstream Zookeeper.
+        Downstream consumer config depends on upstream partitioning and replication.
+
+    Wire protocol
+    https://cwiki.apache.org/confluence/display/KAFKA/A+Guide+To+The+Kafka+Protocol
+
+
+    Remote connect
+    https://stackoverflow.com/questions/33584124/kafka-how-to-connect-kafka-console-consumer-to-fetch-remote-broker-topic-conte?rq=1
+
+
+
+    Spring Cloud Stream
+    http://cloud.spring.io/spring-cloud-stream/
+
+        Spring Cloud Stream is a framework for building message-driven microservices.
+
+
+    Spring Cloud Data Flow (SCDF)
+    http://cloud.spring.io/spring-cloud-dataflow/
+
+        Spring Cloud Data Flow is a toolkit for building data integration and real-time data
+        processing pipelines.
+
+
+
+    https://github.com/spring-cloud/spring-cloud-deployer
+    https://github.com/spring-cloud/spring-cloud-deployer-kubernetes
+
+
+    Spring Cloud Dataflow on OpenShift
+    https://github.com/donovanmuller/spring-cloud-dataflow-server-openshift
+
+
+    https://blog.switchbit.io/spring-cloud-deployer-openshift/
+    https://blog.switchbit.io/scdf-openshift-deploying-maven-artifacts-with-custom-dockerfile/
+
+
+    OpenShift
+    https://www.openshift.com/
+    
+    
+    
+    
+    
+    
+    Software Collections ?
+    https://www.softwarecollections.org/en/scls/rhscl/rh-eclipse46/
+
