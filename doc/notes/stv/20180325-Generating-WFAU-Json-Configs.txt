@@ -1,0 +1,82 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+List of WFAU Archives (for TAP services)
+
+http://wsa.roe.ac.uk/
+http://osa.roe.ac.uk/
+http://vsa.roe.ac.uk/
+http://ges.roe.ac.uk/ (Private, won't setup TAP for this)
+http://ssa.roe.ac.uk/
+
+
+
+Compiling list of databases to import for each
+----------------------------------------------
+
+Step 1
+------
+
+Query used to generate external catalogues with neighbour tables for each survey database:
+
+SELECT surveyName, databaseName, extTableName, description
+FROM ExternalSurvey AS s, ExternalSurveyTable AS t
+WHERE s.surveyID=t.surveyID AND s.surveyID>0
+
+(i.e. run for ATLASDR1 (OSA), VVVDR1 (VSA), VHSDR1 (VSA))
+
+
+Step 2
+------
+Ask around WFAU for feedback 
+
+Mark - Probably the best way to get a list is to query our existing TAP services on the registry.  If it's there, it needs to be in the new TAP.
+
+
+Mike - 6dF (just DR3) would probably best fit under SSA.
+
+Eckhard -  Just have a look at the databases in the browser pages, there you have a full list of external surveys that have neighbour tables in  the given archive:
+http://vsa.roe.ac.uk/www/vsa_browser.html
+http://wsa.roe.ac.uk/www/wsa_browser.html
+http://ges.roe.ac.uk/www/ges_browser.html
+
+
+Step 3
+------
+Feedback with compiled list from Step 1 from Nick Cross:
+Add VHSDR4, VHSDR5 to VSA 
+UKIDSSDR11PLUSUDSONLY to WSA 
+
+
+Step 4
+------
+Manually compile SSA config, because External Survey table used in query for step 1 was not available.
+
+
+
+Step 5
+------
+Query TOPCAT for available TAP services with wfau as the owner. Ensure all are covered by the list we compile
+
+
+
+

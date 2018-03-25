@@ -37,6 +37,7 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -74,13 +75,39 @@ public class AdqlTapSchemaController extends AbstractController {
      *
      */
     public static final String CONN_DRIVER = "driver" ;
-    
+
     /**
      * Property for updating the connection catalog.
      *
      */
     public static final String CONN_CATALOG = "catalog" ;
+
+    /**
+     * Property for updating the connection database.
+     *
+     */
+    public static final String CONN_DATABASE = "database" ;
+
+    /**
+     * Property for updating the connection host.
+     *
+     */
+    public static final String CONN_HOST= "host" ;
     
+    /**
+     * Property for updating the connection type.
+     *
+     */
+    public static final String CONN_TYPE = "type" ;
+    
+    /**
+     * Property for updating the connection port.
+     *
+     */
+    public static final String CONN_PORT = "port" ;
+    
+
+
 
 	@Override
 	public Path path() {
@@ -116,8 +143,6 @@ public class AdqlTapSchemaController extends AbstractController {
 	@RequestMapping(value = "generateTapSchema", method = {  RequestMethod.POST, RequestMethod.GET })
 	public void generateTapSchema(
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-			@RequestParam(value=CONN_URL, required=true)
-	        final String url,
 	        @RequestParam(value=CONN_USER,required=true)
 	        final String user,
 	        @RequestParam(value=CONN_PASS,required=true)
@@ -126,11 +151,20 @@ public class AdqlTapSchemaController extends AbstractController {
 			final String driver,
 		    @RequestParam(value=CONN_CATALOG, required=true)
 	        final String catalog,
+		    @RequestParam(value=CONN_DATABASE, required=true)
+	        final String database,
+		    @RequestParam(value=CONN_HOST, required=true)
+	        final String host,
+		    @RequestParam(value=CONN_TYPE, required=true)
+	        final String type,
+		    @RequestParam(value=CONN_PORT, required=true)
+	        final Integer port,
 			final HttpServletResponse response,
 			HttpServletRequest request)
 			throws IdentifierNotFoundException, IOException, SQLException,
 			ClassNotFoundException, ProtectionException {
-		JDBCParams params = new JDBCParams(url, user, pass, driver, catalog);
+
+		JDBCParams params = new JDBCParams(user, pass, catalog, database, host, type, driver, port); 
 		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "/WEB-INF/data/sqlserver_tap_schema.sql");
 		generator.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 		generator.createTapSchema();

@@ -404,17 +404,17 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		JdbcResource tap_schema_resource = this.factories.jdbc().resources().entities().create(
             this.tapSchemaResourceJDBCName,
             JdbcProductType.mssql,
-            params.getCatalogue(),
-            params.getCatalogue(),
-            "tapschemahost",
-            (Integer) null,
+            params.getDatabase(),
+            params.getCatalog(),
+            params.getHost(),
+            params.getPort(),
 	        params.getUsername(),
 	        params.getPassword()
 	        );
 
 		JdbcSchema tap_schema;
 		try {
-			tap_schema = tap_schema_resource.schemas().select(params.getCatalogue()  + "." + this.tapSchemaJDBCName);
+			tap_schema = tap_schema_resource.schemas().select(params.getCatalog()  + "." + this.tapSchemaJDBCName);
 			resource.schemas().create("TAP_SCHEMA", tap_schema);
 		} catch (NameNotFoundException e) {
 			System.out.println(e);
