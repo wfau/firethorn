@@ -165,9 +165,10 @@ public class AdqlTapSchemaController extends AbstractController {
 			ClassNotFoundException, ProtectionException {
 		
 		String tap_schema_create_script;
+		
 		if (type.toLowerCase().equals("pgsql")){
 			tap_schema_create_script = "pgsql_tap_schema.sql";
-		} else (type.toLowerCase().equals("mssql")){
+		} else if (type.toLowerCase().equals("mssql")){
 			tap_schema_create_script = "sqlserver_tap_schema.sql";
 		} else {
 			tap_schema_create_script = "pgsql_tap_schema.sql";

@@ -582,5 +582,23 @@ EOF
 
 
 
+cat > /tmp/atlas-query.adql << EOF
 
+    SELECT TOP 10 * FROM TAP_SCHEMA.schemas
 
+EOF
+
+        curl \
+            --silent \
+            --include \
+            --header "firethorn.auth.username:${adminuser:?}" \
+            --header "firethorn.auth.password:${adminpass:?}" \
+            --header "firethorn.auth.community:${admingroup:?}" \
+            --data-urlencode "adql.query.input@/tmp/atlas-query.adql" \
+            --data "adql.query.status.next=COMPLETED" \
+            --data "adql.query.wait.time=600000" \
+            "${atlasadql:?}/queries/create" \
+            | split-headers \
+            | jq '.' | tee /tmp/atlas-query.json
+
+        print-headers
