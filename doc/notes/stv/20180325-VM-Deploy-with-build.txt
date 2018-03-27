@@ -163,6 +163,9 @@ EOF
         datadata=${datadata:?}
         datauser=${datauser:?}
         datapass=${datapass:?}
+        datatype=${datatype:?}
+        datahost=${datahost:?}
+
         metadata=${metadata:?}
         metauser=${metauser:?}
         metapass=${metapass:?}
@@ -233,10 +236,11 @@ EOF
 	
 	source /etc/tester.properties
 
+        yum -y install  git
+        git clone https://github.com/stvoutsin/metadata
         mkdir meta
-        pushd meta
-            wget https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/meta/ATLASDR1_TablesSchema.xml
-        popd 
+        cp -r metadata/metadocs/* meta/
+
 
         skip-headers()
             {
@@ -310,10 +314,10 @@ EOF
             --header "firethorn.auth.username:${adminuser:?}" \
             --header "firethorn.auth.password:${adminpass:?}" \
             --header "firethorn.auth.community:${admingroup:?}" \
-            "${endpointurl:?}/system/info" \
+            "${endpointurl:?}/system/info" 	\
             | split-headers
 
-        print-headers
+        print-headers	
 
 # -----------------------------------------------------
 # Make a HEAD request to get a guest username.
@@ -326,40 +330,6 @@ EOF
             | split-headers
 
         guestuser=$(get-username)
-
-        print-headers
-
-# -----------------------------------------------------
-# Make a HEAD request to choose our test username.
-#[root@deployer]
-
-        testuser=albert.augustus@example.com
-        testpass=$(pwgen 20 1)
-
-        curl \
-            --head \
-            --silent \
-            --header "firethorn.auth.username:${testuser:?}" \
-            --header "firethorn.auth.password:${testpass:?}" \
-            "${endpointurl:?}/system/info" \
-            | split-headers
-
-        testgroup=$(get-group)
-
-        print-headers
-
-# -----------------------------------------------------
-# Get the system status.
-#[root@deployer]
-
-        curl \
-            --silent \
-            --include \
-            --header "firethorn.auth.username:${testuser:?}" \
-            --header "firethorn.auth.password:${testpass:?}" \
-            "${endpointurl:?}/system/info" \
-            | split-headers \
-            | jq '.' | tee /tmp/system-info.json
 
         print-headers
 
@@ -584,7 +554,7 @@ EOF
 
 cat > /tmp/atlas-query.adql << EOF
 
-    SELECT TOP 10 * FROM TAP_SCHEMA.schemas
+    SELECT TOP 10 * FROM TAP_SCHEMA.tables
 
 EOF
 
