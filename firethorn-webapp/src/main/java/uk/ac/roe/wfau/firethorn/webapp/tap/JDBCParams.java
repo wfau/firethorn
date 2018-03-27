@@ -10,7 +10,6 @@ public class JDBCParams {
 	private String database;
 	private String host;
 	private String type;
-	private String connectionURL;
 	private String driver;
 	private Integer port;
 	
@@ -22,7 +21,6 @@ public class JDBCParams {
 		this.database = database;
 		this.host = host;
 		this.type = type;
-        this.connectionURL = "jdbc:postgresql://" + host + "/" + database;
 		this.driver = driver;
 		this.port = port;
 	}
@@ -70,20 +68,32 @@ public class JDBCParams {
 	}
 
 	
+	public JdbcProductType getTypeAsJdbcProductType() {
+		if (type.toLowerCase().equals("pgsql")){
+            return JdbcProductType.pgsql;
+		} else if (type.toLowerCase().equals("mssql")){
+			return JdbcProductType.mssql;
+		} else {
+			return JdbcProductType.pgsql;
+		}
+	}
+
 	public String getType() {
 		return type;
 	}
-
+	
 	public void setType(String type) {
 		this.type = type;
 	}
 	
 	public String getConnectionURL() {
-		return connectionURL;
-	}
-
-	public void setConnectionURL(String connectionURL) {
-		this.connectionURL = connectionURL;
+		if (type.toLowerCase().equals("pgsql")){
+            return "jdbc:postgresql://" + this.getHost() + "/" + this.getDatabase();
+		} else if (type.toLowerCase().equals("mssql")){
+			return  "jdbc:jtds:sqlserver://" + this.getHost() + "/" + this.getDatabase();
+		} else {
+			return "jdbc:postgresql://" + this.getHost() + "/" + this.getDatabase();
+		}
 	}
 
 	public String getDriver() {
