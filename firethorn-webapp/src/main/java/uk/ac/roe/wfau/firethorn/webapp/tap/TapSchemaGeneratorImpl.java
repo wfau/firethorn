@@ -521,7 +521,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 							}
 						}
 
-						sql += " 0, '',''";
+						sql += " 0, null, null";
 						sql += ")";
 						stmt.executeUpdate(sql);
 
