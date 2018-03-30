@@ -105,21 +105,17 @@ services:
         environment:
             firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
             firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
-
             firethorn.meta.url: "jdbc:postgresql://bethany/postgres"
             firethorn.meta.user: "${metauser}"
             firethorn.meta.pass: "${metapass}"
             firethorn.meta.driver: "org.postgresql.Driver"
-
             firethorn.user.type: "mssql"
             firethorn.user.host: "patricia"
             firethorn.user.data: "${userdata}"
             firethorn.user.user: "${useruser}"
             firethorn.user.pass: "${userpass}"
-
             firethorn.admin.community: "${admingroup}"
             firethorn.guest.community: "${guestgroup}"
-
             firethorn.admin.user.name: "${adminuser}"
             firethorn.admin.user.pass: "${adminpass}"
 

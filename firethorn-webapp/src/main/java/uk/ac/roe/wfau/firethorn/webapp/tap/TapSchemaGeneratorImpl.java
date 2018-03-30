@@ -195,7 +195,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					this.params.getUsername(), this.params.getPassword());
 			
 			// Create Schema
-			this.updateSQL("CREATE SCHEMA \"" + getTapSchemaJDBCName() +  "\"");
+			this.updateSQL("CREATE SCHEMA \"" + getTapSchemaJDBCName() + "\"");
 
 			ScriptRunner runner = new ScriptRunner(con, false, false);
 
@@ -220,13 +220,12 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 		}
 	}
-	
 
 	/**
 	 * Insert resource metadata into the TAP_SCHEMA schema
 	 * 
 	 */
-	public void insertMetadata() {
+	public void insertMetadataMSSQL() {
 		java.sql.Statement stmt = null;
 		java.sql.Connection con = null;
 		
@@ -389,6 +388,174 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 	}
 	
+
+	/**
+	 * Insert resource metadata into the TAP_SCHEMA schema
+	 * 
+	 */
+	public void insertMetadata() {
+		java.sql.Statement stmt = null;
+		java.sql.Connection con = null;
+		
+		try {
+			stmt = null;
+			Class.forName(this.params.getDriver());
+			con = DriverManager.getConnection(this.params.getConnectionURL(),
+					this.params.getUsername(), this.params.getPassword());
+
+			System.out.println("Inserting resource records into the table...");
+			stmt = con.createStatement();
+
+			for (AdqlSchema schema : this.resource.schemas().select()) {
+
+				String schemaName = schema.name().replace("'", "''");
+
+				String schemaDescription = schema.text();
+				String sql;
+				if (schemaDescription==null){
+					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".schemas VALUES ('"
+							+ schemaName + "', NULL, NULL);";
+				} else {
+					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".schemas VALUES ('"
+							+ schemaName + "', '" + schemaDescription.replace("'", "''")
+							+ "', NULL);";
+				}
+				
+				stmt.executeUpdate(sql);
+				
+				for (AdqlTable table : schema.tables().select()) {
+					String tableName = table.name().replace("'", "''");
+					String tableDescription = table.text();
+					if (tableDescription==null){
+						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".tables VALUES ('"
+								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', NULL, '');";
+					} else {
+						sql = "INSERT INTO \"" + this.tapSchemaJDBCName  +  "\".tables VALUES ('"
+								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
+								+ tableDescription.replace("'", "''") + "', '');";
+					}
+
+					stmt.executeUpdate(sql);
+
+					for (AdqlColumn column : table.columns().select()) {
+						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".columns VALUES (";
+						String columnName = column.name().replace("'", "''");
+                        if (columnName.toLowerCase().equals("timestamp") || columnName.toLowerCase().equals("coord2") || columnName.toLowerCase().equals("coord1")){  
+                        	columnName = '"' + column.name() + '"';
+                        }
+						String columnDescription = column.text();
+						sql += "'" +  schemaName + "." + tableName + "',";
+						sql += "'" + columnName + "',";
+						if (columnDescription==null){
+							sql += "NULL, ";
+						} else {
+							sql += "'" + columnDescription.replace("'", "''") + "',";
+						}
+
+						AdqlColumn.Metadata meta = column.meta();
+
+						if ((meta != null) && (meta.adql() != null)) {
+
+							if (meta.adql().units() != null) {
+								sql += "'" + meta.adql().units().replace("'", "''") + "',";
+							} else {
+								sql += "'',";
+							}
+
+							if (meta.adql().ucd() != null) {
+								sql += "'" + meta.adql().ucd().replace("'", "''") + "',";
+							} else {
+								sql += "'',";
+							}
+
+							if (meta.adql().utype() != null) {
+								sql += "'" + meta.adql().utype().replace("'", "''") + "',";
+							} else {
+								sql += "'',";
+							}
+
+							if (meta.adql().type() != null) {
+								
+								String votableType = meta.adql().type().votype().toString().replace("'", "''");
+								String arraysize = "*";
+								
+								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
+								    {
+								    votableType = "char";
+								    arraysize = "*";
+								    }
+								if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
+								    {
+								    votableType = "char";
+								    arraysize = "*";
+								    }
+								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
+								    {
+								    votableType = "char";
+								    arraysize = "*";
+								    }
+								else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) 
+								    {	
+									votableType = "int";
+								    arraysize = "1";
+								    }
+						       
+								if (votableType != null) {
+									sql += "'" + votableType + "',";
+								} else {
+									sql += "'',";
+								}
+
+								if ((meta.adql().arraysize() != null)
+										&& (meta.adql().arraysize() != 0)) {
+									if (meta.adql().arraysize() == -1) {
+										sql += "null,";
+									} else {
+										sql += "'"+meta.adql().arraysize()
+												.toString().replace("'", "''")
+												+ "',";
+									}
+								} else {
+									sql += "null,";
+								}
+							}
+						}
+
+						sql += " 0, null, null";
+						sql += ")";
+						stmt.executeUpdate(sql);
+
+					}
+				}
+			}
+
+			// End insert
+			System.out.println("Inserted records into the table...");
+
+		} catch (SQLException se) {
+			// Handle errors for JDBC
+			log.debug("SQLException: ", se);
+		} catch (Exception e) {
+			log.debug("Exception: ", e);
+
+		} finally {
+
+			try {
+				if (stmt != null)
+					con.close();
+			} catch (SQLException se) {
+			}
+
+			try {
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}// end finally
+		}
+
+	}
+	
 	/**
 	 * Create the TAP_SCHEMA 
 	 * @throws ProtectionException 
@@ -403,18 +570,18 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		
 		JdbcResource tap_schema_resource = this.factories.jdbc().resources().entities().create(
             this.tapSchemaResourceJDBCName,
-            JdbcProductType.mssql,
-            params.getCatalogue(),
-            params.getCatalogue(),
-            "tapschemahost",
-            (Integer) null,
+            params.getTypeAsJdbcProductType(),
+            params.getDatabase(),
+            params.getCatalog(),
+            params.getHost(),
+            params.getPort(),
 	        params.getUsername(),
 	        params.getPassword()
 	        );
 
 		JdbcSchema tap_schema;
 		try {
-			tap_schema = tap_schema_resource.schemas().select(params.getCatalogue()  + "." + this.tapSchemaJDBCName);
+			tap_schema = tap_schema_resource.schemas().select(params.getCatalog()  + "." + this.tapSchemaJDBCName);
 			resource.schemas().create("TAP_SCHEMA", tap_schema);
 		} catch (NameNotFoundException e) {
 			System.out.println(e);
