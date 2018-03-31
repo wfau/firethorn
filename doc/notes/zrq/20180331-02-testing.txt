@@ -27,8 +27,8 @@
     createvm
 
         INFO : Node name [Araybwyn]
-        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
-        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
         INFO : Disc name [Araybwyn.qcow]
         INFO : Disc size [16GiB]
 
@@ -37,8 +37,6 @@
 #[user@trop]
 
     ssh Araybwyn
-    ssh Lothigometh
-    ssh Acilamwen
 
 # -----------------------------------------------------
 # Add our secret function.
@@ -95,18 +93,6 @@
         02.01-checkout.sh
 
     # -----------------------------------------------------
-    # Merge our branch into main.
-    #[root@builder]
-
-        07.01-merge-start.sh
-
-    # -----------------------------------------------------
-    # Update our version number.
-    #[root@builder]
-
-        07.02-version-step.sh
-
-    # -----------------------------------------------------
     # Build our base images.
     #[root@builder]
 
@@ -124,11 +110,11 @@
 
         05.02-javadocker.sh
 
-    # -----------------------------------------------------
-    # Display the merge versions.
-    #[root@builder]
+#
+# Python client ...
+#
 
-        cat "${HOME}/merge.settings"
+
 
     # -----------------------------------------------------
     # Exit our builder.
