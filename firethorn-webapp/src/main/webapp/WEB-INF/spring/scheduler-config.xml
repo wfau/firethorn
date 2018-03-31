@@ -44,8 +44,8 @@
     <!--+
         | Define our task executor and scheduler.
         +-->
-    <task:executor  id="FireThornTaskExecutor"  pool-size="10"/>
-    <task:scheduler id="FireThornTaskScheduler" pool-size="10"/>
+    <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
+    <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
 
     <!--+
         | Enable support for the @Scheduled and @Async annotations.

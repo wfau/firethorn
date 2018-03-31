@@ -135,7 +135,7 @@
             <id>temp-repo</id>
             <url>file:///tmp/firethorn/repo</url>
             <name>temp-repo</name>
-
+ 
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>daily</updatePolicy>
@@ -147,7 +147,7 @@
                 <updatePolicy>always</updatePolicy>
                 <checksumPolicy> fail</checksumPolicy>
             </snapshots>
-
+ 
         </repository-->
 
         <site>
@@ -173,7 +173,7 @@
             | Skip tests by default.
             | https://maven.apache.org/surefire/maven-surefire-plugin/examples/skipping-test.html
             | Explicitly enable on the command line when we want them.
-            | mvn install -D skipTests=false
+            | mvn install -D skipTests=false 
             +-->
         <skipTests>true</skipTests>
 
@@ -182,7 +182,7 @@
             | https://maven.apache.org/plugins/maven-install-plugin/examples/installing-checksums.html
             +-->
         <createChecksum>true</createChecksum>
-
+    
         <!--+
             | Build for Java 1.7.
             | Build for 1.8 triggers a problem in Eclipse.
@@ -232,7 +232,7 @@
                     | daily, the default value;
                     | interval:XXX: an interval in minutes (XXX)
                     | never: Maven will never try to retrieve another version.
-                    | It will do that only if it doesn't exist locally. With the configuration,
+                    | It will do that only if it doesn't exist locally. With the configuration, 
                     | SNAPSHOT version will be handled as the stable libraries.
                     +-->
                 <updatePolicy>always</updatePolicy>
@@ -266,15 +266,6 @@
 
     <pluginRepositories>
 
-        <!--+
-            | Apache Tomcat repository.
-        <pluginRepository>
-            <id>apache-snapshot</id>
-            <name>Apache snapshot</name>
-            <url>https://repository.apache.org/content/groups/snapshots/</url>
-        </pluginRepository>
-            +-->
-
     </pluginRepositories>
 
     <dependencyManagement>
@@ -283,7 +274,7 @@
             | https://maven.apache.org/ref/3.0.4/maven-model/maven.html#class_dependencyManagement
             | http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html
             | http://www.sonatype.com/people/2009/10/maven-tips-and-tricks-grouping-dependencies/
-            +-->
+            +-->	
 
         <dependencies>
 
@@ -378,7 +369,7 @@
 		        | http://joda-time.sourceforge.net/
 		        | http://joda-time.sourceforge.net/api-release/index.html
                 | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJodaTime
-		        +-->
+		        +-->	
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
@@ -393,7 +384,7 @@
             <!--+
                 | Jadira Type Libraries.
                 | http://blog.jadira.co.uk/
-                +-->
+                +-->	
             <dependency>
                 <groupId>org.jadira.usertype</groupId>
                 <artifactId>usertype.core</artifactId>
@@ -433,7 +424,7 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.16.18</version>
-            </dependency>
+            </dependency> 
 
             <!--+
                 | JUnit test framework.
@@ -444,36 +435,6 @@
         		<artifactId>junit</artifactId>
                 <version>4.12</version>
         	</dependency>
-
-            <!--+
-                | Starlink libraries.
-                | http://www.star.bris.ac.uk/~mbt/stil/
-            <dependency>
-                <groupId>uk.ac.starlink</groupId>
-                <artifactId>stil-util</artifactId>
-                <version>3.2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>uk.ac.starlink</groupId>
-                <artifactId>stil-table</artifactId>
-                <version>3.2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>uk.ac.starlink</groupId>
-                <artifactId>stil-votable</artifactId>
-                <version>3.2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>uk.ac.starlink</groupId>
-                <artifactId>stil-fits</artifactId>
-                <version>3.2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>uk.ac.starlink</groupId>
-                <artifactId>stil-tamfits</artifactId>
-                <version>3.2.3</version>
-            </dependency>
-                +-->
 
             <!--+
                 | os-platform-finder
@@ -551,7 +512,7 @@
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.0.2</version>
                     <configuration>
-                        <encoding>UTF-8</encoding>
+                        <encoding>${project.build.sourceencoding}</encoding>
                     </configuration>
                 </plugin>
 
@@ -749,7 +710,7 @@
                 <configuration>
 
                     <archiveClasses>true</archiveClasses>
-
+        
                     <archive>
 
                         <manifest>
@@ -814,7 +775,7 @@
             <plugin>
                 <groupId>org.basepom.maven</groupId>
                 <artifactId>duplicate-finder-maven-plugin</artifactId>
-            </plugin>
+            </plugin>        
 
         </plugins>
     </build>

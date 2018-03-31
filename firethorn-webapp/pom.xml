@@ -44,7 +44,7 @@
         The FireThorn webapp.
         ]]>
     </description>
-
+    
     <properties>
     </properties>
 
@@ -112,31 +112,6 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-
-	    <!--+
-	        | Servlet libraries.
-            | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-            <scope>provided</scope>
-        </dependency>
-	        +-->
-
-        <!--+
-            | QRCode generator.
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>zxing-core</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>zxing-javase</artifactId>
-            <version>1.7</version>
-        </dependency>
-            +-->
 
         <!--+
             | Apache file upload.
@@ -214,6 +189,7 @@
 
     <reporting>
         <plugins>
+
             <!--+
                 | Project reports.
                 | https://maven.apache.org/plugins/maven-project-info-reports-plugin/

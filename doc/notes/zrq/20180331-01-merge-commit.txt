@@ -1,0 +1,128 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Commit merge changes after a long gap between branches.
+
+# -----------------------------------------------------
+# Run meld to check the differences.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    meld "${FIRETHORN_CODE:?}" &
+
+# -----------------------------------------------------
+# Commit files manually.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        hg branch
+
+            2.1.16-zrq-race-bug
+
+        hg status
+        
+        oldbranch=2.1.10-zrq-concurrent-bug
+        newbranch=2.1.16-zrq-race-bug
+
+        hg commit -m "Merging [${oldbranch:?}] into [${newbranch:?}]"
+
+
+M doc/logs/zrq/20170609-22025-threads.log
+M doc/logs/zrq/20170614-32058-threads.log
+M doc/notes/zrq/20170526-01-mssql-create.txt
+M doc/notes/zrq/20170602-01-docker-merge.txt
+M doc/notes/zrq/20170605-01-concurrent-bug.txt
+M doc/notes/zrq/20170608-01-concurrent-bug.txt
+M doc/notes/zrq/20170609-01-docker-build.txt
+M doc/notes/zrq/20170609-02-debug-trace.txt
+M doc/notes/zrq/20170610-01-debug-trace.txt
+M doc/notes/zrq/20170612-01-debug-trace.txt
+M doc/notes/zrq/20170613-01-concurrent-bug.txt
+M doc/notes/zrq/20170614-01-debug-trace.txt
+M doc/notes/zrq/20170614-02-debug-trace.txt
+M doc/notes/zrq/20170615-01-cloud-build.txt
+M doc/notes/zrq/20170615-02-debug-trace.txt
+M doc/notes/zrq/20170616-01-debug-trace.txt
+M doc/notes/zrq/20170616-02-volume-space.txt
+M doc/notes/zrq/20170619-01-debug-trace.txt
+M doc/notes/zrq/20170621-01-docker-merge.txt
+M doc/notes/zrq/20170621-02-test-queries.txt
+M doc/notes/zrq/20170723-01-cloudy.txt
+M docker/tester/bin/test/test-001.sh
+
+M kickstart/fedora-docker.txt                                   added sysadmin tool
+M kickstart/fedora-image.txt                                    added sysadmin tool
+
+M docker/sql-client/Dockerfile                                  changed download URL
+
+M firethorn-ogsadai/activity/server/pom.xml                     removed unused dependencies
+M firethorn-ogsadai/metadata/client/pom.xml                     removed unused dependencies
+M firethorn-ogsadai/pom.xml                                     removed unused dependencies
+M firethorn-spring/pom.xml                                      removed unused dependencies
+M firethorn-webapp/pom.xml                                      removed unused dependencies
+M pom.xml                                                       removed unused dependencies
+
+M docker/compose/tests/zelleri/zelleri.yml                      removed hard coded path
+
+M firethorn-webapp/src/main/docker/firethorn/Dockerfile                                             added port
+M firethorn-webapp/src/main/docker/firethorn/conf/server.xml                                        added port
+M firethorn-webapp/src/main/java/uk/ac/roe/wfau/firethorn/webapp/blue/BlueQueryController.java      added port
+M firethorn-webapp/src/main/java/uk/ac/roe/wfau/firethorn/webapp/blue/BlueQueryModel.java           added (hard coded) port
+M firethorn-webapp/src/main/java/uk/ac/roe/wfau/firethorn/webapp/control/WebappLinkFactory.java     added port
+M firethorn-webapp/src/main/java/uk/ac/roe/wfau/firethorn/webapp/oper/OperationInterceptor.java     added port
+M attic/test/java/uk/ac/roe/wfau/firethorn/identity/AuthenticationTestCase.java                     added port
+M attic/test/java/uk/ac/roe/wfau/firethorn/identity/OperationTestCase.java                          added port
+M attic/test/java/uk/ac/roe/wfau/firethorn/test/TestBase.java                                       added port
+M firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/identity/Operation.java                     added port
+M firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/identity/OperationEntity.java               added port
+
+M firethorn-webapp/src/main/webapp/WEB-INF/classes/logback.xml                                      INFO -> DEBUG
+M firethorn-webapp/src/main/webapp/WEB-INF/spring/database-config.xml                               increased connection pool size
+M firethorn-webapp/src/main/webapp/WEB-INF/spring/scheduler-config.xml                              increased thread pool size
+
+M firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/blue/BlueQueryEntity.java        refactored create sequence, added (hard coded) port
+M firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/blue/BlueTask.java               refactored state machine, added 'sticky' flag
+M firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/blue/BlueTaskEntity.java         refactored state machine, added 'sticky' flag
+
+M firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractEntity.java                  table prefix version number
+
+M firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/meta/jdbc/JdbcTableEntity.java              comment
+M firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/meta/ogsa/OgsaBaseResourceEntity.java       debug
+M firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/meta/ogsa/OgsaExecResourceEntity.java       comment
+
+M firethorn-ogsadai/activity/common/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/common/data/LimitsParam.java        added cell limit
+M firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/data/LimitsActivity.java     added cell limit
+
+? doc/notes/zrq/20180327-01-coordination.txt
+? doc/notes/zrq/20180328-01-testing.txt
+? doc/notes/zrq/20180331-01-merge-commit.txt
+
+! docker/compose/tests/distictella/Dockerfile                   moved to firethorn-py
+? docker/compose/tests/distictella/firethorn-py/Dockerfile      moved to firethorn-py
+
+? docker/compose/tests/distictella/firethorn-py/bin/testdo.sh   added test scripts (not used)
+? docker/compose/tests/distictella/firethorn-py/bin/testup.sh   added test scripts (not used)
+? docker/compose/tests/zelleri/bin/testdo.sh                    added test scripts (not used)
+? docker/compose/tests/zelleri/bin/testup.sh                    added test scripts (not used)
+

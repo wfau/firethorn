@@ -94,15 +94,6 @@
         </dependency>
 
         <!--+
-            | Jackson JSON tools.
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${ogsadai.jackson.version}</version>
-        </dependency>
-            +-->
-
-        <!--+
             | The OGSA-DAI components used by our code.
             +-->
         <dependency>

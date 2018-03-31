@@ -151,8 +151,8 @@ services:
             - /tmp
         volumes:
             - /etc/localtime:/etc/localtime:ro
-            - /home/Zarquan/zelleri/testup.sh:/testup.sh
-            - /home/Zarquan/zelleri/testdo.sh:/testdo.sh
+            - ./bin/testup.sh:/testup.sh
+            - ./bin/testdo.sh:/testdo.sh
         networks:
             - miriam
 
@@ -181,6 +181,9 @@ services:
     distictella:
         image:
            "firethorn/firethorn-py:${buildtag}"
+        build:
+            context:    "${ftpysrc}"
+            dockerfile: "Fedorafile"
         read_only:
             false
         stdin_open:
@@ -192,9 +195,6 @@ services:
             - /tmp
         networks:
             - miriam
-
-        volumes:
-            - ${ftpysrc}:/home/firethorn-py
 
         environment:
 

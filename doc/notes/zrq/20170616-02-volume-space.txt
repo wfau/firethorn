@@ -1,0 +1,276 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Available space on the physical host.
+#[root@trop02]
+
+    df -h 
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/sda2        92G  935M   86G   2% /
+        udev             10M     0   10M   0% /dev
+        tmpfs            26G  2.3G   23G   9% /run
+        tmpfs            64G     0   64G   0% /dev/shm
+        tmpfs           5.0M     0  5.0M   0% /run/lock
+        tmpfs            64G     0   64G   0% /sys/fs/cgroup
+        /dev/sda1       511M  132K  511M   1% /boot/efi
+        /dev/sda4       9.1G   22M  8.6G   1% /tmp
+        /dev/sda6        53G   53M   50G   1% /home
+        /dev/sda5        65G  5.5G   56G  10% /var
+        /dev/sdc1       3.6T   68M  3.4T   1% /data2
+        /dev/sdb1       3.6T   68M  3.4T   1% /data1
+        tmpfs            13G     0   13G   0% /run/user/0
+        tmpfs            13G     0   13G   0% /run/user/1005
+
+
+# -----------------------------------------------------
+# Available space inside a virtual machine.
+#[Stevedore@Ibalehar]
+
+    df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        devtmpfs        2.0G     0  2.0G   0% /dev
+        tmpfs           2.0G     0  2.0G   0% /dev/shm
+        tmpfs           2.0G  524K  2.0G   1% /run
+        tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+        /dev/vda3        31G  5.0G   25G  17% /
+        tmpfs           2.0G  4.0K  2.0G   1% /tmp
+        /dev/vda1       240M   78M  146M  35% /boot
+        tmpfs           396M     0  396M   0% /run/user/1010
+
+# -----------------------------------------------------
+# Short term fix, move live volumens from /var to /.
+#[root@trop02]
+
+    #
+    # Create the target directory.
+    mkdir -p /libvirt/storage/live
+
+    #
+    # Rename old pool and create a new one.
+    # We used the VirtManager GUI to make the changes.
+    # Text files are for reference to show what changed.
+
+    pushd /etc/libvirt/storage#    
+
+        cat live-old.xml
+
+            <pool type='dir'>
+              <name>live-old</name>
+              <uuid>f2a26a78-811e-4044-86a8-14eb2ca6df82</uuid>
+              <capacity unit='bytes'>0</capacity>
+              <allocation unit='bytes'>0</allocation>
+              <available unit='bytes'>0</available>
+              <source>
+              </source>
+              <target>
+                <path>/var/lib/libvirt/images/live</path>
+                <permissions>
+                  <mode>0755</mode>
+                  <owner>-1</owner>
+                  <group>-1</group>
+                </permissions>
+              </target>
+            </pool>
+
+        cat live.xml
+
+            <pool type='dir'>
+              <name>live</name>
+              <uuid>49b7cd6a-0d3c-40e1-aff3-bfaff4bd7fc7</uuid>
+              <capacity unit='bytes'>0</capacity>
+              <allocation unit='bytes'>0</allocation>
+              <available unit='bytes'>0</available>
+              <source>
+              </source>
+              <target>
+                <path>/libvirt/storage/live</path>
+                <permissions>
+                  <mode>0755</mode>
+                  <owner>-1</owner>
+                  <group>-1</group>
+                </permissions>
+              </target>
+            </pool>
+
+    popd
+
+# -----------------------------------------------------
+# Longer term fix, create specific data pools.
+#[root@trop02]
+
+    /var
+    /data1
+    /data2
+
+    libvirt base /var/lib/libvirt/images/base
+    libvirt live /var/lib/libvirt/images/live
+
+    libvirt data /data1/libvirt/data
+    libvirt logs /data1/libvirt/logs
+
+# -----------------------------------------------------
+# Add a specific mount points inside the virtual machines.
+#[root@trop02]
+
+    # Added to kickstarter file.
+
+    /data
+
+    /logs
+
+
+# -----------------------------------------------------
+# Reduce the default size for the VMs.
+#[root@trop02]
+
+    df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+
+        /dev/sda2        92G  7.4G   80G   9% /
+        /dev/sda5        65G  5.5G   56G  10% /var
+        /dev/sda6        53G   53M   50G   1% /home
+        ....
+        /dev/sdc1       3.6T   68M  3.4T   1% /data2
+        /dev/sdb1       3.6T   68M  3.4T   1% /data1
+
+
+    #
+    # If we rezise the partitions we don't need.
+
+        Reduce / to 16G
+        92-16=76 
+
+        Reduce /home to 16G
+        53-16=37
+
+        Increase space on /var
+        65+(76+37)=178 total
+        56+(76+37)=169 free
+
+        8 virtual machines
+        20*8=160G
+
+        16*8=128G
+
+    #
+    # Virtual machine sizes.
+
+        m1 = 1 core 1G mem 8G disc
+        m2 = 2 core 2G mem 8G disc
+        m4 = 4 core 4G mem 16G disc
+
+
+
+# -----------------------------------------------------
+# ....
+#[root@trop02]
+
+    source "${HOME:?}/libvirt.settings"
+
+    poolpath=/data1/libvirt/logs
+    poolname=logs
+
+
+    vmname=
+    vdname=vdb
+
+    filename=${vmname:?}-${vdname:?}.qcow
+    filepath=${poolpath:?}/${filename:?}
+
+    #
+    # Create the pool.
+    
+    #
+    # Create a sparse qcow image.
+
+
+
+    #
+    # Attach the disc.
+
+    virsh attach-disk \
+        ${vmname:?}   \
+        ${filepath:?} \
+        ${vdname:?}   \
+        --driver    qemu  \
+        --subdriver qcow2 \
+        --type file \
+        --mode file
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    source "${HOME:?}/ischnura.settings"
+
+    pushd "${ischcode:?}"
+        pushd 'src/dat'
+        
+            cat tropo-template.xml 
+
+                <domain type='kvm'>
+                  <name></name>
+                  <uuid></uuid>
+                  <memory unit='GiB'>4</memory>
+                  ....
+                  <devices>
+                    <emulator>/usr/bin/kvm</emulator>
+                    <disk type='file' device='disk'>
+                      <driver name='qemu' type='qcow2'/>
+                      <target dev='vda' bus='virtio'/>
+                      <source file='/var/lib/libvirt/base/unknown.qcow'/>
+                      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+                    </disk>
+                  </devices>
+                  ....
+                </domain>
+
+        popd
+    popd
+

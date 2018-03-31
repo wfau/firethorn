@@ -22,10 +22,7 @@ RUN dnf -y install \
     python3 \
     python3-pip
 
-RUN dnf -y install \
-    python3-pycurl
-    
-COPY .  /home/firethorn-py
+COPY firethorn    /home/firethorn-py
 RUN  pip3 install /home/firethorn-py
 
 WORKDIR /home/firethorn-py

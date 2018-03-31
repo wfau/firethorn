@@ -70,7 +70,7 @@
             <version>${ogsadai.version}</version>
         </dependency>
         <!--+
-	        | The Apache HttpComponent libraries, used by our TAP client.
+	        | The Apache HttpComponent libraries, used by our TAP client. 
             +-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

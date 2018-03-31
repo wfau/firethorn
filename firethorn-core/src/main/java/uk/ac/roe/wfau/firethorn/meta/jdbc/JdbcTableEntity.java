@@ -795,7 +795,6 @@ implements JdbcTable
             public JdbcColumn select(final Identifier ident)
             throws ProtectionException, IdentifierNotFoundException
                 {
-                // TODO Add parent constraint.
                 return factories().jdbc().columns().entities().select(
                     JdbcTableEntity.this,
                     ident

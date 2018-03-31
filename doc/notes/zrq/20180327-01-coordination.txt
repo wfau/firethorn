@@ -1,0 +1,204 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    2.1.16-zrq-kafka-stream
+    Only got as far as preparing Ogsadai packages
+
+    2.1.16-zrq-race-bug
+    One NullPointer bug
+
+    2.1.10-zrq-concurrent-bug
+    8 months old
+
+#---------------------------------------------------------------------
+# Compare branches
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_BASE:?}"
+
+        pushd working
+            mvn clean
+        popd
+
+        cp -r working alpha
+        cp -r working beta
+        cp -r working delta
+
+        pushd alpha
+            hg update 2.1.10-zrq-concurrent-bug
+        popd
+        pushd beta
+            hg update 2.1.16-zrq-race-bug
+        popd
+        pushd delta
+            hg update 2.1.16-zrq-race-bug
+        popd
+
+        meld working alpha &
+
+    popd
+
+#---------------------------------------------------------------------
+
+    BlueQueryEntity
+
+    BlueTask
+    BlueTaskEntity
+
+    
+    HibernateThingsImpl
+        public Entity insert(final Entity entity)
+
+
+#---------------------------------------------------------------------
+# Merge 2.1.10-zrq-concurrent-bug changes into 2.1.16-zrq-race-bug
+#[user@desktop]
+
+    oldbranch=2.1.10-zrq-concurrent-bug
+    newbranch=2.1.16-zrq-race-bug
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_BASE:?}"
+
+        pushd alpha
+            hg update "${newbranch:?}"
+        popd
+
+        pushd delta
+            hg update "${oldbranch:?}"
+        popd
+
+        pushd beta
+            hg update "${newbranch:?}"
+            hg merge  "${oldbranch:?}"
+
+            meld . &
+
+        popd
+
+        meld alpha beta &
+        meld beta delta &
+
+        mv working original
+        mv beta working
+
+        pushd working
+
+            mvn eclipse:eclipse
+            mvn clean install
+
+#
+# Testing ....
+#
+
+            message="Merging [${oldbranch:?}] into [${newbranch:?}]"
+            hg commit -m "${message:?}"
+
+            message="Closing dev branch [${oldbranch:?}]"
+            hg update "${oldbranch:?}"
+            hg commit --close-branch -m "${oldbranch:?}"
+        popd
+
+    popd
+
+#---------------------------------------------------------------------
+        
+    Ubuntu Docker images ?
+
+    Need to check output to remote table works
+    
+    What is ContextParam for ?
+
+    Why does Handle constructor throw ProtectionException ?
+
+    Adding select field
+        arraysize()
+            throws ProtectionException
+
+    jdbctable.resource().connection().operator().create(..)
+    should be
+    jdbctable.resource().connection().driver().create(..)
+    should be
+    jdbctable.create()
+
+    Need to explain what Handle.sticky() does.
+
+    BlueTask.handle()
+    throws ProtectionException    
+
+    BlueTask.queued()
+    throws ProtectionException    
+
+    BlueTask.started()
+    throws ProtectionException    
+
+    BlueTask
+    
+        message log --> task history
+
+    BlueTaskEntity
+        // Needs Spring 4.2
+
+    BlueTaskEntity.handle()
+    throws ProtectionException    
+
+    BlueTaskEntity.newhandle()
+    throws ProtectionException    
+
+    BlueTaskEntity.waitfor(....)
+    //TODO Remove the sticky flag and possibly release the Handle.
+
+
+    AdqlQueryBase
+        type()
+        arraysize()
+            throws ProtectionException;
+
+    JdbcTableEntity
+        jdbcdelete() // promote
+        jdbcdrop() // promote
+
+
+    AbstractEntity
+    DB_TABLE_PREFIX = "FT020116";
+
+    BlueTaskEntity
+        BaseEventListener
+            DEFAULT_TIMEOUT = 5000 ;
+
+    AuthenticationImpl
+    is actually
+    AuthenticationRecord
+    and
+    AuthenticationImplEntity
+    is actually
+    AuthenticationRecordEntity
+
+    BlueQueryEntity
+        ContextParam
+            hard coded callback port !!
+
+    Need to check if callback port is used.
+    Need to fix how callback port is configured.
+
+

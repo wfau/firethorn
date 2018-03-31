@@ -1,0 +1,275 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Identify the threads involved ...
+#
+
+    thread=27334
+    thread=27192
+    thread=27041
+    thread=27251
+    thread=2467
+
+    timestamp=$(date +%Y%m%d%H%M%S)
+    logfile=logs/${timestamp}-${thread}-thread.log
+
+    cp \
+        logs/firethorn.log \
+        ${logfile}
+
+
+    #
+    # Main thread
+    tag=ohx7aeRu
+
+    grep \
+        "${tag}.*\[${thread}\]" \
+        ${logfile}
+
+2017-06-19 15:49:01,461 DEBUG [main-interface-18] [BlueQueryEntity] -- ohx7aeRu raid3Sho [2467]
+
+    #
+    # Callback thread
+    tag=Aemei3te
+    tag=thoh3Jeu
+
+
+    #
+    # Event trigger
+    tag=Ooj6Loqu
+
+    #
+    # Creator thread - this one won't trigger in ident
+    tag=een6Dae1
+
+    #
+    # Updator thread
+    tag=Joh6azi9
+
+2017-06-19 15:49:01,107 DEBUG [FireThornTaskExecutor-55] [BlueQueryEntity] -- Joh6azi9 loolip2Y [2467]
+
+    #
+    # Waitfor thread
+    tag=CheaCh0X
+
+2017-06-19 15:49:01,468 DEBUG [main-interface-18] [BlueTaskEntity] -- CheaCh0X aew1aiSh [2467]
+
+    #
+    # Ready thread
+    tag=Fi1Fahpo
+
+    #
+    # Running thread
+    tag=yae9iTao
+
+2017-06-19 15:49:01,121 DEBUG [FireThornTaskExecutor-56] [BlueTaskEntity] -- yae9iTao adoh9ooW [2467]
+
+    #
+    # Finish thread
+    tag=chieKee1
+
+
+# -----------------------------------------------------
+# Trim the main thread ..
+
+    sed -i \
+        '
+        /\[main-interface-[0-9]*\]/ {
+            /\[main-interface-18\]/ !{
+                d
+                }
+            }
+        ' \
+        ${logfile}
+
+# -----------------------------------------------------
+# Trim the callback thread ..
+
+
+# -----------------------------------------------------
+# Mark the beginning and end ..
+
+    vi ${logfile}
+
+-- BEGIN --
+2017-06-16 13:58:45,459 DEBUG [main-interface-5] [OperationInterceptor] OperationInterceptor.preHandle()
+....
+2017-06-16 13:58:46,110 DEBUG [callback-interface-4] [JdbcCoordinatorImpl] HHH000420: Closing un-released batch
+-- END --
+
+# -----------------------------------------------------
+# Trim the beginning and end ..
+
+    sed -i \
+        '1,/-- BEGIN --/ d' \
+        ${logfile}
+
+    sed -i \
+        '/-- END --/,$ d' \
+        ${logfile}
+
+
+# -----------------------------------------------------
+    # ....
+    #
+
+
+
+
+        2017-06-19 15:49:01,345 DEBUG [FireThornTaskExecutor-47] [BaseComponentEntity] Checking for existing lock [2][Userdata resource]
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [BaseComponentEntity] No existing lock found [2][Userdata resource]
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [BaseComponentEntity] No more locks [2][Userdata resource]
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV][1]
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV]
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV]
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV]
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [JdbcConnectionEntity] Source is null, updating to EMPTY
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [JdbcConnectionEntity] State is EMPTY, initialising DataSource
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [JdbcConnectionEntity] State is READY, initialising Connection
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [JdbcConnectionEntity] With user/pass
+        2017-06-19 15:49:01,348 DEBUG [FireThornTaskExecutor-47] [JdbcConnectionEntity] connecting ....
+
+        2017-06-19 15:49:01,345 DEBUG [FireThornTaskExecutor-43] [BaseComponentEntity] Checking for existing lock [2][Userdata resource]
+        2017-06-19 15:49:01,349 DEBUG [FireThornTaskExecutor-43] [BaseComponentEntity] No existing lock found [2][Userdata resource]
+        2017-06-19 15:49:01,349 DEBUG [FireThornTaskExecutor-43] [BaseComponentEntity] No more locks [2][Userdata resource]
+        2017-06-19 15:49:01,349 DEBUG [FireThornTaskExecutor-43] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV][1]
+        2017-06-19 15:49:01,349 DEBUG [FireThornTaskExecutor-43] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV]
+
+        2017-06-19 15:49:01,345 DEBUG [FireThornTaskExecutor-50] [JdbcConnectionEntity] State is READY, initialising Connection
+        2017-06-19 15:49:01,349 DEBUG [FireThornTaskExecutor-50] [JdbcConnectionEntity] With user/pass
+        2017-06-19 15:49:01,349 DEBUG [FireThornTaskExecutor-50] [JdbcConnectionEntity] connecting ....
+
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-37] [BlueQueryEntity]  JDBC space [2485][FirethornUserdataZRQ20170606121652DEV.dbo]
+
+        2017-06-19 15:49:01,345 DEBUG [FireThornTaskExecutor-25] [BaseComponentEntity] Checking for existing lock [2][Userdata resource]
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [BaseComponentEntity] No existing lock found [2][Userdata resource]
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [BaseComponentEntity] No more locks [2][Userdata resource]
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV][1]
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV]
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV]
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170606121652DEV]
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [JdbcConnectionEntity] Source is null, updating to EMPTY
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [JdbcConnectionEntity] State is EMPTY, initialising DataSource
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [JdbcConnectionEntity] State is READY, initialising Connection
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [JdbcConnectionEntity] With user/pass
+        2017-06-19 15:49:01,350 DEBUG [FireThornTaskExecutor-25] [JdbcConnectionEntity] connecting ....
+
+
+
+
+
+
+
+        2017-06-19 15:49:01,580 DEBUG [FireThornTaskExecutor-37] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity] ident[null]]]
+        2017-06-19 15:49:01,580 ERROR [FireThornTaskExecutor-57] [BlueTaskEntity$TaskRunner] ExecutionException executing Future [java.lang.NullPointerException][null]
+        2017-06-19 15:49:01,582 DEBUG [FireThornTaskExecutor-37] [AbstractEntity] init(Identity)
+        2017-06-19 15:49:01,582 DEBUG [FireThornTaskExecutor-37] [AbstractEntity] Using identity from context
+        2017-06-19 15:49:01,582 DEBUG [FireThornTaskExecutor-37] [AbstractEntity]   owner   [null]
+        2017-06-19 15:49:01,582 DEBUG [FireThornTaskExecutor-37] [AbstractEntity]   created [2017-06-19T15:49:01.582Z]
+        2017-06-19 15:49:01,582 DEBUG [FireThornTaskExecutor-37] [AbstractNamedEntity] AbstractNamedEntity(String)
+        2017-06-19 15:49:01,582 DEBUG [FireThornTaskExecutor-37] [AbstractNamedEntity]   Name  [XX_PUSNZHMZ6JJVUAAAAFOLMLZU4Q]
+        2017-06-19 15:49:01,582 DEBUG [FireThornTaskExecutor-37] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170606121652DEV.dbo][XX_PUSNZHMZ6JJVUAAAAFOLMLZU4Q][TABLE]
+        2017-06-19 15:49:01,582 DEBUG [FireThornTaskExecutor-37] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity] ident[null]]]
+        2017-06-19 15:49:01,583 ERROR [FireThornTaskExecutor-59] [IdentityEntity] Failed to find user space []
+        2017-06-19 15:49:01,583 ERROR [FireThornTaskExecutor-51] [IdentityEntity] Failed to find user space []
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-57] [BlueTaskEntity$TaskRunner] ExecutionException executing Future
+        java.lang.NullPointerException: null
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity.build(BlueQueryEntity.java:2044)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity.execute(BlueQueryEntity.java:1694)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$2.update(BlueTaskEntity.java:1439)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner.future(BlueTaskEntity.java:235)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner$$FastClassBySpringCGLIB$$d43bdbfb.invoke(<generated>)
+	        at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+	        at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:738)
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157)
+	        at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:99)
+	        at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:282)
+	        at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96)
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	        at org.springframework.aop.interceptor.AsyncExecutionInterceptor$1.call(AsyncExecutionInterceptor.java:115)
+	        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	        at java.lang.Thread.run(Thread.java:748)
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-57] [BlueTaskEntity] Finished thread()
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-57] [BlueTaskEntity]   state [READY]
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-57] [BlueTaskEntity] Refreshing state
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-57] [BlueTaskEntity] Refreshing entity [2466]
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-37] [AbstractEntity] init(Identity)
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-37] [AbstractEntity] Using identity from context
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-37] [AbstractEntity]   owner   [null]
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-37] [AbstractEntity]   created [2017-06-19T15:49:01.583Z]
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-37] [AbstractNamedEntity] AbstractNamedEntity(String)
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-37] [AbstractNamedEntity]   Name  [XX_M5H54V5PNJ43UAAAAFOLXH3C4I]
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-37] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170606121652DEV.dbo][XX_M5H54V5PNJ43UAAAAFOLXH3C4I][TABLE]
+        2017-06-19 15:49:01,583 DEBUG [FireThornTaskExecutor-37] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity] ident[null]]]
+        2017-06-19 15:49:01,583 ERROR [FireThornTaskExecutor-48] [BlueTaskEntity$TaskRunner] ExecutionException executing Future [java.lang.NullPointerException][null]
+        2017-06-19 15:49:01,584 ERROR [FireThornTaskExecutor-44] [BlueTaskEntity$TaskRunner] ExecutionException executing Future [java.lang.NullPointerException][null]
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-48] [BlueTaskEntity$TaskRunner] ExecutionException executing Future
+        java.lang.NullPointerException: null
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity.build(BlueQueryEntity.java:2044)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity.execute(BlueQueryEntity.java:1694)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$2.update(BlueTaskEntity.java:1439)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner.future(BlueTaskEntity.java:235)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner$$FastClassBySpringCGLIB$$d43bdbfb.invoke(<generated>)
+	        at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+	        at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:738)
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157)
+	        at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:99)
+	        at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:282)
+	        at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96)
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	        at org.springframework.aop.interceptor.AsyncExecutionInterceptor$1.call(AsyncExecutionInterceptor.java:115)
+	        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	        at java.lang.Thread.run(Thread.java:748)
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-44] [BlueTaskEntity$TaskRunner] ExecutionException executing Future
+        java.lang.NullPointerException: null
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity.build(BlueQueryEntity.java:2044)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity.execute(BlueQueryEntity.java:1694)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$2.update(BlueTaskEntity.java:1439)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner.future(BlueTaskEntity.java:235)
+	        at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner$$FastClassBySpringCGLIB$$d43bdbfb.invoke(<generated>)
+	        at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+	        at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:738)
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157)
+	        at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:99)
+	        at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:282)
+	        at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96)
+	        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	        at org.springframework.aop.interceptor.AsyncExecutionInterceptor$1.call(AsyncExecutionInterceptor.java:115)
+	        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	        at java.lang.Thread.run(Thread.java:748)
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-48] [BlueTaskEntity] Finished thread()
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-48] [BlueTaskEntity]   state [READY]
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-44] [BlueTaskEntity] Finished thread()
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-48] [BlueTaskEntity] Refreshing state
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-44] [BlueTaskEntity]   state [READY]
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-44] [BlueTaskEntity] Refreshing state
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-48] [BlueTaskEntity] Refreshing entity [2463]
+        2017-06-19 15:49:01,586 DEBUG [FireThornTaskExecutor-44] [BlueTaskEntity] Refreshing entity [2460]
+        2017-06-19 15:49:01,587 DEBUG [FireThornTaskExecutor-37] [AbstractEntity] init(Identity)
+

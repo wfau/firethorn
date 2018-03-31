@@ -16,6 +16,23 @@ volumes:
 
 services:
 
+
+
+    consuelo:
+        image:
+           "firethorn/postgres:${buildtag:-latest}"
+        read_only:
+            true
+        tmpfs:
+            - '/run'
+            - '/tmp'
+        networks:
+            - miriam
+        environment:
+            POSTGRES_USER: "${tapsuser}"
+            POSTGRES_PASSWORD: "${tapspass}"
+
+
     bethany:
         image:
            "firethorn/postgres:${buildtag:-latest}"
@@ -29,7 +46,7 @@ services:
         environment:
             POSTGRES_USER: "${metauser}"
             POSTGRES_PASSWORD: "${metapass}"
-
+    
     patricia:
         image:
            "firethorn/sql-proxy:${buildtag:-latest}"
@@ -153,8 +170,8 @@ services:
             - /tmp
         volumes:
             - /etc/localtime:/etc/localtime:ro
-            - /home/Zarquan/zelleri/testup.sh:/testup.sh
-            - /home/Zarquan/zelleri/testdo.sh:/testdo.sh
+            - ./bin/testup.sh:/testup.sh
+            - ./bin/testdo.sh:/testdo.sh
         networks:
             - miriam
         environment:

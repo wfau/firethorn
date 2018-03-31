@@ -63,7 +63,7 @@ extends Entity
          * Create a new Operation.
          *
          */
-        public Operation create(final String target, final String method, final String source);
+        public Operation create(final String target, final String method, final String source, final int port);
 
         }
 
@@ -85,7 +85,7 @@ extends Entity
      * The target URL for the operation.
      *
      */
-    public String target();
+    public String url();
 
     /**
      * The HTTP method.
@@ -99,6 +99,12 @@ extends Entity
      */
     public String source();
 
+    /**
+     * The server port.
+     *
+     */
+    public Integer port();
+    
     /**
      * The list of Authentication(s) for this operation.
      *
@@ -153,7 +159,6 @@ extends Entity
     
     /**
      * Get the {@link Entity} instance linked to the current {@link Thread}.
-     * @throws ProtectionException 
      * @todo Move this to a base class.
      * 
      */

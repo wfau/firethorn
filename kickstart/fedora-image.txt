@@ -82,6 +82,7 @@ curl
 sudo
 htop
 pwgen
+glances
 
 # Network admin
 iputils

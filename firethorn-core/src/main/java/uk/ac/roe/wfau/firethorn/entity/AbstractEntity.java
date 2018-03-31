@@ -74,10 +74,10 @@ implements Entity
         );
     
     /**
-     * Hibernate table name prefix.
+     * Hibernate table name prefix, {@value}.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT020110";
+    protected static final String DB_TABLE_PREFIX = "FT020116";
 
     /**
      * Hibernate column mapping, {@value}.

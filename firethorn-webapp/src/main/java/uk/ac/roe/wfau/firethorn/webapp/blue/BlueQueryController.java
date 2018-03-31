@@ -230,6 +230,8 @@ public class BlueQueryController
         final String ident,
         @RequestParam(value=CALLBACK_TASK_STATE, required=false)
         final TaskState state,
+        @RequestParam(value=CALLBACK_REQUEST_PORT, required=false)
+        final Long port,
         @RequestParam(value=CALLBACK_MESSAGE, required=false)
         final String message,
         @RequestParam(value=CALLBACK_RESULT_COUNT, required=false)
@@ -239,8 +241,9 @@ public class BlueQueryController
         )
     throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
-        log.debug("callback(String, TaskState, Long, ResultState)");
+        log.debug("callback(....)");
         log.debug("  ident [{}]", ident);
+        log.debug("  port  [{}]", port);
         log.debug("  state [{}]", state);
         log.debug("  count [{}]", resultcount);
         log.debug("  state [{}]", resultstate);
@@ -368,15 +371,18 @@ public class BlueQueryController
     @ResponseBody
     @RequestMapping(value=BlueQueryModel.CALLBACK_PATH, method=RequestMethod.POST, consumes=JSON_MIME, produces=JSON_MIME)
     public BlueQueryBean jsonCallback(
-        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
+        @PathVariable(value=Entity.LinkFactory.IDENT_FIELD, required=true)
         final String ident,
+        @RequestParam(value=CALLBACK_REQUEST_PORT, required=false)
+        final Long port,
         @RequestBody
         final RequestBean bean 
         )
     throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
-        log.debug("callback(String, TaskStatus, Long)");
+        log.debug("callback(....)");
         log.debug("  ident [{}]", ident);
+        log.debug("  port  [{}]", port);
         log.debug("  next  [{}]", bean.getState());
         return bean(
 //

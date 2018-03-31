@@ -1,0 +1,391 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    export devname=zrq-concurrent-bug
+
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20141130-01-hg-branch.txt &
+
+# -----------------------------------------------------
+# Update our Maven and Docker build files.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        buildtag=$(hg branch)
+
+        source 'bin/util.sh'
+
+        pomversions "${buildtag:?}"
+        dockerfiles "${buildtag:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Load our secret function.
+#[user@desktop]
+
+    source ${HOME:?}/secret.sh
+    secret 'ping'
+
+# -----------------------------------------------------
+# Create a new database.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    gedit ${FIRETHORN_CODE:?}/doc/notes/zrq/20170526-01-mssql-create.txt &
+
+# -----------------------------------------------------
+# Create our chain config.
+#[user@desktop]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+    metaname=bethany
+    username=patricia
+    dataname=elayne
+    ogsaname=jarmila
+    firename=gillian
+    testname=aaliyah
+
+    metatype=pgsql
+    metadata=postgres
+    metauser=$(pwgen 20 1)
+    metapass=$(pwgen 20 1)
+    metadriver=org.postgresql.Driver
+    metajdbc=jdbc:postgresql://\${metaname:?}/\${metadata:?}
+
+#   metatype=mssql
+#   metahost=$(secret 'firethorn.meta.host')
+#   metadata=$(secret 'firethorn.meta.data')
+#   metauser=$(secret 'firethorn.meta.user')
+#   metapass=$(secret 'firethorn.meta.pass')
+#   metadriver=net.sourceforge.jtds.jdbc.Driver
+#   metajdbc=jdbc:jtds:sqlserver://\${metaname:?}/\${metadata:?}
+
+    usertype=mssql
+    userhost=$(secret 'firethorn.user.host')
+    userdata=$(secret 'firethorn.user.data')
+    useruser=$(secret 'firethorn.user.user')
+    userpass=$(secret 'firethorn.user.pass')
+    userdriver=net.sourceforge.jtds.jdbc.Driver
+    userjdbc=jdbc:jtds:sqlserver://${username:?}/${userdata:?}
+
+    datatype=mssql
+    datahost=$(secret 'firethorn.data.host')
+    datadata=$(secret 'firethorn.data.data')
+    datauser=$(secret 'firethorn.data.user')
+    datapass=$(secret 'firethorn.data.pass')
+    datadriver=net.sourceforge.jtds.jdbc.Driver
+    datajdbc=jdbc:jtds:sqlserver://${dataname:?}/${datadata:?}
+
+    tunneluser=$(secret 'ssh.tunnel.user')
+    tunnelhost=$(secret 'ssh.tunnel.host')
+
+EOF
+
+# -----------------------------------------------------
+# Create our FireThorn config.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.ogsadai.endpoint=http://${ogsaname:?}:8080/ogsadai/services
+
+firethorn.meta.type=${metatype:?}
+firethorn.meta.url=$eval${metajdbc:?}
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+firethorn.meta.driver=${metadriver:?}
+
+firethorn.user.type=${usertype:?}
+firethorn.user.url=${userjdbc:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+firethorn.user.driver=${userdriver:?}
+
+firethorn.ogsa.resource.scan=PT1M
+
+EOF
+
+    chmod a+r "${HOME:?}/firethorn.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/firethorn.properties" 
+
+# -----------------------------------------------------
+# Create our tester config.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    cat > "${HOME:?}/tester.properties" << EOF
+
+        datadata=${datadata:?}
+        dataname=${dataname:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+        datadriver=${datadriver:?}
+        endpointurl=http://${firename:?}:8080/firethorn
+
+EOF
+
+    chmod a+r "${HOME:?}/tester.properties" 
+    chcon -t svirt_sandbox_file_t "${HOME:?}/tester.properties" 
+
+# -----------------------------------------------------
+# Create our composer env file.
+#[user@desktop]
+
+    source "${HOME:?}/chain.properties"
+    source "${HOME:?}/firethorn.settings"
+
+    cat > "${HOME:?}/.env" << EOF
+
+metahost=${metahost:?}
+metauser=${metauser:?}
+metapass=${metapass:?}
+
+datahost=${datahost:?}
+userhost=${userhost:?}
+
+tunneluser=${tunneluser:?}
+tunnelhost=${tunnelhost:?}
+
+EOF
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Check our previous run has been cleared.
+#[user@desktop]
+
+    export buildtag
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tester.yml" \
+        down
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+
+    export buildtag
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tester.yml" \
+        run tester 
+
+# -----------------------------------------------------
+# Setup our tests.
+#[root@tester]
+
+        source bin/test/test-001.sh
+
+# -----------------------------------------------------
+# Run our tests.
+#[root@tester]
+
+    dostatus
+
+    doquery
+
+    doquery &
+
+# -----------------------------------------------------
+
+    for i in {1..2};  do doquery; done
+    for i in {1..5};  do doquery; done
+    for i in {1..10}; do doquery; done
+    for i in {1..20}; do doquery; done
+    for i in {1..30}; do doquery; done
+    for i in {1..40}; do doquery; done
+    for i in {1..50}; do doquery; done
+
+# -----------------------------------------------------
+
+    for i in {1..2};  do sleep 5; doquery &; done
+    for i in {1..5};  do sleep 5; doquery &; done
+    for i in {1..10}; do sleep 5; doquery &; done
+    for i in {1..20}; do sleep 5; doquery &; done
+    for i in {1..30}; do sleep 5; doquery &; done
+    for i in {1..40}; do sleep 5; doquery &; done
+    for i in {1..50}; do sleep 5; doquery &; done
+
+# -----------------------------------------------------
+
+    for i in {1..2};  do doquery &; done
+    for i in {1..5};  do doquery &; done
+    for i in {1..10}; do doquery &; done
+    for i in {1..20}; do doquery &; done
+    for i in {1..30}; do doquery &; done
+    for i in {1..40}; do doquery &; done
+    for i in {1..50}; do doquery &; done
+
+# -----------------------------------------------------
+
+    <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
+    <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
+
+    <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+    <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:100}" />
+    <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
+
+    for i in {1..50} -- works
+
+    Return status READY/RUNNING (wrong)
+
+# -----------------------------------------------------
+
+ ** <task:executor  id="FireThornTaskExecutor"  pool-size="10"/>
+    <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
+
+    for i in {1..5}  -- works
+    for i in {1..10} -- works
+    for i in {1..20} -- hangs
+
+    system/info requests still work ok
+    
+    callback requests blocked
+    callback requests block query requests
+    system hangs :-(
+
+    Return status READY/RUNNING (wrong)
+
+# -----------------------------------------------------
+
+    <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
+ ** <task:scheduler id="FireThornTaskScheduler" pool-size="10"/>
+
+    for i in {1..5}  -- works
+    for i in {1..10} -- works
+    for i in {1..20} -- works
+    for i in {1..50} -- works
+
+    * return status READY/RUNNING (wrong)
+
+# -----------------------------------------------------
+
+    <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+ ** <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:10}" />
+    <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
+
+    for i in {1..2}  -- works
+    for i in {1..3}  -- hangs
+
+
+    * return status READY/RUNNING (wrong)
+
+    Seems that 3 concurrent queries requires > 10 connections !?
+    Hangs during execute(), before the request is sent to OGSADAI.
+
+    Implies one request uses 4 connections.
+
+# -----------------------------------------------------
+
+    <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+ ** <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:20}" />
+    <property name="maxIdleTime"   value="${firethorn.meta.c3p0.max.idle:300}" />
+
+    for i in {1..2}  -- works
+    for i in {1..3}  -- works
+    for i in {1..4}  -- works
+    for i in {1..5}  -- hangs
+
+    * return status READY/RUNNING (wrong)
+
+# -----------------------------------------------------
+
+
+
+
+
+

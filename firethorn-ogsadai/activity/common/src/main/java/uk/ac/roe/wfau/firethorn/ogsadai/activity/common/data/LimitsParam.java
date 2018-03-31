@@ -28,6 +28,12 @@ public interface LimitsParam
 extends TuplesParam
     {
     /**
+     * The default (Not A Number) null value.
+     *
+     */
+    public static final Long NaN = new Long(-1);
+
+    /**
      * The default Activity name, {@value}.
      * 
      */
@@ -43,7 +49,7 @@ extends TuplesParam
      * Default row limit (-1 = no limit).
      * 
      */
-    public static final Long DEFAULT_ROWS = new Long(-1);
+    public static final Long DEFAULT_ROWS = NaN;
     
     /**
      * Activity input name for the cell limit.
@@ -55,7 +61,7 @@ extends TuplesParam
      * Default cell limit (0 = no limit).
      * 
      */
-    public static final Long DEFAULT_CELLS = new Long(0);
+    public static final Long DEFAULT_CELLS = NaN;
     
     /**
      * Activity input name for the time limit, in milliseconds.
@@ -67,7 +73,7 @@ extends TuplesParam
      * Default time limit (0 = no limit).
      * 
      */
-    public static final Long DEFAULT_TIME = new Long(0);
+    public static final Long DEFAULT_TIME = NaN;
     
     }
 

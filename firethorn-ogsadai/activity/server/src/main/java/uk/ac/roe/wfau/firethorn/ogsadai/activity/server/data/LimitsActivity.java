@@ -19,20 +19,19 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.DelaysParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.data.LimitsParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
+import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -49,8 +48,9 @@ import uk.org.ogsadai.activity.io.TupleListIterator;
 import uk.org.ogsadai.activity.io.TypedOptionalActivityInput;
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.authorization.SecurityContext;
-import uk.org.ogsadai.exception.ErrorID;
+import uk.org.ogsadai.metadata.MetadataWrapper;
 import uk.org.ogsadai.tuple.Tuple;
+import uk.org.ogsadai.tuple.TupleMetadata;
 
 /**
  * Activity to enforce limits.
@@ -190,7 +190,7 @@ implements SecureActivity
         start(tuples);
         //
         // Process our tuples.
-        if (maxtime > 0)
+        if (maxtime != LimitsParam.NaN)
             {
             outer(tuples, maxrows, maxcells, maxtime);
             }
@@ -412,19 +412,38 @@ implements SecureActivity
         // Process our tuples.
         try {
             long rowcount = 0 ; 
+
+            
+            final MetadataWrapper wrapper  = tuples.getMetadataWrapper();
+            final TupleMetadata metadata = (TupleMetadata) wrapper.getMetadata();
+            final long colcount = metadata.getColumnCount();
+            
             for (Tuple tuple ; ((tuple = (Tuple) tuples.nextValue()) != null) ; )
                 {
-                if (maxrows != -1)
+                if (maxrows != LimitsParam.NaN)
                     {
                     if (rowcount >= maxrows)
                         {
-                        logger.debug("STOP -- Row limit reached [{}]", maxrows);
+                        logger.debug("STOP -- Row limit reached [{}]", rowcount);
                         callback.truncated(
                             rowcount
                             );
                         break ;
                         }
                     }
+                if (maxcells != LimitsParam.NaN)
+                    {
+                    long cellcount = rowcount * colcount;
+                    if (cellcount >= maxcells)
+                        {
+                        logger.debug("STOP -- Cell limit reached [{}]", cellcount);
+                        callback.truncated(
+                            rowcount
+                            );
+                        break ;
+                        }
+                    }
+                
                 writer.write(
                     tuple
                     );

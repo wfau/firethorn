@@ -12,7 +12,7 @@
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
-#  
+#
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #   </meta:licence>
@@ -65,14 +65,13 @@
 
         ....
 
-
     source "${HOME:?}/secret.sh"
     secret 'ping'
 
 # -----------------------------------------------------
 # Download our compose file
 #[user@virtual]
-     
+
     wget -O builder.yml \
         http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
 
@@ -82,6 +81,7 @@
 
     branch=2.1.8-zrq-fedora-image
     branch=2.1.9-zrq-bug-fixes
+    branch=2.1.10-zrq-concurrent-bug
 
 # -----------------------------------------------------
 # Run our builder.
@@ -90,7 +90,7 @@
     export branch
     docker-compose \
         --file "builder.yml" \
-        run builder 
+        run builder
 
     # -----------------------------------------------------
     # Initialise our path.
@@ -103,7 +103,7 @@
     #[root@builder]
 
         01.01-init.sh
-        
+
     # -----------------------------------------------------
     # Checkout a copy of our source code.
     #[root@builder]
@@ -149,7 +149,7 @@
 # -----------------------------------------------------
 # Run our sql administrator.
 #[user@desktop]
-       
+
     source "${HOME:?}/firethorn.settings"
     less ${FIRETHORN_CODE:?}/doc/notes/zrq/20170526-01-mssql-create.txt
 
@@ -167,7 +167,7 @@
     export branch
     docker-compose \
         --file "builder.yml" \
-        run builder 
+        run builder
 
 
     # -----------------------------------------------------
@@ -181,7 +181,7 @@
     #[root@builder]
 
         01.01-init.sh
-        
+
     # -----------------------------------------------------
     # Update our Mercurial config.
     #[root@builder]
@@ -193,7 +193,7 @@
 
         source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"
-        
+
             vi .hg/hgrc
 
                 [paths]
@@ -219,7 +219,7 @@
         pushd "${FIRETHORN_CODE:?}"
 
             source 'bin/util.sh'
-            
+
             message="Push version [$(getversion)]"
             confirm "${message:?}"
             if [ $? -ne 0 ]

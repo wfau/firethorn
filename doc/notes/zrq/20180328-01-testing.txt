@@ -1,0 +1,584 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Remove existing Docker containers and images.
+#[user@desktop]
+
+    docker rm  -f $(docker ps -aq)
+    docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
+# Fetch our branch name.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        buildtag=$(hg branch)
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@desktop]
+
+    source "${HOME:?}/secret.sh"
+    secret frog
+    
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${buildtag:?}
+        
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        tunneluser=$(secret 'ssh.tunnel.user')
+        tunnelhost=$(secret 'ssh.tunnel.host')
+
+        admingroup=Hyaenidae
+        adminuser=Aardwolf
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=Afrotheria
+
+        zelltype=pgsql
+        zellhost=zelleri
+        zelldata=postgres
+        zelluser=$(pwgen 20 1)
+        zellpass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our compose config.
+#[user@desktop]
+
+    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Set the Python client location.
+#[user@desktop]
+
+    source "${HOME}/projects.settings"
+    FIRETHORN_PY_BASE="${EDINBURGH_PROJECTS:?}/ftpy"
+
+    STV_CLIENT="${FIRETHORN_PY_BASE:?}/github.stv"
+    ZRQ_CLIENT="${FIRETHORN_PY_BASE:?}/github.zrq"
+
+# -----------------------------------------------------
+# Fetch the latest Python client.
+#[user@desktop]
+
+    pushd ${STV_CLIENT:?}
+        git pull
+    popd    
+
+    pushd ${ZRQ_CLIENT:?}
+        git pull
+    popd    
+
+# -----------------------------------------------------
+# Update our fork from the original.
+# https://gist.github.com/CristinaSolana/1885435
+#[user@desktop]
+
+    pushd ${ZRQ_CLIENT:?}
+        git remote add upstream 'git@github.com:stvoutsin/firethorn.py.git'
+        git fetch upstream
+        git pull upstream master
+        git push
+    popd    
+
+# -----------------------------------------------------
+# Take down our compose set.
+#[user@desktop]
+
+    source "${HOME}/firethorn.settings"
+    DISTICTELLA_TEST=${FIRETHORN_CODE}/docker/compose/tests/distictella/distictella.yml
+
+    docker-compose \
+        --file "${DISTICTELLA_TEST:?}" \
+        down
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag=$(hg branch)
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our Python client container.
+#[user@desktop]
+
+    source "${HOME}/firethorn.settings"
+    DISTICTELLA_TEST=${FIRETHORN_CODE}/docker/compose/tests/distictella/distictella.yml
+
+    export buildtag
+    export ftpysrc=${ZRQ_CLIENT:?}
+
+    docker-compose \
+        --file "${DISTICTELLA_TEST:?}" \
+        build \
+            distictella
+
+# -----------------------------------------------------
+# Run our compose set.
+#[user@desktop]
+
+    source "${HOME}/firethorn.settings"
+    DISTICTELLA_TEST=${FIRETHORN_CODE}/docker/compose/tests/distictella/distictella.yml
+
+    docker-compose \
+        --file "${DISTICTELLA_TEST:?}" \
+        run \
+            distictella
+
+# -----------------------------------------------------
+# Run our Python client.
+#[user@pyclient]
+
+import os
+import firethorn as ftpy
+
+#
+# Create our firethorn client.
+firethorn = ftpy.Firethorn(
+    os.environ.get(
+        'endpoint'
+        ),
+    )
+
+#
+# Login using the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    '*',
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass')
+    )
+
+print(
+    atlas_jdbc
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+
+print(
+    atlas_adql
+    )
+
+#
+# List the top level AdqlResources.
+adql_resources = firethorn.firethorn_engine.select_adql_resources()
+for resource in adql_resources:
+    print(
+        resource
+        )
+
+#
+# Import the target JdbcSchema into AdqlSchema.
+schema_names = [
+    "ATLASDR1",
+    "TWOMASS"
+    ]
+
+for schema_name in schema_names:
+    print(schema_name)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        schema_name,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + schema_name + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            schema_name,
+            metadoc=metadoc
+            )
+
+#
+# List the Atlas schemas.
+schemas = atlas_adql.select_schemas()
+for schema in schemas:
+    print(
+        schema
+        )
+
+#
+# Select the TWOMASS schema.
+twomass = atlas_adql.select_schema_by_name(
+    'TWOMASS'
+    )
+print(
+    twomass
+    )
+
+#
+# Select the schema tables.
+tables = twomass.select_tables()
+for table in tables:
+    print(
+        table
+        )
+
+#
+# Select the psc table.
+table = twomass.select_table_by_name(
+    'twomass_psc'
+    )
+print(
+    table
+    )
+
+#
+# Select the table columns.
+columns = table.select_columns()
+for column in columns:
+    print(
+        column
+        )
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using a guest account.
+firethorn.login(
+    'tester@roe.ac.uk',
+    'tester@roe.ac.uk',
+    os.environ.get(
+        'guestgroup'
+        )
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# List our workspace schemas.
+for schema in workspace.select_schemas():
+    print(
+        schema
+        )
+
+#
+# Create and run a query on our workspace.
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query
+    )
+
+#
+# Get the query results.
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+
+#
+# Convert the query results into an astropy table.
+from astropy.table import Table as ApTable
+def wrap_as_pytable(adql_table, limit=100):
+    if ((limit) and (query.table().count() > limit)):
+        print("Row count [" + str(query.table().count()) + "] exceeds limit [" + str(limit) + "]")
+        return None
+    else:
+        return ApTable.read(
+            adql_table.json_object.get("formats").get("votable"),
+            format="votable",
+            use_names_over_ids=True,
+            )    
+
+pytable = wrap_as_pytable(
+    query.table()
+    )
+
+pytable = wrap_as_pytable(
+    query.table(),
+    10000
+    )
+
+pytable.pprint()
+
+
+#
+# Run the same query with a row limit.
+params = {
+    "adql.query.limit.rows" : 10
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(
+    query
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a single row limit.
+params = {
+    "adql.query.limit.rows" : 1
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(query)
+
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a zero row limit.
+params = {
+    "adql.query.limit.rows" : 0
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(
+    query
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a short wait.
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    1000
+    )
+print(
+    query
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table(),
+    1000
+    )
+pytable.pprint(
+    )
+
+
+
+#
+# Run several queries at the same time.
+# https://docs.python.org/3/library/concurrent.futures.html
+# http://masnun.com/2016/03/29/python-a-quick-introduction-to-the-concurrent-futures-module.html
+# 
+
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+
+input_query="SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc"
+
+def do_query(workspace, limit):
+    query = workspace.create_query(
+        input_query,
+        "COMPLETED",
+        None,
+        20000,
+            {
+            "adql.query.limit.rows" : limit
+            }
+        )
+    return query.table().count()
+
+def run_queries(threads, tasks):
+    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        futures = {
+            executor.submit(
+                do_query,
+                workspace,
+                limit
+                ): limit for limit in range(tasks)
+            }
+        for future in concurrent.futures.as_completed(futures):
+            print(
+                future.result()
+                )
+
+run_queries(200, 10)
+run_queries(200, 20)
+run_queries(200, 30)
+...
+run_queries(200, 80)
+run_queries(200, 90)
+run_queries(200, 100)
+
+
+
+
+
+
+
+
+https://tomcat.apache.org/tomcat-8.5-doc/config/http.html#Standard_Implementation
+
+    acceptCount
+    compressibleMimeType
+    compression
+
+https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/orm/hibernate5/support/OpenSessionInViewInterceptor.html
+https://stackoverflow.com/questions/4753824/which-one-to-use-opensessioninviewinterceptor-or-opensessioninviewfilter
+http://www.bigsoft.co.uk/blog/index.php/2008/11/29/lazyinitializationexception-in-servlet
+
+https://www.codota.com/java/spring/scenarios/549bbb56da0ab68415c3b7e1/org.springframework.web.context.request.async.WebAsyncManager
+https://www.javacodegeeks.com/2013/03/deferredresult-asynchronous-processing-in-spring-mvc.html
+
+Spring 
+https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-async
+https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-async-vs-webflux
+https://docs.spring.io/spring/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html
+
+
