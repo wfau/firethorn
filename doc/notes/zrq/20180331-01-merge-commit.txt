@@ -45,8 +45,10 @@
         oldbranch=2.1.10-zrq-concurrent-bug
         newbranch=2.1.16-zrq-race-bug
 
+        hg addremove .
         hg commit -m "Merging [${oldbranch:?}] into [${newbranch:?}]"
 
+    popd
 
 M doc/logs/zrq/20170609-22025-threads.log
 M doc/logs/zrq/20170614-32058-threads.log
