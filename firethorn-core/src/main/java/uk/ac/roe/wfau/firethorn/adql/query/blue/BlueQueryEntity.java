@@ -2077,25 +2077,32 @@ implements BlueQuery
                         //
                         // Update the results table.
                         final AdqlTable results = entity.results().adql();
-                        results.meta().adql().count(
-                            message.results().count()
-                            );
-                        switch (message.results().state())
+                        // BANG !!
+                        if (results == null)
                             {
-                            case PARTIAL:
-                                results.meta().adql().status(
-                                    AdqlTable.TableStatus.PARTIAL
-                                    );
-                                break;
-                            case COMPLETED:
-                                results.meta().adql().status(
-                                    AdqlTable.TableStatus.COMPLETED
-                                    );
-                                break;
-                            default:
-                                break;
+                            log.error("Callback with null results table");
                             }
-
+                        else {
+                            log.debug("Updating results table");
+                            results.meta().adql().count(
+                                message.results().count()
+                                );
+                            switch (message.results().state())
+                                {
+                                case PARTIAL:
+                                    results.meta().adql().status(
+                                        AdqlTable.TableStatus.PARTIAL
+                                        );
+                                    break;
+                                case COMPLETED:
+                                    results.meta().adql().status(
+                                        AdqlTable.TableStatus.COMPLETED
+                                        );
+                                    break;
+                                default:
+                                    break;
+                                }
+                            }
                         log.debug("Notifying listeners");
                         entity.event();
 
