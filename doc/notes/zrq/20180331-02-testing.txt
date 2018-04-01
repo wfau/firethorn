@@ -593,16 +593,16 @@ while not done:
 from concurrent.futures import ThreadPoolExecutor
 import concurrent.futures
 
-input_query="SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc"
+input_query="SELECT TOP 10000 ra,dec FROM TWOMASS.twomass_psc"
 
-def do_query(workspace, delay, limit):
+def do_query(workspace, limit):
     query = workspace.create_query(
         input_query,
         "COMPLETED",
         None,
         20000,
             {
-            "adql.query.limit.rows"  : limit
+            "adql.query.limit.rowsx" : limit,
             "adql.query.delay.first" : 500
             }
         )
