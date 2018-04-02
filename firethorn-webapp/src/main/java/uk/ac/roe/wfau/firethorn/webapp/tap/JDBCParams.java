@@ -1,18 +1,46 @@
 package uk.ac.roe.wfau.firethorn.webapp.tap;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
+@Slf4j
+@Component
 public class JDBCParams {
 
-	private String username;
+    @Value("${firethorn.tapschema.resource.name}")
+    private String jdbcname;
+
+    @Value("${firethorn.tapschema.database.user}")
+    private String username;
+
+    @Value("${firethorn.tapschema.database.pass}")
 	private String password;
+    
+    @Value("${firethorn.tapschema.database.name}")
 	private String catalog;
+    
+    @Value("${firethorn.tapschema.database.name}")
 	private String database;
+    
+    @Value("${firethorn.tapschema.database.host}")
 	private String host;
+    
+    @Value("${firethorn.tapschema.database.type}")
 	private String type;
-	private String driver;
-	private Integer port;
 	
+    @Value("${firethorn.tapschema.database.driver}")
+	private String driver;
+    
+    @Value("${firethorn.tapschema.database.port}")
+	private Integer port;
+
+	public JDBCParams() {
+		super();
+	}
+
 	public JDBCParams(String username, String password, String catalog, String database, String host, String type, String driver, Integer port) {
 		super();
 		this.username = username;

@@ -143,39 +143,21 @@ public class AdqlTapSchemaController extends AbstractController {
 	@RequestMapping(value = "generateTapSchema", method = {  RequestMethod.POST, RequestMethod.GET })
 	public void generateTapSchema(
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-	        @RequestParam(value=CONN_USER,required=true)
-	        final String user,
-	        @RequestParam(value=CONN_PASS,required=true)
-	        final String pass,
-	        @RequestParam(value=CONN_DRIVER, required=true)
-			final String driver,
-		    @RequestParam(value=CONN_CATALOG, required=true)
-	        final String catalog,
-		    @RequestParam(value=CONN_DATABASE, required=true)
-	        final String database,
-		    @RequestParam(value=CONN_HOST, required=true)
-	        final String host,
-		    @RequestParam(value=CONN_TYPE, required=true)
-	        final String type,
-		    @RequestParam(value=CONN_PORT, required=true)
-	        final Integer port,
 			final HttpServletResponse response,
 			HttpServletRequest request)
 			throws IdentifierNotFoundException, IOException, SQLException,
 			ClassNotFoundException, ProtectionException {
 		
-		String tap_schema_create_script;
+		String tap_schema_create_script = "pgsql_tap_schema.sql";
+
+		JDBCParams params = new JDBCParams(); 
 		
-		if (type.toLowerCase().equals("pgsql")){
+		if (params.getType().toLowerCase().equals("pgsql")){
 			tap_schema_create_script = "pgsql_tap_schema.sql";
-		} else if (type.toLowerCase().equals("mssql")){
+		} else if (params.getType().toLowerCase().equals("mssql")){
 			tap_schema_create_script = "sqlserver_tap_schema.sql";
-		} else {
-			tap_schema_create_script = "pgsql_tap_schema.sql";
 		}
 		
-		
-		JDBCParams params = new JDBCParams(user, pass, catalog, database, host, type, driver, port); 
 		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "/WEB-INF/data/" + tap_schema_create_script);
 		generator.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 		generator.createTapSchema();

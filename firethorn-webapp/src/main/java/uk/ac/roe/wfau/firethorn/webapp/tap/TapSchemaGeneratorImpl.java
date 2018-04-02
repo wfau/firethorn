@@ -195,6 +195,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					this.params.getUsername(), this.params.getPassword());
 			
 			// Create Schema
+			this.updateSQL("DROP SCHEMA IF EXISTS \"" + getTapSchemaJDBCName() + "\"");
 			this.updateSQL("CREATE SCHEMA \"" + getTapSchemaJDBCName() + "\"");
 
 			ScriptRunner runner = new ScriptRunner(con, false, false);
