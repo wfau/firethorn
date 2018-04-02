@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.17
+FROM firethorn/python:2.1.17-stv-tap_schema
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
