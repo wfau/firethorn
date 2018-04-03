@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
@@ -29,42 +30,18 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
  * 
  */
 @Slf4j
+@Component
 public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
-
-	@Value("${firethorn.webapp.baseurl:null}")
-	private String baseurl;
-	
-    @Value("${firethorn.tapschema.resource.name}")
-    private String jdbcname;
-
-    @Value("${firethorn.tapschema.database.user}")
-    private String username;
-
-    @Value("${firethorn.tapschema.database.pass}")
-	private String password;
-    
-    @Value("${firethorn.tapschema.database.name}")
-	private String catalog;
-    
-    @Value("${firethorn.tapschema.database.name}")
-	private String database;
-    
-    @Value("${firethorn.tapschema.database.host}")
-	private String host;
-    
-    @Value("${firethorn.tapschema.database.type:pgsql}")
-	private String type;
-	
-    @Value("${firethorn.tapschema.database.driver}")
-	private String driver;
-    
-    @Value("${firethorn.tapschema.database.port}")
-	private String port;
 
 	/**
 	 * Adql resource for which to create the TAP_SCHEMA
 	 */
 	private AdqlResource resource;
+	
+	/**
+	 * Tap Schema Properties
+	 */
+	protected TapSchemaProperties properties;
 	
 	/**
 	 * Servlet Context
@@ -93,90 +70,6 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
   
     private ComponentFactories factories;
 
-    public JdbcProductType getTypeAsJdbcProductType() {
-		if (type.toLowerCase().equals("pgsql")){
-            return JdbcProductType.pgsql;
-		} else if (type.toLowerCase().equals("mssql")){
-			return JdbcProductType.mssql;
-		} else {
-			return JdbcProductType.pgsql;
-		}
-	}
-	public String getUsername() {
-		return username;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	public String getDatabase() {
-		return database;
-	}
-
-	public void setDatabase(String database) {
-		this.database = database;
-	}
-
-	
-	public String getCatalog() {
-		return catalog;
-	}
-
-	public void setCatalog(String catalogue) {
-		this.catalog = catalogue;
-	}
-
-	
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public String getType() {
-		return type;
-	}
-	
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-
-	public String getDriver() {
-		return driver;
-	}
-
-	public void setDriver(String driver) {
-		this.driver = driver;
-	}
-	
-	public String getPort() {
-		return port;
-	}
-
-	public void setPort(String port) {
-		this.port = port;
-	}		
-	public String getConnectionURL() {
-		if (type.toLowerCase().equals("pgsql")){
-            return "jdbc:postgresql://" + this.getHost() + "/" + this.getDatabase();
-		} else if (type.toLowerCase().equals("mssql")){
-			return  "jdbc:jtds:sqlserver://" + this.getHost() + "/" + this.getDatabase();
-		} else {
-			return "jdbc:postgresql://" + this.getHost() + "/" + this.getDatabase();
-		}
-	}
 
     /**
      * Our system services.
@@ -197,7 +90,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	/**
 	 * Constructor
 	 */
-	public TapSchemaGeneratorImpl(ServletContext servletContext,ComponentFactories factories, AdqlResource resource) {
+	public TapSchemaGeneratorImpl(ServletContext servletContext,ComponentFactories factories, AdqlResource resource, TapSchemaProperties properties) {
 		super();
 		this.servletContext = servletContext;
 		this.resource = resource;
@@ -205,33 +98,20 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		this.factories = factories;
 		this.tapSchemaJDBCName = "TAP_SCHEMA_" + this.resource.ident().toString();
 		this.tapSchemaResourceJDBCName = "TAP_RESOURCE_" + this.resource.ident().toString();
-		
-		if (this.getType().toLowerCase().equals("pgsql")){
+		this.properties = properties;
+
+		if (this.properties.getType().toLowerCase().equals("pgsql")){
 			this.tapSchemaScript = "/WEB-INF/data/" + "pgsql_tap_schema.sql";
-		} else if (this.getType().toLowerCase().equals("mssql")){
+		} else if (this.properties.getType().toLowerCase().equals("mssql")){
 			this.tapSchemaScript = "/WEB-INF/data/" + "sqlserver_tap_schema.sql";
 		}
-
-	}
-
-	/**
-	 * Get baseurl
-	 * 
-	 * @return baseurl
-	 */
-	public String getBaseurl() {
-		return baseurl;
-	}
-
-	/**
-	 * Set baseurl
-	 * 
-	 * @return
-	 */
-	public void setBaseurl(String baseurl) {
-		this.baseurl = baseurl;
+		
 	}
 	
+	public TapSchemaProperties getProperties() {
+		return properties;
+	}
+
 	public String getTapSchemaScript() {
 		return tapSchemaScript;
 	}
@@ -267,9 +147,9 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		
 		try {
 			stmt = null;
-			Class.forName(this.driver);
-			con = DriverManager.getConnection(this.getConnectionURL(),
-					this.getUsername(), this.getPassword());
+			Class.forName(this.properties.getDriver());
+			con = DriverManager.getConnection(this.properties.getConnectionURL(),
+					this.properties.getUsername(), this.properties.getPassword());
 
 			log.debug("Inserting resource records into the table...");
 			stmt = con.createStatement();			
@@ -300,10 +180,10 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		java.sql.Statement stmt = null;
 		
 		try {
-			Class.forName(this.getDriver());
+			Class.forName(this.properties.getDriver());
 
-			con = DriverManager.getConnection(this.getConnectionURL(),
-					this.getUsername(), this.getPassword());
+			con = DriverManager.getConnection(this.properties.getConnectionURL(),
+					this.properties.getUsername(), this.properties.getPassword());
 			
 			// Create Schema
 			this.updateSQL("DROP SCHEMA IF EXISTS \"" + getTapSchemaJDBCName() + "\"");
@@ -343,9 +223,9 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		
 		try {
 			stmt = null;
-			Class.forName(this.getDriver());
-			con = DriverManager.getConnection(this.getConnectionURL(),
-					this.getUsername(), this.getPassword());
+			Class.forName(this.properties.getDriver());
+			con = DriverManager.getConnection(this.properties.getConnectionURL(),
+					this.properties.getUsername(), this.properties.getPassword());
 
 			System.out.println("Inserting resource records into the table...");
 			stmt = con.createStatement();
@@ -511,9 +391,9 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		
 		try {
 			stmt = null;
-			Class.forName(this.getDriver());
-			con = DriverManager.getConnection(this.getConnectionURL(),
-					this.getUsername(), this.getPassword());
+			Class.forName(this.properties.getDriver());
+			con = DriverManager.getConnection(this.properties.getConnectionURL(),
+					this.properties.getUsername(), this.properties.getPassword());
 
 			System.out.println("Inserting resource records into the table...");
 			stmt = con.createStatement();
@@ -682,18 +562,19 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 		
 		JdbcResource tap_schema_resource = this.factories.jdbc().resources().entities().create(
             this.tapSchemaResourceJDBCName,
-            this.getTypeAsJdbcProductType(),
-            this.getDatabase(),
-            this.getCatalog(),
-            this.getHost(),
-            Integer.parseInt(this.getPort()),
-            this.getUsername(),
-            this.getPassword()
+            this.properties.getTypeAsJdbcProductType(),
+            this.properties.getDatabase(),
+            this.properties.getCatalog(),
+            this.properties.getHost(),
+            Integer.parseInt(this.properties.getPort()),
+            this.properties.getUsername(),
+            this.properties.getPassword()
 	        );
 
 		JdbcSchema tap_schema;
+		
 		try {
-			tap_schema = tap_schema_resource.schemas().select(this.getCatalog()  + "." + this.tapSchemaJDBCName);
+			tap_schema = tap_schema_resource.schemas().select(this.properties.getCatalog()  + "." + this.tapSchemaJDBCName);
 			resource.schemas().create("TAP_SCHEMA", tap_schema);
 		} catch (NameNotFoundException e) {
 			System.out.println(e);

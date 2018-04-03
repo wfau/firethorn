@@ -40,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import org.springframework.beans.factory.annotation.Value;
 
 @Slf4j
 @Controller
@@ -107,7 +108,35 @@ public class AdqlTapSchemaController extends AbstractController {
     public static final String CONN_PORT = "port" ;
     
 
+	@Value("${firethorn.webapp.baseurl:null}")
+	private String baseurl;
 
+	@Value("${firethorn.tapschema.resource.name}")
+	private String jdbcname;
+
+	@Value("${firethorn.tapschema.database.user}")
+	private String username;
+
+	@Value("${firethorn.tapschema.database.pass}")
+	private String password;
+
+	@Value("${firethorn.tapschema.database.name}")
+	private String catalog;
+
+	@Value("${firethorn.tapschema.database.name}")
+	private String database;
+
+	@Value("${firethorn.tapschema.database.host}")
+	private String host;
+
+	@Value("${firethorn.tapschema.database.type:pgsql}")
+	private String type;
+
+	@Value("${firethorn.tapschema.database.driver}")
+	private String driver;
+
+	@Value("${firethorn.tapschema.database.port}")
+	private String port;
 
 	@Override
 	public Path path() {
@@ -148,9 +177,9 @@ public class AdqlTapSchemaController extends AbstractController {
 			throws IdentifierNotFoundException, IOException, SQLException,
 			ClassNotFoundException, ProtectionException {
 
-		
-		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(servletContext, factories(), resource);
-		generator.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
+		TapSchemaProperties properties = new TapSchemaProperties(username, password, catalog, database, host, type, driver, port, jdbcname);
+		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(servletContext, factories(), resource, properties);
+		generator.getProperties().setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 		generator.createTapSchema();
 		
 	}
