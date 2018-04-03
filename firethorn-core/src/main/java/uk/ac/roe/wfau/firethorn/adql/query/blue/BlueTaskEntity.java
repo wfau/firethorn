@@ -389,12 +389,19 @@ implements BlueTask<TaskType>
     // TODO Move this to base class
     protected void refresh()
     	{
-        log.debug("Refreshing entity [{}]", ident());
+        log.debug("Refreshing Hibernate entity [{}]", ident());
         factories().hibernate().refresh(
     		this
     		);    	
     	}
 
+    // TODO Move this to base class
+    protected void flush()
+        {
+        log.debug("Flushing Hibernate Session [{}]", ident());
+        factories().hibernate().flush();
+        }
+    
     protected abstract BlueTask.TaskRunner<TaskType> runner();
     protected abstract BlueTask.EntityFactory<TaskType>  factory();
     protected abstract BlueTask.EntityServices<TaskType> services();
