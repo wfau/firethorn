@@ -147,18 +147,9 @@ public class AdqlTapSchemaController extends AbstractController {
 			HttpServletRequest request)
 			throws IdentifierNotFoundException, IOException, SQLException,
 			ClassNotFoundException, ProtectionException {
-		
-		String tap_schema_create_script = "pgsql_tap_schema.sql";
 
-		JDBCParams params = new JDBCParams(); 
 		
-		if (params.getType().toLowerCase().equals("pgsql")){
-			tap_schema_create_script = "pgsql_tap_schema.sql";
-		} else if (params.getType().toLowerCase().equals("mssql")){
-			tap_schema_create_script = "sqlserver_tap_schema.sql";
-		}
-		
-		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "/WEB-INF/data/" + tap_schema_create_script);
+		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(servletContext, factories(), resource);
 		generator.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 		generator.createTapSchema();
 		

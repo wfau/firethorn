@@ -24,6 +24,20 @@ services:
             POSTGRES_USER: "${metauser}"
             POSTGRES_PASSWORD: "${metapass}"
 
+    carolina:
+	image:
+           "firethorn/postgres:${buildtag:-latest}"
+        read_only:
+            true
+        tmpfs:
+            - '/run'
+            - '/tmp'
+        networks:
+            - miriam
+        environment:
+            POSTGRES_USER: "${tapschemauser}"
+            POSTGRES_PASSWORD: "${tapschemapass}"
+
     patricia:
         image:
            "firethorn/sql-proxy:${buildtag:-latest}"
@@ -118,10 +132,19 @@ services:
             firethorn.guest.community: "${guestgroup}"
             firethorn.admin.user.name: "${adminuser}"
             firethorn.admin.user.pass: "${adminpass}"
+            firethorn.tapschema.resource.name: "${tapschemajdbcname}"
+            firethorn.tapschema.database.name: "${tapschemadatabase}"
+            firethorn.tapschema.database.host: "${tapschemahost}"
+            firethorn.tapschema.database.post: "${tapschemaport}"
+            firethorn.tapschema.database.user: "${tapschemauser}"
+            firethorn.tapschema.database.pass: "${tapschemapass}"
+            firethorn.tapschema.database.type: "${tapschematype}"
 
 
         depends_on:
             bethany:
+                condition: service_started
+            carolina:
                 condition: service_started            
             elayne:
                 condition: service_started            
@@ -156,5 +179,6 @@ services:
                 condition: service_healthy            
         command:
             [bash]
+
 
 

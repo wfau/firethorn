@@ -28,20 +28,20 @@ public class JDBCParams {
     @Value("${firethorn.tapschema.database.host}")
 	private String host;
     
-    @Value("${firethorn.tapschema.database.type}")
+    @Value("${firethorn.tapschema.database.type:pgsql}")
 	private String type;
 	
     @Value("${firethorn.tapschema.database.driver}")
 	private String driver;
     
     @Value("${firethorn.tapschema.database.port}")
-	private Integer port;
+	private String port;
 
 	public JDBCParams() {
 		super();
 	}
 
-	public JDBCParams(String username, String password, String catalog, String database, String host, String type, String driver, Integer port) {
+	public JDBCParams(String username, String password, String catalog, String database, String host, String type, String driver, String port) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -132,11 +132,11 @@ public class JDBCParams {
 		this.driver = driver;
 	}
 	
-	public Integer getPort() {
+	public String getPort() {
 		return port;
 	}
 
-	public void setPort(Integer port) {
+	public void setPort(String port) {
 		this.port = port;
 	}	
 }
