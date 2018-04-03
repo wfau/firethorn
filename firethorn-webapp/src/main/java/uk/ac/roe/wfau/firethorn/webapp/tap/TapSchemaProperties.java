@@ -91,7 +91,7 @@ public class TapSchemaProperties {
 		if (type == null) {
 			return "pgsql";
 		} else {
-			return null;
+			return type;
 		}
 	}
 
