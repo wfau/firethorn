@@ -511,7 +511,6 @@ pytable = wrap_as_pytable(
 pytable.pprint()
 
 
-
 #
 # Run the same query with a short time limit.
 params = {
@@ -537,6 +536,7 @@ pytable = wrap_as_pytable(
     query.table()
     )
 pytable.pprint()
+
 
 #
 # Run the same query with a short wait.
@@ -583,7 +583,6 @@ while not done:
         time.sleep(0.5)
 
 
-
 #
 # Run several queries at the same time.
 # https://docs.python.org/3/library/concurrent.futures.html
@@ -602,10 +601,12 @@ def do_query(workspace, limit):
         None,
         20000,
             {
-            "adql.query.limit.rowsx" : limit,
+            "adql.query.limit.rows" : limit,
             "adql.query.delay.first" : 500
             }
         )
+    #print(query)
+    #print(query.table())
     return query.table().count()
 
 def run_queries(threads, tasks):
