@@ -123,7 +123,7 @@ implements Operation
             }
 
         /*
-         * ThreadLocal store for the current {@link Operation}.
+         * A {@link ThreadLocal} store for the current {@link Operation}.
          *
          */
         private final ThreadLocal<Operation> local = new ThreadLocal<Operation>();
@@ -134,13 +134,13 @@ implements Operation
             return local.get();
             }
 
-        private Operation current(final Operation oper)
+        @Override
+        public Operation current(final Operation oper)
             {
-// Error if one replaces another ?            
             local.set(
                 oper
                 );
-            return oper;
+            return local.get();
             }
         }
 

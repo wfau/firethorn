@@ -334,7 +334,7 @@ implements BlueQuery
             
             log.debug("Calling BlueQuery.Creator");
             final BlueQuery outerq = services().runner().thread(
-                new BlueQuery.TaskRunner.Creator()
+                new Creator()
                     {
                     @Override
                     public BlueQuery create()
@@ -376,8 +376,8 @@ implements BlueQuery
             
             log.debug("Calling BlueQuery.Updator");
             final TaskState after = services().runner().thread(
-                new BlueQuery.TaskRunner.Updator()
-	            {
+                new Updator(outerq)
+                    {
                     final BlueQuery innerq = outerq.rebase();
                     
                     @Override
@@ -441,9 +441,10 @@ implements BlueQuery
 	            log.debug("After BlueQuery wait");
 	            log.debug("  state [{}]", result.state());
                 //result = result.rebase();
-                //result.refresh();
-	            //log.debug("After BlueQuery refresh");
-	            //log.debug("  state [{}]", result.state());
+                //result = result.refresh();
+                result.refresh();
+	            log.debug("After BlueQuery refresh");
+	            log.debug("  state [{}]", result.state());
 	            }
             log.debug("-- Eethia9o Moophie1 [{}]", outerq.ident());
             log.debug("Returning BlueQuery");

@@ -58,6 +58,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
 
 /**
@@ -114,22 +115,6 @@ implements BlueTask<TaskType>
     protected static final String DB_COMPLETED_COL = "completed";
 
     /**
-     * {@link BlueTask.Services} implementation.
-     * 
-    @Service
-    public static abstract class Services<TaskType extends BlueTask<?>>
-        implements BlueTask.Services<TaskType>
-        {
-        }
-     */
-
-    /**
-     * Our {@link BlueTask.Services} instance.
-     *
-    protected abstract BlueTaskEntity.Services<TaskType> services();
-     */
-
-    /**
      * {@link BlueTask.EntityFactory} implementation.
      * 
      */
@@ -163,14 +148,6 @@ implements BlueTask<TaskType>
         }
 
     /**
-     * Our {@link BlueTask.EntityFactory} instance.
-     * 
-     *
-    @Override
-    protected abstract BlueTask.EntityFactory<TaskType> factory();
-     */
-
-    /**
      * Base class for {@link BlueTaskEntity} task runners.
      * 
      */
@@ -179,6 +156,13 @@ implements BlueTask<TaskType>
     public static class TaskRunner<TaskType extends BlueTask<?>>
     implements BlueTask.TaskRunner<TaskType>
         {
+        
+        @Autowired
+        private Operation.EntityFactory operations ;        
+        protected Operation.EntityFactory operations()
+            {
+            return this.operations;
+            }
         
         @Autowired
         private BlueTask.EntityServices<TaskType> services ;
@@ -196,16 +180,20 @@ implements BlueTask<TaskType>
             log.debug("  ident [{}]", updator.ident());
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
 
-            log.debug("Before execute()");
+            log.debug("Before future()");
+            log.debug("Setting current operation [{}]", operations().current().ident());
+            updator.operation(
+                operations().current()
+                );            
             final Future<TaskState> future = services.runner().future(
                 updator
                 );
-            log.debug("After execute()");
+            log.debug("After future()");
             
             try {
-                log.debug("Before future()");
+                log.debug("Before future.get()");
                 final TaskState result = future.get();
-                log.debug("After future()");
+                log.debug("After future.get()");
                 log.debug("  result [{}]", result);
                 return result ;
                 }
@@ -234,9 +222,24 @@ implements BlueTask<TaskType>
             log.debug("future(Updator)");
             log.debug("  ident [{}]", updator.ident());
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
-            return new AsyncResult<TaskState>(
-                updator.update()
-                );
+
+            log.debug("Getting current operation [{}]", operations().current().ident());
+            log.debug("Setting current operation [{}]", updator.operation());
+            operations().current(
+                updator.operation()
+                );            
+
+            try {
+                return AsyncResult.forValue(
+                    updator.update()
+                    );
+                }
+            catch(final Throwable ouch)
+                {
+                return AsyncResult.forExecutionException(
+                    ouch
+                    );
+                }
             }
 
         @Override
@@ -248,6 +251,10 @@ implements BlueTask<TaskType>
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             
             log.debug("Before future()");
+            log.debug("Setting current operation [{}]", operations().current().ident());
+            creator.operation(
+                operations().current()
+                );            
             final Future<TaskType> future = services.runner().future(
                 creator
                 );
@@ -305,7 +312,15 @@ implements BlueTask<TaskType>
             {
             log.debug("future(Creator)");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
+
+            log.debug("Getting current operation [{}]", operations().current().ident());
+            log.debug("Setting current operation [{}]", creator.operation());
+            operations().current(
+                creator.operation()
+                );            
             // TODO Much better error handling
+/*
+ * 
             try {
 				return new AsyncResult<TaskType>(
 				    creator.create()
@@ -323,9 +338,8 @@ implements BlueTask<TaskType>
                 // TODO Needs Spring 4.2
             	return null ;
             	}
-            /*
-             * 
-            // Needs Spring 4.2
+ * 
+ */
             try {
             	return AsyncResult.forValue(
                     creator.create()
@@ -334,58 +348,97 @@ implements BlueTask<TaskType>
             catch(final Throwable ouch)
             	{
             	return AsyncResult.forExecutionException(
-                        ouch
-            			);
+                    ouch
+        			);
             	}
- * 
- */
             }
         }
 
     /**
-     * Our {@link BlueTaskEntity.TaskRunner} instance.
+     * Operator base class.
      * 
-    protected abstract BlueTask.TaskRunner<TaskType> runner();
      */
+    public static abstract class Operator
+    implements BlueTask.TaskRunner.Operator
+        {
+        /**
+         * Protected constructor.
+         *
+         */
+        protected Operator()
+            {
+            log.debug("Operator constructor");
+            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
+            }
+
+        /**
+         * The {@link Operation} for this {@link Thread}.
+         * 
+         */
+        protected Operation oper ;
+
+        @Override
+        public Operation operation()
+            {
+            return this.oper;
+            }
+
+        @Override
+        public void operation(Operation oper)
+            {
+            this.oper = oper;
+            }
+        }
 
     /**
-     * {@link Updator} base class.
+     * {@link Creator} base class.
      * 
      */
-    public abstract static class Creator<TaskType extends BlueTask<?>>
-    implements TaskRunner.Creator<TaskType>
+    public static abstract class Creator<Creatable extends BlueTask<?>>
+    extends Operator
+    implements BlueTask.TaskRunner.Creator<Creatable>
         {
+        /**
+         * Protected constructor.
+         *
+         */
+        protected Creator()
+            {
+            super();
+            }
         }
     
     /**
      * {@link Updator} base class.
      * 
      */
-    public abstract static class Updator<TaskType extends BlueTask<?>>
-    implements TaskRunner.Updator<TaskType>
+    public static abstract class Updator<Updatable extends BlueTask<?>>
+    extends Operator
+    implements BlueTask.TaskRunner.Updator<Updatable>
         {
-        /**
-         * Our initial {@link BlueTask} entity.
-         * 
-         */
-        private TaskType initial;
-        
         /**
          * Protected constructor.
          *
          */
-        protected Updator(final TaskType initial)
+        protected Updator(final Updatable initial)
             {
-        	this.initial = initial;
+            super();
+        	this.initial = initial ;
             }
 
+        /**
+         * Our initial {@link BlueTask} entity.
+         * 
+         */
+        private Updatable initial;
+        
         @Override
         public Identifier ident()
             {
             return initial.ident();
             }
         }
-
+    
     // TODO Move this to base class
     protected void refresh()
     	{
@@ -402,7 +455,7 @@ implements BlueTask<TaskType>
         factories().hibernate().flush();
         }
     
-    protected abstract BlueTask.TaskRunner<TaskType> runner();
+    protected abstract BlueTask.TaskRunner<TaskType>     runner();
     protected abstract BlueTask.EntityFactory<TaskType>  factory();
     protected abstract BlueTask.EntityServices<TaskType> services();
 
@@ -1388,7 +1441,7 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
         services().runner().thread(
-            new Updator<BlueTask<?>>(this)
+            new Updator<BlueTaskEntity<TaskType>>(this)
                 {
                 @Override
                 public TaskState update()
@@ -1441,7 +1494,7 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
         services().runner().thread(
-            new Updator<BlueTask<?>>(this)
+            new Updator<BlueTaskEntity<TaskType>>(this)
                 {
                 @Override
                 public TaskState update()
@@ -1511,7 +1564,7 @@ implements BlueTask<TaskType>
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", state().name(), next.name());
         services().runner().thread(
-            new Updator<BlueTask<?>>(this)
+            new Updator<BlueTaskEntity<TaskType>>(this)
                 {
                 @Override
                 public TaskState update()

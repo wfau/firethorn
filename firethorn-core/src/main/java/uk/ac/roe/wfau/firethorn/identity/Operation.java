@@ -60,6 +60,12 @@ extends Entity
         public Operation current();
 
         /**
+         * Set the current active operation.
+         *
+         */
+        public Operation current(final Operation oper);
+        
+        /**
          * Create a new Operation.
          *
          */

@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
@@ -73,10 +74,30 @@ extends NamedEntity
     public static interface TaskRunner<TaskType extends BlueTask<?>>
         {
         /**
+         * Public interface for a {@link BlueTask} operator.
+         *
+         */
+        public interface Operator
+            {
+            /**
+             * Get the {@link Operation} for this {@link Thread}.
+             * 
+             */
+            public Operation operation();
+
+            /**
+             * Set the {@link Operation} for this {@link Thread}.
+             * 
+             */
+            public void operation(final Operation oper);
+            }
+
+        /**
          * Public interface for a {@link BlueTask} updator.
          *
          */
         public interface Updator<TaskType extends BlueTask<?>>
+        extends Operator
             {
             /**
              * The {@link BlueTask} {@link Identifier}.
@@ -114,6 +135,7 @@ extends NamedEntity
          *
          */
         public interface Creator<TaskType extends BlueTask<?>>
+        extends Operator
             {
             /**
              * Execute the step.
