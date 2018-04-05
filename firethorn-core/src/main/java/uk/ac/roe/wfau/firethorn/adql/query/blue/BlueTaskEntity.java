@@ -59,7 +59,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
-import uk.ac.roe.wfau.firethorn.util.EmptyIterable;
 
 /**
  * {@link BlueTask} implementation. 
@@ -181,7 +180,7 @@ implements BlueTask<TaskType>
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
 
             log.debug("Before future()");
-            log.debug("Setting current operation [{}]", operations().current().ident());
+            log.debug("Setting current operation [{}]", ident(operations().current()));
             updator.operation(
                 operations().current()
                 );            
@@ -223,8 +222,8 @@ implements BlueTask<TaskType>
             log.debug("  ident [{}]", updator.ident());
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
 
-            log.debug("Getting current operation [{}]", operations().current().ident());
-            log.debug("Setting current operation [{}]", updator.operation());
+            log.debug("Getting current operation [{}]", ident(operations().current()));
+            log.debug("Setting current operation [{}]", ident(updator.operation()));
             operations().current(
                 updator.operation()
                 );            
@@ -251,7 +250,7 @@ implements BlueTask<TaskType>
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             
             log.debug("Before future()");
-            log.debug("Setting current operation [{}]", operations().current().ident());
+            log.debug("Setting current operation [{}]", ident(operations().current()));
             creator.operation(
                 operations().current()
                 );            
@@ -313,8 +312,8 @@ implements BlueTask<TaskType>
             log.debug("future(Creator)");
             log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
 
-            log.debug("Getting current operation [{}]", operations().current().ident());
-            log.debug("Setting current operation [{}]", creator.operation());
+            log.debug("Getting current operation [{}]", ident(operations().current()));
+            log.debug("Setting current operation [{}]", ident(creator.operation()));
             operations().current(
                 creator.operation()
                 );            

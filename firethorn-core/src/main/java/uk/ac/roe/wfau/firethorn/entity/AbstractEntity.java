@@ -568,4 +568,20 @@ implements Entity
         {
         return this.protector;
         }
+
+    /**
+     * Null-safe method for debug statements.  
+     * Get the identity of an {@link Entity}, or null if the {@link Entity} is null.
+     * 
+     */
+    public static Identifier ident(final Entity entity)
+        {
+        if (null != entity)
+            {
+            return entity.ident();
+            }
+        else {
+            return null ;
+            }
+        }
     }
