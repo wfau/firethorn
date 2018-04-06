@@ -241,6 +241,7 @@ for schema in atlas_adql.select_schemas():
 #
 # Create and run a query on our workspace.
 atlas_adql="SELECT TOP 1000 ra,dec FROM ATLASDR1.atlasSource"
+
 query = workspace.create_query(
     atlas_adql,
     "COMPLETED",

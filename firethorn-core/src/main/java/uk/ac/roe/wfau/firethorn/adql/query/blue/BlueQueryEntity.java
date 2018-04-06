@@ -1045,7 +1045,7 @@ implements BlueQuery
         }
 
     @Transient
-    private final List<SelectField> fields = new ArrayList<SelectField>();
+    private List<SelectField> fields = new ArrayList<SelectField>();
     
     @Override
     public Fields fields()
@@ -1777,6 +1777,7 @@ implements BlueQuery
         
         //
         // Build our target resources.
+        // Passing in the current list of fields to build the table.
         services().runner().thread(
             new Updator(this)
                 {
@@ -1786,6 +1787,7 @@ implements BlueQuery
                     {
                     try {
                         BlueQueryEntity entity = (BlueQueryEntity) rebase();
+                        entity.fields = BlueQueryEntity.this.fields;
                         entity.build();
                         return entity.state();
                         }
