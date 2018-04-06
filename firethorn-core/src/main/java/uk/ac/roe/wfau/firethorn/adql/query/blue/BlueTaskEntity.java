@@ -1425,6 +1425,8 @@ implements BlueTask<TaskType>
 				}
 			}
     	}
+
+    static final boolean ASYNC_TASK_THREADS = true ; 
     
     /**
      * Prepare our task.
@@ -1439,42 +1441,62 @@ implements BlueTask<TaskType>
         log.debug("Starting ready()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
-        services().runner().thread(
-            new Updator<BlueTaskEntity<TaskType>>(this)
-                {
-                @Override
-                public TaskState update()
-                throws ProtectionException
-                    {
-                    log.debug("-- Fi1Fahpo yui5EiNa [{}]", ident());
-                    log.debug("ready.Updator.update()");
-                	try {
-	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
-	                    log.debug("Before prepare()");
-	                    log.debug("  state [{}]", task.state().name());
-	                    task.prepare();
-	                    log.debug("After prepare()");
-	                    log.debug("  state [{}]", task.state().name());
-	                    return task.state();
-                    	}
-                	catch (final InvalidStateTransitionException ouch)
-    	    	    	{
-	    	            log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
-                		return TaskState.ERROR;
-	    	    	    }
-                    catch (HibernateConvertException ouch)
-	    	    	    {
-	    	            log.error("HibernateConvertException [{}]", BlueTaskEntity.this.ident());
-                		return TaskState.ERROR;
-	    	    	    }
-                    }
-                }
-            );
-        log.debug("Finished thread()");
-        log.debug("  state [{}]", state().name());
 
-        log.debug("Refreshing state");
-        this.refresh();
+        if (ASYNC_TASK_THREADS)
+            {
+            services().runner().thread(
+                new Updator<BlueTaskEntity<TaskType>>(this)
+                    {
+                    @Override
+                    public TaskState update()
+                    throws ProtectionException
+                        {
+                        log.debug("-- Fi1Fahpo yui5EiNa [{}]", ident());
+                        log.debug("ready.Updator.update()");
+                    	try {
+    	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
+    	                    log.debug("Before prepare()");
+    	                    log.debug("  state [{}]", task.state().name());
+    	                    task.prepare();
+    	                    log.debug("After prepare()");
+    	                    log.debug("  state [{}]", task.state().name());
+    	                    return task.state();
+                        	}
+                    	catch (final InvalidStateTransitionException ouch)
+        	    	    	{
+    	    	            log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
+                    		return TaskState.ERROR;
+    	    	    	    }
+                        catch (HibernateConvertException ouch)
+    	    	    	    {
+    	    	            log.error("HibernateConvertException [{}]", BlueTaskEntity.this.ident());
+                    		return TaskState.ERROR;
+    	    	    	    }
+                        }
+                    }
+                );
+            log.debug("Finished thread()");
+            log.debug("  state [{}]", state().name());
+    
+            log.debug("Refreshing state");
+            this.refresh();
+            }
+        else {
+            try {
+                log.debug("Before prepare()");
+                log.debug("  state [{}]", this.state().name());
+                this.prepare();
+                log.debug("After prepare()");
+                log.debug("  state [{}]", this.state().name());
+                }
+            catch (final InvalidStateTransitionException ouch)
+                {
+                log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
+                this.state(
+                    TaskState.ERROR
+                    );
+                }
+            }
 
         log.debug("Finished ready()");
         log.debug("  state [{}]", state().name());
@@ -1492,61 +1514,98 @@ implements BlueTask<TaskType>
         log.debug("Starting running()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}]", state().name());
-        services().runner().thread(
-            new Updator<BlueTaskEntity<TaskType>>(this)
-                {
-                @Override
-                public TaskState update()
-                throws ProtectionException
+
+        if (ASYNC_TASK_THREADS)
+            {
+            services().runner().thread(
+                new Updator<BlueTaskEntity<TaskType>>(this)
                     {
-                    log.debug("-- yae9iTao adoh9ooW [{}]", ident());
-                    log.debug("running.Updator.update()");
-                	try {
-	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
-	                    log.debug("Before prepare()");
-	                    log.debug("  state [{}]", task.state().name());
-	                    task.prepare();
-	                    log.debug("After prepare()");
-	                    log.debug("  state [{}]", task.state().name());
-	                    //
-	                    // If the task is ready.
-	                    if (task.state() == TaskState.READY)
-	                        {
-	                        log.debug("Before execute()");
-	                        log.debug("  state [{}]", task.state().name());
-	                        task.execute();
-	                        log.debug("After execute()");
-	                        log.debug("  state [{}]", task.state().name());
-	                        }
-	                    //
-	                    // If the task is not ready.
-	                    else {
-	                    	log.debug("Task is not READY, execute FAILED");
-	                        task.transition(
-                                TaskState.FAILED
-                                );
-	                    	}
-	                    return task.state();
-	                    }
-                	catch (final InvalidStateTransitionException ouch)
-    	    	    	{
-	    	            log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
-                		return TaskState.ERROR;
-	    	    	    }
-                    catch (final HibernateConvertException ouch)
-	    	    	    {
-	    	            log.error("HibernateConvertException [{}]", BlueTaskEntity.this.ident());
-                		return TaskState.ERROR;
-	    	    	    }
+                    @Override
+                    public TaskState update()
+                    throws ProtectionException
+                        {
+                        log.debug("-- yae9iTao adoh9ooW [{}]", ident());
+                        log.debug("running.Updator.update()");
+                    	try {
+    	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
+    	                    log.debug("Before prepare()");
+    	                    log.debug("  state [{}]", task.state().name());
+    	                    task.prepare();
+    	                    log.debug("After prepare()");
+    	                    log.debug("  state [{}]", task.state().name());
+    	                    //
+    	                    // If the task is ready.
+    	                    if (task.state() == TaskState.READY)
+    	                        {
+    	                        log.debug("Before execute()");
+    	                        log.debug("  state [{}]", task.state().name());
+    	                        task.execute();
+    	                        log.debug("After execute()");
+    	                        log.debug("  state [{}]", task.state().name());
+    	                        }
+    	                    //
+    	                    // If the task is not ready.
+    	                    else {
+    	                    	log.debug("Task is not READY, execute FAILED");
+    	                        task.transition(
+                                    TaskState.FAILED
+                                    );
+    	                    	}
+    	                    return task.state();
+    	                    }
+                    	catch (final InvalidStateTransitionException ouch)
+        	    	    	{
+    	    	            log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
+                    		return TaskState.ERROR;
+    	    	    	    }
+                        catch (final HibernateConvertException ouch)
+    	    	    	    {
+    	    	            log.error("HibernateConvertException [{}]", BlueTaskEntity.this.ident());
+                    		return TaskState.ERROR;
+    	    	    	    }
+                        }
+                    }
+                );
+            log.debug("Finished thread()");
+            log.debug("  state [{}]", state().name());
+            log.debug("Refreshing state");
+            this.refresh();
+            log.debug("  state [{}]", state().name());
+            }
+        else {
+            try {
+                log.debug("Before prepare()");
+                log.debug("  state [{}]", this.state().name());
+                this.prepare();
+                log.debug("After prepare()");
+                log.debug("  state [{}]", this.state().name());
+                //
+                // If the task is ready.
+                if (this.state() == TaskState.READY)
+                    {
+                    log.debug("Before execute()");
+                    log.debug("  state [{}]", this.state().name());
+                    this.execute();
+                    log.debug("After execute()");
+                    log.debug("  state [{}]", this.state().name());
+                    }
+                //
+                // If the task is not ready.
+                else {
+                    log.debug("Task is not READY, execute FAILED");
+                    this.transition(
+                        TaskState.FAILED
+                        );
                     }
                 }
-            );
-        log.debug("Finished thread()");
-        log.debug("  state [{}]", state().name());
-
-        log.debug("Refreshing state");
-        this.refresh();
-        
+            catch (final InvalidStateTransitionException ouch)
+                {
+                log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
+                this.state(
+                    TaskState.ERROR
+                    );
+                }
+            }
         log.debug("Finished running()");
         log.debug("  state [{}]", state().name());
         }
@@ -1562,46 +1621,66 @@ implements BlueTask<TaskType>
         log.debug("Starting finish()");
         log.debug("  ident [{}]", ident());
         log.debug("  state [{}][{}]", state().name(), next.name());
-        services().runner().thread(
-            new Updator<BlueTaskEntity<TaskType>>(this)
-                {
-                @Override
-                public TaskState update()
-                throws ProtectionException
+        if (ASYNC_TASK_THREADS)
+            {
+            services().runner().thread(
+                new Updator<BlueTaskEntity<TaskType>>(this)
                     {
-                    log.debug("-- chieKee1 apePaiy1 [{}]", ident());
-                    log.debug("finish.Updator.update()");
-                	try {
-	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
-	                    log.debug("Before change()");
-	                    log.debug("  state [{}]", task.state().name());
-	                    task.transition(
-	                        next
-	                        );
-	                    log.debug("After change()");
-	                    log.debug("  state [{}]", task.state().name());
-	                    return task.state();
-	                    }
-                	catch (final InvalidStateTransitionException ouch)
-    	    	    	{
-	    	            log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
-                		return TaskState.ERROR;
-	    	    	    }
-                    catch (HibernateConvertException ouch)
-	    	    	    {
-	    	            log.error("HibernateConvertException [{}]", BlueTaskEntity.this.ident());
-                		return TaskState.ERROR;
-	    	    	    }
+                    @Override
+                    public TaskState update()
+                    throws ProtectionException
+                        {
+                        log.debug("-- chieKee1 apePaiy1 [{}]", ident());
+                        log.debug("finish.Updator.update()");
+                    	try {
+    	                    BlueTaskEntity<?> task = (BlueTaskEntity<?>) rebase();
+    	                    log.debug("Before change()");
+    	                    log.debug("  state [{}]", task.state().name());
+    	                    task.transition(
+    	                        next
+    	                        );
+    	                    log.debug("After change()");
+    	                    log.debug("  state [{}]", task.state().name());
+    	                    return task.state();
+    	                    }
+                    	catch (final InvalidStateTransitionException ouch)
+        	    	    	{
+    	    	            log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
+                    		return TaskState.ERROR;
+    	    	    	    }
+                        catch (HibernateConvertException ouch)
+    	    	    	    {
+    	    	            log.error("HibernateConvertException [{}]", BlueTaskEntity.this.ident());
+                    		return TaskState.ERROR;
+    	    	    	    }
+                        }
                     }
+                );
+            log.debug("Finished thread()");
+            log.debug("  state [{}]", state().name());
+    // TODO we want to merge existing changes 
+    // TODO we don't want to loose any other changes.
+            log.debug("Refreshing state");
+            this.refresh();
+            }
+        else {
+            try {
+                log.debug("Before change()");
+                log.debug("  state [{}]", this.state().name());
+                this.transition(
+                    next
+                    );
+                log.debug("After change()");
+                log.debug("  state [{}]", this.state().name());
                 }
-            );
-        log.debug("Finished thread()");
-        log.debug("  state [{}]", state().name());
-// TODO we want to merge existing changes 
-// TODO we don't want to loose any other changes.
-        log.debug("Refreshing state");
-        this.refresh();
-        
+            catch (final InvalidStateTransitionException ouch)
+                {
+                log.error("InvalidStateTransitionException [{}]", BlueTaskEntity.this.ident());
+                this.state(
+                    TaskState.ERROR
+                    );
+                }
+            }
         log.debug("Finished finish()");
         log.debug("  state [{}]", state().name());
         }

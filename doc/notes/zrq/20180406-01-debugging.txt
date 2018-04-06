@@ -1,0 +1,95 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    |                
+   webservice
+          |
+         factory.create()
+                     |
+                    Creator.create()
+                     |          |
+                     |         insert()
+                     |
+                    Updator.update()
+                     |          |
+                     |         advance(..)
+                     |              |
+                     |             running()
+                     |                  |
+                     |                 Updator.update()
+                     |                             |
+                     |                            prepare()
+                     |                             |   |
+                     |                             |  parse()
+                     |                             |
+                     |                            execute()
+                     |                                 |
+                     |                                build()
+                     |                                 |
+                     |                                ogsa from - +OgsaService +OgsaResource
+                     |                                ogsa dest - +OgsaService +OgsaResource
+                     |                                 |
+                     |                                transition(RUNNING)
+                     |                                 |
+                     |                                event(true) - create handler
+                     |                                 |
+                     |                                new BlueWorkflowClient()
+                     |                                 |
+                     |                                workflow.execute(..)
+                     |                                 |            |
+                     |                                 |            \----------------------\
+                     |                                 |                                   |
+                     |                                refresh()                            |
+                     |                                 |                                   |
+                     |                                transition(RUNNING)                  |
+                     |                                                                     |
+                     |                                                                     |
+                                                                                           |
+                                                                                         query
+                                                                                           |
+                                                                                           |
+                                                                                           |
+    /--------------------------------------------------------------------------------------/
+    |                
+   webservice
+          |
+         factory.callback()
+                     |
+                    Updator.update() <-- why ?
+                     |          |
+                     |         entity.transition(..)
+                     |          |
+                     |         entity.transition(..)
+                     |          |
+                     |         entity.event()
+                     |           
+  /------------------/           
+  |           
+  -           
+
+                     |
+                     |
+                     |
+                    refresh()
+                     |
+                    query.waitfor()
+                     |
+                    refresh()
+                     |           
+  /------------------/           
+  |           
+  -           
+
+
+

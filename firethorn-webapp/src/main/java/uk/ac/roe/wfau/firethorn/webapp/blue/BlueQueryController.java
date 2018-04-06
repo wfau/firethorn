@@ -388,7 +388,7 @@ public class BlueQueryController
 //
 // TODO return a smaller CallbackBean - without the history
 //
-                services().entities().callback(
+            services().entities().callback(
                 services().idents().ident(
                     ident
                     ),

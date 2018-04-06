@@ -314,7 +314,7 @@ implements BlueQuery
         public BlueQuery create(final AdqlResource source, final JdbcSchema jdbcschema, final AdqlSchema adqlschema, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
         throws ProtectionException, InvalidRequestException, InternalServerErrorException
             {
-            log.debug("-- Oi0ieNga Qua8ev1a []");
+            log.debug("-- Oi0ieNga Qua8ev1a");
             log.debug("create(AdqlResource, JdbcSchema, AdqlSchema, String, Mode, Syntax, Limits, Delays, TaskState, Long)");
             log.debug("  wait for [{}]", next);
             log.debug("  wait for [{}]", wait);
@@ -322,17 +322,13 @@ implements BlueQuery
 /*
  * Reason for doing this inside a new Thread is to force a new Hibernate session.
  * Ensuring that the new Entity is committed to the database when the method returns.
- * This is the first time we have had to do this .. because we want to do other things to the entity after it has been created.
- * 
- * Problem - anything relying on ThreadLocal, like current Operation will fail.
- * Solution - modify thread() to pass in Operation context.
  *             
  */
-
-            final Identity outerid = services().contexts().current().oper().identities().primary();
-            log.debug("Owner (outer) [{}][{}]", outerid.ident(), outerid.name());
+            //final Identity outerid = services().contexts().current().oper().identities().primary();
+            //log.debug("Owner [{}][{}]", outerid.ident(), outerid.name());
             
-            log.debug("Calling BlueQuery.Creator");
+            log.debug("Before BlueQuery.Creator");
+            log.debug("-- ieCh0naj oH2cah4A");
             final BlueQuery outerq = services().runner().thread(
                 new Creator()
                     {
@@ -344,12 +340,12 @@ implements BlueQuery
                         log.debug("create.Creator.create()");
                         log.debug("Creating BlueQuery");
 
-                        final Identity innerid = outerid.rebase();
-                        log.debug("Owner (inner) [{}][{}]", innerid.ident(), innerid.name());
+                        //final Identity innerid = outerid.rebase();
+                        //log.debug("Owner (inner) [{}][{}]", innerid.ident(), innerid.name());
                         
                         return insert(
                     		new BlueQueryEntity(
-                				innerid,
+                				operation().identities().primary(),
                                 jdbcschema,
                                 adqlschema,
                 				source,
@@ -364,16 +360,13 @@ implements BlueQuery
                     }
                 );
 
-//
-// TODO
-// Make the create simpler - just a create.
-// State starts at EDITING, then Updator to move to READY and beyond.
-            
+            log.debug("After BlueQuery.Creator");
             log.debug("-- Sohkue2b Cae5Aifa [{}]", outerq.ident());
-            log.debug("Between Creator and Updator");
             log.debug("  ident [{}]", outerq.ident());
             log.debug("  state [{}]", outerq.state());
-            
+/*
+ *
+ */
             log.debug("Calling BlueQuery.Updator");
             final TaskState after = services().runner().thread(
                 new Updator(outerq)
@@ -418,13 +411,35 @@ implements BlueQuery
                         }
                     }
                 );
+/*
+ *             
+ */
 
-            log.debug("-- ohx7aeRu raid3Sho [{}]", outerq.ident());
-            log.debug("After BlueQuery Updator");
-            log.debug("  state [{}]", outerq.state());
-            final BlueQueryEntity result = (BlueQueryEntity) outerq.rebase();
-            log.debug("After BlueQuery rebase");
-            log.debug("  state [{}]", result.state());
+/*
+ * 
+            if ((next != null) && (next != outerq.state()))
+                {
+                log.debug("Before BlueQuery advance");
+                log.debug("-- Taipof7b pi4aiKai [{}]", outerq.ident());
+                log.debug("   state [{}]", outerq.state());
+                outerq.advance(
+                    null,
+                    next,
+                    wait
+                    );
+                log.debug("After BlueQuery advance");
+                log.debug("-- Hei6loor Chai2iex [{}]", outerq.ident());
+                log.debug("   state [{}]", outerq.state());
+                }
+
+            final TaskState after = outerq.state();
+ *             
+ */
+            //log.debug("-- ohx7aeRu raid3Sho [{}]", outerq.ident());
+            //log.debug("  state [{}]", outerq.state());
+            //final BlueQueryEntity result = (BlueQueryEntity) outerq.rebase();
+            //log.debug("After BlueQuery rebase");
+            final BlueQueryEntity result = (BlueQueryEntity) outerq;
             result.refresh();
             log.debug("After BlueQuery refresh");
             log.debug("  state [{}]", result.state());
@@ -446,9 +461,9 @@ implements BlueQuery
 	            log.debug("After BlueQuery refresh");
 	            log.debug("  state [{}]", result.state());
 	            }
-            log.debug("-- Eethia9o Moophie1 [{}]", outerq.ident());
             log.debug("Returning BlueQuery");
-            log.debug("  state [{}]", result.state());
+            log.debug("-- Eethia9o Moophie1 [{}]", outerq.ident());
+            log.debug("   state [{}]", result.state());
             return result;
             }
 
@@ -1754,6 +1769,8 @@ implements BlueQuery
             }
         }
 
+    static final boolean ASYNC_QUERY_BUILD = true ; 
+
     @Override
     protected void execute()
     throws ProtectionException, InvalidStateTransitionException 
@@ -1778,12 +1795,49 @@ implements BlueQuery
 
         //
         // Build our target resources.
-        this.build();
+        if (ASYNC_QUERY_BUILD)
+            {
+            services().runner().thread(
+                new Updator(this)
+                    {
+                    @Override
+                    public TaskState update()
+                    throws ProtectionException
+                        {
+                        log.debug("-- ahG2aigh miechi6O [{}]", ident());
+                        log.debug("running.Updator.update()");
+                        try {
+                            BlueQueryEntity task = (BlueQueryEntity) rebase();
+                            log.debug("Before build()");
+                            log.debug("  state [{}]", task.state().name());
+                            task.build();
+                            log.debug("After build()");
+                            log.debug("  state [{}]", task.state().name());
+                            return task.state();
+                            }
+                        catch (final HibernateConvertException ouch)
+                            {
+                            log.error("HibernateConvertException [{}]", BlueQueryEntity.this.ident());
+                            return TaskState.ERROR;
+                            }
+                        }
+                    }
+                );
+            log.debug("Finished thread()");
+            log.debug("  state [{}]", state().name());
+            log.debug("Refreshing state");
+            this.refresh();
+            log.debug("  state [{}]", state().name());
+            }
+        else {
+            log.debug("Before build()");
+            log.debug("  state [{}]", this.state().name());
+            this.build();
+            this.flush();
+            log.debug("After build()");
+            log.debug("  state [{}]", this.state().name());
+            }
 
-        //
-        // Push changes to the database.
-        this.flush();
-        
         //
         // Select our target OGSA-DAI service.  
 		// Assumes a valid resource list for a DIRECT query.
@@ -1934,6 +1988,7 @@ implements BlueQuery
 						@Override
 						public String port()
 							{
+							// HARD CODED PORT NUMBER !!!
 							return "8081";
                             //return null;
 							}
@@ -2082,6 +2137,7 @@ implements BlueQuery
                         // Update the results table.
                         final AdqlTable results = entity.results().adql();
                         // BANG !!
+                        // Fails if the query hasn't been prepared yet.
                         if (results == null)
                             {
                             log.error("Callback with null results table");
