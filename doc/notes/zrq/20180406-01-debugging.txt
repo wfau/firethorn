@@ -108,9 +108,6 @@
 
     05.01-javamaven.sh
     05.02-javadocker.sh
-    
-
-
 
     docker-compose --file distictella.yml down
     docker-compose --file distictella.yml run distictella

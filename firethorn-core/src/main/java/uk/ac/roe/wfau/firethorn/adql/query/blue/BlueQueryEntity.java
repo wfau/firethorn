@@ -1770,11 +1770,33 @@ implements BlueQuery
 
         //
         // Build our target resources.
-        this.build();
-
+        //this.build();
         //
         // Push changes to the database.
-        this.flush();
+        //this.flush();
+        
+        //
+        // Build our target resources.
+        services().runner().thread(
+            new Updator(this)
+                {
+                @Override
+                public TaskState update()
+                throws ProtectionException
+                    {
+                    try {
+                        BlueQueryEntity entity = (BlueQueryEntity) rebase();
+                        entity.build();
+                        return entity.state();
+                        }
+                    catch (HibernateConvertException ouch)
+                        {
+                        log.error("HibernateConvertException [{}]", BlueQueryEntity.this.ident());
+                        return TaskState.ERROR;
+                        }
+                    }
+                }
+            );
         
         //
         // Select our target OGSA-DAI service.  
