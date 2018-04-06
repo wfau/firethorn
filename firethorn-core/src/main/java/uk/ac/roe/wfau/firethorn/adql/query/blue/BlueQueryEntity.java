@@ -1799,6 +1799,10 @@ implements BlueQuery
                     }
                 }
             );
+
+        //
+        // Pull changes from database.
+        this.refresh();
         
         //
         // Select our target OGSA-DAI service.  
