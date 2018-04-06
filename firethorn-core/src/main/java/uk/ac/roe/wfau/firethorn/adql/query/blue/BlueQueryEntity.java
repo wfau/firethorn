@@ -324,8 +324,9 @@ implements BlueQuery
  * Ensuring that the new Entity is committed to the database when the method returns.
  *             
  */
-            //final Identity outerid = services().contexts().current().oper().identities().primary();
-            //log.debug("Owner [{}][{}]", outerid.ident(), outerid.name());
+
+            final Identity outerid = services().contexts().current().oper().identities().primary();
+            log.debug("Owner (outer) [{}][{}]", outerid.ident(), outerid.name());
             
             log.debug("Before BlueQuery.Creator");
             log.debug("-- ieCh0naj oH2cah4A");
@@ -340,8 +341,8 @@ implements BlueQuery
                         log.debug("create.Creator.create()");
                         log.debug("Creating BlueQuery");
 
-                        //final Identity innerid = outerid.rebase();
-                        //log.debug("Owner (inner) [{}][{}]", innerid.ident(), innerid.name());
+                        final Identity innerid = outerid.rebase();
+                        log.debug("Owner (inner) [{}][{}]", innerid.ident(), innerid.name());
                         
                         return insert(
                     		new BlueQueryEntity(
@@ -364,9 +365,7 @@ implements BlueQuery
             log.debug("-- Sohkue2b Cae5Aifa [{}]", outerq.ident());
             log.debug("  ident [{}]", outerq.ident());
             log.debug("  state [{}]", outerq.state());
-/*
- *
- */
+            
             log.debug("Calling BlueQuery.Updator");
             final TaskState after = services().runner().thread(
                 new Updator(outerq)
@@ -411,35 +410,13 @@ implements BlueQuery
                         }
                     }
                 );
-/*
- *             
- */
 
-/*
- * 
-            if ((next != null) && (next != outerq.state()))
-                {
-                log.debug("Before BlueQuery advance");
-                log.debug("-- Taipof7b pi4aiKai [{}]", outerq.ident());
-                log.debug("   state [{}]", outerq.state());
-                outerq.advance(
-                    null,
-                    next,
-                    wait
-                    );
-                log.debug("After BlueQuery advance");
-                log.debug("-- Hei6loor Chai2iex [{}]", outerq.ident());
-                log.debug("   state [{}]", outerq.state());
-                }
-
-            final TaskState after = outerq.state();
- *             
- */
-            //log.debug("-- ohx7aeRu raid3Sho [{}]", outerq.ident());
-            //log.debug("  state [{}]", outerq.state());
-            //final BlueQueryEntity result = (BlueQueryEntity) outerq.rebase();
-            //log.debug("After BlueQuery rebase");
-            final BlueQueryEntity result = (BlueQueryEntity) outerq;
+            log.debug("-- ohx7aeRu raid3Sho [{}]", outerq.ident());
+            log.debug("After BlueQuery Updator");
+            log.debug("  state [{}]", outerq.state());
+            final BlueQueryEntity result = (BlueQueryEntity) outerq.rebase();
+            log.debug("After BlueQuery rebase");
+            log.debug("  state [{}]", result.state());
             result.refresh();
             log.debug("After BlueQuery refresh");
             log.debug("  state [{}]", result.state());
@@ -461,9 +438,9 @@ implements BlueQuery
 	            log.debug("After BlueQuery refresh");
 	            log.debug("  state [{}]", result.state());
 	            }
-            log.debug("Returning BlueQuery");
             log.debug("-- Eethia9o Moophie1 [{}]", outerq.ident());
-            log.debug("   state [{}]", result.state());
+            log.debug("Returning BlueQuery");
+            log.debug("  state [{}]", result.state());
             return result;
             }
 
@@ -1769,8 +1746,6 @@ implements BlueQuery
             }
         }
 
-    static final boolean ASYNC_QUERY_BUILD = false ; 
-
     @Override
     protected void execute()
     throws ProtectionException, InvalidStateTransitionException 
@@ -1795,48 +1770,12 @@ implements BlueQuery
 
         //
         // Build our target resources.
-        if (ASYNC_QUERY_BUILD)
-            {
-            services().runner().thread(
-                new Updator(this)
-                    {
-                    @Override
-                    public TaskState update()
-                    throws ProtectionException
-                        {
-                        log.debug("-- ahG2aigh miechi6O [{}]", ident());
-                        log.debug("running.Updator.update()");
-                        try {
-                            BlueQueryEntity task = (BlueQueryEntity) rebase();
-                            log.debug("Before build()");
-                            log.debug("  state [{}]", task.state().name());
-                            task.build();
-                            log.debug("After build()");
-                            log.debug("  state [{}]", task.state().name());
-                            return task.state();
-                            }
-                        catch (final HibernateConvertException ouch)
-                            {
-                            log.error("HibernateConvertException [{}]", BlueQueryEntity.this.ident());
-                            return TaskState.ERROR;
-                            }
-                        }
-                    }
-                );
-            log.debug("Finished thread()");
-            log.debug("  state [{}]", state().name());
-            log.debug("Refreshing state");
-            this.refresh();
-            log.debug("  state [{}]", state().name());
-            }
-        else {
-            log.debug("Before build()");
-            log.debug("  state [{}]", this.state().name());
-            this.build();
-            log.debug("After build()");
-            log.debug("  state [{}]", this.state().name());
-            }
+        this.build();
 
+        //
+        // Push changes to the database.
+        this.flush();
+        
         //
         // Select our target OGSA-DAI service.  
 		// Assumes a valid resource list for a DIRECT query.
