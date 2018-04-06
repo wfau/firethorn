@@ -1833,7 +1833,6 @@ implements BlueQuery
             log.debug("Before build()");
             log.debug("  state [{}]", this.state().name());
             this.build();
-            this.flush();
             log.debug("After build()");
             log.debug("  state [{}]", this.state().name());
             }
