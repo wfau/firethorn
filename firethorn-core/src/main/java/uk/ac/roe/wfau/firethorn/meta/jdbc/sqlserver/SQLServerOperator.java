@@ -231,8 +231,9 @@ implements JdbcOperator
             }
         catch (final SQLException ouch)
             {
-            log.warn("SQL Exception [{}]", ouch.getMessage());
-            log.warn("SQL Statement [{}]", statement);
+//TODO Pass this error up to caller.            
+            log.error("SQL Exception [{}]", ouch.getMessage());
+            log.error("SQL Statement [{}]", statement);
             }
         finally {
             connector.close();

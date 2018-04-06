@@ -75,40 +75,10 @@
             builder 
 
     # -----------------------------------------------------
-    # Initialise our path.
+    # Build our Java components.
     #[root@builder]
 
-        PATH=${PATH}:/builder/bin
-
-    # -----------------------------------------------------
-    # Initialise our paths.
-    #[root@builder]
-
-        01.01-init.sh
-        
-    # -----------------------------------------------------
-    # Checkout a copy of our source code.
-    #[root@builder]
-
-        02.01-checkout.sh
-
-    # -----------------------------------------------------
-    # Build our base images.
-    #[root@builder]
-
-        04.01-buildbase.sh
-
-    # -----------------------------------------------------
-    # Compile our Java code.
-    #[root@builder]
-
-        05.01-javamaven.sh
-
-    # -----------------------------------------------------
-    # Build our Java containers.
-    #[root@builder]
-
-        05.02-javadocker.sh
+        /builder/bin/00.00-build.sh
 
     # -----------------------------------------------------
     # Fetch our Python code.
@@ -151,11 +121,9 @@
 
         popd
 
-    # -----------------------------------------------------
-    # Exit our builder.
-    #[root@builder]
 
-        exit
+
+
     
 # -----------------------------------------------------
 # Download our compose file.

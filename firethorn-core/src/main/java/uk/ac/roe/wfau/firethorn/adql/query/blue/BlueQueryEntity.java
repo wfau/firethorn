@@ -1769,7 +1769,7 @@ implements BlueQuery
             }
         }
 
-    static final boolean ASYNC_QUERY_BUILD = true ; 
+    static final boolean ASYNC_QUERY_BUILD = false ; 
 
     @Override
     protected void execute()
@@ -2353,6 +2353,7 @@ implements BlueQuery
         jdbctable.resource().connection().operator().create(
     		jdbctable
     		);
+// TODO catch SQLException ..
         log.debug("JDBC table created");
         //
         // Update the results status.
