@@ -610,7 +610,7 @@ implements BlueTask<TaskType>
             return this.ident;
             }
 
-        private TaskState state;
+        protected TaskState state;
         @Override
         public TaskState state()
             {
@@ -1404,12 +1404,18 @@ implements BlueTask<TaskType>
 		            log.debug("  hand state [{}]", handle.state());
 		            log.debug("  next state [{}]", next);
 
+		            // Update our state from the Handle.
+		            update(handle);
+/*
+ * 
 		            log.debug("Checking Handle status");
 	                if (handle.state().compareTo(this.state()) > 0)
 	                    {
 	                    log.debug("Adopting Handle status");
 	                    this.state = handle.state(); 
 	                    }
+ *                  
+ */
 		
 		            //
 //TODO Remove the sticky flag and possibly release the Handle.
@@ -1426,6 +1432,33 @@ implements BlueTask<TaskType>
 			}
     	}
     
+    /**
+     * Update our BlueTask from a Handle.
+     * 
+     */
+    public void update(final BlueTaskEntity.Handle handle)
+        {
+        log.debug("Checking Handle status [{}]", this.ident());
+        log.debug("  entity state [{}]", this.state());
+        if (handle != null)
+            {
+            log.debug("  handle state [{}]", handle.state());
+            if (handle.state().compareTo(this.state()) > 0)
+                {
+                log.debug("Adopting Handle state [{}][{}]", this.state(), handle.state());
+                try {
+                    transition(
+                        handle.state()
+                        );
+                    }
+                catch (InvalidStateTransitionException ouch)
+                    {
+                    log.warn("Ignoring invalid state transition [{}][{}]", this.state(), handle.state());
+                    } 
+                }
+            }
+        }
+
     /**
      * Prepare our task.
      * Calling {@link #prepare()} in a new {@link Thread} performs the operation in a separate Hibernate {@link Session}.

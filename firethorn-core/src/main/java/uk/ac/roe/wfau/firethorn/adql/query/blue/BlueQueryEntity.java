@@ -60,6 +60,7 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
@@ -431,12 +432,23 @@ implements BlueQuery
                     wait
                     );
 	            log.debug("After BlueQuery wait");
-	            log.debug("  state [{}]", result.state());
+                log.debug("  query  state [{}]", result.state());
+                log.debug("  result state [{}]", result.results().state());
+                log.debug("  result count [{}]", result.results().rowcount());
                 //result = result.rebase();
                 //result = result.refresh();
                 //result.refresh();
 	            //log.debug("After BlueQuery refresh");
 	            //log.debug("  state [{}]", result.state());
+
+                log.debug("Updating from Handle");
+	            final Handle handle = (Handle) result.handle();
+	            result.update(handle);
+                log.debug("After Handle update");
+                log.debug("  query  state [{}]", result.state());
+                log.debug("  result state [{}]", result.results().state());
+                log.debug("  result count [{}]", result.results().rowcount());
+	            
 	            }
             log.debug("-- Eethia9o Moophie1 [{}]", outerq.ident());
             log.debug("Returning BlueQuery");
@@ -972,7 +984,6 @@ implements BlueQuery
      * 
      */
     protected void transition(final ResultState next, final Long count)
-    throws InvalidStateTransitionException
         {
         final ResultState prev = this.resultstate;
         log.debug("transition(ResultState, Long)");
@@ -2043,10 +2054,81 @@ implements BlueQuery
          * @throws ProtectionException 
          * 
          */
-        protected Handle(final BlueQuery query)
+        protected Handle(final BlueQueryEntity query)
         throws ProtectionException
             {
             super(query);
+            this.resultcount = query.resultcount;
+            this.resultstate = query.resultstate;
+            }
+
+        private ResultState resultstate = ResultState.NONE;
+        public ResultState resultstate()
+            {
+            return this.resultstate;
+            }
+        
+        private Long resultcount = new Long(0L);
+        public Long resultcount()
+            {
+            return this.resultcount;
+            }
+
+        /**
+         * Update a Handle from a BlueQueryEntity.
+         * 
+         */
+        public void update(final BlueQueryEntity query)
+            {
+            log.debug("Updating Handle [{}]", query.ident());
+            log.debug("  query  state [{}]",  query.state());
+            log.debug("  handle state [{}]", this.state());
+            if (query.state().compareTo(this.state()) > 0)
+                {
+                log.debug("Adopting query state [{}][{}]", query.state(), this.state());
+                this.state = query.state();
+                }
+            if (query.resultstate.compareTo(this.resultstate) > 0)
+                {
+                log.debug("Adopting result state [{}][{}]", query.resultstate, this.resultstate);
+                this.resultstate = query.resultstate ;
+                }
+            if (query.resultcount > this.resultcount)
+                {
+                log.debug("Adopting result count [{}][{}]", query.resultcount, this.resultcount);
+                this.resultcount = query.resultcount ;
+                }
+            }
+        }
+
+    /**
+     * Update our BlueQuery from a Handle.
+     * 
+     */
+    public void update(final Handle handle)
+        {
+        log.debug("Checking Handle status [{}]", this.ident());
+        log.debug("  entity state [{}]", this.state());
+        if (handle != null)
+            {
+            log.debug("  handle state [{}]", handle.state());
+            if (handle.state().compareTo(this.state()) > 0)
+                {
+                log.debug("Adopting Handle state [{}][{}]", this.state(), handle.state());
+                try {
+                    transition(
+                        handle.state()
+                        );
+                    }
+                catch (InvalidStateTransitionException ouch)
+                    {
+                    log.warn("Ignoring invalid state transition [{}][{}]", this.state(), handle.state());
+                    } 
+                }
+            transition(
+                handle.resultstate,
+                handle.resultcount
+                );
             }
         }
 
@@ -2057,6 +2139,17 @@ implements BlueQuery
         return new Handle(
             this
             );
+        }
+
+    
+    
+    @Override
+    public void waitfor(final TaskState prev, final TaskState next, final Long wait)
+    throws ProtectionException
+        {
+        log.debug("-- ohj0Toh3 Iequae3e [{}]", this.ident());
+        log.debug("waitfor(TaskState, Long)");
+        super.waitfor(prev, next, wait);
         }
     
     @Override
@@ -2135,6 +2228,11 @@ implements BlueQuery
                         log.debug("  query  state [{}]", entity.state());
                         log.debug("  result state [{}]", entity.resultstate);
                         log.debug("  result count [{}]", entity.resultcount);
+
+                        //
+                        // Update our Handle.
+                        final Handle handle = (Handle) entity.handle();
+                        handle.update(entity);
                         
                         return entity.state();
                         }
@@ -2171,9 +2269,6 @@ implements BlueQuery
         log.debug("  result count [{}]", this.resultcount);
 
         log.debug("Finished callback()");
-        log.debug("  query  state [{}]", this.state());
-        log.debug("  result state [{}]", this.resultstate);
-        log.debug("  result count [{}]", this.resultcount);
         
         }
     

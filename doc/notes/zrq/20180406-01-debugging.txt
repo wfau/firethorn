@@ -248,10 +248,10 @@ query = workspace.create_query(
     None,
     3000000
     )
-
 print(
     query
     )
+
 print(
     query.table()
     )
@@ -394,7 +394,11 @@ hg 3826:5200e4ed398b
 // Need a default DQP resource
 
 
-
+dockclean() {
+    docker rmi $(docker images --quiet firethorn/firethorn)
+    docker rmi $(docker images --quiet firethorn/ogsadai)
+    docker rmi $(docker images --quiet --filter 'dangling=true')
+    }
 
 
 
