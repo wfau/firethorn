@@ -248,6 +248,7 @@ query = workspace.create_query(
     None,
     3000000
     )
+
 print(
     query
     )
@@ -303,8 +304,8 @@ def do_query(workspace, limit, delay):
         )
     return query.table().count()
 
-def run_queries(threads, tasks, delay):
-    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+def run_queries(tasks, delay):
+    with concurrent.futures.ThreadPoolExecutor(tasks) as executor:
         futures = {
             executor.submit(
                 do_query,
@@ -318,15 +319,60 @@ def run_queries(threads, tasks, delay):
                 future.result()
                 )
 
-run_queries(200, 10, 500)
-run_queries(200, 20, 500)
-run_queries(200, 40, 500)
-run_queries(200, 80, 500)
+run_queries(10, 500)
+run_queries(20, 500)
+run_queries(40, 500)
+run_queries(80, 500)
 
-run_queries(200, 80, 500)   FAIL
-run_queries(200, 80, 1000)  PASS
-run_queries(200, 10, 10)    FAIL
-run_queries(200, 10, 200)   PASS
-run_queries(200, 10, 150)   FAIL
+run_queries(80, 500)   FAIL
+run_queries(80, 1000)  PASS
+run_queries(10, 10)    FAIL
+run_queries(10, 200)   PASS
+run_queries(10, 150)   FAIL
+
+
+hg 3825:a1a64ab51918
+run_queries(200, 100, 500) // Complete gridlock. Not reproducable ?
+
+run_queries(100, 500) # PASS
+run_queries(100, 600) # PASS
+run_queries(100, 400) # PASS
+run_queries(100, 200) # PASS
+run_queries(100, 100) # PASS
+run_queries(100, 50)  # PASS
+run_queries(100, 25)  # PASS
+run_queries(100, 10)  # PASS
+run_queries(100, 1)   # PASS
+run_queries(100, 0)   # PASS
+
+run_queries(200, 10) # PASS
+
+
+
+
+hg 3825:a1a64ab51918
+
+    Almost all the tests pass.
+    One instance where it locks up - needed to restart the services.
+    Results section of query() response is out of date.
+
+    {
+    "results":{
+        "formats":{
+            ....
+            }
+        "count": 0
+        "state": EMPTY
+        "table": "http://..."
+        }
+    ....
+    }
+
+
+// We need to check this works ok now.
+// Select our target OGSA-DAI service.  
+// Assumes a valid resource list for a DIRECT query.
+// TODO fails on a DISTRIBUTED query.
+// Need a default DQP resource
 
 

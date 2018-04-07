@@ -2129,8 +2129,8 @@ implements BlueQuery
                                     break;
                                 }
                             }
-                        log.debug("Notifying listeners");
-                        entity.event();
+                        //log.debug("Notifying listeners");
+                        //entity.event();
 
                         return entity.state();
                         }
@@ -2152,11 +2152,11 @@ implements BlueQuery
         log.debug("Finished thread()");
         log.debug("  state [{}]", this.state());
 
-        //log.debug("Refreshing state");
-        //this.refresh();
+        log.debug("Refreshing state");
+        this.refresh();
 
-        //log.debug("Notifying listeners");
-        //this.event();
+        log.debug("Notifying listeners");
+        this.event();
 
         log.debug("Finished callback()");
         log.debug("  state [{}]", this.state());
