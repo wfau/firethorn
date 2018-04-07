@@ -251,6 +251,9 @@ query = workspace.create_query(
 print(
     query
     )
+print(
+    query.json_object.get("results").get("count")
+    )
 
 print(
     query.table()
@@ -302,7 +305,7 @@ def do_query(workspace, limit, delay):
             "adql.query.delay.first" : delay
             }
         )
-    return query.table().count()
+    return query.json_object.get("results").get("count")
 
 def run_queries(tasks, delay):
     with concurrent.futures.ThreadPoolExecutor(tasks) as executor:
@@ -399,6 +402,12 @@ dockclean() {
     docker rmi $(docker images --quiet firethorn/ogsadai)
     docker rmi $(docker images --quiet --filter 'dangling=true')
     }
+
+
+
+hg 3828:16898fe43f7e
+Seems fairly robust :-)
+run_queries(1000, 0)
 
 
 
