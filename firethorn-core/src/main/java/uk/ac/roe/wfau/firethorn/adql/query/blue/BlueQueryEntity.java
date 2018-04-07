@@ -434,9 +434,9 @@ implements BlueQuery
 	            log.debug("  state [{}]", result.state());
                 //result = result.rebase();
                 //result = result.refresh();
-                result.refresh();
-	            log.debug("After BlueQuery refresh");
-	            log.debug("  state [{}]", result.state());
+                //result.refresh();
+	            //log.debug("After BlueQuery refresh");
+	            //log.debug("  state [{}]", result.state());
 	            }
             log.debug("-- Eethia9o Moophie1 [{}]", outerq.ident());
             log.debug("Returning BlueQuery");
@@ -1806,9 +1806,9 @@ implements BlueQuery
         
         //
         // Select our target OGSA-DAI service.  
-		// Assumes a valid resource list for a DIRECT query.
-		// TODO fails on a DISTRIBUTED query.
-		// Need a default DQP resource
+        // Assumes a valid resource list for a DIRECT query.
+        // TODO fails on a DISTRIBUTED query.
+        // Need a default DQP resource
         log.debug("Getting base BaseResource");
         final BaseResource<?> base = resources().primary();
         log.debug("Found base BaseResource [{}]", base.name());

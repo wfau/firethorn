@@ -248,10 +248,6 @@ query = workspace.create_query(
     None,
     3000000
     )
-
-
-
-
 print(
     query
     )
