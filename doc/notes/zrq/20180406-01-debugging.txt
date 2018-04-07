@@ -356,6 +356,16 @@ hg 3825:a1a64ab51918
     One instance where it locks up - needed to restart the services.
     Results section of query() response is out of date.
 
+    query = workspace.create_query(
+        atlas_adql,
+        "COMPLETED",
+        None,
+        3000000
+        )
+    print(
+        query
+        )
+
     {
     "results":{
         "formats":{
@@ -369,10 +379,22 @@ hg 3825:a1a64ab51918
     }
 
 
+hg 3826:5200e4ed398b
+
+    Moved event() back outside the Thread in callback.
+    Looks like this is reverting an earlier change though :-(
+
+
+
+
 // We need to check this works ok now.
 // Select our target OGSA-DAI service.  
 // Assumes a valid resource list for a DIRECT query.
 // TODO fails on a DISTRIBUTED query.
 // Need a default DQP resource
+
+
+
+
 
 

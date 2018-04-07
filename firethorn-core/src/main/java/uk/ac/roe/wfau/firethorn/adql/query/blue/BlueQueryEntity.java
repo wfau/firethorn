@@ -2131,7 +2131,11 @@ implements BlueQuery
                             }
                         //log.debug("Notifying listeners");
                         //entity.event();
-
+                        log.debug("-- Ci0liesu Eecha4ee [{}]", entity.state());
+                        log.debug("  query  state [{}]", entity.state());
+                        log.debug("  result state [{}]", entity.resultstate);
+                        log.debug("  result count [{}]", entity.resultcount);
+                        
                         return entity.state();
                         }
                     catch (InvalidStateTransitionException ouch)
@@ -2150,16 +2154,26 @@ implements BlueQuery
 
         log.debug("-- Cie4Dahf Mee0aeXo [{}]", this.state());
         log.debug("Finished thread()");
-        log.debug("  state [{}]", this.state());
+        log.debug("  query  state [{}]", this.state());
+        log.debug("  result state [{}]", this.resultstate);
+        log.debug("  result count [{}]", this.resultcount);
 
         log.debug("Refreshing state");
         this.refresh();
+        log.debug("  query  state [{}]", this.state());
+        log.debug("  result state [{}]", this.resultstate);
+        log.debug("  result count [{}]", this.resultcount);
 
         log.debug("Notifying listeners");
         this.event();
+        log.debug("  query  state [{}]", this.state());
+        log.debug("  result state [{}]", this.resultstate);
+        log.debug("  result count [{}]", this.resultcount);
 
         log.debug("Finished callback()");
-        log.debug("  state [{}]", this.state());
+        log.debug("  query  state [{}]", this.state());
+        log.debug("  result state [{}]", this.resultstate);
+        log.debug("  result count [{}]", this.resultcount);
         
         }
     
