@@ -9,11 +9,6 @@ networks:
     # Internal network
     miriam:
 
-volumes:
-
-    # HSQLDB database
-    hsqldb:
-
 services:
 
     bethany:

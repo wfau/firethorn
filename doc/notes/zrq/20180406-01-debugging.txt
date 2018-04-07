@@ -142,6 +142,22 @@ javax.persistence.EntityExistsException: A different object with the same identi
 
 
 # -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.16-zrq-race-bug
+
+# -----------------------------------------------------
+# Run our compose set.
+#[user@desktop]
+
+    docker-compose \
+        --file distictella.yml \
+        run \
+            distictella
+
+
+# -----------------------------------------------------
 # Run our Python client.
 #[user@pyclient]
 
@@ -388,7 +404,9 @@ hg 3826:5200e4ed398b
     Looks like this is reverting an earlier change though :-(
 
 
-
+#
+# Recovering a confised Docker
+https://github.com/moby/moby/issues/23302#issuecomment-379038990
 
 // We need to check this works ok now.
 // Select our target OGSA-DAI service.  
@@ -408,6 +426,11 @@ dockclean() {
 hg 3828:16898fe43f7e
 Seems fairly robust :-)
 run_queries(1000, 0)
+run_queries(1100, 0)
+
+for delay in range(1000,0,-1):
+    print("----")
+    run_queries(100, delay)
 
 
 
