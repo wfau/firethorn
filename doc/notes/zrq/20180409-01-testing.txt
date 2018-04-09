@@ -489,58 +489,6 @@ while not done:
 # http://masnun.com/2016/03/29/python-a-quick-introduction-to-the-concurrent-futures-module.html
 # 
 
-from concurrent.futures import ThreadPoolExecutor
-import concurrent.futures
-
-def do_query(workspace, limit, delay):
-    query = workspace.create_query(
-        atlas_adql,
-        "COMPLETED",
-        None,
-        20000,
-            {
-            "adql.query.limit.rows"  : limit,
-            "adql.query.delay.first" : delay
-            }
-        )
-    return query.json_object.get("results").get("count")
-
-def run_queries(tasks, delay):
-    with concurrent.futures.ThreadPoolExecutor(tasks) as executor:
-        futures = {
-            executor.submit(
-                do_query,
-                workspace,
-                limit,
-                delay
-                ): limit for limit in range(tasks, 0, -1)
-            }
-        for future in concurrent.futures.as_completed(futures):
-            print(
-                future.result()
-                )
-
-run_queries(100, 500) # PASS
-run_queries(100, 250) # PASS
-run_queries(100, 125) # PASS
-run_queries(100, 50)  # PASS
-run_queries(100, 25)  # PASS
-run_queries(100, 10)  # PASS
-run_queries(100, 1)   # PASS FAIL - gridlock on query callback (system/info ok)
-run_queries(100, 0)   # PASS
-
-
-for delay in range(1000, 0, -10):
-    print("---- ", delay)
-    run_queries(100, delay)
-
-
-
-
-
-
-
-
 
 from concurrent.futures import ThreadPoolExecutor
 import concurrent.futures
@@ -573,12 +521,14 @@ def run_queries(tasks, delay):
                 future.result()
                 )
 
-run_queries(100, 0)
+run_queries(100, 100)
+run_queries(100,  10)
+run_queries(100,   1)
+run_queries(100,   0)
 
-
-for delay in range(10, 0, -1): # FooBar
+for delay in range(10, 0, -1):
     print("---- ", delay)
-    run_queries(500, delay)
+    run_queries(100, delay)
 
 
 

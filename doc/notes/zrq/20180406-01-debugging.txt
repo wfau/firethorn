@@ -425,11 +425,11 @@ dockclean() {
 
 hg 3828:16898fe43f7e
 Seems fairly robust :-)
-run_queries(1000, 0)
-run_queries(1100, 0)
+run_queries(1000, 0) PASS
+run_queries(1100, 0) FAIL - exceeds max connection count - connection reset by peer
 
-for delay in range(1000,0,-1):
-    print("----")
+for delay in range(1000,0,-10):
+    print("---- %d", delay)
     run_queries(100, delay)
 
 
