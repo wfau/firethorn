@@ -2027,11 +2027,6 @@ implements BlueQuery
 		    		);
 	        	break ;
 			
-			case UNKNOWN:
-		        transition(
-		    		TaskState.ERROR
-		    		);
-	        	break ;
 			default:
 	        	log.error("Unknown workflow status[{}]", result.status());
 		        transition(
