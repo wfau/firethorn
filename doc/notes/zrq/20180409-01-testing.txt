@@ -38,6 +38,11 @@
 
     ssh Araybwyn
 
+#
+# Add the /logs disc to our filesystem 
+#
+
+
 # -----------------------------------------------------
 # Add our secret function.
 #[user@virtual]
@@ -121,7 +126,6 @@
 
         popd
 
-
 # -----------------------------------------------------
 # Download our compose file.
 #[user@virtual]
@@ -129,6 +133,40 @@
     wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/distictella/distictella-local.yml
 
     wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/distictella/distictella-remote.yml
+
+# -----------------------------------------------------
+# Create our log directories.
+#[user@virtual]
+
+    sudo mkdir '/logs/jarmila'
+    sudo mkdir '/logs/gillian'
+
+    sudo chmod g+rw '/logs/jarmila'
+    sudo chmod g+rw '/logs/gillian'
+
+    sudo chown 997:996 '/logs/jarmila'
+    sudo chown 997:996 '/logs/gillian'
+
+    sudo chcon -t svirt_sandbox_file_t '/logs/jarmila'
+    sudo chcon -t svirt_sandbox_file_t '/logs/gillian'
+
+# -----------------------------------------------------
+# Update the compose file to mount the logs volumes.
+#[user@virtual]
+
+    vi distictella-local.yml
+
+    jarmila:
+        ....
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /logs/jarmila:/var/local/tomcat/logs:rw
+
+    gillian:
+        ....
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /logs/gillian:/var/local/tomcat/logs:rw
 
 # -----------------------------------------------------
 # Set the target branch
@@ -191,6 +229,19 @@ EOF
         --file distictella-local.yml \
         run \
             distictella
+
+# -----------------------------------------------------
+# Tail the logs in a separate window.
+#[user@desktop]
+
+    ssh Araybwyn
+
+        sudo tail -f /logs/gillian/firethorn.log
+
+    ssh Araybwyn
+
+        sudo tail -f /logs/jarmila/ogsadai.log
+
 
 # -----------------------------------------------------
 # Run our Python client.
@@ -492,7 +543,7 @@ query = workspace.create_query(
     "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
     "COMPLETED",
     None,
-    10,
+    1000,
     params
     )
 
@@ -504,9 +555,10 @@ while not done:
         time.sleep(0.5)
 
 #
-# TODO Real example of long polling ..
+# TODO Better example of long polling ..
+# TODO Needs wait param on query.refresh()
+# TODO Needs query.wait()
 #
-
 
 #
 # Run several queries at the same time.
