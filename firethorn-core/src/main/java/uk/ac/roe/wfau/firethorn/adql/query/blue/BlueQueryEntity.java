@@ -2158,6 +2158,7 @@ implements BlueQuery
         log.debug("  next   [{}]", message.state());
         log.debug("  result [{}]", message.results().state());
         log.debug("  count  [{}]", message.results().count());
+
         services().runner().thread(
             new Updator(this)
                 {

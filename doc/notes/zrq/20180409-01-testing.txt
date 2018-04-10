@@ -503,9 +503,9 @@ while not done:
     if not done:
         time.sleep(0.5)
 
-
-
-
+#
+# TODO Real example of long polling ..
+#
 
 
 #
