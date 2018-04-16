@@ -1,0 +1,171 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Clear exsiting containers.
+#[user@desktop]
+
+    export buildtag
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tester.yml" \
+        down
+
+# -----------------------------------------------------
+# Run our tester.
+#[user@desktop]
+
+    export buildtag
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tester.yml" \
+        run tester 
+
+# -----------------------------------------------------
+# Setup our tests.
+#[root@tester]
+
+        source bin/test/test-001.sh
+
+# -----------------------------------------------------
+# Run our tests.
+#[root@tester]
+
+    dostatus
+
+    doquery
+
+    doquery &
+
+# -----------------------------------------------------
+
+    for i in {1..2};  do doquery done
+    for i in {1..5};  do doquery done
+    for i in {1..10}; do doquery done
+    for i in {1..20}; do doquery done
+    for i in {1..30}; do doquery done
+    for i in {1..40}; do doquery done
+    for i in {1..50}; do doquery done
+
+# -----------------------------------------------------
+
+    for i in {1..2};  do sleep 5; doquery & done
+    for i in {1..5};  do sleep 5; doquery & done
+    for i in {1..10}; do sleep 5; doquery & done
+    for i in {1..20}; do sleep 5; doquery & done
+    for i in {1..30}; do sleep 5; doquery & done
+    for i in {1..40}; do sleep 5; doquery & done
+    for i in {1..50}; do sleep 5; doquery & done
+
+# -----------------------------------------------------
+
+    for i in {1..2};  do doquery & done
+    for i in {1..5};  do doquery & done
+    for i in {1..10}; do doquery & done
+    for i in {1..20}; do doquery & done
+    for i in {1..30}; do doquery & done
+    for i in {1..40}; do doquery & done
+    for i in {1..50}; do doquery & done
+
+# -----------------------------------------------------
+
+    <Executor name="main-interface"     maxThreads="10"
+    <Executor name="callback-interface" maxThreads="10"
+
+    <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
+    <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
+
+    <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+    <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:200}" />
+
+    for i in {1..5}  -- works
+    for i in {1..10} -- works
+    for i in {1..20} -- works
+    for i in {1..50} -- works
+    for i in {1..100} -- works
+    for i in {1..1000} -- works
+
+    * return status READY/RUNNING (wrong)
+
+# -----------------------------------------------------
+
+    # Fix code for return value.
+
+    # Works most of the time.
+    # Issues with first set of queries (READY)
+
+# -----------------------------------------------------
+
+    <Executor name="main-interface"     maxThreads="25"
+    <Executor name="callback-interface" maxThreads="25"
+
+    <task:executor  id="FireThornTaskExecutor"  pool-size="100"/>
+    <task:scheduler id="FireThornTaskScheduler" pool-size="100"/>
+
+    <property name="minPoolSize"   value="${firethorn.meta.c3p0.min.size:5}" />
+    <property name="maxPoolSize"   value="${firethorn.meta.c3p0.max.size:100}" />
+
+# -----------------------------------------------------
+
+    for i in {1..50}; do doquery & done
+
+    for i in {1..50} -- works
+    for i in {1..100} -- works
+    for i in {1..250} -- works
+    for i in {1..500} -- ????
+
+
+# -----------------------------------------------------
+
+    for i in {1..10}
+    do
+        for i in {1..100}
+        do
+            doquery &
+        done
+    done
+
+
+

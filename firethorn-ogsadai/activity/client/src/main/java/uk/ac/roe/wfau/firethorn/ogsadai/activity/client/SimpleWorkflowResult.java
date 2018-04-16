@@ -26,9 +26,9 @@ implements WorkflowResult
     public SimpleWorkflowResult(final RequestResource request)
         {
         this.request = request.getResourceID();
-
         try {
             final RequestExecutionStatus result = request.getRequestExecutionStatus();
+            log.debug("RequestExecutionStatus [{}]", result);
             if (result == null)
                 {
                 this.status = WorkflowResult.Status.FAILED;

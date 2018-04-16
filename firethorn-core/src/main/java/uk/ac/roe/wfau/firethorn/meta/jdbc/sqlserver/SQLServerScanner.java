@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +31,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.JdbcType;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcMetadataScanner;
 import uk.ac.roe.wfau.firethorn.util.ResultSetFilterator;
 import uk.ac.roe.wfau.firethorn.util.ResultSetIterator;
@@ -47,14 +48,14 @@ public class SQLServerScanner
      * Public constructor.
      * 
      */
-    public SQLServerScanner(final JdbcConnection connector)
+    public SQLServerScanner(final JdbcConnector connector)
         {
         this.connector = connector ;
         }
 
-    protected JdbcConnection connector ;
+    protected JdbcConnector connector ;
     @Override
-    public JdbcConnection connector()
+    public JdbcConnector connector()
         {
         return this.connector;
         }
@@ -83,7 +84,16 @@ public class SQLServerScanner
                 // A fatal error accessing a broken catalog can cause the database driver to close the connection, breaking the ResultSet in the process.
                 // To mitigate the side effects we transfer the list of catalogs to a local List.
                 final List<Catalog> list = new ArrayList<Catalog>();
-                final ResultSet rset = connection().getMetaData().getCatalogs();
+
+                final Connection  c1 = connection();
+                log.debug("Connection [{}]", c1);
+
+                final DatabaseMetaData m1 = c1.getMetaData();
+                log.debug("MetaData [{}]", m1);
+                
+                final ResultSet rset = m1.getCatalogs();
+                log.debug("Result [{}]", rset);
+
                 final Iterable<Catalog> iter = new ResultSetIterator.Factory<Catalog>(rset)
                     {
                     @Override

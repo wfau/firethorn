@@ -1,0 +1,391 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#----------------------------------------------------------------
+#
+#
+
+    Problem - fast queries trip over a race condition 
+    Problem - multiple queries can confuse server
+
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    export devname=zrq-race-bug
+
+    source "${HOME:?}/firethorn.settings"
+    gedit "${FIRETHORN_CODE:?}/doc/notes/zrq/20180302-02-hg-branch.txt" &
+
+# -----------------------------------------------------
+# Fetch our branch name.
+#[user@virtual]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        buildtag=$(hg branch)
+
+    popd
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    source "${HOME:?}/secret.sh"
+    secret frog
+    
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${buildtag:?}
+        
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        tunneluser=$(secret 'ssh.tunnel.user')
+        tunnelhost=$(secret 'ssh.tunnel.host')
+
+        admingroup=wombles
+        adminuser=orinoco
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=friends
+
+        zelltype=pgsql
+        zellhost=zelleri
+        zelldata=postgres
+        zelluser=$(pwgen 20 1)
+        zellpass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our compose config.
+#[user@virtual]
+
+    rm "${HOME:?}/.env"
+    ln -s "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+
+        rm    ".env"
+        ln -s "${HOME:?}/chain.properties" ".env"
+
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+# -----------------------------------------------------
+# Set our build environmet variables.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        export buildsrc=$(pwd)
+
+    popd
+
+# -----------------------------------------------------
+# Update our Python client source.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    export ftpysrc=${EDINBURGH_PROJECTS}/ftpy/github.stv
+
+    pushd "${ftpysrc:?}"
+        git pull
+    popd
+
+# -----------------------------------------------------
+# Take down our Python client container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+
+    rm    ".env"
+    ln -s "${HOME:?}/chain.properties" ".env"
+
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tests/distictella/distictella.yml" \
+        down
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag=$(hg branch)
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our Python client container.
+#[user@desktop]
+
+    rm    ".env"
+    ln -s "${HOME:?}/chain.properties" ".env"
+
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/client/firethorn-py.yml" \
+        build \
+            firethorn-py
+
+# -----------------------------------------------------
+# Run our Python client container.
+#[user@desktop]
+
+    rm    ".env"
+    ln -s "${HOME:?}/chain.properties" ".env"
+
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tests/distictella/distictella.yml" \
+        run \
+            distictella
+
+# -----------------------------------------------------
+# Run our Python client.
+#[user@pyclient]
+
+import os
+import numpy
+import astropy
+
+from firethorn.pyfirethorn import Firethorn
+from firethorn.core.firethorn_engine import FirethornEngine
+import firethorn.config as config
+
+#
+# Check that 'config.endpoint' is not set.
+print(
+    config.endpoint
+    )
+
+#
+# Create our firethorn engine.
+engine = FirethornEngine(
+    'http://gillian:8080/firethorn'
+    )
+
+#
+# Login using the admin account.
+engine.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc_resource = engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    os.environ.get('datadata'),
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass'),
+    )
+
+print(
+    atlas_jdbc_resource
+    )
+
+#
+# Select the ATLASDR1 JbdcSchema by catalog and schema name.
+atlas_jdbc_schema = atlas_jdbc_resource.select_schema_by_name(
+    "ATLASDR1",
+    "dbo"
+    )
+
+print(
+    atlas_jdbc_schema
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql_resource = engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+
+print(
+    atlas_adql_resource
+    )
+
+#
+# Import the mapping between the JdbcSchema and AdqlSchema tables.
+atlas_adql_schema = atlas_adql_resource.import_jdbc_schema(
+    atlas_jdbc_schema,
+    "ATLASDR1",
+    metadoc="https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/meta/ATLASDR1_TablesSchema.xml"
+    )
+
+print(
+    atlas_adql_schema
+    )
+
+#
+# List the top level AdqlResources
+for resource in engine.select_adql_resources():
+    print(
+        resource
+        )
+
+#
+# List the Atlas schemas.
+for schema in atlas_adql_resource.select_schemas():
+    print(
+        schema
+        )
+
+#
+# Select the Atlas schema by name (object).
+print(
+    atlas_adql_resource.select_schema_by_name(
+        'ATLASDR1'
+        )
+    )
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Create a new AdqlResource to act as our workspace.
+query_resource = engine.create_adql_resource(
+    "Query resource"
+    )
+
+print(
+    query_resource
+    )
+
+#
+# Import the ATLAS AdqlSchema into our AdqlResource
+query_schema = query_resource.import_adql_schema(
+    atlas_adql_schema
+    )
+
+#
+# Query our AdqlResource
+adql_query = query_resource.create_query(
+    'SELECT TOP 1000 ra, dec, cx, cy, cz FROM atlasSource',
+    'COMPLETED'
+    )
+print(
+    adql_query
+    )
+
+#
+# Check the query status.
+adql_query.status()
+
+#
+# Get the results table.
+adql_table = adql_query.results()
+print(
+    adql_table
+    )
+
+#
+# Check the table row count.
+adql_table.count()
+
+#
+# Get an astropy table.
+apy_table = adql_table.as_astropy()
+
+#
+# Print the astropy table.
+print (
+    apy_table
+    )
+
+
+
+# -------- -------- -------- --------
+
+for schema in query_resource.select_schemas():
+    print(
+        schema.name()
+        )
+    for table in schema.select_tables():
+        print(
+            table.name()
+            )
+        for column in table.select_columns():
+            print(
+                column.name()
+                )
+
+# -------- -------- -------- --------
+
+query_resource.create_query(
+    'SELECT filterID FROM Filter',
+    'COMPLETED'
+    ).results().as_astropy()
+
+

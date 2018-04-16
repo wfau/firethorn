@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-metadata</artifactId>
-        <version project='firethorn'>2.1.17</version>
+        <version project='firethorn'>2.1.18</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata-client</artifactId>
@@ -92,15 +92,6 @@
             <artifactId>spring-web</artifactId>
             <version>${ogsadai.spring.version}</version>
         </dependency>
-
-        <!--+
-            | Jackson JSON tools.
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${ogsadai.jackson.version}</version>
-        </dependency>
-            +-->
 
         <!--+
             | The OGSA-DAI components used by our code.

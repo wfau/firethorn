@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcOperator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -71,23 +71,23 @@ implements JdbcOperator
      * Public constructor.
      * 
      */
-    public PostgresOperator(final JdbcConnection connection)
+    public PostgresOperator(final JdbcConnector connection)
         {
         super();
         this.connection = connection ;
         }
 
     /**
-     * Our parent {@link JdbcConnection}.
+     * Our parent {@link JdbcConnector}.
      *  
      */
-    private JdbcConnection connection;
+    private JdbcConnector connection;
 
     /**
-     * Our parent {@link JdbcConnection}.
+     * Our parent {@link JdbcConnector}.
      *  
      */
-    public JdbcConnection connection()
+    public JdbcConnector connection()
         {
         return this.connection;
         }

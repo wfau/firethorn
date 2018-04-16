@@ -1,0 +1,387 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Thread main-interface-55 ..
+#
+
+    sed -n \
+        '/main-interface-55/p' \
+        logs/20170614-32058-threads.log | less
+
+
+        2017-06-14 09:35:21,756 DEBUG [main-interface-55] [OperationInterceptor] OperationInterceptor.preHandle() 
+        2017-06-14 09:35:21,756 DEBUG [main-interface-55] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+        2017-06-14 09:35:21,756 DEBUG [main-interface-55] [TransactionImpl] begin 
+
+            #
+            # Future(Creator)
+            # FireThornTaskExecutor-75
+            # 09:35:21,800 .. 09:35:22,102
+            # 22102 - 21800 = 302ms
+            #
+
+            #
+            # Future(Updator)
+            # FireThornTaskExecutor-74
+            # 09:35:22,157 .. 09:35:26,007
+            # 26007 - 22157 = 3850 ~ 3s
+            #
+
+            #
+            # FireThornTaskExecutor-95
+            # 09:35:22,157 .. 09:35:26,072
+            # 26072 - 22157 = 3915ms, ~3s
+            #
+
+
+        # Beginning  wait
+     
+        2017-06-14 09:35:26,130 DEBUG [main-interface-55] [BlueTaskEntity] done() 
+        2017-06-14 09:35:26,130 DEBUG [main-interface-55] [BlueTaskEntity]   prev  [RUNNING] 
+        2017-06-14 09:35:26,130 DEBUG [main-interface-55] [BlueTaskEntity]   state [RUNNING] 
+        2017-06-14 09:35:26,130 DEBUG [main-interface-55] [BlueTaskEntity]   next  [COMPLETED] 
+        2017-06-14 09:35:26,137 DEBUG [main-interface-55] [BlueTaskEntity] done() 
+        2017-06-14 09:35:26,140 DEBUG [main-interface-55] [BlueTaskEntity]   elapsed [13] 
+        2017-06-14 09:35:26,140 DEBUG [main-interface-55] [BlueTaskEntity]   timeout [600000] 
+        2017-06-14 09:35:26,140 DEBUG [main-interface-55] [BlueTaskEntity] wait start [599987] 
+
+        # Finished wait
+
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity] wait done 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity] done() 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   prev  [RUNNING] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   state [RUNNING] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   next  [COMPLETED] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity] done() 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   elapsed [600000] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   timeout [600000] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity] done (elapsed >= timeout) 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity] After listener.waitfor() 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   ident [32058] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   ident [32058] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   prev  [RUNNING] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   state [RUNNING] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   state [RUNNING] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueTaskEntity]   next  [COMPLETED] 
+        2017-06-14 09:45:26,127 DEBUG [main-interface-55] [BlueQueryEntity] After BlueQuery wait
+
+        # Finished
+
+        2017-06-14 09:45:26,149 DEBUG [main-interface-55] [OperationInterceptor] Operation [32017][http://gillian:8080/firethorn/adql/resource/2390/queries/create] 
+        2017-06-14 09:45:26,149 DEBUG [main-interface-55] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+        2017-06-14 09:45:26,149 DEBUG [main-interface-55] [JdbcCoordinatorImpl] HHH000420: Closing un-released batch 
+
+        #
+        # main-interface-55
+        # 09:35:21,756 .. 09:45:26,149 => 10 min
+        # > 10 min
+        #
+
+# -----------------------------------------------------
+# Thread FireThornTaskExecutor-75 ..
+# future(Creator)
+
+    sed -n \
+        '/FireThornTaskExecutor-75/p' \
+        logs/20170614-32058-threads.log | less
+
+                # future(Creator)
+
+                2017-06-14 09:35:21,800 DEBUG [FireThornTaskExecutor-75] [TransactionImpl] begin 
+                2017-06-14 09:35:21,801 DEBUG [FireThornTaskExecutor-75] [BlueTaskEntity$TaskRunner] future(Creator) 
+                2017-06-14 09:35:21,801 DEBUG [FireThornTaskExecutor-75] [BlueTaskEntity$TaskRunner]   thread [152][FireThornTaskExecutor-75] 
+                2017-06-14 09:35:21,801 DEBUG [FireThornTaskExecutor-75] [BlueQueryEntity] create( 
+                2017-06-14 09:35:21,801 DEBUG [FireThornTaskExecutor-75] [BlueQueryEntity] Creating BlueQuery 
+
+                2017-06-14 09:35:21,806 INFO  [FireThornTaskExecutor-75] [AdqlQueryTimings] TIMING - adqlstart() 
+
+                2017-06-14 09:35:22,064 INFO  [FireThornTaskExecutor-75] [AdqlQueryTimings] TIMING - adqldone() 
+
+                2017-06-14 09:35:22,087 DEBUG [FireThornTaskExecutor-75] [AbstractCollectionPersister] Inserting collection: [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity.params#32058] 
+                2017-06-14 09:35:22,089 DEBUG [FireThornTaskExecutor-75] [AbstractCollectionPersister] Collection was empty 
+                2017-06-14 09:35:22,097 DEBUG [FireThornTaskExecutor-75] [AbstractCollectionPersister] Inserting collection: [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity.resources#32058] 
+                2017-06-14 09:35:22,098 DEBUG [FireThornTaskExecutor-75] [AbstractCollectionPersister] Done inserting collection: 1 rows inserted 
+                2017-06-14 09:35:22,102 DEBUG [FireThornTaskExecutor-75] [JdbcCoordinatorImpl] HHH000420: Closing un-released batch 
+
+                09:35:21,800 .. 09:35:22,102
+                22102 - 21800 = 302ms
+
+# -----------------------------------------------------
+# Trim thread FireThornTaskExecutor-95 ..
+
+    sed -n \
+        '/\[FireThornTaskExecutor-95\]/p' \
+        logs/20170614-32058-threads.log | less
+
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [TransactionImpl] begin 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner] future(Updator) 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner]   ident [32058] 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner]   thread [177][FireThornTaskExecutor-95] 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueQueryEntity] update() 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueQueryEntity] Updating BlueQuery [32058] 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueQueryEntity]   from [READY] 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueQueryEntity]   next [COMPLETED] 
+
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [TransactionImpl] begin 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner] update(Updator) 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner]   ident [32058] 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner]   thread [177][FireThornTaskExecutor-95] 
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner] Before execute()
+             
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner] After execute()
+            2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner] Before future()
+
+                #
+                # FireThornTaskExecutor-74
+                # 09:35:22,157 .. 09:35:26,007
+                # 26007 - 22157 = 3850 ~ 3s
+                #
+            
+            2017-06-14 09:35:26,007 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner] After future() 
+            2017-06-14 09:35:26,007 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity$TaskRunner]   result [RUNNING] 
+            2017-06-14 09:35:26,007 DEBUG [FireThornTaskExecutor-95] [TransactionImpl] committing 
+
+            2017-06-14 09:35:26,007 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity] Finished thread() 
+            2017-06-14 09:35:26,007 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity]   state [READY] 
+            2017-06-14 09:35:26,007 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity] Refreshing state 
+            2017-06-14 09:35:26,007 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity] Refreshing entity [32058] 
+            ....
+            2017-06-14 09:35:26,072 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity] Finished running() 
+            2017-06-14 09:35:26,072 DEBUG [FireThornTaskExecutor-95] [BlueTaskEntity]   state [RUNNING] 
+            2017-06-14 09:35:26,072 DEBUG [FireThornTaskExecutor-95] [BlueQueryEntity] Completing update 
+            2017-06-14 09:35:26,072 DEBUG [FireThornTaskExecutor-95] [BlueQueryEntity]   state [RUNNING] 
+            2017-06-14 09:35:26,072 DEBUG [FireThornTaskExecutor-95] [TransactionImpl] committing 
+
+            #
+            # FireThornTaskExecutor-95
+            # 09:35:22,157 .. 09:35:26,072
+            # 26072 - 22157 = 3915ms, ~3s
+            #
+
+# -----------------------------------------------------
+# Thread FireThornTaskExecutor-74 ..
+# future(Updator)
+
+    sed -n \
+        '/FireThornTaskExecutor-74/p' \
+        logs/20170614-32058-threads.log | less
+
+                #
+                # execute(Updator)
+                #
+
+                2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-74] [TransactionImpl] begin 
+                2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity$TaskRunner] execute(Updator) 
+                2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity$TaskRunner]   ident [32058] 
+                2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity$TaskRunner]   thread [151][FireThornTaskExecutor-74] 
+                2017-06-14 09:35:22,157 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] Converting current instance [32058] 
+
+                2017-06-14 09:35:22,301 INFO  [FireThornTaskExecutor-74] [AdqlQueryTimings] TIMING - adqlstart() 
+                ....
+                2017-06-14 09:35:23,031 INFO  [FireThornTaskExecutor-74] [AdqlQueryTimings] TIMING - adqldone() 
+
+                2017-06-14 09:35:23,045 INFO  [FireThornTaskExecutor-74] [AdqlQueryTimings] TIMING - jdbcstart() 
+                ....
+                2017-06-14 09:35:25,291 INFO  [FireThornTaskExecutor-74] [AdqlQueryTimings] TIMING - jdbcdone() 
+                ....
+                2017-06-14 09:35:25,319 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] ci3ooN5u Ohmei0Ga 
+                2017-06-14 09:35:25,319 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity] transition(TaskState) 
+                2017-06-14 09:35:25,319 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   ident [32058] 
+                2017-06-14 09:35:25,319 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   state [READY][SENDING] 
+                2017-06-14 09:35:25,320 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity] accept(TaskState) 
+                2017-06-14 09:35:25,320 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   ident [32058] 
+                2017-06-14 09:35:25,320 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   state [READY][SENDING] <-- Is this pushed to the DB ?
+                2017-06-14 09:35:25,320 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] Executing workflow ...  <-- Do we have a Handle by now ?
+                ....
+                .... Main body of callback happens here ..
+                ....
+                2017-06-14 09:35:25,980 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] After workflow ... 
+                2017-06-14 09:35:25,980 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] -- Meex9Lae OzoDei0b -- 
+                2017-06-14 09:35:25,980 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] Refreshing entity 
+                2017-06-14 09:35:25,980 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity] Refreshing entity [32058] <-- this actually goes backward to READY not forward to > SENDING 
+                ....
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] Activating handler 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity] handle() 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   ident [32058] 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity] handle(String) 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   key [32058] 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity] State is not active - no handle 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueQueryEntity] Workflow result [RUNNING] 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity] transition(TaskState) 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   ident [32058] 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   state [READY][RUNNING] 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity] accept(TaskState) 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   ident [32058] 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   state [READY][RUNNING] 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity] After execute() 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [BlueTaskEntity]   state [RUNNING] 
+                2017-06-14 09:35:25,998 DEBUG [FireThornTaskExecutor-74] [TransactionImpl] committing 
+
+                ....
+                2017-06-14 09:35:26,003 DEBUG [FireThornTaskExecutor-74] [AdqlQueryTimings] AdqlQueryTimings() 
+                2017-06-14 09:35:26,007 DEBUG [FireThornTaskExecutor-74] [JdbcCoordinatorImpl] HHH000420: Closing un-released batch 
+
+                ....
+                .... Final steps of callback happens here ..
+                ....
+
+                #
+                # FireThornTaskExecutor-74
+                # 09:35:22,157 .. 09:35:26,007
+                # 26007 - 22157 = 3850 ~ 3s
+                #
+
+# -----------------------------------------------------
+# Thread callback-interface-14 ..
+
+    sed -n \
+        '/callback-interface-14/p' \
+        logs/20170614-32058-threads.log | less
+
+            2017-06-14 09:35:25,835 DEBUG [callback-interface-14] [OperationInterceptor] OperationInterceptor.preHandle() 
+            2017-06-14 09:35:25,843 DEBUG [callback-interface-14] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+            2017-06-14 09:35:25,843 DEBUG [callback-interface-14] [TransactionImpl] begin 
+            ....
+            2017-06-14 09:35:25,853 DEBUG [callback-interface-14] [OperationInterceptor] Operation [32247] 
+            2017-06-14 09:35:25,853 DEBUG [callback-interface-14] [OperationInterceptor]   url  [http://172.20.0.6:8081/firethorn/blue/query/callback/32058] 
+            ....
+
+                #
+                # FireThornTaskExecutor-8
+                # 09:35:25,910 .. 09:35:26,014
+                # 26014 - 25910 = 104ms
+                #
+            
+            ....
+            2017-06-14 09:35:26,096 DEBUG [callback-interface-14] [OperationInterceptor] OperationInterceptor.postHandle() 
+            2017-06-14 09:35:26,096 DEBUG [callback-interface-14] [OperationInterceptor] Operation [32247][http://172.20.0.6:8081/firethorn/blue/query/callback/32058] 
+            2017-06-14 09:35:26,096 DEBUG [callback-interface-14] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+            2017-06-14 09:35:26,096 DEBUG [callback-interface-14] [AnonymousAuthenticator] afterCompletion() 
+            2017-06-14 09:35:26,096 DEBUG [callback-interface-14] [HttpHeaderAuthenticator] afterCompletion() 
+            2017-06-14 09:35:26,096 DEBUG [callback-interface-14] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+            2017-06-14 09:35:26,096 DEBUG [callback-interface-14] [OperationInterceptor] Operation [32247][http://172.20.0.6:8081/firethorn/blue/query/callback/32058] 
+            2017-06-14 09:35:26,096 DEBUG [callback-interface-14] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+            2017-06-14 09:35:26,096 DEBUG [callback-interface-14] [JdbcCoordinatorImpl] HHH000420: Closing un-released batch 
+
+            #
+            # 09:35:25,835 .. 2017-06-14 09:35:26,096
+            # 26096 - 25835 = 261ms
+            #
+
+
+# -----------------------------------------------------
+# Thread FireThornTaskExecutor-8 ..
+
+    sed -n \
+        '/\[FireThornTaskExecutor-8\]/p' \
+        logs/20170614-32058-threads.log | less
+
+                #
+                # callback update ?
+                #
+
+                2017-06-14 09:35:25,910 DEBUG [FireThornTaskExecutor-8] [TransactionImpl] begin 
+                2017-06-14 09:35:25,910 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity$TaskRunner] execute(Updator) 
+                2017-06-14 09:35:25,910 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity$TaskRunner]   ident [32058] 
+                2017-06-14 09:35:25,910 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity$TaskRunner]   thread [65][FireThornTaskExecutor-8] 
+                2017-06-14 09:35:25,910 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Converting current instance [32058] 
+                ....
+                2017-06-14 09:35:25,918 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] transition(ResultState, Long) 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   ident [32058] 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   state [NONE][COMPLETED] 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity]   count [10] 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueQueryEntity] Forward transition, state change accepted [NONE][COMPLETED] 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity] transition(TaskState) 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity]   ident [32058] 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity]   state [READY][COMPLETED] 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity] accept(TaskState) 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity]   ident [32058] 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [BlueTaskEntity]   state [READY][COMPLETED] 
+                2017-06-14 09:35:25,919 DEBUG [FireThornTaskExecutor-8] [TransactionImpl] committing 
+                ....
+                2017-06-14 09:35:26,007 DEBUG [FireThornTaskExecutor-8] [AdqlQueryTimings] AdqlQueryTimings() 
+                2017-06-14 09:35:26,014 DEBUG [FireThornTaskExecutor-8] [JdbcCoordinatorImpl] HHH000420: Closing un-released batch 
+
+                #
+                # FireThornTaskExecutor-8
+                # 09:35:25,910 .. 09:35:26,014
+                # 26014 - 25910 = 104ms
+                #
+
+
+# -----------------------------------------------------
+# Simplify the logs.
+
+    sed -n \
+        '/\[EntityPrinter\]/{
+            s/{.*}/{}/
+            s/\(BlueQueryEntity{\).*/\1}/
+            p
+            }
+        ' \
+        20170614-32058-threads.log | less
+
+    sed -i \
+        '/\[EntityPrinter\]/{
+            s/{.*}/{}/
+            s/\(BlueQueryEntity{\).*/\1}/
+            }
+        ' \
+        20170614-32058-threads.log
+
+
+
+    sed -n \
+        '/\[EntityReferenceInitializerImpl\]/{
+            s/\(EntityKey was already known\).*/\1;/
+            p
+            }
+        ' \
+        20170614-32058-threads.log | less
+
+    sed -i \
+        '/\[EntityReferenceInitializerImpl\]/{
+            s/\(EntityKey was already known\).*/\1;/
+            }
+        ' \
+        20170614-32058-threads.log
+
+
+    sed -n \
+        '/\[Collections\]/{
+            s/\(Collection found\): \[\(.*\)\], was: \[\(.*\)\].*/\1: [\2]/
+            p
+            }
+        ' \
+        20170614-32058-threads.log | less
+
+    sed -i \
+        '/\[Collections\]/{
+            s/\(Collection found\): \[\(.*\)\], was: \[\(.*\)\].*/\1: [\2]/
+            }
+        ' \
+        20170614-32058-threads.log
+
+
+

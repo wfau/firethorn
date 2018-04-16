@@ -41,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectMethod;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.ResourceWorkflowResult;
@@ -451,7 +451,7 @@ implements OgsaJdbcResource
         final JdbcCreateResourceWorkflow workflow = new JdbcCreateResourceWorkflow(
             endpointurl
             );
-        final JdbcConnection connection = resource.connection();
+        final JdbcConnector connection = resource.connection();
 
         log.debug("Creating OGSA-DAI JDBC resource");
         log.debug("Executing JdbcCreateResourceWorkflow");

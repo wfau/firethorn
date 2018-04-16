@@ -46,17 +46,23 @@ implements HandlerInterceptor
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
         {
-        log.debug("preHandle()");
+        log.debug("OperationInterceptor.preHandle()");
         log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
 
         final Operation oper = factories.operations().entities().create(
             request.getRequestURL().toString(),
             request.getMethod(),
-            request.getRemoteAddr()
+            request.getRemoteAddr(),
+            request.getServerPort()
             );
 
-        log.debug("Operation [{}][{}]", oper.ident(), oper.target());
-        log.debug("Handler   [{}]", handler.getClass().getName());
+        log.debug("Operation [{}]", oper.ident());
+        log.debug("  url  [{}]", oper.url());
+        log.debug("  port [{}]", oper.port());
+
+        //
+        // Add the port number as a request attribute.
+        request.setAttribute("adql.query.callback.port", new Integer(request.getServerPort()));
 
         return true ;
         }
@@ -64,18 +70,18 @@ implements HandlerInterceptor
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
-        log.debug("postHandle()");
+        log.debug("OperationInterceptor.postHandle()");
         final Operation oper = factories.operations().entities().current();
-        log.debug("Operation [{}][{}]", oper.ident(), oper.target());
+        log.debug("Operation [{}][{}]", oper.ident(), oper.url());
         log.debug("Handler   [{}]", handler.getClass().getName());
         }
 
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
-        log.debug("afterCompletion()");
+        log.debug("OperationInterceptor.afterCompletion()");
         final Operation oper = factories.operations().entities().current();
-        log.debug("Operation [{}][{}]", oper.ident(), oper.target());
+        log.debug("Operation [{}][{}]", oper.ident(), oper.url());
         log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
         if (ouch != null)
             {

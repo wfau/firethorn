@@ -1,0 +1,232 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create the logs pool on our data disc.
+#[wheel@trop]
+
+    source "${HOME:?}/libvirt.settings"
+
+    poolpath=/data1/libvirt/logs
+    logspool=logs
+
+    sudo mkdir -p "${poolpath:?}"
+
+
+    logsxml=$(mktemp)
+    cat > "${logsxml:?}" << EOF
+<pool type='dir'>
+  <name>${logspool:?}</name>
+  <target>
+    <path>${poolpath:?}</path>
+  </target>
+</pool>
+EOF
+
+   virsh \
+       --connect "${connection:?}" \
+        pool-define "${logsxml:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-build "${logspool:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-start "${logspool:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-autostart "${logspool:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-info "${logspool:?}"
+
+
+#---------------------------------------------------------------------
+# Create a new virtual machine.
+#[user@trop03]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+#---------------------------------------------------------------------
+# Set the virtual params.
+#[user@trop03]
+
+    vmname=Araybwyn
+    vdname=vdc
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@trop03]
+
+    source "${HOME:?}/libvirt.settings"
+
+    logsfile=${vmname:?}-logs.qcow
+    logssize=32G
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${logspool:?}" \
+            "${logsfile:?}" \
+            "${logssize:?}" \
+            --format qcow2
+
+#---------------------------------------------------------------------
+# Get the volume path.
+#[user@trop03]
+
+    filepath=$(
+        virsh \
+            --connect "${connection:?}" \
+            vol-path \
+                --pool "${logspool:?}" \
+                "${logsfile:?}"
+                )
+
+#---------------------------------------------------------------------
+# Check the volume details.
+#[user@trop03]
+
+    sudo qemu-img \
+        info \
+            "${filepath:?}"
+
+        image: /data1/libvirt/logs/Araybwyn-logs.qcow
+        file format: qcow2
+        virtual size: 32G (34359738368 bytes)
+        disk size: 196K
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+
+#---------------------------------------------------------------------
+# Attach the new volume to our virtual machine.
+#[user@trop03]
+
+    source "${HOME:?}/libvirt.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        attach-disk \
+            ${vmname:?}   \
+            ${filepath:?} \
+            ${vdname:?}   \
+            --driver    qemu  \
+            --subdriver qcow2
+
+
+# --config
+
+#---------------------------------------------------------------------
+# Restart the virtual machine.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        reboot "${vmname:?}"
+
+#---------------------------------------------------------------------
+# Login to the VM.
+#[user@trop03]
+
+    ssh "${vmname:?}"
+
+        sudo -s
+    
+#---------------------------------------------------------------------
+# Create a filesystem on the volume.
+#[root@trop03]
+
+    fsdev=/dev/vdc
+
+    mkfs.btrfs \
+        --force \
+        --data single \
+        --metadata single \
+        "${fsdev:?}"
+
+        Label:              (null)
+        UUID:               99874d0b-991d-4745-8b7a-1703cb66a9bd
+        Node size:          16384
+        Sector size:        4096
+        Filesystem size:    32.00GiB
+        Block group profiles:
+          Data:             single            8.00MiB
+          Metadata:         single            8.00MiB
+          System:           single            4.00MiB
+        SSD detected:       no
+        Incompat features:  extref, skinny-metadata
+        Number of devices:  1
+        Devices:
+           ID        SIZE  PATH
+            1    32.00GiB  /dev/vdc
+
+    btrfs \
+        filesystem show \
+        "${fsdev:?}"
+
+        Label: none  uuid: 99874d0b-991d-4745-8b7a-1703cb66a9bd
+	        Total devices 1 FS bytes used 112.00KiB
+	        devid    1 size 32.00GiB used 20.00MiB path /dev/vdc
+
+
+#---------------------------------------------------------------------
+# Create our mount point.
+#[root@trop03]
+
+    fspath=/logs
+
+    mkdir "${fspath:?}"
+    touch "${fspath:?}/mount-failed"
+
+#---------------------------------------------------------------------
+# Add the volume to our FileSystemTABle.
+#[root@trop03]
+   
+    fsuuid=$(
+        lsblk --noheadings --output UUID "${fsdev:?}"
+        )
+
+    cat >> /etc/fstab << EOF
+UUID=${fsuuid:?} ${fspath:?}    btrfs    defaults    0  0
+EOF
+
+#---------------------------------------------------------------------
+# Mount the new volume.
+#[user@trop03]
+
+    mount /logs
+
+
+
+
+
+

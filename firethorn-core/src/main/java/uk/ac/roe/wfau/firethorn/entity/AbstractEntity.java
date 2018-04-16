@@ -74,10 +74,10 @@ implements Entity
         );
     
     /**
-     * Hibernate table name prefix.
+     * Hibernate table name prefix, {@value}.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT020110";
+    protected static final String DB_TABLE_PREFIX = "FT020116";
 
     /**
      * Hibernate column mapping, {@value}.
@@ -567,5 +567,21 @@ implements Entity
     public EntityProtector protector()
         {
         return this.protector;
+        }
+
+    /**
+     * Null-safe method for debug statements.  
+     * Get the identity of an {@link Entity}, or null if the {@link Entity} is null.
+     * 
+     */
+    public static Identifier ident(final Entity entity)
+        {
+        if (null != entity)
+            {
+            return entity.ident();
+            }
+        else {
+            return null ;
+            }
         }
     }

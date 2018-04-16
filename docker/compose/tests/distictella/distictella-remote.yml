@@ -9,11 +9,6 @@ networks:
     # Internal network
     miriam:
 
-volumes:
-
-    # HSQLDB database
-    hsqldb:
-
 services:
 
     bethany:
@@ -151,8 +146,8 @@ services:
             - /tmp
         volumes:
             - /etc/localtime:/etc/localtime:ro
-            - /home/Zarquan/zelleri/testup.sh:/testup.sh
-            - /home/Zarquan/zelleri/testdo.sh:/testdo.sh
+            - ./bin/testup.sh:/testup.sh
+            - ./bin/testdo.sh:/testdo.sh
         networks:
             - miriam
 
@@ -182,8 +177,8 @@ services:
         image:
            "firethorn/firethorn-py:${buildtag}"
         build:
-            context:    "${FIRETHORN_PY_BASE}"
-            dockerfile: "${DISTICTELLA_BASE}/Dockerfile"
+            context:    "${ftpysrc}"
+            dockerfile: "Fedorafile"
         read_only:
             false
         stdin_open:
@@ -195,10 +190,10 @@ services:
             - /tmp
         networks:
             - miriam
+
         environment:
 
             endpoint: "http://gillian:8080/firethorn"
-            default_endpoint: "http://gillian:8080/firethorn"
 
             datatype: "mssql"
             datahost: "elayne"

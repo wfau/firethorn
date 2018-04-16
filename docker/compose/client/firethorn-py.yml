@@ -1,0 +1,13 @@
+version: '2.1'
+# https://en.wikipedia.org/wiki/Aphomia_distictella
+
+services:
+
+    firethorn-py:
+        image:
+           "firethorn/firethorn-py:${buildtag}"
+        build:
+            context:    '${ftpysrc}'
+            dockerfile: '${buildsrc}/docker/compose/client/Dockerfile'
+
+

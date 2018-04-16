@@ -1,0 +1,657 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh Araybwyn
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    vi "${HOME:?}/secret.sh"
+
+        ....
+        ....
+        ....
+
+    source "${HOME:?}/secret.sh"
+    secret 'frog'
+
+# -----------------------------------------------------
+# Download our compose file
+#[user@virtual]
+     
+    wget -O builder.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.16-zrq-race-bug
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder 
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        01.01-init.sh
+        
+    # -----------------------------------------------------
+    # Checkout a copy of our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
+
+        05.01-javamaven.sh
+
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
+
+        05.02-javadocker.sh
+
+    # -----------------------------------------------------
+    # Fetch our Python code.
+    #[root@builder]
+
+        PYTHON_CODE=/var/local/build/client
+
+        if [  -e "${PYTHON_CODE:?}" ]
+        then
+            pushd "${PYTHON_CODE:?}"
+
+                echo "Updating Python code"
+
+                git pull
+            
+            popd
+        else
+            pushd "$(dirname ${PYTHON_CODE:?})"
+
+                gitrepo='https://github.com/Zarquan/firethorn.py.git'
+                echo "Cloning Python code from [${gitrepo:?}]"
+
+                git clone "${gitrepo:?}" "$(basename ${PYTHON_CODE:?})"
+
+            popd
+        fi
+
+    # -----------------------------------------------------
+    # Build our Python container.
+    #[root@builder]
+
+        export buildtag=${branch:?}
+
+        pushd "${PYTHON_CODE:?}"
+
+            docker build \
+                --tag firethorn/firethorn-py:${buildtag} \
+                --file Fedorafile \
+                .
+
+        popd
+
+    # -----------------------------------------------------
+    # Exit our builder.
+    #[root@builder]
+
+        exit
+    
+# -----------------------------------------------------
+# Download our compose file.
+#[user@virtual]
+
+    source "${HOME}/firethorn.settings"
+
+    wget -O distictella.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/distictella/distictella.yml
+
+    vi distictella.yml
+    
+        ....
+        ....
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    source "${HOME:?}/secret.sh"
+    secret frog
+    
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${branch:?}
+        
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        tunneluser=$(secret 'ssh.tunnel.user')
+        tunnelhost=$(secret 'ssh.tunnel.host')
+
+        admingroup=Hyaenidae
+        adminuser=Aardwolf
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=Afrotheria
+
+        zelltype=pgsql
+        zellhost=zelleri
+        zelldata=postgres
+        zelluser=$(pwgen 20 1)
+        zellpass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Link our compose config.
+#[user@virtual]
+
+    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Run our compose set.
+#[user@desktop]
+
+    docker-compose \
+        --file distictella.yml \
+        run \
+            distictella
+
+# -----------------------------------------------------
+# Run our Python client.
+#[user@pyclient]
+
+import os
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client.
+firethorn = ftpy.Firethorn(
+    os.environ.get(
+        'endpoint'
+        ),
+    )
+
+#
+# Login using the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    '*',
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass')
+    )
+
+print(
+    atlas_jdbc
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+
+print(
+    atlas_adql
+    )
+
+#
+# List the top level AdqlResources.
+adql_resources = firethorn.firethorn_engine.select_adql_resources()
+for resource in adql_resources:
+    print(
+        resource
+        )
+
+#
+# Import the target JdbcSchema into AdqlSchema.
+schema_names = [
+    "ATLASDR1",
+    "TWOMASS"
+    ]
+
+for schema_name in schema_names:
+    print(schema_name)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        schema_name,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + schema_name + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            schema_name,
+            metadoc=metadoc
+            )
+
+#
+# List the Atlas schemas.
+schemas = atlas_adql.select_schemas()
+for schema in schemas:
+    print(
+        schema
+        )
+
+#
+# Select the TWOMASS schema.
+twomass = atlas_adql.select_schema_by_name(
+    'TWOMASS'
+    )
+print(
+    twomass
+    )
+
+#
+# Select the schema tables.
+tables = twomass.select_tables()
+for table in tables:
+    print(
+        table
+        )
+
+#
+# Select the psc table.
+table = twomass.select_table_by_name(
+    'twomass_psc'
+    )
+print(
+    table
+    )
+
+#
+# Select the table columns.
+columns = table.select_columns()
+for column in columns:
+    print(
+        column
+        )
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using a guest account.
+firethorn.login(
+    'tester@roe.ac.uk',
+    'tester@roe.ac.uk',
+    os.environ.get(
+        'guestgroup'
+        )
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# List our workspace schemas.
+for schema in workspace.select_schemas():
+    print(
+        schema
+        )
+
+#
+# Create and run a query on our workspace.
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query
+    )
+
+#
+# Get the query results.
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+
+#
+# Convert the query results into an astropy table.
+from astropy.table import Table as ApTable
+def wrap_as_pytable(adql_table, limit=100):
+    if ((limit) and (query.table().count() > limit)):
+        print("Row count [" + str(query.table().count()) + "] exceeds limit [" + str(limit) + "]")
+        return None
+    else:
+        return ApTable.read(
+            adql_table.json_object.get("formats").get("votable"),
+            format="votable",
+            use_names_over_ids=True,
+            )    
+
+pytable = wrap_as_pytable(
+    query.table()
+    )
+
+pytable = wrap_as_pytable(
+    query.table(),
+    10000
+    )
+
+pytable.pprint()
+
+
+#
+# Run the same query with a row limit.
+params = {
+    "adql.query.limit.rows" : 10
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(
+    query
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a single row limit.
+params = {
+    "adql.query.limit.rows" : 1
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(query)
+
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a zero row limit.
+params = {
+    "adql.query.limit.rows" : 0
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(
+    query
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a short time limit.
+params = {
+    "adql.query.limit.time" : 5
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(
+    query
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a short wait.
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    10
+    )
+print(
+    query
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table(),
+    1000
+    )
+pytable.pprint(
+    )
+
+#
+# Run the same query with a short wait and a longer delay.
+params = {
+    "adql.query.delay.every" : 20
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    10,
+    params
+    )
+
+done=False
+while not done:
+    done = (query.status() == 'COMPLETED')
+    print("[{}][{}]".format(query.status(), query.table().count()))
+    if not done:
+        time.sleep(0.5)
+
+
+#
+# Run several queries at the same time.
+# https://docs.python.org/3/library/concurrent.futures.html
+# http://masnun.com/2016/03/29/python-a-quick-introduction-to-the-concurrent-futures-module.html
+# 
+
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+
+input_query="SELECT TOP 10000 ra,dec FROM TWOMASS.twomass_psc"
+
+def do_query(workspace, limit):
+    query = workspace.create_query(
+        input_query,
+        "COMPLETED",
+        None,
+        20000,
+            {
+            "adql.query.limit.rows" : limit,
+            "adql.query.delay.first" : 500
+            }
+        )
+    #print(query)
+    #print(query.table())
+    return query.table().count()
+
+def run_queries(threads, tasks):
+    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        futures = {
+            executor.submit(
+                do_query,
+                workspace,
+                limit
+                ): limit for limit in range(tasks)
+            }
+        for future in concurrent.futures.as_completed(futures):
+            print(
+                future.result()
+                )
+
+run_queries(200, 10)
+run_queries(200, 20)
+run_queries(200, 30)
+...
+run_queries(200, 80)
+run_queries(200, 90)
+run_queries(200, 100)
+
+
+2018-04-01 03:40:33,096 ERROR [callback-interface-49] [BlueTaskEntity$TaskRunner] ExecutionException executing Future [java.lang.NullPointerException][null] 
+2018-04-01 03:40:33,097 DEBUG [main-interface-57] [AdqlResourceEntity] services() 
+2018-04-01 03:40:33,100 DEBUG [main-interface-57] [AdqlResourceEntity] services() 
+2018-04-01 03:40:33,097 DEBUG [main-interface-90] [HttpRequestDebug]   remoteAddr  [172.20.0.5] 
+2018-04-01 03:40:33,100 DEBUG [main-interface-90] [HttpRequestDebug]   remoteHost  [172.20.0.5] 
+2018-04-01 03:40:33,100 DEBUG [main-interface-57] [JdbcResourceEntity] services() 
+2018-04-01 03:40:33,100 DEBUG [callback-interface-49] [BlueTaskEntity$TaskRunner] ExecutionException executing Future 
+java.lang.NullPointerException: null
+	at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity$10.update(BlueQueryEntity.java:2080)
+	at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner.future(BlueTaskEntity.java:238)
+	at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner$$FastClassBySpringCGLIB$$d43bdbfb.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:747)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:294)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:98)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+

@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateMethod;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnector;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcOperator;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -56,14 +56,14 @@ implements JdbcOperator
         //jdbc:jtds:sqlserver://{host}:{port}/${database}
         final StringBuilder builder = new StringBuilder();
         builder.append("jdbc:jtds:sqlserver://");
-        builder.append(this.connection.host());
-        if (this.connection.port() != null)
+        builder.append(this.connector.host());
+        if (this.connector.port() != null)
             {
             builder.append(":");
-            builder.append(this.connection.port());
+            builder.append(this.connector.port());
             }
         builder.append("/");
-        builder.append(this.connection.database());
+        builder.append(this.connector.database());
         return builder.toString();
         }
 
@@ -71,25 +71,25 @@ implements JdbcOperator
      * Public constructor.
      * 
      */
-    public SQLServerOperator(final JdbcConnection connection)
+    public SQLServerOperator(final JdbcConnector connector)
         {
         super();
-        this.connection = connection ;
+        this.connector = connector ;
         }
 
     /**
-     * Our parent {@link JdbcConnection}.
+     * Our parent {@link JdbcConnector}.
      *  
      */
-    private JdbcConnection connection;
+    private JdbcConnector connector;
 
     /**
-     * Our parent {@link JdbcConnection}.
+     * Our parent {@link JdbcConnector}.
      *  
      */
-    public JdbcConnection connection()
+    public JdbcConnector connector()
         {
-        return this.connection;
+        return this.connector;
         }
 
     /**
@@ -224,18 +224,19 @@ implements JdbcOperator
         {
         try {
             log.debug("SQL statement [{}]", statement);
-            final int result = this.connection.open().createStatement().executeUpdate(
+            final int result = this.connector.open().createStatement().executeUpdate(
                 statement.toString()
                 );
             log.debug("SQL result [{}]", result);
             }
         catch (final SQLException ouch)
             {
-            log.warn("SQL Exception [{}]", ouch.getMessage());
-            log.warn("SQL Statement [{}]", statement);
+//TODO Pass this error up to caller.            
+            log.error("SQL Exception [{}]", ouch.getMessage());
+            log.error("SQL Statement [{}]", statement);
             }
         finally {
-            connection.close();
+            connector.close();
             }
         }
 

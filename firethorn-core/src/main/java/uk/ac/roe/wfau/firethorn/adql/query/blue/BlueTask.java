@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
@@ -73,10 +74,30 @@ extends NamedEntity
     public static interface TaskRunner<TaskType extends BlueTask<?>>
         {
         /**
+         * Public interface for a {@link BlueTask} operator.
+         *
+         */
+        public interface Operator
+            {
+            /**
+             * Get the {@link Operation} for this {@link Thread}.
+             * 
+             */
+            public Operation operation();
+
+            /**
+             * Set the {@link Operation} for this {@link Thread}.
+             * 
+             */
+            public void operation(final Operation oper);
+            }
+
+        /**
          * Public interface for a {@link BlueTask} updator.
          *
          */
         public interface Updator<TaskType extends BlueTask<?>>
+        extends Operator
             {
             /**
              * The {@link BlueTask} {@link Identifier}.
@@ -89,7 +110,7 @@ extends NamedEntity
              * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public TaskState execute()
+            public TaskState update()
             throws ProtectionException;
             }
 
@@ -114,6 +135,7 @@ extends NamedEntity
          *
          */
         public interface Creator<TaskType extends BlueTask<?>>
+        extends Operator
             {
             /**
              * Execute the step.
@@ -142,7 +164,7 @@ extends NamedEntity
         /**
          * Execute an {@link TaskRunner.Creator} in a {@link Future}.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action.
-         *  
+         * 
          */
         public Future<TaskType> future(final Creator<TaskType> creator)
         throws ProtectionException ;
@@ -188,6 +210,7 @@ extends NamedEntity
         EDITING(false),
         READY(false),
         QUEUED(true),
+        SENDING(true),
         RUNNING(true),
         COMPLETED(false),
         CANCELLED(false),
@@ -315,10 +338,22 @@ extends NamedEntity
         public TaskState state();
 
         /**
+         * Check if this {@link Handle} is sticky.
+         * 
+         */
+        public boolean sticky();
+
+        /**
          * Update our {@link Handle} with a {@link TaskState} event.
          *
          */
         public void event(final TaskState state);
+
+        /**
+         * Update our {@link Handle} with a {@link TaskState} event.
+         *
+         */
+        public void event(final TaskState state, final boolean activate);
 
         /**
          * Event listener interface.
@@ -401,7 +436,7 @@ extends NamedEntity
         }
 
     /**
-     * Access to the {@link BlueTask} parameters.
+     *  Access to the {@link BlueTask} parameters.
      * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *  
      */
@@ -409,13 +444,13 @@ extends NamedEntity
     throws ProtectionException;
 
     /**
-     * Public interface for the {@link Entity} message log.
+     * Public interface for the {@link BlueTask} history.
      * 
      */
     public interface History
         {
         /**
-         * Create a new log entry.
+         * Create a new entry.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
@@ -423,7 +458,7 @@ extends NamedEntity
         throws ProtectionException;
 
         /**
-         * Create a new log entry.
+         * Create a new entry.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
@@ -431,7 +466,7 @@ extends NamedEntity
         throws ProtectionException;
 
         /**
-         * Create a new log entry.
+         * Create a new entry.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
@@ -439,7 +474,7 @@ extends NamedEntity
         throws ProtectionException;
 
         /**
-         * Create a new log entry.
+         * Create a new entry.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
@@ -447,7 +482,7 @@ extends NamedEntity
         throws ProtectionException;
 
         /**
-         * Select all the log entries for this entity.
+         * Select all the entries for this {@link BlueTask}.
          * @Deprecated Use select(Integer count).
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
@@ -457,7 +492,7 @@ extends NamedEntity
         throws ProtectionException;
 
         /**
-         * Select the most recent log entries for this entity.
+         * Select the most recent entries.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
@@ -465,7 +500,7 @@ extends NamedEntity
         throws ProtectionException;
 
         /**
-         * Select all the log entries with a specific level for this entity.
+         * Select all the entries with a specific level.
          * @Deprecated Use select(Integer count, Level level).
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
@@ -475,7 +510,7 @@ extends NamedEntity
         throws ProtectionException;
 
         /**
-         * Select the most recent log entries with a specific level for this entity.
+         * Select the most recent entries with a specific level.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          * 
          */
@@ -485,7 +520,7 @@ extends NamedEntity
         }
 
     /**
-     * Access to the {@link BlueTask} message log.
+     * Access to the {@link History} for this {@link BlueTask}.
      * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      * 
      */

@@ -50,7 +50,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.sqlserver.SQLServerTranslator;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
- * {@link JdbcConnection} implementation.
+ * {@link JdbcConnector} implementation.
  * @todo This is not thread safe at all.
  * Miss-match, JDBC connections are held in a ThreadLocal, but the count of open/close is per entity, not per thread.
  *
@@ -61,7 +61,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
     AccessType.FIELD
     )
 public class JdbcConnectionEntity
-implements JdbcConnection
+implements JdbcConnector
     {
     /**
      * Hibernate column mapping, {@value}.
@@ -687,6 +687,7 @@ implements JdbcConnection
      */
     public JdbcMetadataScanner scanner()
         {
+        log.debug("scanner() for [{}]", this.type().name());
         switch (this.type())
             {
             case hsqldb :
@@ -713,7 +714,7 @@ implements JdbcConnection
     @Override
     public JdbcOperator operator()
         {
-        log.debug("jdbcdriver() for [{}]", this.type().name());
+        log.debug("operator() for [{}]", this.type().name());
         switch (this.type())
             {
             case hsqldb:
@@ -740,7 +741,7 @@ implements JdbcConnection
     @Override
     public AdqlTranslator translator()
         {
-        log.debug("jdbctranslator() for [{}]", this.type().name());
+        log.debug("translator() for [{}]", this.type().name());
         switch (this.type())
             {
             case hsqldb:

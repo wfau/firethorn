@@ -170,6 +170,7 @@ implements OgsaExecResource
          */
         protected OgsaExecResource simple(final OgsaService service)
             {
+// TODO - is this actually used ?            
             log.debug("simple(OgsaService) [{}]", service.ident());
             return super.insert(
                 new OgsaExecResourceEntity(

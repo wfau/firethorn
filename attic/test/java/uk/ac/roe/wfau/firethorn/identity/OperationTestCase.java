@@ -45,7 +45,8 @@ extends TestBase
             final Operation operation = factories().operations().entities().create(
                 "target",
                 "method",
-                "source"
+                "source",
+                i
                 );
             factories().hibernate().flush();
             factories().hibernate().evict(operation);

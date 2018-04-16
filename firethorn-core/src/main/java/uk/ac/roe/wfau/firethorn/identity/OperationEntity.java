@@ -83,10 +83,11 @@ implements Operation
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_TARGET_COL  = "target"  ;
-    protected static final String DB_METHOD_COL  = "method"  ;
-    protected static final String DB_SOURCE_COL  = "source"  ;
-    protected static final String DB_AUTH_COL    = "auth" ;
+    protected static final String DB_HTTP_URL_COL    = "http_url" ;
+    protected static final String DB_HTTP_METHOD_COL = "http_method" ;
+    protected static final String DB_SOURCE_ADDR_COL = "source_addr" ;
+    protected static final String DB_SERVER_PORT_COL = "server_port" ;
+    protected static final String DB_AUTH_METHOD_COL = "auth_method" ;
 
     @Component
     public static class EntityFactory
@@ -107,21 +108,22 @@ implements Operation
 
         @Override
         @CreateMethod
-        public Operation create(final String target, final String method, final String source)
+        public Operation create(final String path, final String method, final String source, final int port)
             {
             return current(
                 this.insert(
                     new OperationEntity(
-                        target,
+                        path,
                         method,
-                        source
+                        source,
+                        port
                         )
                     )
                 );
             }
 
         /*
-         * ThreadLocal store for the current {@link Operation}.
+         * A {@link ThreadLocal} store for the current {@link Operation}.
          *
          */
         private final ThreadLocal<Operation> local = new ThreadLocal<Operation>();
@@ -132,13 +134,13 @@ implements Operation
             return local.get();
             }
 
-        private Operation current(final Operation oper)
+        @Override
+        public Operation current(final Operation oper)
             {
-// Error if one replaces another ?            
             local.set(
                 oper
                 );
-            return oper;
+            return local.get();
             }
         }
 
@@ -254,14 +256,13 @@ implements Operation
      * Protected constructor.
      *
      */
-    protected OperationEntity(final String target, final String method, final String source)
+    protected OperationEntity(final String path, final String method, final String source, final int port)
         {
         super(true);
 	    // Question - how can Operation get an owner, when we haven't handled the authentication yet. 
-        // Because the ThreadLocal Operation does not get cleared when a Thread from a ThreadPool is re-used ?
-        log.debug("OperationEntity()");
-        log.debug("  Owner [{}]", this.owner());
-        this.target = target ;
+        // Because the ThreadLocal Operation does not get cleared when a Thread from a ThreadPool is re-used ? 
+        this.port = port ;
+        this.url = path ;
         this.method = method ;
         this.source = source ;
         }
@@ -270,26 +271,26 @@ implements Operation
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_TARGET_COL,
+        name = DB_HTTP_URL_COL,
         unique = false,
         nullable = true,
-        updatable = true
+        updatable = false
         )
-    private String target ;
+    private String url ;
     @Override
-    public String target()
+    public String url()
         {
-        return this.target ;
+        return this.url ;
         }
 
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_METHOD_COL,
+        name = DB_HTTP_METHOD_COL,
         unique = false,
         nullable = true,
-        updatable = true
+        updatable = false
         )
     private String method ;
     @Override
@@ -302,16 +303,32 @@ implements Operation
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_SOURCE_COL,
+        name = DB_SOURCE_ADDR_COL,
         unique = false,
         nullable = true,
-        updatable = true
+        updatable = false
         )
     private String source ;
     @Override
     public String source ()
         {
         return this.source ;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_SERVER_PORT_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private Integer port ;
+    @Override
+    public Integer port()
+        {
+        return this.port;
         }
 
     /**
@@ -323,7 +340,7 @@ implements Operation
         targetEntity = AuthenticationImplEntity.class
         )
     @JoinColumn(
-        name = DB_AUTH_COL,
+        name = DB_AUTH_METHOD_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -433,7 +450,6 @@ implements Operation
     /**
      * Get the corresponding Hibernate entity for the current thread.
      * @throws HibernateConvertException 
-     * @throws ProtectionException 
      * @todo Move to a generic base class. 
      *
      */
@@ -458,10 +474,10 @@ implements Operation
         catch (final ProtectionException ouch)
             {
             log.error("ProtectionException [{}][{}]", this.getClass().getName(), ident());
-            throw new HibernateConvertException(
-                ident(),
-                ouch
-                );
-            }
+        	throw new HibernateConvertException(
+    			ident(),
+    			ouch
+    			);
+        	}
         }
     }

@@ -688,7 +688,7 @@ implements JdbcTable
             schema,
             name
             );
-        log.debug("ZRQ JdbcTableEntity [{}][{}][{}]", schema.name(), name, type);
+        log.debug("JdbcTableEntity [{}][{}][{}]", schema.name(), this.name(), type);
         
         this.bluequery = query;
         this.schema = schema;
@@ -795,7 +795,6 @@ implements JdbcTable
             public JdbcColumn select(final Identifier ident)
             throws ProtectionException, IdentifierNotFoundException
                 {
-                // TODO Add parent constraint.
                 return factories().jdbc().columns().entities().select(
                     JdbcTableEntity.this,
                     ident

@@ -223,7 +223,7 @@ extends BaseResource<JdbcSchema>
      * Access to our JDBC connection.
      *
      */
-    public JdbcConnection connection()
+    public JdbcConnector connection()
     throws ProtectionException;
 
     /**
