@@ -21,10 +21,41 @@
 #
 
 # -----------------------------------------------------
-# Set the target branch
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh Araybwyn
+
+# -----------------------------------------------------
+# Add our secret function.
 #[user@virtual]
 
-    branch=2.1.18
+    vi "${HOME:?}/secret.sh"
+
+        ....
+        ....
+        ....
+
+    source "${HOME:?}/secret.sh"
+    secret 'frog'
+
+# -----------------------------------------------------
+# Set the target version
+#[user@virtual]
+
+    buildtag=2.1.18
 
 # -----------------------------------------------------
 # Download our compose file.
@@ -42,7 +73,7 @@
     
     cat > "${HOME:?}/chain.properties" << EOF
 
-        buildtag=${branch:?}
+        buildtag=${buildtag:?}
         
         metauser=$(pwgen 20 1)
         metapass=$(pwgen 20 1)

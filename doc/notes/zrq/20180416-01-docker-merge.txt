@@ -227,6 +227,11 @@
 
         08.02-docker-push.sh
 
+        docker tag "firethorn/firethorn-py:${newversion:?}" "firethorn/firethorn-py:latest"
+
+        docker push "firethorn/firethorn-py:${newversion:?}"
+        docker push "firethorn/firethorn-py:latest"
+
     # -----------------------------------------------------
     # Push binaries to Maven repo.
     #[root@builder]

@@ -85,53 +85,9 @@ services:
             jarmila:
                 condition: service_healthy            
 
-    tester:
-        image:
-           "firethorn/tester:${buildtag}"
-        read_only:
-            false
-        stdin_open:
-            true
-        tty:
-            true
-        tmpfs:
-            - /run
-            - /tmp
-        volumes:
-            - /etc/localtime:/etc/localtime:ro
-            - ./bin/testup.sh:/testup.sh
-            - ./bin/testdo.sh:/testdo.sh
-        networks:
-            - miriam
-
-        environment:
-
-            endpointurl: "http://gillian:8080/firethorn"
-
-            datatype: "${datatype}"
-            datahost: "${datahost}"
-            datadata: "${datadata}"
-            datauser: "${datauser}"
-            datapass: "${datapass}"
-
-            admingroup: "${admingroup}"
-            guestgroup: "${guestgroup}"
-
-            adminuser: "${adminuser}"
-            adminpass: "${adminpass}"
-
-        depends_on:
-            gillian:
-                condition: service_healthy            
-        command:
-            [bash]
-
-    distictella:
+    angela:
         image:
            "firethorn/firethorn-py:${buildtag}"
-        build:
-            context:    "${ftpysrc}"
-            dockerfile: "Fedorafile"
         read_only:
             false
         stdin_open:
@@ -165,6 +121,5 @@ services:
                 condition: service_healthy            
         command:
             [python3]
-
 
 
