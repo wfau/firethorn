@@ -87,7 +87,7 @@ services:
 
     angela:
         image:
-           "firethorn/firethorn-py:${buildtag}"
+           "firethorn/firethorn-py:${buildtag:-latest}"
         read_only:
             false
         stdin_open:
