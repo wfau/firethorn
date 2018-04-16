@@ -1,0 +1,475 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.18
+
+# -----------------------------------------------------
+# Download our compose file.
+#[user@virtual]
+
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/distictella/distictella-local.yml
+
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/distictella/distictella-remote.yml
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    source "${HOME:?}/secret.sh"
+    
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${branch:?}
+        
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        usertype=mssql
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datatype=mssql
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        admingroup=Hyaenidae
+        adminuser=Aardwolf
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=Afrotheria
+        guestuser=Hyrax
+        guestpass=$(pwgen 20 1)
+
+        zelltype=pgsql
+        zellhost=zelleri
+        zelldata=postgres
+        zelluser=$(pwgen 20 1)
+        zellpass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Link our compose config.
+#[user@virtual]
+
+    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Run our compose set.
+#[user@desktop]
+
+    docker-compose \
+        --file distictella-local.yml \
+        run \
+            distictella
+
+# -----------------------------------------------------
+# Tail the logs in a separate window.
+#[user@desktop]
+
+    ssh Araybwyn
+
+        sudo tail -f /logs/gillian/firethorn.log
+
+    ssh Araybwyn
+
+        sudo tail -f /logs/jarmila/ogsadai.log
+
+
+# -----------------------------------------------------
+# Run our Python client.
+#[user@pyclient]
+
+import os
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client.
+firethorn = ftpy.Firethorn(
+    os.environ.get(
+        'endpoint'
+        ),
+    )
+
+#
+# Login using the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    '*',
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass')
+    )
+
+print(
+    atlas_jdbc
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+
+print(
+    atlas_adql
+    )
+
+#
+# Import the target JdbcSchema into AdqlSchema.
+schema_names = [
+    "ATLASDR1",
+    "TWOMASS"
+    ]
+
+for schema_name in schema_names:
+    print(schema_name)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        schema_name,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + schema_name + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            schema_name,
+            metadoc=metadoc
+            )
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using our guest account.
+firethorn.login(
+    os.environ.get('guestuser'),
+    os.environ.get('guestpass'),
+    os.environ.get('guestgroup')
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# Create and run a query.
+atlas_adql = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query = workspace.create_query(
+    atlas_adql,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query
+    )
+print(
+    query.json_object.get("results").get("count")
+    )
+
+#
+# Get the query results.
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+
+#
+# Convert the query results into an astropy table.
+from astropy.table import Table as ApTable
+def wrap_as_pytable(adql_table, limit=100):
+    if ((limit) and (query.table().count() > limit)):
+        print("Row count [" + str(query.table().count()) + "] exceeds limit [" + str(limit) + "]")
+        return None
+    else:
+        return ApTable.read(
+            adql_table.json_object.get("formats").get("votable"),
+            format="votable",
+            use_names_over_ids=True,
+            )    
+
+pytable = wrap_as_pytable(
+    query.table(),
+    10000
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a small row limit.
+params = {
+    "adql.query.limit.rows" : 10
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(
+    query
+    )
+print(
+    query.json_object.get("results").get("count")
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a single row limit.
+params = {
+    "adql.query.limit.rows" : 1
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(
+    query
+    )
+print(
+    query.json_object.get("results").get("count")
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a zero row limit.
+params = {
+    "adql.query.limit.rows" : 0
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(
+    query
+    )
+print(
+    query.json_object.get("results").get("count")
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a short time limit.
+params = {
+    "adql.query.limit.time" : 5
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    3000000,
+    params
+    )
+print(
+    query
+    )
+print(
+    query.json_object.get("results").get("count")
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table()
+    )
+pytable.pprint()
+
+
+#
+# Run the same query with a short wait.
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    10
+    )
+print(
+    query
+    )
+print(
+    query.json_object.get("results").get("count")
+    )
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
+pytable = wrap_as_pytable(
+    query.table(),
+    1000
+    )
+pytable.pprint(
+    )
+
+#
+# Run the same query with a short wait and a long delay.
+params = {
+    "adql.query.delay.every" : 20
+    }
+query = workspace.create_query(
+    "SELECT TOP 1000 ra,dec FROM TWOMASS.twomass_psc",
+    "COMPLETED",
+    None,
+    1000,
+    params
+    )
+
+done=False
+while not done:
+    done = (query.status() == 'COMPLETED')
+    print("[{}][{}]".format(query.status(), query.table().count()))
+    if not done:
+        time.sleep(0.5)
+
+#
+# TODO Better example of long polling ..
+# TODO Needs wait param on query.refresh()
+# TODO Needs query.wait()
+#
+
+#
+# Run several queries at the same time.
+# https://docs.python.org/3/library/concurrent.futures.html
+# http://masnun.com/2016/03/29/python-a-quick-introduction-to-the-concurrent-futures-module.html
+# 
+
+
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+
+def do_query(workspace, limit, delay):
+    query = workspace.create_query(
+        atlas_adql,
+        "COMPLETED",
+        None,
+        200000,
+            {
+            "adql.query.limit.rows"  : limit,
+            "adql.query.delay.every" : delay
+            }
+        )
+    return query.json_object.get("results").get("count")
+
+def run_queries(threads, delay):
+    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        futures = {
+            executor.submit(
+                do_query,
+                workspace,
+                limit,
+                delay
+                ): limit for limit in range(threads, 0, -1)
+            }
+        for future in concurrent.futures.as_completed(futures):
+            print(
+                future.result()
+                )
+
+run_queries(100, 100)
+run_queries(100,  10)
+run_queries(100,   1)
+run_queries(100,   0)
+
+#
+# Takes > 36hrs and produces > 30G of logs
+for threads in range(1, 100):
+    for delay in range(100, -10, -10):
+        print("---- ", threads, delay)
+        run_queries(threads, delay)
+
+
+
+

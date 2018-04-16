@@ -1,0 +1,240 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh Araybwyn
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    vi "${HOME:?}/secret.sh"
+
+        ....
+        ....
+        ....
+
+    source "${HOME:?}/secret.sh"
+    secret 'frog'
+
+# -----------------------------------------------------
+# Download our builder compose file
+#[user@virtual]
+     
+    wget -O builder.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.16-zrq-race-bug
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder 
+
+    # -----------------------------------------------------
+    # Add our secret function.
+    #[user@virtual]
+
+        vi "${HOME:?}/secret.sh"
+
+            ....
+            ....
+            ....
+
+        source "${HOME:?}/secret.sh"
+        secret 'frog'
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        01.01-init.sh
+        
+    # -----------------------------------------------------
+    # Checkout a copy of our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+    # -----------------------------------------------------
+    # Merge our branch into main.
+    #[root@builder]
+
+        07.01-merge-start.sh
+
+    # -----------------------------------------------------
+    # Update our version number.
+    #[root@builder]
+
+        07.02-version-step.sh
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
+
+        05.01-javamaven.sh
+
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
+
+        05.02-javadocker.sh
+
+    # -----------------------------------------------------
+    # Fetch our Python code.
+    #[root@builder]
+
+        PYTHON_CODE=/var/local/build/client
+
+        if [  -e "${PYTHON_CODE:?}" ]
+        then
+            pushd "${PYTHON_CODE:?}"
+
+                echo "Updating Python code"
+
+                git pull
+            
+            popd
+        else
+            pushd "$(dirname ${PYTHON_CODE:?})"
+
+                gitrepo='https://github.com/Zarquan/firethorn.py.git'
+                echo "Cloning Python code from [${gitrepo:?}]"
+
+                git clone "${gitrepo:?}" "$(basename ${PYTHON_CODE:?})"
+
+            popd
+        fi
+
+    # -----------------------------------------------------
+    # Build our Python container.
+    #[root@builder]
+
+        export buildtag=${newversion:?}
+
+        pushd "${PYTHON_CODE:?}"
+
+            docker build \
+                --tag firethorn/firethorn-py:${buildtag} \
+                --file Fedorafile \
+                .
+
+        popd
+
+
+# -----------------------------------------------------
+# Run our Python tests.
+#[user@virtual]
+# -----------------------------------------------------
+
+
+    # -----------------------------------------------------
+    # Update our Mercurial config.
+    #[root@builder]
+
+        # TODO Move to secrets.
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+    
+            vi .hg/hgrc
+
+                [paths]
+                default   = http://wfau.metagrid.co.uk/code/firethorn
+            +   push-repo = ssh://Zarquan@data.metagrid.co.uk//var/local/wfau/projects/firethorn/code
+
+                [ui]
+            +   username = Dave Morris <dmr@roe.ac.uk>
+
+        popd
+
+    # -----------------------------------------------------
+    # Commit our merged code.
+    #[root@builder]
+
+        07.03-merge-commit.sh
+
+    # -----------------------------------------------------
+    # Push changes to Mercurial 
+    #[root@builder]
+
+        08.03-mercurial-push.sh
+
+    # -----------------------------------------------------
+    # Tag our new images
+    #[root@builder]
+
+        08.01-docker-latest.sh
+
+    # -----------------------------------------------------
+    # Push images to Docker.
+    #[root@builder]
+
+        08.02-docker-push.sh
+
+    # -----------------------------------------------------
+    # Push binaries to Maven repo.
+    #[root@builder]
+
+        08.04-maven-push.sh
+
+
+
+
+
+
