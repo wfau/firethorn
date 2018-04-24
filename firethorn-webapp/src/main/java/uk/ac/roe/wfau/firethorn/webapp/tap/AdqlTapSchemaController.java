@@ -134,10 +134,10 @@ public class AdqlTapSchemaController extends AbstractController {
 	@Value("${firethorn.tapschema.database.type:pgsql}")
 	private String type;
 
-	@Value("${firethorn.tapschema.database.driver}")
+	@Value("${firethorn.tapschema.database.driver:org.postgresql.Driver}")
 	private String driver;
 
-	@Value("${firethorn.tapschema.database.port}")
+	@Value("${firethorn.tapschema.database.port:5432}")
 	private String port;
 
 	@Override

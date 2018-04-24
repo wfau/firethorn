@@ -121,9 +121,10 @@ tapschemadatabase=$(secret 'firethorn.tapschema.database.name')
 tapschemauser=$(secret 'firethorn.tapschema.database.user')
 tapschemapass=$(secret 'firethorn.tapschema.database.pass')
 tapschemahost=$(secret 'firethorn.tapschema.database.host')
-tapschemaport=$(secret 'firethorn.tapschema.database.post')
+tapschemaport=$(secret 'firethorn.tapschema.database.port')
 tapschemahost=carolina
 tapschemajdbcname=$(secret 'firethorn.tapschema.resource.name')
+tapschemadriver=$(secret 'firethorn.tapschema.database.driver')
 
 datahost=$(secret 'firethorn.data.host')
 datadata=$(secret 'firethorn.data.data')
@@ -163,9 +164,10 @@ EOF
         firethorn.tapschema.resource.name="${tapschemajdbcname}"
 	firethorn.tapschema.database.name="${tapschemadatabase}"
 	firethorn.tapschema.database.host="${tapschemahost}"
-	firethorn.tapschema.database.post="${tapschemaport}"
+	firethorn.tapschema.database.port="${tapschemaport}"
 	firethorn.tapschema.database.user="${tapschemauser}"
 	firethorn.tapschema.database.pass="${tapschemapass}"
+	firethorn.tapschema.database.driver="${tapschemadriver}"
 
         firethorn.admin.community=${admingroup:?}
         firethorn.admin.user.name=${adminuser:?}
