@@ -39,8 +39,8 @@
     ssh Araybwyn
 
 #
-# Add the /logs disc to our filesystem 
-#
+# Add the /logs volume to our filesystem 
+# 20180410-01-log-space.txt
 
 
 # -----------------------------------------------------
@@ -603,8 +603,8 @@ run_queries(100,  10)
 run_queries(100,   1)
 run_queries(100,   0)
 
-for threads in range(1, 100):
-    for delay in range(100, -10, -10):
+for threads in range(1, 110):
+    for delay in range(1000, -100, -100):
         print("---- ", threads, delay)
         run_queries(threads, delay)
 
