@@ -18,9 +18,11 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
@@ -553,12 +555,11 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	 * @throws ProtectionException 
 	 * 
 	 */
-	public void createTapSchema()
+	public JdbcSchema createTapSchemaJdbc()
     throws ProtectionException
 	    {
 		this.createStructure();
 		this.insertMetadata();
-		AdqlResource resource = this.resource;
 		
 		JdbcResource tap_schema_resource = this.factories.jdbc().resources().entities().create(
             this.tapSchemaResourceJDBCName,
@@ -571,16 +572,49 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
             this.properties.getPassword()
 	        );
 
-		JdbcSchema tap_schema;
+		JdbcSchema tap_schema = null;
 		
 		try {
 			tap_schema = tap_schema_resource.schemas().select(this.properties.getCatalog()  + "." + this.tapSchemaJDBCName);
-			resource.schemas().create("TAP_SCHEMA", tap_schema);
-		} catch (NameNotFoundException e) {
-			System.out.println(e);
+		} catch (Exception e) {
+			log.debug("Exception: ", e);
 		}
+		
+		return tap_schema;
 	}
 
+	/**
+	 * Create the TAP_SCHEMA 
+	 * @throws ProtectionException 
+	 * 
+	 */
+	public AdqlSchema createTapSchemaAdql(JdbcSchema tap_schema )
+    throws ProtectionException
+	    {
+		AdqlSchema tap_adql_schema = null;
+		
+		try {
+			tap_adql_schema = resource.schemas().create(AdqlSchema.CopyDepth.PARTIAL, "TAP_SCHEMA", tap_schema);
+
+			for (JdbcTable table : tap_schema.tables().select()) {
+				AdqlTable adqltable = tap_adql_schema.tables().create(AdqlSchema.CopyDepth.PARTIAL, table.base(), table.name());
+
+				for (JdbcColumn column : table.columns().select()) {
+					if (column.name().toLowerCase()!="tableoid" && 
+							column.name().toLowerCase()!="ctid" &&
+							column.name().toLowerCase()!="xmin" &&
+							column.name().toLowerCase()!="xmax" &&
+							column.name().toLowerCase()!="cmin" &&
+							column.name().toLowerCase()!="cmax")
+					adqltable.columns().create(column.base(), column.name());
+				}
+			}
+		} catch (Exception e) {
+			log.debug("Exception: ", e);
+		}
+		
+		return tap_adql_schema;
+	}
 
 
 }

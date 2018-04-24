@@ -38,7 +38,9 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import org.springframework.beans.factory.annotation.Value;
@@ -182,8 +184,9 @@ public class AdqlTapSchemaController extends AbstractController {
 		TapSchemaProperties properties = new TapSchemaProperties(username, password, catalog, database, host, type, driver, port, jdbcname);
 		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(servletContext, factories(), resource, properties);
 		generator.getProperties().setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
-		generator.createTapSchema();
-		
+		JdbcSchema schema = generator.createTapSchemaJdbc();
+		generator.createTapSchemaAdql(schema);
+	
 	}
 
 }
