@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Arrays;
 
 import javax.servlet.ServletContext;
 
@@ -153,7 +155,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			con = DriverManager.getConnection(this.properties.getConnectionURL(),
 					this.properties.getUsername(), this.properties.getPassword());
 
-			log.debug("Inserting resource records into the table...");
+            log.debug("Inserting resource records into the table...");
 			stmt = con.createStatement();			
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -413,12 +415,12 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".schemas VALUES ('"
 							+ schemaName + "', '" + schemaDescription.replace("'", "''")
 							+ "', NULL);";
-				}
+				    }
 				
 				stmt.executeUpdate(sql);
 				
 				for (AdqlTable table : schema.tables().select()) {
-					String tableName = table.name().replace("'", "''");
+				    String tableName = table.name().replace("'", "''");
 					String tableDescription = table.text();
 					if (tableDescription==null){
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".tables VALUES ('"
@@ -427,16 +429,16 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName  +  "\".tables VALUES ('"
 								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
 								+ tableDescription.replace("'", "''") + "', '');";
-					}
+					    }
 
 					stmt.executeUpdate(sql);
 
 					for (AdqlColumn column : table.columns().select()) {
-						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".columns VALUES (";
+	                    sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".columns VALUES (";
 						String columnName = column.name().replace("'", "''");
                         if (columnName.toLowerCase().equals("timestamp") || columnName.toLowerCase().equals("coord2") || columnName.toLowerCase().equals("coord1")){  
                         	columnName = '"' + column.name() + '"';
-                        }
+                            }
 						String columnDescription = column.text();
 						sql += "'" +  schemaName + "." + tableName + "',";
 						sql += "'" + columnName + "',";
@@ -444,7 +446,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 							sql += "NULL, ";
 						} else {
 							sql += "'" + columnDescription.replace("'", "''") + "',";
-						}
+						    }
 
 						AdqlColumn.Metadata meta = column.meta();
 
@@ -454,13 +456,13 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 								sql += "'" + meta.adql().units().replace("'", "''") + "',";
 							} else {
 								sql += "'',";
-							}
+							    }
 
 							if (meta.adql().ucd() != null) {
 								sql += "'" + meta.adql().ucd().replace("'", "''") + "',";
 							} else {
 								sql += "'',";
-							}
+							    }
 
 							if (meta.adql().utype() != null) {
 								sql += "'" + meta.adql().utype().replace("'", "''") + "',";
@@ -584,6 +586,19 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	}
 
 	/**
+	 * List of system tables to ignore.
+	 * 
+	 */
+	protected static final List<String> systables = Arrays.asList(
+        "tableoid",
+        "xmin",
+        "xmax",
+        "cmin",
+        "cmax",
+        "ctid"
+        );
+	
+	/**
 	 * Create the TAP_SCHEMA 
 	 * @throws ProtectionException 
 	 * 
@@ -599,15 +614,16 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			for (JdbcTable table : tap_schema.tables().select()) {
 				AdqlTable adqltable = tap_adql_schema.tables().create(AdqlSchema.CopyDepth.PARTIAL, table.base(), table.name());
 
-				for (JdbcColumn column : table.columns().select()) {
-					if (column.name().toLowerCase()!="tableoid" && 
-							column.name().toLowerCase()!="ctid" &&
-							column.name().toLowerCase()!="xmin" &&
-							column.name().toLowerCase()!="xmax" &&
-							column.name().toLowerCase()!="cmin" &&
-							column.name().toLowerCase()!="cmax")
-					adqltable.columns().create(column.base(), column.name());
-				}
+				for (JdbcColumn column : table.columns().select())
+			        {
+			        if (systables.contains(column.name().toLowerCase()))
+	                    {
+	                    continue ;
+	                    }
+			        else {
+					    adqltable.columns().create(column.base(), column.name());
+			            }
+			        }
 			}
 		} catch (Exception e) {
 			log.debug("Exception: ", e);
