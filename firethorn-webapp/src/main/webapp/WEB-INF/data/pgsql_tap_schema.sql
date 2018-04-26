@@ -1,9 +1,9 @@
 
-CREATE TABLE "TAP_SCHEMA"."schemas" ("schema_name" VARCHAR PRIMARY KEY, "description" VARCHAR, "utype" VARCHAR);
-CREATE TABLE "TAP_SCHEMA"."tables" ("schema_name" VARCHAR, "table_name" VARCHAR PRIMARY KEY, "table_type" VARCHAR, "description" VARCHAR, "utype" VARCHAR);
-CREATE TABLE "TAP_SCHEMA"."columns" ("table_name" VARCHAR, "column_name" VARCHAR, "description" VARCHAR, "unit" VARCHAR, "ucd" VARCHAR, "utype" VARCHAR, "datatype" VARCHAR, "size" INTEGER, "principal" INTEGER, "indexed" INTEGER, "std" INTEGER, PRIMARY KEY("table_name","column_name"));
-CREATE TABLE "TAP_SCHEMA"."keys" ("key_id" VARCHAR PRIMARY KEY, "from_table" VARCHAR, "target_table" VARCHAR, "description" VARCHAR, "utype" VARCHAR);
-CREATE TABLE "TAP_SCHEMA"."key_columns" ("key_id" VARCHAR, "from_column" VARCHAR, "target_column" VARCHAR, PRIMARY KEY("key_id", "from_column", "target_column"));
+CREATE TABLE "TAP_SCHEMA"."schemas" ("ts_schema_id" SERIAL PRIMARY KEY, schema_name" VARCHAR, "description" VARCHAR, "utype" VARCHAR, "ft_schema_id" INTEGER);
+CREATE TABLE "TAP_SCHEMA"."tables" ("ts_table_id" SERIAL PRIMARY KEY, "schema_name" VARCHAR, "table_name" VARCHAR PRIMARY KEY, "table_type" VARCHAR, "description" VARCHAR, "utype" VARCHAR, "ft_table_id" INTEGER);
+CREATE TABLE "TAP_SCHEMA"."columns" ("ts_column_id" SERIAL PRIMARY KEY, "table_name" VARCHAR, "column_name" VARCHAR, "description" VARCHAR, "unit" VARCHAR, "ucd" VARCHAR, "utype" VARCHAR, "datatype" VARCHAR, "size" INTEGER, arraysize INTEGER, "principal" INTEGER, "indexed" INTEGER, "std" INTEGER, "ft_column_id" INTEGER);
+CREATE TABLE "TAP_SCHEMA"."keys" ("ts_key_id" SERIAL PRIMARY KEY, "key_id" VARCHAR, "from_table" VARCHAR, "target_table" VARCHAR, "description" VARCHAR, "utype" VARCHAR);
+CREATE TABLE "TAP_SCHEMA"."key_columns" ("ts_key_column_id" SERIAL PRIMARY KEY, "key_id" VARCHAR, "from_column" VARCHAR, "target_column" VARCHAR);
 
 INSERT INTO "TAP_SCHEMA"."schemas" VALUES ('TAP_SCHEMA', 'Set of tables listing and describing the schemas, tables and columns published in this TAP service.', NULL);
 
@@ -29,6 +29,7 @@ INSERT INTO "TAP_SCHEMA"."columns" VALUES ('TAP_SCHEMA.columns', 'ucd', 'UCD of 
 INSERT INTO "TAP_SCHEMA"."columns" VALUES ('TAP_SCHEMA.columns', 'utype', 'UTYPE of column if any', '', '', '', 'VARCHAR', -1, 0, 0, 1);
 INSERT INTO "TAP_SCHEMA"."columns" VALUES ('TAP_SCHEMA.columns', 'datatype', 'ADQL datatype as in section 2.5', '', '', '', 'VARCHAR', -1, 0, 0, 1);
 INSERT INTO "TAP_SCHEMA"."columns" VALUES ('TAP_SCHEMA.columns', '"size"', 'length of variable length datatypes', '', '', '', 'INTEGER', -1, 0, 0, 1);
+INSERT INTO "TAP_SCHEMA"."columns" VALUES ('TAP_SCHEMA.columns', 'arraysize', 'length of variable length datatypes', '', '', '', 'INTEGER', -1, 0, 0, 1);
 INSERT INTO "TAP_SCHEMA"."columns" VALUES ('TAP_SCHEMA.columns', 'principal', 'a principal column; 1 means true, 0 means false', '', '', '', 'INTEGER', -1, 0, 0, 1);
 INSERT INTO "TAP_SCHEMA"."columns" VALUES ('TAP_SCHEMA.columns', 'indexed', 'an indexed column; 1 means true, 0 means false', '', '', '', 'INTEGER', -1, 0, 0, 1);
 INSERT INTO "TAP_SCHEMA"."columns" VALUES ('TAP_SCHEMA.columns', 'std', 'a standard column; 1 means true, 0 means false', '', '', '', 'INTEGER', -1, 0, 0, 1);

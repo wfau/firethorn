@@ -256,11 +256,11 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 				String sql;
 				if (schemaDescription==null){
 					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"schemas\" VALUES ('"
-							+ schemaName + "', NULL, NULL);";
+							+ schemaName + "', NULL, NULL," + schema.ident().toString() + ");";
 				} else {
 					sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"schemas\" VALUES ('"
 							+ schemaName + "', '" + schemaDescription.replace("'", "''")
-							+ "', NULL);";
+							+ "', NULL,"  + schema.ident().toString() + ");";
 				}
 				
 				stmt.executeUpdate(sql);
@@ -270,11 +270,11 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 					String tableDescription = table.text();
 					if (tableDescription==null){
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
-								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', NULL, '');";
+								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', NULL, ''," + table.ident().toString() + ");";
 					} else {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName +  "\".\"tables\" VALUES ('"
 								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
-								+ tableDescription.replace("'", "''") + "', '');";
+								+ tableDescription.replace("'", "''") + "', ''," + table.ident().toString() + ");";
 					}
 
 					stmt.executeUpdate(sql);
@@ -318,27 +318,27 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 							if (meta.adql().type() != null) {
 								
-								String votableType = meta.adql().type().votype().toString().replace("'", "''");
+								String votableType = meta.adql().type().name().toString().replace("'", "''");
 								String arraysize = "*";
 								
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
 								    {
-								    votableType = "char";
+								    votableType = "VARCHAR";
 								    arraysize = "*";
 								    }
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
 								    {
-								    votableType = "char";
+								    votableType = "VARCHAR";
 								    arraysize = "*";
 								    }
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
 								    {
-								    votableType = "char";
+								    votableType = "VARCHAR";
 								    arraysize = "*";
 								    }
 								else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) 
 								    {	
-									votableType = "int";
+									votableType = "INTEGER";
 								    arraysize = "1";
 								    }
 						       
@@ -351,14 +351,18 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 								if ((meta.adql().arraysize() != null)
 										&& (meta.adql().arraysize() != 0)) {
 									if (meta.adql().arraysize() == -1) {
-										sql += "null,";
+										sql += "null, null,";
 									} else {
+										sql += "'"+meta.adql().arraysize()
+												.toString().replace("'", "''")
+												+ "',";
+										
 										sql += "'"+meta.adql().arraysize()
 												.toString().replace("'", "''")
 												+ "',";
 									}
 								} else {
-									sql += "null,";
+									sql += "null, null,";
 								}
 							}
 						}
@@ -486,27 +490,27 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 							if (meta.adql().type() != null) {
 								
-								String votableType = meta.adql().type().votype().toString().replace("'", "''");
+								String votableType = meta.adql().type().name().toString().replace("'", "''");
 								String arraysize = "*";
 								
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
 								    {
-								    votableType = "char";
+								    votableType = "VARCHAR";
 								    arraysize = "*";
 								    }
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
 								    {
-								    votableType = "char";
+								    votableType = "VARCHAR";
 								    arraysize = "*";
 								    }
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
 								    {
-								    votableType = "char";
+								    votableType = "VARCHAR";
 								    arraysize = "*";
 								    }
 								else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) 
 								    {	
-									votableType = "int";
+									votableType = "INTEGER";
 								    arraysize = "1";
 								    }
 						       
@@ -519,19 +523,24 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 								if ((meta.adql().arraysize() != null)
 										&& (meta.adql().arraysize() != 0)) {
 									if (meta.adql().arraysize() == -1) {
-										sql += "null,";
+										sql += "null, null,";
 									} else {
+										sql += "'"+meta.adql().arraysize()
+												.toString().replace("'", "''")
+												+ "',";
+										
 										sql += "'"+meta.adql().arraysize()
 												.toString().replace("'", "''")
 												+ "',";
 									}
 								} else {
-									sql += "null,";
+									sql += "null, null,";
 								}
 							}
 						}
 
-						sql += " 0, null, null";
+						sql += " 0, null, null, ";
+							sql += column.ident().toString();
 						sql += ")";
 						stmt.executeUpdate(sql);
 
