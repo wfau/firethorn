@@ -5,13 +5,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletContext;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
@@ -21,7 +18,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -34,14 +30,32 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
  * 
  */
 @Slf4j
-@Component
 public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 
 	/**
-	 * Adql resource for which to create the TAP_SCHEMA
+	 * AdqlResource for which to create the TAP_SCHEMA.
+	 * 
 	 */
-	private AdqlResource resource;
+	private AdqlResource adqlresource;
+
+    /**
+     * AdqlSchema for the TAP_SCHEMA.
+     * 
+     */
+    private AdqlSchema adqlschema;
 	
+   /**
+     * JdbcResource for the TAP_SCHEMA.
+     * 
+     */
+    private JdbcResource jdbcresource;
+
+    /**
+     * JdbcSchema for the TAP_SCHEMA.
+     * 
+     */
+    private JdbcSchema jdbcschema;
+    
 	/**
 	 * Tap Schema Properties
 	 */
@@ -97,11 +111,11 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 	public TapSchemaGeneratorImpl(ServletContext servletContext,ComponentFactories factories, AdqlResource resource, TapSchemaProperties properties) {
 		super();
 		this.servletContext = servletContext;
-		this.resource = resource;
+		this.adqlresource = resource;
 		this.tapSchemaScript = "/WEB-INF/data/" + "pgsql_tap_schema";
 		this.factories = factories;
-		this.tapSchemaJDBCName = "TAP_SCHEMA_" + this.resource.ident().toString();
-		this.tapSchemaResourceJDBCName = "TAP_RESOURCE_" + this.resource.ident().toString();
+		this.tapSchemaJDBCName = "TAP_SCHEMA_" + this.adqlresource.ident().toString();
+		this.tapSchemaResourceJDBCName = "TAP_RESOURCE_" + this.adqlresource.ident().toString();
 		this.properties = properties;
 
 		if (this.properties.getType().toLowerCase().equals("pgsql")){
@@ -159,16 +173,16 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			stmt = con.createStatement();			
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
-			e.printStackTrace();
+            log.error("Exception: ", e);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+            log.error("Exception: ", e);
 		} finally {
 
 			if (con != null)
 				try {
 					con.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+	                log.debug("Exception: ", e);
 				}
 
 		}
@@ -202,16 +216,16 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			runner.runScript(r , getTapSchemaJDBCName());
 
 		} catch (IOException | SQLException e) {
-			e.printStackTrace();
+		    log.error("Exception: ", e);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+            log.error("Exception: ", e);
 		} finally {
 
 			if (con != null)
 				try {
 					con.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+	                log.error("Exception: ", e);
 				}
 
 		}
@@ -234,7 +248,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			System.out.println("Inserting resource records into the table...");
 			stmt = con.createStatement();
 
-			for (AdqlSchema schema : this.resource.schemas().select()) {
+			for (AdqlSchema schema : this.adqlresource.schemas().select()) {
 
 				String schemaName = schema.name().replace("'", "''");
 
@@ -360,25 +374,25 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			// End insert
 			System.out.println("Inserted records into the table...");
 
-		} catch (SQLException se) {
+		} catch (SQLException e) {
 			// Handle errors for JDBC
-			log.debug("SQLException: ", se);
+            log.error("Exception: ", e);
 		} catch (Exception e) {
-			log.debug("Exception: ", e);
-
+            log.error("Exception: ", e);
 		} finally {
 
 			try {
 				if (stmt != null)
 					con.close();
-			} catch (SQLException se) {
+			} catch (SQLException e) {
+                log.error("Exception: ", e);
 			}
 
 			try {
 				if (con != null)
 					con.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
+			} catch (SQLException e) {
+                log.error("Exception: ", e);
 			}// end finally
 		}
 
@@ -402,7 +416,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			System.out.println("Inserting resource records into the table...");
 			stmt = con.createStatement();
 
-			for (AdqlSchema schema : this.resource.schemas().select()) {
+			for (AdqlSchema schema : this.adqlresource.schemas().select()) {
 
 				String schemaName = schema.name().replace("'", "''");
 
@@ -528,42 +542,43 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
 			// End insert
 			System.out.println("Inserted records into the table...");
 
-		} catch (SQLException se) {
+		} catch (SQLException e) {
 			// Handle errors for JDBC
-			log.debug("SQLException: ", se);
+		    log.error("Exception: ", e);
 		} catch (Exception e) {
-			log.debug("Exception: ", e);
-
+            log.error("Exception: ", e);
 		} finally {
 
 			try {
 				if (stmt != null)
 					con.close();
-			} catch (SQLException se) {
+			} catch (SQLException e) {
+			    log.error("Exception: ", e);
 			}
 
 			try {
 				if (con != null)
 					con.close();
-			} catch (SQLException se) {
-				se.printStackTrace();
+			} catch (SQLException e) {
+                log.error("Exception: ", e);
 			}// end finally
 		}
 
 	}
 	
 	/**
-	 * Create the TAP_SCHEMA 
+	 * Create the JDBC TAP_SCHEMA. 
 	 * @throws ProtectionException 
+	 * @throws NameNotFoundException 
 	 * 
 	 */
 	public JdbcSchema createTapSchemaJdbc()
-    throws ProtectionException
+    throws ProtectionException, NameNotFoundException
 	    {
 		this.createStructure();
 		this.insertMetadata();
 		
-		JdbcResource tap_schema_resource = this.factories.jdbc().resources().entities().create(
+		jdbcresource = this.factories.jdbc().resources().entities().create(
             this.tapSchemaResourceJDBCName,
             this.properties.getTypeAsJdbcProductType(),
             this.properties.getDatabase(),
@@ -574,16 +589,9 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
             this.properties.getPassword()
 	        );
 
-		JdbcSchema tap_schema = null;
-		
-		try {
-			tap_schema = tap_schema_resource.schemas().select(this.properties.getCatalog()  + "." + this.tapSchemaJDBCName);
-		} catch (Exception e) {
-			log.debug("Exception: ", e);
-		}
-		
-		return tap_schema;
-	}
+        jdbcschema = jdbcresource.schemas().select(this.properties.getCatalog()  + "." + this.tapSchemaJDBCName);
+        return jdbcschema ;
+	    }
 
 	/**
 	 * List of system tables to ignore.
@@ -599,37 +607,37 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator{
         );
 	
 	/**
-	 * Create the TAP_SCHEMA 
+	 * Create the ADQL TAP_SCHEMA.
 	 * @throws ProtectionException 
 	 * 
 	 */
-	public AdqlSchema createTapSchemaAdql(JdbcSchema tap_schema )
+	public AdqlSchema createTapSchemaAdql()
     throws ProtectionException
 	    {
-		AdqlSchema tap_adql_schema = null;
-		
-		try {
-			tap_adql_schema = resource.schemas().create(AdqlSchema.CopyDepth.PARTIAL, "TAP_SCHEMA", tap_schema);
+        adqlschema = adqlresource.schemas().create(AdqlSchema.CopyDepth.PARTIAL, "TAP_SCHEMA", jdbcschema);
 
-			for (JdbcTable table : tap_schema.tables().select()) {
-				AdqlTable adqltable = tap_adql_schema.tables().create(AdqlSchema.CopyDepth.PARTIAL, table.base(), table.name());
-
-				for (JdbcColumn column : table.columns().select())
-			        {
-			        if (systables.contains(column.name().toLowerCase()))
-	                    {
-	                    continue ;
-	                    }
-			        else {
-					    adqltable.columns().create(column.base(), column.name());
-			            }
-			        }
+		for (JdbcTable jdbctable : jdbcschema.tables().select())
+		    {
+            log.debug("Processing JdbcTable [{}][{}]", jdbctable.ident(), jdbctable.name());
+			
+            AdqlTable adqltable = adqlschema.tables().create(AdqlSchema.CopyDepth.PARTIAL, jdbctable.base(), jdbctable.name());
+            log.debug("Created AdqlTable [{}][{}]", adqltable.ident(), adqltable.name());
+			
+			for (JdbcColumn jdbccolumn : jdbctable.columns().select())
+		        {
+                log.debug("Processing JdbcColumn [{}][{}]", jdbccolumn.ident(), jdbccolumn.name());
+		        if (systables.contains(jdbccolumn.name().toLowerCase()))
+                    {
+                    log.debug("Skipping system column [{}][{}]", jdbccolumn.ident(), jdbccolumn.name());
+                    }
+		        else {
+				    AdqlColumn adqlcolumn = adqltable.columns().create(jdbccolumn.base(), jdbccolumn.name());
+                    log.debug("Created AdqlColumn [{}][{}]", adqlcolumn.ident(), adqlcolumn.name());
+		            }
+		        }
 			}
-		} catch (Exception e) {
-			log.debug("Exception: ", e);
-		}
 		
-		return tap_adql_schema;
+		return adqlschema;
 	}
 
 

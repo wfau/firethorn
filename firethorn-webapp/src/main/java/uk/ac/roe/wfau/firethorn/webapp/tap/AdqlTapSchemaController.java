@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,19 +34,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import org.springframework.beans.factory.annotation.Value;
 
 @Slf4j
 @Controller
-@Component
 @RequestMapping("/tap/{ident}/")
 public class AdqlTapSchemaController extends AbstractController {
 
@@ -172,6 +171,7 @@ public class AdqlTapSchemaController extends AbstractController {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 * @throws ProtectionException 
+	 * @throws NameNotFoundException 
 	 */
 	@RequestMapping(value = "generateTapSchema", method = {  RequestMethod.POST, RequestMethod.GET })
 	public void generateTapSchema(
@@ -179,14 +179,23 @@ public class AdqlTapSchemaController extends AbstractController {
 			final HttpServletResponse response,
 			HttpServletRequest request)
 			throws IdentifierNotFoundException, IOException, SQLException,
-			ClassNotFoundException, ProtectionException {
+			ClassNotFoundException, ProtectionException, NameNotFoundException {
 
-		TapSchemaProperties properties = new TapSchemaProperties(username, password, catalog, database, host, type, driver, port, jdbcname);
+        TapSchemaProperties properties = new TapSchemaProperties(username, password, catalog, database, host, type, driver, port, jdbcname);
 		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(servletContext, factories(), resource, properties);
 		generator.getProperties().setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
-		JdbcSchema schema = generator.createTapSchemaJdbc();
-		generator.createTapSchemaAdql(schema);
-	
+
+		log.debug("Before JDBC");
+        component.jdbc(generator);
+        log.debug("After JDBC");
+
+        log.debug("Before ADQL");
+        component.adql(generator);
+        log.debug("After ADQL");
+
 	}
 
+	@Autowired
+	private AdqlTapSchemaComponent component ;
+    
 }
