@@ -22,7 +22,7 @@
 
 # -----------------------------------------------------
 # Create a new VM.
-#[user@trop]
+#[user@server]
 
     createvm
 
@@ -34,7 +34,7 @@
 
 # -----------------------------------------------------
 # Login as Stevedore
-#[user@trop]
+#[user@server]
 
     ssh Araybwyn
 
@@ -47,12 +47,6 @@
 
     source "${HOME:?}/secret.sh"
     secret 'frog'
-
-# -----------------------------------------------------
-# Download our compose file.
-#[user@virtual]
-
-    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/distictella/distictella-local.yml
 
 # -----------------------------------------------------
 # Create our chain properties.
@@ -87,13 +81,12 @@
         guestuser=Hyrax
         guestpass=$(pwgen 20 1)
 
-        zelltype=pgsql
-        zellhost=zelleri
-        zelldata=postgres
-        zelluser=$(pwgen 20 1)
-        zellpass=$(pwgen 20 1)
-
 EOF
+
+# -----------------------------------------------------
+# Download our compose file.
+#[user@virtual
+    wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/distictella/distictella-local.yml
 
 # -----------------------------------------------------
 # Link our compose config.
@@ -103,7 +96,7 @@ EOF
 
 # -----------------------------------------------------
 # Run our compose set.
-#[user@desktop]
+#[user@virtual]
 
     docker-compose \
         --file distictella-local.yml \
@@ -112,7 +105,7 @@ EOF
 
 # -----------------------------------------------------
 # Tail the logs in a separate window.
-#[user@desktop]
+#[user@virtual]
 
     ssh Araybwyn
 
@@ -124,7 +117,7 @@ EOF
 
 # -----------------------------------------------------
 # List the docker containers in a separate window.
-#[user@desktop]
+#[user@virtual]
 
     ssh Araybwyn
 
@@ -183,8 +176,7 @@ print(
 #
 # Import the target JdbcSchema into AdqlSchema.
 schema_names = [
-    "ATLASDR1",
-    "TWOMASS"
+    "ATLASDR1"
     ]
 
 for schema_name in schema_names:
@@ -250,26 +242,38 @@ print(
     query.table().count()
     )
 
-#
-# Convert the query results into an astropy table.
-from astropy.table import Table as ApTable
 
-def wrap_as_pytable(adql_table, limit=100):
-    if ((limit) and (query.table().count() > limit)):
-        print("Row count [" + str(query.table().count()) + "] exceeds limit [" + str(limit) + "]")
-        return None
-    else:
-        return ApTable.read(
-            adql_table.json_object.get("formats").get("votable"),
-            format="votable",
-            use_names_over_ids=True,
-            )    
 
-pytable = wrap_as_pytable(
-    query.table(),
-    10000
-    )
-pytable.pprint()
 
+
+
+
+# -----------------------------------------------------
+# Run a second set of services.
+#[user@virtual]
+
+    docker-compose \
+        --project-name umbrolt \
+        --file distictella-local.yml \
+        run \
+            angela
+
+
+
+# -----------------------------------------------------
+# Run Maria's Kafka and Zookeper.
+#[user@virtual]
+
+
+    git clone git@github.com:mtpatter/alert_stream.git
+        
+    docker-compose \
+        --file "alert_stream/docker-compose.yml" \
+        up -d
+
+
+    docker-compose \
+        --file "alert_stream/docker-compose.yml" \
+        down
 
 
