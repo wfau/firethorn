@@ -550,14 +550,26 @@ implements JdbcMetadataScanner
      */
     protected static Map<String, JdbcColumn.JdbcType> typemap = new HashMap<String, JdbcColumn.JdbcType>();
     static {
+
+        typemap.put("oid",       JdbcColumn.JdbcType.INTEGER); 
+        typemap.put("tid",       JdbcColumn.JdbcType.INTEGER); 
+        typemap.put("xid",       JdbcColumn.JdbcType.INTEGER); 
+        typemap.put("cid",       JdbcColumn.JdbcType.INTEGER); 
     
-        typemap.put("bit",       JdbcColumn.JdbcType.BIT); 
-        typemap.put("int",       JdbcColumn.JdbcType.INTEGER); 
-        typemap.put("bigint",    JdbcColumn.JdbcType.BIGINT); 
         typemap.put("smallint",  JdbcColumn.JdbcType.SMALLINT); 
-        typemap.put("tinyint",   JdbcColumn.JdbcType.TINYINT); 
+        typemap.put("int",       JdbcColumn.JdbcType.INTEGER); 
+        typemap.put("int4",      JdbcColumn.JdbcType.INTEGER); 
+        typemap.put("integer",   JdbcColumn.JdbcType.INTEGER); 
+        typemap.put("bigint",    JdbcColumn.JdbcType.BIGINT); 
+
+        typemap.put("serial",    JdbcColumn.JdbcType.INTEGER); 
+        typemap.put("bigserial", JdbcColumn.JdbcType.BIGINT); 
+
         typemap.put("real",      JdbcColumn.JdbcType.REAL); 
         typemap.put("float",     JdbcColumn.JdbcType.FLOAT); 
+        typemap.put("double",    JdbcColumn.JdbcType.DOUBLE); 
+        typemap.put("double precision", JdbcColumn.JdbcType.DOUBLE); 
+        
         typemap.put("datetime",  JdbcColumn.JdbcType.DATETIME); 
 
         typemap.put("char",      JdbcColumn.JdbcType.CHAR); 
@@ -568,17 +580,9 @@ implements JdbcMetadataScanner
         typemap.put("binary",    JdbcColumn.JdbcType.BINARY); 
         typemap.put("varbinary", JdbcColumn.JdbcType.VARBINARY); 
 
-        //http://msdn.microsoft.com/en-GB/library/ms187993.aspx
         typemap.put("image",     JdbcColumn.JdbcType.VARBINARY); 
         typemap.put("text",      JdbcColumn.JdbcType.VARCHAR);
         typemap.put("ntext",     JdbcColumn.JdbcType.NVARCHAR); 
-
-        //http://msdn.microsoft.com/en-us/library/ms187746.aspx
-        typemap.put("numeric",          JdbcColumn.JdbcType.UNKNOWN); 
-        //http://msdn.microsoft.com/en-us/library/ms173829.aspx
-        typemap.put("sql_variant",      JdbcColumn.JdbcType.UNKNOWN); 
-        //http://msdn.microsoft.com/en-us/library/ms187942.aspx
-        typemap.put("uniqueidentifier", JdbcColumn.JdbcType.UNKNOWN); 
 
         };
 

@@ -34,12 +34,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import org.springframework.beans.factory.annotation.Value;
 
 @Slf4j
 @Controller
@@ -107,7 +111,35 @@ public class AdqlTapSchemaController extends AbstractController {
     public static final String CONN_PORT = "port" ;
     
 
+	@Value("${firethorn.webapp.baseurl:null}")
+	private String baseurl;
 
+	@Value("${firethorn.tapschema.resource.name}")
+	private String jdbcname;
+
+	@Value("${firethorn.tapschema.database.user}")
+	private String username;
+
+	@Value("${firethorn.tapschema.database.pass}")
+	private String password;
+
+	@Value("${firethorn.tapschema.database.name}")
+	private String catalog;
+
+	@Value("${firethorn.tapschema.database.name}")
+	private String database;
+
+	@Value("${firethorn.tapschema.database.host}")
+	private String host;
+
+	@Value("${firethorn.tapschema.database.type:pgsql}")
+	private String type;
+
+	@Value("${firethorn.tapschema.database.driver:org.postgresql.Driver}")
+	private String driver;
+
+	@Value("${firethorn.tapschema.database.port:5432}")
+	private String port;
 
 	@Override
 	public Path path() {
@@ -139,47 +171,31 @@ public class AdqlTapSchemaController extends AbstractController {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 * @throws ProtectionException 
+	 * @throws NameNotFoundException 
 	 */
 	@RequestMapping(value = "generateTapSchema", method = {  RequestMethod.POST, RequestMethod.GET })
 	public void generateTapSchema(
 			@ModelAttribute("urn:adql.resource.entity") AdqlResource resource,
-	        @RequestParam(value=CONN_USER,required=true)
-	        final String user,
-	        @RequestParam(value=CONN_PASS,required=true)
-	        final String pass,
-	        @RequestParam(value=CONN_DRIVER, required=true)
-			final String driver,
-		    @RequestParam(value=CONN_CATALOG, required=true)
-	        final String catalog,
-		    @RequestParam(value=CONN_DATABASE, required=true)
-	        final String database,
-		    @RequestParam(value=CONN_HOST, required=true)
-	        final String host,
-		    @RequestParam(value=CONN_TYPE, required=true)
-	        final String type,
-		    @RequestParam(value=CONN_PORT, required=true)
-	        final Integer port,
 			final HttpServletResponse response,
 			HttpServletRequest request)
 			throws IdentifierNotFoundException, IOException, SQLException,
-			ClassNotFoundException, ProtectionException {
-		
-		String tap_schema_create_script;
-		
-		if (type.toLowerCase().equals("pgsql")){
-			tap_schema_create_script = "pgsql_tap_schema.sql";
-		} else if (type.toLowerCase().equals("mssql")){
-			tap_schema_create_script = "sqlserver_tap_schema.sql";
-		} else {
-			tap_schema_create_script = "pgsql_tap_schema.sql";
-		}
-		
-		
-		JDBCParams params = new JDBCParams(user, pass, catalog, database, host, type, driver, port); 
-		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(params, servletContext, factories(), resource, "/WEB-INF/data/" + tap_schema_create_script);
-		generator.setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
-		generator.createTapSchema();
-		
+			ClassNotFoundException, ProtectionException, NameNotFoundException {
+
+        TapSchemaProperties properties = new TapSchemaProperties(username, password, catalog, database, host, type, driver, port, jdbcname);
+		TapSchemaGeneratorImpl generator = new TapSchemaGeneratorImpl(servletContext, factories(), resource, properties);
+		generator.getProperties().setBaseurl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
+
+		log.debug("Before JDBC");
+        component.jdbc(generator);
+        log.debug("After JDBC");
+
+        log.debug("Before ADQL");
+        component.adql(generator);
+        log.debug("After ADQL");
+
 	}
 
+	@Autowired
+	private AdqlTapSchemaComponent component ;
+    
 }

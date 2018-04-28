@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tester:2.1.18
+FROM firethorn/tester:2.1.19
 LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 ENV ftpysrc=/home/firethorn-py

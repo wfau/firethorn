@@ -34,6 +34,7 @@ INSERT INTO `TAP_SCHEMA`.`columns` VALUES ('TAP_SCHEMA.columns', 'ucd', 'UCD of 
 INSERT INTO `TAP_SCHEMA`.`columns` VALUES ('TAP_SCHEMA.columns', 'utype', 'UTYPE of column if any', NULL, NULL, NULL, 'VARCHAR(256)', -1, 0, 0, 1, NULL);
 INSERT INTO `TAP_SCHEMA`.`columns` VALUES ('TAP_SCHEMA.columns', 'datatype', 'ADQL datatype as in section 2.5', NULL, NULL, NULL, 'VARCHAR(256)', -1, 0, 0, 1, NULL);
 INSERT INTO `TAP_SCHEMA`.`columns` VALUES ('TAP_SCHEMA.columns', 'size', 'length of variable length datatypes', NULL, NULL, NULL, 'INTEGER', -1, 0, 0, 1, NULL);
+INSERT INTO `TAP_SCHEMA`.`columns` VALUES ('TAP_SCHEMA.columns', 'arraysize', 'length of variable length datatypes', NULL, NULL, NULL, 'INTEGER', -1, 0, 0, 1, NULL);
 INSERT INTO `TAP_SCHEMA`.`columns` VALUES ('TAP_SCHEMA.columns', 'principal', 'a principal column; 1 means true, 0 means false', NULL, NULL, NULL, 'INTEGER', -1, 0, 0, 1, NULL);
 INSERT INTO `TAP_SCHEMA`.`columns` VALUES ('TAP_SCHEMA.columns', 'indexed', 'an indexed column; 1 means true, 0 means false', NULL, NULL, NULL, 'INTEGER', -1, 0, 0, 1, NULL);
 INSERT INTO `TAP_SCHEMA`.`columns` VALUES ('TAP_SCHEMA.columns', 'std', 'a standard column; 1 means true, 0 means false', NULL, NULL, NULL, 'INTEGER', -1, 0, 0, 1, NULL);

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tomcat:2.1.18
+FROM firethorn/tomcat:2.1.19
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #

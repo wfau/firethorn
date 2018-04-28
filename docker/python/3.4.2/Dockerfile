@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.18
+FROM firethorn/ubuntu:2.1.19
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
