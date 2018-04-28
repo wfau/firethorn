@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.17-stv-tap_schema
+FROM firethorn/ubuntu:2.1.18
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
