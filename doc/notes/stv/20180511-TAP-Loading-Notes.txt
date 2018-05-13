@@ -1,0 +1,244 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+###############################################################################
+# Notes/Metadata Issues from Loading WFAU Archive Resources using JSON config #
+###############################################################################
+
+OSA: 192.168.137.11
+WSA: 192.168.137.11
+VSA: 192.168.137.47
+SSA: 192.168.137.27
+
+
+
+OSA
+---------------------------------------------------------------------------------------------------------
+Config: https://raw.githubusercontent.com/stvoutsin/firethorn.py/dev/firethorn/data/osa-tap.json
+Host: 192.168.137.11 (ramses19)
+Failed Databases (404):
+
+Importing ATLASDR1
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/home/stelios/firethornquery/firethornquery/firethorn/models/adql/adql_resource.py", line 111, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.4/json/__init__.py", line 318, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.4/json/decoder.py", line 343, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.4/json/decoder.py", line 361, in raw_decode
+    raise ValueError(errmsg("Expecting value", s, err.value)) from None
+ValueError: Expecting value: line 1 column 1 (char 0)
+
+Importing TWOMASS
+ERROR:root:HTTP Error 404: 
+
+
+Importing TWOXMM
+ERROR:root:HTTP Error 404: 
+
+
+Importing WISE
+ERROR:root:HTTP Error 404: 
+
+
+Importing MGC
+ERROR:root:HTTP Error 404: 
+
+
+Importing GLIMPSE
+ERROR:root:HTTP Error 404: 
+
+
+Importing FIRST
+ERROR:root:HTTP Error 404: 
+
+
+Importing DENIS
+ERROR:root:HTTP Error 404: 
+
+
+Manual Check on ramses19
+-------------------------
+
+Unavailable Databases for OSA user:
+TWOMASS
+TWOXMM
+WISE
+MGC
+GLIMPSE
+FIRST
+
+
+
+
+
+
+
+
+WSA
+---------------------------------------------------------------------------------------------------------
+
+Importing UKIDSSDR1
+[{"type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-schema-1.0.json","queries":"http://localhost:8081/firethorn/adql/schema/123801/queries/select","base":"http://localhost:8081/firethorn/jdbc/schema/123693","tables":"http://localhost:8081/firethorn/adql/schema/123801/tables/select","depth":"PARTIAL","fullname":"UKIDSSDR1","resource":"http://localhost:8081/firethorn/adql/resource/83486","parent":"http://localhost:8081/firethorn/adql/resource/83486","root":"http://localhost:8081/firethorn/jdbc/schema/123693","text":null,"name":"UKIDSSDR1","url":"http://localhost:8081/firethorn/adql/schema/123801","self":"http://localhost:8081/firethorn/adql/schema/123801","modified":"2018-05-13T20:00:38.951","ident":"123801","created":"2018-05-13T20:00:38.855","owner":"http://localhost:8081/firethorn/community-member/156"}]
+https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/UKIDSSDR1_TablesSchema.xml
+http://localhost:8081/firethorn/adql/resource/83486/metadoc/import
+Importing UKIDSSDR1PLUS
+[{"type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-schema-1.0.json","queries":"http://localhost:8081/firethorn/adql/schema/130952/queries/select","base":"http://localhost:8081/firethorn/jdbc/schema/123699","tables":"http://localhost:8081/firethorn/adql/schema/130952/tables/select","depth":"PARTIAL","fullname":"UKIDSSDR1PLUS","resource":"http://localhost:8081/firethorn/adql/resource/83486","parent":"http://localhost:8081/firethorn/adql/resource/83486","root":"http://localhost:8081/firethorn/jdbc/schema/123699","text":null,"name":"UKIDSSDR1PLUS","url":"http://localhost:8081/firethorn/adql/schema/130952","self":"http://localhost:8081/firethorn/adql/schema/130952","modified":"2018-05-13T20:04:16.718","ident":"130952","created":"2018-05-13T20:04:16.198","owner":"http://localhost:8081/firethorn/community-member/156"}]
+https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/UKIDSSDR1PLUS_TablesSchema.xml
+http://localhost:8081/firethorn/adql/resource/83486/metadoc/import
+Importing UKIDSSDR2PLUS
+[{"type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-schema-1.0.json","queries":"http://localhost:8081/firethorn/adql/schema/130953/queries/select","base":"http://localhost:8081/firethorn/jdbc/schema/123706","tables":"http://localhost:8081/firethorn/adql/schema/130953/tables/select","depth":"PARTIAL","fullname":"UKIDSSDR2PLUS","resource":"http://localhost:8081/firethorn/adql/resource/83486","parent":"http://localhost:8081/firethorn/adql/resource/83486","root":"http://localhost:8081/firethorn/jdbc/schema/123706","text":null,"name":"UKIDSSDR2PLUS","url":"http://localhost:8081/firethorn/adql/schema/130953","self":"http://localhost:8081/firethorn/adql/schema/130953","modified":"2018-05-13T20:07:56.850","ident":"130953","created":"2018-05-13T20:07:56.140","owner":"http://localhost:8081/firethorn/community-member/156"}]
+https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/UKIDSSDR2PLUS_TablesSchema.xml
+http://localhost:8081/firethorn/adql/resource/83486/metadoc/import
+Importing UKIDSSDR3PLUS
+<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Description</b> The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.</p><hr class="line" /><h3>Apache Tomcat/8.5.24</h3></body></html>
+https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/UKIDSSDR3PLUS_TablesSchema.xml
+http://localhost:8081/firethorn/adql/resource/83486/metadoc/import
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/home/stelios/firethornquery/firethornquery/firethorn/models/adql/adql_resource.py", line 113, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.4/json/__init__.py", line 318, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.4/json/decoder.py", line 343, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.4/json/decoder.py", line 361, in raw_decode
+    raise ValueError(errmsg("Expecting value", s, err.value)) from None
+ValueError: Expecting value: line 1 column 1 (char 0)
+Importing UKIDSSDR4PLUS
+<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Description</b> The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.</p><hr class="line" /><h3>Apache Tomcat/8.5.24</h3></body></html>
+https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/UKIDSSDR4PLUS_TablesSchema.xml
+http://localhost:8081/firethorn/adql/resource/83486/metadoc/import
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/home/stelios/firethornquery/firethornquery/firethorn/models/adql/adql_resource.py", line 113, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.4/json/__init__.py", line 318, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.4/json/decoder.py", line 343, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.4/json/decoder.py", line 361, in raw_decode
+    raise ValueError(errmsg("Expecting value", s, err.value)) from None
+ValueError: Expecting value: line 1 column 1 (char 0)
+Importing UKIDSSDR5PLUS
+
+
+Manual Check on ramses19
+-------------------------
+
+Unavailable Databases for WSA user:
+
+UKIDSSDR10PLUS
+BESTDR1
+BestDR2
+BestDR3
+BestDR4
+BestDR5
+BestDR7
+BestDR8
+BestDR9
+SEGUEDR6 (Missing from Database)
+TWOMASS
+USNOB (Missing from Database)
+ROSAT
+FIRST
+IRAS
+SSA
+GLIMPSE
+TWOXMM
+MGC
+Stripe82
+WISE
+
+
+
+VSA
+---------------------------------------------------------------------------------------------------------
+
+
+Manual Check on ramses13
+-------------------------
+
+Unavailable Databases for VSA user:
+VVVDR4
+VHSDR1
+VHSDR2
+VHSDR3
+VMCDR4
+VMCDR3
+VMCDR2
+VMCDR1
+VIKINGDR4
+VIKINGDR3
+VIKINGDR2
+VIDEODR2
+VIDEODR3
+VIDEODR4
+UKIDSSDR4PLUS
+UKIDSSDR5PLUS
+UKIDSSDR6PLUS
+UKIDSSDR7PLUS
+UKIDSSDR8PLUS
+UKIDSSDR9PLUS
+UKIDSSDR10PLUS
+UKIDSSDR11PLUSUDSONLY
+BestDR1
+BestDR2
+BestDR3
+BestDR4
+BestDR5
+BestDR7
+BestDR8
+BestDR9
+SEGUEDR6
+TWOMASS
+USNOB
+ROSAT
+FIRST
+IRAS
+SSA
+GLIMPSE
+TWOXMM
+NVSS
+MGC
+Stripe82
+WISE
+
+
+
+SSA
+---------------------------------------------------------------------------------------------------------
+
+
+Manual Check on ramses8
+-------------------------
+
+Unavailable Databases for SSA user:
+PSSA
+TWOMASS
+EDR
+BESTDR2
+BESTDR5
+BestDR8
+6dFGS
