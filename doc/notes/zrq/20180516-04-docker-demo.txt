@@ -1,0 +1,119 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# New VM
+#[user@laptop]
+
+    ssh Araybwyn
+
+# -----------------------------------------------------
+# Checkout Maria's code.
+#[Stevedore@virtual]
+
+    git clone git@github.com:mtpatter/alert_stream.git
+
+# -----------------------------------------------------
+# Start Maria's Kafka services.
+#[Stevedore@virtual]
+
+    docker-compose \
+        --file "alert_stream/docker-compose.yml" \
+        up
+
+# -----------------------------------------------------
+# New VM
+#[user@laptop]
+
+    createvm
+    
+    ssh Lothigometh
+
+# -----------------------------------------------------
+# Checkout Maria's code.
+#[Stevedore@virtual]
+
+    git clone git@github.com:mtpatter/alert_stream.git
+
+# -----------------------------------------------------
+# Build Maria's Producer.
+#[Stevedore@virtual]
+
+    docker build \
+        --tag 'alert_stream' \
+        "alert_stream"
+
+# -----------------------------------------------------
+# Run the Producer.
+#[Stevedore@virtual]
+
+    kafkahost=192.168.202.8
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --add-host "kafka:${kafkahost:?}" \
+        alert_stream \
+            python bin/sendAlertStream.py \
+                test-stream \
+                5
+
+# -----------------------------------------------------
+# New VM
+#[user@laptop]
+
+    createvm
+    
+    ssh Dwiema
+
+# -----------------------------------------------------
+# Checkout Maria's code.
+#[Stevedore@virtual]
+
+    git clone git@github.com:mtpatter/alert_stream.git
+
+# -----------------------------------------------------
+# Build Maria's Consumer.
+#[Stevedore@virtual]
+
+    docker build \
+        --tag 'alert_stream' \
+        "alert_stream"
+
+# -----------------------------------------------------
+# Run the Consumer.
+#[Stevedore@virtual]
+
+    kafkahost=192.168.202.8
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --add-host "kafka:${kafkahost:?}" \
+        alert_stream \
+            python bin/monitorStream.py \
+                --group monitor-group \
+                test-stream
+
+

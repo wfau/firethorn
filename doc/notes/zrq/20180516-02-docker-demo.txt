@@ -1,0 +1,236 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -------------------------------------------------------------------------------------------
+# Test various Linux versions ...
+#[user@server]
+
+    docker run -i -t fedora /bin/bash
+
+        Unable to find image 'fedora' locally
+        Pulling repository fedora
+        ....
+
+        bash-4.2#
+        
+            cat /etc/redhat-release 
+                Fedora release 20 (Heisenbug)
+
+
+    docker run -i -t centos /bin/bash
+
+        Unable to find image 'centos' locally
+        Pulling repository centos
+        ....
+
+        bash-4.2# 
+
+            /etc/redhat-release 
+                CentOS Linux release 7.0.1406 (Core) 
+
+    docker run -i -t ubuntu /bin/bash
+
+        Unable to find image 'ubuntu' locally
+        Pulling repository ubuntu
+        ....
+
+        root@cb43a4bca55c:/#
+        
+            cat /etc/debian_version 
+                jessie/sid
+
+    docker run -i -t debian /bin/bash
+
+        Unable to find image 'debian' locally
+        Pulling repository debian
+        ....
+
+        root@cb43a4bca55c:/#
+        
+            cat /etc/debian_version 
+                jessie/sid
+
+# -------------------------------------------------------------------------------------------
+# List our downloaded images
+#[user@server]
+
+    docker images
+
+# -------------------------------------------------------------------------------------------
+# Test various Linux versions ...
+#[user@server]
+
+    docker run -i -t fedora /bin/bash
+
+        bash-4.2#
+        
+            cat /etc/redhat-release 
+                Fedora release 20 (Heisenbug)
+
+
+    docker run -i -t centos /bin/bash
+
+        bash-4.2# 
+
+            /etc/redhat-release 
+                CentOS Linux release 7.0.1406 (Core) 
+
+    docker run -i -t ubuntu /bin/bash
+
+        root@cb43a4bca55c:/#
+        
+            cat /etc/debian_version 
+                jessie/sid
+
+    docker run -i -t debian /bin/bash
+
+        root@cb43a4bca55c:/#
+        
+            cat /etc/debian_version 
+                jessie/sid
+
+# -------------------------------------------------------------------------------------------
+# Create an Apache image 
+# http://welldefinedbehaviour.wordpress.com/2014/01/30/adventures-with-containerization-fedora-docker-and-httpd/
+#[user@server]
+
+    pushd $(mktemp -d)
+
+        #
+        # Create a simple Dockerfile
+        vi Dockerfile
+
+FROM fedora
+
+RUN dnf -y install httpd
+
+EXPOSE :80
+
+ENTRYPOINT /usr/sbin/httpd -DFOREGROUND
+
+        #
+        # Build a new image using the Dockerfile instructions
+        docker build --tag apache:001 .
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# List the available images
+#[user@server]
+
+    docker images
+
+        REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+        panda               001                 a136536ea126        About a minute ago   423MB
+        fedora              latest              cc510acfcd70        11 days ago          253MB
+
+# -------------------------------------------------------------------------------------------
+# Run an instance of our new container
+#[user@server]
+
+    docker run -d -t apache:001
+
+        b44b182c71b5a75397b724adbe4e8b84c2e9e510454c40a4ec841f8917f6b52f
+
+# -------------------------------------------------------------------------------------------
+# List the active containers
+#[user@server]
+
+    docker ps
+
+        CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+        b44b182c71b5        apache:001           "/bin/sh -c '/usr/sb…"   7 seconds ago       Up 6 seconds        80/tcp              tender_jang
+
+# -------------------------------------------------------------------------------------------
+# Inspect the running container properties
+#[user@server]
+
+    docker inspect b44b182c71b5
+
+# -------------------------------------------------------------------------------------------
+# Extract just the IP address
+#[user@server]
+
+    docker inspect b44b182c71b5 | grep 'IPAddress'
+
+        "IPAddress": "172.17.0.2",
+
+# -------------------------------------------------------------------------------------------
+# Make a HEAD request to the web server
+#[user@server]
+
+    curl --head 'http://172.17.0.2/'
+
+        HTTP/1.1 403 Forbidden
+        Date: Wed, 16 May 2018 13:19:43 GMT
+        Server: Apache/2.4.33 (Fedora)
+        Last-Modified: Tue, 01 May 2018 08:51:41 GMT
+        ETag: "122a-56b21143a2140"
+        Accept-Ranges: bytes
+        Content-Length: 4650
+        Content-Type: text/html; charset=UTF-8
+
+# -------------------------------------------------------------------------------------------
+# Run a bash command prompt in the container
+#[user@server]
+
+    docker exec -it b44b182c71b5 bash
+
+        #
+        # Add a text file to the webserver.
+        vi /var/www/html/frog.txt
+
+one
+two
+three
+
+        exit
+
+# -------------------------------------------------------------------------------------------
+# Make a HEAD request for the text file.    
+#[user@server]
+
+    curl --head 'http://172.17.0.2/frog.txt'
+
+        HTTP/1.1 200 OK
+        Date: Wed, 16 May 2018 13:21:24 GMT
+        Server: Apache/2.4.33 (Fedora)
+        Last-Modified: Wed, 16 May 2018 13:21:15 GMT
+        ETag: "e-56c5297eb781c"
+        Accept-Ranges: bytes
+        Content-Length: 14
+        Content-Type: text/plain; charset=UTF-8
+
+# -------------------------------------------------------------------------------------------
+# Make a GET request for the text file.    
+#[user@server]
+
+    curl --head 'http://172.17.0.2/frog.txt'
+
+        one
+        two
+        three
+
+
+
+

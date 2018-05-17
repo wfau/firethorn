@@ -1,0 +1,156 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Start a PostgreSQL container.
+#[Stevedore@virtual]
+
+    docker run \
+        --detach \
+        --name 'pgsql' \
+        "cosmopterix/pgsql-test"
+
+# -------------------------------------------------------------------------------------------
+# Test our PostgreSQL container.
+#[Stevedore@virtual]
+
+    docker exec \
+        --tty \
+        --interactive \
+        'pgsql' \
+        pgsql-client
+
+            \pset pager off
+
+            \dt
+
+            select version();
+
+            SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+
+        \q
+
+# -------------------------------------------------------------------------------------------
+# Start a MySQL container.
+#[Stevedore@virtual]
+
+    docker run \
+        --detach \
+        --name 'mysql' \
+        "cosmopterix/mysql-test"
+
+# -------------------------------------------------------------------------------------------
+# Test our MySQL container.
+#[Stevedore@virtual]
+
+    docker exec \
+        --tty \
+        --interactive \
+        'mysql' \
+        mysql-client
+
+            show tables ;
+
+            select version();
+
+            SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+
+        \q
+
+# -------------------------------------------------------------------------------------------
+# Start a MariaDB container.
+#[Stevedore@virtual]
+
+    docker run \
+        --detach \
+        --name 'mariadb' \
+        "cosmopterix/mariadb-test"
+
+# -------------------------------------------------------------------------------------------
+# Test our MariaDB container.
+#[Stevedore@virtual]
+
+    docker exec \
+        --tty \
+        --interactive \
+        'mariadb' \
+        mariadb-client
+
+            show tables ;
+
+            select version();
+
+            SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+
+        \q
+
+# -------------------------------------------------------------------------------------------
+# Start a Derby container.
+#[Stevedore@virtual]
+
+    docker run \
+        --detach \
+        --name 'derby' \
+        "cosmopterix/derby-test"
+
+# -------------------------------------------------------------------------------------------
+# Test our Derby container.
+#[Stevedore@virtual]
+
+    docker exec \
+        --tty \
+        --interactive \
+        'derby' \
+        derby-client
+
+            show tables ;
+
+            SELECT id, ra, decl FROM alpha_source FETCH FIRST 10 ROWS ONLY ;
+
+        ^C
+
+# -------------------------------------------------------------------------------------------
+# Start a HSQLDB container.
+#[Stevedore@virtual]
+
+    docker run \
+        --detach \
+        --name 'hsqldb' \
+        "cosmopterix/hsqldb-test"
+
+# -------------------------------------------------------------------------------------------
+# Test our HSQLDB container.
+#[Stevedore@virtual]
+
+    docker exec \
+        --tty \
+        --interactive \
+        'hsqldb' \
+        hsqldb-client
+
+            SELECT id, ra, decl FROM alpha_source LIMIT 10 ;
+        
+        \q
+
+
+
+

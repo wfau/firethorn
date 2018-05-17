@@ -1,0 +1,66 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Create a new VM.
+#[user@server]
+
+    createvm
+    
+        INFO : Node name [Umiawyth]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Disc name [Umiawyth.qcow]
+        INFO : Disc size [16GiB]
+    
+    ssh Umiawyth
+
+# -------------------------------------------------------------------------------------------
+# Clone a copy of the git repository.
+#[user@virtual]
+
+    git clone https://github.com/ramkulkarni1/django-apache2-docker.git
+
+# -------------------------------------------------------------------------------------------
+# Build and run the Docker container
+#[user@virtual]
+
+    pushd django-apache2-docker
+
+        docker-compose up -d
+
+    popd
+
+# -------------------------------------------------------------------------------------------
+# Make a test request
+#[user@server]
+
+    curl http://Umiawyth:8005/
+
+
+
+
+
+
+
+
+
