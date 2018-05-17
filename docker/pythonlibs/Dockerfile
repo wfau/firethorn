@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.19
+FROM firethorn/python:2.1.19-zrq-metadoc-parser
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
