@@ -65,6 +65,7 @@
 
     branch=2.1.16-zrq-race-bug
     branch=2.1.19-zrq-metadoc-parser
+    branch=2.1.20-zrq-metadoc-parser
 
 # -----------------------------------------------------
 # Run our builder.
@@ -167,23 +168,21 @@
     # Build our Python container.
     #[root@builder]
 
-        export buildtag=${newversion:?}
+        source "${HOME:?}/merge.settings"
 
         pushd "${PYTHON_CODE:?}"
 
             docker build \
-                --tag firethorn/firethorn-py:${buildtag:?} \
+                --tag firethorn/firethorn-py:${newversion:?} \
                 --file Fedorafile \
                 .
 
         popd
 
-
 # -----------------------------------------------------
 # Run our Python tests.
 #[user@virtual]
 # -----------------------------------------------------
-
 
     # -----------------------------------------------------
     # Update our Mercurial config.
@@ -228,11 +227,6 @@
     #[root@builder]
 
         08.02-docker-push.sh
-
-        docker tag "firethorn/firethorn-py:${newversion:?}" "firethorn/firethorn-py:latest"
-
-        docker push "firethorn/firethorn-py:${newversion:?}"
-        docker push "firethorn/firethorn-py:latest"
 
     # -----------------------------------------------------
     # Push binaries to Maven repo.

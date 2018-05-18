@@ -23,7 +23,6 @@
 # -------------------------------------------------------------------------------------------
 # Push our containers to the Docker registry.
 
-    source "${HOME:?}/secret.sh"
     source "${HOME:?}/merge.settings"
 
     #
@@ -46,6 +45,8 @@
     docker push "firethorn/postgres:${newversion:?}"
     docker push "firethorn/sql-proxy:${newversion:?}"
 
+    docker push "firethorn/firethorn-py:${newversion:?}"
+
     docker push "firethorn/fedora:latest"
     docker push "firethorn/java:latest"
     docker push "firethorn/tomcat:latest"
@@ -56,4 +57,6 @@
     docker push "firethorn/tester:latest"
     docker push "firethorn/postgres:latest"
     docker push "firethorn/sql-proxy:latest"
+
+    docker push "firethorn/firethorn-py:latest"
 

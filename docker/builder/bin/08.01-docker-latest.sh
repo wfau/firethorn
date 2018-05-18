@@ -35,3 +35,5 @@
     docker tag "firethorn/tester:${newversion:?}"     "firethorn/tester:latest"
     docker tag "firethorn/sql-proxy:${newversion:?}"  "firethorn/sql-proxy:latest"
 
+    docker tag "firethorn/firethorn-py:${newversion:?}" "firethorn/firethorn-py:latest"
+
