@@ -109,7 +109,6 @@
 
     popd
 
-
 # -----------------------------------------------------
 # Build our Python client container.
 #[user@desktop]
