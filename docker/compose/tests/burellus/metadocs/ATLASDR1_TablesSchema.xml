@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasetDescription xmlns='urn:astrogrid:schema:TableMetaDoc:v1.1'
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Catalog>
+   <Name>ATLASDR1</Name>
+   <Description></Description>
+
+   <Table ID="ExtraTable">
+      <Name>ExtraTable</Name>
+      <Description><![CDATA[ An extra table to test the parser ]]></Description>
+      <Column ID="ExtraTable.ident" indexed="true">
+         <Name>ident</Name>
+         <Datatype>int</Datatype>
+         <Description><![CDATA[ident column]]></Description>
+         <Units> </Units>
+         <UCD version="1+">meta.id</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+   </Table>
+
+   <Table ID="ArchiveCurationHistory">
+      <Name>ArchiveCurationHistory</Name>
+      <Description><![CDATA[ Contains details of the matrix of the Archives' required curation tasks]]></Description>
+      <Column ID="ArchiveCurationHistory.cuEventID" indexed="true">
+         <Name>cuEventID</Name>
+         <Datatype>int</Datatype>
+         <Description><![CDATA[UID of curation event giving rise to this record]]></Description>
+         <Units> </Units>
+         <UCD version="1+">meta.bib</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="ArchiveCurationHistory.cuID" indexed="false">
+         <Name>cuID</Name>
+         <Datatype>int</Datatype>
+         <Description><![CDATA[the unique curation task ID]]></Description>
+         <Units> </Units>
+         <UCD version="1+">meta.bib</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="ArchiveCurationHistory.logFile" indexed="false">
+         <Name>logFile</Name>
+         <Datatype>string</Datatype>
+         <Description><![CDATA[filename of verbose logged task output]]></Description>
+         <Units> </Units>
+         <UCD version="1+">meta.id;meta.file</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="ArchiveCurationHistory.resultsFile" indexed="false">
+         <Name>resultsFile</Name>
+         <Datatype>string</Datatype>
+         <Description><![CDATA[filename of any results file]]></Description>
+         <Units> </Units>
+         <UCD version="1+">meta.id;meta.file</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="ArchiveCurationHistory.timeStamp" indexed="false">
+         <Name>timeStamp</Name>
+         <Datatype>dateTime</Datatype>
+         <Description><![CDATA[Time of the completion of the whole task]]></Description>
+         <Units>UTC</Units>
+         <UCD version="1+">time.epoch</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="ArchiveCurationHistory.curator" indexed="false">
+         <Name>curator</Name>
+         <Datatype>string</Datatype>
+         <Description><![CDATA[The archive curation scientist responsible for this event]]></Description>
+         <Units> </Units>
+         <UCD version="1+">??</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="ArchiveCurationHistory.comment" indexed="false">
+         <Name>comment</Name>
+         <Datatype>string</Datatype>
+         <Description><![CDATA[Comment string supplied by the curator]]></Description>
+         <Units> </Units>
+         <UCD version="1+">??</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="ArchiveCurationHistory.rolledBack" indexed="false">
+         <Name>rolledBack</Name>
+         <Datatype>int</Datatype>
+         <Description><![CDATA[Flag for roll-back of this event: 0=no, 1 = yes]]></Description>
+         <Units> </Units>
+         <UCD version="1+">??</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+   </Table>
+   </Catalog>
+</DatasetDescription>
+

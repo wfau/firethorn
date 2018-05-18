@@ -674,11 +674,11 @@ public class JdbcResourceEntity
             // Scan all the catalogs.
             if ((connection().catalog() == null) || ("*".equals(connection().catalog())))
                 {
-                log.debug("connection().catalog() [{}]", connection().catalog());
+                log.trace("connection().catalog() [{}]", connection().catalog());
                 try {
                     for (JdbcMetadataScanner.Catalog catalog : scanner.catalogs().select())
                         {
-                        log.debug("catalog [{}]", catalog);
+                        log.trace("catalog [{}]", catalog);
                         scan(
                             known,
                             matching,
@@ -699,13 +699,13 @@ public class JdbcResourceEntity
             //
             // Scan a specific catalog.
             else {
-            	log.debug("connection().catalog() [{}]", connection().catalog());
+            	log.trace("connection().catalog() [{}]", connection().catalog());
                 try {
-                	final JdbcMetadataScanner.Catalog catalog = scanner.catalogs().select(
-            			connection().catalog()
+                    final JdbcMetadataScanner.Catalog catalog = scanner.catalogs().select(
+            	        connection().catalog()
                         );
-                    log.debug("catalog [{}]", catalog);
-            		scan(
+                    log.trace("catalog [{}]", catalog);
+                    scan(
                         known,
                         matching,
                         catalog
@@ -751,8 +751,14 @@ public class JdbcResourceEntity
                 }
             catch (SQLException ouch)
                 {
-                log.warn("Exception while scanning catalog [{}][{}][{}]", this.ident(), catalog.name(), ouch.getMessage());
-                catalog.scanner().handle(ouch);
+                if (ouch.getErrorCode() == 916)
+                    {
+                    log.debug("Access denied to catalog [{}]", catalog.name());
+                    }
+                else {
+                    log.warn("Exception while scanning catalog [{}][{}][{}]", this.ident(), catalog.name(), ouch.getMessage());
+                    catalog.scanner().handle(ouch);
+                    }
                 }
             }
         }

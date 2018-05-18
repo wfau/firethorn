@@ -26,6 +26,8 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -182,7 +184,6 @@ public class XMLParserImpl
 
     @Override
     public boolean done(final XMLEvent event)
-    throws XMLParserException
         {
         log.debug("done(XMLEvent)");
         log.debug("  QName [{}]", this.qname());
@@ -205,7 +206,6 @@ public class XMLParserImpl
      *
      */
     protected boolean done(final EndElement event)
-    throws XMLParserException
         {
         log.debug("done(EndElement)");
         log.debug("  QName [{}]", this.qname());
@@ -215,6 +215,21 @@ public class XMLParserImpl
             );
         }
 
+    @Override
+    public void skip(final XMLEventReader source)
+    throws XMLParserException
+        {
+        log.debug("skip(XMLEventReader)");
+        log.debug("  QName [{}]", this.qname());
+        while (done(peek(source)) == false)
+            {
+            final XMLEvent skip = next(
+                source
+                );
+            log.debug("Skipping [{}]", StringUtils.abbreviate(skip.toString(), 10));
+            }
+        }
+
     /**
      * Check if a {@link QName} matches ours.
      * @param theirs The {@link QName} to check.
@@ -222,7 +237,6 @@ public class XMLParserImpl
      * 
      */
     protected boolean match(final QName theirs)
-    throws XMLParserException
         {
         log.debug("match(QName)");
         log.debug("  Ours   [{}]", this.qname());

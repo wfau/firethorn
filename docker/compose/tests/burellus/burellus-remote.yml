@@ -1,5 +1,5 @@
 version: '2.1'
-# https://en.wikipedia.org/wiki/Aphomia_distictella
+# https://en.wikipedia.org/wiki/Aphomia_burellus
 
 networks:
 
@@ -185,6 +185,8 @@ services:
         tmpfs:
             - /run
             - /tmp
+        volumes:
+            - ./metadocs:/metadocs:ro
         networks:
             - miriam
 
@@ -209,6 +211,5 @@ services:
                 condition: service_healthy            
         command:
             [python3]
-
 
 

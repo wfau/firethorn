@@ -199,20 +199,29 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
         public void inport(final XMLEventReader source, final AdqlTableImporter tables)
         throws ProtectionException, XMLParserException, XMLReaderException, NameNotFoundException
             {
-            log.debug("inport(XMLEventReader, AdqlSchema)");
+            log.debug("inport(XMLEventReader, AdqlTableImporter)");
             parser.start(
                 source
                 );
 
-            config(
-                tables.inport(
+            try {
+                final AdqlTable table = tables.inport(
                     namereader.read(
                         source
                         )
-                    ),
-                source
-                );
-
+                    );
+                config(
+                    table,
+                    source
+                    );
+                }
+            catch (final NameNotFoundException ouch)
+                {
+                parser.skip(
+                    source
+                    );
+                }
+            
             parser.done(
                 source
                 );
