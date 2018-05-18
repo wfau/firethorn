@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tomcat:2.1.20
+FROM firethorn/tomcat:2.1.20-2.1.20-zrq-metadoc-parser
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #

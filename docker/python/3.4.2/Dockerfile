@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.20
+FROM firethorn/ubuntu:2.1.20-2.1.20-zrq-metadoc-parser
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
