@@ -221,7 +221,7 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
                     source
                     );
                 }
-            
+
             parser.done(
                 source
                 );
@@ -332,14 +332,25 @@ urn:astrogrid:schema:TableMetaDoc:v1.1
             parser.start(
                 source
                 );
-            config(
-                columns.inport(
+
+            try {
+                final AdqlColumn column = columns.inport(
                     namereader.read(
                         source
                         )
-                    ),
-                source
-                );
+                    );
+                config(
+                    column,
+                    source
+                    );
+                }
+            catch (final NameNotFoundException ouch)
+                {
+                parser.skip(
+                    source
+                    );
+                }
+
             parser.done(
                 source
                 );

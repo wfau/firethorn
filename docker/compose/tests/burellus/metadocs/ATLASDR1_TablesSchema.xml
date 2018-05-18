@@ -69,6 +69,16 @@
          <UCD version="1+">??</UCD>
          <ErrorColumn></ErrorColumn>
       </Column>
+
+      <Column ID="ArchiveCurationHistory.unknown" indexed="false">
+         <Name>unknown</Name>
+         <Datatype>string</Datatype>
+         <Description><![CDATA[Unknown coloumn to test the parser]]></Description>
+         <Units> </Units>
+         <UCD version="1+">??</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+
       <Column ID="ArchiveCurationHistory.comment" indexed="false">
          <Name>comment</Name>
          <Datatype>string</Datatype>
