@@ -65,7 +65,7 @@ public class SQLServerScanner
         {
         if (connection == null)
             {
-            log.debug("Openning a new connection");
+            log.trace("Openning a new connection");
             connection = connector.open();
             }
         return connection;
@@ -86,13 +86,13 @@ public class SQLServerScanner
                 final List<Catalog> list = new ArrayList<Catalog>();
 
                 final Connection  c1 = connection();
-                log.debug("Connection [{}]", c1);
+                log.trace("Connection [{}]", c1);
 
                 final DatabaseMetaData m1 = c1.getMetaData();
-                log.debug("MetaData [{}]", m1);
+                log.trace("MetaData [{}]", m1);
                 
                 final ResultSet rset = m1.getCatalogs();
-                log.debug("Result [{}]", rset);
+                log.trace("Result [{}]", rset);
 
                 final Iterable<Catalog> iter = new ResultSetIterator.Factory<Catalog>(rset)
                     {
@@ -156,13 +156,13 @@ public class SQLServerScanner
             @Override
             public Schemas schemas()
                 {
-                log.debug("schemas() for [{}]", catalog().name());
+                log.trace("schemas() for [{}]", catalog().name());
                 return new Schemas()
                     {
                     @Override
                     public Iterable<Schema> select() throws SQLException
                         {
-                        log.debug("schemas().select() for [{}]", catalog().name());
+                        log.trace("schemas().select() for [{}]", catalog().name());
                         // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                     	// http://msdn.microsoft.com/en-GB/library/ms182642.aspx
                         final PreparedStatement statement = connection().prepareStatement(
@@ -176,7 +176,6 @@ public class SQLServerScanner
                                 catalog().name()
                                 )
                             );
-                        log.debug("Statement [{}]", statement.toString());
                         return new ResultSetFilterator.Factory<Schema>(
                             statement.executeQuery()
                             ){
@@ -192,14 +191,13 @@ public class SQLServerScanner
                                 final String schemaname = results().getString(
                                     "SCHEMA_NAME"
                                     );
-                                log.debug("Found schema [{}]", schemaname);
                                 if (connector().type().ignore().contains(schemaname))
                                     {
-                                    log.debug(" Ignoring schema [{}]", schemaname);
+                                    log.debug("Ignoring schema [{}]", schemaname);
                                     return null ;
                                     }
                                 else {
-                                    log.debug(" Returning schema [{}]", schemaname);
+                                    log.debug("Including schema [{}]", schemaname);
                                     return schema(
                                         catalog(),
                                         schemaname
@@ -212,7 +210,7 @@ public class SQLServerScanner
                     @Override
                     public Schema select(String name) throws SQLException
                         {
-                        log.debug("schemas().select(String) for [{}][{}]", catalog().name(), name);
+                        log.trace("schemas().select(String) for [{}][{}]", catalog().name(), name);
                         // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                     	// http://msdn.microsoft.com/en-GB/library/ms182642.aspx
                         final PreparedStatement statement = connection().prepareStatement(
@@ -236,22 +234,22 @@ public class SQLServerScanner
                         final ResultSet results = statement.executeQuery();
                         if (results.next())
                             {
-							//
-							// Check for reserved names.
-							final String schemaname = results.getString(
-								"SCHEMA_NAME"
-								);
-							log.debug("Found schema [{}]", schemaname);
-							if (connector().type().ignore().contains(schemaname))
-								{
-								log.debug(" Ignoring schema [{}]", schemaname);
-								return null ;
-								}
-							else {
-	                        	return schema(
-	                                catalog(),
-	                                schemaname
-	                                );
+                            //
+                            // Check for reserved names.
+                            final String schemaname = results.getString(
+                                "SCHEMA_NAME"
+                                );
+                            if (connector().type().ignore().contains(schemaname))
+                                {
+                                log.debug("Ignoring schema [{}]", schemaname);
+                                return null ;
+                                }
+                            else {
+                                log.debug("Including schema [{}]", schemaname);
+	                        return schema(
+	                            catalog(),
+	                            schemaname
+	                            );
                             	}
                             }
                         else {
@@ -284,14 +282,14 @@ public class SQLServerScanner
                     @Override
                     public Tables tables()
                         {
-                        log.debug("tables() for [{}][{}]", catalog().name(), schema().name());
+                        log.trace("tables() for [{}][{}]", catalog().name(), schema().name());
                         return new Tables()
                             {
                             @Override
                             public Iterable<Table> select()
                                 throws SQLException
                                 {
-                                log.debug("tables().select() for [{}][{}]", catalog().name(), schema().name());
+                                log.trace("tables().select() for [{}][{}]", catalog().name(), schema().name());
                                 // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                                 final PreparedStatement statement = connection().prepareStatement(
                                     (
@@ -327,7 +325,7 @@ public class SQLServerScanner
                             public Table select(String name)
                                 throws SQLException
                                 {
-                                log.debug("tables().select(String) for [{}][{}][{}]", catalog().name(), schema().name(), name);
+                                log.trace("tables().select(String) for [{}][{}][{}]", catalog().name(), schema().name(), name);
                                 // http://msdn.microsoft.com/en-us/library/aa933205%28v=sql.80%29.aspx
                                 final PreparedStatement statement = connection().prepareStatement(
                                     (
@@ -393,14 +391,14 @@ public class SQLServerScanner
                             @Override
                             public Columns columns()
                                 {
-                                log.debug("columns() for [{}][{}][{}]", catalog().name(), schema().name(), table().name());
+                                log.trace("columns() for [{}][{}][{}]", catalog().name(), schema().name(), table().name());
                                 return new Columns()
                                     {
                                     @Override
                                     public Iterable<Column> select()
                                         throws SQLException
                                         {
-                                        log.debug("columns().select() for [{}][{}][{}]", catalog().name(), schema().name(), table().name());
+                                        log.trace("columns().select() for [{}][{}][{}]", catalog().name(), schema().name(), table().name());
                                         // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
                                         final PreparedStatement statement = connection().prepareStatement(
                                             (
@@ -448,7 +446,7 @@ public class SQLServerScanner
                                     public Column select(String name)
                                         throws SQLException
                                         {
-                                        log.debug("columns().select(String) for [{}][{}][{}][{}]", catalog().name(), schema().name(), table().name(), name);
+                                        log.trace("columns().select(String) for [{}][{}][{}][{}]", catalog().name(), schema().name(), table().name(), name);
                                         // http://msdn.microsoft.com/en-us/library/aa933218%28v=sql.80%29.aspx
                                         final PreparedStatement statement = connection().prepareStatement(
                                     		(
@@ -576,20 +574,31 @@ public class SQLServerScanner
     @Override
     public void handle(SQLException ouch)
         {
-        log.debug("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
-        if ((ouch.getErrorCode() == 0) || (ouch.getErrorCode() == 21))
+        log.warn("SQLException [{}][{}][{}]", ouch.getErrorCode(), ouch.getSQLState(), ouch.getMessage());
+        switch (ouch.getErrorCode())
             {
-            log.warn("Fatal error code, resetting connection");
-            try {
-                connector().reset();
-                }
-            catch (Exception eeek)
-                {
-                log.warn("Exception while resetting connection following SQLException [{}]", eeek.getMessage());
-                }
-            finally {
-                connection = null ;
-                }
+            case 0:
+            case 22:
+                reset();
+                break;
+
+            default:
+                break;
+            }
+        }
+
+    private void reset()
+        {
+        log.trace("Resetting connection");
+        try {
+            connector().reset();
+            }
+        catch (Exception eeek)
+            {
+            log.warn("Exception while resetting connection following SQLException [{}]", eeek.getMessage());
+            }
+        finally {
+            connection = null ;
             }
         }
     

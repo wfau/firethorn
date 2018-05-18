@@ -42,13 +42,14 @@
 # Add our secret function.
 #[user@virtual]
 
-    vi "${HOME:?}/secret.sh"
+    mkdir "${HOME:?}/bin"
+    vi "${HOME:?}/bin/secret"
 
         ....
         ....
         ....
 
-    source "${HOME:?}/secret.sh"
+    chmod u+x "${HOME:?}/bin/secret"
     secret 'frog'
 
 # -----------------------------------------------------
@@ -63,6 +64,7 @@
 #[user@virtual]
 
     branch=2.1.16-zrq-race-bug
+    branch=2.1.19-zrq-metadoc-parser
 
 # -----------------------------------------------------
 # Run our builder.
@@ -78,13 +80,13 @@
     # Add our secret function.
     #[user@virtual]
 
-        vi "${HOME:?}/secret.sh"
+        vi "/bin/secret"
 
             ....
             ....
             ....
 
-        source "${HOME:?}/secret.sh"
+        chmod u+x "/bin/secret"
         secret 'frog'
 
     # -----------------------------------------------------
@@ -170,7 +172,7 @@
         pushd "${PYTHON_CODE:?}"
 
             docker build \
-                --tag firethorn/firethorn-py:${buildtag} \
+                --tag firethorn/firethorn-py:${buildtag:?} \
                 --file Fedorafile \
                 .
 

@@ -76,8 +76,8 @@ implements Entity, NamedEntity
     throws NameFormatException
         {
     	super(true);
-    	log.debug("AbstractNamedEntity(String)");
-        log.debug("  Name  [{}]", name);
+    	log.trace("AbstractNamedEntity(String)");
+        log.trace("  Name  [{}]", name);
     	this.init(
             name
             );
@@ -92,8 +92,8 @@ implements Entity, NamedEntity
     	super(
 			owner
 			);
-    	log.debug("AbstractNamedEntity(Identity, String)");
-        log.debug("  Name  [{}]", name);
+    	log.trace("AbstractNamedEntity(Identity, String)");
+        log.trace("  Name  [{}]", name);
     	this.init(
             name
             );
@@ -109,8 +109,8 @@ implements Entity, NamedEntity
             ident,
             owner
             );
-        log.debug("AbstractNamedEntity(Identity, String)");
-        log.debug("  Name  [{}]", name);
+        log.trace("AbstractNamedEntity(Identity, String)");
+        log.trace("  Name  [{}]", name);
         this.init(
             name
             );

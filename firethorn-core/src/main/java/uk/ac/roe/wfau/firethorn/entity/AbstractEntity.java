@@ -261,27 +261,27 @@ implements Entity
      */
     private void init(final Identity owner)
     	{
-	    log.debug("init(Identity)");
+	    log.trace("init(Identity)");
         this.uidlo = random.nextLong();
         this.uidhi = System.currentTimeMillis();
         if (owner != null)
         	{
-    	    log.debug("Using owner param");
+    	    log.trace("Using owner param");
         	this.owner = owner;
         	}
         else {
-    		log.debug("Using identity from context");
+    		log.trace("Using identity from context");
         	this.owner = factories().contexts().current().identity();
         	}
         this.created = new DateTime();
 		if (this.owner != null)
 			{
-	        log.debug("  owner   [{}][{}]", this.owner.ident(), this.owner.name());
+	        log.trace("  owner   [{}][{}]", this.owner.ident(), this.owner.name());
 			}
 		else {
-	        log.debug("  owner   [null]");
+	        log.trace("  owner   [null]");
 			}
-	    log.debug("  created [{}]", this.created);
+	    log.trace("  created [{}]", this.created);
 
 	    
 	    

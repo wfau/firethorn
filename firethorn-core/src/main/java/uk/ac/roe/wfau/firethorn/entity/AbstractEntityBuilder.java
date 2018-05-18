@@ -75,10 +75,10 @@ implements EntityBuilder<EntityType, EntityParam>
      */
     public AbstractEntityBuilder<EntityType, EntityParam> init(final Iterable<EntityType> source)
         {
-        log.debug("init(Iterable<EntityType, EntityParam>)");
+        log.trace("init(Iterable<EntityType, EntityParam>)");
         for (EntityType entity : source)
             {
-            log.debug("  entity [{}]", entity.name());
+            log.trace("  entity [{}]", entity.name());
             todo.put(
                 entity.name(),
                 entity
@@ -91,12 +91,12 @@ implements EntityBuilder<EntityType, EntityParam>
     public EntityType build(final EntityParam param)
     throws DuplicateEntityException, ProtectionException
         {
-        log.debug("build(EntityParam)");
-        log.debug("  todo [{}]", todo.size());
-        log.debug("  done [{}]", done.size());
+        log.trace("build(EntityParam)");
+        log.trace("  todo [{}]", todo.size());
+        log.trace("  done [{}]", done.size());
 
         final String name = this.name(param);
-        log.debug("  name [{}]", name);
+        log.trace("  name [{}]", name);
         
         //
         // Check for a duplicate in the done list.

@@ -1,5 +1,3 @@
-
-
 #
 # <meta:header>
 #   <meta:licence>
@@ -66,17 +64,6 @@
 
     popd
 
-# -------------------------------------------------------------------------------------------
-# Update Eclipse.
-#[user@desktop]
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        mvn clean install eclipse:eclipse
-
-    popd
-
 # -----------------------------------------------------
 # Build our Docker images.
 #[user@desktop]
@@ -99,7 +86,7 @@
     source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
-        mvn clean install
+        mvn clean install eclipse:eclipse
 
     popd
 
@@ -121,7 +108,6 @@
         popd
 
     popd
-
 
 # -----------------------------------------------------
 # Build our Python client container.

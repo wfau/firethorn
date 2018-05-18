@@ -133,7 +133,7 @@ implements AdqlResource
                 }
             catch (final EntityNotFoundException ouch)
                 {
-                log.debug("Unable to locate resource [{}]", name);
+                log.trace("Unable to locate resource [{}]", name);
                 throw new NameNotFoundException(
                     name,
                     ouch
@@ -207,7 +207,7 @@ implements AdqlResource
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
+            log.trace("init()");
             if (AdqlResourceEntity.EntityServices.instance == null)
                 {
                 AdqlResourceEntity.EntityServices.instance = this ;
@@ -272,14 +272,14 @@ implements AdqlResource
     @Override
     protected AdqlResource.EntityFactory factory()
         {
-        log.debug("factory()");
+        log.trace("factory()");
         return AdqlResourceEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected AdqlResource.EntityServices services()
         {
-        log.debug("services()");
+        log.trace("services()");
         return AdqlResourceEntity.EntityServices.instance() ; 
         }
 

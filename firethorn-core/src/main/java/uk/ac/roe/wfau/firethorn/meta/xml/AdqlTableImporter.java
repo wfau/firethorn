@@ -120,7 +120,6 @@ public class AdqlTableImporter
     /**
      * Import a table.
      *
-    public AdqlTable inport(final String name)
      */
     public AdqlTable inport(final String name)
     throws ProtectionException, NameNotFoundException

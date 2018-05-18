@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:2.1.20
+FROM firethorn/fedora:2.1.21
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
@@ -69,6 +69,10 @@ RUN dnf -y install maven
 COPY maven-cache.sh /tmp 
 RUN chmod a+x /tmp/maven-cache.sh
 RUN /tmp/maven-cache.sh
+
+#
+# Install rsync.
+RUN dnf -y install rsync
 
 #
 # Install our build scripts
