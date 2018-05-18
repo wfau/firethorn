@@ -74,9 +74,9 @@ implements Entity.LinkFactory<EntityType>
 
     protected Matcher matcher(String link)
         {
-        log.debug("matcher(String)");
-        log.debug("  link    [{}]", link);
-        log.debug("  pattern [{}]", this.pattern.pattern());
+        log.trace("matcher(String)");
+        log.trace("  link    [{}]", link);
+        log.trace("  pattern [{}]", this.pattern.pattern());
         return this.pattern.matcher(
             link
             );
@@ -85,9 +85,9 @@ implements Entity.LinkFactory<EntityType>
     @Override
     public boolean matches(String link)
         {
-        log.debug("matches(String)");
-        log.debug("  link    [{}]", link);
-        log.debug("  pattern [{}]", this.pattern.pattern());
+        log.trace("matches(String)");
+        log.trace("  link    [{}]", link);
+        log.trace("  pattern [{}]", this.pattern.pattern());
         final Matcher matcher = this.matcher(
             link
             );
@@ -97,17 +97,17 @@ implements Entity.LinkFactory<EntityType>
     @Override
     public Identifier ident(final String link)
         {
-        log.debug("ident(String)");
-        log.debug("  link    [{}]", link);
-        log.debug("  pattern [{}]", this.pattern.pattern());
+        log.trace("ident(String)");
+        log.trace("  link    [{}]", link);
+        log.trace("  pattern [{}]", this.pattern.pattern());
 
         final Matcher matcher = matcher(
             link
             );
         if (matcher.matches())
             {
-            log.debug("  group[0][{}]", matcher.group(0));
-            log.debug("  group[1][{}]", matcher.group(1));
+            log.trace("  group[0][{}]", matcher.group(0));
+            log.trace("  group[1][{}]", matcher.group(1));
             return this.idents.ident(
                 matcher.group(1)
                 );

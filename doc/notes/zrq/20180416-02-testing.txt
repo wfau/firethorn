@@ -42,18 +42,19 @@
 # Add our secret function.
 #[user@virtual]
 
-    scp Zarquan@wfau.metagrid.co.uk:secret.sh \
-        "${HOME:?}/secret.sh"
+    mkdir "${HOME:?}/bin"
+    pushd "${HOME:?}/bin"
+        scp 'Zarquan@wfau.metagrid.co.uk:bin/secret' \
+            'secret'
+        chmod u+x 'secret'
+    popd
 
-    source "${HOME:?}/secret.sh"
     secret 'frog'
 
 # -----------------------------------------------------
 # Create our chain properties.
 #[user@virtual]
 
-    source "${HOME:?}/secret.sh"
-    
     cat > "${HOME:?}/chain.properties" << EOF
 
         buildtag=${buildtag:-latest}

@@ -65,10 +65,16 @@ public interface XMLParser
     /**
      * Check if an event is a {@link XMLStreamConstants#END_ELEMENT} that matches our {@link QName}.
      * @returns true if the event matches.
-     * @throws {@link XMLReaderException} if the event does not match.
      *
      */
-    public boolean done(final XMLEvent event)
+    public boolean done(final XMLEvent event);
+
+    /**
+     * Skip to the next {@link XMLStreamConstants#END_ELEMENT} that matches our {@link QName}.
+     * This doesn't count open/close so it may get the wrong element if this element contains child elements with the same name.
+     *
+     */
+    public void skip(final XMLEventReader reader)
     throws XMLParserException;
 
     /**

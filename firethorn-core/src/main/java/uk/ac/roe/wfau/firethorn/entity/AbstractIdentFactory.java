@@ -41,11 +41,11 @@ implements Entity.IdentFactory<EntityType>
     @Override
     public Identifier ident(final String string)
         {
-        log.debug("ident(String) [{}]", string);
+        log.trace("ident(String) [{}]", string);
         final Matcher m1 = p1.matcher(string);
         if (m1.matches())
             {
-            //log.debug("m1 matches");
+            log.trace("m1 matches");
             return new LongIdentifier(
                 string
                 );
@@ -54,7 +54,7 @@ implements Entity.IdentFactory<EntityType>
             final Matcher m2 = p2.matcher(string);
             if (m2.matches())
                 {
-                //log.debug("m2 matches");
+                log.trace("m2 matches");
                 return new ProxyIdentifier(
                     ident(
                         m2.group(1)
@@ -68,7 +68,7 @@ implements Entity.IdentFactory<EntityType>
                 final Matcher m3 = p3.matcher(string);
                 if (m3.matches())
                     {
-                    //log.debug("m3 matches");
+                    log.trace("m3 matches");
                     return new ProxyIdentifier(
                         ident(
                             m3.group(1)
@@ -82,7 +82,7 @@ implements Entity.IdentFactory<EntityType>
                     final Matcher m4 = p4.matcher(string);
                     if (m4.matches())
                         {
-                        //log.debug("m4 matches");
+                        log.trace("m4 matches");
                         return new ProxyIdentifier(
                             ident(
                                 m4.group(1)
@@ -96,7 +96,7 @@ implements Entity.IdentFactory<EntityType>
                         final Matcher m5 = p5.matcher(string);
                         if (m5.matches())
                             {
-                            //log.debug("m5 matches");
+                            log.trace("m5 matches");
                             return new ProxyIdentifier(
                                 ident(
                                     m5.group(1)

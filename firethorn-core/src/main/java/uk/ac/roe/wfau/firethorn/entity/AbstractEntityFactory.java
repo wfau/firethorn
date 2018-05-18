@@ -45,9 +45,6 @@ extends AbstractComponent
 implements Entity.EntityFactory<EntityType>
     {
 
-    //@Override
-    //public abstract Entity.IdentFactory idents();
-
     /**
      * Get the class of Entity we manage.
      * Required because we can't get this from the generics at runtime, because ....
@@ -63,7 +60,7 @@ implements Entity.EntityFactory<EntityType>
     public EntityType search(final Identifier ident)
     throws ProtectionException
         {
-        //log.debug("search() [{}]", (ident != null) ? ident.value() : null);
+        log.trace("search() [{}]", (ident != null) ? ident.value() : null);
         return (EntityType) factories().hibernate().select(
             etype(),
             ident
@@ -75,7 +72,7 @@ implements Entity.EntityFactory<EntityType>
     public EntityType select(final Identifier ident)
     throws IdentifierNotFoundException, ProtectionException
         {
-        //log.debug("select() [{}]", (ident != null) ? ident.value() : null);
+        log.trace("select() [{}]", (ident != null) ? ident.value() : null);
         final EntityType result = search(
             ident
             );
@@ -108,7 +105,7 @@ implements Entity.EntityFactory<EntityType>
     @SuppressWarnings("unchecked")
     protected EntityType insert(final EntityType entity)
         {
-        log.debug("insert [{}]", entity);
+        log.trace("insert [{}]", entity);
         return (EntityType) factories().hibernate().insert(
             entity
             );
@@ -344,9 +341,9 @@ implements Entity.EntityFactory<EntityType>
         @Override
         public boolean check(Identity identity, Action action)
             {
-            log.debug("check(Identity, Action)");
-            log.debug("  Identity [{}]", identity);
-            log.debug("  Action   [{}]", action);
+            log.trace("check(Identity, Action)");
+            log.trace("  Identity [{}]", identity);
+            log.trace("  Action   [{}]", action);
             switch (action.type())
                 {
                 case CREATE:
@@ -371,9 +368,9 @@ implements Entity.EntityFactory<EntityType>
         @Override
         public boolean check(Identity identity, Action action)
             {
-            log.debug("check(Identity, Action)");
-            log.debug("  Identity [{}]", identity);
-            log.debug("  Action   [{}]", action);
+            log.trace("check(Identity, Action)");
+            log.trace("  Identity [{}]", identity);
+            log.trace("  Action   [{}]", action);
             switch (action.type())
                 {
                 case CREATE:

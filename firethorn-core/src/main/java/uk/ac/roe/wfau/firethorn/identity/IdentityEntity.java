@@ -496,7 +496,7 @@ implements Identity
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
+            log.trace("init()");
             if (IdentityEntity.EntityServices.instance == null)
                 {
                 IdentityEntity.EntityServices.instance = this ;
@@ -545,14 +545,14 @@ implements Identity
     @Override
     protected Identity.EntityFactory factory()
         {
-        log.debug("factory()");
+        log.trace("factory()");
         return IdentityEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected Identity.EntityServices services()
         {
-        log.debug("services()");
+        log.trace("services()");
         return IdentityEntity.EntityServices.instance() ; 
         }
     
