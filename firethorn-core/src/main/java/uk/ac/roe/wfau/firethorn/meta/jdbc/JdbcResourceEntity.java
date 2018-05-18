@@ -770,7 +770,7 @@ public class JdbcResourceEntity
             schema
             );
         log.debug("Scanning for schema [{}][{}]", schema.catalog().name(), schema.name());
-        log.debug("Scanning for schema [{}]", key);
+        log.trace("Scanning for schema [{}]", key);
         //
         // Check for an existing match.
         if (existing.containsKey(key))
@@ -787,7 +787,7 @@ public class JdbcResourceEntity
         // No match, so create a new one.
         else {
             log.debug("Creating new schema [{}][{}]", schema.catalog().name(), schema.name());
-            log.debug("Cacheing new schema [{}]", key);
+            log.trace("Cacheing new schema [{}]", key);
             matching.put(
                 key,
                 factories().jdbc().schemas().entities().create(
