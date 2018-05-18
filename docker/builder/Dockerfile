@@ -71,6 +71,10 @@ RUN chmod a+x /tmp/maven-cache.sh
 RUN /tmp/maven-cache.sh
 
 #
+# Install rsync.
+RUN dnf -y install rsync
+
+#
 # Install our build scripts
 RUN mkdir -p  /builder
 COPY bin/     /builder/bin 
