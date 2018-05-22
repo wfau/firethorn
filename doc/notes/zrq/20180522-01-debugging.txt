@@ -1,0 +1,258 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Login to the VM
+#[user@desktop]
+
+    ssh Stevedore@Ulov
+
+# -----------------------------------------------------
+# Create a temp directory
+#[user@virtual]
+
+    pushd $(mktemp -d)
+
+# -----------------------------------------------------
+# Extract a copy of the logfile from the container.
+#[user@virtual]
+
+    docker cp stv_gillian_1:/var/local/tomcat/logs/firethorn.log .
+
+# -----------------------------------------------------
+# Find lines with the SQLServer error.
+#[user@virtual]
+
+    grep 'Fatal error 823' firethorn.log
+
+        ....
+        2018-05-22 14:36:59,795 WARN  [main-interface-5] [SQLServerScanner] SQLException [21][S1000][Warning: Fatal error 823 ....
+        2018-05-22 14:37:01,318 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VIKINGDR3][Warning: Fatal error 823 ....
+        2018-05-22 14:37:01,318 WARN  [main-interface-5] [SQLServerScanner] SQLException [21][S1000][Warning: Fatal error 823 ....
+        2018-05-22 14:37:13,640 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VMCDR1][Warning: Fatal error 823 ....
+        2018-05-22 14:37:13,640 WARN  [main-interface-5] [SQLServerScanner] SQLException [21][S1000][Warning: Fatal error 823 ....
+        2018-05-22 14:37:15,181 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VMCDR2][Warning: Fatal error 823 ....
+        2018-05-22 14:37:15,181 WARN  [main-interface-5] [SQLServerScanner] SQLException [21][S1000][Warning: Fatal error 823 ....
+        2018-05-22 14:37:16,713 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VMCDR3][Warning: Fatal error 823 ....
+        2018-05-22 14:37:16,713 WARN  [main-interface-5] [SQLServerScanner] SQLException [21][S1000][Warning: Fatal error 823 ....
+        2018-05-22 14:37:29,053 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][WORLDR1][Warning: Fatal error 823 ....
+        ....
+
+# -----------------------------------------------------
+# Extract lines for a single thread.
+#[user@virtual]
+
+    grep 'main-interface-5' firethorn.log | tee extract-001.log
+
+# -----------------------------------------------------
+# Identify the begin and end points.
+#[user@virtual]
+
+    grep \
+        -e '\[HttpRequestDebug\] preHandle()' \
+        -e '\[HttpRequestDebug\] afterCompletion()' \
+        extract-001.log
+
+
+        2018-05-22 14:19:13,535 DEBUG [main-interface-5] [HttpRequestDebug] preHandle() 
+        2018-05-22 14:19:13,580 DEBUG [main-interface-5] [HttpRequestDebug] afterCompletion() 
+
+        2018-05-22 14:19:15,793 DEBUG [main-interface-5] [HttpRequestDebug] preHandle() 
+        2018-05-22 14:20:36,261 DEBUG [main-interface-5] [HttpRequestDebug] afterCompletion() 
+
+        2018-05-22 14:26:45,094 DEBUG [main-interface-5] [HttpRequestDebug] preHandle() 
+        2018-05-22 14:27:13,392 DEBUG [main-interface-5] [HttpRequestDebug] afterCompletion() 
+
+        2018-05-22 14:36:10,888 DEBUG [main-interface-5] [HttpRequestDebug] preHandle() 
+        2018-05-22 14:37:30,614 DEBUG [main-interface-5] [HttpRequestDebug] afterCompletion() 
+
+        2018-05-22 14:40:08,223 DEBUG [main-interface-5] [HttpRequestDebug] preHandle() 
+        2018-05-22 14:40:09,948 DEBUG [main-interface-5] [HttpRequestDebug] afterCompletion() 
+
+# -----------------------------------------------------
+# Extract the SQL errors for each request block.
+#[user@virtual]
+
+    sed -n '
+        /^2018-05-22 14:19:13,535/,/2018-05-22 14:19:13,580/ {
+            s/\(.*Exception while scanning catalog.*Fatal error 823\).*/\1 ..../ p
+            }
+        ' \
+        extract-001.log
+
+            -- NONE --
+
+
+
+    sed -n '
+        /^2018-05-22 14:19:15,793/,/2018-05-22 14:20:36,261/ {
+            s/\(.*Exception while scanning catalog.*Fatal error 823\).*/\1 ..../ p
+            }
+        ' \
+        extract-001.log
+
+            2018-05-22 14:19:17,635 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:19:19,179 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR2][Warning: Fatal error 823 ....
+            2018-05-22 14:19:24,498 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][TRANSIT][Warning: Fatal error 823 ....
+            2018-05-22 14:19:26,074 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:19:27,626 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR11PLUSUDSONLY][Warning: Fatal error 823 ....
+            2018-05-22 14:19:29,158 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR1PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:30,691 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR2PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:32,220 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR3PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:33,765 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR4PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:35,294 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR5PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:36,838 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR6PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:38,367 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR7PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:39,911 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR8PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:41,456 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR9PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:42,984 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSEDR][Warning: Fatal error 823 ....
+            2018-05-22 14:19:44,544 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSEDRPLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:19:47,649 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSSV][Warning: Fatal error 823 ....
+            2018-05-22 14:19:49,209 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VHSDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:19:55,468 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VIDEODR2][Warning: Fatal error 823 ....
+            2018-05-22 14:19:57,009 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VIDEODR3][Warning: Fatal error 823 ....
+            2018-05-22 14:20:04,668 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VIKINGDR2][Warning: Fatal error 823 ....
+            2018-05-22 14:20:06,213 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VIKINGDR3][Warning: Fatal error 823 ....
+            2018-05-22 14:20:19,114 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VMCDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:20:20,651 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VMCDR2][Warning: Fatal error 823 ....
+            2018-05-22 14:20:22,187 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VMCDR3][Warning: Fatal error 823 ....
+            2018-05-22 14:20:34,636 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][WORLDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:20:36,180 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][WORLDR2][Warning: Fatal error 823 ....
+
+
+
+    sed -n '
+        /^2018-05-22 14:26:45,094/,/2018-05-22 14:27:13,392/ {
+            s/\(.*Exception while scanning catalog.*Fatal error 823\).*/\1 ..../ p
+            }
+        ' \
+        extract-001.log
+
+            -- NONE --
+
+
+
+    sed -n '
+        /^2018-05-22 14:36:10,888/,/2018-05-22 14:37:30,614/ {
+            s/\(.*Exception while scanning catalog.*Fatal error 823\).*/\1 ..../ p
+            }
+        ' \
+        extract-001.log
+
+            2018-05-22 14:36:12,520 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:36:14,064 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR2][Warning: Fatal error 823 ....
+            2018-05-22 14:36:18,778 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][TRANSIT][Warning: Fatal error 823 ....
+            2018-05-22 14:36:20,335 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:36:21,880 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR11PLUSUDSONLY][Warning: Fatal error 823 ....
+            2018-05-22 14:36:23,424 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR1PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:24,969 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR2PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:26,505 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR3PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:28,010 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR4PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:29,555 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR5PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:31,099 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR6PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:32,628 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR7PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:34,157 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR8PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:35,686 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR9PLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:37,230 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSEDR][Warning: Fatal error 823 ....
+            2018-05-22 14:36:38,748 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSEDRPLUS][Warning: Fatal error 823 ....
+            2018-05-22 14:36:41,832 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSSV][Warning: Fatal error 823 ....
+            2018-05-22 14:36:43,376 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VHSDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:36:50,584 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VIDEODR2][Warning: Fatal error 823 ....
+            2018-05-22 14:36:52,112 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VIDEODR3][Warning: Fatal error 823 ....
+            2018-05-22 14:36:59,795 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VIKINGDR2][Warning: Fatal error 823 ....
+            2018-05-22 14:37:01,318 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VIKINGDR3][Warning: Fatal error 823 ....
+            2018-05-22 14:37:13,640 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VMCDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:37:15,181 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VMCDR2][Warning: Fatal error 823 ....
+            2018-05-22 14:37:16,713 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][VMCDR3][Warning: Fatal error 823 ....
+            2018-05-22 14:37:29,053 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][WORLDR1][Warning: Fatal error 823 ....
+            2018-05-22 14:37:30,594 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][WORLDR2][Warning: Fatal error 823 ....
+
+
+
+    sed -n '
+        /^2018-05-22 14:40:08,223/,/2018-05-22 14:40:09,948/ {
+            s/\(.*Exception while scanning catalog.*Fatal error 823\).*/\1 ..../ p
+            }
+        ' \
+        extract-001.log
+
+            -- NONE --
+
+# -----------------------------------------------------
+# Extract the interesting blocks.
+#[user@virtual]
+
+    sed -n '
+        /^2018-05-22 14:19:15,793/,/2018-05-22 14:20:36,261/ {
+            p
+            }
+        ' \
+        extract-001.log | tee extract-002.log
+
+
+    sed -n '
+        /^2018-05-22 14:36:10,888/,/2018-05-22 14:37:30,614/ {
+            p
+            }
+        ' \
+        extract-001.log | tee extract-003.log
+
+
+# -----------------------------------------------------
+# Examine an interesting block.
+#[user@virtual]
+
+    vi extract-003.log
+    
+        2018-05-22 14:36:10,888 DEBUG [main-interface-5] [HttpRequestDebug] preHandle()
+        2018-05-22 14:36:10,888 DEBUG [main-interface-5] [HttpRequestDebug] ----
+
+        ....
+
+        2018-05-22 14:36:10,977 DEBUG [main-interface-5] [JdbcResourceEntity] Scanning catalog [AKARI]
+        2018-05-22 14:36:10,980 DEBUG [main-interface-5] [JdbcResourceEntity] Access denied to catalog [AKARI]
+        2018-05-22 14:36:10,980 DEBUG [main-interface-5] [JdbcResourceEntity] Scanning catalog [ATLASDR1]
+        2018-05-22 14:36:12,520 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR1][Warning: Fatal error 823 ....
+        2018-05-22 14:36:12,520 WARN  [main-interface-5] [SQLServerScanner] SQLException [21][S1000][Warning: Fatal error 823 ....
+        2018-05-22 14:36:12,520 DEBUG [main-interface-5] [JdbcResourceEntity] Scanning catalog [ATLASDR2]
+        2018-05-22 14:36:14,064 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR2][Warning: Fatal error 823 ....
+        2018-05-22 14:36:14,064 WARN  [main-interface-5] [SQLServerScanner] SQLException [21][S1000][Warning: Fatal error 823 ....
+        2018-05-22 14:36:14,064 DEBUG [main-interface-5] [JdbcResourceEntity] Scanning catalog [ATLASv20130426]
+        2018-05-22 14:36:15,593 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASv20130426][Invalid state, the Connection object is closed.]
+        2018-05-22 14:36:15,593 WARN  [main-interface-5] [SQLServerScanner] SQLException [0][HY010][Invalid state, the Connection object is closed.]
+
+        ....
+
+        2018-05-22 14:37:30,613 DEBUG [main-interface-5] [AnonymousAuthenticator] afterCompletion()
+        2018-05-22 14:37:30,613 DEBUG [main-interface-5] [SimpleHeaderAuthenticator] afterCompletion()
+        2018-05-22 14:37:30,613 DEBUG [main-interface-5] [OperationInterceptor] OperationInterceptor.afterCompletion()
+        2018-05-22 14:37:30,613 DEBUG [main-interface-5] [OperationInterceptor] Operation [3259][http://localhost:8081/firethorn/jdbc/resource/53/schemas/select]
+        2018-05-22 14:37:30,613 DEBUG [main-interface-5] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod]
+        2018-05-22 14:37:30,614 DEBUG [main-interface-5] [HttpRequestDebug] afterCompletion()
+
+
+    #
+    # Request takes 1min 20 sec (14:36:10 -> 14:37:30)
+    # This might explain the java.net.SocketTimeoutException errors we see in the web browser response.
+    #
+
+
