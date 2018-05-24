@@ -169,10 +169,15 @@ public class AdqlTapSyncController extends AbstractController {
 									null, // No cell limit
                                     null  // No time limit
 			                        ),
-                                null, // No delays
+								factories().blues().delays().create(
+									500,
+			                        null,
+			                        null
+			                        ),
 								TaskState.COMPLETED, // Wait for COMPLETED
-								factories().blues().limits().absolute().time() // TODO This is not the right value.
+								Long.valueOf(600000) // TODO This is not the right value.
 								);
+						
 						;
 					} else {
 						query = resource.blues().create(
@@ -182,9 +187,13 @@ public class AdqlTapSyncController extends AbstractController {
 						        null, // Mode.AUTO
 						        null, // Syntax.AUTO
 						        null, // No limits
-						        null, // No delays
+						        factories().blues().delays().create(
+									500,
+			                        null,
+			                        null
+				                ),
                                 TaskState.COMPLETED, // Wait for COMPLETED
-								factories().blues().limits().absolute().time() // TODO This is not the right value.
+                                Long.valueOf(600000) // TODO This is not the right value.
 								);
 					}
 
@@ -192,6 +201,10 @@ public class AdqlTapSyncController extends AbstractController {
 					// Write results to VOTable using AdqlQueryVOTableController
 					if (query != null) {
 						
+                        while (query.state() == TaskState.RUNNING ){   
+                            Thread.sleep(1000);
+                        } 
+                        
 						if (query.state() == TaskState.EDITING || 
 								query.state() == TaskState.QUEUED || 
 										query.state() == TaskState.READY || 
