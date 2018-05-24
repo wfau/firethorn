@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.22
+FROM firethorn/python:2.1.22-stv-wfau-tap
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
