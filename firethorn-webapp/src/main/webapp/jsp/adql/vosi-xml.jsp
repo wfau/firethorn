@@ -4,6 +4,8 @@
     import="uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable"
     import="uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn"
     import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceController"
+
+
     contentType="text/xml; charset=UTF-8" 
     session="false"
 %><%
@@ -35,14 +37,46 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 {
                 %>
             <column>
-           		<% if (column.name().equals("size")) { %>
+           		        <% if (column.name().equals("size")) { %>
 					 <name><%= '"' + column.name() +'"'  %></name>
 				<% } else if (column.name().equals("timeStamp")) { %>
 					 <name><%= '"' + column.name() +'"'  %></name>
 				<% } else if (column.name().equals("coord1")) { %>
 					 <name><%= '"' + column.name() +'"'  %></name>
 				<% } else if (column.name().equals("coord2")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>				 
+					 <name><%= '"' + column.name() +'"'  %></name>				
+				<% } else if (column.name().equals("date")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("min")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("max")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name> 
+				<% } else if (column.name().equals("distance")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("value")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("zone")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("match")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("time")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("count")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("key")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("when")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("area")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("sql")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("first")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("DATE")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
+				<% } else if (column.name().equals("MATCH")) { %>
+					 <name><%= '"' + column.name() +'"'  %></name>
 				<% } else { %>
 					 <name><%= column.name() %></name>
 				<% } %>
@@ -61,7 +95,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                     if (meta.adql().units() != null)
                         {
                         %>
-                        <unit><%= meta.adql().units() %></unit>
+                        <unit><![CDATA[<%= meta.adql().units() %>]]></unit>
                         <%
                         }
                  

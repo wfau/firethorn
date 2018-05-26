@@ -588,10 +588,10 @@ public class AdqlTapAsyncController extends AbstractController {
 				return;
 			}
 			
-			writer.append(Long.toString(queryentity.limits().time()));
+			writer.append(Long.toString(0));
 			return;
 		} catch (Exception e) {
-			writer.append(Long.toString(factories().blues().limits().absolute().time()));
+			writer.append(Long.toString(0));
 			return;
 		}
 		
@@ -627,7 +627,7 @@ public class AdqlTapAsyncController extends AbstractController {
 			return;
 			
 		} catch (Exception e) {
-			writer.append("0");
+			writer.append("");
 			return;
 		}
 	}
