@@ -413,7 +413,7 @@
         15.201.168.192.in-addr.arpa domain name pointer Gworewia.
 
 #
-# Login to the Tomcat VM
+# Login to the Tomcat VM.
 #[user@trop01]
 
     ssh Gworewia
@@ -422,8 +422,8 @@
         -- works eventually --        
 
 #
-# Check available space
-[root@Gworewia ~]#
+# Check available space.
+#[root@Gworewia]
 
     df -h
 
@@ -440,6 +440,113 @@
         shm              64M     0   64M   0% /var/lib/docker/containers/37c73e603e18f90f66f8218f2190b56272a408452f18972596a8554fcad1d65a/shm
         shm              64M     0   64M   0% /var/lib/docker/containers/a17d351ce707247b0d4ae4b3b360081d78e3636c8ff8185721a51c766614151c/shm
         tmpfs           396M     0  396M   0% /run/user/0
+
+#
+# Check the running containers.
+#[root@Gworewia]
+
+    docker ps
+
+        CONTAINER ID        IMAGE                                     COMMAND                  CREATED             STATUS                  PORTS                    NAMES
+        a17d351ce707        firethorn/apache                          "/bin/sh -c '/usr/..."   7 days ago          Up 7 days               0.0.0.0:80->80/tcp       firepache
+        37c73e603e18        firethorn/firethorn:2.1.22-stv-wfau-tap   "/bin/sh -c '/var/..."   8 days ago          Up 8 days (unhealthy)   0.0.0.0:8080->8080/tcp   root_gillian_1
+        5374050fb270        firethorn/ogsadai:2.1.22-stv-wfau-tap     "/bin/sh -c '/var/..."   8 days ago          Up 8 days (healthy)     8080/tcp                 root_jarmila_1
+        023b44eed503        firethorn/postgres:2.1.22-stv-wfau-tap    "docker-entrypoint..."   8 days ago          Up 8 days               5432/tcp                 root_carolina_1
+
+#
+# List the volume mounts for the firethorn container.
+#[root@float01]
+
+    dnf install -y jq
+
+        # FAILS - out of space
+
+    docker inspect \
+        root_gillian_1 \
+        |
+        jq '.[]|."Mounts"'
+
+        # FAILS - jq not installed
+
+#
+# Inspect the firethorn container
+#[root@Gworewia]
+
+    docker inspect root_gillian_1
+
+
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/etc/localtime",
+                "Destination": "/etc/localtime",
+                "Mode": "ro",
+                "RW": false,
+                "Propagation": ""
+            },
+            {
+                "Type": "bind",
+                "Source": "/root/firethorn.properties",
+                "Destination": "/etc/firethorn.properties",
+                "Mode": "rw",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "c88000f34aac7b7523e710efd6d4e96d2f520e9b4130c737bf97081ed5c57745",
+                "Source": "/var/lib/docker/volumes/c88000f34aac7b7523e710efd6d4e96d2f520e9b4130c737bf97081ed5c57745/_data",
+                "Destination": "/var/local/tomcat/work",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e",
+                "Source": "/var/lib/docker/volumes/3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e/_data",
+                "Destination": "/var/local/tomcat/logs",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "78cec3b9bcdc4554c0ca3ed07a6d3702628d08d9b6db576a3b938f7832209b1e",
+                "Source": "/var/lib/docker/volumes/78cec3b9bcdc4554c0ca3ed07a6d3702628d08d9b6db576a3b938f7832209b1e/_data",
+                "Destination": "/var/local/tomcat/temp",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+
+#
+# Tomcat logs is mounted as a volume, but not as a bind mount.
+
+            {
+                "Type": "volume",
+                "Name": "3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e",
+                "Source": "/var/lib/docker/volumes/3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e/_data",
+                "Destination": "/var/local/tomcat/logs",
+            },
+
+#
+# Get a copy of the log file ... ?
+#[user@trop01]
+
+    ssh Gworewia -T '
+        docker exec -t root_gillian_1 cat /var/local/tomcat/logs/firethorn.log
+        ' > firethorn.log
+
+
+
+
+
+
 
 
 
