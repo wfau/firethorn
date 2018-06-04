@@ -22,6 +22,7 @@
 
 #
 # Check the external hostname.
+#[user@desktop]
 
     host tap.roe.ac.uk
 
@@ -30,11 +31,13 @@
 
 #
 # Login to the host server.
+#[user@desktop]
 
     ssh trop01
 
 #
 # List the virtual machines.
+#[user@trop01]
 
     virsh \
         -c ${connection:?} \
@@ -49,6 +52,7 @@
 
 #
 # List the VM networks.
+#[user@trop01]
 
     virsh \
         -c ${connection:?} \
@@ -61,6 +65,7 @@
 
 #
 # List the VM interfaces.
+#[user@trop01]
 
     virsh \
         -c ${connection:?} \
@@ -74,6 +79,7 @@
 
 #
 # Check which VM is connected to the bridge interface.
+#[user@trop01]
 
     virsh \
         -c ${connection:?} \
@@ -96,11 +102,13 @@
 
 #
 # Login to the proxy VM.
+#[user@trop01]
 
     ssh Astoalith
 
 #
 # List the docker containers.
+#[root@float01]
 
     docker ps
 
@@ -109,6 +117,7 @@
 
 #
 # List the apache container volume mounts.
+#[root@float01]
 
     dnf install -y jq
 
@@ -136,6 +145,7 @@
 
 #
 # Check the apache logs.
+#[root@float01]
 
     ls -al /var/logs/firepache
 
@@ -196,6 +206,7 @@
 
 #
 # Check the setup script.
+#[root@float01]
 
     cat /root/setup/apache-proxy-config-script.sh
 
@@ -243,11 +254,13 @@
 
 #
 # Run a shell inside the container.
+#[root@float01]
 
     docker exec -it firepache bash
 
 #
 # List the Apache config files.
+#[root@container]
 
     ls -al /etc/apache2/sites-enabled
 
@@ -258,6 +271,7 @@
 
 #
 # Check the Apache config file.
+#[root@container]
 
     cat /etc/apache2/sites-enabled/000-default.conf
 
@@ -390,6 +404,42 @@
             ProxyPassMatch ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
             ProxyPassReverse  ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
 
+#
+# Back to the VM and to identify which VM has the IP address.
+#[root@float01]
+
+    host 192.168.201.15
+
+        15.201.168.192.in-addr.arpa domain name pointer Gworewia.
+
+#
+# Login to the Tomcat VM
+#[user@trop01]
+
+    ssh Gworewia
+
+        -- HANGS --
+        -- works eventually --        
+
+#
+# Check available space
+[root@Gworewia ~]#
+
+    df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        devtmpfs        2.0G     0  2.0G   0% /dev
+        tmpfs           2.0G     0  2.0G   0% /dev/shm
+        tmpfs           2.0G  1.9M  2.0G   1% /run
+        tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+        /dev/vda3        31G   30G     0 100% /
+        tmpfs           2.0G  4.0K  2.0G   1% /tmp
+        /dev/vda1       240M   78M  146M  35% /boot
+        shm              64M  4.0K   64M   1% /var/lib/docker/containers/023b44eed5037a0841861777ee2a3549c6af85a20e64626d7c5d5c1147907b76/shm
+        shm              64M     0   64M   0% /var/lib/docker/containers/5374050fb2709e655fa8b54c1a86f931dc2032414a854f665c5c8d9bd9a06104/shm
+        shm              64M     0   64M   0% /var/lib/docker/containers/37c73e603e18f90f66f8218f2190b56272a408452f18972596a8554fcad1d65a/shm
+        shm              64M     0   64M   0% /var/lib/docker/containers/a17d351ce707247b0d4ae4b3b360081d78e3636c8ff8185721a51c766614151c/shm
+        tmpfs           396M     0  396M   0% /run/user/0
 
 
 
