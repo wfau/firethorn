@@ -1,0 +1,395 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# Check the external hostname.
+
+    host tap.roe.ac.uk
+
+        tap.roe.ac.uk is an alias for tropfloat1.roe.ac.uk.
+        tropfloat1.roe.ac.uk has address 129.215.175.100
+
+#
+# Login to the host server.
+
+    ssh trop01
+
+#
+# List the virtual machines.
+
+    virsh \
+        -c ${connection:?} \
+        list
+
+         Id    Name                           State
+        ----------------------------------------------------
+         2     Astoalith                      running
+         3     Cadelicia                      running
+         4     Froeseth                       running
+         6     Gworewia                       running
+
+#
+# List the VM networks.
+
+    virsh \
+        -c ${connection:?} \
+        net-list
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         bridged              active     yes           yes
+         default              active     yes           yes
+
+#
+# List the VM interfaces.
+
+    virsh \
+        -c ${connection:?} \
+        iface-list
+
+         Name                 State      MAC Address
+        ---------------------------------------------------
+         br0                  active     0c:c4:7a:35:10:78
+         br1                  active     0c:c4:7a:35:10:79
+         lo                   active     00:00:00:00:00:00
+
+#
+# Check which VM is connected to the bridge interface.
+
+    virsh \
+        -c ${connection:?} \
+        dumpxml \
+        Astoalith \
+        |
+    xmllint \
+        --xpath "//interface[@type='bridge']" \
+        -
+
+
+        <interface type="bridge">
+            <mac address="52:54:00:03:03:02"/>
+            <source bridge="br0"/>
+            <target dev="vnet1"/>
+            <model type="virtio"/>
+            <alias name="net1"/>
+            <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0"/>
+        </interface>
+
+#
+# Login to the proxy VM.
+
+    ssh Astoalith
+
+#
+# List the docker containers.
+
+    docker ps
+
+        CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                NAMES
+        a050cbd6960d        firethorn/apache:2.1.3   "/bin/sh -c '/usr/sbi"   5 months ago        Up 5 months         0.0.0.0:80->80/tcp   firepache
+
+#
+# List the apache container volume mounts.
+
+    dnf install -y jq
+
+    docker inspect \
+        firepache \
+        |
+        jq '.[]|."Mounts"'
+
+        [
+          {
+            "Source": "/var/logs/firepache",
+            "Destination": "/var/log/apache2",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          },
+          {
+            "Source": "/root/setup/apache-proxy-config-script.sh",
+            "Destination": "/root/setup/apache-proxy-config-script.sh",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          }
+        ]
+
+#
+# Check the apache logs.
+
+    ls -al /var/logs/firepache
+
+        total 349152
+        drwxr-xr-x. 1 root root        84 Feb 11  2017 .
+        drwxr-xr-x. 1 root root        94 Feb 11  2017 ..
+        -rw-r--r--. 1 root root   1732846 Jun  4 12:28 access.log
+        -rw-r--r--. 1 root root    340386 Jun  4 12:28 error.log
+        -rw-r--r--. 1 root root 355450186 Jun  4 12:28 other_vhosts_access.log
+
+    tail /var/logs/firepache/access.log
+
+        125.84.176.94 - - [04/Jun/2018:07:44:57 +0000] "GET / HTTP/1.0" 200 11783 "-" "-"
+        1.30.30.57 - - [04/Jun/2018:07:45:24 +0000] "GET / HTTP/1.1" 200 3538 "-" "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.89 Safari/537.1"
+        165.16.37.188 - - [04/Jun/2018:08:08:46 +0000] "GET / HTTP/1.1" 200 11764 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
+        189.152.157.233 - - [04/Jun/2018:08:35:37 +0000] "GET / HTTP/1.1" 200 11764 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
+        103.84.165.77 - - [04/Jun/2018:09:31:37 +0000] "GET / HTTP/1.1" 200 11764 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"
+        189.235.75.181 - - [04/Jun/2018:09:36:09 +0000] "GET / HTTP/1.1" 200 11764 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
+        188.92.74.189 - - [04/Jun/2018:09:59:02 +0000] "GET /webfig/roteros.info HTTP/1.1" 404 476 "-" "python-requests/2.18.4"
+        107.170.227.216 - - [04/Jun/2018:10:23:18 +0000] "GET / HTTP/1.1" 200 3538 "-" "Mozilla/5.0 zgrab/0.x"
+        187.76.171.34 - - [04/Jun/2018:10:38:38 +0000] "GET / HTTP/1.1" 200 11764 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
+        190.73.244.181 - - [04/Jun/2018:11:28:50 +0000] "GET / HTTP/1.1" 200 11764 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/601.7.7 (KHTML, like Gecko) Version/9.1.2 Safari/601.7.7"
+
+    tail /var/logs/firepache/error.log
+
+        [Mon Jun 04 11:04:26.703352 2018] [proxy_http:error] [pid 892:tid 139661968127744] (70007)The timeout specified has expired: [client 178.79.157.93:58086] AH01102: error reading status line from remote server 192.168.201.15:8080
+        [Mon Jun 04 11:04:26.703428 2018] [proxy:error] [pid 892:tid 139661968127744] [client 178.79.157.93:58086] AH00898: Error reading from remote server returned by /osa/availability
+        [Mon Jun 04 11:04:32.812120 2018] [proxy_http:error] [pid 892:tid 139661984913152] (70007)The timeout specified has expired: [client 81.187.247.196:47848] AH01102: error reading status line from remote server 192.168.201.15:8080
+        [Mon Jun 04 11:04:32.812193 2018] [proxy:error] [pid 892:tid 139661984913152] [client 81.187.247.196:47848] AH00898: Error reading from remote server returned by /osa/availability
+        [Mon Jun 04 11:28:44.385854 2018] [proxy_http:error] [pid 920:tid 139661800273664] (70007)The timeout specified has expired: [client 145.238.193.18:60969] AH01102: error reading status line from remote server 192.168.201.15:8080
+        [Mon Jun 04 11:28:44.385928 2018] [proxy:error] [pid 920:tid 139661800273664] [client 145.238.193.18:60969] AH00898: Error reading from remote server returned by /ssa/sync
+        [Mon Jun 04 11:33:44.539600 2018] [proxy_http:error] [pid 920:tid 139661926164224] (70007)The timeout specified has expired: [client 145.238.193.18:60969] AH01102: error reading status line from remote server 192.168.201.15:8080
+        [Mon Jun 04 11:33:44.539680 2018] [proxy:error] [pid 920:tid 139661926164224] [client 145.238.193.18:60969] AH00898: Error reading from remote server returned by /ssa/sync
+        [Mon Jun 04 11:34:34.242006 2018] [proxy_http:error] [pid 920:tid 139661968127744] (70007)The timeout specified has expired: [client 81.187.247.196:48666] AH01102: error reading status line from remote server 192.168.201.15:8080
+        [Mon Jun 04 11:34:34.242118 2018] [proxy:error] [pid 920:tid 139661968127744] [client 81.187.247.196:48666] AH00898: Error reading from remote server returned by /osa/availability
+
+
+    tail /var/logs/firepache/other_vhosts_access.log
+
+        tap.roe.ac.uk:80 81.187.247.196 - - [04/Jun/2018:10:59:32 +0000] "HEAD /osa/availability HTTP/1.1" 502 141 "-" "curl/7.43.0"
+        genius.roe.ac.uk:80 81.187.247.196 - - [04/Jun/2018:11:04:32 +0000] "HEAD / HTTP/1.1" 200 263 "-" "curl/7.43.0"
+        tap.roe.ac.uk:80 145.238.193.18 - - [04/Jun/2018:11:18:54 +0000] "GET /ssa/tables HTTP/1.1" 500 13886 "-" "STILTS/3.0-9+ Java/1.7.0_161"
+        tap.roe.ac.uk:80 145.238.193.18 - - [04/Jun/2018:11:22:04 +0000] "GET /ssa/tables HTTP/1.1" 500 13886 "-" "STILTS/3.0-9+ Java/1.7.0_161"
+        tap.roe.ac.uk:80 145.238.193.18 - - [04/Jun/2018:11:22:10 +0000] "GET /ssa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas HTTP/1.1" 500 13886 "-" "STILTS/3.0-9+ Java/1.7.0_161"
+        tap.roe.ac.uk:80 145.238.193.18 - - [04/Jun/2018:11:23:22 +0000] "GET /ssa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables HTTP/1.1" 500 13886 "-" "STILTS/3.0-9+ Java/1.7.0_161"
+        tap.roe.ac.uk:80 145.238.193.18 - - [04/Jun/2018:11:23:44 +0000] "GET /ssa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns HTTP/1.1" 502 691 "-" "STILTS/3.0-9+ Java/1.7.0_161"
+        tap.roe.ac.uk:80 145.238.193.18 - - [04/Jun/2018:11:28:44 +0000] "GET /ssa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys HTTP/1.1" 502 690 "-" "STILTS/3.0-9+ Java/1.7.0_161"
+        tap.roe.ac.uk:80 81.187.247.196 - - [04/Jun/2018:11:29:34 +0000] "HEAD /osa/availability HTTP/1.1" 502 141 "-" "curl/7.43.0"
+        genius.roe.ac.uk:80 81.187.247.196 - - [04/Jun/2018:11:34:34 +0000] "HEAD / HTTP/1.1" 200 263 "-" "curl/7.43.0"
+
+
+    #
+    # Note the requests using STILTS/3.0-9 from Paris.
+    # [user@desktop]     
+
+        host 145.238.193.18
+        18.193.238.145.in-addr.arpa domain name pointer voparis-vo.obspm.fr.
+
+#
+# Check the setup script.
+
+    cat /root/setup/apache-proxy-config-script.sh
+
+        cat >> /etc/apache2/sites-enabled/000-default.conf <<EOF
+
+        <VirtualHost *:80>
+            ServerName osa.metagrid.xyz
+
+            ProxyRequests Off
+            ProxyPreserveHost On
+
+            <Proxy *>
+                Order deny,allow
+                Allow from all
+            </Proxy>
+
+            ProxyPass ^/(.*)$  http://${clearwingip:?}/$1
+            ProxyPassMatch ^/(.*)$  http://${clearwingip:?}/$1  retry=0 connectiontimeout=14400 timeout=14400
+            ProxyPassReverse  ^/(.*)$  http://${clearwingip:?}/$1
+        </VirtualHost>
+
+
+        <VirtualHost *:80>
+            ServerName genius.metagrid.xyz
+
+            ProxyRequests Off
+            ProxyPreserveHost On
+
+            <Proxy *>
+                Order deny,allow
+                Allow from all
+            </Proxy>
+
+            ProxyPass ^/(.*)$  http://${tapserviceip:?}/$1
+            ProxyPassMatch ^/(.*)$  http://${tapserviceip:?}/$1  retry=0 connectiontimeout=14400 timeout=14400
+            ProxyPassReverse  ^/(.*)$  http://${tapserviceip:?}/$1
+
+        </VirtualHost>
+
+        EOF
+
+#
+# Nothing in the setup script for ssa.
+# Nothing in the setup script for ???.roe.ac.uk.
+
+#
+# Run a shell inside the container.
+
+    docker exec -it firepache bash
+
+#
+# List the Apache config files.
+
+    ls -al /etc/apache2/sites-enabled
+
+        total 4
+        drwxr-xr-x. 1 root root  32 Dec 10 21:04 .
+        drwxr-xr-x. 1 root root 228 Dec 10 21:04 ..
+        lrwxrwxrwx. 1 root root  35 Dec 10 21:04 000-default.conf -> ../sites-available/000-default.conf
+
+#
+# Check the Apache config file.
+
+    cat /etc/apache2/sites-enabled/000-default.conf
+
+        <VirtualHost *:80>
+          ServerAdmin me@mydomain.com
+          DocumentRoot /var/www/html/
+
+          <Directory /var/www/html/>
+              Options Indexes FollowSymLinks MultiViews
+              AllowOverride All
+              Order deny,allow
+              Allow from all
+          </Directory>
+
+          ErrorLog ${APACHE_LOG_DIR}/error.log
+          CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        </VirtualHost>
+
+        <VirtualHost *:80>
+            ServerName genius.roe.ac.uk
+
+            ProxyRequests Off
+            ProxyPreserveHost On
+
+            <Proxy *>
+                Order deny,allow
+                Allow from all
+            </Proxy>
+
+            ProxyPass ^/(.*)$  http://192.168.201.11/
+            ProxyPassMatch ^/(.*)$  http://192.168.201.11/  retry=0 connectiontimeout=14400 timeout=14400
+            ProxyPassReverse  ^/(.*)$  http://192.168.201.11/
+        </VirtualHost>
+
+        <VirtualHost *:80>
+            ServerName tap.roe.ac.uk
+
+            ProxyRequests Off
+            ProxyPreserveHost On
+
+            <Proxy *>
+                Order deny,allow
+                Allow from all
+            </Proxy>
+
+            ProxyPassMatch ^/osa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/54/$1
+            ProxyPassReverse  ^/osa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/54/$1
+
+            ProxyPassMatch ^/ssa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/372565/$1
+            ProxyPassReverse  ^/ssa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/372565/$1
+
+            ProxyPassMatch ^/vsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/73/$1
+            ProxyPassReverse  ^/vsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/73/$1
+
+            ProxyPassMatch ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
+            ProxyPassReverse  ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
+
+
+            ProxyPass ^/(.*)$          http://192.168.201.15:8080/
+            ProxyPassMatch ^/(.*)$     http://192.168.201.15:8080/  retry=0 connectiontimeout=14400 timeout=14400
+            ProxyPassReverse  ^/(.*)$  http://192.168.201.15:8080/
+
+        </VirtualHost>
+
+        <VirtualHost *:80>
+            ServerName erennon.metagrid.xyz
+
+            ProxyRequests Off
+            ProxyPreserveHost On
+
+            <Proxy *>
+                Order deny,allow
+                Allow from all
+            </Proxy>
+
+            ProxyPass ^/(.*)$          http://192.168.201.14/
+            ProxyPassMatch ^/(.*)$     http://192.168.201.14/  retry=0 connectiontimeout=14400 timeout=14400
+            ProxyPassReverse  ^/(.*)$  http://192.168.201.14/
+
+        </VirtualHost>
+
+        <VirtualHost *:80>
+            ServerName gworewia.metagrid.xyz
+
+            ProxyRequests Off
+            ProxyPreserveHost On
+
+            <Proxy *>
+                Order deny,allow
+                Allow from all
+            </Proxy>
+
+            ProxyPassMatch ^/osa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/54/$1
+            ProxyPassReverse  ^/osa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/54/$1
+
+            ProxyPassMatch ^/ssa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/372565/$1
+            ProxyPassReverse  ^/ssa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/372565/$1
+
+            ProxyPassMatch ^/vsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/73/$1
+            ProxyPassReverse  ^/vsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/73/$1
+            
+            ProxyPassMatch ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
+            ProxyPassReverse  ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
+
+
+            ProxyPass ^/(.*)$          http://192.168.201.15:8080/
+            ProxyPassMatch ^/(.*)$     http://192.168.201.15:8080/  retry=0 connectiontimeout=14400 timeout=14400
+            ProxyPassReverse  ^/(.*)$  http://192.168.201.15:8080/
+
+        </VirtualHost>
+
+#
+# No comments.
+# Possibly old config for erennon and gworewia.
+# Manual config, not created by the setup script.
+
+#
+# Tap services for osa, ssa, vsa and wsa.
+
+            ProxyPassMatch ^/osa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/54/$1
+            ProxyPassReverse  ^/osa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/54/$1
+
+            ProxyPassMatch ^/ssa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/372565/$1
+            ProxyPassReverse  ^/ssa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/372565/$1
+
+            ProxyPassMatch ^/vsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/73/$1
+            ProxyPassReverse  ^/vsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/73/$1
+
+            ProxyPassMatch ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
+            ProxyPassReverse  ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
+
+
+
+
