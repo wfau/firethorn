@@ -20,7 +20,7 @@
 #
 #
 
-#
+#----------------------------------------------------------------
 # Check the external hostname.
 #[user@desktop]
 
@@ -29,13 +29,13 @@
         tap.roe.ac.uk is an alias for tropfloat1.roe.ac.uk.
         tropfloat1.roe.ac.uk has address 129.215.175.100
 
-#
+#----------------------------------------------------------------
 # Login to the host server.
 #[user@desktop]
 
     ssh trop01
 
-#
+#----------------------------------------------------------------
 # List the virtual machines.
 #[user@trop01]
 
@@ -50,7 +50,7 @@
          4     Froeseth                       running
          6     Gworewia                       running
 
-#
+#----------------------------------------------------------------
 # List the VM networks.
 #[user@trop01]
 
@@ -63,7 +63,7 @@
          bridged              active     yes           yes
          default              active     yes           yes
 
-#
+#----------------------------------------------------------------
 # List the VM interfaces.
 #[user@trop01]
 
@@ -77,7 +77,7 @@
          br1                  active     0c:c4:7a:35:10:79
          lo                   active     00:00:00:00:00:00
 
-#
+#----------------------------------------------------------------
 # Check which VM is connected to the bridge interface.
 #[user@trop01]
 
@@ -100,13 +100,13 @@
             <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0"/>
         </interface>
 
-#
+#----------------------------------------------------------------
 # Login to the proxy VM.
 #[user@trop01]
 
     ssh Astoalith
 
-#
+#----------------------------------------------------------------
 # List the docker containers.
 #[root@float01]
 
@@ -115,7 +115,7 @@
         CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                NAMES
         a050cbd6960d        firethorn/apache:2.1.3   "/bin/sh -c '/usr/sbi"   5 months ago        Up 5 months         0.0.0.0:80->80/tcp   firepache
 
-#
+#----------------------------------------------------------------
 # List the apache container volume mounts.
 #[root@float01]
 
@@ -143,7 +143,7 @@
           }
         ]
 
-#
+#----------------------------------------------------------------
 # Check the apache logs.
 #[root@float01]
 
@@ -204,7 +204,7 @@
         host 145.238.193.18
         18.193.238.145.in-addr.arpa domain name pointer voparis-vo.obspm.fr.
 
-#
+#----------------------------------------------------------------
 # Check the setup script.
 #[root@float01]
 
@@ -252,13 +252,13 @@
 # Nothing in the setup script for ssa.
 # Nothing in the setup script for ???.roe.ac.uk.
 
-#
+#----------------------------------------------------------------
 # Run a shell inside the container.
 #[root@float01]
 
     docker exec -it firepache bash
 
-#
+#----------------------------------------------------------------
 # List the Apache config files.
 #[root@container]
 
@@ -269,7 +269,7 @@
         drwxr-xr-x. 1 root root 228 Dec 10 21:04 ..
         lrwxrwxrwx. 1 root root  35 Dec 10 21:04 000-default.conf -> ../sites-available/000-default.conf
 
-#
+#----------------------------------------------------------------
 # Check the Apache config file.
 #[root@container]
 
@@ -404,7 +404,7 @@
             ProxyPassMatch ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
             ProxyPassReverse  ^/wsa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/65/$1
 
-#
+#----------------------------------------------------------------
 # Back to the VM and to identify which VM has the IP address.
 #[root@float01]
 
@@ -412,7 +412,7 @@
 
         15.201.168.192.in-addr.arpa domain name pointer Gworewia.
 
-#
+#----------------------------------------------------------------
 # Login to the Tomcat VM.
 #[user@trop01]
 
@@ -421,7 +421,7 @@
         -- HANGS --
         -- works eventually --        
 
-#
+#----------------------------------------------------------------
 # Check available space.
 #[root@Gworewia]
 
@@ -441,7 +441,7 @@
         shm              64M     0   64M   0% /var/lib/docker/containers/a17d351ce707247b0d4ae4b3b360081d78e3636c8ff8185721a51c766614151c/shm
         tmpfs           396M     0  396M   0% /run/user/0
 
-#
+#----------------------------------------------------------------
 # Check the running containers.
 #[root@Gworewia]
 
@@ -453,7 +453,7 @@
         5374050fb270        firethorn/ogsadai:2.1.22-stv-wfau-tap     "/bin/sh -c '/var/..."   8 days ago          Up 8 days (healthy)     8080/tcp                 root_jarmila_1
         023b44eed503        firethorn/postgres:2.1.22-stv-wfau-tap    "docker-entrypoint..."   8 days ago          Up 8 days               5432/tcp                 root_carolina_1
 
-#
+#----------------------------------------------------------------
 # List the volume mounts for the firethorn container.
 #[root@float01]
 
@@ -468,7 +468,7 @@
 
         # FAILS - jq not installed
 
-#
+#----------------------------------------------------------------
 # Inspect the firethorn container
 #[root@Gworewia]
 
@@ -524,7 +524,7 @@
             }
         ],
 
-#
+#----------------------------------------------------------------
 # Tomcat logs is mounted as a volume, but not as a bind mount.
 
             {
@@ -534,7 +534,7 @@
                 "Destination": "/var/local/tomcat/logs",
             },
 
-#
+#----------------------------------------------------------------
 # Get a copy of the log file ... ?
 #[user@trop01]
 
@@ -542,6 +542,725 @@
         docker exec -t root_gillian_1 cat /var/local/tomcat/logs/firethorn.log
         ' > firethorn.log
 
+#----------------------------------------------------------------
+# Transfer hangs after 20G
+#[user@trop01]
+
+    ls -al firethorn.log 
+
+        -rw-r--r-- 1 dmr users 21161246782 Jun  4 14:13 firethorn.log
+        -rw-r--r-- 1 dmr users 21161246782 Jun  4 14:13 firethorn.log
+        -rw-r--r-- 1 dmr users 21161246782 Jun  4 14:13 firethorn.log
+        -rw-r--r-- 1 dmr users 21161246782 Jun  4 14:13 firethorn.log
+        -rw-r--r-- 1 dmr users 21161246782 Jun  4 14:13 firethorn.log
+
+#----------------------------------------------------------------
+# Access the logfile via the host side of the Docker mount point, push the data to a different server.
+#[user@trop01]
+
+    scp root@Gworewia:/var/lib/docker/volumes/3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e/_data/firethorn.log dave@shepseskaf.roe.ac.uk:storage
+
+    .... Transfer completed
+
+#----------------------------------------------------------------
+# Truncate the log file ..
+#[root@Gworewia]
+
+    docker exec -it root_gillian_1 \
+        truncate -s 1024 /var/local/tomcat/logs/firethorn.log
+
+    docker exec -it root_gillian_1 \
+        ls -al /var/local/tomcat/logs
+
+    docker exec -it root_gillian_1 \
+        tail -f /var/local/tomcat/logs/firethorn.log
+
+#----------------------------------------------------------------
+# Tail the log file .. Postgresql connection errors.
+#[root@Gworewia]
+
+    docker exec -it root_gillian_1 \
+        tail -f /var/local/tomcat/logs/firethorn.log
+
+        ....
+        ....
+        2018-06-04 14:05:13,119 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] com.mchange.v2.async.ThreadPoolAsynchronousRunner$DeadlockDetector@20a5ee89 -- APPARENT DEADLOCK!!! Creating emergency threads for unassigned pending tasks! 
+        2018-06-04 14:05:13,124 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] com.mchange.v2.async.ThreadPoolAsynchronousRunner$DeadlockDetector@20a5ee89 -- APPARENT DEADLOCK!!! Complete Status: 
+	        Managed Threads: 3
+	        Active Threads: 3
+	        Active Tasks: 
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@6ea8d01d (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1)
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@1dd07f38 (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2)
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@666e96a3 (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0)
+	        Pending Tasks: 
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@507fe0de
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@78fffaf4
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@66c8736c
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@74813a98
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@5b575dc6
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@5c783402
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@798e6ff2
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@4a6cfa1
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@657e1b9e
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@78bbeb17
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@7240ea0d
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@40a9f823
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@559eb943
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@72da13b4
+        Pool thread stack traces:
+	        Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2,5,main]
+		        java.net.PlainSocketImpl.socketConnect(Native Method)
+		        java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+		        java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+		        java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+		        java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+		        java.net.Socket.connect(Socket.java:589)
+		        org.postgresql.core.PGStream.<init>(PGStream.java:68)
+		        org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:144)
+		        org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+		        org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:194)
+		        org.postgresql.Driver.makeConnection(Driver.java:450)
+		        org.postgresql.Driver.connect(Driver.java:252)
+		        com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134)
+		        com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182)
+		        com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171)
+		        com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
+		        com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
+		        com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
+		        com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+	        Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1,5,main]
+		        java.net.PlainSocketImpl.socketConnect(Native Method)
+		        java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+		        java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+		        java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+		        java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+		        java.net.Socket.connect(Socket.java:589)
+		        org.postgresql.core.PGStream.<init>(PGStream.java:68)
+		        org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:144)
+		        org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+		        org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:194)
+		        org.postgresql.Driver.makeConnection(Driver.java:450)
+		        org.postgresql.Driver.connect(Driver.java:252)
+		        com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134)
+		        com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182)
+		        com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171)
+		        com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
+		        com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
+		        com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
+		        com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+	        Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0,5,main]
+		        java.net.PlainSocketImpl.socketConnect(Native Method)
+		        java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+		        java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+		        java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+		        java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+		        java.net.Socket.connect(Socket.java:589)
+		        org.postgresql.core.PGStream.<init>(PGStream.java:68)
+		        org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:144)
+		        org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+		        org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:194)
+		        org.postgresql.Driver.makeConnection(Driver.java:450)
+		        org.postgresql.Driver.connect(Driver.java:252)
+		        com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134)
+		        com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182)
+		        com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171)
+		        com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
+		        com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
+		        com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
+		        com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
+		        com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+
+
+        2018-06-04 14:09:13,278 WARN  [Task-Thread-for-com.mchange.v2.async.ThreadPerTaskAsynchronousRunner@6a5482f5] [BasicResourcePool] com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@27e26a76
+            -- Acquisition Attempt Failed!!! Clearing pending acquires. While trying to acquire a needed new resource, we failed to succeed more than the maximum number of allowed acquisition attempts (30).
+            Last acquisition attempt exception:  
+        org.postgresql.util.PSQLException: The connection attempt failed.
+	        at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:275)
+	        at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+	        at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:194)
+	        at org.postgresql.Driver.makeConnection(Driver.java:450)
+	        at org.postgresql.Driver.connect(Driver.java:252)
+	        at com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134)
+	        at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182)
+	        at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171)
+	        at com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
+	        at com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
+	        at com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
+	        at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
+	        at com.mchange.v2.async.ThreadPerTaskAsynchronousRunner$TaskThread.run(ThreadPerTaskAsynchronousRunner.java:255)
+        Caused by: java.net.NoRouteToHostException: No route to host (Host unreachable)
+	        at java.net.PlainSocketImpl.socketConnect(Native Method)
+	        at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	        at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	        at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	        at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	        at java.net.Socket.connect(Socket.java:589)
+	        at org.postgresql.core.PGStream.<init>(PGStream.java:68)
+	        at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:144)
+	        ... 12 common frames omitted
+
+#----------------------------------------------------------------
+# Check the PostgreSQL container .. seems healthy.
+#[root@Gworewia]
+
+    docker exec -it root_carolina_1 \
+        bash
+
+        psql --user $POSTGRES_USER
+
+            psql (9.6.9)
+            Type "help" for help.
+
+            SELECT version() ;
+
+                                                                              version                                                               
+                ------------------------------------------------------------------------------------------------------------------------------------
+                 PostgreSQL 9.6.9 on x86_64-pc-linux-gnu (Debian 9.6.9-2.pgdg90+1), compiled by gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516, 64-bit
+                (1 row)
+
+    #
+    # NoRouteToHostException suggests it is a connection problem.
+
+    #
+    # Container name 'root_gillian_1' suggests it was launched using docker-compose.
+
+    #
+    # Can we use docker-compose to stop/start the Tomcat container?
+
+
+#----------------------------------------------------------------
+# User home directory has three YML files.
+#[root@Gworewia]
+
+    ls -al *.yml
+
+        -rw-r--r--. 1 root root  743 Mar  1 16:26 builder.yml
+        -rw-r--r--. 1 root root 3606 Mar  1 17:59 deployer.yml
+        -rw-r--r--. 1 root root 4371 May 27 00:56 tap-deployer.yml
+
+    #
+    # builder.yml       only contains the builder container.
+    # deployer.yml      looks like standard compose YML from project source
+    # tap-deployer.yml  adds postgresql container for tapschema called carolina
+
+#----------------------------------------------------------------
+# User home directory has chain properties.
+#[root@Gworewia]
+
+    cat chain.properties 
+
+        metadata=postgres
+        metauser=ahfeephae1Ies8koothi
+        metapass=woo6Ceer7ohKitaquaew
+
+
+        tapschemadatabase=postgres
+        tapschemauser=ieW7oomei7Laebuu9Ax7
+        tapschemapass=vamee3puChoomahz9Iek
+        tapschemahost=carolina
+        tapschemaport=5432
+        tapschemajdbcname=tapschemajdbc
+        tapschematype=pgsql
+
+        userhost=ramses2
+        userdata=TESTFirethornUserdataSHEP20170525
+        useruser=stelios
+        userpass=steliosPW!
+
+        datahost=ramses15
+        datadata=ATLASDR1
+        datauser=atlasro
+        datapass=atlasropw
+        datacatalog=*
+        datatype=mssql
+
+        tunneluser=stv
+        tunnelhost=shepseskaf.roe.ac.uk
+
+        systemuser=admin
+        systempass=pass
+        systemcomm=system
+        admingroup=system
+        adminuser=admin
+        adminpass=pass
+        guestgroup=friends
+        endpoint=http://gworewia.metagrid.xyz:8080
+
+    #
+    # OMG!! don't use admin/pass
+    #
+
+    #
+    # If this is a *live* deploy, don't use a user database called TEST
+    #
+
+#----------------------------------------------------------------
+# Initial container listing only showed one postgres container.
+# I thought the running on was the metadata database.
+# In fact, the healthy postgres is the tapschema database
+# and we are missing the metadata database.
+#
+# Need to use ps -a to get all of the containers.
+#[root@Gworewia]
+
+    docker ps -a
+
+        CONTAINER ID        IMAGE                                     COMMAND                  CREATED             STATUS                  PORTS                    NAMES
+        a17d351ce707        firethorn/apache                          "/bin/sh -c '/usr/..."   7 days ago          Up 7 days               0.0.0.0:80->80/tcp       firepache
+        37c73e603e18        firethorn/firethorn:2.1.22-stv-wfau-tap   "/bin/sh -c '/var/..."   8 days ago          Up 8 days (unhealthy)   0.0.0.0:8080->8080/tcp   root_gillian_1
+        54d07217e82a        firethorn/postgres:2.1.22-stv-wfau-tap    "docker-entrypoint..."   8 days ago          Exited (1) 2 days ago                            root_bethany_1
+        5374050fb270        firethorn/ogsadai:2.1.22-stv-wfau-tap     "/bin/sh -c '/var/..."   8 days ago          Up 8 days (healthy)     8080/tcp                 root_jarmila_1
+        023b44eed503        firethorn/postgres:2.1.22-stv-wfau-tap    "docker-entrypoint..."   8 days ago          Up 8 days               5432/tcp                 root_carolina_1
+        577323096e02        da5f61d89e5e                              "/bin/sh -c 'wget ..."   8 days ago          Exited (4) 8 days ago                            loving_ritchie
+
+    #
+    # Assumption - containers were launched using docker-compose with tap-deployer.yml.
+    #
+
+#----------------------------------------------------------------
+# Try restarting the metadata database container.
+#[root@Gworewia]
+
+    source chain.properties
+
+    docker-compose \
+        --file tap-deployer.yml \
+        run \
+            bethany
+
+
+        WARNING: The osa_endpoint variable is not set. Defaulting to a blank string.
+        Pulling bethany (firethorn/postgres:default)...
+        ERROR: manifest for firethorn/postgres:default not found
+
+    #
+    # If this is a *live* deploy, don't use a local built branch version (2.1.22-stv-wfau-tap)
+    # If this is a *live* deploy, don't use a image that hasn't been pushed to the Docker registry.
+    #
+
+#----------------------------------------------------------------
+# Try setting the buildtag.
+#[root@Gworewia]
+
+    export buildtag=2.1.22-stv-wfau-tap
+
+    docker-compose \
+        --file tap-deployer.yml \
+        run \
+            bethany
+
+        WARNING: The osa_endpoint variable is not set. Defaulting to a blank string.
+        Starting bethany ... error
+        ERROR: for bethany  Cannot start service bethany: service endpoint with name root_bethany_1 already exists
+        ERROR: No containers to start
+
+#----------------------------------------------------------------
+# Try restarting the service.
+#[root@Gworewia]
+
+    export buildtag=2.1.22-stv-wfau-tap
+
+    docker-compose \
+        --file tap-deployer.yml \
+        restart \
+            bethany
+
+
+        WARNING: The osa_endpoint variable is not set. Defaulting to a blank string.
+        Restarting root_bethany_1 ... error
+        ERROR: for root_bethany_1  Cannot restart container 54d07217e82a7d4878a5e9ecf2bb1b18f2b71c823ed57149e9df3644e6dafa7b: service endpoint with name root_bethany_1 already exists
+
+#----------------------------------------------------------------
+# Try removing and creating the service.
+#[root@Gworewia]
+
+    export buildtag=2.1.22-stv-wfau-tap
+
+    docker-compose \
+        --file tap-deployer.yml \
+        rm \
+            bethany
+
+    docker-compose \
+        --file tap-deployer.yml \
+        up
+
+        Pulling firethorn-py (firethorn-py:latest)...
+        ERROR: repository firethorn-py not found: does not exist or no pull access
+
+#----------------------------------------------------------------
+# List the docker images.
+#[root@Gworewia]
+
+    docker images
+
+        REPOSITORY            TAG                   IMAGE ID            CREATED             SIZE
+        firethorn/firethorn   2.1.22-stv-wfau-tap   88d1be8c195a        8 days ago          1.06 GB
+        firethorn/ogsadai     2.1.22-stv-wfau-tap   43056a4248f5        8 days ago          1.07 GB
+        <none>                <none>                a63975037aff        8 days ago          1.06 GB
+        <none>                <none>                2251784eb8fe        8 days ago          1.07 GB
+        firethorn/postgres    2.1.22-stv-wfau-tap   bdf7ad7a2f39        8 days ago          235 MB
+        firethorn/sql-proxy   2.1.22-stv-wfau-tap   9e4fa484a3aa        8 days ago          722 MB
+        firethorn/builder     2.1.22-stv-wfau-tap   9c32893da800        8 days ago          1.64 GB
+        firethorn/tester      2.1.22-stv-wfau-tap   09cd0de48daf        8 days ago          665 MB
+        firethorn/tomcat      2.1.22-stv-wfau-tap   e48415186c14        8 days ago          1.02 GB
+        firethorn/java        2.1.22-stv-wfau-tap   d15adc72fdac        8 days ago          980 MB
+        firethorn/fedora      2.1.22-stv-wfau-tap   4192f1de9bf8        8 days ago          619 MB
+        postgres              9                     80e563dfecd8        9 days ago          235 MB
+        firethorn/tomcat      2.1.22                ca7c7aa5d643        2 weeks ago         1.02 GB
+        fedora                <none>                422dc563ca32        6 months ago        252 MB
+        firethorn/apache      latest                2418aa8b9196        2 years ago         263 MB
+
+    #
+    # We don't have an image for firethorn-py.
+    #
+
+#----------------------------------------------------------------
+# Find all the YML files.
+#[root@Gworewia]
+
+    find . -name '*.yml' 
+
+        ./builder.yml
+        ./deployer.yml
+        ./hg/doc/presentations/dave/20180416/Docker/distictella-local.yml
+        ./hg/doc/presentations/dave/20180416/Docker/distictella-remote.yml
+        ./hg/docker/compose/builder.yml
+        ./hg/docker/compose/images.yml
+        ./hg/docker/compose/tests/burellus/burellus-local.yml
+        ./hg/docker/compose/tests/burellus/burellus-remote.yml
+        ./hg/docker/compose/tests/distictella/distictella-local.yml
+        ./hg/docker/compose/tests/distictella/distictella-remote.yml
+        ./hg/docker/compose/tests/zelleri/zelleri.yml
+        ./hg/docker/compose/tests/baryptera/baryptera.yml
+        ./hg/docker/compose/client/firethorn-py.yml
+        ./hg/docker/compose/tester.yml
+        ./hg/docker/compose/sqlclient.yml
+        ./hg/docker/compose/deployer.yml
+        ./hg/firethorn-admin/src/main/docker/firethorn/conf.yml
+        ./hg/firethorn-ogsadai/webapp/src/main/docker/ogsadai/conf.yml
+        ./hg/firethorn-ogsadai/webapp/target/docker/ogsadai/conf.yml
+        ./hg/firethorn-webapp/src/main/docker/firethorn/conf.yml
+        ./hg/firethorn-webapp/target/docker/firethorn/conf.yml
+        ./tap-deployer.yml
+
+#----------------------------------------------------------------
+# List the current containers.
+#[root@Gworewia]
+
+    docker ps -a
+
+        CONTAINER ID        IMAGE                                     COMMAND                  CREATED             STATUS                       PORTS                    NAMES
+        07d787d80003        firethorn/postgres:2.1.22-stv-wfau-tap    "docker-entrypoint..."   9 minutes ago       Up 7 minutes                 5432/tcp                 root_bethany_1
+        a17d351ce707        firethorn/apache                          "/bin/sh -c '/usr/..."   7 days ago          Exited (137) 7 minutes ago                            firepache
+        37c73e603e18        firethorn/firethorn:2.1.22-stv-wfau-tap   "/bin/sh -c '/var/..."   8 days ago          Up 7 minutes (healthy)       0.0.0.0:8080->8080/tcp   root_gillian_1
+        5374050fb270        firethorn/ogsadai:2.1.22-stv-wfau-tap     "/bin/sh -c '/var/..."   8 days ago          Up 7 minutes (healthy)       8080/tcp                 root_jarmila_1
+        023b44eed503        firethorn/postgres:2.1.22-stv-wfau-tap    "docker-entrypoint..."   8 days ago          Up 7 minutes                 5432/tcp                 root_carolina_1
+        577323096e02        da5f61d89e5e                              "/bin/sh -c 'wget ..."   8 days ago          Exited (4) 8 days ago                                 loving_ritchie
+
+    #
+    # This looks good - but I missed it.
+    # Went off on a misdirection trying to figure out which yaml file launches the tapschema database carolina.
+    #
+
+#----------------------------------------------------------------
+# Where does 'carolina' come from.
+#[root@Gworewia]
+
+    grep -rc 'carolina' *
+
+        chain.properties:tapschemahost=carolina
+        firethorn.properties:	firethorn.tapschema.database.host=carolina
+        hg/doc/notes/stv/20180403-VM-Deploy-with-build.txt:tapschemahost=carolina
+        hg/doc/notes/stv/20180511-Firethornpy-TAP-deploy.txt:	tapschemahost=carolina
+        hg/docker/compose/tests/baryptera/baryptera.yml:    carolina:
+        hg/docker/compose/tests/baryptera/baryptera.yml:            firethorn.tapschema.database.host: carolina
+        hg/docker/compose/tests/baryptera/baryptera.yml:            carolina:
+        hg/docker/compose/tests/baryptera/baryptera.yml:            tapschemahost: carolina
+        hg/docker/compose/tester.yml:    carolina:
+        hg/docker/compose/tester.yml:            carolina:
+        tap-deployer.yml:    carolina:
+        tap-deployer.yml:            carolina:
+
+#----------------------------------------------------------------
+# Check the modified dates ...
+#[root@Gworewia]
+
+    readarray files <<< '
+        tap-deployer.yml
+        hg/docker/compose/tester.yml
+        hg/docker/compose/tests/baryptera/baryptera.yml
+        hg/doc/notes/stv/20180511-Firethornpy-TAP-deploy.txt
+        hg/doc/notes/stv/20180403-VM-Deploy-with-build.txt
+        firethorn.properties 
+        chain.properties 
+        '
+
+    for file in ${files[@]}
+        do
+            echo "file [$(stat -c '%y' ${file:?})][$(basename ${file:?})]"
+        done
+
+
+        file [2018-05-27 00:56:03.835001199 +0100][tap-deployer.yml]
+        file [2018-05-27 00:28:59.501001199 +0100][tester.yml]
+        file [2018-05-27 00:28:59.675001199 +0100][baryptera.yml]
+        file [2018-05-27 00:33:07.733001199 +0100][20180511-Firethornpy-TAP-deploy.txt]
+        file [2018-05-27 00:28:58.607001199 +0100][20180403-VM-Deploy-with-build.txt]
+        file [2018-05-27 00:55:39.916001199 +0100][firethorn.properties]
+        file [2018-05-27 00:53:49.332001199 +0100][chain.properties]
+
+    #
+    # Manual sort by date ..
+    #
+
+        file [2018-05-27 00:56:03.835001199 +0100][tap-deployer.yml]
+        file [2018-05-27 00:55:39.916001199 +0100][firethorn.properties]
+        file [2018-05-27 00:53:49.332001199 +0100][chain.properties]
+
+        file [2018-05-27 00:33:07.733001199 +0100][20180511-Firethornpy-TAP-deploy.txt]
+
+        file [2018-05-27 00:28:59.675001199 +0100][baryptera.yml]
+        file [2018-05-27 00:28:59.501001199 +0100][tester.yml]
+        file [2018-05-27 00:28:58.607001199 +0100][20180403-VM-Deploy-with-build.txt]
+
+#----------------------------------------------------------------
+# Left things as-is for a couple of hours .. [real life]
+#[root@Gworewia]
+
+    docker ps -a
+
+        CONTAINER ID        IMAGE                                     COMMAND                  CREATED             STATUS                     PORTS                    NAMES
+        07d787d80003        firethorn/postgres:2.1.22-stv-wfau-tap    "docker-entrypoint..."   2 hours ago         Up 2 hours                 5432/tcp                 root_bethany_1
+        a17d351ce707        firethorn/apache                          "/bin/sh -c '/usr/..."   7 days ago          Exited (137) 2 hours ago                            firepache
+        37c73e603e18        firethorn/firethorn:2.1.22-stv-wfau-tap   "/bin/sh -c '/var/..."   8 days ago          Up 2 hours (healthy)       0.0.0.0:8080->8080/tcp   root_gillian_1
+        5374050fb270        firethorn/ogsadai:2.1.22-stv-wfau-tap     "/bin/sh -c '/var/..."   8 days ago          Up 2 hours (healthy)       8080/tcp                 root_jarmila_1
+        023b44eed503        firethorn/postgres:2.1.22-stv-wfau-tap    "docker-entrypoint..."   8 days ago          Up 2 hours                 5432/tcp                 root_carolina_1
+        577323096e02        da5f61d89e5e                              "/bin/sh -c 'wget ..."   8 days ago          Exited (4) 8 days ago                               loving_ritchie
+
+    #
+    # New questions ..
+    
+    # Which yaml file was used to create the original set ?
+    # Why was apache running for 7 days on this machine ?
+    # Is everything working ok now ?
+
+#----------------------------------------------------------------
+# Check how old this VM is ..
+#[root@Gworewia]
+
+    #
+    # Why was apache running for 7 days on this machine ?
+    # No user prefix in the name it looks like firepache was started by a direct 'run' command, rather a compose 'up' command.
+    # If it was launched by a compose 'up'command, then the name would be 'root_firepache_1' rather than just 'firepache'.
+    # Mixture of direct 'run' and compose 'up' suggests this machine has a history.
+    #
+
+    uptime
+
+        20:03:36 up 95 days,  4:22,  1 user,  load average: 0.00, 0.00, 0.00
+
+    #
+    # Seriously !? 95 days !!
+    # The reason for using disposable VMs is that we dispose of them when we create a new configuration.
+    #
+
+#----------------------------------------------------------------
+# Which yaml file are we supposed to be using ? 
+#[root@Gworewia]
+
+    #
+    # Which yaml file was used to create the original set ?
+
+    cat tap-deployer.yml
+
+        services:
+
+            bethany:
+                ....
+                image:
+                   "firethorn/postgres:${buildtag:-latest}"
+
+            carolina:
+                ....
+                image:
+                   "firethorn/postgres:${buildtag:-latest}"
+
+            jarmila:
+                ....
+                image:
+                   "firethorn/ogsadai:${buildtag:-latest}"
+
+            gillian:
+                ....
+                image:
+                   "firethorn/firethorn:${buildtag:-latest}"
+                ....
+                depends_on:
+                    bethany:
+                        condition: service_started
+                    carolina:
+                        condition: service_started            
+                    jarmila:
+                        condition: service_healthy            
+
+            firethorn-py:
+                ....
+                image:
+                   "firethorn-py"
+                depends_on:
+                    gillian:
+                        condition: service_healthy
+
+
+#----------------------------------------------------------------
+# Looks like services are back up and running ok ...
+#[root@Gworewia]
+    
+    curl http://tap.roe.ac.uk/ssa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
+
+    http://tap.roe.ac.uk/firethorn/adql/table/270326/votable
+
+    http://tap.roe.ac.uk/firethorn/adql/table/270326
+
+    http://tap.roe.ac.uk/firethorn/jdbc/table/270325
+
+#----------------------------------------------------------------
+# Examining the logs shows what finally caused the problem.
+#[user@shepseskaf]
+
+    pushd storage
+
+        mv firethorn.log 20180604-firethorn.log
+
+        vi 20180604-firethorn.log
+
+
+
+    lots of (normal looking) requests
+    just ran out of log space
+
+    https://www.whois.com/whois/128.183.17.116
+    National Aeronautics and Space Administration (NASA)    
+
+    https://www.whois.com/whois/145.238.193.18
+    Observatoire de Paris
+
+
+    #
+    # Need to reduce the amount of logging for simple requests.
+    # Need to prevent multiple anon identities for simple requests.
+    # Assign the same anon identity for an IP address ?
+    #
+    
+    #
+    # Health checks shouldn't get a new identity.
+    #   remoteAddr  [0:0:0:0:0:0:0:1] 
+    #   remoteHost  [0:0:0:0:0:0:0:1]
+    #   [host][localhost:8081] 
+
+
+    grep 'x-forwarded-for' firethorn.log
+
+
+    #
+    # Get a list of client IP addresses
+    sed -n '
+        s/.*\[x-forwarded-for\]\[\([0-9.]*\)\].*/\1/p
+        ' 20180604-firethorn.log \
+        > requests.txt
+
+    #
+    # Count the number of requests ..
+    # https://stackoverflow.com/a/3137099
+    wc -l requests.txt 
+
+        1711063 requests.txt
+
+    #
+    # Count unique lines ..
+    # https://stackoverflow.com/a/49658482
+    sort requests.txt | uniq -c
+
+         531705 128.183.17.116
+              4 129.206.110.245
+             72 129.215.175.52
+              2 129.215.175.96
+           1974 133.40.215.124
+           1316 133.40.215.125
+             36 141.33.4.164
+        1175251 145.238.193.18
+             36 145.238.193.76
+            123 178.79.157.93
+              2 192.108.120.188
+            296 195.194.121.66
+            246 81.187.247.196
+
+    #
+    # Manual sort ..
+
+              2 129.215.175.96
+              2 192.108.120.188
+              4 129.206.110.245
+             36 141.33.4.164
+             36 145.238.193.76
+             72 129.215.175.52
+            123 178.79.157.93
+            296 195.194.121.66
+            246 81.187.247.196
+           1974 133.40.215.124
+           1316 133.40.215.125
+         531705 128.183.17.116
+        1175251 145.238.193.18
+
+    #
+    # Manual whois check ..
+
+              2 129.215.175.96      The Edinburgh University
+              2 192.108.120.188     Royal Observatory Edinburgh
+              4 129.206.110.245     Universitaet Heidelberg
+             36 141.33.4.164        Leibniz-Institut fuer Astrophysik Potsdam (AIP)
+             36 145.238.193.76      Observatoire de Paris
+             72 129.215.175.52      The University of Edinburgh
+            123 178.79.157.93       Linode
+            296 195.194.121.66      Royal Observatory Edinburgh
+            246 81.187.247.196      Andrews & Arnold
+           1974 133.40.215.124      National Astronomical Observatory of JAPAN
+           1316 133.40.215.125      National Astronomical Observatory of JAPAN
+         531705 128.183.17.116      National Aeronautics and Space Administration (NASA)
+        1175251 145.238.193.18      Observatoire de Paris
+
+
+#----------------------------------------------------------------
+# Apache proxy no longer built as part of firethorn.
+# Most recent push to Docker repo was 2 years ago.
+# https://hub.docker.com/r/firethorn/apache/tags/
+
+#----------------------------------------------------------------
+# Apache proxy container inherits Python libs, Python, Ubuntu 14.04
+# http://wfau.metagrid.co.uk/code/firethorn/file/4d3914f963de/docker/apache/Dockerfile
+
+    apache/Dockerfile
+
+        FROM firethorn/pythonlibs
+
+    pythonlibs/Dockerfile
+     
+        FROM firethorn/python:2.1.22
+
+    python/3.4.2/Dockerfile
+
+        FROM firethorn/ubuntu:2.1.22
+
+    ubuntu/14.04/Dockerfile
+
+        FROM ubuntu:14.04
+
+# Ubuntu 14.04.5 LTS (August 4 2016)
+# Latest release
+# Ubuntu 18.04 LTS (April 26, 2018)
 
 
 
