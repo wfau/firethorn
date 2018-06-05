@@ -132,6 +132,10 @@ services:
             jarmila:
                 condition: service_healthy            
 
+        healthcheck:
+            disable: true
+
+
     tester:
         image:
            "firethorn/tester:${buildtag}"

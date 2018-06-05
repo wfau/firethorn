@@ -1,0 +1,134 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+    admin.community
+    admin.user
+    admin.pass
+
+    member of ???? allowed to create new community
+
+    owner is allowed to update
+    owner is allowed to 'hide'
+
+
+
+
+    start as root
+    
+        create wfau-admin user
+
+    drop community ?
+    what does community do ?
+
+    just create users
+    ignore community
+
+    users can be a member of many different groups
+
+# --------------------------------------------------
+
+    shortcut authentication on callback interface
+    (shared secret?)
+
+# --------------------------------------------------
+
+    admin user set in config
+
+        admin.username
+        admin.password
+    
+    admin creates wfau user
+    admin assigns ivo://uk.ac.roe/
+
+        wfau user creates archives
+        wfau user publishes archives
+            published using ivo://uk.ac.roe/
+
+        user owns an ivorn
+        who sets the ivorn ?
+
+    users can create their own account
+    
+    anyone can create a jdbc resource
+    anyone can create a ivoa resource
+    anyone can create a adql resource
+
+        owner write to a jdbc resource
+        owner write to a adql resource
+        owner write to a ivoa resource
+
+        owner read from a jdbc resource
+        public read from a ivoa resource
+        public read from a adql resource
+
+
+    protect jdbc resource from metadata read
+    owner only
+
+
+    distinguish between logged in using name/pass or just cookie
+
+
+# --------------------------------------------------
+
+    long term - get rid of community
+
+# --------------------------------------------------
+
+    short term
+    
+    anyone can create a jdbc resource
+    only owner can read the jdbc resource
+
+# --------------------------------------------------
+
+    admin assigns ivo authority
+    ivo authority required to publish/register services
+
+
+
+makepy()
+    {
+    source "${HOME:?}/ftpy.settings"
+    pushd "${FTPY_CODE:?}"
+        docker build \
+            --tag firethorn/firethorn-py:${buildtag:?} \
+            --file Fedorafile \
+            .
+    popd
+    }
+
+runpy()
+    {
+    source "${HOME:?}/firethorn.settings"
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tests/burellus/burellus-remote.yml" \
+        run \
+            angela
+    }    
+
+
+
+

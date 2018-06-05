@@ -153,6 +153,31 @@ EOF
 
 
 # -----------------------------------------------------
+# Functions to make it easier to build and test ....
+#[user@virtual]
+
+    makepy()
+        {
+        source "${HOME:?}/ftpy.settings"
+        pushd "${FTPY_CODE:?}"
+            docker build \
+                --tag firethorn/firethorn-py:${buildtag:?} \
+                --file Fedorafile \
+                .
+        popd
+        }
+
+    runpy()
+        {
+        source "${HOME:?}/firethorn.settings"
+        docker-compose \
+            --file "${FIRETHORN_CODE:?}/docker/compose/tests/burellus/burellus-remote.yml" \
+            run \
+                angela
+        }    
+
+
+# -----------------------------------------------------
 # Test login modes ...
 
 import os
@@ -260,5 +285,96 @@ firethorn.login(
     'toad',
     'abcd'
     )
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Test login modes ...
+#[user@pyclient]
+
+import os
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client (using named param).
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Login as the admin account with the wrong password.
+firethorn.login(
+    os.environ.get('adminuser'),
+    'bogus',
+    os.environ.get('admingroup')
+    )
+
+#
+# Login as a new guest account.
+firethorn.login(
+    'frog',
+    '1234'
+    )
+
+#
+# Login as 'frog' with the wrong password.
+firethorn.login(
+    'frog'
+    )
+
+#
+# Login as the 'frog' with no password.
+# This should not work because 'frog' was created with a password.
+firethorn.login(
+    'frog'
+    )
+
+#
+# Login as a new guest account, with no password.
+firethorn.login(
+    'toad'
+    )
+
+#
+# Login as 'toad' with no password.
+firethorn.login(
+    'toad'
+    )
+
+#
+# Login as 'toad' with a password.
+# This should not work because 'toad' was created with no password.
+firethorn.login(
+    'toad',
+    'abcd'
+    )
+
+
+
+
+
+
+
+
+
+
 
 

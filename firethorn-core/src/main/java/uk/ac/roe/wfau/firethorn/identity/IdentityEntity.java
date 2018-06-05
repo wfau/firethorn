@@ -917,6 +917,11 @@ implements Identity
 			}
     	}
 
+    /**
+     * Really bad password hash.
+     * TODO replace this with a secure hash with salt.
+     * 
+     */
     protected String hashpass(final String pass)
     	{
     	if (pass == null)

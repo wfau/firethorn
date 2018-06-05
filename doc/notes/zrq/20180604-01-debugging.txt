@@ -1262,8 +1262,49 @@
 # Latest release
 # Ubuntu 18.04 LTS (April 26, 2018)
 
+#----------------------------------------------------------------
+# As of 5am, log file is back up to 320M
+#[root@Gworewia]
 
+    pushd /var/lib/docker/volumes/3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e/_data/
+    
+        stat firethorn.log
 
+              File: 'firethorn.log'
+              Size: 336557220 	Blocks: 657344     IO Block: 4096   regular file
+            Device: 26h/38d	Inode: 762799      Links: 1
+            Access: (0640/-rw-r-----)  Uid: (  997/  chrony)   Gid: (  996/   cgred)
+            Context: system_u:object_r:docker_var_lib_t:s0
+            Access: 2018-06-05 05:18:23.537001199 +0100
+            Modify: 2018-06-05 05:18:23.537001199 +0100
+            Change: 2018-06-05 05:18:23.537001199 +0100
+             Birth: -
+
+        du -h firethorn.log
+
+            322M firethorn.log
+
+    popd
+
+#----------------------------------------------------------------
+# As of 5pm, log file is down to 73M ?
+#[root@Gworewia]
+
+        stat firethorn.log
+
+              File: 'firethorn.log'
+              Size: 76191386  	Blocks: 148824     IO Block: 4096   regular file
+            Device: 26h/38d	Inode: 762799      Links: 1
+            Access: (0640/-rw-r-----)  Uid: (  997/  chrony)   Gid: (  996/   cgred)
+            Context: system_u:object_r:docker_var_lib_t:s0
+            Access: 2018-06-05 17:48:00.015001199 +0100
+            Modify: 2018-06-05 17:48:00.015001199 +0100
+            Change: 2018-06-05 17:48:00.015001199 +0100
+             Birth: -
+
+        du -h firethorn.log
+
+            73M	firethorn.log
 
 
 
