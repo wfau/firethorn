@@ -25,6 +25,8 @@
 
     echo "devname [${devname:?}]"
 
+    devname=zrq-vodml-hacking
+
 # -----------------------------------------------------
 # Create a new development branch.
 #[user@desktop]
