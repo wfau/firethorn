@@ -169,13 +169,13 @@ public class AdqlTapSyncController extends AbstractController {
 									null, // No cell limit
                                     null  // No time limit
 			                        ),
-factories().blues().delays().create(
-                        500,
-                        null,
-                        null
-                        ),
+								factories().blues().delays().create(
+			                        500,
+			                        null,
+			                        null
+		                        ),
 								TaskState.COMPLETED, // Wait for COMPLETED
-							 Long.valueOf(600000) // TODO This is not the right value.
+								Long.valueOf(600000) // TODO This is not the right value.
 								);
 						;
 					} else {
@@ -186,29 +186,25 @@ factories().blues().delays().create(
 						        null, // Mode.AUTO
 						        null, // Syntax.AUTO
 						        null, // No limits
-                                                      	factories().blues().delays().create(
-                        500,
-                        null,
-                        null
-                        ),
-	
+                              	factories().blues().delays().create(
+									500,
+									null,
+									null
+								),
+										
                                 TaskState.COMPLETED, // Wait for COMPLETED
-							Long.valueOf(600000) // TODO This is not the right value.
+							    Long.valueOf(600000) // TODO This is not the right value.
 								);
 					}
 
 					while (query.state() == TaskState.RUNNING || query.state() ==  TaskState.READY || query.state() ==  TaskState.QUEUED){   
-                                            System.out.println("***In Wait loop***");
                                             Thread.sleep(1000);
 					}	
 
                                        
 					// Write results to VOTable using AdqlQueryVOTableController
 					if (query != null) {
-                                                    log.error(query.state().toString()); 
-                                                    log.error("**************************");
-                                                    System.out.println("**************************");
-                                                    System.out.println(query.state().toString());
+
 						if (query.state() == TaskState.EDITING || 
 								query.state() == TaskState.QUEUED || 
 										query.state() == TaskState.READY || 
@@ -217,8 +213,6 @@ factories().blues().delays().create(
 								) {
 							
 							response.setContentType("text/xml");
-                                                      log.error("**************1************");
-                                                     System.out.println("*********1*****************");
 
 						    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 							writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
@@ -227,8 +221,6 @@ factories().blues().delays().create(
 						} else if (query.state() == TaskState.FAILED || query.state() == TaskState.ERROR) {
 							response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 							response.setContentType("text/xml");
-							log.error("*************2*************");
-                                                    System.out.println("**********2****************");
 
 							if (query.syntax()!=null){
 								writer.append(TapError.writeErrorToVotable(StringEscapeUtils.escapeXml(query.syntax().friendly())));
@@ -239,8 +231,6 @@ factories().blues().delays().create(
 							return;
 							
 						} else {
-log.error("***********3***************");
-                                                    System.out.println("*************3*************");
 
 							results = query.results().adql().link() + "/votable";
 							response.setStatus(HttpServletResponse.SC_SEE_OTHER);
@@ -255,22 +245,16 @@ log.error("***********3***************");
 
 				} catch (final Exception ouch) {
 					log.error("Exception caught [{}]", ouch);
-					System.out.println("Exception ***********4******");
 					TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR);
 					return;
 				}
 
 			}
 		} else {
-log.error("********5******************");
-                                                    System.out.println("***********5***************");
-
 			writer.append(validator.getErrorMessage());
 			return;
 		}
 		
-		log.error("***********6***************");
-                                                    System.out.println("***********6***************");
 
 		writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 		return;

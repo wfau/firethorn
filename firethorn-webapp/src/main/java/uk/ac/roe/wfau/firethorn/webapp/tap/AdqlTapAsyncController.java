@@ -123,7 +123,6 @@ public class AdqlTapAsyncController extends AbstractController {
 
         // Let's obtains parameters name here! 
         //
-		log.debug("**********");
 		Enumeration<?> enumeration = request.getParameterNames();
 		while (enumeration.hasMoreElements()) {
 			String parameterName = (String) enumeration.nextElement();
