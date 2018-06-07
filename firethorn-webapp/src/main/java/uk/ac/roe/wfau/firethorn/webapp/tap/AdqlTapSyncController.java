@@ -169,9 +169,13 @@ public class AdqlTapSyncController extends AbstractController {
 									null, // No cell limit
                                     null  // No time limit
 			                        ),
-                                null, // No delays
+								factories().blues().delays().create(
+			                        500,
+			                        null,
+			                        null
+		                        ),
 								TaskState.COMPLETED, // Wait for COMPLETED
-								factories().blues().limits().absolute().time() // TODO This is not the right value.
+								Long.valueOf(600000) // TODO This is not the right value.
 								);
 						;
 					} else {
@@ -182,16 +186,25 @@ public class AdqlTapSyncController extends AbstractController {
 						        null, // Mode.AUTO
 						        null, // Syntax.AUTO
 						        null, // No limits
-						        null, // No delays
+                              	factories().blues().delays().create(
+									500,
+									null,
+									null
+								),
+										
                                 TaskState.COMPLETED, // Wait for COMPLETED
-								factories().blues().limits().absolute().time() // TODO This is not the right value.
+							    Long.valueOf(600000) // TODO This is not the right value.
 								);
 					}
 
+					while (query.state() == TaskState.RUNNING || query.state() ==  TaskState.READY || query.state() ==  TaskState.QUEUED){   
+                                            Thread.sleep(1000);
+					}	
 
+                                       
 					// Write results to VOTable using AdqlQueryVOTableController
 					if (query != null) {
-						
+
 						if (query.state() == TaskState.EDITING || 
 								query.state() == TaskState.QUEUED || 
 										query.state() == TaskState.READY || 
@@ -200,6 +213,7 @@ public class AdqlTapSyncController extends AbstractController {
 								) {
 							
 							response.setContentType("text/xml");
+
 						    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 							writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 							return;
@@ -207,7 +221,7 @@ public class AdqlTapSyncController extends AbstractController {
 						} else if (query.state() == TaskState.FAILED || query.state() == TaskState.ERROR) {
 							response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 							response.setContentType("text/xml");
-							
+
 							if (query.syntax()!=null){
 								writer.append(TapError.writeErrorToVotable(StringEscapeUtils.escapeXml(query.syntax().friendly())));
 							} else {
@@ -217,6 +231,7 @@ public class AdqlTapSyncController extends AbstractController {
 							return;
 							
 						} else {
+
 							results = query.results().adql().link() + "/votable";
 							response.setStatus(HttpServletResponse.SC_SEE_OTHER);
 						    response.setHeader("Location", results);
@@ -240,7 +255,7 @@ public class AdqlTapSyncController extends AbstractController {
 			return;
 		}
 		
-		
+
 		writer.append(TapError.writeErrorToVotable(TapJobErrors.INTERNAL_ERROR));
 		return;
 	}

@@ -155,23 +155,15 @@ extends AbstractTableController
         //writer.append(" ID='table.");
         //writer.append(table.ident().toString());
         //writer.append("'");
-        if (table.name() != null)
-            {
-            writer.append(" name='");
-            writer.append(table.name());
-            writer.append("'");
-            }
+        //if (table.name() != null)
+        //    {
+        //    writer.append(" name='");
+        //    writer.append(table.name());
+        //    writer.append("'");
+        //    }
         writer.append(">");
 
-        writer.append("<LINK");
-        writer.append(" content-type='");
-        writer.append(JSON_MIME);
-        writer.append("'");
-        writer.append(" content-role='metadata'");
-        writer.append(" href='");
-        writer.append(table.link());
-        writer.append("'");
-        writer.append("/>");
+ 
         if (table.bluequery()!=null){
 	        if (!table.bluequery().results().state().equals(ResultState.NONE) && !table.bluequery().results().state().equals(ResultState.EMPTY)) {
 	            writer.append("<INFO name='QUERY_STATUS' value='OK'>");
@@ -189,7 +181,12 @@ extends AbstractTableController
         	writer.append("<INFO name='QUERY_STATUS' value='OK'></INFO>");
         }
     
-        
+        writer.append("<INFO");
+	writer.append(" name='link'");
+        writer.append(" value='");
+        writer.append(table.link());
+        writer.append("'");
+        writer.append("/>");	
      
         if (table.text() != null)
             {
@@ -263,10 +260,17 @@ extends AbstractTableController
                 writer.append(" datatype='char'");
                 writer.append(" arraysize='*'");
                 }
-
+            else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) {
+		writer.append(" datatype='int'");
+                writer.append(" arraysize='1'");
+		}
+	    else if (column.meta().adql().type() == AdqlColumn.AdqlType.BYTE) {
+		writer.append(" datatype='unsignedByte'");
+                writer.append(" arraysize='*'");
+		}
             else {
                 writer.append(" datatype='");
-                writer.append(column.meta().adql().type().votype());
+                writer.append(column.meta().adql().type().name().toString().replace("'", "''").toLowerCase());
                 writer.append("'");
 
                 

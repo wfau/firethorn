@@ -232,7 +232,7 @@ popd
 source "${HOME:?}/chain.properties"
 
 pushd  "${HOME}/"
-    cp firethorn.py/docker/tap-deployer.yml ${HOME}/tap-deployer.yml
+
     docker-compose --file "tap-deployer.yml" run firethorn-py
 
 
