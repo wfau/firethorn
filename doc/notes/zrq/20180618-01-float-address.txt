@@ -1,0 +1,348 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Assign a floating IP address on trop03
+    #
+
+
+    newaddress=129.215.175.102
+    newgateway=129.215.175.126
+    newnetwork=129.215.175.0
+    newnetmask=255.255.255.0
+    newmacaddr=52:54:00:03:03:02
+    newnetname=ens5
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop03]
+
+    vmname=Greand
+    vmuser=Stevedore
+
+    createvm
+
+        INFO : Node name [Greand]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Disc name [Greand.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to the new VM and configure the network interface.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+        cat > /etc/sysconfig/network-scripts/ifcfg-${newnetname:?} << EOF
+NAME=${newnetname:?}
+DEVICE=${newnetname:?}
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=${newmacaddr:?}
+NETWORK=${newnetwork:?}
+NETMASK=${newnetmask:?}
+GATEWAY=${newgateway:?}
+IPADDR=${newaddress}
+EOF
+
+EOSH
+
+#---------------------------------------------------------------------
+# Use virsh to attach an new (virtual) network interface to the VM.
+#[user@trop03]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${newmacaddr:?}" \
+            --live \
+            --config
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}" \
+        | xmllint --xpath '//interface' -
+
+
+# -----------------------------------------------------
+# Login to the VM and initialise the interface.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+        ifup "${newnetname:?}"        
+
+EOSH
+
+# -----------------------------------------------------
+# Login to the VM and run Apache test container.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        docker run -p 80:80 -d yrvafhom/docker-demo
+
+EOSH
+
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@desktop]
+
+    curl --head http://129.215.175.102/
+
+# -----------------------------------------------------
+# Test failed .. and live service deoesn't seem to respond either :-(
+# Check the settings on trop01 ..
+#[user@trop01]
+
+    vmname=Astoalith
+    
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}" \
+        | xmllint --xpath '//interface' -
+
+
+        <interface type="network">
+          <mac address="52:54:00:02:01:0d"/>
+          <source network="default"/>
+          <target dev="vnet0"/>
+          <model type="virtio"/>
+          <alias name="net0"/>
+          <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+        </interface><interface type="bridge">
+          <mac address="52:54:00:03:03:02"/>
+          <source bridge="br0"/>
+          <target dev="vnet1"/>
+          <model type="virtio"/>
+          <alias name="net1"/>
+          <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0"/>
+        </interface>dmr@trop01:~$ 
+        
+    #
+    # We used the same MAC address on our new VM.
+
+          <mac address="52:54:00:03:03:02"/>
+
+    #
+    # The two network cards will be competing for IP packets.
+    # Shutting down the 'new' one ..
+    #
+
+# -----------------------------------------------------
+# Shutdown the new VM and try again ..
+#[user@trop03]
+
+    vmname=Greand
+    vmuser=Stevedore
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        shutdown Greand
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    newaddress=129.215.175.102
+    newgateway=129.215.175.126
+    newnetwork=129.215.175.0
+    newnetmask=255.255.255.0
+    newmacaddr=52:54:00:00:01:02
+    newnetname=ens5
+
+    vmname=Greand
+    vmuser=Stevedore
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop03]
+
+    createvm
+
+        INFO : Node name [Greand]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Disc name [Greand.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to the new VM and configure the network interface.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+        cat > /etc/sysconfig/network-scripts/ifcfg-${newnetname:?} << EOF
+NAME=${newnetname:?}
+DEVICE=${newnetname:?}
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=${newmacaddr:?}
+NETWORK=${newnetwork:?}
+NETMASK=${newnetmask:?}
+GATEWAY=${newgateway:?}
+IPADDR=${newaddress}
+EOF
+
+EOSH
+
+#---------------------------------------------------------------------
+# Use virsh to attach an new (virtual) network interface to the VM.
+#[user@trop03]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${newmacaddr:?}" \
+            --live \
+            --config
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}" \
+        | xmllint --xpath '//interface' -
+
+
+# -----------------------------------------------------
+# Login to the VM and initialise the interface.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+        ifup "${newnetname:?}"        
+
+EOSH
+
+# -----------------------------------------------------
+# Login to the VM and run Apache test container.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        docker run -p 80:80 -d yrvafhom/docker-demo
+
+EOSH
+
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@shep]
+
+    curl --head http://129.215.175.102/
+    PASS
+
+#[user@desktop]
+
+    curl --head http://129.215.175.102/
+    FAIL - HANGS
+
+#[user@linode]
+
+    curl --head http://129.215.175.102/
+    FAIL - HANGS
+
+# -----------------------------------------------------
+# Live site is available from all of them.
+#[user@shep]
+
+    curl --head http://129.215.175.100/
+    PASS
+
+
+# -----------------------------------------------------
+# Try rebooting the new VM.
+#[user@trop03]
+
+    vmname=Greand
+    vmuser=Stevedore
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        reboot Greand
+
+# -----------------------------------------------------
+# Login to the VM and run Apache test container.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        docker run -p 80:80 -d yrvafhom/docker-demo
+
+EOSH
+
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@shep]
+
+    curl --head http://129.215.175.102/
+    PASS
+
+#[user@desktop]
+
+    curl --head http://129.215.175.102/
+    PASS
+
+#[user@linode]
+
+    curl --head http://129.215.175.102/
+    PASS
+
+#
+# Ok, se we need a numbering scheme to prevent us using the same MAC address more than once.
+
+
+    float1  129.215.175.100  52:54:00:00:01:00
+    float2  129.215.175.101  52:54:00:00:01:01
+    float3  129.215.175.102  52:54:00:00:01:02
+    float4  129.215.175.103  52:54:00:00:01:03
+
+
+
+

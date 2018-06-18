@@ -1,0 +1,170 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Numbering scheme to avoid using the same MAC address more than once.
+
+    float1  129.215.175.100  52:54:00:00:01:00
+    float2  129.215.175.101  52:54:00:00:01:01
+    float3  129.215.175.102  52:54:00:00:01:02
+    float4  129.215.175.103  52:54:00:00:01:03
+
+# -----------------------------------------------------
+# Settings for float3 on trop03 ** edit for float2 on trop02 **
+#[user@trop03]
+
+    newaddress=129.215.175.102
+    newmacaddr=52:54:00:00:01:02
+
+    vmname=Greand
+    vmuser=Stevedore
+
+# -----------------------------------------------------
+# Generic settings for the trop external network.
+#[user@trop03]
+
+    newgateway=129.215.175.126
+    newnetwork=129.215.175.0
+    newnetmask=255.255.255.0
+    newnetname=ens5
+
+# -----------------------------------------------------
+# Generic settings for libvirt commands.
+#[user@trop03]
+
+    cat > "${HOME}/libvirt.settings" << EOF
+ : ${basepool:='base'}
+ : ${livepool:='live'}
+ : ${connection:='qemu:///system'}
+export basepool
+export livepool
+export connection
+EOF
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop03]
+
+    createvm
+
+        INFO : Node name [Greand]
+        INFO : Base name [fedora-27-docker-base-20180129.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Disc name [Greand.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to the new VM and configure the network interface.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+        cat > /etc/sysconfig/network-scripts/ifcfg-${newnetname:?} << EOF
+NAME=${newnetname:?}
+DEVICE=${newnetname:?}
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=${newmacaddr:?}
+NETWORK=${newnetwork:?}
+NETMASK=${newnetmask:?}
+GATEWAY=${newgateway:?}
+IPADDR=${newaddress}
+EOF
+
+EOSH
+
+#---------------------------------------------------------------------
+# Use virsh to attach an new (virtual) network interface to the VM.
+#[user@trop03]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${newmacaddr:?}" \
+            --live \
+            --config
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}" \
+        | xmllint --xpath '//interface' -
+
+
+# -----------------------------------------------------
+# Login to the VM and initialise the interface.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+        ifup "${newnetname:?}"        
+
+EOSH
+
+# -----------------------------------------------------
+# Reboot the new VM to force an update of the routing tables.
+# We should be able to avoid this .. but for now ..
+#[user@trop03]
+
+    vmname=Greand
+    vmuser=Stevedore
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        reboot Greand
+
+# -----------------------------------------------------
+# Login to the VM and run Apache test container.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        docker run -p 80:80 -d yrvafhom/docker-demo
+
+EOSH
+
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@shep]
+
+    curl --head http://129.215.175.102/
+    PASS
+
+#[user@desktop]
+
+    curl --head http://129.215.175.102/
+    PASS
+
+#[user@linode]
+
+    curl --head http://129.215.175.102/
+    PASS
+
