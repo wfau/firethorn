@@ -1,0 +1,129 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#----------------------------------------------------------------
+# Login to the VM as root.
+#[user@desktop]
+
+    ssh root@Gworewia
+
+#----------------------------------------------------------------
+# Inspect the firethorn container volumes
+#[root@Gworewia]
+
+    docker inspect root_gillian_1
+
+        ....
+        ....
+
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e",
+                "Source": "/var/lib/docker/volumes/3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e/_data",
+                "Destination": "/var/local/tomcat/logs",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "78cec3b9bcdc4554c0ca3ed07a6d3702628d08d9b6db576a3b938f7832209b1e",
+                "Source": "/var/lib/docker/volumes/78cec3b9bcdc4554c0ca3ed07a6d3702628d08d9b6db576a3b938f7832209b1e/_data",
+                "Destination": "/var/local/tomcat/temp",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "c88000f34aac7b7523e710efd6d4e96d2f520e9b4130c737bf97081ed5c57745",
+                "Source": "/var/lib/docker/volumes/c88000f34aac7b7523e710efd6d4e96d2f520e9b4130c737bf97081ed5c57745/_data",
+                "Destination": "/var/local/tomcat/work",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "bind",
+                "Source": "/root/firethorn.properties",
+                "Destination": "/etc/firethorn.properties",
+                "Mode": "rw",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "bind",
+                "Source": "/etc/localtime",
+                "Destination": "/etc/localtime",
+                "Mode": "ro",
+                "RW": false,
+                "Propagation": ""
+            }
+        ],
+
+
+#----------------------------------------------------------------
+# Locate the server side of the firethorn logs volume.
+#[root@Gworewia]
+
+    ls -al /var/lib/docker/volumes/3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e/_data/
+
+        drwxr-xr-x. 1 chrony cgred 1.7K Jun  7 01:00 .
+        drwxr-xr-x. 1 root   root    10 May 27 00:59 ..
+        -rw-r-----. 1 chrony cgred 5.4K May 27 00:59 catalina.2018-05-26.log
+        -rw-r-----. 1 chrony cgred 1.6K Jun  2 14:56 catalina.2018-06-02.log
+        -rw-r-----. 1 chrony cgred    0 Jun  3 01:00 catalina.2018-06-03.log
+        -rw-r-----. 1 chrony cgred  87M Jun  4 17:05 catalina.2018-06-04.log
+        -rw-r-----. 1 chrony cgred 514M Jun  7 12:05 firethorn.log
+        -rw-r-----. 1 chrony cgred    0 May 27 00:59 host-manager.2018-05-26.log
+        -rw-r-----. 1 chrony cgred    0 Jun  4 16:57 host-manager.2018-06-04.log
+        -rw-r-----. 1 chrony cgred  470 May 27 00:59 localhost.2018-05-26.log
+        -rw-r-----. 1 chrony cgred  23K May 28 00:18 localhost.2018-05-27.log
+        -rw-r-----. 1 chrony cgred  17K May 28 05:44 localhost.2018-05-28.log
+        -rw-r-----. 1 chrony cgred  12K Jun  2 09:33 localhost.2018-06-02.log
+        ....
+        ....
+
+#----------------------------------------------------------------
+# Copy firethorn log to the side and empty the original.
+#[root@Gworewia]
+
+    cp "firethorn.log" "$(date '+%Y%m%d')-firethorn.log"
+    echo /dev/null > "firethorn.log"
+
+#----------------------------------------------------------------
+# Move the copy to storage.
+#[user@trop]
+
+    scp "root@Gworewia:/var/lib/docker/volumes/3696da675e01e37717d622089b0d904dbdfed779ea34b6631e88814b174cf06e/_data/$(date '+%Y%m%d')-firethorn.log" \
+        "dave@shepseskaf.roe.ac.uk:storage/firethorn/$(date '+%Y%m%d')-firethorn.log"
+
+    .... Transfer completed
+
+
+
+
+

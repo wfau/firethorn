@@ -1,0 +1,262 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+Looks like one or more clients are stuck in a loop.
+
+    2018-06-13 13:32:41,173 DEBUG [main-interface-10] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/2459152] 
+    2018-06-13 13:32:41,412 DEBUG [main-interface-5] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/59/async/5225825] 
+    2018-06-13 13:32:41,465 DEBUG [main-interface-3] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/59/async/1764720] 
+    2018-06-13 13:32:41,643 DEBUG [main-interface-2] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/1066833] 
+    2018-06-13 13:32:41,729 DEBUG [main-interface-7] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/830567] 
+    2018-06-13 13:32:41,739 DEBUG [main-interface-9] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/2459152] 
+    2018-06-13 13:32:42,003 DEBUG [main-interface-11] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/59/async/5225825] 
+    2018-06-13 13:32:42,049 DEBUG [main-interface-10] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/59/async/1764720] 
+    2018-06-13 13:32:42,221 DEBUG [main-interface-5] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/1066833] 
+    2018-06-13 13:32:42,324 DEBUG [main-interface-3] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/830567] 
+    2018-06-13 13:32:42,329 DEBUG [main-interface-2] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/2459152] 
+    2018-06-13 13:32:42,557 DEBUG [main-interface-7] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/59/async/5225825] 
+    2018-06-13 13:32:42,602 DEBUG [main-interface-9] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/59/async/1764720] 
+    2018-06-13 13:32:42,797 DEBUG [main-interface-11] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/1066833] 
+    2018-06-13 13:32:42,899 DEBUG [main-interface-10] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/2459152] 
+    2018-06-13 13:32:42,935 DEBUG [main-interface-5] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/830567] 
+    2018-06-13 13:32:43,141 DEBUG [main-interface-3] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/59/async/5225825] 
+    2018-06-13 13:32:43,177 DEBUG [main-interface-2] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/59/async/1764720] 
+    2018-06-13 13:32:43,359 DEBUG [main-interface-7] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/1066833] 
+    2018-06-13 13:32:43,479 DEBUG [main-interface-9] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/76/async/2459152] 
+
+
+Looking at one of these 
+    http://tap.roe.ac.uk//firethorn/tap/59/async/5225825
+
+Firefox objects because we have an xlink:href attribute without defining the corresponding namespace.
+    https://en.wikipedia.org/wiki/XLink
+    https://www.w3.org/TR/xlink/#att-method
+    https://www.w3.org/1999/xlink
+
+Using curl
+
+    curl http://tap.roe.ac.uk//firethorn/tap/59/async/5225825
+
+<?xml version='1.0' encoding='UTF-8'?>	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd'><uws:jobId>5225825</uws:jobId><uws:ownerId xsi:nil='true'>null</uws:ownerId><uws:phase>EXECUTING</uws:phase><uws:startTime xsi:nil='true'>2018-06-12T23:57:26.033Z</uws:startTime><uws:endTime xsi:nil='true'>2018-06-12T23:57:26.042Z</uws:endTime><uws:executionDuration>0</uws:executionDuration><uws:destruction xsi:nil='true'></uws:destruction><uws:parameters><uws:parameter id='request'>doQuery</uws:parameter><uws:parameter id='lang'>ADQL</uws:parameter><uws:parameter id='query'>SELECT TOP 10 surveyID FROM ATLASDR2.Survey</uws:parameter><uws:parameter id='format'>None</uws:parameter><uws:parameter id='maxrec'>None</uws:parameter><uws:parameter id='jobstatus'>None</uws:parameter></uws:parameters><uws:results><uws:result id='result'  xlink:href='http://tap.roe.ac.uk/firethorn/adql/table/5225895/votable'></uws:result></uws:results></uws:job>[Zarquan@methionine ~]$ 
+
+    Check the UWS job :
+    curl http://tap.roe.ac.uk//firethorn/tap/59/async/5225825 | xmllint --format -
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uws:job xmlns:uws="http://www.ivoa.net/xml/UWS/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd">
+          <uws:jobId>5225825</uws:jobId>
+          <uws:ownerId xsi:nil="true">null</uws:ownerId>
+          <uws:phase>EXECUTING</uws:phase>
+          <uws:startTime xsi:nil="true">2018-06-12T23:57:26.033Z</uws:startTime>
+          <uws:endTime xsi:nil="true">2018-06-12T23:57:26.042Z</uws:endTime>
+          <uws:executionDuration>0</uws:executionDuration>
+          <uws:destruction xsi:nil="true"/>
+          <uws:parameters>
+            <uws:parameter id="request">doQuery</uws:parameter>
+            <uws:parameter id="lang">ADQL</uws:parameter>
+            <uws:parameter id="query">SELECT TOP 10 surveyID FROM ATLASDR2.Survey</uws:parameter>
+            <uws:parameter id="format">None</uws:parameter>
+            <uws:parameter id="maxrec">None</uws:parameter>
+            <uws:parameter id="jobstatus">None</uws:parameter>
+          </uws:parameters>
+          <uws:results>
+            <uws:result id="result" xlink:href="http://tap.roe.ac.uk/firethorn/adql/table/5225895/votable"/>
+          </uws:results>
+        </uws:job>
+
+        Looks like a stuck request ?
+
+            phase : EXECUTING
+            query : 'SELECT TOP 10 surveyID FROM ATLASDR2.Survey'
+            startTime : 2018-06-12T23:57:26.033Z
+
+        Why do we have a Heidelberg URL for the UWS schema ?
+
+            xsi:schemaLocation="
+                http://www.ivoa.net/xml/UWS/v1.0
+                http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd
+                "
+        Having both xsi:nil="true" and an element value is invalid 
+        http://zvon.org/xxl/XMLSchemaTutorial/Output/ser_over_st0.html
+
+            <uws:startTime xsi:nil="true">2018-06-12T23:57:26.033Z</uws:startTime>
+            <uws:endTime xsi:nil="true">2018-06-12T23:57:26.042Z</uws:endTime>
+
+    
+    Check the results :
+    curl http://tap.roe.ac.uk/firethorn/adql/table/5225895/votable | xmllint --format -
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" version="1.3">
+          <RESOURCE type="results">
+            <INFO name="QUERY_STATUS" value="OK"/>
+            <INFO name="link" value="http://tap.roe.ac.uk/firethorn/adql/table/5225895"/>
+            <TABLE ID="table.5225895" name="XX_M6R7EMCLLCPPGAAAAFR7M3WLEU">
+              <FIELD ID="column.5226866" name="surveyID" datatype="int" arraysize="1" xtype="null">
+                <LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/5226866"/>
+              </FIELD>
+              <DATA>
+                <TABLEDATA>
+                  <TR>
+                    <TD>70</TD>
+                  </TR>
+                </TABLEDATA>
+              </DATA>
+            </TABLE>
+          </RESOURCE>
+        </VOTABLE>
+
+    Check the adql table :
+    curl http://tap.roe.ac.uk/firethorn/adql/table/5225895 | jq '.'
+
+        {
+          "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+          "metadata": {
+            "adql": {
+              "count": 1,
+              "status": "COMPLETED"
+            }
+          },
+          "formats": {
+            "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/5225895/datatable",
+            "votable": "http://tap.roe.ac.uk/firethorn/adql/table/5225895/votable"
+          },
+          "query": "http://tap.roe.ac.uk/firethorn/blue/query/5225825",
+          "base": "http://tap.roe.ac.uk/firethorn/jdbc/table/5225894",
+          "depth": "PARTIAL",
+          "fullname": "temp.XX_M6R7EMCLLCPPGAAAAFR7M3WLEU",
+          "columns": "http://tap.roe.ac.uk/firethorn/adql/table/5225895/columns/select",
+          "schema": "http://tap.roe.ac.uk/firethorn/adql/schema/5226364",
+          "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/4747551",
+          "parent": "http://tap.roe.ac.uk/firethorn/adql/schema/5226364",
+          "root": "http://tap.roe.ac.uk/firethorn/jdbc/table/5225894",
+          "text": null,
+          "name": "XX_M6R7EMCLLCPPGAAAAFR7M3WLEU",
+          "url": "http://tap.roe.ac.uk/firethorn/adql/table/5225895",
+          "self": "http://tap.roe.ac.uk/firethorn/adql/table/5225895",
+          "created": "2018-06-12T23:57:26.182",
+          "ident": "5225895",
+          "modified": "2018-06-12T23:57:26.182",
+          "owner": "http://tap.roe.ac.uk/firethorn/community-member/5226930"
+        }
+
+    Check the adql query
+    curl http://tap.roe.ac.uk/firethorn/blue/query/5225825 | jq '.'
+
+        {
+          "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+          "callback": "http://tap.roe.ac.uk:8081/firethorn/callback/5225825",
+          "results": {
+            "formats": {
+              "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/5225895/datatable",
+              "votable": "http://tap.roe.ac.uk/firethorn/adql/table/5225895/votable"
+            },
+            "count": 1,
+            "state": "COMPLETED",
+            "table": "http://tap.roe.ac.uk/firethorn/adql/table/5225895"
+          },
+          "tables": [],
+          "mode": "DIRECT",
+          "syntax": {
+            "friendly": null,
+            "status": "VALID",
+            "message": null
+          },
+          "delays": {
+            "every": null,
+            "last": null,
+            "first": null
+          },
+          "osql": "SELECT TOP 10 [ATLASDR2].[dbo].[Survey].[surveyID] AS [surveyID]\nFROM [ATLASDR2].[dbo].[Survey]",
+          "adql": "SELECT TOP 10 surveyID\nFROM ATLASDR2.Survey",
+          "workspace": "http://tap.roe.ac.uk/firethorn/adql/resource/59",
+          "limits": {
+            "rows": 1000000,
+            "cells": null,
+            "time": null
+          },
+          "history": [
+            {
+              "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+              "level": "INFO",
+              "task": "http://tap.roe.ac.uk/firethorn/blue/query/5225825",
+              "message": null,
+              "state": "COMPLETED",
+              "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/5226341",
+              "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/5226341",
+              "created": "2018-06-12T23:57:26.436",
+              "ident": "5226341",
+              "modified": "2018-06-12T23:57:26.436",
+              "owner": "http://tap.roe.ac.uk/firethorn/community-member/5226935"
+            },
+            {
+              "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+              "level": "INFO",
+              "task": "http://tap.roe.ac.uk/firethorn/blue/query/5225825",
+              "message": "Executing query",
+              "state": "READY",
+              "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/5226340",
+              "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/5226340",
+              "created": "2018-06-12T23:57:26.169",
+              "ident": "5226340",
+              "modified": "2018-06-12T23:57:26.170",
+              "owner": "http://tap.roe.ac.uk/firethorn/community-member/5226930"
+            }
+          ],
+          "columns": [],
+          "input": "SELECT TOP 10 surveyID FROM ATLASDR2.Survey",
+          "status": "RUNNING",
+          "fields": [],
+          "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/59",
+          "resources": [
+            "http://tap.roe.ac.uk/firethorn/jdbc/resource/58"
+          ],
+          "text": null,
+          "name": "XX_OGQJDY4B6GRCMAAAAFR7M3WKSE",
+          "url": "http://tap.roe.ac.uk/firethorn/blue/query/5225825",
+          "self": "http://tap.roe.ac.uk/firethorn/blue/query/5225825",
+          "created": "2018-06-12T23:57:26.033",
+          "ident": "5225825",
+          "modified": "2018-06-12T23:57:26.042",
+          "owner": "http://tap.roe.ac.uk/firethorn/community-member/5226929"
+        }
+
+    # I think this is hitting the race condition bug.
+    # Query history includes a COMPLETED state change at '2018-06-12T23:57:26.436'
+    # Query results table statie is COMPLETED.
+    # Query status is still RUNNING.
+
+    #
+    # Things that need fixing.
+    # 1) Reproducable deployment
+    # 2) Logrotate
+    # 3) Reduce the log detail
+    # 4) Update TAP controller to use BlueQuery correctly.
+    # 5) Don't issue new identifiers for every anon request.
+    # 6) Webform for modifying queries in the metadata database.
+
+
+
+
+
+

@@ -163,7 +163,7 @@ EOF
     
 #---------------------------------------------------------------------
 # Create a filesystem on the volume.
-#[root@trop03]
+#[root@virtual]
 
     fsdev=/dev/vdc
 
@@ -200,7 +200,7 @@ EOF
 
 #---------------------------------------------------------------------
 # Create our mount point.
-#[root@trop03]
+#[root@virtual]
 
     fspath=/logs
 
@@ -209,7 +209,7 @@ EOF
 
 #---------------------------------------------------------------------
 # Add the volume to our FileSystemTABle.
-#[root@trop03]
+#[root@virtual]
    
     fsuuid=$(
         lsblk --noheadings --output UUID "${fsdev:?}"
@@ -221,7 +221,7 @@ EOF
 
 #---------------------------------------------------------------------
 # Mount the new volume.
-#[user@trop03]
+#[root@virtual]
 
     mount /logs
 
