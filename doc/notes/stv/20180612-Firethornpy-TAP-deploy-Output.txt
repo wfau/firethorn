@@ -1,0 +1,1215 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Firethorn.py WFAU TAP service setup on trop02
+
+python3
+
+..
+
+
+>> import firethorn
+
+>> ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
+>> ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
+
+>>> ft.firethorn_engine.load_resources("https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/data/wsa-tap.json")
+Importing UKIDSSDR1PLUS
+Importing UKIDSSDR2PLUS
+Importing UKIDSSDR3PLUS
+Importing UKIDSSDR4PLUS
+Importing UKIDSSDR5PLUS
+Importing UKIDSSDR6PLUS
+Importing UKIDSSDR7PLUS
+Importing UKIDSSDR8PLUS
+Importing UKIDSSDR9PLUS
+Importing UKIDSSDR10PLUS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SDSSDR1
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SDSSDR3
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SDSSDR5
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SDSSDR7
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SDSSDR8
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SDSSDR9
+Importing 2MASS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing ROSAT
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing FIRST
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing IRAS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SSA
+Importing GLIMPSE
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing 2XMM
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing MGC
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing Stripe82
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing WISE
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+TAP Service available at: http://gillian:8080/firethorn/tap/54/
+
+--------------------------------------------------------------------------------------------------------------------
+Importing VVVDR1
+Importing VVVDR2
+Importing VVVDR4
+Importing VHSDR1
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing VHSDR2
+Importing VHSDR3
+Importing VMCDR1
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing VMCDR2
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing VMCDR3
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing VMCDR4
+Importing VIKINGDR2
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing VIKINGDR3
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing VIKINGDR4
+Importing VIDEODR2
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing VIDEODR3
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing VIDEODR4
+Importing VIDEODR5
+Importing UKIDSSDR4PLUS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing UKIDSSDR5PLUS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing UKIDSSDR6PLUS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing UKIDSSDR7PLUS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing UKIDSSDR8PLUS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing UKIDSSDR9PLUS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing UKIDSSDR10PLUS
+Importing SDSSDR1
+Importing SDSSDR3
+Importing SDSSDR5
+Importing SDSSDR7
+Importing SDSSDR8
+Importing SDSSDR9
+Importing 2MASS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing ROSAT
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing FIRST
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing IRAS
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SSA
+Importing GLIMPSE
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing 2XMM
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing MGC
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing Stripe82
+Importing WISE
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+TAP Service available at: http://gillian:8080/firethorn/tap/57/
+
+---------------------------------------------------------------------------------------------------
+
+>>> ft.firethorn_engine.load_resources("https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/data/ssa-tap.json")
+Importing SSA
+Importing 2MASS
+Importing 2MPZ
+Importing WISExSCOSPZ
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SDSSDR1
+Importing SDSSDR5
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing SDSSDR7
+Importing SDSSDR8
+Importing SDSSDR9
+Importing 6dF
+TAP Service available at: http://gillian:8080/firethorn/tap/60/
+
+
+----------------------------------------------------------------------------------------------
+
+
+>>> ft.firethorn_engine.load_resources("https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/data/osa-tap.json")
+Importing ATLASDR1
+Importing ATLASDR2
+Importing ATLASDR3
+Importing 2MASS
+Importing 2XMM
+Importing WISE
+Importing VIKINGDR3
+Importing VHSDR1
+Importing MGC
+Importing GLIMPSE
+Importing FIRST
+Importing DENIS
+TAP Service available at: http://gillian:8080/firethorn/tap/63/
+

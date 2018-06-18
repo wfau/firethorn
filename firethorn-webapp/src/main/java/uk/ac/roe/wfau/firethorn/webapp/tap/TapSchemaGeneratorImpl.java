@@ -287,8 +287,27 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
 								+ "\".\"columns\" (\"table_name\", \"column_name\", \"description\", \"unit\", \"ucd\", \"utype\", \"datatype\", \"size\", \"arraysize\", \"principal\", \"indexed\", \"std\", \"ft_column_id\") VALUES (";
 						String columnName = column.name().replace("'", "''");
-						if (columnName.toLowerCase().equals("timestamp") || columnName.toLowerCase().equals("coord2")
-								|| columnName.toLowerCase().equals("coord1")) {
+						if (columnName.toLowerCase().equals("timestamp") 
+                                                                || columnName.toLowerCase().equals("coord2")
+								|| columnName.toLowerCase().equals("coord1") 
+								|| columnName.toLowerCase().equals("size") 
+                                                                || columnName.toLowerCase().equals("min")
+								|| columnName.toLowerCase().equals("min")
+                                                                || columnName.toLowerCase().equals("max")
+								|| columnName.toLowerCase().equals("match")
+								|| columnName.toLowerCase().equals("zone")
+								|| columnName.toLowerCase().equals("time")
+								|| columnName.toLowerCase().equals("distance")
+								|| columnName.toLowerCase().equals("value")
+								|| columnName.toLowerCase().equals("sql")
+								|| columnName.toLowerCase().equals("first")
+								|| columnName.toLowerCase().equals("MATCH")
+								|| columnName.toLowerCase().equals("DATE")
+								|| columnName.toLowerCase().equals("area")
+								|| columnName.toLowerCase().equals("key")
+								|| columnName.toLowerCase().equals("count")
+								|| columnName.toLowerCase().equals("when")
+                                                                || columnName.toLowerCase().equals("date") ) {
 							columnName = '"' + column.name() + '"';
 						}
 						String columnDescription = column.text();
@@ -328,23 +347,23 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 								String arraysize = "*";
 
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE) {
-									votableType = "VARCHAR";
+									votableType = "char";
 									arraysize = "*";
 								}
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME) {
-									votableType = "VARCHAR";
+									votableType = "char";
 									arraysize = "*";
 								}
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME) {
-									votableType = "VARCHAR";
+									votableType = "char";
 									arraysize = "*";
 								} else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) {
-									votableType = "INTEGER";
+									votableType = "int";
 									arraysize = "1";
 								}
 
 								if (votableType != null) {
-									sql += "'" + votableType + "',";
+									sql += "'" + votableType.toLowerCase() + "',";
 								} else {
 									sql += "'',";
 								}
@@ -363,7 +382,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 							}
 						}
 
-						sql += " 0, '',''";
+						sql += " 0, 0,''";
 						sql += ")";
 						stmt.executeUpdate(sql);
 
@@ -453,8 +472,27 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
 								+ "\".columns (\"table_name\", \"column_name\", \"description\", \"unit\", \"ucd\", \"utype\", \"datatype\", \"size\", \"arraysize\", \"principal\", \"indexed\", \"std\", \"ft_column_id\") VALUES (";
 						String columnName = column.name().replace("'", "''");
-						if (columnName.toLowerCase().equals("timestamp") || columnName.toLowerCase().equals("coord2")
-								|| columnName.toLowerCase().equals("coord1")) {
+						if (columnName.toLowerCase().equals("timestamp") 
+                                                                || columnName.toLowerCase().equals("coord2")
+								|| columnName.toLowerCase().equals("coord1") 
+								|| columnName.toLowerCase().equals("size") 
+                                                                || columnName.toLowerCase().equals("min")
+								|| columnName.toLowerCase().equals("min")
+                                                                || columnName.toLowerCase().equals("max")
+								|| columnName.toLowerCase().equals("match")
+								|| columnName.toLowerCase().equals("zone")
+								|| columnName.toLowerCase().equals("time")
+								|| columnName.toLowerCase().equals("distance")
+								|| columnName.toLowerCase().equals("value")
+								|| columnName.toLowerCase().equals("sql")
+								|| columnName.toLowerCase().equals("first")
+								|| columnName.toLowerCase().equals("MATCH")
+								|| columnName.toLowerCase().equals("DATE")
+								|| columnName.toLowerCase().equals("area")
+								|| columnName.toLowerCase().equals("key")
+								|| columnName.toLowerCase().equals("count")
+								|| columnName.toLowerCase().equals("when")
+                                                                || columnName.toLowerCase().equals("date") ) {
 							columnName = '"' + column.name() + '"';
 						}
 						String columnDescription = column.text();
@@ -490,23 +528,28 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 
 							if (meta.adql().type() != null) {
 
-								String votableType = meta.adql().type().name().toString().replace("'", "''");
+								String votableType = meta.adql().type().name().toString().replace("'", "''").toLowerCase();
 								String arraysize = "*";
 
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE) {
-									votableType = "VARCHAR";
+									votableType = "char";
 									arraysize = "*";
 								}
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME) {
-									votableType = "VARCHAR";
+									votableType = "char";
 									arraysize = "*";
 								}
 								if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME) {
-									votableType = "VARCHAR";
+									votableType = "char";
 									arraysize = "*";
-								} else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) {
-									votableType = "INTEGER";
+								} 
+								if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) {
+									votableType = "int";
 									arraysize = "1";
+								}
+								if (column.meta().adql().type() == AdqlColumn.AdqlType.BYTE) {
+									votableType = "unsignedByte";
+									arraysize = "*";
 								}
 
 								if (votableType != null) {
@@ -529,7 +572,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 							}
 						}
 
-						sql += " 0, null, null, ";
+						sql += " 0, 0, 0, ";
 						sql += column.ident().toString();
 						sql += ")";
 						stmt.executeUpdate(sql);

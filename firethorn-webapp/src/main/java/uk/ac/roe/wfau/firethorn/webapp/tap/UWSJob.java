@@ -290,11 +290,11 @@ public class UWSJob {
 	}
 	
 	public String getExecutionDuration(){
-		return Long.toString(this.getQuery().limits().time());
+		return Long.toString(0);
 	}
 	
 	public String getDestructionTime(){
-		return "0";
+		return "";
 	}
 	
 	public void setRequest(String request) throws ProtectionException{
@@ -541,7 +541,7 @@ public class UWSJob {
 	            writer.append("<uws:startTime xsi:nil='true'>" + this.getStartTime() + "</uws:startTime>");
 	            writer.append("<uws:endTime xsi:nil='true'>" + this.getEndTime() + "</uws:endTime>");
 	            writer.append("<uws:executionDuration>" + this.getExecutionDuration() + "</uws:executionDuration>");
-	            writer.append("<uws:destruction>" + this.getDestructionTime() + "</uws:destruction>");
+	            writer.append("<uws:destruction xsi:nil='true'>" + this.getDestructionTime() + "</uws:destruction>");
 	            writer.append("<uws:parameters>");
 			        if (this.getRequest()!=null){
 		            	writer.append("<uws:parameter id='request'>" + this.getRequest() + "</uws:parameter>");
