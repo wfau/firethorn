@@ -1,0 +1,151 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#----------------------------------------------------------------
+# Login to the VM as root.
+#[user@desktop]
+
+    ssh -A root@Gworewia
+
+#----------------------------------------------------------------
+# List the containers.
+#[root@Gworewia]
+
+        docker ps -a
+
+            CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                  PORTS                    NAMES
+            c6687035a4f5        firethorn-py                 "bash"                   6 days ago          Exited (0) 6 days ago                            root_firethorn-py_run_1
+            58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   6 days ago          Up 6 days (healthy)     0.0.0.0:8080->8080/tcp   root_gillian_1
+            abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   6 days ago          Up 6 days               5432/tcp                 root_carolina_1
+            9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   6 days ago          Up 6 days               5432/tcp                 root_bethany_1
+            251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   6 days ago          Up 6 days (healthy)     8080/tcp                 root_jarmila_1
+
+#----------------------------------------------------------------
+# Inspect the firethorn container volumes.
+#[root@Gworewia]
+
+    docker inspect root_gillian_1 | jq '.[].Mounts'
+
+        [
+          {
+            "Type": "bind",
+            "Source": "/etc/localtime",
+            "Destination": "/etc/localtime",
+            "Mode": "ro",
+            "RW": false,
+            "Propagation": ""
+          },
+          {
+            "Type": "bind",
+            "Source": "/root/firethorn.properties",
+            "Destination": "/etc/firethorn.properties",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": ""
+          },
+          {
+            "Type": "volume",
+            "Name": "206907543bcfd661b12b06623641107090546875f7f6ca2d0dbf2a931bc02747",
+            "Source": "/var/lib/docker/volumes/206907543bcfd661b12b06623641107090546875f7f6ca2d0dbf2a931bc02747/_data",
+            "Destination": "/var/local/tomcat/work",
+            "Driver": "local",
+            "Mode": "",
+            "RW": true,
+            "Propagation": ""
+          },
+          {
+            "Type": "volume",
+            "Name": "33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833",
+            "Source": "/var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data",
+            "Destination": "/var/local/tomcat/logs",
+            "Driver": "local",
+            "Mode": "",
+            "RW": true,
+            "Propagation": ""
+          },
+          {
+            "Type": "volume",
+            "Name": "4b0919185534143d4f0e1d25a301aa10230b254335671d61016bf1b0ec315077",
+            "Source": "/var/lib/docker/volumes/4b0919185534143d4f0e1d25a301aa10230b254335671d61016bf1b0ec315077/_data",
+            "Destination": "/var/local/tomcat/temp",
+            "Driver": "local",
+            "Mode": "",
+            "RW": true,
+            "Propagation": ""
+          }
+        ]
+
+#----------------------------------------------------------------
+# Locate the server side of the firethorn logs volume.
+#[root@Gworewia]
+
+    ls -al /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
+
+        -rw-r-----. 1 chrony cgred      5471 Jun 15 15:36 catalina.2018-06-15.log
+        -rw-r-----. 1 chrony cgred 880766938 Jun 22 12:33 firethorn.log
+        -rw-r-----. 1 chrony cgred         0 Jun 15 15:36 host-manager.2018-06-15.log
+        -rw-r-----. 1 chrony cgred     25355 Jun 15 16:06 localhost.2018-06-15.log
+        -rw-r-----. 1 chrony cgred    493554 Jun 16 01:00 localhost_access_log.2018-06-15.txt
+        -rw-r-----. 1 chrony cgred    317918 Jun 17 00:59 localhost_access_log.2018-06-16.txt
+        -rw-r-----. 1 chrony cgred    667815 Jun 18 00:59 localhost_access_log.2018-06-17.txt
+        -rw-r-----. 1 chrony cgred    689594 Jun 19 00:59 localhost_access_log.2018-06-18.txt
+        -rw-r-----. 1 chrony cgred    719014 Jun 20 00:59 localhost_access_log.2018-06-19.txt
+        -rw-r-----. 1 chrony cgred    672991 Jun 21 01:00 localhost_access_log.2018-06-20.txt
+        -rw-r-----. 1 chrony cgred    684433 Jun 22 00:59 localhost_access_log.2018-06-21.txt
+        -rw-r-----. 1 chrony cgred    136294 Jun 22 12:33 localhost_access_log.2018-06-22.txt
+        -rw-r-----. 1 chrony cgred         0 Jun 15 15:36 manager.2018-06-15.log
+
+#----------------------------------------------------------------
+# Check the available space.
+#[root@Gworewia]
+
+    df -h /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        31G   11G   20G  35% /
+
+#----------------------------------------------------------------
+# Copy firethorn log to the side and empty the original.
+#[root@Gworewia]
+
+    pushd /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
+
+        datetime="$(date '+%Y%m%d')"
+
+        cp "firethorn.log" "$(date '+%Y%m%d')-firethorn.log"
+        echo /dev/null > "firethorn.log"
+
+    popd
+
+#----------------------------------------------------------------
+# Move the copy to storage.
+#[user@trop]
+
+    pushd /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
+
+        scp "${datetime:?}-firethorn.log" \
+            "dave@shepseskaf.roe.ac.uk:storage/firethorn"
+
+    .... Transfer completed
+
+        rm "${datetime:?}-firethorn.log"
+
