@@ -1,0 +1,172 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+########## Monday, June 25 - TAP service not responding
+
+Checksite test failed
+Sent:	Monday, June 25, 2018 1:05 AM
+
+Target [http://tap.roe.ac.uk/osa/availability]    
+Result [curl: (22) The requested URL returned error: 502 Proxy Error]
+
+
+
+########### Monday June 25 (Aproximately 10pm)
+
+ssh root@Gworewia
+
+## Check that docker containers are all running [Check]
+[root@Gworewia ~]# docker ps ..
+
+
+
+
+
+## Check that Apache Proxy container is running [Check]
+[root@float01 ~] docker ps
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                NAMES
+a050cbd6960d        firethorn/apache:2.1.3   "/bin/sh -c '/usr/sbi"   6 months ago        Up 6 months         0.0.0.0:80->80/tcp   firepache
+
+
+
+
+## From Apache VM, check if we can curl using the IP in the apache configuration
+
+[root@float01 ~]# docker exec -it firepache bash
+..
+
+root@a050cbd6960d:/# nano /etc/apache2/sites-enabled/000-default.conf
+
+<VirtualHost *:80>
+    ServerName tap.roe.ac.uk
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+
+    ProxyPassMatch ^/osa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/61/$1
+    ProxyPassReverse  ^/osa\/(.*)$  http://192.168.201.15:8080/firethorn/tap/61/$1
+
+....
+
+
+
+
+[root@float01 ~]# curl http://192.168.201.15:8080/firethorn/tap/372565/capabilities
+...
+
+## No Output in Gworewia logs other than the health check ("../system/info") request.. Request not reaching the VM?
+
+
+
+
+## Check the Apache Proxy Logs
+
+[Mon Jun 25 15:50:22.865603 2018] [proxy:error] [pid 1471:tid 139661892593408] [client 145.238.193.76:56633] AH00898: Error reading from remote server returned by /osa/tables
+[Mon Jun 25 15:52:13.960908 2018] [proxy_http:error] [pid 1472:tid 139661926164224] (70007)The timeout specified has expired: [client 129.206.110.245:45884] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 15:52:13.960986 2018] [proxy:error] [pid 1472:tid 139661926164224] [client 129.206.110.245:45884] AH00898: Error reading from remote server returned by /osa/tables
+[Mon Jun 25 16:04:26.688707 2018] [proxy_http:error] [pid 1472:tid 139661934556928] (70007)The timeout specified has expired: [client 178.79.157.93:33252] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 16:04:26.688809 2018] [proxy:error] [pid 1472:tid 139661934556928] [client 178.79.157.93:33252] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 16:04:32.311255 2018] [proxy_http:error] [pid 1471:tid 139661934556928] (70007)The timeout specified has expired: [client 81.187.247.196:35802] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 16:04:32.311337 2018] [proxy:error] [pid 1471:tid 139661934556928] [client 81.187.247.196:35802] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 16:34:33.742850 2018] [proxy_http:error] [pid 1471:tid 139661850629888] (70007)The timeout specified has expired: [client 81.187.247.196:35828] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 16:34:33.742933 2018] [proxy:error] [pid 1471:tid 139661850629888] [client 81.187.247.196:35828] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 17:04:26.409588 2018] [proxy_http:error] [pid 1472:tid 139661833844480] (70007)The timeout specified has expired: [client 178.79.157.93:33256] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 17:04:26.409648 2018] [proxy:error] [pid 1472:tid 139661833844480] [client 178.79.157.93:33256] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 17:04:33.035691 2018] [proxy_http:error] [pid 1471:tid 139661875808000] (70007)The timeout specified has expired: [client 81.187.247.196:35854] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 17:04:33.035752 2018] [proxy:error] [pid 1471:tid 139661875808000] [client 81.187.247.196:35854] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 17:31:39.216909 2018] [proxy_http:error] [pid 1472:tid 139661842237184] (70007)The timeout specified has expired: [client 133.40.215.124:37371] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 17:31:39.216990 2018] [proxy:error] [pid 1472:tid 139661842237184] [client 133.40.215.124:37371] AH00898: Error reading from remote server returned by /osa/sync
+[Mon Jun 25 17:34:32.715585 2018] [proxy_http:error] [pid 1472:tid 139661951342336] (70007)The timeout specified has expired: [client 81.187.247.196:35880] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 17:34:32.715659 2018] [proxy:error] [pid 1472:tid 139661951342336] [client 81.187.247.196:35880] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 17:36:39.840490 2018] [proxy_http:error] [pid 1471:tid 139661959735040] (70007)The timeout specified has expired: [client 133.40.215.124:37999] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 17:36:39.840570 2018] [proxy:error] [pid 1471:tid 139661959735040] [client 133.40.215.124:37999] AH00898: Error reading from remote server returned by /osa/async
+[Mon Jun 25 17:41:40.471882 2018] [proxy_http:error] [pid 1472:tid 139661909378816] (70007)The timeout specified has expired: [client 133.40.215.124:38627] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 17:41:40.471961 2018] [proxy:error] [pid 1472:tid 139661909378816] [client 133.40.215.124:38627] AH00898: Error reading from remote server returned by /osa/tables
+[Mon Jun 25 17:46:41.066212 2018] [proxy_http:error] [pid 1471:tid 139661984913152] (70007)The timeout specified has expired: [client 133.40.215.124:39255] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 17:46:41.066290 2018] [proxy:error] [pid 1471:tid 139661984913152] [client 133.40.215.124:39255] AH00898: Error reading from remote server returned by /osa/tables
+[Mon Jun 25 17:51:41.669333 2018] [proxy_http:error] [pid 1472:tid 139661800273664] (70007)The timeout specified has expired: [client 133.40.215.124:39878] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 17:51:41.669417 2018] [proxy:error] [pid 1472:tid 139661800273664] [client 133.40.215.124:39878] AH00898: Error reading from remote server returned by /osa/tables
+[Mon Jun 25 17:56:42.199676 2018] [proxy_http:error] [pid 1471:tid 139662001698560] (70007)The timeout specified has expired: [client 133.40.215.124:40504] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 17:56:42.199754 2018] [proxy:error] [pid 1471:tid 139662001698560] [client 133.40.215.124:40504] AH00898: Error reading from remote server returned by /osa/tables
+[Mon Jun 25 18:04:26.242007 2018] [proxy_http:error] [pid 1472:tid 139661976520448] (70007)The timeout specified has expired: [client 178.79.157.93:33260] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 18:04:26.242120 2018] [proxy:error] [pid 1472:tid 139661976520448] [client 178.79.157.93:33260] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 18:04:33.972281 2018] [proxy_http:error] [pid 1472:tid 139661942949632] (70007)The timeout specified has expired: [client 81.187.247.196:35906] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 18:04:33.972358 2018] [proxy:error] [pid 1472:tid 139661942949632] [client 81.187.247.196:35906] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 18:34:41.412000 2018] [proxy_http:error] [pid 1471:tid 139661892593408] (70007)The timeout specified has expired: [client 81.187.247.196:35938] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 18:34:41.412061 2018] [proxy:error] [pid 1471:tid 139661892593408] [client 81.187.247.196:35938] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 19:04:25.913229 2018] [proxy_http:error] [pid 1472:tid 139661917771520] (70007)The timeout specified has expired: [client 178.79.157.93:33272] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 19:04:25.913307 2018] [proxy:error] [pid 1472:tid 139661917771520] [client 178.79.157.93:33272] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 19:04:32.928347 2018] [proxy_http:error] [pid 1471:tid 139661934556928] (70007)The timeout specified has expired: [client 81.187.247.196:35964] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 19:04:32.928422 2018] [proxy:error] [pid 1471:tid 139661934556928] [client 81.187.247.196:35964] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 19:34:33.489535 2018] [proxy_http:error] [pid 1471:tid 139661800273664] (70007)The timeout specified has expired: [client 81.187.247.196:35990] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 19:34:33.489609 2018] [proxy:error] [pid 1471:tid 139661800273664] [client 81.187.247.196:35990] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 19:53:47.645903 2018] [proxy_http:error] [pid 1471:tid 139661909378816] (70007)The timeout specified has expired: [client 195.194.121.66:51894] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Mon Jun 25 19:53:47.645978 2018] [proxy:error] [pid 1471:tid 139661909378816] [client 195.194.121.66:51894] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Jun 25 19:58:13.472519 2018] [proxy_http:error] [pid 1471:tid 139661842237184] (104)Connection reset by peer: [client 195.194.121.66:51894] AH01102: error reading status line from remote server 192.168.201.15:8080, referer: http://tap.roe.ac.uk/osa/availability
+[Mon Jun 25 19:58:14.923229 2018] [proxy:error] [pid 1472:tid 139661875808000] (113)No route to host: AH00957: HTTP: attempt to connect to 192.168.201.15:8080 (192.168.201.15) failed
+[Mon Jun 25 19:58:14.923308 2018] [proxy:error] [pid 1472:tid 139661875808000] AH00959: ap_proxy_connect_backend disabling worker for (192.168.201.15) for 60s
+[Mon Jun 25 19:58:14.923320 2018] [proxy_http:error] [pid 1472:tid 139661875808000] [client 195.194.121.66:52144] AH01114: HTTP: failed to make connection to backend: 192.168.201.15, referer: http://tap.roe.ac.uk/osa/availability
+[Mon Jun 25 19:58:54.478012 2018] [proxy:error] [pid 1472:tid 139661909378816] AH00940: HTTP: disabled connection for (192.168.201.15)
+[Mon Jun 25 19:59:02.588064 2018] [proxy:error] [pid 1472:tid 139661800273664] AH00940: HTTP: disabled connection for (192.168.201.15)
+[Mon Jun 25 19:59:04.139767 2018] [proxy:error] [pid 1472:tid 139661867415296] AH00940: HTTP: disabled connection for (192.168.201.15)
+
+
+
+
+
+
+## Try restarting`using docker-compose
+
+[root@Gworewia ~]# docker-compose restart root_gillian_1
+ERROR: 
+        Can't find a suitable configuration file in this directory or any
+        parent. Are you in the right directory?
+
+        Supported filenames: docker-compose.yml, docker-compose.yaml
+
+??
+
+
+
+
+## Try restarting using docker stop
+
+[root@Gworewia ~]# docker stop root_gillian_1 
+[root@Gworewia ~]# docker start root_gillian_1 
+
+
+
+
+
+## Check availability
+stelios@stelios-pc:~$ curl http://tap.roe.ac.uk/osa/availability
+<?xml version="1.0" encoding="UTF-8"?><vosi:availability xmlns:vosi="http://www.ivoa.net/xml/VOSIAvailability/v1.0"><vosi:available>true</vosi:available><vosi:note>service is accepting queries</vosi:note></vosi:availability>
+
+
+## TAP Service seems to be working fine again..
+
