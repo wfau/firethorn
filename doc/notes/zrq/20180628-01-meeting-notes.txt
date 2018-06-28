@@ -1,0 +1,118 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Thursday 9:00
+
+    SSDC
+    SpaceScienceDataCenter
+    http://www.g-vo.org/edp-forum-2018/slides/Giardino_ssdc.pdf
+
+    Italian space agency
+
+    Interactive data plots, inc sed
+    
+    15 catalogs in TAP services
+
+    Short of resources to injest more data
+    
+    SAMP intergration (export selected data to TopCat)
+
+    GaiaPortal
+    
+        MySQL database
+        
+        Geom based on MySQL_SPHERE
+        https://github.com/aipescience/mysql_sphere
+        https://github.com/aipescience/queryparser
+        
+        dynamic index based on HTM and HEALPix
+
+        Sharded data (strips)
+        
+
+    EPN-TAP service
+    
+        DACHS
+
+
+Thursday 9:20
+
+    IA2 Italian center for Astronomical Archives
+    http://www.g-vo.org/edp-forum-2018/slides/NFC_EDPF_T_2018_Heidelberg.pdf
+
+    NADIR - CORBA framework
+
+**
+    RAP - Remote Authentication Portal
+    Multiple login methobds to one identity
+**
+
+
+Thursday 9:40
+
+    LOFAR intro 
+
+Thursday 10:10
+
+    LOFAR adaptive 
+
+    http://www.g-vo.org/edp-forum-2018/slides/Iacobelli_ADP_ASTERICS_DADI.pdf
+
+    Good intor into 
+
+
+Thursday 11:00
+
+    Volodymyr Savchenko (University of Geneva)
+    CDCI (Common Data Center Infrastructure) Online Analysis System
+    
+    Based on Drupal :-)
+    
+    Declarative data analaysis
+    pipeline of side effect free analysis nodes
+    data processed into a new product
+    full provenance reorded
+
+Thursday 11:40
+
+    EUCLID - nothing VO related
+
+Thursday 12:00
+
+    ARTEMIX - Alma RemoTE MIning eXperiment
+    http://www.g-vo.org/edp-forum-2018/slides/Asterics_Juin2018_Artemix.pdf
+
+    http://zeromq.org/
+
+Thursday 12:20
+
+    Peter Hague
+    Script Tracking for Observational Astronomy
+    http://www.g-vo.org/edp-forum-2018/slides/Hague-STOA.pdf
+
+    https://github.com/petehague/BASC
+    https://github.com/petehague/STOA
+
+
+    https://github.com/common-workflow-language/common-workflow-language
+
+

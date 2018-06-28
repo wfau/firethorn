@@ -1,0 +1,411 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#----------------------------------------------------------------
+# Login to the VM as root.
+#[user@desktop]
+
+    ssh -A root@Gworewia
+
+#----------------------------------------------------------------
+# List the containers.
+#[root@Gworewia]
+
+        docker ps -a
+
+            CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                   PORTS                    NAMES
+            c6687035a4f5        firethorn-py                 "bash"                   12 days ago         Exited (0) 12 days ago                            root_firethorn-py_run_1
+            58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   12 days ago         Up 2 days (healthy)      0.0.0.0:8080->8080/tcp   root_gillian_1
+            abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   12 days ago         Up 12 days               5432/tcp                 root_carolina_1
+            9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   12 days ago         Up 12 days               5432/tcp                 root_bethany_1
+            251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   12 days ago         Up 12 days (healthy)     8080/tcp                 root_jarmila_1
+
+
+#----------------------------------------------------------------
+# Inspect the firethorn container volumes.
+#[root@Gworewia]
+
+    docker inspect root_gillian_1 | jq '.[].Mounts'
+
+        [
+          {
+            "Type": "bind",
+            "Source": "/etc/localtime",
+            "Destination": "/etc/localtime",
+            "Mode": "ro",
+            "RW": false,
+            "Propagation": ""
+          },
+          {
+            "Type": "bind",
+            "Source": "/root/firethorn.properties",
+            "Destination": "/etc/firethorn.properties",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": ""
+          },
+          {
+            "Type": "volume",
+            "Name": "206907543bcfd661b12b06623641107090546875f7f6ca2d0dbf2a931bc02747",
+            "Source": "/var/lib/docker/volumes/206907543bcfd661b12b06623641107090546875f7f6ca2d0dbf2a931bc02747/_data",
+            "Destination": "/var/local/tomcat/work",
+            "Driver": "local",
+            "Mode": "",
+            "RW": true,
+            "Propagation": ""
+          },
+          {
+            "Type": "volume",
+            "Name": "33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833",
+            "Source": "/var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data",
+            "Destination": "/var/local/tomcat/logs",
+            "Driver": "local",
+            "Mode": "",
+            "RW": true,
+            "Propagation": ""
+          },
+          {
+            "Type": "volume",
+            "Name": "4b0919185534143d4f0e1d25a301aa10230b254335671d61016bf1b0ec315077",
+            "Source": "/var/lib/docker/volumes/4b0919185534143d4f0e1d25a301aa10230b254335671d61016bf1b0ec315077/_data",
+            "Destination": "/var/local/tomcat/temp",
+            "Driver": "local",
+            "Mode": "",
+            "RW": true,
+            "Propagation": ""
+          }
+        ]
+
+
+#----------------------------------------------------------------
+# Locate the server side of the firethorn logs volume.
+#[root@Gworewia]
+
+    ls -al /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
+
+        drwxr-xr-x. 1 chrony cgred       1390 Jun 28 01:00 .
+        drwxr-xr-x. 1 root   root          10 Jun 15 15:36 ..
+        -rw-r-----. 1 chrony cgred       5471 Jun 15 15:36 catalina.2018-06-15.log
+        -rw-r-----. 1 chrony cgred     206100 Jun 25 20:58 catalina.2018-06-25.log
+        -rw-r-----. 1 chrony cgred 2675365036 Jun 28 10:36 firethorn.log
+        -rw-r-----. 1 chrony cgred          0 Jun 15 15:36 host-manager.2018-06-15.log
+        -rw-r-----. 1 chrony cgred          0 Jun 25 20:58 host-manager.2018-06-25.log
+
+#----------------------------------------------------------------
+# Check the available space.
+#[root@Gworewia]
+
+    df -h /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        31G   13G   17G  43% /
+
+
+#----------------------------------------------------------------
+# Copy firethorn log to the side and empty the original.
+#[root@Gworewia]
+
+    pushd /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
+
+        datetime="$(date '+%Y%m%d')"
+
+# **
+# Can we do this using BTRFS snapshots ?
+# **
+
+        cp "firethorn.log" "${datetime}-firethorn.log"
+
+        echo /dev/null > "firethorn.log"
+
+        gzip "${datetime}-firethorn.log"
+
+    popd
+
+#----------------------------------------------------------------
+# Move the copy to storage.
+#[user@trop]
+
+    pushd /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
+
+        scp "${datetime:?}-firethorn.log.gz" \
+            "dave@shepseskaf.roe.ac.uk:storage/firethorn"
+
+    .... Transfer completed
+
+        rm "${datetime:?}-firethorn.log.gz"
+
+#----------------------------------------------------------------
+# Tail the live log.
+#[user@trop]
+
+    pushd /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
+
+        tail -f firethorn.log
+
+
+Rapid polling (< 1sec) by TopCat/STILTS
+
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug] preHandle() 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug] ---- 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug] Servlet 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   scheme      [http] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   serverName  [tap.roe.ac.uk] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   serverPort  [80] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   serverPath  [/tap/58/async/1601719] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   pathInfo    [null] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   pathTrans   [null] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   requestURI  [//firethorn/tap/58/async/1601719] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/58/async/1601719] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   protocol    [HTTP/1.1] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   queryString [null] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   authType    [null] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   remoteAddr  [192.168.201.13] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   remoteHost  [192.168.201.13] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug] ---- 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug] Headers 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   [host][tap.roe.ac.uk] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   [user-agent][STILTS/3.0-9+ Jav...] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   [accept][text/html, image/...] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   [x-forwarded-for][145.238.193.18] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   [x-forwarded-host][tap.roe.ac.uk] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   [x-forwarded-server][tap.roe.ac.uk] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug]   [connection][Keep-Alive] 
+        2018-06-28 09:52:48,526 DEBUG [main-interface-19] [HttpRequestDebug] ---- 
+
+        ....
+        ....
+        
+        2018-06-28 09:52:49,105 DEBUG [main-interface-17] [HttpRequestDebug] preHandle() 
+        2018-06-28 09:52:49,105 DEBUG [main-interface-17] [HttpRequestDebug] ---- 
+        2018-06-28 09:52:49,105 DEBUG [main-interface-17] [HttpRequestDebug] Servlet 
+        2018-06-28 09:52:49,106 DEBUG [main-interface-17] [HttpRequestDebug]   scheme      [http] 
+        2018-06-28 09:52:49,106 DEBUG [main-interface-17] [HttpRequestDebug]   serverName  [tap.roe.ac.uk] 
+        2018-06-28 09:52:49,106 DEBUG [main-interface-17] [HttpRequestDebug]   serverPort  [80] 
+        2018-06-28 09:52:49,106 DEBUG [main-interface-17] [HttpRequestDebug]   serverPath  [/tap/58/async/1601719] 
+        2018-06-28 09:52:49,106 DEBUG [main-interface-17] [HttpRequestDebug]   pathInfo    [null] 
+        2018-06-28 09:52:49,106 DEBUG [main-interface-17] [HttpRequestDebug]   pathTrans   [null] 
+        2018-06-28 09:52:49,106 DEBUG [main-interface-17] [HttpRequestDebug]   requestURI  [//firethorn/tap/58/async/1601719] 
+        2018-06-28 09:52:49,107 DEBUG [main-interface-17] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk//firethorn/tap/58/async/1601719] 
+        2018-06-28 09:52:49,107 DEBUG [main-interface-17] [HttpRequestDebug]   protocol    [HTTP/1.1] 
+        2018-06-28 09:52:49,107 DEBUG [main-interface-17] [HttpRequestDebug]   queryString [null] 
+        2018-06-28 09:52:49,107 DEBUG [main-interface-17] [HttpRequestDebug]   authType    [null] 
+        2018-06-28 09:52:49,107 DEBUG [main-interface-17] [HttpRequestDebug]   remoteAddr  [192.168.201.13] 
+        2018-06-28 09:52:49,107 DEBUG [main-interface-17] [HttpRequestDebug]   remoteHost  [192.168.201.13] 
+        2018-06-28 09:52:49,107 DEBUG [main-interface-17] [HttpRequestDebug] ---- 
+        2018-06-28 09:52:49,107 DEBUG [main-interface-17] [HttpRequestDebug] Headers 
+        2018-06-28 09:52:49,108 DEBUG [main-interface-17] [HttpRequestDebug]   [host][tap.roe.ac.uk] 
+        2018-06-28 09:52:49,108 DEBUG [main-interface-17] [HttpRequestDebug]   [user-agent][STILTS/3.0-9+ Jav...] 
+        2018-06-28 09:52:49,108 DEBUG [main-interface-17] [HttpRequestDebug]   [accept][text/html, image/...] 
+        2018-06-28 09:52:49,108 DEBUG [main-interface-17] [HttpRequestDebug]   [x-forwarded-for][145.238.193.18] 
+        2018-06-28 09:52:49,108 DEBUG [main-interface-17] [HttpRequestDebug]   [x-forwarded-host][tap.roe.ac.uk] 
+        2018-06-28 09:52:49,108 DEBUG [main-interface-17] [HttpRequestDebug]   [x-forwarded-server][tap.roe.ac.uk] 
+        2018-06-28 09:52:49,108 DEBUG [main-interface-17] [HttpRequestDebug]   [connection][Keep-Alive] 
+        2018-06-28 09:52:49,109 DEBUG [main-interface-17] [HttpRequestDebug] ---- 
+
+
+    #
+    # Check the job status
+    http://tap.roe.ac.uk//firethorn/tap/58/async/1601719
+    
+    #
+    # Namespace problem in FireFox
+    XML Parsing Error: prefix not bound to a namespace
+    Location: http://tap.roe.ac.uk//firethorn/tap/58/async/1601719
+    Line Number 1, Column 1116:
+    
+    #
+    # Curl and xmllint
+    curl -s http://tap.roe.ac.uk//firethorn/tap/58/async/1601719 | xmllint --format -
+
+        -:1: namespace error : Namespace prefix xlink for href on result is not defined
+        'result'  xlink:href='http://tap.roe.ac.uk/firethorn/adql/table/1600599/votable'
+                                                                                       ^
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uws:job xmlns:uws="http://www.ivoa.net/xml/UWS/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd">
+          <uws:jobId>1601719</uws:jobId>
+          <uws:ownerId xsi:nil="true">null</uws:ownerId>
+          <uws:phase>EXECUTING</uws:phase>
+          <uws:startTime xsi:nil="true">2018-06-27T03:50:17.952Z</uws:startTime>
+          <uws:endTime xsi:nil="true">2018-06-27T03:50:17.973Z</uws:endTime>
+          <uws:executionDuration>0</uws:executionDuration>
+          <uws:destruction xsi:nil="true"/>
+          <uws:parameters>
+            <uws:parameter id="request">doQuery</uws:parameter>
+            <uws:parameter id="lang">ADQL</uws:parameter>
+            <uws:parameter id="query">SELECT TOP 8 loadVersion, targetID AS taplint_c_2, B.collisionGroupID, tiMask AS taplint_c_4, tiPriority, B.tile AS taplint_c_6, tid, tileRun AS taplint_c_8  FROM BestDR7.TilingInfo AS B</uws:parameter>
+            <uws:parameter id="format">None</uws:parameter>
+            <uws:parameter id="maxrec">None</uws:parameter>
+            <uws:parameter id="jobstatus">None</uws:parameter>
+          </uws:parameters>
+          <uws:results>
+            <uws:result id="result" xlink:href="http://tap.roe.ac.uk/firethorn/adql/table/1600599/votable"/>
+          </uws:results>
+        </uws:job>
+
+    #
+    # Start time
+    <uws:startTime xsi:nil="true">2018-06-27T03:50:17.952Z</uws:startTime>
+
+    #
+    # TAP says it is still executing ....
+    <uws:phase>EXECUTING</uws:phase>
+
+    #
+    # Use the results table to find the original job
+    curl -s http://tap.roe.ac.uk/firethorn/adql/table/1600599 | jq '.'
+
+        {
+          "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+          "metadata": {
+            "adql": {
+              "count": 8,
+              "status": "COMPLETED"
+            }
+          },
+          "formats": {
+            "votable": "http://tap.roe.ac.uk/firethorn/adql/table/1600599/votable",
+            "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/1600599/datatable"
+          },
+          "query": "http://tap.roe.ac.uk/firethorn/blue/query/1601719",
+          "base": "http://tap.roe.ac.uk/firethorn/jdbc/table/1600598",
+          "depth": "PARTIAL",
+          "fullname": "temp.XX_ZUEIHHIAEVETYAAAAFSD6XIFDY",
+          "schema": "http://tap.roe.ac.uk/firethorn/adql/schema/1596800",
+          "columns": "http://tap.roe.ac.uk/firethorn/adql/table/1600599/columns/select",
+          "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/1596750",
+          "parent": "http://tap.roe.ac.uk/firethorn/adql/schema/1596800",
+          "root": "http://tap.roe.ac.uk/firethorn/jdbc/table/1600598",
+          "text": null,
+          "name": "XX_ZUEIHHIAEVETYAAAAFSD6XIFDY",
+          "url": "http://tap.roe.ac.uk/firethorn/adql/table/1600599",
+          "self": "http://tap.roe.ac.uk/firethorn/adql/table/1600599",
+          "created": "2018-06-27T03:50:18.142",
+          "ident": "1600599",
+          "modified": "2018-06-27T03:50:18.142",
+          "owner": "http://tap.roe.ac.uk/firethorn/community-member/1601889"
+        }
+
+
+    #
+    # Check the original job
+    curl -s http://tap.roe.ac.uk/firethorn/blue/query/1601719 | jq '.'
+
+        {
+          "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+          "results": {
+            "count": 8,
+            "formats": {
+              "votable": "http://tap.roe.ac.uk/firethorn/adql/table/1600599/votable",
+              "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/1600599/datatable"
+            },
+            "state": "COMPLETED",
+            "table": "http://tap.roe.ac.uk/firethorn/adql/table/1600599"
+          },
+          "tables": [],
+          "callback": "http://tap.roe.ac.uk:8081/firethorn/callback/1601719",
+          "mode": "DIRECT",
+          "adql": "SELECT TOP 8 loadVersion , targetID AS taplint_c_2 , B.collisionGroupID , tiMask AS taplint_c_4 , tiPriority , B.tile AS taplint_c_6 , tid , tileRun AS taplint_c_8\nFROM BestDR7.TilingInfo AS B",
+          "history": [
+            {
+              "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+              "task": "http://tap.roe.ac.uk/firethorn/blue/query/1601719",
+              "level": "INFO",
+              "message": null,
+              "state": "COMPLETED",
+              "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/1602003",
+              "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/1602003",
+              "created": "2018-06-27T03:50:18.389",
+              "ident": "1602003",
+              "modified": "2018-06-27T03:50:18.390",
+              "owner": "http://tap.roe.ac.uk/firethorn/community-member/1601890"
+            },
+            {
+              "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+              "task": "http://tap.roe.ac.uk/firethorn/blue/query/1601719",
+              "level": "INFO",
+              "message": "Executing query",
+              "state": "READY",
+              "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/1602002",
+              "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/1602002",
+              "created": "2018-06-27T03:50:18.130",
+              "ident": "1602002",
+              "modified": "2018-06-27T03:50:18.131",
+              "owner": "http://tap.roe.ac.uk/firethorn/community-member/1601889"
+            }
+          ],
+          "delays": {
+            "every": null,
+            "last": null,
+            "first": null
+          },
+          "limits": {
+            "rows": 1000000,
+            "cells": null,
+            "time": null
+          },
+          "syntax": {
+            "friendly": null,
+            "status": "VALID",
+            "message": null
+          },
+          "osql": "SELECT TOP 8 B.[loadVersion] AS [loadVersion] , B.[targetID] AS taplint_c_2 , B.[collisionGroupID] AS [collisionGroupID] , B.[tiMask] AS taplint_c_4 , B.[tiPriority] AS [tiPriority] , B.[tile] AS taplint_c_6 , B.[tid] AS [tid] , B.[tileRun] AS taplint_c_8\nFROM [BestDR7].[dbo].[TilingInfo] AS B",
+          "workspace": "http://tap.roe.ac.uk/firethorn/adql/resource/58",
+          "input": "SELECT TOP 8 loadVersion, targetID AS taplint_c_2, B.collisionGroupID, tiMask AS taplint_c_4, tiPriority, B.tile AS taplint_c_6, tid, tileRun AS taplint_c_8  FROM BestDR7.TilingInfo AS B",
+          "columns": [],
+          "status": "RUNNING",
+          "fields": [],
+          "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/58",
+          "resources": [
+            "http://tap.roe.ac.uk/firethorn/jdbc/resource/57"
+          ],
+          "text": null,
+          "name": "XX_SCFZB3NRGAGB2AAAAFSD6XIEMA",
+          "url": "http://tap.roe.ac.uk/firethorn/blue/query/1601719",
+          "self": "http://tap.roe.ac.uk/firethorn/blue/query/1601719",
+          "created": "2018-06-27T03:50:17.952",
+          "ident": "1601719",
+          "modified": "2018-06-27T03:50:17.973",
+          "owner": "http://tap.roe.ac.uk/firethorn/community-member/1601888"
+        }
+
+
+    #
+    # Looks like we are hitting the race bug.
+    
+        "status": "RUNNING",
+
+        "history": [
+            {
+            "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+            "task": "http://tap.roe.ac.uk/firethorn/blue/query/1601719",
+            "level": "INFO",
+            "message": null,
+            "state": "COMPLETED",
+            ....
+            ....
+            }
+
+
+    #
+    # GUI admin pages that allow us to change status ?
+
+

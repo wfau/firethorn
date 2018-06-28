@@ -131,8 +131,10 @@
 
         datetime="$(date '+%Y%m%d')"
 
-        cp "firethorn.log" "$(date '+%Y%m%d')-firethorn.log"
+        cp "firethorn.log" "${datetime}-firethorn.log"
         echo /dev/null > "firethorn.log"
+
+        gzip "${datetime}-firethorn.log"
 
     popd
 
@@ -142,7 +144,7 @@
 
     pushd /var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data
 
-        scp "${datetime:?}-firethorn.log" \
+        scp "${datetime:?}-firethorn.log.gz" \
             "dave@shepseskaf.roe.ac.uk:storage/firethorn"
 
     .... Transfer completed
