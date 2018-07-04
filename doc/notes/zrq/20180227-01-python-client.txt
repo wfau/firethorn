@@ -65,3 +65,5 @@
 
 
     https://blogs.msdn.microsoft.com/martijnh/2010/07/15/sql-serverhow-to-quickly-retrieve-accurate-row-count-for-table/
+    
+    
