@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.23
+FROM firethorn/ubuntu:2.1.23-zrq-update-depends
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
