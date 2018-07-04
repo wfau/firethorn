@@ -1,0 +1,158 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+ssh Stevedore@Ulov
+
+docker exec -it stevedore_firethorn-py_run_2 bash
+
+python3
+
+..
+
+import firethorn
+
+ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
+ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
+
+ft.firethorn_engine.load_resources("https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/data/osa-tap.json")
+Importing ATLASDR1 (SUCCESS)
+Importing ATLASDR2 (SUCCESS)
+Importing ATLASDR3 (SUCCESS)
+Importing 2MASS (SUCCESS)
+Importing 2XMM (SUCCESS)
+Importing WISE (SUCCESS)
+Importing VIKINGDR3 (SUCCESS)
+Importing VHSDR1 (SUCCESS)
+Importing MGC (SUCCESS)
+Importing GLIMPSE (SUCCESS)
+Importing FIRST (SUCCESS)
+Importing DENIS (SUCCESS)
+TAP Service available at: http://gillian:8080/firethorn/tap/534583/
+
+
+
+>>> ft.firethorn_engine.load_resources("https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/data/ssa-tap.json")
+Importing SSA (SUCCESS)
+Importing 2MASS (SUCCESS)
+Importing 2MPZ (SUCCESS)
+Importing WISExSCOSPZ (FAILED / Missing Metadoc which is not available anywhere)
+Importing SDSSDR1 (SUCCESS)
+Importing SDSSDR5 (SUCCESS)
+Importing SDSSDR7 (SUCCESS)
+Importing SDSSDR8 (SUCCESS)
+Importing SDSSDR9 (SUCCESS)
+Importing 6dF (SUCCESS)
+TAP Service available at: http://gillian:8080/firethorn/tap/783260/
+
+
+## Create WSA TAP service
+
+>>> ft.firethorn_engine.load_resources("https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/data/wsa-tap.json")
+Importing UKIDSSDR1PLUS (SUCCESS)
+Importing UKIDSSDR2PLUS (SUCCESS)
+Importing UKIDSSDR3PLUS (SUCCESS)
+Importing UKIDSSDR4PLUS (SUCCESS)
+Importing UKIDSSDR5PLUS (SUCCESS)
+Importing UKIDSSDR6PLUS (SUCCESS)
+Importing UKIDSSDR7PLUS (SUCCESS)
+Importing UKIDSSDR8PLUS (SUCCESS)
+Importing UKIDSSDR9PLUS (SUCCESS)
+Importing UKIDSSDR10PLUS (SUCCESS)
+Importing SDSSDR1 (SUCCESS)
+Importing SDSSDR3 (SUCCESS)
+Importing SDSSDR5 (SUCCESS)
+Importing SDSSDR7 (SUCCESS)
+Importing SDSSDR8 (SUCCESS)
+Importing SDSSDR9 (SUCCESS)
+Importing 2MASS (SUCCESS)
+Importing ROSAT (SUCCESS)
+Importing FIRST (SUCCESS)
+Importing IRAS (SUCCESS)
+Importing SSA (SUCCESS)
+Importing GLIMPSE (SUCCESS)
+Importing 2XMM (SUCCESS)
+Importing MGC (SUCCESS)
+Importing Stripe82 (SUCCESS)
+Importing WISE (SUCCESS)
+TAP Service available at: http://gillian:8080/firethorn/tap/783266/
+
+
+
+## Create VSA TAP service
+
+>>> ft.firethorn_engine.load_resources("https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/data/vsa-tap.json")
+Importing VVVDR1
+Importing VVVDR2
+Importing VVVDR4
+Importing VHSDR1
+Importing VHSDR2
+Importing VHSDR3
+Importing VMCDR1
+Importing VMCDR2
+Importing VMCDR3
+Importing VMCDR4
+Importing VIKINGDR2
+Importing VIKINGDR3
+Importing VIKINGDR4
+Importing VIDEODR2
+Importing VIDEODR3
+Importing VIDEODR4
+Importing VIDEODR5
+Importing UKIDSSDR4PLUS
+Importing UKIDSSDR5PLUS
+Importing UKIDSSDR6PLUS
+Importing UKIDSSDR7PLUS
+Importing UKIDSSDR8PLUS
+Importing UKIDSSDR9PLUS
+Importing UKIDSSDR10PLUS
+Importing SDSSDR1
+Importing SDSSDR3
+Importing SDSSDR5
+Importing SDSSDR7
+Importing SDSSDR8
+Importing SDSSDR9
+Importing 2MASS
+Importing ROSAT
+Importing FIRST
+Importing IRAS
+Importing SSA
+Importing GLIMPSE
+Importing 2XMM
+Importing MGC
+Importing Stripe82
+Importing WISE
+TAP Service available at: http://gillian:8080/firethorn/tap/783269/
+
+
+
+#################################################################
+##################### WFAU TAP Service URLs ##################### 
+#################################################################
+
+OSA: http://tap.metagrid.xyz/firethorn/tap/534583
+SSA: http://tap.metagrid.xyz/firethorn/tap/783260
+WSA: http://tap.metagrid.xyz/firethorn/tap/783266
+VSA: http://tap.metagrid.xyz/firethorn/tap/783269
+
+
+
+
