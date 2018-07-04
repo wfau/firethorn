@@ -1,0 +1,143 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Tidy up Mercurial branches ..
+
+
+    # 2.1.20-2.1.20-zrq-metadoc-parser
+    # no changes, open/close
+    # closed
+
+    # 2.1.21-zrq-metadoc-parser 
+    # MetaDocReader, skip column not found
+    # merged into default
+    # closed
+
+    # 2.1.19-zrq-metadoc-parser
+    # ** Not merged **
+    # Multiple debug -> trace
+    # JdbcResourceEntity skip error code 916 (access denied)
+    # SQLServerScanner reset on fatal error codes 0 amd 22
+    # MetaDocReader, skip column not found (2.1.21-zrq-metadoc-parser)
+    # XMLParser, XMLParserImpl, add skip (not in 2.1.21-zrq-metadoc-parser ??)
+    # merged into default
+    # closed
+
+
+# -----------------------------------------------------
+# Create a local copy to compare.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_BASE:?}"
+
+        cp -r default orphan
+
+    popd
+    
+# -----------------------------------------------------
+# Compare changes.
+#[user@desktop]
+
+    devbranch=2.1.19-zrq-metadoc-parser
+    devbranch=2.1.10-zrq-concurrent-bug
+    devbranch=2.1.16-zrq-race-bug
+    devbranch=2.1.10-zrq-concurrent-bug
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_BASE:?}"
+
+        pushd orphan
+
+            hg update "${devbranch:?}"
+
+        popd
+
+        meld default orphan &
+
+    popd
+
+# -----------------------------------------------------
+# Close unused branches.
+#[user@desktop]
+
+    devbranch=2.1.20-2.1.20-zrq-metadoc-parser
+    devbranch=2.1.21-zrq-metadoc-parser
+    devbranch=2.1.19-zrq-metadoc-parser
+    devbranch=2.1.16-zrq-race-bug
+    devbranch=2.1.10-zrq-concurrent-bug
+    devbranch=2.1.4-zrq-triggers
+    devbranch=1.11.34-zrq-apache-config
+
+    devbranch=2.1.14-zrq-python-notes
+
+    devbranch=1.11.23-query-owner
+
+    devbranch=1.11.28-release
+    devbranch=1.11.13-release
+
+
+#
+# Not closed on website
+1.11.17-zrq-dqp-switch
+1.11.15-zrq-sync-bug
+1.11.14-zrq-webapp-meta
+1.11.13-zrq-jdbc-meta
+1.11.12-zrq-jdbc-meta
+1.11.11-zrq-char-debug
+1.11.10-zrq-docker-test
+1.11.9-zrq-ogsa-meta
+1.11.8-zrq-ogsa-meta
+1.11.5-zrq-gaia-tap
+1.11.4-zrq-tableset
+1.11.3-zrq-community
+1.11.2-zrq-merge-test
+1.10.5-zrq-interfaces
+1.9.8-zrq-ogsadai-dqp
+1.9.6-zrq-community
+
+
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_BASE:?}"
+
+        pushd orphan
+
+            hg update "${devbranch:?}"
+            hg branch
+
+            message="Close dev branch [${devbranch:?}]"
+            hg commit --close-branch -m "${message:?}"
+
+            hg push
+
+        popd
+
+        pushd orphan
+            hg pull
+            hg update default
+            hg branches
+        popd
+    popd
+
+
