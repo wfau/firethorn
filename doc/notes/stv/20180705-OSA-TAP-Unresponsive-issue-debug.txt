@@ -1,0 +1,198 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+stelios@stelios-pc:~$ ssh root@Gworewia 
+Last login: Thu Jun 28 10:34:12 2018 from 192.168.201.1
+
+
+[root@Gworewia ~]# docker ps
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                 PORTS                    NAMES
+58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   2 weeks ago         Up 9 days (healthy)    0.0.0.0:8080->8080/tcp   root_gillian_1
+abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   2 weeks ago         Up 2 weeks             5432/tcp                 root_carolina_1
+9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   2 weeks ago         Up 2 weeks             5432/tcp                 root_bethany_1
+251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   2 weeks ago         Up 2 weeks (healthy)   8080/tcp                 root_jarmila_1
+
+[root@Gworewia ~]# docker exec -it  root_gillian_1 bash
+
+[root@Gworewia ~]# tail -f -n 1000 logs/firethorn.log
+...
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [user-agent][curl/7.55.1] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [accept][*/*] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug] Attributes 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.producibleMediaTypes][[application/json]] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.context.request.async.WebAsyncManager.WEB_ASYNC_MANAGER][org.springframewo...] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.CONTEXT][WebApplicationCon...] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.LOCALE_RESOLVER][org.springframewo...] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/system/info] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.OUTPUT_FLASH_MAP][FlashMap [attribu...] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/system/info] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.FLASH_MAP_MANAGER][org.springframewo...] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.uriTemplateVariables][{}] 
+2018-07-05 09:05:00,897 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_RESOLVER][org.springframewo...] 
+2018-07-05 09:05:00,898 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.core.convert.ConversionService][ConversionService...] 
+2018-07-05 09:05:00,898 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_SOURCE][WebApplicationCon...] 
+2018-07-05 09:05:00,898 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+2018-07-05 09:05:00,898 DEBUG [callback-interface-4] [HttpRequestDebug] Parameters 
+2018-07-05 09:05:00,898 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+2018-07-05 09:05:00,898 DEBUG [callback-interface-4] [OperationInterceptor] OperationInterceptor.preHandle() 
+2018-07-05 09:05:00,898 DEBUG [callback-interface-4] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+2018-07-05 09:05:00,902 DEBUG [callback-interface-4] [OperationInterceptor] Operation [3701058] 
+2018-07-05 09:05:00,902 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://localhost:8081/firethorn/system/info] 
+2018-07-05 09:05:00,902 DEBUG [callback-interface-4] [OperationInterceptor]   port [8081] 
+2018-07-05 09:05:00,902 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] preHandle() 
+2018-07-05 09:05:00,902 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[3701058]]] 
+2018-07-05 09:05:00,902 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Community [null] 
+2018-07-05 09:05:00,902 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Username  [null] 
+2018-07-05 09:05:00,902 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Password  [null] 
+2018-07-05 09:05:00,902 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Primary   [null] 
+2018-07-05 09:05:00,903 DEBUG [callback-interface-4] [AnonymousAuthenticator] preHandle() 
+2018-07-05 09:05:00,903 DEBUG [callback-interface-4] [AnonymousAuthenticator]  Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[3701058]]] 
+2018-07-05 09:05:00,903 DEBUG [callback-interface-4] [AnonymousAuthenticator]  Primary [null] 
+2018-07-05 09:05:00,903 DEBUG [callback-interface-4] [AnonymousAuthenticator] Null primary, adding anonymous Authentication 
+2018-07-05 09:05:00,903 DEBUG [callback-interface-4] [CommunityEntity] guests() 
+2018-07-05 09:05:00,903 DEBUG [callback-interface-4] [CommunityEntity] find (String) [friends] 
+2018-07-05 09:05:00,903 DEBUG [callback-interface-4] [CommunityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.community.CommunityEntity] ident[102]]] 
+2018-07-05 09:05:00,904 DEBUG [callback-interface-4] [CommunityEntity] services() 
+2018-07-05 09:05:00,905 DEBUG [callback-interface-4] [IdentityEntity] create(Community) [friends] 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [OperationEntity] create(Identity, String) 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [OperationEntity]   Identity [anon-TA6EJKB6YQ2OQAAAAFSGTMAF5E] 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [OperationEntity]   Method   [anonymous] 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [AuthenticationImplEntity] create(Operation, Identity, String) 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Operation [HEAD] 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Identity  [anon-TA6EJKB6YQ2OQAAAAFSGTMAF5E] 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Method    [anonymous] 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [AuthenticationImplEntity] AuthenticationEntity(Operation, Identity, String) 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Operation [HEAD] 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Identity  [anon-TA6EJKB6YQ2OQAAAAFSGTMAF5E] 
+2018-07-05 09:05:00,908 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Method    [anonymous] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [OperationEntity] primary(Authentication) 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [OperationEntity]   Authentication [Authentication[Ident[3701158]Identity[anon-TA6EJKB6YQ2OQAAAAFSGTMAF5E]Method[anonymous]]] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[3701108]]] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [AnonymousAuthenticator] postHandle() 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] postHandle() 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Operation [3701058] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Authentication [Authentication[Ident[3701158]Identity[anon-TA6EJKB6YQ2OQAAAAFSGTMAF5E]Method[anonymous]]] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Identity  [3701108][anon-TA6EJKB6YQ2OQAAAAFSGTMAF5E] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Community [102][friends] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [OperationInterceptor] OperationInterceptor.postHandle() 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [OperationInterceptor] Operation [3701058][http://localhost:8081/firethorn/system/info] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [HttpRequestDebug] postHandle() 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [HttpRequestDebug] Headers 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [HttpRequestDebug]   [firethorn.auth.username][anon-TA6EJKB6YQ2O...] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+2018-07-05 09:05:00,911 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+2018-07-05 09:05:00,913 DEBUG [callback-interface-4] [AnonymousAuthenticator] afterCompletion() 
+2018-07-05 09:05:00,913 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] afterCompletion() 
+2018-07-05 09:05:00,913 DEBUG [callback-interface-4] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+2018-07-05 09:05:00,913 DEBUG [callback-interface-4] [OperationInterceptor] Operation [3701058][http://localhost:8081/firethorn/system/info] 
+2018-07-05 09:05:00,913 DEBUG [callback-interface-4] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+2018-07-05 09:05:00,913 DEBUG [callback-interface-4] [HttpRequestDebug] afterCompletion() 
+
+
+
+^C
+bash-4.4$ ^C
+bash-4.4$ exit
+
+
+[root@Gworewia ~]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  964K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        31G   17G   14G  56% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   78M  146M  35% /boot
+shm              64M  4.0K   64M   1% /var/lib/docker/containers/abe5ffa5e554887fcadd833062e2f105bd2326699c628c28a74a50fb9a904572/shm
+shm              64M     0   64M   0% /var/lib/docker/containers/251da737dc98b03c3dcff7e1a2f6b52aff39c0af9522fe5e3922d93b39d03478/shm
+shm              64M  4.0K   64M   1% /var/lib/docker/containers/9a8db568afa2d60d3d2b4a14edd1aa02bb789dd0bf812053137e8e23bebb517f/shm
+shm              64M     0   64M   0% /var/lib/docker/containers/58e622aa6ad01b65a1180e9375e6ba01c7795593062d8342914452c4462ef963/shm
+tmpfs           396M     0  396M   0% /run/user/0
+
+## Space seems fine. Same issue as last time?
+
+
+
+curl http://tap.roe.ac.uk/osa/tables
+
+
+stelios@stelios-pc:~$ ssh root@Astoalith 
+docker ps
+docker exec -itLast login: Tue Jun 26 21:22:36 2018 from 192.168.201.1
+[root@float01 ~]# docker ps
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                NAMES
+a050cbd6960d        firethorn/apache:2.1.3   "/bin/sh -c '/usr/sbi"   6 months ago        Up 6 months         0.0.0.0:80->80/tcp   firepache
+[root@float01 ~]# docker exec -it firepache bash
+
+root@a050cbd6960d:/# tail -f -n 1000 /var/log/apache2/error.log 
+
+[Thu Jul 05 06:04:33.701284 2018] [proxy:error] [pid 1472:tid 139661942949632] [client 81.187.247.196:39226] AH00898: Error reading from remote server returned by /osa/availability
+[Thu Jul 05 06:34:32.672959 2018] [proxy_http:error] [pid 1471:tid 139661884200704] (70007)The timeout specified has expired: [client 81.187.247.196:39258] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Jul 05 06:34:32.673032 2018] [proxy:error] [pid 1471:tid 139661884200704] [client 81.187.247.196:39258] AH00898: Error reading from remote server returned by /osa/availability
+[Thu Jul 05 07:04:26.119040 2018] [proxy_http:error] [pid 1471:tid 139661808666368] (70007)The timeout specified has expired: [client 178.79.157.93:34888] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Jul 05 07:04:26.119158 2018] [proxy:error] [pid 1471:tid 139661808666368] [client 178.79.157.93:34888] AH00898: Error reading from remote server returned by /osa/availability
+[Thu Jul 05 07:04:33.734720 2018] [proxy_http:error] [pid 1472:tid 139661926164224] (70007)The timeout specified has expired: [client 81.187.247.196:39284] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Jul 05 07:04:33.734788 2018] [proxy:error] [pid 1472:tid 139661926164224] [client 81.187.247.196:39284] AH00898: Error reading from remote server returned by /osa/availability
+[Thu Jul 05 07:34:33.593133 2018] [proxy_http:error] [pid 1472:tid 139661993305856] (70007)The timeout specified has expired: [client 81.187.247.196:39308] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Jul 05 07:34:33.593194 2018] [proxy:error] [pid 1472:tid 139661993305856] [client 81.187.247.196:39308] AH00898: Error reading from remote server returned by /osa/availability
+[Thu Jul 05 08:04:25.769363 2018] [proxy_http:error] [pid 1472:tid 139662001698560] (70007)The timeout specified has expired: [client 178.79.157.93:34892] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Jul 05 08:04:25.769441 2018] [proxy:error] [pid 1472:tid 139662001698560] [client 178.79.157.93:34892] AH00898: Error reading from remote server returned by /osa/availability
+[Thu Jul 05 08:34:33.180810 2018] [proxy_http:error] [pid 1472:tid 139661808666368] (70007)The timeout specified has expired: [client 81.187.247.196:39362] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Jul 05 08:34:33.180887 2018] [proxy:error] [pid 1472:tid 139661808666368] [client 81.187.247.196:39362] AH00898: Error reading from remote server returned by /osa/availability
+[Thu Jul 05 09:04:33.187796 2018] [proxy_http:error] [pid 1472:tid 139661850629888] (70007)The timeout specified has expired: [client 81.187.247.196:39388] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Jul 05 09:04:33.187876 2018] [proxy:error] [pid 1472:tid 139661850629888] [client 81.187.247.196:39388] AH00898: Error reading from remote server returned by /osa/availability
+
+
+
+
+
+
+
+### Restart Firethorn Container
+
+[root@Gworewia ~]# docker stop root_gillian_1
+
+
+[root@Gworewia ~]# docker start root_gillian_1
+root_gillian_1
+
+[root@Gworewia ~]# docker ps
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                            PORTS                    NAMES
+58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   2 weeks ago         Up 2 seconds (health: starting)   0.0.0.0:8080->8080/tcp   root_gillian_1
+abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   2 weeks ago         Up 2 weeks                        5432/tcp                 root_carolina_1
+9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   2 weeks ago         Up 2 weeks                        5432/tcp                 root_bethany_1
+251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   2 weeks ago         Up 2 weeks (healthy)              8080/tcp                 root_jarmila_1
+
+
+[root@Gworewia ~]# curl http://tap.roe.ac.uk/osa/availability
+<?xml version="1.0" encoding="UTF-8"?><vosi:availability xmlns:vosi="http://www.ivoa.net/xml/VOSIAvailability/v1.0"><vosi:available>true</vosi:available><vosi:note>service is accepting queries</vosi:note></vosi:availability>
+
+
+## TAP Services work after restart
