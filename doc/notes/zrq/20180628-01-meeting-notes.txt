@@ -116,3 +116,24 @@ Thursday 12:20
     https://github.com/common-workflow-language/common-workflow-language
 
 
+Thursday 15:30
+
+    Multi-Dimensiinal Data and Time Series 
+    http://www.g-vo.org/edp-forum-2018/slides/DescriptionDiscoveryAccessMultiDiDataAndTimeSeriesVO.pdf
+
+    We need to build a client for the Vizier example data.
+
+    F.Bonnarel solution puts copies of utypes into time series namespace
+    utype=xx.yy.zz
+    utype=ts.TimeSeriesData.NDPoint.xx.yy.zz
+
+    This disassocoates the timeseries data from the original data.
+    If my data has utype=xx.yy.zz
+    a timeseries of that data ends up with a different datatype !
+
+    A timeseries should be like a zip
+
+
+
+
+   
