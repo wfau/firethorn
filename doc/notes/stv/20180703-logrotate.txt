@@ -1,0 +1,175 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+ssh Stevedore@Siamond
+
+
+cd ${HOME}
+
+
+
+## We need to mount the log directories as volumes
+
+nano docker-compose.yml
+
+..
+    jarmila:
+        image:
+           "firethorn/ogsadai:${buildtag:-latest}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /var/logs/jarmila:/var/local/tomcat/logs
+        networks:
+            - miriam
+        healthcheck:
+            test: [
+                "CMD-SHELL",
+                "curl --silent --head --fail http://localhost:8080/ogsadai/services || exit 1"
+                ]
+            interval: 30s
+            timeout: 5s
+            retries: 5
+
+    gillian:
+        image:
+           "firethorn/firethorn:${buildtag:-latest}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /var/logs/gillian:/var/local/tomcat/logs
+            - ${HOME}/firethorn.properties:/etc/firethorn.properties
+
+
+..
+
+
+
+docker-compose up 
+
+
+docker exec -it stevedore_gillian_1 bash
+
+
+
+# Following needs sudo access
+sudo su
+
+
+
+
+## Create Log directories and give them permissions
+
+mkdir /var/logs
+mkdir /var/logs/gillian
+mkdir /var/logs/jarmila
+
+jarmilalog=/var/logs/jarmila
+gillianlog=/var/logs/gillian
+
+chown 997:996 ${jarmilalog} ## Looking at the Firethorn container, tomcat has Id's of 997/996
+chmod u=rwxs  ${jarmilalog}
+chmod g=rwxs  ${jarmilalog}
+chcon -t svirt_sandbox_file_t ${jarmilalog}
+
+chown 997:996 ${gillianlog}
+chmod u=rwxs  ${gillianlog}
+chmod g=rwxs  ${gillianlog}
+chcon -t svirt_sandbox_file_t ${gillianlog}
+
+## Needed to fix permission to get "Stevedore" account to see logs
+chmod 755 ${jarmilalog}
+chmod 755 ${gillianlog}
+
+
+
+
+
+## Install Logrotate
+yum install logrotate
+
+
+
+## Add Logrotate as cronjob
+
+# Add to cron.daily
+echo "*/5 * * * * root logrotate -f /etc/cron.daily/logrotate" >> /etc/crontab
+
+
+## Create Logrotate
+cat >> /etc/cron.daily/logrotate
+
+/var/logs/gillian/*.log {
+    maxsize 500M
+    hourly
+    missingok
+    rotate 12
+    compress
+    notifempty
+    dateext
+    copytruncate
+}
+
+
+/var/logs/jarmila/*.log {
+    maxsize 500M
+    hourly
+    missingok
+    rotate 12
+    compress
+    notifempty
+    dateext
+    copytruncate
+}
+^D
+
+
+# maxsize - rotate if exceeds maxsize
+# rotate 12 - keep 12 days worth of logs
+# hourly - rotate hourly
+# missingok - avoids halting on any error and carries on with the next log file.
+# notifempty - avoid log rotation if the logfile is empty.
+# dateext - add a date to the rotated file
+# copytruncate - Truncate the original log file in place after creating a copy, instead of moving the old log file and optionally creating a new one
+
+
+
+## Restart our services and test
+cd ${HOME}
+docker-compose down
+docker-compose --file "docker-compose.yml" run firethorn-py
+
+
+
+
+[Stevedore@Siamond gillian]$ ls
+catalina.2018-07-04.log       firethorn.log       firethorn.log.2.gz           localhost.2018-07-04.log       localhost_access_log.2018-07-04.txt
+catalina.2018-07-04.log.1.gz  firethorn.log.1.gz  host-manager.2018-07-04.log  localhost.2018-07-04.log.1.gz  manager.2018-07-04.log
+
