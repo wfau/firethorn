@@ -1,0 +1,156 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+#---------------------------------------------------------------------
+# Clear our Maven cache.
+#[user@desktop]
+
+    pushd /var/local/cache
+        mv -f maven maven-$(date +%Y%m%d)
+        mkdir maven
+    popd        
+
+#---------------------------------------------------------------------
+# Install the latest version of Starlink stil.
+#[user@desktop]
+
+    pushd $(mktemp -d)
+
+        wget http://www.star.bristol.ac.uk/~mbt/stil/stil_jars.zip
+
+        unzip stil_jars.zip
+
+        for name in 'fits' 'util' 'table' 'votable' 'tamfits'
+        do
+
+            echo "Name [${name}]"
+
+            jarfile=${name?}.jar
+            fullname=stil-${name?}
+            version=3.3.1
+            group=uk.ac.starlink
+
+            mvn install:install-file  \
+                -Dfile=${jarfile?} \
+                -DgroupId=${group?} \
+                -DartifactId=${fullname?} \
+                -Dversion=${version?} \
+                -Dpackaging=jar \
+                -DcreateChecksum=true
+
+        done
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+    
+#---------------------------------------------------------------------
+# Update our Java dependencies.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn versions:display-dependency-updates
+
+        mvn versions:display-plugin-updates
+
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag=$(hg branch)
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Build our Python client container.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    export ftpysrc=${EDINBURGH_PROJECTS}/ftpy/github.stv
+
+    pushd "${ftpysrc:?}"
+        git pull
+    popd
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        export buildsrc=$(pwd)
+
+        docker-compose \
+            --file "docker/compose/client/firethorn-py.yml" \
+            build \
+                firethorn-py
+
+    popd
+
+
