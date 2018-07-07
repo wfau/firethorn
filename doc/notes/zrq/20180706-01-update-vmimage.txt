@@ -584,3 +584,303 @@ EOF
 
 
 
+
+
+
+
+#---------------------------------------------------------------------
+# Create an initial VM on the university LAN.
+#[user@trop03]
+
+    createvm
+
+        INFO : Node name [Umiawyth]
+        INFO : Base name [fedora-28-docker-base-20180707.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180707.qcow]
+        INFO : Disc name [Umiawyth.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to our initial VM.
+#[user@desktop]
+
+    ssh Umiawyth
+
+    # -----------------------------------------------------
+    # Configure our secrets function.
+    #[user@virtual]
+
+        mkdir "${HOME}/bin"
+        pushd "${HOME}/bin"
+
+            cat > "secret" << 'EOF'
+....
+....
+EOF
+
+            chmod u=rwx,og= "secret"
+        popd
+
+        secret frog
+
+    # -----------------------------------------------------
+    # Configure our OpenStack settings.
+    # https://horizon.ecdf.ed.ac.uk/dashboard/project/access_and_security/api_access/openrc/
+    #[user@virtual]
+
+        mkdir "${HOME}/settings"
+        
+        cat > "${HOME}/settings/openstack.settings" << EOF
+
+export OS_INTERFACE=public
+export OS_IDENTITY_API_VERSION=3
+
+export OS_AUTH_URL=https://keystone.ecdf.ed.ac.uk/v3
+
+export OS_USER_DOMAIN_NAME="ed"
+export OS_REGION_NAME="Edinburgh"
+
+export OS_USERNAME=$(secret openstack.user)
+export OS_PASSWORD=$(secret openstack.pass)
+
+export OS_PROJECT_ID=fcef6dd450f64a1ab4ffa5a7234c4161
+export OS_PROJECT_NAME=lsst
+
+EOF
+
+    # -----------------------------------------------------
+    # Create a container to work with.
+    #[user@virtual]
+
+        docker run \
+            --rm \
+            --tty \
+            --interactive \
+            --hostname openstacker \
+            --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+            --volume "${HOME}/settings/:/etc/phymatopus/" \
+            --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+            phymatopus/openstack-client \
+            bash
+
+        # -----------------------------------------------------
+        # Load our OpenStack settings.
+        #[root@openstacker]
+
+            source '/etc/phymatopus/openstack.settings'
+
+        # -----------------------------------------------------
+        # Load our OpenStack and Eleanor functions.
+        #[root@openstacker]
+
+            source 'openstack-utils.sh'
+            source 'eleanor-utils.sh'
+            source 'eleanor-init.sh'
+
+        # -----------------------------------------------------
+        # Initialize our cluster settings.
+        #[root@openstacker]
+
+if [ ! -e '/etc/phymatopus/cluster.settings' ]
+then
+    cat > '/etc/phymatopus/cluster.settings' << EOF
+
+    phym_userkey=dmr
+    phym_project=Raminiara
+
+    phym_image=\${fedora27:?}
+    phym_flavor=\${m1small:?}
+
+    sshuser=Stevedore
+    sshopts=(
+        '-o CheckHostIP=no'
+        '-o UserKnownHostsFile=/dev/null'
+        '-o StrictHostKeyChecking=no'
+        )
+
+EOF
+fi
+
+        # -----------------------------------------------------
+        # Load our project settings.
+        #[root@openstacker]
+
+            source '/etc/phymatopus/cluster.settings'
+
+        # -----------------------------------------------------
+        # Process the gobal list of nodes.
+        #[root@openstacker]
+
+            unset controller
+
+            unset unknowns
+            unknowns=()
+
+            unset kfidents
+            kfidents=()
+
+            unset mmidents
+            mmidents=()
+
+            unset zkidents
+            zkidents=()
+
+            echo ""
+            echo "Processing OpenStack nodes"
+            
+            for ident in $(
+                openstack \
+                    server list \
+                    --format json \
+                | jq -r '.[] | .ID'
+                )
+                do
+                    echo "Ident [$ident]"
+                    getvminfo "${ident:?}"
+
+                    name=$(getvmname)
+                    echo "Name  [$name]"
+
+                    case "${name}" in
+
+                        ${phym_project:?}-zookeeper*)
+                            echo "Match zookeeper"
+                            zkidents+=(${ident})
+                            ;;
+                            
+                        ${phym_project:?}-mirror*)
+                            echo "Match mirror"
+                            mmidents+=(${ident})
+                            ;;
+
+                        ${phym_project:?}-kafka*)
+                            echo "Match kafka"
+                            kfidents+=(${ident})
+                            ;;
+
+                        ${phym_project:?}-control*)
+                            echo "Match control"
+                            controller=${ident}
+                            ;;
+
+                        *)
+                            echo "unknown"
+                            unknowns+=(${ident})
+                            ;;
+                    esac
+                done
+
+        # -----------------------------------------------------
+        # Get our controller address.
+        #[root@openstacker]
+
+            getvminfo "${controller:?}"
+            controlip=$(geteleanor172)
+
+        # -----------------------------------------------------
+        # Configure our ssh proxy command.
+        #[root@openstacker]
+
+            sshproxy="ssh ${sshopts[*]} ${sshuser:?}@${controlip:?} nc %h %p"
+
+        # -----------------------------------------------------
+        # Create our OpenStack image.
+        #[root@openstacker]
+
+            datasite=http://data.metagrid.co.uk/ischnura/base
+
+            basename=fedora-28-docker-base-20180707
+            qcowfile=${basename:?}.qcow
+            gzipfile=${qcowfile:?}.gz
+
+            wget -O "/tmp/${gzipfile:?}" "${datasite:?}/${gzipfile:?}"
+
+            gunzip "/tmp/${gzipfile:?}"
+
+            openstack \
+                image create \
+                --shared \
+                --format json \
+                --disk-format 'qcow2' \
+                --file "/tmp/${qcowfile:?}" \
+                "${basename:?}" \
+                | jq '.' \
+                | tee /tmp/image-info.json
+
+
+            imageident=$(
+                jq -r "
+                    .id
+                    " /tmp/image-info.json
+                )
+
+        # -----------------------------------------------------
+        # Re-load our Eleanor information.
+        #[root@openstacker]
+
+            source 'eleanor-init.sh'
+
+        # -----------------------------------------------------
+        # Check we found our Fedora 28 image.
+        #[root@openstacker]
+
+            echo "[${imageident:?}]"
+            echo "[${fedora28:?}]"
+
+        # -----------------------------------------------------
+        # Create a Fedora 28 instance.
+        #[root@openstacker]
+
+            vmident=$(
+                makevm \
+                    "fedora-test" \
+                    "${m1small}"  \
+                    "${fedora28}"
+                    )
+
+        # -----------------------------------------------------
+        # Check our Fedora 28 instance.
+        #[root@openstacker]
+
+            openstack \
+                server \
+                show \
+                --format json \
+                "${vmident:?}" \
+                | jq '.'
+
+        # -----------------------------------------------------
+        # Test login to our new instance.
+        #[root@openstacker]
+
+            getvminfo "${vmident:?}"
+            echo "Name    [$(getvmname)]"
+            echo "Ident   [${vmident:?}]"
+
+            internalip=$(geteleanor192)
+            echo "Address [${internalip:?}]"
+
+            ssh \
+                ${sshopts[*]} \
+                -o ProxyCommand="${sshproxy:?}" \
+                ${sshuser:?}@${internalip:?} \
+                hostname
+            
+            ssh \
+                ${sshopts[*]} \
+                -o ProxyCommand="${sshproxy:?}" \
+                ${sshuser:?}@${internalip:?} \
+                cat /etc/redhat-release
+
+        # -----------------------------------------------------
+        # Delete our new instance.
+        #[root@openstacker]
+
+            openstack \
+                server \
+                delete \
+                "${vmident:?}"
+
+
+
+
