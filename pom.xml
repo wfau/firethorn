@@ -207,7 +207,7 @@
             | Tomcat version.
             | https://tomcat.apache.org/whichversion.html
             +-->
-        <tomcat.version>8.5.32</tomcat.version>
+        <tomcat.version>9.0.10</tomcat.version>
 
     </properties>
 

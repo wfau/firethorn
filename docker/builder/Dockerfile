@@ -40,9 +40,10 @@ RUN dnf -y install git
 RUN dnf -y install mercurial
 
 #
-# Install Docker components.
-#RUN dnf -y install docker-io
-#RUN dnf -y install docker-compose
+# Update SELinux library.
+# https://bugzilla.redhat.com/show_bug.cgi?id=1596409 
+# https://bugzilla.redhat.com/show_bug.cgi?id=1595316
+RUN dnf -y update libsemanage
 
 #
 # Install Docker CE from the Docker repository.

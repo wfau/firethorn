@@ -1,0 +1,586 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Check version of virt-install.
+#[user@trop03]
+
+    virt-install --version
+
+        1.4.0
+
+#---------------------------------------------------------------------
+# Build settings
+#[user@trop03]
+
+    source "${HOME}/ischnura.settings"
+
+    basecpu=4
+    basemem=4096
+    basesize=16G
+    basearch=x86_64
+
+    basever=28
+    basedate=$(date +%Y%m%d)
+    basedist=fedora-${basever:?}
+    basename=${basedist}-docker-base-${basedate:?}
+    basefile=${basename}.qcow
+    basegzip=${basefile}.gz
+
+    kickstartfile=fedora-docker-base.txt
+    kickstarthref=https://raw.githubusercontent.com/Zarquan/ischnura/master/src/kickstart/${kickstartfile:?}
+
+#---------------------------------------------------------------------
+# Delete any existing VM image.
+#[user@trop03]
+
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${basename:?}"
+
+#---------------------------------------------------------------------
+# Delete any existing volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${basefile:?}"
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format qcow2
+
+#---------------------------------------------------------------------
+# Set a MAC address to match our DHCP range.
+#[user@trop03]
+
+    macaddress='52:54:00:02:03:0F'
+
+#---------------------------------------------------------------------
+# Create a new VM image by installing the Fedora boot image.
+#[user@trop03]
+
+    virt-install \
+        --noreboot \
+        --name       "${basename:?}" \
+        --disk       "vol=${basepool:?}/${basefile:?}" \
+        --vcpus      "${basecpu:?}" \
+        --memory     "${basemem:?}" \
+        --network    "network=default,mac=${macaddress:?}" \
+        --connect    "${connection:?}" \
+        --location   "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
+        --extra-args "inst.ks=${kickstarthref:?}"
+
+#---------------------------------------------------------------------
+# Check the file info.
+#[user@trop03]
+
+    basepath=$(
+        virsh \
+            --connect "${connection:?}" \
+            vol-path \
+                --pool "${basepool:?}" \
+                "${basefile:?}"
+                )
+
+    sudo \
+        qemu-img \
+            info \
+                "${basepath:?}"
+
+        image: /var/lib/libvirt/images/base/fedora-28-docker-base-20180707.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 2.3G
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+#---------------------------------------------------------------------
+# Create a compressed copy of the image.
+#[user@trop03]
+
+    tempfile=$(mktemp)
+    sudo \
+        qemu-img \
+            convert \
+                -c \
+                -O qcow2 \
+                "${basepath:?}" \
+                "${tempfile:?}"
+
+    qemu-img \
+        info \
+            "${tempfile:?}"
+
+        image: /tmp/tmp.YIg4nO6XAS
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 992M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+
+#---------------------------------------------------------------------
+# Delete the virtual machine.
+#[user@trop03]
+
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${basename:?}"
+
+#---------------------------------------------------------------------
+# Delete the uncompressed volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${basefile:?}"
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format 'qcow2'
+
+#---------------------------------------------------------------------
+# Upload the compressed copy into the new volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${basefile:?}" \
+            "${tempfile:?}"
+
+#---------------------------------------------------------------------
+# Delete the temp copy.
+#[user@desktop]
+
+    rm "${tempfile:?}"
+
+#---------------------------------------------------------------------
+# Create a test instance.
+#[user@trop03]
+
+    createvm
+
+        INFO : Node name [Umiawyth]
+        INFO : Base name [fedora-28-docker-base-20180706.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180706.qcow]
+        INFO : Disc name [Umiawyth.qcow]
+        INFO : Disc size [16GiB]
+
+#---------------------------------------------------------------------
+# Test login.
+#[user@trop03]
+
+    vmname=Umiawyth
+
+    ssh "dmr@${vmname:?}" date ## works
+    ssh "root@${vmname:?}" date ## not allowed
+    ssh "fedora@${vmname:?}" date ## denied
+    ssh "Stevedore@${vmname:?}" date ## works
+
+#---------------------------------------------------------------------
+# Shutdown and delete the instance.
+#[user@trop03]
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        -c "${connection:?}" \
+        shutdown "${vmname:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        undefine "${vmname:?}"
+
+#---------------------------------------------------------------------
+# Create a gzipped version of our image.
+#[user@trop03]
+
+    pushd $(mktemp -d)
+
+        virsh \
+            --connect "${connection:?}" \
+            vol-download \
+                --pool "${basepool:?}" \
+                "${basefile:?}" \
+                "${basefile:?}"
+
+        gzip \
+            "${basefile:?}"
+
+#---------------------------------------------------------------------
+# Push the compressed image to our webserver.
+#[user@trop03]
+
+        file "${basefile:?}.gz" 
+
+        rsync \
+            --stats \
+            --progress \
+            --human-readable \
+            "${basefile:?}.gz" \
+            "Zarquan@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${basefile:?}.gz"
+
+    popd
+
+
+
+#---------------------------------------------------------------------
+# Update our settings.
+#[user@methionine]
+#[user@asparagine]
+
+cat > "${HOME}/projects.settings" << 'EOF'
+ : ${projectbase:='/var/local/projects'}
+ : ${metaprojects:=${projectbase:?}/metagrid}
+ : ${edinprojects:=${projectbase:?}/edinburgh}
+EOF
+
+
+cat > "${HOME}/libvirt.settings" << 'EOF'
+ : ${connection:='qemu:///system'}
+ : ${basepool:='base'}
+ : ${basepath:='/var/lib/libvirt/images/base'}
+ : ${livepool:='live'}
+ : ${livepath:='/var/lib/libvirt/images/live'}
+export basepool
+export livepool
+export connection
+EOF
+
+
+cat > "${HOME}/ischnura.settings" << 'EOF'
+source "${HOME}/projects.settings"
+source "${HOME}/libvirt.settings"
+ : ${tempdir:="/tmp"}
+ : ${ischname:="ischnura"}
+ : ${ischbase:="${metaprojects:?}/${ischname:?}"}
+ : ${ischcode:="${ischbase:?}/github.zrq"}
+ : ${ischrepo:="git@github.com:Zarquan/${ischname:?}.git"}
+EOF
+
+#---------------------------------------------------------------------
+# Update our source code.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    source "${HOME}/ischnura.settings"
+
+    if [ ! -e "${ischcode:?}" ]
+    then
+        if [ ! -e "${ischbase:?}" ]
+        then
+            mkdir -p "${ischbase}"
+        fi
+        pushd "${ischbase}"
+            git clone "${ischrepo:?}" "$(basename ${ischcode})"
+        popd
+    else
+        pushd "${ischcode:?}"
+            git pull
+        popd
+    fi
+
+    ln -fs "${ischcode:?}/src/bin/createvm" /usr/local/bin/createvm
+
+cat > "${ischcode:?}/src/config" << 'EOF'
+machines=${datpath:?}/metagrid-machines.txt
+template=${datpath:?}/metagrid-template.xml
+EOF
+
+#---------------------------------------------------------------------
+# Install the missing dependency.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+
+    sudo apt-get update
+    sudo apt-get install xmlstarlet
+    sudo apt-get install genisoimage
+
+#[user@asparagine]
+
+    sudo yum -y install xmlstarlet
+    sudo yum -y install genisoimage
+
+#[user@methionine]
+
+    sudo dnf -y install xmlstarlet
+    sudo dnf -y install genisoimage
+
+#---------------------------------------------------------------------
+# Create the cloud-init volume pool.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    source "${HOME}/ischnura.settings"
+
+    initpool='init'
+    initpath='/var/lib/libvirt/images/init'
+
+    initxml=$(mktemp)
+    cat > "${initxml:?}" << EOF
+<pool type='dir'>
+  <name>${initpool:?}</name>
+  <target>
+    <path>${initpath:?}</path>
+  </target>
+</pool>
+EOF
+
+   virsh \
+       --connect "${connection:?}" \
+        pool-define "${initxml:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-build "${initpool:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-start "${initpool:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-autostart "${initpool:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-info "${initpool:?}"
+
+        Name:           init
+        UUID:           0482a7b3-fe2b-44e1-8a48-e696d8cdfcc9
+        State:          running
+        Persistent:     yes
+        Autostart:      yes
+        Capacity:       91.54 GiB
+        Allocation:     82.01 GiB
+        Available:      9.53 GiB
+
+#---------------------------------------------------------------------
+# Build settings
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    source "${HOME}/ischnura.settings"
+
+    basename=fedora-28-docker-base-20180707
+    basefile=${basename}.qcow
+    tempfile=/tmp/${basefile:?}
+
+#---------------------------------------------------------------------
+# Download a copy of the base image.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    wget -O "${tempfile:?}.gz" "http://data.metagrid.co.uk/ischnura/base/${basefile:?}.gz"
+
+    gzip --uncompress "${tempfile:?}.gz"
+
+#---------------------------------------------------------------------
+# Check the image details.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+
+    qemu-img \
+        info \
+            "${tempfile:?}"
+
+        image: /tmp/fedora-28-docker-base-20180707.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 995M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+
+    basesize=$(
+        qemu-img \
+            info \
+                "${tempfile:?}" \
+            | sed -n 's/virtual size: \([0-9]*[KkMmGg]\).*/\1/p'
+            )
+
+#---------------------------------------------------------------------
+# Delete any existing VM image.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${basename:?}"
+
+#---------------------------------------------------------------------
+# Delete any existing volume.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${basefile:?}"
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format qcow2
+
+#---------------------------------------------------------------------
+# Upload the image into the new volume.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${basefile:?}" \
+            "${tempfile:?}"
+
+#---------------------------------------------------------------------
+# Delete our temp file.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    rm "${tempfile:?}"
+
+#---------------------------------------------------------------------
+# Create a test instance.
+#[user@trop01]
+#[user@trop02]
+#[user@trop03]
+#[user@trop04]
+#[user@methionine]
+
+    createvm
+
+        INFO : Node name [Delild][Araybwyn][Wumar]
+        INFO : Base name [fedora-28-docker-base-20180706.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180706.qcow]
+        INFO : Disc name [Delild.qcow][Araybwyn.qcow][Wumar.qcow]
+        INFO : Disc size [16GiB]
+
+#---------------------------------------------------------------------
+# Test login.
+#[user@trop01]
+#[user@trop02]
+#[user@trop03]
+#[user@trop04]
+#[user@methionine]
+
+    vmname=Delild
+    vmname=Araybwyn
+    vmname=Wumar
+    vmname=eta
+
+    ssh "$(id -un)@${vmname:?}" date ## works
+    ssh "root@${vmname:?}" date ## not allowed
+    ssh "fedora@${vmname:?}" date ## denied
+    ssh "Stevedore@${vmname:?}" date ## works
+
+#---------------------------------------------------------------------
+# Shutdown and delete the instance.
+#[user@trop01]
+#[user@trop02]
+#[user@trop03]
+#[user@trop04]
+#[user@methionine]
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        -c "${connection:?}" \
+        shutdown "${vmname:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        undefine "${vmname:?}"
+
+
+

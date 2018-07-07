@@ -31,9 +31,44 @@
 
         docker-compose \
             --file docker/compose/images.yml \
-            build
+            build builder
 
     popd
+
+# -----------------------------------------------------
+# Error report installing docker-ce in builder 
+
+    # -----------------------------------------------------
+    # Error report
+
+          Installing       : container-selinux-2:2.65-1.gitbf5b26b.fc28.noarch    19/22 
+          Running scriptlet: container-selinux-2:2.65-1.gitbf5b26b.fc28.noarch    19/22 
+        setsebool:  SELinux is disabled.
+        neverallow check failed at /var/lib/selinux/targeted/tmp/modules/100/base/cil:9191
+          (neverallow base_typeattr_7 unlabeled_t (file (entrypoint)))
+            <root>
+            allow at /var/lib/selinux/targeted/tmp/modules/200/container/cil:1554
+              (allow spc_t unlabeled_t (file (entrypoint)))
+            <root>
+            allow at /var/lib/selinux/targeted/tmp/modules/100/sandboxX/cil:866
+              (allow sandbox_x_domain exec_type (file (entrypoint)))
+            <root>
+            allow at /var/lib/selinux/targeted/tmp/modules/100/virt/cil:1677
+              (allow virtd_lxc_t exec_type (file (entrypoint)))
+            <root>
+            allow at /var/lib/selinux/targeted/tmp/modules/100/virt/cil:2068
+              (allow svirt_sandbox_domain exec_type (file (entrypoint)))
+
+        Failed to generate binary
+        /usr/sbin/semodule:  Failed!
+
+    # -----------------------------------------------------
+    # Fix added to Dockerfile
+    
+        # Update SELinux library.
+        # https://bugzilla.redhat.com/show_bug.cgi?id=1596409 
+        # https://bugzilla.redhat.com/show_bug.cgi?id=1595316
+        RUN dnf -y update libsemanage
 
 #---------------------------------------------------------------------
 # Clear our Maven cache.

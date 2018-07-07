@@ -24,9 +24,9 @@ RUN dnf -y install \
     python3 \
     python3-pip
 
-#COPY . ${ftpysrc}
+COPY . ${ftpysrc}
 RUN  pip3 install numpy astropy requests
-#RUN  pip3 install --editable ${ftpysrc}
+RUN  pip3 install --editable ${ftpysrc}
 
 WORKDIR ${ftpysrc}
 

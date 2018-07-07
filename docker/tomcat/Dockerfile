@@ -19,8 +19,9 @@ FROM firethorn/java:2.1.23-zrq-update-depends
 MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
 
 # https://tomcat.apache.org/whichversion.html
-ENV TOMCAT_VERSION 8.5.32
-#NV TOMCAT_VERSION 9.0.10 -- Java 8+
+#NV TOMCAT_VERSION 8.5.32
+ENV TOMCAT_VERSION 9.0.10
+ENV TOMCAT_MAJOR  9
 
 ENV TOMCAT_DIRNAME apache-tomcat-${TOMCAT_VERSION}
 ENV TOMCAT_TARFILE apache-tomcat-${TOMCAT_VERSION}.tar.gz
@@ -49,8 +50,8 @@ WORKDIR /tmp
 # Download the tar file
 # Avoid using ADD - unreliable results.
 # https://github.com/moby/moby/issues/34243
-RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}
-RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_SUMFILE}
+RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}
+RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/${TOMCAT_SUMFILE}
 
 #
 # Check the checksum.
