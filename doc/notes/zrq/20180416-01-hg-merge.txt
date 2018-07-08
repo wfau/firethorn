@@ -27,8 +27,8 @@
     createvm
 
         INFO : Node name [Araybwyn]
-        INFO : Base name [fedora-27-docker-base-20180129.qcow]
-        INFO : Base path [/var/lib/libvirt/images/base/fedora-27-docker-base-20180129.qcow]
+        INFO : Base name [fedora-28-docker-base-20180707.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180707.qcow]
         INFO : Disc name [Araybwyn.qcow]
         INFO : Disc size [16GiB]
 
@@ -66,6 +66,7 @@
     branch=2.1.16-zrq-race-bug
     branch=2.1.19-zrq-metadoc-parser
     branch=2.1.20-zrq-metadoc-parser
+    branch=2.1.23-zrq-update-depends
 
 # -----------------------------------------------------
 # Run our builder.

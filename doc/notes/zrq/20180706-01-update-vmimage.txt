@@ -42,6 +42,10 @@
     basever=28
     basedate=$(date +%Y%m%d)
     basedist=fedora-${basever:?}
+
+    initname=${basedist}-docker-init-${basedate:?}
+    initfile=${initname}.qcow
+
     basename=${basedist}-docker-base-${basedate:?}
     basefile=${basename}.qcow
     basegzip=${basefile}.gz
@@ -49,17 +53,29 @@
     kickstartfile=fedora-docker-base.txt
     kickstarthref=https://raw.githubusercontent.com/Zarquan/ischnura/master/src/kickstart/${kickstartfile:?}
 
+    tempfile=/tmp/${basefile}
+
 #---------------------------------------------------------------------
-# Delete any existing VM image.
+# Delete any existing VM images.
 #[user@trop03]
+
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${initname:?}"
 
    virsh \
        --connect "${connection:?}" \
        undefine "${basename:?}"
 
 #---------------------------------------------------------------------
-# Delete any existing volume.
+# Delete any existing volumes.
 #[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${initfile:?}"
 
     virsh \
         --connect "${connection:?}" \
@@ -75,7 +91,7 @@
         --connect "${connection:?}" \
         vol-create-as \
             "${basepool:?}" \
-            "${basefile:?}" \
+            "${initfile:?}" \
             "${basesize:?}" \
             --format qcow2
 
@@ -91,8 +107,8 @@
 
     virt-install \
         --noreboot \
-        --name       "${basename:?}" \
-        --disk       "vol=${basepool:?}/${basefile:?}" \
+        --name       "${initname:?}" \
+        --disk       "vol=${basepool:?}/${initfile:?}" \
         --vcpus      "${basecpu:?}" \
         --memory     "${basemem:?}" \
         --network    "network=default,mac=${macaddress:?}" \
@@ -101,23 +117,23 @@
         --extra-args "inst.ks=${kickstarthref:?}"
 
 #---------------------------------------------------------------------
-# Check the file info.
+# Check the image file info.
 #[user@trop03]
 
-    basepath=$(
+    initpath=$(
         virsh \
             --connect "${connection:?}" \
             vol-path \
                 --pool "${basepool:?}" \
-                "${basefile:?}"
+                "${initfile:?}"
                 )
 
     sudo \
         qemu-img \
             info \
-                "${basepath:?}"
+                "${initpath:?}"
 
-        image: /var/lib/libvirt/images/base/fedora-28-docker-base-20180707.qcow
+        image: /var/lib/libvirt/images/base/fedora-28-docker-init-20180708.qcow
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
         disk size: 2.3G
@@ -130,23 +146,22 @@
 # Create a compressed copy of the image.
 #[user@trop03]
 
-    tempfile=$(mktemp)
     sudo \
         qemu-img \
             convert \
                 -c \
                 -O qcow2 \
-                "${basepath:?}" \
+                "${initpath:?}" \
                 "${tempfile:?}"
 
     qemu-img \
         info \
             "${tempfile:?}"
 
-        image: /tmp/tmp.YIg4nO6XAS
+        image: /tmp/fedora-28-docker-base-20180708.qcow
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
-        disk size: 992M
+        disk size: 990M
         cluster_size: 65536
         Format specific information:
             compat: 1.1
@@ -154,14 +169,13 @@
             refcount bits: 16
             corrupt: false
 
-
 #---------------------------------------------------------------------
-# Delete the virtual machine.
+# Delete the initial virtual machine.
 #[user@trop03]
 
    virsh \
        --connect "${connection:?}" \
-       undefine "${basename:?}"
+       undefine "${initname:?}"
 
 #---------------------------------------------------------------------
 # Delete the uncompressed volume.
@@ -171,7 +185,7 @@
         --connect "${connection:?}" \
         vol-delete \
             --pool "${basepool}" \
-            "${basefile:?}"
+            "${initfile:?}"
 
 #---------------------------------------------------------------------
 # Create a new (empty) volume.
@@ -197,20 +211,14 @@
             "${tempfile:?}"
 
 #---------------------------------------------------------------------
-# Delete the temp copy.
-#[user@desktop]
-
-    rm "${tempfile:?}"
-
-#---------------------------------------------------------------------
 # Create a test instance.
 #[user@trop03]
 
     createvm
 
         INFO : Node name [Umiawyth]
-        INFO : Base name [fedora-28-docker-base-20180706.qcow]
-        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180706.qcow]
+        INFO : Base name [fedora-28-docker-base-20180708.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
         INFO : Disc name [Umiawyth.qcow]
         INFO : Disc size [16GiB]
 
@@ -224,6 +232,35 @@
     ssh "root@${vmname:?}" date ## not allowed
     ssh "fedora@${vmname:?}" date ## denied
     ssh "Stevedore@${vmname:?}" date ## works
+
+#---------------------------------------------------------------------
+# Check docker works.
+#[user@trop03]
+
+#
+# Had issues installing the Docker packages:
+#    Adding repo from: https://download.docker.com/linux/fedora/docker-ce.repo
+#    Curl error (7): Couldn't connect to server for https://download.docker.com/linux/fedora/docker-ce.repo []
+#    Error: Configuration of repo failed
+
+    ssh "Stevedore@${vmname:?}" \
+        '
+        docker ps -a
+        docker run --rm debian '/bin/sh -c date'
+        '
+
+#---------------------------------------------------------------------
+# Check docker-compose is installed.
+#[user@trop03]
+
+#
+# Had issues installing docker-compose in the past.
+#
+
+    ssh "Stevedore@${vmname:?}" \
+        '
+        docker-compose -version 
+        '
 
 #---------------------------------------------------------------------
 # Shutdown and delete the instance.
@@ -240,38 +277,27 @@
         undefine "${vmname:?}"
 
 #---------------------------------------------------------------------
-# Create a gzipped version of our image.
-#[user@trop03]
-
-    pushd $(mktemp -d)
-
-        virsh \
-            --connect "${connection:?}" \
-            vol-download \
-                --pool "${basepool:?}" \
-                "${basefile:?}" \
-                "${basefile:?}"
-
-        gzip \
-            "${basefile:?}"
-
-#---------------------------------------------------------------------
 # Push the compressed image to our webserver.
 #[user@trop03]
 
-        file "${basefile:?}.gz" 
+    rsync \
+        --stats \
+        --progress \
+        --human-readable \
+        "${tempfile:?}" \
+        "Zarquan@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${basefile:?}"
 
-        rsync \
-            --stats \
-            --progress \
-            --human-readable \
-            "${basefile:?}.gz" \
-            "Zarquan@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${basefile:?}.gz"
+#---------------------------------------------------------------------
+# Delete the compressed image.
+#[user@desktop]
 
-    popd
+    sudo rm "${tempfile:?}"
 
 
 
+#---------------------------------------------------------------------
+# Update local desktop machines to be able to run the image ..
+#---------------------------------------------------------------------
 #---------------------------------------------------------------------
 # Update our settings.
 #[user@methionine]
@@ -306,6 +332,9 @@ source "${HOME}/libvirt.settings"
  : ${ischrepo:="git@github.com:Zarquan/${ischname:?}.git"}
 EOF
 
+#---------------------------------------------------------------------
+# Update host machines to be able to run the image ..
+#---------------------------------------------------------------------
 #---------------------------------------------------------------------
 # Update our source code.
 #[user@trop01]
@@ -411,6 +440,8 @@ EOF
         Available:      9.53 GiB
 
 #---------------------------------------------------------------------
+# Download and test the new image.
+#---------------------------------------------------------------------
 # Build settings
 #[user@trop01]
 #[user@trop02]
@@ -420,7 +451,7 @@ EOF
 
     source "${HOME}/ischnura.settings"
 
-    basename=fedora-28-docker-base-20180707
+    basename=fedora-28-docker-base-20180708
     basefile=${basename}.qcow
     tempfile=/tmp/${basefile:?}
 
@@ -432,9 +463,7 @@ EOF
 #[user@methionine]
 #[user@asparagine]
 
-    wget -O "${tempfile:?}.gz" "http://data.metagrid.co.uk/ischnura/base/${basefile:?}.gz"
-
-    gzip --uncompress "${tempfile:?}.gz"
+    wget -O "${tempfile:?}" "http://data.metagrid.co.uk/ischnura/base/${basefile:?}"
 
 #---------------------------------------------------------------------
 # Check the image details.
@@ -447,10 +476,10 @@ EOF
         info \
             "${tempfile:?}"
 
-        image: /tmp/fedora-28-docker-base-20180707.qcow
+        image: /tmp/fedora-28-docker-base-20180708.qcow
         file format: qcow2
         virtual size: 16G (17179869184 bytes)
-        disk size: 995M
+        disk size: 993M
         cluster_size: 65536
         Format specific information:
             compat: 1.1
@@ -462,18 +491,6 @@ EOF
                 "${tempfile:?}" \
             | sed -n 's/virtual size: \([0-9]*[KkMmGg]\).*/\1/p'
             )
-
-#---------------------------------------------------------------------
-# Delete any existing VM image.
-#[user@trop01]
-#[user@trop02]
-#[user@trop04]
-#[user@methionine]
-#[user@asparagine]
-
-   virsh \
-       --connect "${connection:?}" \
-       undefine "${basename:?}"
 
 #---------------------------------------------------------------------
 # Delete any existing volume.
@@ -531,7 +548,7 @@ EOF
     rm "${tempfile:?}"
 
 #---------------------------------------------------------------------
-# Create a test instance.
+# Test a VM instance using the new image.
 #[user@trop01]
 #[user@trop02]
 #[user@trop03]
@@ -540,11 +557,9 @@ EOF
 
     createvm
 
-        INFO : Node name [Delild][Araybwyn][Wumar]
+        INFO : Node name [Delild][Araybwyn][Umiawyth][Wumar]
         INFO : Base name [fedora-28-docker-base-20180706.qcow]
-        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180706.qcow]
-        INFO : Disc name [Delild.qcow][Araybwyn.qcow][Wumar.qcow]
-        INFO : Disc size [16GiB]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
 
 #---------------------------------------------------------------------
 # Test login.
@@ -556,13 +571,34 @@ EOF
 
     vmname=Delild
     vmname=Araybwyn
+    vmname=Umiawyth
     vmname=Wumar
     vmname=eta
+
+    vmuser=Stevedore
 
     ssh "$(id -un)@${vmname:?}" date ## works
     ssh "root@${vmname:?}" date ## not allowed
     ssh "fedora@${vmname:?}" date ## denied
-    ssh "Stevedore@${vmname:?}" date ## works
+    ssh "${vmuser:?}@${vmname:?}" date ## works
+
+#---------------------------------------------------------------------
+# Check docker and docker-compose are installed.
+#[user@trop03]
+
+    ssh "${vmuser:?}@${vmname:?}" \
+        '
+        echo "---- Docker"
+        docker version 
+        echo ""
+        echo "---- Docker compose"
+        docker-compose -version 
+        '
+
+    ssh "${vmuser:?}@${vmname:?}" \
+        '
+        docker info 
+        '
 
 #---------------------------------------------------------------------
 # Shutdown and delete the instance.
@@ -583,11 +619,10 @@ EOF
         undefine "${vmname:?}"
 
 
+ZRQ HERE
 
-
-
-
-
+#---------------------------------------------------------------------
+# Install the new image on our OpenStack service. 
 #---------------------------------------------------------------------
 # Create an initial VM on the university LAN.
 #[user@trop03]
