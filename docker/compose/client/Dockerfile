@@ -18,16 +18,16 @@
 FROM firethorn/tester:2.1.23-zrq-update-depends
 LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV ftpysrc=/home/firethorn-py
+ENV pysrc=/home/firethorn-py
 
 RUN dnf -y install \
     python3 \
     python3-pip
 
-COPY . ${ftpysrc}
+COPY . ${pysrc}
 RUN  pip3 install numpy astropy requests
-RUN  pip3 install --editable ${ftpysrc}
+RUN  pip3 install --editable ${pysrc}
 
-WORKDIR ${ftpysrc}
+WORKDIR ${pysrc}
 
 

@@ -1,0 +1,227 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+# Named after the Aphomia baryptera moth.
+# https://en.wikipedia.org/wiki/Aphomia_baryptera
+#
+
+version: '2.1'
+
+networks:
+
+    # External network
+    rosana:
+
+    # Internal network
+    miriam:
+
+services:
+
+    bethany:
+        image:
+           "firethorn/postgres:${buildtag:-unknown}"
+        read_only:
+            true
+        tmpfs:
+            - '/run'
+            - '/tmp'
+        networks:
+            - miriam
+        environment:
+            POSTGRES_DB:       "${metadata}"
+            POSTGRES_USER:     "${metauser}"
+            POSTGRES_PASSWORD: "${metapass}"
+
+    carolina:
+        image:
+           "firethorn/postgres:${buildtag:-unknown}"
+        read_only:
+            true
+        tmpfs:
+            - '/run'
+            - '/tmp'
+        networks:
+            - miriam
+        environment:
+            POSTGRES_DB:       "${tapschemadata}"
+            POSTGRES_USER:     "${tapschemauser}"
+            POSTGRES_PASSWORD: "${tapschemapass}"
+
+    patricia:
+        image:
+           "firethorn/sql-proxy:${buildtag:-unknown}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+        environment:
+            targethost: "${userhost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+
+    elayne:
+        image:
+           "firethorn/sql-proxy:${buildtag:-unknown}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        stdin_open:
+            true
+        volumes:
+            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
+        networks:
+            - miriam
+        environment:
+            targethost: "${datahost}"
+            tunneluser: "${tunneluser}"
+            tunnelhost: "${tunnelhost}"
+
+    jarmila:
+        image:
+           "firethorn/ogsadai:${buildtag:-unknown}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+        networks:
+            - miriam
+        depends_on:
+            elayne:
+                condition: service_started            
+            patricia:
+                condition: service_started            
+        healthcheck:
+            test: [
+                "CMD-SHELL",
+                "curl --silent --head --fail http://localhost:8080/ogsadai/services || exit 1"
+                ]
+            interval: 30s
+            timeout: 5s
+            retries: 5
+
+    gillian:
+        image:
+           "firethorn/firethorn:${buildtag:-unknown}"
+        read_only:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/firethorn.properties:/etc/firethorn.properties
+        networks:
+            - miriam
+            - rosana
+        environment:
+            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
+
+            firethorn.meta.url:    "jdbc:postgresql://bethany/${metadata}"
+            firethorn.meta.user:   "${metauser}"
+            firethorn.meta.pass:   "${metapass}"
+            firethorn.meta.driver: "org.postgresql.Driver"
+
+            firethorn.user.type: "mssql"
+            firethorn.user.host: "patricia"
+            firethorn.user.data: "${userdata}"
+            firethorn.user.user: "${useruser}"
+            firethorn.user.pass: "${userpass}"
+
+            firethorn.admin.community: "${admingroup}"
+            firethorn.guest.community: "${guestgroup}"
+            firethorn.admin.user.name: "${adminuser}"
+            firethorn.admin.user.pass: "${adminpass}"
+
+            firethorn.tapschema.resource.name: "${tapresource}"
+            firethorn.tapschema.database.type: "pgsql"
+            firethorn.tapschema.database.host: "carolina"
+            firethorn.tapschema.database.name: "${tapschemadata}"
+            firethorn.tapschema.database.user: "${tapschemauser}"
+            firethorn.tapschema.database.pass: "${tapschemapass}"
+
+        depends_on:
+            bethany:
+                condition: service_started
+            carolina:
+                condition: service_started            
+            elayne:
+                condition: service_started            
+            patricia:
+                condition: service_started            
+            jarmila:
+                condition: service_healthy            
+
+    tester:
+        image:
+           "firethorn/firethorn-py:${buildtag:-unknown}"
+        read_only:
+            false
+        stdin_open:
+            true
+        tty:
+            true
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+        networks:
+            - miriam
+        environment:
+            endpointurl: "http://gillian:8080/firethorn"
+
+            datatype:  "mssql"
+            datahost:  "patricia"
+            datadata:  "${datadata}"
+            datauser:  "${datauser}"
+            datapass:  "${datapass}"
+
+            adminuser:  "${adminuser}"
+            adminpass:  "${adminpass}"
+            admingroup: "${admingroup}"
+
+            guestgroup: "${guestgroup}"
+
+            tapresource:   "${tapresource}"
+            tapschematype: "pgsql"
+            tapschemahost: "carolina"
+            tapschemadata: "${tapschemadata}"
+            tapschemauser: "${tapschemauser}"
+            tapschemapass: "${tapschemapass}"
+
+        depends_on:
+            gillian:
+                condition: service_healthy            
+        command:
+            [python3]
+
+

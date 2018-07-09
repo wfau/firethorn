@@ -114,22 +114,18 @@
         02.01-checkout.sh
 
     # -----------------------------------------------------
-    # Merge our branch into main.
-    #[root@builder]
-
-        07.01-merge-start.sh
-
-    # -----------------------------------------------------
-    # Update our version number.
-    #[root@builder]
-
-        07.02-version-step.sh
-
-    # -----------------------------------------------------
     # Build our base images.
     #[root@builder]
 
         04.01-buildbase.sh
+
+# Exit our builder
+exit
+
+# Tag this version of builder as latest
+docker tag "firethorn/builder:${branch}" "firethorn/builder:latest"
+
+# Run a new copy of builder
 
     # -----------------------------------------------------
     # Compile our Java code.
@@ -147,24 +143,24 @@
     # Fetch our Python code.
     #[root@builder]
 
-        PYTHON_CODE=/var/local/build/client
+        echo "Fetching client source"
 
-        if [  -e "${PYTHON_CODE:?}" ]
+        ftpysrc='/var/local/build/client'
+        ftpygit='https://github.com/Zarquan/firethorn.py.git'
+
+        if [  -e "${ftpysrc:?}" ]
         then
-            pushd "${PYTHON_CODE:?}"
+            pushd "${ftpysrc:?}"
 
                 echo "Updating Python code"
-
                 git pull
             
             popd
         else
-            pushd "$(dirname ${PYTHON_CODE:?})"
+            pushd "$(dirname ${ftpysrc:?})"
 
-                gitrepo='https://github.com/Zarquan/firethorn.py.git'
-                echo "Cloning Python code from [${gitrepo:?}]"
-
-                git clone "${gitrepo:?}" "$(basename ${PYTHON_CODE:?})"
+                echo "Cloning Python code from [${ftpygit:?}]"
+                git clone "${ftpygit:?}" "$(basename ${ftpysrc:?})"
 
             popd
         fi
@@ -173,74 +169,24 @@
     # Build our Python container.
     #[root@builder]
 
-        source "${HOME:?}/merge.settings"
-
-        pushd "${PYTHON_CODE:?}"
-
-            docker build \
-                --tag firethorn/firethorn-py:${newversion:?} \
-                --file Fedorafile \
-                .
-
-        popd
-
-# -----------------------------------------------------
-# Run our Python tests.
-#[user@virtual]
-# -----------------------------------------------------
-
-    # -----------------------------------------------------
-    # Update our Mercurial config.
-    #[root@builder]
-
-        # TODO Move to secrets.
+        echo "Building client image"
 
         source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"
-    
-            vi .hg/hgrc
 
-                [paths]
-                default   = http://wfau.metagrid.co.uk/code/firethorn
-            +   push-repo = ssh://Zarquan@data.metagrid.co.uk//var/local/wfau/projects/firethorn/code
+            source 'bin/util.sh'
+            export buildtag=$(getbuildtag)
+            export buildsrc=$(pwd)
+            export ftpysrc
 
-                [ui]
-            +   username = Dave Morris <dmr@roe.ac.uk>
+            docker-compose \
+                --file docker/compose/client/firethorn-py.yml \
+                build
 
         popd
 
-    # -----------------------------------------------------
-    # Commit our merged code.
-    #[root@builder]
-
-        07.03-merge-commit.sh
-
-    # -----------------------------------------------------
-    # Push changes to Mercurial 
-    #[root@builder]
-
-        08.03-mercurial-push.sh
-
-    # -----------------------------------------------------
-    # Tag our new images
-    #[root@builder]
-
-        08.01-docker-latest.sh
-
-    # -----------------------------------------------------
-    # Push images to Docker.
-    #[root@builder]
-
-        08.02-docker-push.sh
-
-    # -----------------------------------------------------
-    # Push binaries to Maven repo.
-    #[root@builder]
-
-        08.04-maven-push.sh
-
-
-
+# Exit our builder
+exit
 
 
 
