@@ -180,7 +180,7 @@ services:
             jarmila:
                 condition: service_healthy            
 
-    tester:
+    angela:
         image:
            "firethorn/firethorn-py:${buildtag:-unknown}"
         read_only:

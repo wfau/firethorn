@@ -190,3 +190,67 @@ exit
 
 
 
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${buildtag:-latest}
+
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        usertype=mssql
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datatype=mssql
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        tunneluser=$(secret 'ssh.tunnel.user')
+        tunnelhost=$(secret 'ssh.tunnel.host')
+
+        admingroup=Hyaenidae
+        adminuser=Aardwolf
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=Afrotheria
+        guestuser=Hyrax
+        guestpass=$(pwgen 20 1)
+
+        tapresource=Wilhelmina
+        tapschemadata=data-$(pwgen 10 1)
+        tapschemauser=user-$(pwgen 10 1)
+        tapschemapass=pass-$(pwgen 10 1)
+
+EOF
+
+# -----------------------------------------------------
+# Link our compose config.
+#[user@virtual]
+
+    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Run our test ...
+#[user@virtual]
+
+
+    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/3b9993dbae53/docker/compose/tests/baryptera/baryptera-local.yml'
+
+    docker-compose \
+        --file "burellus-local.yml" \
+        run \
+            angela
+
+
+
+
+
