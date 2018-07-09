@@ -453,6 +453,10 @@ EOF
 
     basename=fedora-28-docker-base-20180708
     basefile=${basename}.qcow
+
+    testname=alpha-28-docker-base-20180708
+    testfile=${testname}.qcow
+
     tempfile=/tmp/${basefile:?}
 
 #---------------------------------------------------------------------
@@ -504,7 +508,7 @@ EOF
         --connect "${connection:?}" \
         vol-delete \
             --pool "${basepool}" \
-            "${basefile:?}"
+            "${testfile:?}"
 
 #---------------------------------------------------------------------
 # Create a new (empty) volume.
@@ -518,7 +522,7 @@ EOF
         --connect "${connection:?}" \
         vol-create-as \
             "${basepool:?}" \
-            "${basefile:?}" \
+            "${testfile:?}" \
             "${basesize:?}" \
             --format qcow2
 
@@ -534,7 +538,7 @@ EOF
         --connect "${connection:?}" \
         vol-upload \
             --pool "${basepool:?}" \
-            "${basefile:?}" \
+            "${testfile:?}" \
             "${tempfile:?}"
 
 #---------------------------------------------------------------------
