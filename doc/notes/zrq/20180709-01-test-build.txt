@@ -119,13 +119,56 @@
 
         04.01-buildbase.sh
 
-# Exit our builder
-exit
+    # -----------------------------------------------------
+    # Tag this version of builder as latest
+    # (this is only needed if we made significant chances to builder)
+    #[root@builder]
 
-# Tag this version of builder as latest
-docker tag "firethorn/builder:${branch}" "firethorn/builder:latest"
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
 
-# Run a new copy of builder
+            source 'bin/util.sh'
+            export buildtag=$(getbuildtag)
+
+            docker tag "firethorn/builder:${buildtag}" "firethorn/builder:latest"
+
+        popd
+
+    # -----------------------------------------------------
+    # Exit our builder
+    # (this is only needed if we made significant chances to builder)
+    #[root@builder]
+
+        exit
+
+# -----------------------------------------------------
+# Run a new copy of builder.
+# (this is only needed if we made significant chances to builder)
+#[user@virtual]
+
+    export branch
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder 
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        01.01-init.sh
+
+    # -----------------------------------------------------
+    # Update our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
 
     # -----------------------------------------------------
     # Compile our Java code.
@@ -147,6 +190,7 @@ docker tag "firethorn/builder:${branch}" "firethorn/builder:latest"
 
         ftpysrc='/var/local/build/client'
         ftpygit='https://github.com/Zarquan/firethorn.py.git'
+        ftpygit='https://github.com/stvoutsin/firethorn.py.git'
 
         if [  -e "${ftpysrc:?}" ]
         then
@@ -185,9 +229,11 @@ docker tag "firethorn/builder:${branch}" "firethorn/builder:latest"
 
         popd
 
-# Exit our builder
-exit
+    # -----------------------------------------------------
+    # Exit our builder
+    #[root@builder]
 
+        exit
 
 
 # -----------------------------------------------------
@@ -197,7 +243,7 @@ exit
 
     cat > "${HOME:?}/chain.properties" << EOF
 
-        buildtag=${buildtag:-latest}
+        buildtag=${branch:-latest}
 
         metauser=$(pwgen 20 1)
         metapass=$(pwgen 20 1)
@@ -239,18 +285,189 @@ EOF
     ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
 
 # -----------------------------------------------------
-# Run our test ...
+# Download the latest version of our compose file.
 #[user@virtual]
 
+    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/baryptera/baryptera-local.yml'
 
-    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/3b9993dbae53/docker/compose/tests/baryptera/baryptera-local.yml'
+# -----------------------------------------------------
+# Run our network of containers ...
+#[user@virtual]
 
     docker-compose \
-        --file "burellus-local.yml" \
+        --file "baryptera-local.yml" \
         run \
             angela
 
 
+# -----------------------------------------------------
+# Run our Python tests ...
+#[user@pyclient]
+
+import os
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client (using named param).
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    '*',
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass')
+    )
+
+print(
+    atlas_jdbc
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+
+print(
+    atlas_adql
+    )
+
+#
+# Import the target JdbcSchema into AdqlSchema.
+schema_names = [
+    "ATLASDR1"
+    ]
+
+for schema_name in schema_names:
+    print(schema_name)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        schema_name,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + schema_name + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            schema_name,
+            metadoc=metadoc
+            )
+
+
+#
+# Errors scanning the databases need to be logged.
+# 2018-07-09 12:09:07,194 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR2][Database 'ATLASDR2' cannot be opened due to inaccessible files or insufficient memory or disk space ...]
+# 2018-07-09 12:09:07,194 WARN  [main-interface-4] [SQLServerScanner] SQLException [945][S1000][Database 'ATLASDR2' cannot be opened due to inaccessible files or insufficient memory or disk space ...]]
+# 
+# 2018-07-09 12:09:47,701 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][SkyServerV3][Invalid state, the Connection object is closed.] 
+# 2018-07-09 12:09:47,702 WARN  [main-interface-4] [SQLServerScanner] SQLException [0][HY010][Invalid state, the Connection object is closed.] 
+# 
+# 2018-07-09 12:09:49,214 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][SPITZER][Invalid state, the Connection object is closed.] 
+# 2018-07-09 12:09:49,214 WARN  [main-interface-4] [SQLServerScanner] SQLException [0][HY010][Invalid state, the Connection object is closed.] 
+# 
+# 2018-07-09 12:09:57,263 DEBUG [main-interface-4] [JdbcResourceEntity] Scanning catalog [THREEXMM] 
+# 2018-07-09 12:09:58,768 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][THREEXMM][Invalid state, the Connection object is closed.] 
+# 2018-07-09 12:09:58,768 WARN  [main-interface-4] [SQLServerScanner] SQLException [0][HY010][Invalid state, the Connection object is closed.] 
+# 
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using our guest account.
+firethorn.login(
+    os.environ.get('guestuser'),
+    os.environ.get('guestpass'),
+    os.environ.get('guestgroup')
+    )
+
+
+firethorn.login(
+    'Hyrax',
+    'frobengle23',
+    os.environ.get('guestgroup')
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# Create and run a query.
+atlas_adql = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query = workspace.create_query(
+    atlas_adql,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query
+    )
+
+#
+# Loooong time scanning JDBC metadata for user space.
+# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_CDOOAW4PLHLBKAAAAFRLFEJJEQ][TABLE] 
+# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_4QH2URNMIQN3WAAAAFRKBAFIPI][TABLE] 
+# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_FV5FIQONFRMAYAAAAFRKXMS7JU][TABLE] 
+# 2018-07-09 12:21:49,739 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_FE2I3BT5SS3NGAAAAFRLADOCOM][TABLE] 
+# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_JLXAGIZEHPFM2AAAAFRLFX5WHY][TABLE] 
+# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_ZGTORLNMSYRP4AAAAFRKBBGZOE][TABLE] 
+# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_TSNAQINSEZKD2AAAAFRKXRJJB4][TABLE] 
+# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_QKBAKAQHZIKP6AAAAFRLAG35LI][TABLE] 
+# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_CJKG2VUWWE3JMAAAAFRLGNT4O4][TABLE] 
+# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_H5UEMCMMACJVWAAAAFRKBKGC2M][TABLE] 
+# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_JMQXLRND64DX6AAAAFRKZZZY3Y][TABLE] 
+# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_VXBOVKUIAMKV4AAAAFRLAKRIK4][TABLE] 
+# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_EJ3YPWMXGFAJUAAAAFRLHE7GOM][TABLE] 
+# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_XEFAD6C7SN6DUAAAAFRKBMRXRU][TABLE] 
+# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_CUO7HPJUV7RNIAAAAFRKZ4C4BI][TABLE] 
+# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_E7K7B2DCJZ4UWAAAAFRLAOKC7U][TABLE] 
+# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_VMGVNCDREH4GQAAAAFRLH7DGRU][TABLE] 
+# 2018-07-09 12:21:49,742 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_IBMAT3U7DZDRQAAAAFRKBOK2JY][TABLE] 
+# 2018-07-09 12:21:49,742 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_RCUZMWEJVIS2GAAAAFRKZ6NU34][TABLE] 
+
+#
+# Need to use DROP rather than DELETE for old user data.
+# Check side effects ..
+
+#
+# Get the query results.
+print(
+    query.table()
+    )
+print(
+    query.table().count()
+    )
 
 
 
