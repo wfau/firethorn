@@ -76,11 +76,6 @@ services:
             - /etc/localtime:/etc/localtime:ro
         networks:
             - miriam
-        depends_on:
-            elayne:
-                condition: service_started            
-            patricia:
-                condition: service_started            
         healthcheck:
             test: [
                 "CMD-SHELL",
@@ -134,10 +129,6 @@ services:
             bethany:
                 condition: service_started
             carolina:
-                condition: service_started            
-            elayne:
-                condition: service_started            
-            patricia:
                 condition: service_started            
             jarmila:
                 condition: service_healthy            
