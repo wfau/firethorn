@@ -291,7 +291,7 @@ EOF
     wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/baryptera/baryptera-local.yml'
 
 # -----------------------------------------------------
-# Run our network of containers ...
+# Start our containers ...
 #[user@virtual]
 
     docker-compose \
@@ -299,10 +299,9 @@ EOF
         run \
             angela
 
-
 # -----------------------------------------------------
 # Run our Python tests ...
-#[user@pyclient]
+#[user@virtual]
 
 import os
 import time
@@ -335,7 +334,6 @@ atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
     os.environ.get('datauser'),
     os.environ.get('datapass')
     )
-
 print(
     atlas_jdbc
     )
@@ -345,7 +343,6 @@ print(
 atlas_adql = firethorn.firethorn_engine.create_adql_resource(
     "ATLAS ADQL resource"
     )
-
 print(
     atlas_adql
     )
@@ -369,7 +366,6 @@ for schema_name in schema_names:
             schema_name,
             metadoc=metadoc
             )
-
 
 #
 # Errors scanning the databases need to be logged.
@@ -423,15 +419,21 @@ for schema in atlas_adql.select_schemas():
 
 #
 # Create and run a query.
-atlas_adql = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
-query = workspace.create_query(
-    atlas_adql,
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = workspace.create_query(
+    query_str,
     "COMPLETED",
     None,
     3000000
     )
 print(
-    query
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
     )
 
 #
@@ -455,19 +457,141 @@ print(
 # 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_VMGVNCDREH4GQAAAAFRLH7DGRU][TABLE] 
 # 2018-07-09 12:21:49,742 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_IBMAT3U7DZDRQAAAAFRKBOK2JY][TABLE] 
 # 2018-07-09 12:21:49,742 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_RCUZMWEJVIS2GAAAAFRKZ6NU34][TABLE] 
-
 #
 # Need to use DROP rather than DELETE for old user data.
 # Check side effects ..
+#
 
 #
-# Get the query results.
-print(
-    query.table()
-    )
-print(
-    query.table().count()
-    )
+# Iterate the metadata tree
+for schema in atlas_adql.select_schemas():
+    for table in schema.select_tables():
+        print(
+            "table  [{}][{}]".format(
+                schema.name(),
+                table.name()
+                )
+            )
+        query_str = "SELECT TOP 10 * FROM {}.{}".format(
+            schema.name(),
+            table.name()
+            )
+        query_obj = workspace.create_query(
+            query_str,
+            "COMPLETED",
+            None,
+            3000000
+            )
+        py_table = query_obj.table().as_astropy()
+        py_table.pprint()
+
+#
+# Run some queries in parallel
+
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+
+query_str = "SELECT TOP 10000 ra, dec FROM ATLASDR1.atlasSource"
+
+def do_query(workspace, query_str, limit, delay):
+    query_obj = workspace.create_query(
+        query_str,
+        "COMPLETED",
+        None,
+        200000,
+            {
+            "adql.query.limit.rows"  : limit,
+            "adql.query.delay.every" : delay
+            }
+        )
+    return query_obj.json_object.get("results").get("count")
+
+def do_queries(workspace, query_str, threads, delay):
+    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        futures = {
+            executor.submit(
+                do_query,
+                workspace,
+                query_str,
+                limit,
+                delay
+                ): limit for limit in range(threads, 0, -1)
+            }
+        for future in concurrent.futures.as_completed(futures):
+            print(
+                future.result()
+                )
+
+for threads in range(1, 50):
+    for delay in range(1000, -100, -100):
+        print("---- ", threads, delay)
+        do_queries(
+            workspace,
+            query_str,
+            threads,
+            delay
+            )
 
 
+#
+# Exit the Python shell
+
+    Ctrl^D
+    
+# -----------------------------------------------------
+# Stop our containers ...
+#[user@virtual]
+
+    docker-compose \
+        --file "baryptera-local.yml" \
+        stop
+
+# -----------------------------------------------------
+# Take a cop of the firethorn log file.
+#[user@virtual]
+
+    docker cp stevedore_gillian_1:/var/local/tomcat/logs/firethorn.log /tmp/firethorn.log
+
+# -----------------------------------------------------
+# Count the bytes in firethorn.log.
+#[user@virtual]
+
+    stat --printf "%s" /tmp/firethorn.log
+
+        141963613
+
+# -----------------------------------------------------
+# Count the lines in firethorn.log.
+#[user@virtual]
+
+    wc -l /tmp/firethorn.log 
+
+        1188074 /tmp/firethorn.log
+
+# -----------------------------------------------------
+# Remove our containers ...
+#[user@virtual]
+
+    docker-compose \
+        --file "baryptera-local.yml" \
+        down
+
+
+
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Separate shell, find and tail the logfile.
+#[user@virtual]
+
+    logpath=$(
+        docker inspect \
+            stevedore_gillian_1 \
+        | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+        )
+
+    tail -f "${logpath:?}/firethorn.log"
 
