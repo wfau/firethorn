@@ -25,7 +25,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
  *
  */
 //@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class InvalidStateRequestException
+public class InvalidStateException
 extends InvalidRequestException
     {
     /**
@@ -38,7 +38,7 @@ extends InvalidRequestException
      * Default message for simple constructor.
      *
      */
-    public static final String DEFAULT_MESSAGE = "Invalid state transition [:prev:][:next:] for [:ident:]" ;
+    public static final String DEFAULT_MESSAGE = "Invalid state transition [:prev:]->[:next:] for [:ident:]" ;
 
     /**
      * Create a default message.
@@ -56,7 +56,7 @@ extends InvalidRequestException
      * Public constructor, with default message.
      *
      */
-    public InvalidStateRequestException(final BlueTask<?> task, final TaskState prev, final TaskState next)
+    public InvalidStateException(final BlueTask<?> task, final TaskState prev, final TaskState next)
         {
         this(
             task,
@@ -72,7 +72,7 @@ extends InvalidRequestException
      * Public constructor, with specific message.
      *
      */
-    public InvalidStateRequestException(final BlueTask<?> task, final String message)
+    public InvalidStateException(final BlueTask<?> task, final String message)
         {
         super(message);
         this.ident = task.ident();

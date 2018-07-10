@@ -214,7 +214,6 @@ extends TreeComponent
 
     /**
      * The {@link BlueQuery} that generated this table.
-     * @TODO Should this only be on AdqlTable ? 
      * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
      *
      */

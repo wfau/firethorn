@@ -127,7 +127,7 @@ implements BlueTask<TaskType>
         @Override
         @UpdateAtomicMethod
         public TaskType advance(final Identifier ident, final TaskState prev, final TaskState next, long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException, ProtectionException
+        throws IdentifierNotFoundException, InvalidStateException, ProtectionException
             {
             log.debug("advance(Identifier, TaskState, TaskState, long)");
             log.debug("  ident [{}]", ident);
@@ -1171,7 +1171,7 @@ implements BlueTask<TaskType>
     
     @Override
     public void advance(final TaskState prev, final TaskState next, final Long wait)
-    throws InvalidStateRequestException, ProtectionException
+    throws InvalidStateException, ProtectionException
         {
         log.debug("advance(TaskState, TaskState, Long)");
         log.debug("  ident [{}]", ident());
@@ -1644,10 +1644,10 @@ implements BlueTask<TaskType>
      * 
      */
     private void reject(final TaskState prev, final TaskState next)
-    throws InvalidStateRequestException
+    throws InvalidStateException
         {
         log.warn("Invalid status change [{}][{}]", prev.name(), next.name());
-        throw new InvalidStateRequestException(
+        throw new InvalidStateException(
     		this,
     		prev,
     		next
