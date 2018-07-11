@@ -1,0 +1,398 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+##################################################################
+## Running Taplint on WSA TAP database on Ulov (tap.metagrid.xyz)#
+##################################################################
+
+stelios@stelios-pc:~$ java -Xmx4096m -jar stilts.jar -disk taplint tapurl=http://tap.metagrid.xyz/wsa debug=true
+This is STILTS taplint, 3.1-4/a0c52d8 (2018-05-18)
+Static report types: ERROR(123), WARNING(47), INFO(20), SUMMARY(9), FAILURE(21)
+
+Section TMV: Validate table metadata against XML schema
+I-TMV-VURL-1 Validating http://tap.metagrid.xyz/wsa/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+S-TMV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section TME: Check content of tables metadata from /tables
+I-TME-TURL-1 Reading table metadata from http://tap.metagrid.xyz/wsa/tables
+S-TME-SUMM-1 Schemas: 12, Tables: 1180, Columns: 59187, Foreign Keys: 0
+S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
+S-TME-FLGO-1 Other column flags: none
+
+Section TMS: Check content of tables metadata from TAP_SCHEMA
+I-TMS-QSUB-1 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.schemas
+I-TMS-QGET-1 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
+I-TMS-QSUB-2 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.tables
+I-TMS-QGET-2 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
+I-TMS-QSUB-3 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.columns
+I-TMS-QGET-3 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
+I-TMS-QSUB-4 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.keys
+I-TMS-QGET-4 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
+I-TMS-QSUB-5 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-5 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
+I-TMS-QSUB-6 Submitting query: SELECT principal, indexed, std, "size" FROM TAP_SCHEMA.columns
+I-TMS-QGET-6 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=59197
+I-TMS-QSUB-7 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.columns
+I-TMS-QGET-7 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+*+FROM+TAP_SCHEMA.columns&MAXREC=1
+I-TMS-QSUB-8 Submitting query: SELECT ft_column_id, std, indexed, principal, ts_column_id, datatype, utype, ucd, unit, description, column_name, table_name FROM TAP_SCHEMA.columns
+I-TMS-QGET-8 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+ft_column_id%2C+std%2C+indexed%2C+principal%2C+ts_column_id%2C+datatype%2C+utype%2C+ucd%2C+unit%2C+description%2C+column_name%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=59197
+E-TMS-VOOT-1 (l.2, c.17): Bad integer string 'float'
+E-TMS-VOXS-1 (l.2, c.50): Bad integer string 'pixels'
+E-TMS-VOGC-1 (l.2, c.108): Bad integer string 'SEX source extraction tool option for mosaic FWHM'
+E-TMS-VOUR-1 (l.2, c.159): The element type "TD" must be terminated by the matching end-tag "</TD>".
+E-TMS-CLIO-1 Error reading TAP_SCHEMA.columns table [Result parse error: The element type "TD" must be terminated by the matching end-tag "</TD>".]
+java.io.IOException: Result parse error: The element type "TD" must be terminated by the matching end-tag "</TD>".
+	at uk.ac.starlink.ttools.taplint.TapSchemaStage$LintTapSchemaInterrogator.executeQuery(TapSchemaStage.java:288)
+	at uk.ac.starlink.vo.TapSchemaInterrogator$MetaQuerier.query(TapSchemaInterrogator.java:730)
+	at uk.ac.starlink.vo.TapSchemaInterrogator$MetaQuerier.readMap(TapSchemaInterrogator.java:642)
+	at uk.ac.starlink.vo.TapSchemaInterrogator.readMap(TapSchemaInterrogator.java:208)
+	at uk.ac.starlink.ttools.taplint.TapSchemaStage.readTableMetadata(TapSchemaStage.java:78)
+	at uk.ac.starlink.ttools.taplint.TableMetadataStage.run(TableMetadataStage.java:85)
+	at uk.ac.starlink.ttools.taplint.TapSchemaStage.run(TapSchemaStage.java:45)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+Caused by: org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 159; The element type "TD" must be terminated by the matching end-tag "</TD>".
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.TapSchemaStage$LintTapSchemaInterrogator.executeQuery(TapSchemaStage.java:285)
+	... 9 more
+I-TMS-QSUB-9 Submitting query: SELECT from_column, target_column, key_id FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-9 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=59197
+W-TMS-NOCT-1 No Content-Type header for http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=59197
+I-TMS-VVNL-1 Undeclared VOTable version; assuming v1.2
+E-TMS-VOCX-1 (l.1, c.1): Content is not allowed in prolog.
+E-TMS-KCIO-1 Error reading TAP_SCHEMA.key_columns table [Result parse error: Content is not allowed in prolog.]
+java.io.IOException: Result parse error: Content is not allowed in prolog.
+	at uk.ac.starlink.ttools.taplint.TapSchemaStage$LintTapSchemaInterrogator.executeQuery(TapSchemaStage.java:288)
+	at uk.ac.starlink.vo.TapSchemaInterrogator$MetaQuerier.query(TapSchemaInterrogator.java:730)
+	at uk.ac.starlink.vo.TapSchemaInterrogator$MetaQuerier.readMap(TapSchemaInterrogator.java:642)
+	at uk.ac.starlink.vo.TapSchemaInterrogator.readMap(TapSchemaInterrogator.java:208)
+	at uk.ac.starlink.ttools.taplint.TapSchemaStage.readTableMetadata(TapSchemaStage.java:87)
+	at uk.ac.starlink.ttools.taplint.TableMetadataStage.run(TableMetadataStage.java:85)
+	at uk.ac.starlink.ttools.taplint.TapSchemaStage.run(TapSchemaStage.java:45)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+Caused by: org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 1; Content is not allowed in prolog.
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.TapSchemaStage$LintTapSchemaInterrogator.executeQuery(TapSchemaStage.java:285)
+	... 9 more
+S-TMS-SUMM-1 Schemas: 12, Tables: 1180, Columns: 0, Foreign Keys: 0
+S-TMS-FLGS-1 Standard column flags: indexed: 0, principal: 0, std: 0
+S-TMS-QNUM-1 Successful/submitted TAP queries: 11/13
+S-TMS-QTIM-1 Average successful query time: 2.5s
+I-TMS-QSUB-x (4 more)
+I-TMS-QGET-x (4 more)
+
+Section TMC: Compare table metadata from /tables and TAP_SCHEMA
+E-TMC-CM12-1 Column specObjID from table BestDR9.SpecObjAll exists in /tables but not in TAP_SCHEMA
+E-TMC-CM12-2 Column bestObjID from table BestDR9.SpecObjAll exists in /tables but not in TAP_SCHEMA
+E-TMC-CM12-3 Column fluxObjID from table BestDR9.SpecObjAll exists in /tables but not in TAP_SCHEMA
+E-TMC-CM12-4 Column targetObjID from table BestDR9.SpecObjAll exists in /tables but not in TAP_SCHEMA
+E-TMC-CM12-5 Column plateID from table BestDR9.SpecObjAll exists in /tables but not in TAP_SCHEMA
+E-TMC-CM12-6 Column sciencePrimary from table BestDR9.SpecObjAll exists in /tables but not in TAP_SCHEMA
+E-TMC-CM12-7 Column legacyPrimary from table BestDR9.SpecObjAll exists in /tables but not in TAP_SCHEMA
+E-TMC-CM12-8 Column seguePrimary from table BestDR9.SpecObjAll exists in /tables but not in TAP_SCHEMA
+E-TMC-CM12-9 Column segue1Primary from table BestDR9.SpecObjAll exists in /tables but not in TAP_SCHEMA
+E-TMC-CM12-x (59178 more)
+
+Section CPV: Validate capabilities against XML schema
+I-CPV-VURL-1 Validating http://tap.metagrid.xyz/wsa/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+S-CPV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section CAP: Check content of TAPRegExt capabilities record
+I-CAP-CURL-1 Reading capability metadata from http://tap.metagrid.xyz/wsa/capabilities
+
+Section AVV: Validate availability against XML schema
+I-AVV-VURL-1 Validating http://tap.metagrid.xyz/wsa/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section QGE: Make ADQL queries in sync GET mode
+F-QGE-ZCOL-1 No columns known for UKIDSSDR5PLUS.CurationTask, can't make column queries
+F-QGE-ZCOL-2 No columns known for UKIDSSDR5PLUS.CurrentAstrometry, can't make column queries
+F-QGE-ZCOL-3 No columns known for UKIDSSDR5PLUS.ExternalSurvey, can't make column queries
+I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
+I-QGE-QGET-1 Query GET URL: http://tap.metagrid.xyz/wsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
+S-QGE-QNUM-1 Successful/submitted TAP queries: 0/0
+
+Section QPO: Make ADQL queries in sync POST mode
+F-QPO-ZCOL-1 No columns known for UKIDSSDR5PLUS.CurationTask, can't make column queries
+F-QPO-ZCOL-2 No columns known for UKIDSSDR5PLUS.CurrentAstrometry, can't make column queries
+F-QPO-ZCOL-3 No columns known for UKIDSSDR5PLUS.ExternalSurvey, can't make column queries
+I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
+S-QPO-QNUM-1 Successful/submitted TAP queries: 0/0
+
+Section QAS: Make ADQL queries in async mode
+F-QAS-ZCOL-1 No columns known for UKIDSSDR5PLUS.CurationTask, can't make column queries
+F-QAS-ZCOL-2 No columns known for UKIDSSDR5PLUS.CurrentAstrometry, can't make column queries
+F-QAS-ZCOL-3 No columns known for UKIDSSDR5PLUS.ExternalSurvey, can't make column queries
+I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
+I-QAS-QJOB-1 Submitted query at http://tap.metagrid.xyz/firethorn/tap/54/async/1617445
+S-QAS-QNUM-1 Successful/submitted TAP queries: 0/0
+
+Section UWS: Test asynchronous UWS/TAP behaviour
+I-UWS-CJOB-1 Created new job http://tap.metagrid.xyz/firethorn/tap/54/async/1617446
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://tap.metagrid.xyz/firethorn/tap/54/async/1617446/parameters
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://tap.metagrid.xyz/firethorn/tap/54/async/1617446/phase
+I-UWS-POPA-3 POSTed ACTION=DELETE to http://tap.metagrid.xyz/firethorn/tap/54/async/1617446
+I-UWS-CJOB-2 Created new job http://tap.metagrid.xyz/firethorn/tap/54/async/1617447
+I-UWS-CJOB-3 Created new job http://tap.metagrid.xyz/firethorn/tap/54/async/1617448
+W-UWS-TFMT-1 Not ISO-8601 content "" from http://tap.metagrid.xyz/firethorn/tap/54/async/1617448/destruction
+I-UWS-POPA-4 POSTed PHASE=RUN to http://tap.metagrid.xyz/firethorn/tap/54/async/1617448/phase
+I-UWS-JOFI-1 Job completed immediately - can't test phase progression
+
+Section MDQ: Check table query result columns against declared metadata
+I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM BestDR9.AtlasOutline
+E-MDQ-QERR-1 Failed TAP query SELECT TOP 1 * FROM BestDR9.AtlasOutline [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+I-MDQ-QSUB-2 Submitting query: SELECT TOP 1 * FROM BestDR9.CalibStatus
+E-MDQ-QERR-2 Failed TAP query SELECT TOP 1 * FROM BestDR9.CalibStatus [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+I-MDQ-QSUB-3 Submitting query: SELECT TOP 1 * FROM BestDR9.Columns
+E-MDQ-CLRD-1 SELECT * for table BestDR9.Columns returns 7 undeclared columns: tablename, name, unit, ucd, enum, description, rank
+I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM BestDR9.CoordType
+E-MDQ-CLRD-2 SELECT * for table BestDR9.CoordType returns 3 undeclared columns: name, value, description
+I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM BestDR9.DBColumns
+E-MDQ-CLRD-3 SELECT * for table BestDR9.DBColumns returns 7 undeclared columns: tablename, name, unit, ucd, enum, description, rank
+I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM BestDR9.DBObjects
+E-MDQ-CLRD-4 SELECT * for table BestDR9.DBObjects returns 6 undeclared columns: name, type, access, description, text, rank
+I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM BestDR9.DBViewCols
+E-MDQ-CLRD-5 SELECT * for table BestDR9.DBViewCols returns 3 undeclared columns: name, viewname, parent
+I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM BestDR9.DataConstants
+E-MDQ-CLRD-6 SELECT * for table BestDR9.DataConstants returns 4 undeclared columns: field, name, value, description
+I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM BestDR9.Dependency
+E-MDQ-CLRD-7 SELECT * for table BestDR9.Dependency returns 3 undeclared columns: filename, parent, child
+E-MDQ-CLRD-8 SELECT * for table BestDR9.Diagnostics returns 3 undeclared columns: name, type, count
+E-MDQ-CLRD-9 SELECT * for table BestDR9.FIRST returns 11 undeclared columns: objID, ra, dec, warning, peak, integr, rms, major, minor, pa, skyrms
+E-MDQ-QERR-3 Failed TAP query SELECT TOP 1 * FROM BestDR9.Frame [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+E-MDQ-QERR-4 Failed TAP query SELECT TOP 1 * FROM BestDR9.Region [Service error: " Encountered "Region". Was expecting one of: "\"" <REGULAR_IDENTIFIER> "]
+java.io.IOException: Service error: " Encountered "Region". Was expecting one of: "\"" <REGULAR_IDENTIFIER> "
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+E-MDQ-QERR-5 Failed TAP query SELECT TOP 1 * FROM BestDR9.SpecObj [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+E-MDQ-QERR-6 Failed TAP query SELECT TOP 1 * FROM BestDR9.SpecObjAll [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+E-MDQ-QERR-7 Failed TAP query SELECT TOP 1 * FROM BestDR9.segue1SpecObjAll [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+E-MDQ-QERR-8 Failed TAP query SELECT TOP 1 * FROM BestDR9.segue2SpecObjAll [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+E-MDQ-QERR-9 Failed TAP query SELECT TOP 1 * FROM BestDR9.segueSpecObjAll [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+I-MDQ-VVNL-1 Undeclared VOTable version; assuming v1.2
+E-MDQ-QERX-1 Failed to parse result for TAP query SELECT TOP 1 * FROM UKIDSSDR2PLUS.UKIDSSDetection [White spaces are required between publicId and systemId.]
+org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 50; White spaces are required between publicId and systemId.
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+I-MDQ-VVNL-2 Undeclared VOTable version; assuming v1.2
+E-MDQ-QERX-2 Failed to parse result for TAP query SELECT TOP 1 * FROM UKIDSSDR3PLUS.UKIDSSDetection [White spaces are required between publicId and systemId.]
+org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 50; White spaces are required between publicId and systemId.
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+I-MDQ-VVNL-3 Undeclared VOTable version; assuming v1.2
+E-MDQ-QERX-3 Failed to parse result for TAP query SELECT TOP 1 * FROM UKIDSSDR4PLUS.UKIDSSDetection [White spaces are required between publicId and systemId.]
+org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 50; White spaces are required between publicId and systemId.
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+I-MDQ-VVNL-4 Undeclared VOTable version; assuming v1.2
+E-MDQ-QERX-4 Failed to parse result for TAP query SELECT TOP 1 * FROM UKIDSSDR5PLUS.UKIDSSDetection [White spaces are required between publicId and systemId.]
+org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 50; White spaces are required between publicId and systemId.
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+I-MDQ-VVNL-5 Undeclared VOTable version; assuming v1.2
+E-MDQ-QERX-5 Failed to parse result for TAP query SELECT TOP 1 * FROM UKIDSSDR6PLUS.UKIDSSDetection [White spaces are required between publicId and systemId.]
+org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 50; White spaces are required between publicId and systemId.
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+I-MDQ-VVNL-6 Undeclared VOTable version; assuming v1.2
+E-MDQ-QERX-6 Failed to parse result for TAP query SELECT TOP 1 * FROM UKIDSSDR7PLUS.UKIDSSDetection [White spaces are required between publicId and systemId.]
+org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 50; White spaces are required between publicId and systemId.
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:294)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:45)
+S-MDQ-QNUM-1 Successful/submitted TAP queries: 1165/1180
+S-MDQ-QTIM-1 Average successful query time: 3.5s
+I-MDQ-QSUB-x (1171 more)
+E-MDQ-CLRD-x (1156 more)
+
+Section OBS: Test implementation of ObsCore Data Model
+I-OBS-NODM-1 Table capabilities lists no ObsCore DataModel - no ObsCore tests
+
+Section UPL: Make queries with table uploads
+F-UPL-NOUP-1 Table capabilities lists no upload methods - will not attempt upload tests
+
+Section EXA: Check content of examples document
+I-EXA-EURL-1 Reading examples document from http://tap.metagrid.xyz/wsa/examples
+F-EXA-EXNO-1 No examples document at http://tap.metagrid.xyz/wsa/examples
+
+Totals: Errors: 60374; Warnings: 2; Infos: 1233; Summaries: 15; Failures: 11
+
+
