@@ -41,11 +41,24 @@
     https://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/SizeAndTimeBasedRollingPolicy.html
 
 
+    <!--+
+        | Set scan to true to enable live edits.
+        +-->
+    <configuration scan="true">
+
+
         <!--+
             | Different appenders with different levels.
             | https://stackoverflow.com/a/23894254
             | https://stackoverflow.com/a/13284960
             +-->
+        <root level="ALL">
+            <appender-ref ref="info-log" />
+            <appender-ref ref="error-log" />
+            <appender-ref ref="debug-log" />
+            <appender-ref ref="trace-log" />
+        </root>
+
         <appender name="info-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>logs/firethorn-info.log</file>
             <append>true</append>
@@ -100,12 +113,114 @@
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
                 <!-- Rollover hourly -->
                 <fileNamePattern>logs/firethorn-debug-%d{yyyyMMddHH, UTC}-%i.log.gz</fileNamePattern>
-                <!-- Each file should be at most 100MB -->
-                <maxFileSize>100MB</maxFileSize>    
+                <!-- Each file should be at most 1GB -->
+                <maxFileSize>1GB</maxFileSize>    
+                <!-- Keep 4 hours of history -->
+                <maxHistory>4</maxHistory>
+                <!-- Maximum 4GB of disc space -->
+                <totalSizeCap>4GB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
+        <appender name="trace-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/firethorn-trace.log</file>
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+              <level>DEBUG</level>
+            </filter>
+            <encoder>
+                <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>
+            </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- Rollover hourly -->
+                <fileNamePattern>logs/firethorn-trace-%d{yyyyMMddHH, UTC}-%i.log.gz</fileNamePattern>
+                <!-- Each file should be at most 1GB -->
+                <maxFileSize>1GB</maxFileSize>    
                 <!-- Keep 4 hours of history -->
                 <maxHistory>4</maxHistory>
                 <!-- Maximum 8GB of disc space -->
                 <totalSizeCap>8GB</totalSizeCap>
             </rollingPolicy>
         </appender>
+
+
+# -----------------------------------------------------
+# Stop our containers
+#[user@virtual]
+
+    docker-compose \
+        --file "baryptera-local.yml" \
+        down
+
+# -----------------------------------------------------
+# Edit the compose file to mount logback.xml from external path.
+#[user@virtual]
+
+    vi baryptera-local.yml 
+
+        gillian:
+            image:
+               "firethorn/firethorn:${buildtag:-unknown}"
+            read_only:
+                false
+            tmpfs:
+                - /run
+                - /tmp
+            volumes:
+                - /etc/localtime:/etc/localtime:ro
+                - ${HOME}/firethorn.properties:/etc/firethorn.properties
+        +       - ${HOME}/logback.xml:/var/local/tomcat/webapps/firethorn/WEB-INF/classes/logback.xml
+            networks:
+                - miriam
+                - rosana
+            environment:
+                firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
+
+# -----------------------------------------------------
+# Start our containers
+#[user@virtual]
+
+    docker-compose \
+        --file "baryptera-local.yml" \
+        run \
+            angela
+
+
+        
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Separate shell, find and tail the logfile.
+#[user@virtual]
+
+    sudo -s
+
+        pushd $(
+            docker inspect \
+                stevedore_gillian_1 \
+          | jq -r '
+                .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+                '
+                )
+
+        ls -alh
+
+            -rw-r-----. 1 polkitd systemd-coredump 888K Jul 11 12:54 firethorn-debug-2018071111.0.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 1.1M Jul 11 12:54 firethorn-debug-2018071111.1.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 1.1M Jul 11 12:54 firethorn-debug-2018071111.2.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 813K Jul 11 12:56 firethorn-debug-2018071111.3.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 651K Jul 11 12:57 firethorn-debug-2018071111.4.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 627K Jul 11 12:58 firethorn-debug-2018071111.5.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 611K Jul 11 12:58 firethorn-debug-2018071111.6.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 603K Jul 11 12:59 firethorn-debug-2018071111.7.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 592K Jul 11 12:59 firethorn-debug-2018071111.8.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump  49K Jul 11 13:00 firethorn-debug-2018071111.9.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 603K Jul 11 13:00 firethorn-debug-2018071112.0.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 602K Jul 11 13:01 firethorn-debug-2018071112.1.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 590K Jul 11 13:01 firethorn-debug-2018071112.2.log.gz
+            -rw-r-----. 1 polkitd systemd-coredump 3.2M Jul 11 13:02 firethorn-debug-2018071112.3.log
+            -rw-r-----. 1 polkitd systemd-coredump 507K Jul 11 13:02 firethorn-error-20180711.0.log
+            -rw-r-----. 1 polkitd systemd-coredump 4.9M Jul 11 13:02 firethorn-info-20180711.0.log
+
+    #
+    # Rollover triggers edited to limit debug log to 10MB filesize, 40MB totalcap for testing ...
 
