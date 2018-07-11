@@ -1347,19 +1347,24 @@ implements BlueTask<TaskType>
 	            final BlueTaskEntity.Handle handle = handle();
 	            if (handle != null)
 	            	{
-		            log.trace("Before listener.waitfor() [{}]:[{}] [{}]:[{}]",
+                    log.trace("Before listener.waitfor() [{}][{}]:[{}]->[{}][{}]->[{}]",
                         this.ident(),
                         handle.ident(),
+                        prev,
                         this.state(),
-                        handle.state()
-	                    );
+                        handle.state(),
+                        next
+                        );
 		            //
 		            // Wait for a state change event.
 					if ((prev != null) || (next != null))
 						{
-			            log.debug("Waiting for state change event");
-			            log.debug("  prev  [{}]", prev);
-			            log.debug("  next  [{}]", next);
+			            log.trace("Waiting for state change event [{}]:[{}]->[{}]:[{}]",
+		                    this.ident(),
+		                    prev,
+		                    next,
+		                    wait
+			                );
 					    final Handle.Listener listener = new StatusEventListener(
 							prev,
 							next,
@@ -1372,7 +1377,7 @@ implements BlueTask<TaskType>
 		            //
 		            // Wait any event.
 					else {
-		            	log.debug("Waiting for any event");
+		            	log.trace("Waiting for any event");
 					    final Handle.Listener listener = new AnyEventListener(
 							wait
 					        );
@@ -1380,39 +1385,28 @@ implements BlueTask<TaskType>
 							handle
 							);
 						}
-
-					log.debug("After listener.waitfor()");
-		            log.debug("  this ident [{}]", this.ident());
-		            log.debug("  hand ident [{}]", handle.ident());
-		            log.debug("  prev state [{}]", prev);
-		            log.debug("  this state [{}]", this.state());
-		            log.debug("  hand state [{}]", handle.state());
-		            log.debug("  next state [{}]", next);
-
+					log.trace("After listener.waitfor() [{}][{}]:[{}]->[{}][{}]->[{}]",
+				        this.ident(),
+				        handle.ident(),
+				        prev,
+				        this.state(),
+				        handle.state(),
+				        next
+				        );
+					//
 		            // Update our state from the Handle.
 		            update(handle);
-/*
- * 
-		            log.debug("Checking Handle status");
-	                if (handle.state().compareTo(this.state()) > 0)
-	                    {
-	                    log.debug("Adopting Handle status");
-	                    this.state = handle.state(); 
-	                    }
- *                  
- */
-		
-		            //
+//
 //TODO Remove the sticky flag and possibly release the Handle.
 //
 
     				}
 	            else {
-	                log.debug("Null handle - skipping wait");
+	                log.trace("Null handle - skipping wait");
 	            	}
 				}
 			else {
-				log.debug("State is not active - skipping wait");
+				log.trace("State is inactive - skipping wait");
 				}
 			}
     	}
@@ -1423,8 +1417,12 @@ implements BlueTask<TaskType>
      */
     public void update(final BlueTaskEntity.Handle handle)
         {
-        log.debug("Checking Handle status [{}]", this.ident());
-        log.debug("  entity state [{}]", this.state());
+        log.debug("update(Handle) [{}][{}]:[{}][{}]",
+            this.ident(),
+            handle.ident(),
+            this.state(),
+            handle.state()
+            );
         if (handle != null)
             {
             log.debug("  handle state [{}]", handle.state());
