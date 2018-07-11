@@ -1,0 +1,111 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Google foo for 'logback different level to different files'
+    https://www.google.com/search?q=logback+different+level+to+different+files
+
+    How to configure different logback levels to different appenders?
+    https://stackoverflow.com/questions/23893745/how-to-configure-different-logback-levels-to-different-appenders
+    Best answer
+    https://stackoverflow.com/a/23894254
+
+    Logback different files for different levels
+    https://stackoverflow.com/questions/13284535/logback-different-files-for-different-levels
+
+    Logback manual
+    https://logback.qos.ch/manual/appenders.html#RollingFileAppender
+    https://logback.qos.ch/manual/appenders.html#SizeBasedTriggeringPolicy
+    https://logback.qos.ch/manual/appenders.html#SizeAndTimeBasedRollingPolicy
+
+    JavaDoc
+    https://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/SizeAndTimeBasedRollingPolicy.html
+
+
+        <!--+
+            | Different appenders with different levels.
+            | https://stackoverflow.com/a/23894254
+            | https://stackoverflow.com/a/13284960
+            +-->
+        <appender name="info-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/firethorn-info.log</file>
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+              <level>INFO</level>
+            </filter>
+            <encoder>
+                <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>
+            </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- Rollover daily -->
+                <fileNamePattern>logs/firethorn-info-%d{yyyyMMdd, UTC}-%i.log.gz</fileNamePattern>
+                <!-- Each file should be at most 100MB -->
+                <maxFileSize>100MB</maxFileSize>    
+                <!-- Keep 4 days of history -->
+                <maxHistory>4</maxHistory>
+                <!-- Maximum 1GB of disc space -->
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
+        <appender name="error-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/firethorn-error.log</file>
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+              <level>ERROR</level>
+            </filter>
+            <encoder>
+                <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>
+            </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- Rollover daily -->
+                <fileNamePattern>logs/firethorn-error-%d{yyyyMMdd, UTC}-%i.log.gz</fileNamePattern>
+                <!-- Each file should be at most 100MB -->
+                <maxFileSize>100MB</maxFileSize>    
+                <!-- Keep 4 days of history -->
+                <maxHistory>4</maxHistory>
+                <!-- Maximum 1GB of disc space -->
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
+        <appender name="debug-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/firethorn-debug.log</file>
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+              <level>DEBUG</level>
+            </filter>
+            <encoder>
+                <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>
+            </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- Rollover hourly -->
+                <fileNamePattern>logs/firethorn-debug-%d{yyyyMMddHH, UTC}-%i.log.gz</fileNamePattern>
+                <!-- Each file should be at most 100MB -->
+                <maxFileSize>100MB</maxFileSize>    
+                <!-- Keep 4 hours of history -->
+                <maxHistory>4</maxHistory>
+                <!-- Maximum 8GB of disc space -->
+                <totalSizeCap>8GB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
