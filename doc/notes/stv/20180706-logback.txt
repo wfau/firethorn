@@ -1,0 +1,289 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+ssh Stevedore@Siamond
+
+
+sudo su
+
+## Create Log directories and give them permissions
+
+configlog=/var/config/gillian 
+mkdir -p ${configlog}
+
+chown root:Stevedore ${configlog}
+chcon -t svirt_sandbox_file_t ${configlog}
+
+
+
+
+## We need to mount the log directories as volumes
+
+nano docker-compose.yml
+
+..
+    jarmila:
+        image:
+           "firethorn/ogsadai:${buildtag:-latest}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /var/logs/jarmila:/var/local/tomcat/logs
+        networks:
+            - miriam
+        healthcheck:
+            test: [
+                "CMD-SHELL",
+                "curl --silent --head --fail http://localhost:8080/ogsadai/services || exit 1"
+                ]
+            interval: 30s
+            timeout: 5s
+            retries: 5
+
+    gillian:
+        image:
+           "firethorn/firethorn:${buildtag:-latest}"
+        read_only:
+            false
+        tmpfs:
+            - /run
+            - /tmp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /var/logs/gillian:/var/local/tomcat/logs
+            - /var/config/gillian/logback.xml:/var/local/tomcat/webapps/firethorn/WEB-INF/classes/logback.xml
+            - ${HOME}/firethorn.properties:/etc/firethorn.properties
+
+
+..
+
+
+
+
+cat >/var/config/gillian/logback.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<configuration scan="true" scanPeriod="30 seconds" > 
+
+	<!--+
+	    | Default console appender (e.g. tomcat/logs/catalina.out).
+	    | http://logback.qos.ch/manual/configuration.html
+	    | http://logback.qos.ch/manual/appenders.html
+	    | http://logback.qos.ch/manual/layouts.html
+	    +-->
+        <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+            <file>logs/firethorn.log</file>
+            <append>true</append>
+            <encoder>
+                <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>
+            </encoder>
+        </appender>
+
+        <logger name="jdbc" level="OFF" />
+        <logger name="jdbc.sqlonly" level="debug" />
+
+        <root level="INFO">
+               <appender-ref ref="FILE" />
+        </root>
+
+
+	
+	<!--+
+	    | Firethorn logging.
+	    +-->
+	<logger name="uk.ac.roe.wfau.firethorn">
+		<level value="INFO"/>
+	</logger>
+	<logger name="uk.ac.roe.wfau.firethorn.adql.parser">
+		<level value="INFO"/>
+	</logger>
+	<logger name="uk.ac.roe.wfau.firethorn.util.xml">
+		<level value="WARN"/>
+	</logger>
+
+	<!--+
+	    | Spring loggers.
+	    +-->
+	<logger name="org.springframework">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.core">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.beans">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.context">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.http">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.aop">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.jdbc">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.orm">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.web">
+		<level value="INFO" />
+	</logger>
+	<!--logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<level value="WARN" />
+	</logger-->
+
+	<!--+
+	    | Spring scheduling.
+	    +-->
+	<logger name="org.springframework.scheduling">
+		<level value="DEBUG" />
+	</logger>
+
+	<!--+
+	    | Spring transactions.
+        | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
+	    +-->
+	<logger name="org.springframework.transaction">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.transaction.interceptor">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | Hibernate loggers.
+	    +-->
+	<logger name="org.hibernate">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.hibernate.SQL">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | Hibernate 'proxy narrowing' warning.
+	    | https://jira.atlassian.com/browse/CONF-4981
+	    | http://opensource.atlassian.com/projects/hibernate/browse/HHH-1367
+        | https://forum.hibernate.org/viewtopic.php?p=2404391
+        | https://forum.hibernate.org/viewtopic.php?f=1&t=1030440
+        | https://hibernate.atlassian.net/browse/HHH-1367
+	    +-->
+    <logger name="org.hibernate.engine.internal.StatefulPersistenceContext">
+        <level value="ERROR" />
+    </logger>
+    <logger name="org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer">
+        <level value="ERROR" />
+    </logger>
+
+	<!--+
+	    | C3PO loggers
+	    | Includes strange DEBUG via Exception logging.
+	    | http://stackoverflow.com/questions/8403227/weird-error-close-by-client-stack-trace
+	    | http://forum.springsource.org/archive/index.php/t-47689.html 
+	    | https://forum.hibernate.org/viewtopic.php?f=1&t=982410
+	    +-->
+	<logger name="com.mchange">
+		<level value="INFO" />
+	</logger>
+	<logger name="com.mchange.v2.async">
+		<level value="INFO" />
+	</logger>
+	<logger name="com.mchange.v2.c3p0.impl.C3P0ImplUtils">
+		<level value="WARN" />
+	</logger>
+
+	<!--+
+	    | StarLink loggers.
+	    +-->
+	<logger name="uk.ac.starlink">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | OGSA-DAI loggers.
+	    +-->
+	<logger name="uk.org.ogsadai">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | Liquibase loggers.
+	    +-->
+	<logger name="liquibase">
+		<level value="WARN" />
+	</logger>
+	<!--logger name="liquibase.changelog.ChangeSet">
+		<level value="WARN" />
+	</logger>
+	<logger name="liquibase.ext.logging">
+		<level value="WARN" />
+	</logger-->
+
+	<!--+
+	    | Root logger.
+	    
+	<root level="DEBUG">
+		priority value="${root-level:-INFO}" /
+		<appender-ref ref="file" />
+	</root> -->
+	
+</configuration>
+EOF
+
+
+chmod -R 755 ${configlog}
+
+## Restart our services and test
+cd ${HOME}
+docker-compose down
+docker-compose --file "docker-compose.yml" run firethorn-py
+
+
+
+## Changing /var/config/gillian/logback.xml level will automatically update the Logging levels
+## Needed to sudo su to change, I probably had the wrong permissions setup for the file?
+
