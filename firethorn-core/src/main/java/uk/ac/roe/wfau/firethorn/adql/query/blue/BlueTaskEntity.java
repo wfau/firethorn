@@ -541,6 +541,7 @@ implements BlueTask<TaskType>
      * {@link BlueTask.Handle} implementation.
      * 
      */
+    @Slf4j
     protected static class Handle
     implements BlueTask.Handle
         {
@@ -588,25 +589,32 @@ implements BlueTask<TaskType>
         @Override
         public synchronized void event(final TaskState next, final boolean sticky)
             {
-            log.debug("event() [{}][{}]->[{}] [{}]->[{}]",
+            log.debug("event() [{}]:[{}]->[{}]:[{}]->[{}]",
                     this.ident,
                     this.state,
                     next,
                     this.sticky,
                     sticky
                     );
-            
             if (next.compareTo(this.state) > 0)
                 {
-                log.trace("Accepting forward state change [{}][{}]->[{}]",
+                log.trace("Accepting forward state change [{}]:[{}]->[{}]",
                     this.ident,
                     this.state,
                     next
                     );
                 this.state = next;
                 }
+            else if (next.compareTo(this.state) == 0)
+                {
+                log.trace("No state change [{}]:[{}]->[{}]",
+                    this.ident,
+                    this.state,
+                    next
+                    );
+                }
             else {
-                log.error("Ignoring backward state change [{}][{}]->[{}]",
+                log.error("Ignoring backward state change [{}]:[{}]->[{}]",
                     this.ident,
                     this.state,
                     next
@@ -1316,36 +1324,35 @@ implements BlueTask<TaskType>
     public void waitfor(final TaskState prev, final TaskState next, final Long wait)
     throws ProtectionException
     	{
-        log.debug("-- CheaCh0X aew1aiSh [{}]", this.ident());
-        log.debug("waitfor(TaskState, Long)");
-        log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", state());
-        log.debug("  prev  [{}]", prev);
-        log.debug("  next  [{}]", next);
-        log.debug("  wait  [{}]", wait);
-
+        log.debug("waitfor() [{}]:[{}]->[{}]->[{}]:[{}]",
+            ident(),
+            prev,
+            state(),
+            next,
+            wait
+            );
         if (wait == null)
             {
-            log.debug("Wait is null - skipping wait");
+            log.trace("Wait is null - skipping wait");
             }
         else if (wait <= 0)
 			{
 			// TODO Do we need an absolute max value of -1 for sync TAP requests ?
-			log.debug("Wait is zero - skipping wait");
+			log.trace("Wait is <= zero - skipping wait");
 			}
 		else {
 			if (this.state().active())
 				{
-	            log.debug("State is active - getting handle");
+	            log.trace("State is active - getting handle");
 	            final BlueTaskEntity.Handle handle = handle();
 	            if (handle != null)
 	            	{
-		            log.debug("Before listener.waitfor()");
-		            log.debug("  ident [{}]", this.ident());
-		            log.debug("  ident [{}]", handle.ident());
-		            log.debug("  state [{}]", this.state());
-		            log.debug("  state [{}]", handle.state());
-
+		            log.trace("Before listener.waitfor() [{}]:[{}] [{}]:[{}]",
+                        this.ident(),
+                        handle.ident(),
+                        this.state(),
+                        handle.state()
+	                    );
 		            //
 		            // Wait for a state change event.
 					if ((prev != null) || (next != null))

@@ -143,6 +143,24 @@
             </rollingPolicy>
         </appender>
 
+        ....
+        ....
+
+        <!--+
+            | Firethorn logging.
+            +-->
+        <logger name="uk.ac.roe.wfau.firethorn">
+                <level value="DEBUG"/>
+        </logger>
+        <logger name="uk.ac.roe.wfau.firethorn.adql.parser">
+    -           <level value="DEBUG"/>
+    +           <level value="TRACE"/>
+        </logger>
+        <logger name="uk.ac.roe.wfau.firethorn.util.xml">
+                <level value="WARN"/>
+        </logger>
+
+
 
 # -----------------------------------------------------
 # Stop our containers
