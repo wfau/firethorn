@@ -556,17 +556,28 @@ for threads in range(1, 20):
 # Count the bytes in firethorn.log.
 #[user@virtual]
 
-    stat --printf "%s" /tmp/firethorn.log
+    datetime="$(date '+%Y%m%d')"
+    filesize="$(stat --printf "%s" /tmp/firethorn.log)"
 
-        20180709 - 350905543
+    echo "${datetime:?} : ${filesize:?}"
+
+        20180709 : 350905543
+        20180711 : 193175671
+
+        ((350905543-193175671) * 100) / 350905543 = 44% reduction
 
 # -----------------------------------------------------
 # Count the lines in firethorn.log.
 #[user@virtual]
 
-    wc -l /tmp/firethorn.log 
+    linecount=$(wc -l /tmp/firethorn.log | cut -d ' ' -f 1)
 
-        20180709 - 3128887
+    echo "${datetime:?} : ${linecount:?}"
+
+        20180709 : 3128887
+        20180711 : 1602730
+
+        ((3128887 - 1602730) * 100) / 3128887 = 48% reduction
 
 # -----------------------------------------------------
 # Remove our containers ...
@@ -593,5 +604,5 @@ for threads in range(1, 20):
             '
         )
 
-    tail -f "${logpath:?}/firethorn.log"
+    sudo tail -f "${logpath:?}/firethorn.log"
 
