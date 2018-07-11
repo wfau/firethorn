@@ -166,8 +166,8 @@ public abstract class BlueQueryModel
     /**
      * Request param name for the {@link BlueQuery.CallbackEvent} port number, [{@value}].
      *
-     */
     public static final String CALLBACK_REQUEST_PORT = "adql.query.callback.port" ;
+     */
 
     /**
      * Request param name for the {@link BlueQuery.CallbackEvent} {@link BlueTask.TaskState}, [{@value}].
@@ -234,8 +234,6 @@ public abstract class BlueQueryModel
         @Override
         public String callback(final BlueQuery query)
             {
-            log.debug("callback(....)");
-            log.debug("  query [{}]", query.ident());
             return link(
                 new Integer(8081),
                 CALLBACK_PATH,
@@ -286,6 +284,13 @@ public abstract class BlueQueryModel
         {
         return new BlueQueryBean.Iter(
             iter
+            );
+        }
+
+    public BlueQueryMini mini(BlueQuery entity)
+        {
+        return new BlueQueryMini (
+            entity
             );
         }
     }

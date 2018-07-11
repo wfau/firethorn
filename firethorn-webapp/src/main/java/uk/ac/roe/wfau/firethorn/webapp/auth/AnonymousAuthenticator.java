@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
- *
+ * If the {@link Operation} doesn't have an {@link Authentication}, add an anonymous identity.  
  *
  */
 @Slf4j
@@ -54,22 +54,22 @@ implements HandlerInterceptor
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
     throws ProtectionException
         {
-        log.debug("preHandle()");
+        log.trace("preHandle()");
 
         final Operation operation =  factories.operations().entities().current();
-        log.debug(" Operation [{}]", operation);
+        log.trace(" Operation [{}]", operation.ident());
 
         if (operation != null)
             {
             final Authentication primary = operation.authentications().primary();
-            log.debug(" Primary [{}]", primary);
+            log.trace(" Primary [{}]", primary);
 
             if (primary == null)
                 {
-                log.debug("Null primary, adding anonymous Authentication");
-                
+                log.debug("Adding anonymous Authentication");
                 final Community guests = factories.communities().entities().guests();
                 final Identity  guest  = guests.members().create();
+// TODO use the same anon authentication rather than create a new one every time.
                 operation.authentications().create(
                     guest,
                     METHOD_NAME
@@ -83,12 +83,12 @@ implements HandlerInterceptor
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
-        log.debug("postHandle()");
+        log.trace("postHandle()");
         }
 
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
-        log.debug("afterCompletion()");
+        log.trace("afterCompletion()");
         }
     }

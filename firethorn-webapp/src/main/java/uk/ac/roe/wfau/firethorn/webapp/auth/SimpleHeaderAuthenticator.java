@@ -55,18 +55,13 @@ implements HandlerInterceptor
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
     throws UnauthorizedException, ProtectionException
         {
-        log.debug("preHandle()");
-
+        log.trace("preHandle()");
         final String commname = request.getHeader(COMMUNITY_ATTRIB);
         final String username = request.getHeader(USERNAME_ATTRIB);
         final String password = request.getHeader(PASSWORD_ATTRIB);
+        log.trace("Request headers [{}][{}][{}]", commname, username, password);
 
         final Operation operation = factories.operations().entities().current();
-        log.debug("Operation [{}]", operation);
-
-        log.debug("Community [{}]", commname);
-        log.debug("Username  [{}]", username);
-        log.debug("Password  [{}]", password);
         
         if (operation != null)
             {
@@ -82,16 +77,13 @@ implements HandlerInterceptor
                     );
                 }
             }
-
-        log.debug("Primary   [{}]", operation.authentications().primary());
-       
         return true ;
         }
 
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
-        log.debug("postHandle()");
+        log.trace("postHandle()");
 
         /*
          * postHandle() doesn't work with @ResponseBody controller methods.
@@ -104,21 +96,21 @@ implements HandlerInterceptor
         final Operation operation = factories.operations().entities().current();
         if (operation != null)
             {
-            log.debug("Operation [{}]", operation.ident());
+            log.trace("Operation [{}]", operation.ident());
             final Authentication authentication = operation.authentications().primary();
             if (authentication != null)
                 {
-                log.debug("Authentication [{}]", authentication);
+                log.trace("Authentication [{}]", authentication);
                 final Identity identity = authentication.identity();
 
                 if (identity != null)
                     {
-                    log.debug("Identity  [{}][{}]", identity.ident(), identity.name());
+                    log.trace("Identity  [{}][{}]", identity.ident(), identity.name());
                     response.addHeader(IDENTITY_ATTRIB, identity.link());
                     response.addHeader(USERNAME_ATTRIB, identity.name());
 
                     final Community community = identity.community();
-                    log.debug("Community [{}][{}]", community.ident(), community.name());
+                    log.trace("Community [{}][{}]", community.ident(), community.name());
 
                     if (community != null)
                         {
@@ -132,6 +124,5 @@ implements HandlerInterceptor
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
-        log.debug("afterCompletion()");
         }
     }

@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.community.UnauthorizedException;
 
 /**
- *
+ * Servlet {@link HandlerInterceptor} to print out the request and response properties.
  *
  */
 @Slf4j
@@ -42,28 +42,22 @@ implements HandlerInterceptor
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
     throws UnauthorizedException
         {
-        log.debug("preHandle()");
-
-        log.debug("----");
-        log.debug("Servlet");
-
-        log.debug("  scheme      [{}]", request.getScheme());
-        log.debug("  serverName  [{}]", request.getServerName());
-        log.debug("  serverPort  [{}]", request.getServerPort());
-        log.debug("  serverPath  [{}]", request.getServletPath());
-        log.debug("  pathInfo    [{}]", request.getPathInfo());
-        log.debug("  pathTrans   [{}]", request.getPathTranslated());
-        log.debug("  requestURI  [{}]", request.getRequestURI());
+        log.debug("Request properties");
+      //log.debug("  scheme      [{}]", request.getScheme());
+      //log.debug("  serverName  [{}]", request.getServerName());
+      //log.debug("  serverPort  [{}]", request.getServerPort());
+      //log.debug("  serverPath  [{}]", request.getServletPath());
+      //log.debug("  pathInfo    [{}]", request.getPathInfo());
+      //log.debug("  pathTrans   [{}]", request.getPathTranslated());
+      //log.debug("  requestURI  [{}]", request.getRequestURI());
         log.debug("  requestURL  [{}]", request.getRequestURL());
-        log.debug("  protocol    [{}]", request.getProtocol());
+      //log.debug("  protocol    [{}]", request.getProtocol());
         log.debug("  queryString [{}]", request.getQueryString());
         log.debug("  authType    [{}]", request.getAuthType());        
-
         log.debug("  remoteAddr  [{}]", request.getRemoteAddr());        
-        log.debug("  remoteHost  [{}]", request.getRemoteHost());        
+      //log.debug("  remoteHost  [{}]", request.getRemoteHost());        
 
-        log.debug("----");
-        log.debug("Headers");
+        log.debug("Request headers");
         final Enumeration<String> headers = request.getHeaderNames();
         if (headers != null)
             {
@@ -74,10 +68,9 @@ implements HandlerInterceptor
                 log.debug("  [{}][{}]", name, StringUtils.abbreviate(value, 20));
                 }
             }
-        else {
-            log.debug("-- null --");;
-            }
 
+/*
+ * The attributes didn't tell us much.
         log.debug("----");
         log.debug("Attributes");
         final Enumeration<String> attribs = request.getAttributeNames(); 
@@ -93,9 +86,9 @@ implements HandlerInterceptor
         else {
             log.debug("-- null --");;
             }
-
-        log.debug("----");
-        log.debug("Parameters");
+ *         
+ */
+        log.debug("Request parameters");
         final Enumeration<String> params = request.getParameterNames(); 
         if (params != null)
             {
@@ -106,9 +99,6 @@ implements HandlerInterceptor
                 log.debug("  [{}][{}]", name, StringUtils.abbreviate(value.toString(), 20));
                 }
             }
-        else {
-            log.debug("-- null --");;
-            }
         log.debug("----");
         
         return true ;
@@ -117,10 +107,7 @@ implements HandlerInterceptor
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
-        log.debug("postHandle()");
-
-        log.debug("----");
-        log.debug("Headers");
+        log.debug("Response headers");
         final Iterator<String> headers = response.getHeaderNames().iterator();
         if (headers != null)
             {
@@ -131,15 +118,11 @@ implements HandlerInterceptor
                 log.debug("  [{}][{}]", name, StringUtils.abbreviate(value, 20));
                 }
             }
-        else {
-            log.debug("-- null --");;
-            }
         log.debug("----");
         }
 
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
-        log.debug("afterCompletion()");
         }
     }

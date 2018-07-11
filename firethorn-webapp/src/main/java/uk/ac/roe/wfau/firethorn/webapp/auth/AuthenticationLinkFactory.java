@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.AuthenticationImpl;
+import uk.ac.roe.wfau.firethorn.identity.AuthMethod;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -34,8 +34,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class AuthenticationLinkFactory
-extends WebappLinkFactory<AuthenticationImpl>
-implements AuthenticationImpl.LinkFactory
+extends WebappLinkFactory<AuthMethod>
+implements AuthMethod.LinkFactory
     {
     protected AuthenticationLinkFactory()
         {
@@ -57,7 +57,7 @@ implements AuthenticationImpl.LinkFactory
     public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final AuthenticationImpl entity)
+    public String link(final AuthMethod entity)
         {
         return link(
             ENTITY_PATH,
@@ -66,9 +66,9 @@ implements AuthenticationImpl.LinkFactory
         }
 
     @Autowired
-    private AuthenticationImpl.EntityFactory factory ;
+    private AuthMethod.EntityFactory factory ;
     @Override
-    public AuthenticationImpl resolve(String link)
+    public AuthMethod resolve(String link)
     throws IdentifierFormatException, IdentifierNotFoundException, EntityNotFoundException, ProtectionException
         {
         if (this.matches(link))

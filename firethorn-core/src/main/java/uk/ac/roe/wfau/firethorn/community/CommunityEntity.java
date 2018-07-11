@@ -114,7 +114,6 @@ implements Community
          */
         private Community find(final String name)
             {
-            log.debug("find (String) [{}]", name);
             return super.first(
                 super.query(
                     "Comunity-select-name"
@@ -158,31 +157,31 @@ implements Community
          * 
          */
         @Value("${firethorn.admin.community:admin}")
-        protected String ADMIN_COMMUNITY_NAME ;
+        protected String adminname ;
 
         @Override
         @CreateMethod
         public synchronized Community admins()
         throws ProtectionException
             {
-            log.debug("admin()");
+            log.trace("admins()");
             final Community found = find(
-                ADMIN_COMMUNITY_NAME
+                adminname
                 );
             if (found != null)
                 {
-                log.debug("  found [{}]", found);
+                log.trace("  found [{}][{}]", found.ident(), found.name());
                 return found;
                 }
             else {
                 try {
                     final Community created = make(
-                        ADMIN_COMMUNITY_NAME,
+                        adminname,
                         factories().jdbc().resources().entities().userdata(),
                         false,
                         false
                         );
-                    log.debug("  created [{}]", created);
+                    log.trace("  created [{}][{}]", created.ident(), created.name());
                     return created ;
                     }
                 // Only needed because finding the default space may throw an exception. 
@@ -202,31 +201,31 @@ implements Community
          * 
          */
         @Value("${firethorn.guest.community:guests}")
-        protected String GUEST_COMMUNITY_NAME ;
+        protected String guestname ;
 
         @Override
         @CreateMethod
         public synchronized Community guests()
         throws ProtectionException
             {
-            log.debug("guests()");
+            log.trace("guests()");
             final Community found = find(
-                GUEST_COMMUNITY_NAME
+                guestname
                 );
             if (found != null)
                 {
-                log.debug("  found [{}]", found);
+                log.trace("  found [{}][{}]", found.ident(), found.name());
                 return found;
                 }
             else {
                 try {
                     final Community created = make(
-                        GUEST_COMMUNITY_NAME,
+                        guestname,
                         factories().jdbc().resources().entities().userdata(),
                         true,
                         true
                         );
-                    log.debug("  created [{}]", created);
+                    log.trace("  created [{}][{}]", created.ident(), created.name());
                     return created ;
                     }
                 // Only needed because finding the default space may throw an exception. 
@@ -264,7 +263,7 @@ implements Community
         public Community create(final String name, final JdbcResource space)
         throws DuplicateEntityException, ProtectionException
             {
-            log.debug("create(String, JdbcResource) [{}][{}]", name, space);
+            log.debug("create() [{}][{}][{}]", name, space.ident(), space.name());
             protector().affirm(Action.create);
             final Community found = find(
                 name
@@ -278,7 +277,7 @@ implements Community
                     );
                 }
             else {
-                log.debug("Duplicate community [{}][{}]", name, found.ident());
+                log.error("Duplicate community [{}][{}]", name, found.ident());
                 throw new DuplicateEntityException(found);
                 }
             }
@@ -288,7 +287,6 @@ implements Community
         public Community select(final String name)
         throws NameNotFoundException, ProtectionException
             {
-            log.debug("select(String) [{}]", name);
             protector().affirm(Action.select);
             final Community found = find(
                 name
@@ -307,7 +305,6 @@ implements Community
         @SelectMethod
         public Community search(final String name) throws ProtectionException
             {
-            log.debug("search (String) [{}]", name);
             protector().affirm(Action.select);
             return find(
                 name
@@ -319,19 +316,16 @@ implements Community
         public Identity login(final String comm, final String name, final String pass)
         throws UnauthorizedException, ProtectionException
             {
-            log.debug("login(String, String, String)");
-            log.debug("  community [{}]", comm);
-            log.debug("  username  [{}]", name);
-            log.debug("  password  [{}]", pass);
+            log.debug("login() [{}][{}]", name, ((pass != null) ? "####" : null));
             //
             // Load the guest Community for comparison.
             final Community guests = factories().communities().entities().guests();
-            log.debug("Guest Community [{}][{}]", guests.ident(), guests.name());
+            log.trace("Guest Community [{}][{}]", guests.ident(), guests.name());
             //
             // Load the system Identity for comparison.
             final Identity system = factories().identities().entities().admin();
-            log.debug("System Identity  [{}][{}]", system.ident(), system.name());
-            log.debug("System Community [{}][{}]", system.community().ident(), system.community().name());
+            log.trace("System Identity  [{}][{}]", system.ident(), system.name());
+            log.trace("System Community [{}][{}]", system.community().ident(), system.community().name());
 
             //
             // Check the Community.
@@ -348,12 +342,12 @@ implements Community
 
             if (community == null)
                 {
-                log.warn("LOGIN FAIL unknown community [{}]", comm);
+                log.warn("Login failed - unknown community [{}]", comm);
                 throw new UnauthorizedException();
                 }
             if (name == null)
                 {
-                log.warn("FAIL : Null username");
+                log.warn("Login failed - null username");
                 throw new UnauthorizedException();
                 }
 
@@ -403,7 +397,6 @@ implements Community
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
             if (CommunityEntity.EntityServices.instance == null)
                 {
                 CommunityEntity.EntityServices.instance = this ;
@@ -460,14 +453,12 @@ implements Community
     @Override
     protected Community.EntityFactory factory()
         {
-        log.debug("factory()");
         return CommunityEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected Community.EntityServices services()
         {
-        log.debug("services()");
         return CommunityEntity.EntityServices.instance() ; 
         }
 
@@ -512,7 +503,12 @@ implements Community
         super(
             name
             );
-        log.debug("CommunityEntity(String, JdbcResource, boolean, boolean) [{}][{}][{}][{}]", name, space, autocreate, usercreate);
+        log.trace("CommunityEntity() [{}][{}][{}][{}]",
+            name,
+            space,
+            autocreate,
+            usercreate
+            );
         this.space = space ;
         this.autocreate = autocreate;
         this.usercreate = usercreate;
@@ -564,9 +560,7 @@ implements Community
     public Identity login(final String name, final String pass)
     throws UnauthorizedException, ProtectionException
         {
-        log.debug("login(String, String)");
-        log.debug("  name [{}]", name);
-        log.debug("  pass [{}]", pass);
+        log.debug("login() [{}][{}]", name, ((pass != null) ? "####" : null));
         return members().login(name, pass);
         }
     
@@ -640,9 +634,7 @@ implements Community
             public Identity login(String name, String pass)
             throws ProtectionException, UnauthorizedException
                 {
-                log.debug("login(String, String)");
-                log.debug("  name [{}]", name);
-                log.debug("  pass [{}]", pass);
+                log.debug("login() [{}][{}]", name, ((pass != null) ? "####" : null));
             	return services().identities().login(
                     CommunityEntity.this,
                     name,

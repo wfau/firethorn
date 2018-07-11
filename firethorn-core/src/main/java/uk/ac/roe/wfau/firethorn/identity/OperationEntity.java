@@ -183,7 +183,6 @@ implements Operation
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
             if (OperationEntity.EntityServices.instance == null)
                 {
                 OperationEntity.EntityServices.instance = this ;
@@ -224,14 +223,12 @@ implements Operation
     @Override
     protected Operation.EntityFactory factory()
         {
-        log.debug("factory()");
         return OperationEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected Operation.EntityServices services()
         {
-        log.debug("services()");
         return OperationEntity.EntityServices.instance() ; 
         }
 
@@ -337,7 +334,7 @@ implements Operation
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = AuthenticationImplEntity.class
+        targetEntity = AuthMethodEntity.class
         )
     @JoinColumn(
         name = DB_AUTH_METHOD_COL,
@@ -345,14 +342,14 @@ implements Operation
         nullable = true,
         updatable = true
         )
-    private AuthenticationImpl primary ;
+    private AuthMethod primary ;
 
-    private AuthenticationImpl primary()
+    private AuthMethod primary()
         {
         return this.primary;
         }
 
-    private void primary(final AuthenticationImpl auth)
+    private void primary(final AuthMethod auth)
         {
         log.debug("primary(Authentication)");
         log.debug("  Authentication [{}]", auth);
@@ -370,25 +367,23 @@ implements Operation
     @OneToMany(
         fetch   = FetchType.LAZY,
         mappedBy = "operation",
-        targetEntity = AuthenticationImplEntity.class
+        targetEntity = AuthMethodEntity.class
         )
-    private final List<AuthenticationImpl> authentications = new ArrayList<AuthenticationImpl>();
+    private final List<AuthMethod> authmethods = new ArrayList<AuthMethod>();
 
     /**
      * Create a new Authentication for this Operation.
      *
      */
-    private AuthenticationImpl create(final Identity identity, final String method)
+    private AuthMethod authenticate(final Identity identity, final String method)
         {
-        log.debug("create(Identity, String)");
-        log.debug("  Identity [{}]", identity.name());
-        log.debug("  Method   [{}]", method);
-        final AuthenticationImpl auth = factories().authentication().entities().create(
+        log.debug("authenticate() [{}][{}][{}][{}]", this.ident(), identity.ident(), identity.name(), method);
+        final AuthMethod auth = factories().authentication().entities().create(
             this,
             identity,
             method
             );
-        authentications.add(
+        authmethods.add(
             auth
             );
         primary(
@@ -403,7 +398,7 @@ implements Operation
         return new Authentications()
             {
             @Override
-            public AuthenticationImpl primary()
+            public Authentication primary()
                 {
                 return OperationEntity.this.primary();
                 }
@@ -411,15 +406,15 @@ implements Operation
             @Override
             public Iterable<Authentication> select()
                 {
-                return new GenericIterable<Authentication, AuthenticationImpl>(
-                    OperationEntity.this.authentications
+                return new GenericIterable<Authentication, AuthMethod>(
+                    OperationEntity.this.authmethods
                     );
                 }
 
             @Override
-            public AuthenticationImpl create(final Identity identity, final String method)
+            public Authentication create(final Identity identity, final String method)
                 {
-                return OperationEntity.this.create(
+                return OperationEntity.this.authenticate(
                     identity,
                     method
                     );
@@ -435,7 +430,7 @@ implements Operation
 			@Override
 			public Identity primary()
 				{
-				final AuthenticationImpl auth = OperationEntity.this.primary();
+				final AuthMethod auth = OperationEntity.this.primary();
 				if (auth != null)
 					{
 					return auth.identity();
@@ -457,7 +452,7 @@ implements Operation
     public Operation rebase()
     throws HibernateConvertException
     	{
-        log.debug("Converting current instance [{}]", ident());
+        log.trace("rebase [{}]", ident());
         try {
 			return services().entities().select(
 			    ident()
@@ -473,7 +468,7 @@ implements Operation
         	}
         catch (final ProtectionException ouch)
             {
-            log.error("ProtectionException [{}][{}]", this.getClass().getName(), ident());
+            log.error("ProtectionException [{}][{}]", this.ident(), ouch.getMessage());
         	throw new HibernateConvertException(
     			ident(),
     			ouch

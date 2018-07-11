@@ -21,49 +21,49 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
- * Public interface for an {@link Authentication} {@link Entity}.
+ * Public interface for an {@link Operation} {@link Authentication} method.
  *
  */
-public interface AuthenticationImpl
+public interface AuthMethod
 extends Entity, Authentication
     {
 
     /**
-     * {@link AuthenticationImpl} {@link Link} factory interface.
+     * {@link AuthMethod} {@link Link} factory interface.
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<AuthenticationImpl>
+    extends Entity.LinkFactory<AuthMethod>
         {
         }
 
     /**
-     * {@link AuthenticationImpl} {@link Identifier} factory interface.
+     * {@link AuthMethod} {@link Identifier} factory interface.
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<AuthenticationImpl>
+    extends Entity.IdentFactory<AuthMethod>
         {
         }
 
     /**
-     * {@link AuthenticationImpl} factory interface.
+     * {@link AuthMethod} factory interface.
      *
      */
     public interface EntityFactory
-    extends Entity.EntityFactory<AuthenticationImpl>
+    extends Entity.EntityFactory<AuthMethod>
         {
         /**
-         * Get the current active {@link AuthenticationImpl}.
+         * Get the current active {@link AuthMethod}.
          *
+        public AuthMethod current();
          */
-        public AuthenticationImpl current();
 
         /**
-         * Create a new {@link AuthenticationImpl}.
+         * Create a new {@link AuthMethod}.
          *
          */
-        public AuthenticationImpl create(final Operation oper, final Identity identity, final String method);
+        public AuthMethod create(final Operation oper, final Identity identity, final String method);
 
         }
 
@@ -72,13 +72,13 @@ extends Entity, Authentication
      * 
      */
     public static interface EntityServices
-    extends Entity.EntityServices<AuthenticationImpl>
+    extends Entity.EntityServices<AuthMethod>
         {
         /**
-         * Our {@link AuthenticationImpl.EntityFactory} instance.
+         * Our {@link AuthMethod.EntityFactory} instance.
          *
          */
-        public AuthenticationImpl.EntityFactory entities();
+        public AuthMethod.EntityFactory entities();
         }
 
     /**
