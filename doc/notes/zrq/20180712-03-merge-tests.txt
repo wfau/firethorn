@@ -70,7 +70,7 @@ EOF
 # Start our test containers ...
 #[user@builder]
     
-    cd "${FIRETHORN_HOME:?}"
+    pushd "${FIRETHORN_HOME:?}"
 
     docker-compose \
         --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-local.yml" \
