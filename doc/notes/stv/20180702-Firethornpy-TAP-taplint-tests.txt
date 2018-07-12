@@ -372,7 +372,46 @@ stelios@stelios-pc:~$ cat tables
 
 ## wget second time gets the full table (?) which is 15 Mb
 
+********************************
+********************************
+The /tables endpoint should return a VOSI response, not a VOTable.
+Works ok from here ..
 
+    curl -s -L 'http://tap.metagrid.xyz/firethorn/tap/783260/tables' | xmllint --format -
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vtm:tableset xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" xmlns:vtm="http://www.ivoa.net/xml/VOSITables/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v1.1 http://www.ivoa.net/xml/VOSITables/v1.0">
+          <schema>
+            <name>BestDR1</name>
+            <title/>
+            <utype/>
+            <table type="table">
+              <name>BestDR1.SpecObjAll</name>
+              <title/>
+              <utype/>
+              <column>
+                <name>specObjID</name>
+                <description><![CDATA[Unique ID]]></description>
+                <ucd>meta.id;meta.dataset</ucd>
+                <dataType arraysize="*" xsi:type="vs:VOTableType">long</dataType>
+              </column>
+              ....
+              ....
+              <column>
+                <name>zSpec</name>
+                <description/>
+                <dataType arraysize="*" xsi:type="vs:VOTableType">float</dataType>
+              </column>
+              <column>
+                <name>zPhoto</name>
+                <description/>
+                <dataType arraysize="*" xsi:type="vs:VOTableType">float</dataType>
+              </column>
+            </table>
+          </schema>
+        </vtm:tableset>
+********************************
+********************************
 
 ## Check http://tap.metagrid.xyz/firethorn/tap/783260/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=37954
 which caused error..

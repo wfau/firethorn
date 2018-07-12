@@ -69,6 +69,8 @@ resource = Resource(
 
 #
 # Iterate the catalog schemas querying each in turn.
+results=dict()
+errors=dict()
 for schema in resource.get_schemas():
     for table in schema.get_tables():
         print(
@@ -91,5 +93,9 @@ for schema in resource.get_schemas():
                 )
             py_table = query_obj.results().as_astropy()
             py_table.pprint()
-
+            fullname = schema.name() + '.' + table.name()
+            rowcount = query_obj.results().rowcount()
+            results[fullname] = rowcount
+            if (rowcount < 10):
+                errors[fullname] = rowcount
 
