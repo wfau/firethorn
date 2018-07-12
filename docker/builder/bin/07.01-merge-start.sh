@@ -22,14 +22,13 @@
 # -----------------------------------------------------
 # Merge the changes into main.
 
-    source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
 
         #
         # Get the current branch name.
-cat > "${HOME:?}/merge.settings" << EOF
+cat > "${FIRETHORN_HOME:?}/merge.settings" << EOF
 devbranch=$(hg branch)
 EOF
 
@@ -37,13 +36,13 @@ EOF
         # Swap to the main branch and get the version.
         hg update 'default'
 
-cat >> "${HOME:?}/merge.settings" << EOF
+cat >> "${FIRETHORN_HOME:?}/merge.settings" << EOF
 oldversion=$(getversion)
 EOF
 
         #
         # Merge the dev branch.
-        source "${HOME:?}/merge.settings"
+        source "${FIRETHORN_HOME:?}/merge.settings"
 
         message="Confirm merge [${devbranch:?}] into [default]"
         confirm "${message:?}"

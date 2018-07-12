@@ -23,11 +23,10 @@
 # -------------------------------------------------------------------------------------------
 # Push our changes to our Maven repository.
 
-    mvnport=22
-    mvnuser=Zarquan
-    mvnhost=data.metagrid.co.uk
-    mvnpath=/var/local/websites/data/wfau/maven
-    mvnrepo=${mvnuser:?}@${mvnhost:?}:/${mvnpath:?}
+    mvnuser=$(secret 'firethorn.mvnrepo.user')
+    mvnhost=$(secret 'firethorn.mvnrepo.host')
+    mvnpath=$(secret 'firethorn.mvnrepo.path')
+    mvnrepo=${mvnuser:?}@${mvnhost:?}:${mvnpath:?}
 
     mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
 

@@ -24,7 +24,6 @@
 
     echo "Building Java code"
 
-    source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'

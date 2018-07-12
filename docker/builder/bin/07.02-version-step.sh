@@ -39,7 +39,6 @@ newversion()
 # -----------------------------------------------------
 # Prompt the user, update our Maven and Docker files.
 
-    source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
@@ -54,7 +53,7 @@ newversion()
             exit 0
         fi
 
-cat >> "${HOME:?}/merge.settings" << EOF
+cat >> "${FIRETHORN_HOME:?}/merge.settings" << EOF
 newversion=${newversion:?}
 EOF
 
