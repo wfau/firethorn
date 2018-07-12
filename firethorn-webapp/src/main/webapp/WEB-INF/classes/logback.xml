@@ -21,18 +21,6 @@
 <configuration scan="true">
 
     <!--+
-        | Different appenders with different levels.
-        | https://stackoverflow.com/a/23894254
-        | https://stackoverflow.com/a/13284960
-        +-->
-    <root level="ALL">
-        <appender-ref ref="info-log" />
-        <appender-ref ref="error-log" />
-        <appender-ref ref="debug-log" />
-        <appender-ref ref="trace-log" />
-    </root>
-
-    <!--+
         | Rolling log for INFO and above.
         | Rollover daily, max file size is 250MB (before compression), 4 days history, total size limit of 1GB.
         +-->
@@ -131,6 +119,18 @@
             <totalSizeCap>8GB</totalSizeCap>
         </rollingPolicy>
     </appender>
+
+    <!--+
+        | Different appenders with different levels.
+        | https://stackoverflow.com/a/23894254
+        | https://stackoverflow.com/a/13284960
+        +-->
+    <root level="ALL">
+        <appender-ref ref="info-log" />
+        <appender-ref ref="error-log" />
+        <appender-ref ref="debug-log" />
+        <appender-ref ref="trace-log" />
+    </root>
     
     <!--+
         | Firethorn logging.
