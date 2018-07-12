@@ -372,16 +372,6 @@ for schema_name in schema_names:
 # 2018-07-09 12:09:07,194 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR2][Database 'ATLASDR2' cannot be opened due to inaccessible files or insufficient memory or disk space ...]
 # 2018-07-09 12:09:07,194 WARN  [main-interface-4] [SQLServerScanner] SQLException [945][S1000][Database 'ATLASDR2' cannot be opened due to inaccessible files or insufficient memory or disk space ...]]
 # 
-# 2018-07-09 12:09:47,701 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][SkyServerV3][Invalid state, the Connection object is closed.] 
-# 2018-07-09 12:09:47,702 WARN  [main-interface-4] [SQLServerScanner] SQLException [0][HY010][Invalid state, the Connection object is closed.] 
-# 
-# 2018-07-09 12:09:49,214 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][SPITZER][Invalid state, the Connection object is closed.] 
-# 2018-07-09 12:09:49,214 WARN  [main-interface-4] [SQLServerScanner] SQLException [0][HY010][Invalid state, the Connection object is closed.] 
-# 
-# 2018-07-09 12:09:57,263 DEBUG [main-interface-4] [JdbcResourceEntity] Scanning catalog [THREEXMM] 
-# 2018-07-09 12:09:58,768 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][THREEXMM][Invalid state, the Connection object is closed.] 
-# 2018-07-09 12:09:58,768 WARN  [main-interface-4] [SQLServerScanner] SQLException [0][HY010][Invalid state, the Connection object is closed.] 
-# 
 
 #
 # Admin user
@@ -441,26 +431,14 @@ print(
 # 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_CDOOAW4PLHLBKAAAAFRLFEJJEQ][TABLE] 
 # 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_4QH2URNMIQN3WAAAAFRKBAFIPI][TABLE] 
 # 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_FV5FIQONFRMAYAAAAFRKXMS7JU][TABLE] 
-# 2018-07-09 12:21:49,739 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_FE2I3BT5SS3NGAAAAFRLADOCOM][TABLE] 
-# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_JLXAGIZEHPFM2AAAAFRLFX5WHY][TABLE] 
-# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_ZGTORLNMSYRP4AAAAFRKBBGZOE][TABLE] 
-# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_TSNAQINSEZKD2AAAAFRKXRJJB4][TABLE] 
-# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_QKBAKAQHZIKP6AAAAFRLAG35LI][TABLE] 
-# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_CJKG2VUWWE3JMAAAAFRLGNT4O4][TABLE] 
-# 2018-07-09 12:21:49,740 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_H5UEMCMMACJVWAAAAFRKBKGC2M][TABLE] 
-# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_JMQXLRND64DX6AAAAFRKZZZY3Y][TABLE] 
-# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_VXBOVKUIAMKV4AAAAFRLAKRIK4][TABLE] 
-# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_EJ3YPWMXGFAJUAAAAFRLHE7GOM][TABLE] 
-# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_XEFAD6C7SN6DUAAAAFRKBMRXRU][TABLE] 
-# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_CUO7HPJUV7RNIAAAAFRKZ4C4BI][TABLE] 
-# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_E7K7B2DCJZ4UWAAAAFRLAOKC7U][TABLE] 
-# 2018-07-09 12:21:49,741 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_VMGVNCDREH4GQAAAAFRLH7DGRU][TABLE] 
-# 2018-07-09 12:21:49,742 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_IBMAT3U7DZDRQAAAAFRKBOK2JY][TABLE] 
-# 2018-07-09 12:21:49,742 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_RCUZMWEJVIS2GAAAAFRKZ6NU34][TABLE] 
 #
 # Need to use DROP rather than DELETE for old user data.
 # Check side effects ..
 #
+# Naming convention for table names - FT_USER_012345_FV5FIQONFRMAYAAAAFRKXMS7JU
+# Clean operation to DROP old orphaned tables.
+# 
+
 
 #
 # Iterate the metadata tree
@@ -546,63 +524,4 @@ for threads in range(1, 20):
         --file "baryptera-local.yml" \
         stop
 
-# -----------------------------------------------------
-# Take a copy of the firethorn log file.
-#[user@virtual]
-
-    docker cp stevedore_gillian_1:/var/local/tomcat/logs/firethorn.log /tmp/firethorn.log
-
-# -----------------------------------------------------
-# Count the bytes in firethorn.log.
-#[user@virtual]
-
-    datetime="$(date '+%Y%m%d')"
-    filesize="$(stat --printf "%s" /tmp/firethorn.log)"
-
-    echo "${datetime:?} : ${filesize:?}"
-
-        20180709 : 350905543
-        20180711 : 193175671
-
-        ((350905543-193175671) * 100) / 350905543 = 44% reduction
-
-# -----------------------------------------------------
-# Count the lines in firethorn.log.
-#[user@virtual]
-
-    linecount=$(wc -l /tmp/firethorn.log | cut -d ' ' -f 1)
-
-    echo "${datetime:?} : ${linecount:?}"
-
-        20180709 : 3128887
-        20180711 : 1602730
-
-        ((3128887 - 1602730) * 100) / 3128887 = 48% reduction
-
-# -----------------------------------------------------
-# Remove our containers ...
-#[user@virtual]
-
-    docker-compose \
-        --file "baryptera-local.yml" \
-        down
-
-
-
-
-
-# -----------------------------------------------------
-# -----------------------------------------------------
-# Separate shell, find and tail the logfile.
-#[user@virtual]
-
-    logpath=$(
-        docker inspect \
-            stevedore_gillian_1 \
-        | jq -r '
-            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
-            '
-        )
-
-    sudo tail -f "${logpath:?}/firethorn.log"
 
