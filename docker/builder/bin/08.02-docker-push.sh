@@ -23,7 +23,7 @@
 # -------------------------------------------------------------------------------------------
 # Push our containers to the Docker registry.
 
-    source "${HOME:?}/merge.settings"
+    source "${FIRETHORN_HOME:?}/merge.settings"
 
     #
     # Issues with running push from inside a container ?

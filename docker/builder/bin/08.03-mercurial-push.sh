@@ -21,9 +21,27 @@
 
 
 # -------------------------------------------------------------------------------------------
+# Update our Mercurial repository config.
+
+    gitrepo=$(secret 'firethorn.mercurial.repo')
+    gituser=$(secret 'firethorn.mercurial.user')
+
+    pushd "${FIRETHORN_CODE:?}"
+
+        sed -i "
+            /^\[paths\]/,/^\[.*\]/ {
+                /^default/ a\
+push-repo = ${gitrepo:?}
+                }
+            $ a\
+username = ${gituser:?}                                
+            " .hg/hgrc
+
+    popd
+
+# -------------------------------------------------------------------------------------------
 # Push our changes to our Mercurial repository.
 
-    source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'

@@ -34,6 +34,7 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
             - /var/run/docker.sock:/var/run/docker.sock
+            - ${secretsh:${HOME}/bin/secret}:/bin/secret
         environment:
             branch: "${branch}"
             SSH_AUTH_SOCK: /tmp/ssh_auth_sock

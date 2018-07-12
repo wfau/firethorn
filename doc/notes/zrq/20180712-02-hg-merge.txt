@@ -38,6 +38,21 @@
 
     ssh Araybwyn
 
+
+# -----------------------------------------------------
+# Install our secret function.
+#[user@virtual]
+
+    mkdir "${HOME:?}/bin"
+    vi "${HOME:?}/bin/secret"
+
+        ....
+        ....
+        ....
+
+    chmod u+x "${HOME:?}/bin/secret"
+    secret 'frog'
+
 # -----------------------------------------------------
 # Download our builder compose file
 #[user@virtual]
@@ -62,29 +77,10 @@
             builder 
 
     # -----------------------------------------------------
-    # Add our secret function.
-    #[user@virtual]
-
-        # cat $(which secret)
-
-        vi "/bin/secret"
-
-            ....
-            ....
-            ....
-
-        chmod u+x "/bin/secret"
-        secret 'frog'
-
-    # -----------------------------------------------------
     # Initialise our path.
     #[root@builder]
 
         PATH=${PATH}:/builder/bin
-
-    # -----------------------------------------------------
-    # Initialise our paths.
-    #[root@builder]
 
         01.01-init.sh
         
@@ -127,7 +123,6 @@
 
 # -----------------------------------------------------
 # Run a new copy of builder.
-# (this is only needed if we made significant chances to builder)
 #[user@virtual]
 
     export branch
@@ -157,10 +152,6 @@
 
         PATH=${PATH}:/builder/bin
 
-    # -----------------------------------------------------
-    # Initialise our paths.
-    #[root@builder]
-
         01.01-init.sh
 
     # -----------------------------------------------------
@@ -189,7 +180,6 @@
 
         ftpysrc='/var/local/build/client'
         ftpygit='https://github.com/Zarquan/firethorn.py.git'
-        ftpygit='https://github.com/stvoutsin/firethorn.py.git'
 
         if [  -e "${ftpysrc:?}" ]
         then
@@ -214,7 +204,6 @@
 
         echo "Building client image"
 
-        source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"
 
             source 'bin/util.sh'
@@ -231,26 +220,6 @@
 # -----------------------------------------------------
 # Run our Python tests, 20180712-03-merge-tests.txt
 # -----------------------------------------------------
-
-    # -----------------------------------------------------
-    # Update our Mercurial config.
-    #[root@builder]
-
-        # TODO Move to secrets.
-
-        source "${HOME:?}/firethorn.settings"
-        pushd "${FIRETHORN_CODE:?}"
-    
-            vi .hg/hgrc
-
-                [paths]
-                default   = http://wfau.metagrid.co.uk/code/firethorn
-            +   push-repo = ssh://Zarquan@data.metagrid.co.uk//var/local/wfau/projects/firethorn/code
-
-                [ui]
-            +   username = Dave Morris <dmr@roe.ac.uk>
-
-        popd
 
     # -----------------------------------------------------
     # Commit our merged code.
