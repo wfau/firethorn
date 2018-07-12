@@ -436,34 +436,34 @@ for name in differences:
 [1] [UKIDSSDR9PLUS.udsVarFrameSetInfo]
 [5] [UKIDSSDR9PLUS.RequiredListDrivenProduct]
 
-for table_name in candidates:
-    query_str = "SELECT COUNT(*) FROM {}".format(
-        table_name
-        )
-    query_obj = resource.query(
-        query_str
-        )
-    if (query_obj.status() == 'FAILED'):
-        print(
-            "[{}] FAILED".format(
-                table_name
-                )
+    for table_name in candidates:
+        query_str = "SELECT COUNT(*) FROM {}".format(
+            table_name
             )
-    else:
-        py_table = query_obj.results().as_astropy()
-        rowcount = py_table[0][0]
-        if (errors[table_name] < rowcount):
-            flag = "****"
+        query_obj = resource.query(
+            query_str
+            )
+        if (query_obj.status() == 'FAILED'):
+            print(
+                "[{}] FAILED".format(
+                    table_name
+                    )
+                )
         else:
-            flag = ""
-        print(
-            "[{}] [{}][{}] {}".format(
-                table_name,
-                candidates[name],
-                rowcount,
-                flag
+            py_table = query_obj.results().as_astropy()
+            rowcount = py_table[0][0]
+            if (errors[table_name] < rowcount):
+                flag = "****"
+            else:
+                flag = ""
+            print(
+                "[{}] [{}][{}] {}".format(
+                    table_name,
+                    candidates[name],
+                    rowcount,
+                    flag
+                    )
                 )
-            )
 
 
 #

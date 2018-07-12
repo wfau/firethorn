@@ -210,11 +210,14 @@
 # Separate shell, find and tail the logfile.
 #[user@virtual]
 
+    
     sudo -s
 
+        container=stevedore_gillian_1
+        
         pushd $(
             docker inspect \
-                stevedore_gillian_1 \
+                "${container:?}" \
           | jq -r '
                 .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
                 '
