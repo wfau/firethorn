@@ -90,7 +90,11 @@
 
         PATH=${PATH}:/builder/bin
 
-        01.01-init.sh
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
         
     # -----------------------------------------------------
     # Checkout a copy of our source code.
@@ -148,7 +152,7 @@
         secret 'frog'
 
     # -----------------------------------------------------
-    # Initialise our path.
+    # Initialise our paths.
     #[root@builder]
 
         PATH=${PATH}:/builder/bin

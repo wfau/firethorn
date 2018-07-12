@@ -43,7 +43,7 @@ newversion()
 
         source 'bin/util.sh'
 
-        source "${HOME:?}/merge.settings"
+        source "${FIRETHORN_HOME:?}/merge.settings"
         newversion=$(newversion "${oldversion:?}")
 
         confirm "New version [${newversion:?}]"
