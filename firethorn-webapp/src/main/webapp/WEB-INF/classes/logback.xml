@@ -221,6 +221,9 @@
     <logger name="org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer">
         <level value="ERROR" />
     </logger>
+    <logger name="org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor">
+        <level value="ERROR" />
+    </logger>
 
     <!--+
         | C3PO loggers
