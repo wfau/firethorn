@@ -20,14 +20,15 @@
 #
 
 # -----------------------------------------------------
-# Initialise our path.
+# Initialise our paths.
 
     PATH=${PATH}:/builder/bin
 
-# -----------------------------------------------------
-# Initialise our paths.
+    : ${FIRETHORN_HOME:=/etc/firethorn}
+    : ${FIRETHORN_CODE:=/var/local/build/firethorn}
 
-    01.01-init.sh
+    export FIRETHORN_HOME
+    export FIRETHORN_CODE
     
 # -----------------------------------------------------
 # Checkout a copy of our source code.

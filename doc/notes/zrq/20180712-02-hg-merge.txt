@@ -71,13 +71,21 @@
 #[user@virtual]
 
     export branch
+    export secretsh=$(which secret)
+
     docker-compose \
         --file "builder.yml" \
         run \
             builder 
 
     # -----------------------------------------------------
-    # Initialise our path.
+    # Test our secret function.
+    #[root@builder]
+
+        secret 'frog'
+
+    # -----------------------------------------------------
+    # Initialise our paths.
     #[root@builder]
 
         PATH=${PATH}:/builder/bin
@@ -126,24 +134,17 @@
 #[user@virtual]
 
     export branch
+    export secretsh=$(which secret)
+
     docker-compose \
         --file "builder.yml" \
         run \
             builder 
 
     # -----------------------------------------------------
-    # Add our secret function.
-    #[user@virtual]
+    # Test our secret function.
+    #[root@builder]
 
-        # cat $(which secret)
-
-        vi "/bin/secret"
-
-            ....
-            ....
-            ....
-
-        chmod u+x "/bin/secret"
         secret 'frog'
 
     # -----------------------------------------------------
@@ -152,7 +153,11 @@
 
         PATH=${PATH}:/builder/bin
 
-        01.01-init.sh
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
 
     # -----------------------------------------------------
     # Build our base images.
@@ -180,6 +185,7 @@
 
         ftpysrc='/var/local/build/client'
         ftpygit='https://github.com/Zarquan/firethorn.py.git'
+        ftpygit='https://github.com/stvoutsin/firethorn.py.git'
 
         if [  -e "${ftpysrc:?}" ]
         then

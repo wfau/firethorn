@@ -24,7 +24,7 @@
 # Create our chain properties.
 #[user@builder]
 
-    cat > "${HOME:?}/chain.properties" << EOF
+    cat > "${FIRETHORN_HOME:?}/chain.properties" << EOF
 
         metadata=$(pwgen 20 1)
         metauser=$(pwgen 20 1)
@@ -60,18 +60,17 @@
 
 EOF
 
-
 # -----------------------------------------------------
 # Link our compose config.
 #[user@builder]
 
-    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
+    ln -sf "${FIRETHORN_HOME:?}/chain.properties" "${FIRETHORN_HOME:?}/.env"
 
 # -----------------------------------------------------
 # Start our test containers ...
 #[user@builder]
     
-    cd "${HOME:?}"
+    cd "${FIRETHORN_HOME:?}"
 
     docker-compose \
         --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-local.yml" \
