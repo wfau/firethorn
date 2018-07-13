@@ -76,7 +76,28 @@ EOF
         --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-local.yml" \
         run \
             angela
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Separate shell on the host VM, locate the logs volume.
+#[user@virtual]
+
+    sudo -s
+
+    container=baryptera_gillian_1
+    
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+    tail -f firethorn-debug.log
    
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Run our Python tests ...
 #[user@python]
@@ -274,23 +295,5 @@ for threads in range(1, 20):
     docker-compose \
         --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-local.yml" \
         down
-
-# -----------------------------------------------------
-# Separate shell on the host VM, locate the logs volume.
-#[user@virtual]
-
-    sudo -s
-
-    container=baryptera_gillian_1
-    
-    pushd $(
-        docker inspect \
-            "${container:?}" \
-      | jq -r '
-            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
-            '
-            )
-
-    tail -f firethorn-debug.log
 
 

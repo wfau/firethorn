@@ -124,6 +124,8 @@
     # Tag this version of builder as latest.
     #[root@builder]
 
+        source "${FIRETHORN_HOME}/merge.settings"
+
         docker tag \
             "firethorn/builder:${newversion}" "firethorn/builder:latest"
 
@@ -230,6 +232,12 @@
 # -----------------------------------------------------
 # Run our Python tests, 20180712-03-merge-tests.txt
 # -----------------------------------------------------
+
+    # -----------------------------------------------------
+    # Update our Mercurial config.
+    #[root@builder]
+
+        07.02-mercurial-user.sh
 
     # -----------------------------------------------------
     # Commit our merged code.
