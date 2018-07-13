@@ -21,21 +21,21 @@
 
 
 # -------------------------------------------------------------------------------------------
-# Push our changes to our Mercurial repository.
+# Update our Mercurial repository config.
+
+    gitrepo=$(secret 'firethorn.mercurial.repo')
+    gituser=$(secret 'firethorn.mercurial.user')
 
     pushd "${FIRETHORN_CODE:?}"
 
-        source 'bin/util.sh'
-        
-        message="Push version [$(getversion)]"
-        confirm "${message:?}"
-        if [ $? -ne 0 ]
-        then
-            echo "EXIT : Cancelled"
-            exit 0
-        fi
-
-        hg push 'push-repo'
+        sed -i "
+            /^\[paths\]/,/^\[.*\]/ {
+                /^default/ a\
+push-repo = ${gitrepo:?}
+                }
+            $ a\
+username = ${gituser:?}                                
+            " .hg/hgrc
 
     popd
 

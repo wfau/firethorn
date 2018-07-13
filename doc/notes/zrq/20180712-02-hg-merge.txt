@@ -125,7 +125,7 @@
     #[root@builder]
 
         docker tag \
-            "firethorn/builder:${buildtag}" "firethorn/builder:latest"
+            "firethorn/builder:${newversion}" "firethorn/builder:latest"
 
     # -----------------------------------------------------
     # Exit this version of builder.
@@ -188,7 +188,7 @@
         echo "Fetching client source"
 
         ftpysrc='/var/local/build/client'
-        ftpygit='https://github.com/Zarquan/firethorn.py.git'
+       #ftpygit='https://github.com/Zarquan/firethorn.py.git'
         ftpygit='https://github.com/stvoutsin/firethorn.py.git'
 
         if [  -e "${ftpysrc:?}" ]
