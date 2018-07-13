@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.24
+FROM firethorn/ubuntu:2.1.24-zrq-userdata-drop
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
