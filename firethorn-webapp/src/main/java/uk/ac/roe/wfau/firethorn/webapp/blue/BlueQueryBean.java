@@ -69,7 +69,7 @@ public class BlueQueryBean
                 );
             }
         }
-
+    
     /**
      * Public constructor.
      * @param entity The {@link BlueQuery} to wrap.
@@ -145,7 +145,7 @@ public class BlueQueryBean
         }
 
     /**
-     * The {@link BlueQuery} OGSA-DA SQL query.
+     * The {@link BlueQuery} OGSA-DAI query.
      *
      */
     public String getOsql()

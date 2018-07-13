@@ -13,7 +13,7 @@ import uk.ac.roe.wfau.firethorn.access.ProtectionError;
 import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateRequestException;
+import uk.ac.roe.wfau.firethorn.adql.query.blue.InvalidStateException;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -132,7 +132,7 @@ class UWSJobFactory extends AbstractComponent {
 										        TaskState.RUNNING,
 												Long.valueOf(0)
 										        );
-									} catch (InvalidStateRequestException e) {
+									} catch (InvalidStateException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
@@ -184,7 +184,7 @@ class UWSJobFactory extends AbstractComponent {
  										        state,
  												Long.valueOf(0)
  										        );
- 									} catch (InvalidStateRequestException e) {
+ 									} catch (InvalidStateException e) {
  										// TODO Auto-generated catch block
  										e.printStackTrace();
  									}
@@ -300,7 +300,7 @@ class UWSJobFactory extends AbstractComponent {
 											query.update(
 													querystring
 											    );
-										} catch (InvalidStateRequestException e) {
+										} catch (InvalidStateException e) {
 											// TODO Auto-generated catch block
 											e.printStackTrace();
 										}

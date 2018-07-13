@@ -3,6 +3,10 @@ version: '2.1'
 volumes:
 
     #
+    # Build settings.
+    settings:
+
+    #
     # The source code cache.
     sourcecode:
 
@@ -24,11 +28,13 @@ services:
         read_only:
             false
         volumes:
+            - settings:/etc/firethorn
             - sourcecode:/var/local/build
             - buildcache:/var/local/cache
             - /etc/localtime:/etc/localtime:ro
             - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
             - /var/run/docker.sock:/var/run/docker.sock
+            - ${secretsh}:/bin/secret
         environment:
             branch: "${branch}"
             SSH_AUTH_SOCK: /tmp/ssh_auth_sock

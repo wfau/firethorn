@@ -36,7 +36,7 @@ services:
 
     bethany:
         image:
-           "firethorn/postgres:${buildtag:-latest}"
+           "firethorn/postgres:${buildtag:-unknown}"
         read_only:
             true
         tmpfs:
@@ -45,12 +45,13 @@ services:
         networks:
             - miriam
         environment:
-            POSTGRES_USER: "${metauser}"
+            POSTGRES_DB:       "${metadata}"
+            POSTGRES_USER:     "${metauser}"
             POSTGRES_PASSWORD: "${metapass}"
 
     carolina:
         image:
-           "firethorn/postgres:${buildtag:-latest}"
+           "firethorn/postgres:${buildtag:-unknown}"
         read_only:
             true
         tmpfs:
@@ -59,12 +60,13 @@ services:
         networks:
             - miriam
         environment:
-            POSTGRES_USER: "${tapschemauser}"
+            POSTGRES_DB:       "${tapschemadata}"
+            POSTGRES_USER:     "${tapschemauser}"
             POSTGRES_PASSWORD: "${tapschemapass}"
 
     patricia:
         image:
-           "firethorn/sql-proxy:${buildtag:-latest}"
+           "firethorn/sql-proxy:${buildtag:-unknown}"
         read_only:
             false
         tmpfs:
@@ -83,7 +85,7 @@ services:
 
     elayne:
         image:
-           "firethorn/sql-proxy:${buildtag:-latest}"
+           "firethorn/sql-proxy:${buildtag:-unknown}"
         read_only:
             false
         tmpfs:
@@ -102,7 +104,7 @@ services:
 
     jarmila:
         image:
-           "firethorn/ogsadai:${buildtag:-latest}"
+           "firethorn/ogsadai:${buildtag:-unknown}"
         read_only:
             false
         tmpfs:
@@ -128,7 +130,7 @@ services:
 
     gillian:
         image:
-           "firethorn/firethorn:${buildtag:-latest}"
+           "firethorn/firethorn:${buildtag:-unknown}"
         read_only:
             true
         tmpfs:
@@ -142,25 +144,29 @@ services:
             - rosana
         environment:
             firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
-            firethorn.meta.url: "jdbc:postgresql://bethany/postgres"
-            firethorn.meta.user: "${metauser}"
-            firethorn.meta.pass: "${metapass}"
+
+            firethorn.meta.url:    "jdbc:postgresql://bethany/${metadata}"
+            firethorn.meta.user:   "${metauser}"
+            firethorn.meta.pass:   "${metapass}"
             firethorn.meta.driver: "org.postgresql.Driver"
+
             firethorn.user.type: "mssql"
             firethorn.user.host: "patricia"
             firethorn.user.data: "${userdata}"
             firethorn.user.user: "${useruser}"
             firethorn.user.pass: "${userpass}"
+
             firethorn.admin.community: "${admingroup}"
             firethorn.guest.community: "${guestgroup}"
             firethorn.admin.user.name: "${adminuser}"
             firethorn.admin.user.pass: "${adminpass}"
-            firethorn.tapschema.resource.name: Wilhelmina
-            firethorn.tapschema.database.name: postgres
-            firethorn.tapschema.database.host: carolina
+
+            firethorn.tapschema.resource.name: "${tapresource}"
+            firethorn.tapschema.database.type: "pgsql"
+            firethorn.tapschema.database.host: "carolina"
+            firethorn.tapschema.database.name: "${tapschemadata}"
             firethorn.tapschema.database.user: "${tapschemauser}"
             firethorn.tapschema.database.pass: "${tapschemapass}"
-            firethorn.tapschema.database.type: pgsql
 
         depends_on:
             bethany:
@@ -174,9 +180,9 @@ services:
             jarmila:
                 condition: service_healthy            
 
-    tester:
+    angela:
         image:
-           "firethorn/tester:${buildtag}"
+           "firethorn/firethorn-py:${buildtag:-unknown}"
         read_only:
             false
         stdin_open:
@@ -193,29 +199,29 @@ services:
         environment:
             endpointurl: "http://gillian:8080/firethorn"
 
-            datahost:  "patricia"
             datatype:  "mssql"
+            datahost:  "patricia"
             datadata:  "${datadata}"
             datauser:  "${datauser}"
             datapass:  "${datapass}"
 
-            adminuser: "${adminuser}"
-            adminpass: "${adminpass}"
+            adminuser:  "${adminuser}"
+            adminpass:  "${adminpass}"
             admingroup: "${admingroup}"
+
             guestgroup: "${guestgroup}"
 
-            tapresource: Wilhelmina
-            tapschemadata: postgres
-            tapschemahost: carolina
+            tapresource:   "${tapresource}"
+            tapschematype: "pgsql"
+            tapschemahost: "carolina"
+            tapschemadata: "${tapschemadata}"
             tapschemauser: "${tapschemauser}"
             tapschemapass: "${tapschemapass}"
-            tapschematype: pgsql
 
         depends_on:
             gillian:
                 condition: service_healthy            
         command:
-            [bash]
-
+            [python3]
 
 

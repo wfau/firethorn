@@ -72,7 +72,7 @@ fi
 
 # -----------------------------------------------------
 # Create our chain properties.
-#[user@laptop]
+#[user@desktop]
 
     cat > "${HOME:?}/chain.properties" << EOF
 
@@ -108,7 +108,7 @@ EOF
 
 # -----------------------------------------------------
 # Link our compose config.
-#[user@virtual]
+#[user@desktop]
 
     ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
 
@@ -142,7 +142,7 @@ EOF
 
 # -----------------------------------------------------
 # Run our compose set.
-#[user@virtual]
+#[user@desktop]
 
     source "${HOME:?}/firethorn.settings"
 
@@ -154,7 +154,7 @@ EOF
 
 # -----------------------------------------------------
 # Functions to make it easier to build and test ....
-#[user@virtual]
+#[user@desktop]
 
     makepy()
         {

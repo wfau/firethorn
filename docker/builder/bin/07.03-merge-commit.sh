@@ -26,11 +26,10 @@
     # ONLY DO THIS IF THE TESTS PASS
     #
 
-    source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'
-        source "${HOME:?}/merge.settings"
+        source "${FIRETHORN_HOME:?}/merge.settings"
 
         #
         # Commit the merge.

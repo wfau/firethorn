@@ -15,19 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tester:2.1.23
+FROM firethorn/tester:2.1.24
 LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV ftpysrc=/home/firethorn-py
+ENV pysrc=/home/firethorn-py
 
 RUN dnf -y install \
     python3 \
     python3-pip
 
-#COPY . ${ftpysrc}
+COPY . ${pysrc}
 RUN  pip3 install numpy astropy requests
-#RUN  pip3 install --editable ${ftpysrc}
+RUN  pip3 install --editable ${pysrc}
 
-WORKDIR ${ftpysrc}
+WORKDIR ${pysrc}
 
 

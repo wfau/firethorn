@@ -46,50 +46,38 @@ implements HandlerInterceptor
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
         {
-        log.debug("OperationInterceptor.preHandle()");
-        log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
-
+        log.trace("preHandle()");
         final Operation oper = factories.operations().entities().create(
             request.getRequestURL().toString(),
             request.getMethod(),
             request.getRemoteAddr(),
             request.getServerPort()
             );
-
-        log.debug("Operation [{}]", oper.ident());
-        log.debug("  url  [{}]", oper.url());
-        log.debug("  port [{}]", oper.port());
-
-        //
+        log.trace("Operation [{}][{}]", oper.ident(), oper.url());
+        /*
         // Add the port number as a request attribute.
         request.setAttribute("adql.query.callback.port", new Integer(request.getServerPort()));
-
+         */
         return true ;
         }
 
     @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
-        log.debug("OperationInterceptor.postHandle()");
+        log.trace("postHandle()");
         final Operation oper = factories.operations().entities().current();
-        log.debug("Operation [{}][{}]", oper.ident(), oper.url());
-        log.debug("Handler   [{}]", handler.getClass().getName());
+        log.trace("Operation [{}][{}]", oper.ident(), oper.url());
         }
 
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
-        log.debug("OperationInterceptor.afterCompletion()");
+        log.trace("afterCompletion()");
         final Operation oper = factories.operations().entities().current();
-        log.debug("Operation [{}][{}]", oper.ident(), oper.url());
-        log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
+        log.trace("Operation [{}][{}]", oper.ident(), oper.url());
         if (ouch != null)
             {
-            log.debug("Operation threw an exception");
-            log.debug(" type [{}]", ouch.getClass().getName());
-            // Include the stack trace in the message
-            // http://slf4j.org/faq.html#paramException
-            log.debug(" text [{}]", ouch.getMessage(), ouch);
+            log.debug("Exception [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
             }
         }
     }

@@ -115,11 +115,7 @@ public class BlueQueryController
         )
     throws IdentifierNotFoundException, IdentifierFormatException, ProtectionException
         {
-        log.debug("select(String, TaskStatus, TaskStatus, Long)");
-        log.debug("  ident [{}]", ident);
-        log.debug("  prev  [{}]", next);
-        log.debug("  next  [{}]", next);
-        log.debug("  wait  [{}]", wait);
+        log.debug("select() [{}][{}][{}][{}]", ident, prev, next, wait);
         return bean(
             services().entities().select(
                 services().idents().ident(
@@ -182,11 +178,7 @@ public class BlueQueryController
         )
     throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
-        log.debug("update(String, TaskStatus, Long)");
-        log.debug("  ident [{}]", ident);
-        log.debug("  prev  [{}]", prev);
-        log.debug("  next  [{}]", next);
-        log.debug("  wait  [{}]", wait);
+        log.debug("update() [{}][{}][{}][{}]", ident, prev, next, wait);
         return bean(
             services().entities().update(
                 services().idents().ident(
@@ -225,13 +217,13 @@ public class BlueQueryController
      */
     @ResponseBody
     @RequestMapping(value=BlueQueryModel.CALLBACK_PATH, method=RequestMethod.POST, consumes=FORM_MIME, produces=JSON_MIME)
-    public BlueQueryBean formpost(
+    public BlueQueryMini formCallback(
         @PathVariable(value=Entity.LinkFactory.IDENT_FIELD)
         final String ident,
         @RequestParam(value=CALLBACK_TASK_STATE, required=false)
         final TaskState state,
-        @RequestParam(value=CALLBACK_REQUEST_PORT, required=false)
-        final Long port,
+        //@RequestParam(value=CALLBACK_REQUEST_PORT, required=false)
+        //final Long port,
         @RequestParam(value=CALLBACK_MESSAGE, required=false)
         final String message,
         @RequestParam(value=CALLBACK_RESULT_COUNT, required=false)
@@ -241,13 +233,8 @@ public class BlueQueryController
         )
     throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
-        log.debug("callback(....)");
-        log.debug("  ident [{}]", ident);
-        log.debug("  port  [{}]", port);
-        log.debug("  state [{}]", state);
-        log.debug("  count [{}]", resultcount);
-        log.debug("  state [{}]", resultstate);
-        return bean(
+        log.debug("formCallback() [{}][{}][{}][{}]", ident, state, resultcount, resultstate);
+        return mini(
             services().entities().callback(
                 services().idents().ident(
                     ident
@@ -370,24 +357,23 @@ public class BlueQueryController
      */
     @ResponseBody
     @RequestMapping(value=BlueQueryModel.CALLBACK_PATH, method=RequestMethod.POST, consumes=JSON_MIME, produces=JSON_MIME)
-    public BlueQueryBean jsonCallback(
+    public BlueQueryMini jsonCallback(
         @PathVariable(value=Entity.LinkFactory.IDENT_FIELD, required=true)
         final String ident,
-        @RequestParam(value=CALLBACK_REQUEST_PORT, required=false)
-        final Long port,
+        //@RequestParam(value=CALLBACK_REQUEST_PORT, required=false)
+        //final Long port,
         @RequestBody
         final RequestBean bean 
         )
     throws IdentifierNotFoundException, IdentifierFormatException, InvalidRequestException, InternalServerErrorException, ProtectionException
         {
-        log.debug("callback(....)");
-        log.debug("  ident [{}]", ident);
-        log.debug("  port  [{}]", port);
-        log.debug("  next  [{}]", bean.getState());
-        return bean(
-//
-// TODO return a smaller CallbackBean - without the history
-//
+        log.debug("jsonCallback() [{}][{}][{}][{}]",
+            ident,
+            bean.getState(),
+            bean.getResultCount(),
+            bean.getResultCount()
+            );
+        return mini(
             services().entities().callback(
                 services().idents().ident(
                     ident

@@ -20,13 +20,13 @@ package uk.ac.roe.wfau.firethorn.spring;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
-import uk.ac.roe.wfau.firethorn.identity.AuthenticationImpl;
+import uk.ac.roe.wfau.firethorn.identity.AuthMethod;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 
 /**
- * Factory for accessing the current {@link Operation}, {@link AuthenticationImpl} and {@link Identity}.  
+ * Factory for accessing the current {@link Operation}, {@link AuthMethod} and {@link Identity}.  
  *
  */
 @Component

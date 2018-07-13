@@ -171,17 +171,17 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
          * Update a {@link BlueQuery} with an ADQL string, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
-         */
         public BlueQuery update(final Identifier ident, final String input, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
-        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException;
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateException;
+         */
 
         /**
          * Update a {@link BlueQuery} with an ADQL string, {@link AdqlQueryBase.Limits}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
-         */
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
-        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException;
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateException;
+         */
 
         /**
          * Update a new {@link BlueQuery} with an ADQL string, {@link AdqlQueryBase.Limits}, {@link AdqlQueryBase.Delays}, prev and next {@link BlueQuery.TaskState}, and a wait timeout.
@@ -189,7 +189,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
          *
          */
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueTask.TaskState prev, final BlueTask.TaskState next, Long wait)
-        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException;
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateException;
 
         /**
          * Select a {@link BlueQuery} with a state and wait limit.
@@ -213,7 +213,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
          * 
          */
         public BlueQuery callback(final Identifier ident, final CallbackEvent message)
-        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException;
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateException;
 
         }
 
@@ -285,7 +285,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
      * 
      */
     public void callback(final BlueQuery.CallbackEvent message)
-    throws InvalidStateRequestException, ProtectionException;
+    throws InvalidStateException, ProtectionException;
 
     /**
      * The {@link CallbackEvent} URL (as a string).
@@ -311,7 +311,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
      * 
      */
     public void update(final String input)
-    throws ProtectionException, InvalidStateRequestException;
+    throws ProtectionException, InvalidStateException;
 
     /**
      * Update our input query and {@link AdqlQueryBase.Limits}.
@@ -319,7 +319,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
      * 
      */
     public void update(final String input, final AdqlQueryBase.Limits limits)
-    throws ProtectionException,InvalidStateRequestException;
+    throws ProtectionException,InvalidStateException;
 
     /**
      * Update our input query and {@link AdqlQueryBase.Limits} and {@link AdqlQueryBase.Delays}.
@@ -327,7 +327,7 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
      * 
      */
     public void update(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
-    throws ProtectionException, InvalidStateRequestException;
+    throws ProtectionException, InvalidStateException;
     
     /**
      * Our ADQL query.

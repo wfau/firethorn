@@ -22,7 +22,6 @@
 # -----------------------------------------------------
 # Update our Maven and Docker files.
 
-    source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         source 'bin/util.sh'

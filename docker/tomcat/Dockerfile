@@ -15,14 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/java:2.1.23
+FROM firethorn/java:2.1.24
 MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
 
 # https://tomcat.apache.org/whichversion.html
-ENV TOMCAT_VERSION 8.5.24
+#NV TOMCAT_VERSION 8.5.32
+ENV TOMCAT_VERSION 9.0.10
+ENV TOMCAT_MAJOR  9
 
 ENV TOMCAT_DIRNAME apache-tomcat-${TOMCAT_VERSION}
 ENV TOMCAT_TARFILE apache-tomcat-${TOMCAT_VERSION}.tar.gz
+ENV TOMCAT_SUMFILE ${TOMCAT_TARFILE}.sha512
 
 ENV TOMCAT_USER tomcat
 ENV TOMCAT_ROOT /var/local/tomcat
@@ -33,7 +36,7 @@ EXPOSE :8080
 
 #
 # Install the Tomcat Native Library
-# RUN dnf -y install tomcat-native
+RUN dnf -y install tomcat-native
 
 #
 # Create the Tomcat user.
@@ -47,18 +50,18 @@ WORKDIR /tmp
 # Download the tar file
 # Avoid using ADD - unreliable results.
 # https://github.com/moby/moby/issues/34243
-RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}
-RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}.md5
+RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}
+RUN wget --no-verbose https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/${TOMCAT_SUMFILE}
 
 #
 # Check the checksum.
-RUN md5sum -c "${TOMCAT_TARFILE}.md5"
+RUN sha512sum -c "${TOMCAT_SUMFILE}"
 
 #
 # Unpack the tar file.
 RUN tar -zxf  ${TOMCAT_TARFILE}
 RUN rm ${TOMCAT_TARFILE}
-RUN rm ${TOMCAT_TARFILE}.md5
+RUN rm ${TOMCAT_SUMFILE}
 
 #
 # Remove the default webapps.

@@ -19,7 +19,7 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 /**
- * Public interface for an {@link AuthenticationImpl} method.
+ * Public interface for an {@link AuthMethod} method.
  * 
  */
 public interface Method

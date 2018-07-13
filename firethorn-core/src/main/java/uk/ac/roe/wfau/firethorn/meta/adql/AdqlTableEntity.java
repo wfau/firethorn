@@ -198,6 +198,7 @@ public class AdqlTableEntity
      * {@link AdqlTable.EntityFactory} implementation.
      *
      */
+    @Slf4j
     @Repository
     public static class EntityFactory
     extends BaseTableEntity.EntityFactory<AdqlSchema, AdqlTable>
@@ -223,24 +224,21 @@ public class AdqlTableEntity
         public AdqlTable select(final Identifier ident)
         throws ProtectionException, IdentifierNotFoundException
             {
-            log.debug("select(Identifier) [{}]", ident);
+            log.trace("select(Identifier) [{}]", ident);
             if (ident instanceof ProxyIdentifier)
                 {
-                log.debug("-- proxy identifier");
+                log.trace("Proxy identifier [{}]", ident);
                 final ProxyIdentifier proxy = (ProxyIdentifier) ident;
-
-                log.debug("-- parent schema");
                 final AdqlSchema schema = schemas.select(
                     proxy.parent()
                     );
-
-                log.debug("-- proxy table");
                 final AdqlTable table = schema.tables().select(
                     proxy.base()
                     );
                 return table;
                 }
             else {
+                log.trace("Plain identifier [{}]", ident);
                 return super.select(
                     ident
                     );
@@ -433,7 +431,6 @@ public class AdqlTableEntity
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
             if (AdqlTableEntity.EntityServices.instance == null)
                 {
                 AdqlTableEntity.EntityServices.instance = this ;
@@ -498,14 +495,12 @@ public class AdqlTableEntity
     @Override
     protected AdqlTable.EntityFactory factory()
         {
-        log.debug("factory()");
         return AdqlTableEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected AdqlTable.EntityServices services()
         {
-        log.debug("services()");
         return AdqlTableEntity.EntityServices.instance() ; 
         }
 
@@ -572,7 +567,7 @@ public class AdqlTableEntity
     protected void realize(final BaseColumn<?> base)
     throws ProtectionException
         {
-        log.debug("realize(CopyDepth, BaseColumn) [{}][{}][{}][{}]", ident(), name(), base.ident(), base.name());
+        log.debug("realize(BaseColumn) [{}][{}][{}][{}]", this.ident(), this.name(), base.ident(), base.name());
         factories().adql().columns().entities().create(
             AdqlTableEntity.this,
             base
@@ -587,14 +582,13 @@ public class AdqlTableEntity
     protected void realize()
     throws ProtectionException
         {
-        log.debug("realize() [{}][{}]", ident(), name());
+        log.debug("realize() [{}][{}]", this.ident(), this.name());
         if (this.depth == CopyDepth.FULL)
             {
             if (this.base != null)
                 {
                 for (final BaseColumn<?> column : base.columns().select())
                     {
-                    log.debug("Importing base column [{}][{}]", column.ident(), column.name());
                     realize(
                         column
                         );
@@ -666,7 +660,7 @@ public class AdqlTableEntity
     public AdqlTable.Columns columns()
     throws ProtectionException
         {
-        log.debug("columns() for [{}][{}]", ident(), namebuilder());
+        log.debug("columns() for [{}][{}]", this.ident(), this.namebuilder());
         scan();
         return new AdqlTable.Columns()
             {
@@ -764,35 +758,37 @@ public class AdqlTableEntity
             public AdqlColumn select(final Identifier ident)
             throws ProtectionException, IdentifierNotFoundException
                 {
-                log.debug("columns().select(Identifier) [{}] from [{}]", ident, ident());
-                log.debug(" Table depth [{}]", depth());
+                log.trace("Columns.select() [{}] from [{}][{}]",
+                    ident,
+                    AdqlTableEntity.this.ident(),
+                    AdqlTableEntity.this.name()
+                    );
                 if (depth() == CopyDepth.THIN)
                     {
                     if (ident instanceof ProxyIdentifier)
                         {
                         final ProxyIdentifier proxy = (ProxyIdentifier) ident;
-                        log.debug("  Ident is a proxy");
-                        log.debug("  Checking ident parent [{}]", proxy.parent());
+                        log.trace("Proxy Identifier [{}][{}]", ident, proxy.parent());
                         if (ident().equals(proxy.parent()))
                             {
-                            log.debug("  Parent is us :-)");
+                            log.trace("ProxyIdentifier.parent() matches");
                             }
                         else {
-                            log.error("  Parent is NOT us :-(");
+                            log.error("ProxyIdentifier.parent() does not match");
                             }
-                        log.debug("  Selecting [{}] from base [{}]", proxy.base(), base.ident());
+                        log.trace("Selecting [{}] from base [{}]", proxy.base(), AdqlTableEntity.this.base().ident());
                         return new AdqlColumnProxy(
-                            base().columns().select(
+                                AdqlTableEntity.this.base().columns().select(
                                 proxy.base()
                                 ),
                             AdqlTableEntity.this
                             );
                         }
                     else {
-                        log.debug("  Ident is plain");
-                        log.debug("  Selecting [{}] from base [{}]", ident, base.ident());
+                        log.trace("Plain Identifier [{}]", ident);
+                        log.trace("Selecting [{}] from base [{}]", ident, AdqlTableEntity.this.base().ident());
                         return new AdqlColumnProxy(
-                            base().columns().select(
+                            AdqlTableEntity.this.base().columns().select(
                                 ident
                                 ),
                             AdqlTableEntity.this
@@ -811,8 +807,11 @@ public class AdqlTableEntity
             public AdqlColumn inport(final String name)
             throws ProtectionException, NameNotFoundException
                 {
-                log.debug("columns().inport(String)");
-                log.debug("  name [{}]", name);
+                log.trace("columns.inport() [{}] into [{}][{}]",
+                    name,
+                    AdqlTableEntity.this.ident(),
+                    AdqlTableEntity.this.name()
+                    );
                 if ((depth() == CopyDepth.PARTIAL) || (depth() == CopyDepth.FULL))
                     {
                     AdqlColumn column = search(
@@ -820,7 +819,12 @@ public class AdqlTableEntity
                         );
                     if (column != null)
                         {
-                        log.debug("Found ADQL column [{}][{}]", column.ident(), column.name());
+                        log.trace("Found ADQL column [{}][{}] in [{}][{}]",
+                            column.ident(),
+                            column.name(),
+                            AdqlTableEntity.this.ident(),
+                            AdqlTableEntity.this.name()
+                            );
                         }
                     else {
                         try {
@@ -835,7 +839,12 @@ public class AdqlTableEntity
                             log.error("Unable to locate base column [{}]", name);
                             throw ouch;
                             }
-                        log.debug("Created new ADQL column [{}][{}]", column.ident(), column.name());
+                        log.trace("Created new ADQL column [{}][{}] for [{}][{}]",
+                            column.ident(),
+                            column.name(),
+                            AdqlTableEntity.this.ident(),
+                            AdqlTableEntity.this.name()
+                            );
                         }
                     return column;
                     }
@@ -852,8 +861,7 @@ public class AdqlTableEntity
     protected void scanimpl()
     throws ProtectionException
         {
-        log.debug("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
-        // TODO Auto-generated method stub
+        log.trace("scanimpl() for [{}][{}]", this.ident(), this.namebuilder());
         }
 
     @Override

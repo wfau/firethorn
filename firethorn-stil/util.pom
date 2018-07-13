@@ -25,9 +25,9 @@
     >
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uk.ac.starlink</groupId>
+    <groupId>${stil.groupId}</groupId>
     <artifactId>stil-util</artifactId>
-    <version>3.2.3</version>
+    <version>${stil.version}</version>
     <packaging>jar</packaging>
 
     <name>STIL util</name>

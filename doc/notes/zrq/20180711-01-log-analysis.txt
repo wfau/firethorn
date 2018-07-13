@@ -1,0 +1,78 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Locate the Tomcat logs.
+#[root@virtual]
+
+    docker inspect \
+        root_gillian_1 \
+      | jq '.[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs")'
+
+        {
+          "Type": "volume",
+          "Name": "33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833",
+          "Source": "/var/lib/docker/volumes/33763c65fac9396020b50834c26c6b5552d8bdd58349dc5c63453c48681f0833/_data",
+          "Destination": "/var/local/tomcat/logs",
+          "Driver": "local",
+          "Mode": "",
+          "RW": true,
+          "Propagation": ""
+        }
+
+    pushd $(
+        docker inspect \
+            root_gillian_1 \
+          | jq -r '.[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source'
+          )
+
+    # -----------------------------------------------------
+    # Transfer a copy of firethorn.log.
+    #[root@virtual]
+
+            scp "firethorn.log" \
+                "dave@shepseskaf.roe.ac.uk:storage/firethorn/$(date '+%Y%m%d')-firethorn.log"
+
+    # -----------------------------------------------------
+    # Truncate the contents of firethorn.log.
+    #[root@virtual]
+
+            echo /dev/null > "firethorn.log"
+
+    # -----------------------------------------------------
+    # Tail the log to check Tomcat is ok.
+    #[root@virtual]
+
+            tail -f firethorn.log 
+
+                2018-07-11 03:33:23,654 DEBUG [main-interface-71] [HttpRequestDebug] preHandle() 
+                2018-07-11 03:33:23,654 DEBUG [main-interface-71] [HttpRequestDebug] ---- 
+                2018-07-11 03:33:23,654 DEBUG [main-interface-71] [HttpRequestDebug] Servlet 
+                2018-07-11 03:33:23,654 DEBUG [main-interface-71] [HttpRequestDebug]   scheme      [http] 
+                2018-07-11 03:33:23,654 DEBUG [main-interface-71] [HttpRequestDebug]   serverName  [tap.roe.ac.uk] 
+                2018-07-11 03:33:23,654 DEBUG [main-interface-71] [HttpRequestDebug]   serverPort  [80] 
+                2018-07-11 03:33:23,654 DEBUG [main-interface-71] [HttpRequestDebug]   serverPath  [/tap/61/availability] 
+                ....
+
+
+    popd

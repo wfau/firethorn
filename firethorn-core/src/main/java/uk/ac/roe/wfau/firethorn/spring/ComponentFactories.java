@@ -22,7 +22,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntry;
 import uk.ac.roe.wfau.firethorn.community.Community;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateThings;
-import uk.ac.roe.wfau.firethorn.identity.AuthenticationImpl;
+import uk.ac.roe.wfau.firethorn.identity.AuthMethod;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
@@ -99,10 +99,10 @@ public interface ComponentFactories
     public Operation.EntityServices operations();
 
     /**
-     * Our {@link AuthenticationImpl.EntityServices} instance.
+     * Our {@link AuthMethod.EntityServices} instance.
      *
      */
-    public AuthenticationImpl.EntityServices authentication();
+    public AuthMethod.EntityServices authentication();
 
     /**
      * Our {@link ConfigProperty.EntityServices} instance.

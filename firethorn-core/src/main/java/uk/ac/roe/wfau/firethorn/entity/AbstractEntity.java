@@ -331,10 +331,10 @@ implements Entity
         updatable = false
         )
     @GeneratedValue(
-        generator="ident-generator"
+        generator="entityidentseqgen"
         )
     @SequenceGenerator(
-        name="ident-generator"
+        name="entityidentseqgen"
         )
     private Long ident ;
 

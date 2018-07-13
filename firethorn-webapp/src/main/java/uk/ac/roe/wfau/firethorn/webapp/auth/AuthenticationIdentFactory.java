@@ -21,7 +21,7 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.identity.AuthenticationImpl;
+import uk.ac.roe.wfau.firethorn.identity.AuthMethod;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -30,8 +30,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class AuthenticationIdentFactory
-extends WebappIdentFactory<AuthenticationImpl>
-implements AuthenticationImpl.IdentFactory
+extends WebappIdentFactory<AuthMethod>
+implements AuthMethod.IdentFactory
     {
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/authentication-1.0.json"

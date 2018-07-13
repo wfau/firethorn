@@ -1,0 +1,925 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Check version of virt-install.
+#[user@trop03]
+
+    virt-install --version
+
+        1.4.0
+
+#---------------------------------------------------------------------
+# Build settings
+#[user@trop03]
+
+    source "${HOME}/ischnura.settings"
+
+    basecpu=4
+    basemem=4096
+    basesize=16G
+    basearch=x86_64
+
+    basever=28
+    basedate=$(date +%Y%m%d)
+    basedist=fedora-${basever:?}
+
+    initname=${basedist}-docker-init-${basedate:?}
+    initfile=${initname}.qcow
+
+    basename=${basedist}-docker-base-${basedate:?}
+    basefile=${basename}.qcow
+    basegzip=${basefile}.gz
+
+    kickstartfile=fedora-docker-base.txt
+    kickstarthref=https://raw.githubusercontent.com/Zarquan/ischnura/master/src/kickstart/${kickstartfile:?}
+
+    tempfile=/tmp/${basefile}
+
+#---------------------------------------------------------------------
+# Delete any existing VM images.
+#[user@trop03]
+
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${initname:?}"
+
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${basename:?}"
+
+#---------------------------------------------------------------------
+# Delete any existing volumes.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${initfile:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${basefile:?}"
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${initfile:?}" \
+            "${basesize:?}" \
+            --format qcow2
+
+#---------------------------------------------------------------------
+# Set a MAC address to match our DHCP range.
+#[user@trop03]
+
+    macaddress='52:54:00:02:03:0F'
+
+#---------------------------------------------------------------------
+# Create a new VM image by installing the Fedora boot image.
+#[user@trop03]
+
+    virt-install \
+        --noreboot \
+        --name       "${initname:?}" \
+        --disk       "vol=${basepool:?}/${initfile:?}" \
+        --vcpus      "${basecpu:?}" \
+        --memory     "${basemem:?}" \
+        --network    "network=default,mac=${macaddress:?}" \
+        --connect    "${connection:?}" \
+        --location   "https://download.fedoraproject.org/pub/fedora/linux/releases/${basever}/Server/${basearch}/os" \
+        --extra-args "inst.ks=${kickstarthref:?}"
+
+#---------------------------------------------------------------------
+# Check the image file info.
+#[user@trop03]
+
+    initpath=$(
+        virsh \
+            --connect "${connection:?}" \
+            vol-path \
+                --pool "${basepool:?}" \
+                "${initfile:?}"
+                )
+
+    sudo \
+        qemu-img \
+            info \
+                "${initpath:?}"
+
+        image: /var/lib/libvirt/images/base/fedora-28-docker-init-20180708.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 2.3G
+        cluster_size: 65536
+        Format specific information:
+            compat: 0.10
+            refcount bits: 16
+
+#---------------------------------------------------------------------
+# Create a compressed copy of the image.
+#[user@trop03]
+
+    sudo \
+        qemu-img \
+            convert \
+                -c \
+                -O qcow2 \
+                "${initpath:?}" \
+                "${tempfile:?}"
+
+    qemu-img \
+        info \
+            "${tempfile:?}"
+
+        image: /tmp/fedora-28-docker-base-20180708.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 990M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+            refcount bits: 16
+            corrupt: false
+
+#---------------------------------------------------------------------
+# Delete the initial virtual machine.
+#[user@trop03]
+
+   virsh \
+       --connect "${connection:?}" \
+       undefine "${initname:?}"
+
+#---------------------------------------------------------------------
+# Delete the uncompressed volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${initfile:?}"
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${basefile:?}" \
+            "${basesize:?}" \
+            --format 'qcow2'
+
+#---------------------------------------------------------------------
+# Upload the compressed copy into the new volume.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${basefile:?}" \
+            "${tempfile:?}"
+
+#---------------------------------------------------------------------
+# Create a test instance.
+#[user@trop03]
+
+    createvm
+
+        INFO : Node name [Umiawyth]
+        INFO : Base name [fedora-28-docker-base-20180708.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+        INFO : Disc name [Umiawyth.qcow]
+        INFO : Disc size [16GiB]
+
+#---------------------------------------------------------------------
+# Test login.
+#[user@trop03]
+
+    vmname=Umiawyth
+
+    ssh "dmr@${vmname:?}" date ## works
+    ssh "root@${vmname:?}" date ## not allowed
+    ssh "fedora@${vmname:?}" date ## denied
+    ssh "Stevedore@${vmname:?}" date ## works
+
+#---------------------------------------------------------------------
+# Check docker works.
+#[user@trop03]
+
+#
+# Had issues installing the Docker packages:
+#    Adding repo from: https://download.docker.com/linux/fedora/docker-ce.repo
+#    Curl error (7): Couldn't connect to server for https://download.docker.com/linux/fedora/docker-ce.repo []
+#    Error: Configuration of repo failed
+
+    ssh "Stevedore@${vmname:?}" \
+        '
+        docker ps -a
+        docker run --rm debian '/bin/sh -c date'
+        '
+
+#---------------------------------------------------------------------
+# Check docker-compose is installed.
+#[user@trop03]
+
+#
+# Had issues installing docker-compose in the past.
+#
+
+    ssh "Stevedore@${vmname:?}" \
+        '
+        docker-compose -version 
+        '
+
+#---------------------------------------------------------------------
+# Shutdown and delete the instance.
+#[user@trop03]
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        -c "${connection:?}" \
+        shutdown "${vmname:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        undefine "${vmname:?}"
+
+#---------------------------------------------------------------------
+# Push the compressed image to our webserver.
+#[user@trop03]
+
+    rsync \
+        --stats \
+        --progress \
+        --human-readable \
+        "${tempfile:?}" \
+        "Zarquan@data.metagrid.co.uk:/var/local/websites/data/ischnura/base/${basefile:?}"
+
+#---------------------------------------------------------------------
+# Delete the compressed image.
+#[user@desktop]
+
+    sudo rm "${tempfile:?}"
+
+
+
+#---------------------------------------------------------------------
+# Update local desktop machines to be able to run the image ..
+#---------------------------------------------------------------------
+#---------------------------------------------------------------------
+# Update our settings.
+#[user@methionine]
+#[user@asparagine]
+
+cat > "${HOME}/projects.settings" << 'EOF'
+ : ${projectbase:='/var/local/projects'}
+ : ${metaprojects:=${projectbase:?}/metagrid}
+ : ${edinprojects:=${projectbase:?}/edinburgh}
+EOF
+
+
+cat > "${HOME}/libvirt.settings" << 'EOF'
+ : ${connection:='qemu:///system'}
+ : ${basepool:='base'}
+ : ${basepath:='/var/lib/libvirt/images/base'}
+ : ${livepool:='live'}
+ : ${livepath:='/var/lib/libvirt/images/live'}
+export basepool
+export livepool
+export connection
+EOF
+
+
+cat > "${HOME}/ischnura.settings" << 'EOF'
+source "${HOME}/projects.settings"
+source "${HOME}/libvirt.settings"
+ : ${tempdir:="/tmp"}
+ : ${ischname:="ischnura"}
+ : ${ischbase:="${metaprojects:?}/${ischname:?}"}
+ : ${ischcode:="${ischbase:?}/github.zrq"}
+ : ${ischrepo:="git@github.com:Zarquan/${ischname:?}.git"}
+EOF
+
+#---------------------------------------------------------------------
+# Update host machines to be able to run the image ..
+#---------------------------------------------------------------------
+#---------------------------------------------------------------------
+# Update our source code.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    source "${HOME}/ischnura.settings"
+
+    if [ ! -e "${ischcode:?}" ]
+    then
+        if [ ! -e "${ischbase:?}" ]
+        then
+            mkdir -p "${ischbase}"
+        fi
+        pushd "${ischbase}"
+            git clone "${ischrepo:?}" "$(basename ${ischcode})"
+        popd
+    else
+        pushd "${ischcode:?}"
+            git pull
+        popd
+    fi
+
+    ln -fs "${ischcode:?}/src/bin/createvm" /usr/local/bin/createvm
+
+cat > "${ischcode:?}/src/config" << 'EOF'
+machines=${datpath:?}/metagrid-machines.txt
+template=${datpath:?}/metagrid-template.xml
+EOF
+
+#---------------------------------------------------------------------
+# Install the missing dependency.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+
+    sudo apt-get update
+    sudo apt-get install xmlstarlet
+    sudo apt-get install genisoimage
+
+#[user@asparagine]
+
+    sudo yum -y install xmlstarlet
+    sudo yum -y install genisoimage
+
+#[user@methionine]
+
+    sudo dnf -y install xmlstarlet
+    sudo dnf -y install genisoimage
+
+#---------------------------------------------------------------------
+# Create the cloud-init volume pool.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    source "${HOME}/ischnura.settings"
+
+    initpool='init'
+    initpath='/var/lib/libvirt/images/init'
+
+    initxml=$(mktemp)
+    cat > "${initxml:?}" << EOF
+<pool type='dir'>
+  <name>${initpool:?}</name>
+  <target>
+    <path>${initpath:?}</path>
+  </target>
+</pool>
+EOF
+
+   virsh \
+       --connect "${connection:?}" \
+        pool-define "${initxml:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-build "${initpool:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-start "${initpool:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-autostart "${initpool:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        pool-info "${initpool:?}"
+
+        Name:           init
+        UUID:           0482a7b3-fe2b-44e1-8a48-e696d8cdfcc9
+        State:          running
+        Persistent:     yes
+        Autostart:      yes
+        Capacity:       91.54 GiB
+        Allocation:     82.01 GiB
+        Available:      9.53 GiB
+
+#---------------------------------------------------------------------
+# Download and test the new image.
+#---------------------------------------------------------------------
+# Build settings
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    source "${HOME}/ischnura.settings"
+
+    basename=fedora-28-docker-base-20180708
+    basefile=${basename}.qcow
+
+    testname=alpha-28-docker-base-20180708
+    testfile=${testname}.qcow
+
+    tempfile=/tmp/${basefile:?}
+
+#---------------------------------------------------------------------
+# Download a copy of the base image.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    wget -O "${tempfile:?}" "http://data.metagrid.co.uk/ischnura/base/${basefile:?}"
+
+#---------------------------------------------------------------------
+# Check the image details.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+
+    qemu-img \
+        info \
+            "${tempfile:?}"
+
+        image: /tmp/fedora-28-docker-base-20180708.qcow
+        file format: qcow2
+        virtual size: 16G (17179869184 bytes)
+        disk size: 993M
+        cluster_size: 65536
+        Format specific information:
+            compat: 1.1
+            lazy refcounts: false
+
+    basesize=$(
+        qemu-img \
+            info \
+                "${tempfile:?}" \
+            | sed -n 's/virtual size: \([0-9]*[KkMmGg]\).*/\1/p'
+            )
+
+#---------------------------------------------------------------------
+# Delete any existing volume.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool "${basepool}" \
+            "${testfile:?}"
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-create-as \
+            "${basepool:?}" \
+            "${testfile:?}" \
+            "${basesize:?}" \
+            --format qcow2
+
+#---------------------------------------------------------------------
+# Upload the image into the new volume.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-upload \
+            --pool "${basepool:?}" \
+            "${testfile:?}" \
+            "${tempfile:?}"
+
+#---------------------------------------------------------------------
+# Delete our temp file.
+#[user@trop01]
+#[user@trop02]
+#[user@trop04]
+#[user@methionine]
+#[user@asparagine]
+
+    rm "${tempfile:?}"
+
+#---------------------------------------------------------------------
+# Test a VM instance using the new image.
+#[user@trop01]
+#[user@trop02]
+#[user@trop03]
+#[user@trop04]
+#[user@methionine]
+
+    createvm
+
+        INFO : Node name [Delild][Araybwyn][Umiawyth][Wumar]
+        INFO : Base name [fedora-28-docker-base-20180706.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+
+#---------------------------------------------------------------------
+# Test login.
+#[user@trop01]
+#[user@trop02]
+#[user@trop03]
+#[user@trop04]
+#[user@methionine]
+
+    vmname=Delild
+    vmname=Araybwyn
+    vmname=Umiawyth
+    vmname=Wumar
+    vmname=eta
+
+    vmuser=Stevedore
+
+    ssh "$(id -un)@${vmname:?}" date ## works
+    ssh "root@${vmname:?}" date ## not allowed
+    ssh "fedora@${vmname:?}" date ## denied
+    ssh "${vmuser:?}@${vmname:?}" date ## works
+
+#---------------------------------------------------------------------
+# Check docker and docker-compose are installed.
+#[user@trop03]
+
+    ssh "${vmuser:?}@${vmname:?}" \
+        '
+        echo "---- Docker"
+        docker version 
+        echo ""
+        echo "---- Docker compose"
+        docker-compose -version 
+        '
+
+    ssh "${vmuser:?}@${vmname:?}" \
+        '
+        docker info 
+        '
+
+#---------------------------------------------------------------------
+# Shutdown and delete the instance.
+#[user@trop01]
+#[user@trop02]
+#[user@trop03]
+#[user@trop04]
+#[user@methionine]
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        -c "${connection:?}" \
+        shutdown "${vmname:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        undefine "${vmname:?}"
+
+
+ZRQ HERE
+
+#---------------------------------------------------------------------
+# Install the new image on our OpenStack service. 
+#---------------------------------------------------------------------
+# Create an initial VM on the university LAN.
+#[user@trop03]
+
+    createvm
+
+        INFO : Node name [Umiawyth]
+        INFO : Base name [fedora-28-docker-base-20180707.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180707.qcow]
+        INFO : Disc name [Umiawyth.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to our initial VM.
+#[user@desktop]
+
+    ssh Umiawyth
+
+    # -----------------------------------------------------
+    # Configure our secrets function.
+    #[user@virtual]
+
+        mkdir "${HOME}/bin"
+        pushd "${HOME}/bin"
+
+            cat > "secret" << 'EOF'
+....
+....
+EOF
+
+            chmod u=rwx,og= "secret"
+        popd
+
+        secret frog
+
+    # -----------------------------------------------------
+    # Configure our OpenStack settings.
+    # https://horizon.ecdf.ed.ac.uk/dashboard/project/access_and_security/api_access/openrc/
+    #[user@virtual]
+
+        mkdir "${HOME}/settings"
+        
+        cat > "${HOME}/settings/openstack.settings" << EOF
+
+export OS_INTERFACE=public
+export OS_IDENTITY_API_VERSION=3
+
+export OS_AUTH_URL=https://keystone.ecdf.ed.ac.uk/v3
+
+export OS_USER_DOMAIN_NAME="ed"
+export OS_REGION_NAME="Edinburgh"
+
+export OS_USERNAME=$(secret openstack.user)
+export OS_PASSWORD=$(secret openstack.pass)
+
+export OS_PROJECT_ID=fcef6dd450f64a1ab4ffa5a7234c4161
+export OS_PROJECT_NAME=lsst
+
+EOF
+
+    # -----------------------------------------------------
+    # Create a container to work with.
+    #[user@virtual]
+
+        docker run \
+            --rm \
+            --tty \
+            --interactive \
+            --hostname openstacker \
+            --env SSH_AUTH_SOCK=/tmp/ssh_auth_sock \
+            --volume "${HOME}/settings/:/etc/phymatopus/" \
+            --volume ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock \
+            phymatopus/openstack-client \
+            bash
+
+        # -----------------------------------------------------
+        # Load our OpenStack settings.
+        #[root@openstacker]
+
+            source '/etc/phymatopus/openstack.settings'
+
+        # -----------------------------------------------------
+        # Load our OpenStack and Eleanor functions.
+        #[root@openstacker]
+
+            source 'openstack-utils.sh'
+            source 'eleanor-utils.sh'
+            source 'eleanor-init.sh'
+
+        # -----------------------------------------------------
+        # Initialize our cluster settings.
+        #[root@openstacker]
+
+if [ ! -e '/etc/phymatopus/cluster.settings' ]
+then
+    cat > '/etc/phymatopus/cluster.settings' << EOF
+
+    phym_userkey=dmr
+    phym_project=Raminiara
+
+    phym_image=\${fedora27:?}
+    phym_flavor=\${m1small:?}
+
+    sshuser=Stevedore
+    sshopts=(
+        '-o CheckHostIP=no'
+        '-o UserKnownHostsFile=/dev/null'
+        '-o StrictHostKeyChecking=no'
+        )
+
+EOF
+fi
+
+        # -----------------------------------------------------
+        # Load our project settings.
+        #[root@openstacker]
+
+            source '/etc/phymatopus/cluster.settings'
+
+        # -----------------------------------------------------
+        # Process the gobal list of nodes.
+        #[root@openstacker]
+
+            unset controller
+
+            unset unknowns
+            unknowns=()
+
+            unset kfidents
+            kfidents=()
+
+            unset mmidents
+            mmidents=()
+
+            unset zkidents
+            zkidents=()
+
+            echo ""
+            echo "Processing OpenStack nodes"
+            
+            for ident in $(
+                openstack \
+                    server list \
+                    --format json \
+                | jq -r '.[] | .ID'
+                )
+                do
+                    echo "Ident [$ident]"
+                    getvminfo "${ident:?}"
+
+                    name=$(getvmname)
+                    echo "Name  [$name]"
+
+                    case "${name}" in
+
+                        ${phym_project:?}-zookeeper*)
+                            echo "Match zookeeper"
+                            zkidents+=(${ident})
+                            ;;
+                            
+                        ${phym_project:?}-mirror*)
+                            echo "Match mirror"
+                            mmidents+=(${ident})
+                            ;;
+
+                        ${phym_project:?}-kafka*)
+                            echo "Match kafka"
+                            kfidents+=(${ident})
+                            ;;
+
+                        ${phym_project:?}-control*)
+                            echo "Match control"
+                            controller=${ident}
+                            ;;
+
+                        *)
+                            echo "unknown"
+                            unknowns+=(${ident})
+                            ;;
+                    esac
+                done
+
+        # -----------------------------------------------------
+        # Get our controller address.
+        #[root@openstacker]
+
+            getvminfo "${controller:?}"
+            controlip=$(geteleanor172)
+
+        # -----------------------------------------------------
+        # Configure our ssh proxy command.
+        #[root@openstacker]
+
+            sshproxy="ssh ${sshopts[*]} ${sshuser:?}@${controlip:?} nc %h %p"
+
+        # -----------------------------------------------------
+        # Create our OpenStack image.
+        #[root@openstacker]
+
+            datasite=http://data.metagrid.co.uk/ischnura/base
+
+            basename=fedora-28-docker-base-20180707
+            qcowfile=${basename:?}.qcow
+            gzipfile=${qcowfile:?}.gz
+
+            wget -O "/tmp/${gzipfile:?}" "${datasite:?}/${gzipfile:?}"
+
+            gunzip "/tmp/${gzipfile:?}"
+
+            openstack \
+                image create \
+                --shared \
+                --format json \
+                --disk-format 'qcow2' \
+                --file "/tmp/${qcowfile:?}" \
+                "${basename:?}" \
+                | jq '.' \
+                | tee /tmp/image-info.json
+
+
+            imageident=$(
+                jq -r "
+                    .id
+                    " /tmp/image-info.json
+                )
+
+        # -----------------------------------------------------
+        # Re-load our Eleanor information.
+        #[root@openstacker]
+
+            source 'eleanor-init.sh'
+
+        # -----------------------------------------------------
+        # Check we found our Fedora 28 image.
+        #[root@openstacker]
+
+            echo "[${imageident:?}]"
+            echo "[${fedora28:?}]"
+
+        # -----------------------------------------------------
+        # Create a Fedora 28 instance.
+        #[root@openstacker]
+
+            vmident=$(
+                makevm \
+                    "fedora-test" \
+                    "${m1small}"  \
+                    "${fedora28}"
+                    )
+
+        # -----------------------------------------------------
+        # Check our Fedora 28 instance.
+        #[root@openstacker]
+
+            openstack \
+                server \
+                show \
+                --format json \
+                "${vmident:?}" \
+                | jq '.'
+
+        # -----------------------------------------------------
+        # Test login to our new instance.
+        #[root@openstacker]
+
+            getvminfo "${vmident:?}"
+            echo "Name    [$(getvmname)]"
+            echo "Ident   [${vmident:?}]"
+
+            internalip=$(geteleanor192)
+            echo "Address [${internalip:?}]"
+
+            ssh \
+                ${sshopts[*]} \
+                -o ProxyCommand="${sshproxy:?}" \
+                ${sshuser:?}@${internalip:?} \
+                hostname
+            
+            ssh \
+                ${sshopts[*]} \
+                -o ProxyCommand="${sshproxy:?}" \
+                ${sshuser:?}@${internalip:?} \
+                cat /etc/redhat-release
+
+        # -----------------------------------------------------
+        # Delete our new instance.
+        #[root@openstacker]
+
+            openstack \
+                server \
+                delete \
+                "${vmident:?}"
+
+
+
+

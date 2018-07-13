@@ -22,7 +22,6 @@
 # -----------------------------------------------------
 # Checkout a copy of our source code.
 
-    source "${HOME:?}/firethorn.settings"
     if [  -e "${FIRETHORN_CODE:?}" ]
     then
         pushd "${FIRETHORN_CODE:?}"
@@ -47,8 +46,6 @@
 # -----------------------------------------------------
 # Update the source code branch.
 
-
-    source "${HOME:?}/firethorn.settings"
     pushd "${FIRETHORN_CODE:?}"
 
         if [[ -n "${branch:?}" ]]

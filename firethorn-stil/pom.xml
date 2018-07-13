@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.23</version>
+        <version project='firethorn'>2.1.24</version>
     </parent>
 
     <artifactId>firethorn-stil</artifactId>
@@ -48,34 +48,35 @@
     <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
 
     <properties>
-        <stil.version>3.2.3</stil.version>
+        <stil.groupId>uk.ac.starlink</stil.groupId>
+        <stil.version>3.3.1</stil.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>uk.ac.starlink</groupId>
+            <groupId>${stil.groupId}</groupId>
             <artifactId>stil-util</artifactId>
             <version>${stil.version}</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.starlink</groupId>
+            <groupId>${stil.groupId}</groupId>
             <artifactId>stil-table</artifactId>
             <version>${stil.version}</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.starlink</groupId>
+            <groupId>${stil.groupId}</groupId>
             <artifactId>stil-votable</artifactId>
             <version>${stil.version}</version>
         </dependency>
         <!--+
             |
         <dependency>
-            <groupId>uk.ac.starlink</groupId>
+            <groupId>${stil.groupId}</groupId>
             <artifactId>stil-fits</artifactId>
             <version>${stil.version}</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.starlink</groupId>
+            <groupId>${stil.groupId}</groupId>
             <artifactId>stil-tamfits</artifactId>
             <version>${stil.version}</version>
         </dependency>

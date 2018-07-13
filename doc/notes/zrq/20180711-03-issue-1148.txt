@@ -1,0 +1,520 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Start our containers ...
+#[user@virtual]
+
+    docker-compose \
+        --file "baryptera-local.yml" \
+        run \
+            angela
+
+# -----------------------------------------------------
+# Run our Python tests ...
+#[user@virtual]
+
+
+#
+# Create our firethorn client and point it at our test service.
+
+<pre>
+    import os
+    import sys
+    import uuid
+    import time
+    import firethorn as ftpy
+
+    firethorn = ftpy.Firethorn(
+        'http://tap.metagrid.xyz/firethorn/'
+        )
+
+    #
+    # Login as a guest user.
+    firethorn.login(
+        str(uuid.uuid4()),
+        str(uuid.uuid4()),
+        None
+        )
+
+    #
+    # Start with the WSA resource ..
+    # http://tap.metagrid.xyz/firethorn/adql/resource/54
+    from models.resource import Resource 
+    from adql.adql_resource import AdqlResource
+
+    resource = Resource(
+        adql_resource = AdqlResource(
+            url = 'http://tap.metagrid.xyz/firethorn/adql/resource/54',
+            account = firethorn.identity()
+            )
+        )
+
+    #
+    # Iterate the catalog/schema/tables tree querying each and
+    # building a list of candidates where the result rowcount
+    # is less than expected. 
+
+    processed = dict()
+    candidates = dict()
+    exceptions =  dict()
+
+    for schema in resource.get_schemas():
+        for table in schema.get_tables():
+            fullname = schema.name() + "." + table.name()
+            print(
+                "Testing [{}]".format(
+                    fullname
+                    )
+                )
+            try:
+                query_str = "SELECT TOP 10 * FROM {}.{}".format(
+                    schema.name(),
+                    table.name()
+                    )
+                query_obj = resource.query(
+                    query_str
+                    )
+                py_table = query_obj.results().as_astropy()
+                py_table.pprint()
+                rowcount = query_obj.results().rowcount()
+                processed[fullname] = rowcount
+                if (rowcount < 10):
+                    candidates[fullname] = rowcount
+                    print(
+                        "Candidate [{}] [{}]".format(
+                            fullname,
+                            rowcount
+                            )
+                        )
+            except:
+                message = sys.exc_info()[0]
+                exceptions[fullname] = message
+                print(
+                    "Exception [{}] [{}]".format(
+                        fullname,
+                        message
+                        )
+                    )
+
+    for name in candidates:
+        print (
+            "[{}] [{}]".format(
+                name,
+                candidates[name]
+                )
+            )
+
+    for name in exceptions:
+        print (
+            "[{}] [{}]".format(
+                name,
+                exceptions[name]
+                )
+            )
+</pre>
+
+
+
+
+
+
+
+
+
+for name in differences:
+    print (
+        "[{}] [{}]".format(
+            candidates[name],
+            name
+            )
+        )
+
+[1] [BestDR9.SpecObjAll]
+[6] [BestDR9.HoleType]
+[0] [BestDR9.sppTargets]
+[1] [BestDR9.segue1SpecObjAll]
+[5] [BestDR9.FieldQuality]
+[1] [BestDR9.SpecObj]
+[0] [BestDR9.sdssSector2Tile]
+[9] [BestDR9.RunShift]
+[1] [BestDR9.Frame]
+[0] [BestDR9.Region2Box]
+[0] [BestDR9.Sky]
+[5] [BestDR9.TiMask]
+[8] [BestDR9.SiteConstants]
+[5] [BestDR9.PhotoMode]
+[4] [BestDR9.CoordType]
+[4] [BestDR9.FramesStatus]
+[0] [BestDR9.Target]
+[0] [BestDR9.sdssSector]
+[1] [BestDR9.RecentQueries]
+[0] [BestDR9.FileGroupMap]
+[0] [BestDR9.TargetInfo]
+[0] [BestDR9.sdssBestTarget2Sector]
+[6] [BestDR9.SiteDBs]
+[9] [BestDR9.SpecZWarning]
+[5] [BestDR9.MaskType]
+[1] [BestDR9.segueSpecObjAll]
+[3] [BestDR9.ProgramType]
+[1] [BestDR9.segue2SpecObjAll]
+[7] [BestDR9.InsideMask]
+[4] [SSA.FieldSystem]
+[0] [SSA.PrevIsoCal]
+[0] [SSA.IsoCalVersion]
+[0] [SSA.CurrIsoCal]
+[0] [TAP_SCHEMA.key_columns]
+[0] [TAP_SCHEMA.keys]
+[0] [UKIDSSDR1PLUS.PreviousAstrometry]
+[0] [UKIDSSDR1PLUS.lasListRemeasurement]
+[0] [UKIDSSDR1PLUS.StackImage]
+[0] [UKIDSSDR1PLUS.gpsListRemeasurement]
+[0] [UKIDSSDR1PLUS.CurrentStdStarInfo]
+[0] [UKIDSSDR1PLUS.dxsSourceRemeasurement]
+[0] [UKIDSSDR1PLUS.CurrentNightlyExt]
+[0] [UKIDSSDR1PLUS.MosaicImage]
+[0] [UKIDSSDR1PLUS.PreviousSpatialMap]
+[1] [UKIDSSDR1PLUS.udsMergeLog]
+[9] [UKIDSSDR1PLUS.Filter]
+[0] [UKIDSSDR1PLUS.gpsSourceRemeasurement]
+[0] [UKIDSSDR1PLUS.StdFieldInfo]
+[0] [UKIDSSDR1PLUS.PreviousNightlyExt]
+[0] [UKIDSSDR1PLUS.dxsListRemeasurement]
+[0] [UKIDSSDR1PLUS.CurrentZP]
+[0] [UKIDSSDR1PLUS.udsListRemeasurement]
+[0] [UKIDSSDR1PLUS.DifferenceImage]
+[1] [UKIDSSDR1PLUS.RequiredDiffImage]
+[0] [UKIDSSDR1PLUS.PreviousZP]
+[0] [UKIDSSDR1PLUS.gcsSourceRemeasurement]
+[0] [UKIDSSDR1PLUS.udsSourceRemeasurement]
+[1] [UKIDSSDR1PLUS.MultiframeSetUp]
+[0] [UKIDSSDR1PLUS.gcsListRemeasurement]
+[6] [UKIDSSDR1PLUS.RequiredListDrivenProduct]
+[0] [UKIDSSDR1PLUS.AstrCalVers]
+[0] [UKIDSSDR1PLUS.PhotCalVers]
+[0] [UKIDSSDR1PLUS.PreviousStdStarInfo]
+[0] [UKIDSSDR1PLUS.lasSourceRemeasurement]
+[0] [UKIDSSDR1PLUS.CurrentSpatialMap]
+[1] [UKIDSSDR1PLUS.DetectorSetUp]
+[0] [UKIDSSDR2PLUS.PreviousAstrometry]
+[0] [UKIDSSDR2PLUS.lasListRemeasurement]
+[0] [UKIDSSDR2PLUS.PreviousSpatialMap]
+[3] [UKIDSSDR2PLUS.udsFrameSets]
+[0] [UKIDSSDR2PLUS.AstrCalVers]
+[0] [UKIDSSDR2PLUS.dxsListRemeasurement]
+[0] [UKIDSSDR2PLUS.udsListRemeasurement]
+[0] [UKIDSSDR2PLUS.PreviousNightlyExt]
+[0] [UKIDSSDR2PLUS.DifferenceImage]
+[0] [UKIDSSDR2PLUS.udsSourceRemeasurement]
+[1] [UKIDSSDR2PLUS.DetectorSetUp]
+[0] [UKIDSSDR2PLUS.gcsListRemeasurement]
+[0] [UKIDSSDR2PLUS.lasSourceRemeasurement]
+[0] [UKIDSSDR2PLUS.RequiredSynoptic]
+[0] [UKIDSSDR2PLUS.CurrentNightlyExt]
+[0] [UKIDSSDR2PLUS.dxsSourceRemeasurement]
+[0] [UKIDSSDR2PLUS.gpsSourceRemeasurement]
+[1] [UKIDSSDR2PLUS.RequiredDiffImage]
+[0] [UKIDSSDR2PLUS.gpsListRemeasurement]
+[1] [UKIDSSDR2PLUS.udsMergeLog]
+[1] [UKIDSSDR2PLUS.MultiframeSetUp]
+[0] [UKIDSSDR2PLUS.CurrentPhtSoln]
+[6] [UKIDSSDR2PLUS.Programme]
+[1] [UKIDSSDR2PLUS.PhotCalVers]
+[0] [UKIDSSDR2PLUS.PreviousPhtSoln]
+[0] [UKIDSSDR2PLUS.CurrentStdStarInfo]
+[3] [UKIDSSDR2PLUS.RequiredMosaic]
+[0] [UKIDSSDR2PLUS.gcsSourceRemeasurement]
+[6] [UKIDSSDR2PLUS.RequiredListDrivenProduct]
+[0] [UKIDSSDR2PLUS.PreviousStdStarInfo]
+[0] [UKIDSSDR2PLUS.CurrentSpatialMap]
+[0] [UKIDSSDR3PLUS.PreviousAstrometry]
+[0] [UKIDSSDR3PLUS.lasListRemeasurement]
+[0] [UKIDSSDR3PLUS.PreviousSpatialMap]
+[3] [UKIDSSDR3PLUS.udsFrameSets]
+[0] [UKIDSSDR3PLUS.AstrCalVers]
+[0] [UKIDSSDR3PLUS.dxsListRemeasurement]
+[0] [UKIDSSDR3PLUS.DifferenceImage]
+[0] [UKIDSSDR3PLUS.udsListRemeasurement]
+[0] [UKIDSSDR3PLUS.PreviousNightlyExt]
+[0] [UKIDSSDR3PLUS.udsSourceRemeasurement]
+[1] [UKIDSSDR3PLUS.DetectorSetUp]
+[0] [UKIDSSDR3PLUS.gcsListRemeasurement]
+[0] [UKIDSSDR3PLUS.lasSourceRemeasurement]
+[2] [UKIDSSDR3PLUS.RequiredSynoptic]
+[0] [UKIDSSDR3PLUS.CurrentNightlyExt]
+[0] [UKIDSSDR3PLUS.dxsSourceRemeasurement]
+[0] [UKIDSSDR3PLUS.gpsSourceRemeasurement]
+[1] [UKIDSSDR3PLUS.RequiredDiffImage]
+[0] [UKIDSSDR3PLUS.gpsListRemeasurement]
+[1] [UKIDSSDR3PLUS.udsMergeLog]
+[1] [UKIDSSDR3PLUS.MultiframeSetUp]
+[0] [UKIDSSDR3PLUS.CurrentPhtSoln]
+[6] [UKIDSSDR3PLUS.Programme]
+[9] [UKIDSSDR3PLUS.PhotCalVers]
+[0] [UKIDSSDR3PLUS.PreviousPhtSoln]
+[0] [UKIDSSDR3PLUS.CurrentStdStarInfo]
+[5] [UKIDSSDR3PLUS.RequiredMosaic]
+[0] [UKIDSSDR3PLUS.gcsSourceRemeasurement]
+[6] [UKIDSSDR3PLUS.RequiredListDrivenProduct]
+[0] [UKIDSSDR3PLUS.PreviousStdStarInfo]
+[0] [UKIDSSDR3PLUS.CurrentSpatialMap]
+[0] [UKIDSSDR4PLUS.PreviousAstrometry]
+[0] [UKIDSSDR4PLUS.lasListRemeasurement]
+[3] [UKIDSSDR4PLUS.udsFrameSets]
+[0] [UKIDSSDR4PLUS.AstrCalVers]
+[0] [UKIDSSDR4PLUS.dxsListRemeasurement]
+[0] [UKIDSSDR4PLUS.dxsSourceXDetectionBestMatch]
+[0] [UKIDSSDR4PLUS.dxsSourceRemeasurement]
+[0] [UKIDSSDR4PLUS.udsListRemeasurement]
+[0] [UKIDSSDR4PLUS.udsSourceRemeasurement]
+[0] [UKIDSSDR4PLUS.gcsListRemeasurement]
+[0] [UKIDSSDR4PLUS.udsDetection]
+[0] [UKIDSSDR4PLUS.lasSourceRemeasurement]
+[1] [UKIDSSDR4PLUS.Survey]
+[4] [UKIDSSDR4PLUS.RequiredSynoptic]
+[0] [UKIDSSDR4PLUS.dxsVariability]
+[0] [UKIDSSDR4PLUS.gpsSourceRemeasurement]
+[5] [UKIDSSDR4PLUS.SurveyProgrammes]
+[0] [UKIDSSDR4PLUS.udsSourceXDetectionBestMatch]
+[1] [UKIDSSDR4PLUS.RequiredDiffImage]
+[0] [UKIDSSDR4PLUS.gpsListRemeasurement]
+[1] [UKIDSSDR4PLUS.udsMergeLog]
+[0] [UKIDSSDR4PLUS.ExternalSurveyTable]
+[1] [UKIDSSDR4PLUS.ExternalSurvey]
+[6] [UKIDSSDR4PLUS.Programme]
+[9] [UKIDSSDR4PLUS.PhotCalVers]
+[0] [UKIDSSDR4PLUS.udsVariability]
+[5] [UKIDSSDR4PLUS.RequiredMosaic]
+[0] [UKIDSSDR4PLUS.reliableUdsSource]
+[0] [UKIDSSDR4PLUS.dxsVarFrameSetInfo]
+[0] [UKIDSSDR4PLUS.gcsSourceRemeasurement]
+[0] [UKIDSSDR4PLUS.udsVarFrameSetInfo]
+[5] [UKIDSSDR4PLUS.RequiredListDrivenProduct]
+[0] [UKIDSSDR4PLUS.udsSource]
+[0] [UKIDSSDR5PLUS.PreviousAstrometry]
+[0] [UKIDSSDR5PLUS.lasListRemeasurement]
+[3] [UKIDSSDR5PLUS.udsFrameSets]
+[0] [UKIDSSDR5PLUS.AstrCalVers]
+[0] [UKIDSSDR5PLUS.dxsListRemeasurement]
+[0] [UKIDSSDR5PLUS.dxsSourceRemeasurement]
+[0] [UKIDSSDR5PLUS.udsListRemeasurement]
+[0] [UKIDSSDR5PLUS.udsSourceRemeasurement]
+[0] [UKIDSSDR5PLUS.gcsListRemeasurement]
+[0] [UKIDSSDR5PLUS.lasSourceRemeasurement]
+[1] [UKIDSSDR5PLUS.Survey]
+[0] [UKIDSSDR5PLUS.gpsSourceRemeasurement]
+[5] [UKIDSSDR5PLUS.SurveyProgrammes]
+[1] [UKIDSSDR5PLUS.RequiredDiffImage]
+[0] [UKIDSSDR5PLUS.gpsListRemeasurement]
+[1] [UKIDSSDR5PLUS.udsMergeLog]
+[1] [UKIDSSDR5PLUS.ExternalSurvey]
+[6] [UKIDSSDR5PLUS.Programme]
+[3] [UKIDSSDR5PLUS.RequiredMosaic]
+[0] [UKIDSSDR5PLUS.ExternalSurveyTable]
+[0] [UKIDSSDR5PLUS.gcsSourceRemeasurement]
+[1] [UKIDSSDR5PLUS.udsVarFrameSetInfo]
+[5] [UKIDSSDR5PLUS.RequiredListDrivenProduct]
+[0] [UKIDSSDR6PLUS.udsSource]
+[0] [UKIDSSDR6PLUS.udsDetection]
+[0] [UKIDSSDR6PLUS.PreviousAstrometry]
+[0] [UKIDSSDR6PLUS.lasListRemeasurement]
+[3] [UKIDSSDR6PLUS.udsFrameSets]
+[0] [UKIDSSDR6PLUS.AstrCalVers]
+[0] [UKIDSSDR6PLUS.dxsListRemeasurement]
+[0] [UKIDSSDR6PLUS.dxsSourceRemeasurement]
+[0] [UKIDSSDR6PLUS.udsListRemeasurement]
+[0] [UKIDSSDR6PLUS.udsSourceRemeasurement]
+[0] [UKIDSSDR6PLUS.gcsListRemeasurement]
+[0] [UKIDSSDR6PLUS.lasSourceRemeasurement]
+[1] [UKIDSSDR6PLUS.Survey]
+[0] [UKIDSSDR6PLUS.gpsSourceRemeasurement]
+[5] [UKIDSSDR6PLUS.SurveyProgrammes]
+[1] [UKIDSSDR6PLUS.RequiredDiffImage]
+[0] [UKIDSSDR6PLUS.gpsListRemeasurement]
+[1] [UKIDSSDR6PLUS.udsMergeLog]
+[0] [UKIDSSDR6PLUS.ExternalSurveyTable]
+[1] [UKIDSSDR6PLUS.ExternalSurvey]
+[6] [UKIDSSDR6PLUS.Programme]
+[0] [UKIDSSDR6PLUS.udsVariability]
+[3] [UKIDSSDR6PLUS.RequiredMosaic]
+[0] [UKIDSSDR6PLUS.reliableUdsSource]
+[0] [UKIDSSDR6PLUS.gcsSourceRemeasurement]
+[0] [UKIDSSDR6PLUS.udsVarFrameSetInfo]
+[5] [UKIDSSDR6PLUS.RequiredListDrivenProduct]
+[0] [UKIDSSDR7PLUS.udsSource]
+[0] [UKIDSSDR7PLUS.udsDetection]
+[0] [UKIDSSDR7PLUS.PreviousAstrometry]
+[0] [UKIDSSDR7PLUS.lasListRemeasurement]
+[3] [UKIDSSDR7PLUS.udsFrameSets]
+[0] [UKIDSSDR7PLUS.AstrCalVers]
+[0] [UKIDSSDR7PLUS.dxsListRemeasurement]
+[0] [UKIDSSDR7PLUS.dxsSourceRemeasurement]
+[0] [UKIDSSDR7PLUS.udsListRemeasurement]
+[0] [UKIDSSDR7PLUS.udsSourceRemeasurement]
+[0] [UKIDSSDR7PLUS.gcsListRemeasurement]
+[0] [UKIDSSDR7PLUS.lasSourceRemeasurement]
+[1] [UKIDSSDR7PLUS.Survey]
+[0] [UKIDSSDR7PLUS.gpsSourceRemeasurement]
+[5] [UKIDSSDR7PLUS.SurveyProgrammes]
+[1] [UKIDSSDR7PLUS.RequiredDiffImage]
+[0] [UKIDSSDR7PLUS.gpsListRemeasurement]
+[1] [UKIDSSDR7PLUS.udsMergeLog]
+[0] [UKIDSSDR7PLUS.ExternalSurveyTable]
+[1] [UKIDSSDR7PLUS.ExternalSurvey]
+[6] [UKIDSSDR7PLUS.Programme]
+[0] [UKIDSSDR7PLUS.udsVariability]
+[3] [UKIDSSDR7PLUS.RequiredMosaic]
+[0] [UKIDSSDR7PLUS.reliableUdsSource]
+[0] [UKIDSSDR7PLUS.gcsSourceRemeasurement]
+[0] [UKIDSSDR7PLUS.udsVarFrameSetInfo]
+[5] [UKIDSSDR7PLUS.RequiredListDrivenProduct]
+[0] [UKIDSSDR8PLUS.PreviousAstrometry]
+[0] [UKIDSSDR8PLUS.lasListRemeasurement]
+[3] [UKIDSSDR8PLUS.udsFrameSets]
+[0] [UKIDSSDR8PLUS.AstrCalVers]
+[0] [UKIDSSDR8PLUS.dxsListRemeasurement]
+[0] [UKIDSSDR8PLUS.dxsSourceRemeasurement]
+[0] [UKIDSSDR8PLUS.udsListRemeasurement]
+[0] [UKIDSSDR8PLUS.udsSourceRemeasurement]
+[0] [UKIDSSDR8PLUS.gcsListRemeasurement]
+[0] [UKIDSSDR8PLUS.lasSourceRemeasurement]
+[1] [UKIDSSDR8PLUS.Survey]
+[3] [UKIDSSDR8PLUS.ProductLinks]
+[0] [UKIDSSDR8PLUS.gpsSourceRemeasurement]
+[5] [UKIDSSDR8PLUS.SurveyProgrammes]
+[1] [UKIDSSDR8PLUS.RequiredDiffImage]
+[0] [UKIDSSDR8PLUS.gpsListRemeasurement]
+[1] [UKIDSSDR8PLUS.udsMergeLog]
+[3] [UKIDSSDR8PLUS.ExternalSurvey]
+[6] [UKIDSSDR8PLUS.Programme]
+[3] [UKIDSSDR8PLUS.RequiredMosaic]
+[3] [UKIDSSDR8PLUS.ExternalSurveyTable]
+[0] [UKIDSSDR8PLUS.gcsSourceRemeasurement]
+[1] [UKIDSSDR8PLUS.udsVarFrameSetInfo]
+[5] [UKIDSSDR8PLUS.RequiredListDrivenProduct]
+[0] [UKIDSSDR9PLUS.udsSource]
+[1] [UKIDSSDR9PLUS.udsDetection]
+[0] [UKIDSSDR9PLUS.PreviousAstrometry]
+[0] [UKIDSSDR9PLUS.lasListRemeasurement]
+[3] [UKIDSSDR9PLUS.udsFrameSets]
+[0] [UKIDSSDR9PLUS.AstrCalVers]
+[3] [UKIDSSDR9PLUS.ProductLinks]
+[0] [UKIDSSDR9PLUS.udsListRemeasurement]
+[0] [UKIDSSDR9PLUS.udsSourceRemeasurement]
+[0] [UKIDSSDR9PLUS.gcsListRemeasurement]
+[0] [UKIDSSDR9PLUS.lasSourceRemeasurement]
+[1] [UKIDSSDR9PLUS.Survey]
+[5] [UKIDSSDR9PLUS.SurveyProgrammes]
+[1] [UKIDSSDR9PLUS.RequiredDiffImage]
+[1] [UKIDSSDR9PLUS.udsMergeLog]
+[1] [UKIDSSDR9PLUS.ExternalSurvey]
+[6] [UKIDSSDR9PLUS.Programme]
+[3] [UKIDSSDR9PLUS.RequiredMosaic]
+[0] [UKIDSSDR9PLUS.ExternalSurveyTable]
+[0] [UKIDSSDR9PLUS.reliableUdsSource]
+[0] [UKIDSSDR9PLUS.dxsOrphan]
+[0] [UKIDSSDR9PLUS.gcsSourceRemeasurement]
+[1] [UKIDSSDR9PLUS.udsVarFrameSetInfo]
+[5] [UKIDSSDR9PLUS.RequiredListDrivenProduct]
+
+    for table_name in candidates:
+        query_str = "SELECT COUNT(*) FROM {}".format(
+            table_name
+            )
+        query_obj = resource.query(
+            query_str
+            )
+        if (query_obj.status() == 'FAILED'):
+            print(
+                "[{}] FAILED".format(
+                    table_name
+                    )
+                )
+        else:
+            py_table = query_obj.results().as_astropy()
+            rowcount = py_table[0][0]
+            if (errors[table_name] < rowcount):
+                flag = "****"
+            else:
+                flag = ""
+            print(
+                "[{}] [{}][{}] {}".format(
+                    table_name,
+                    candidates[name],
+                    rowcount,
+                    flag
+                    )
+                )
+
+
+#
+# Suggested 
+
+@Configurator@ is a toolkit for loading configurations
+from JSON config files.
+
+@load_resources@ loads a set of ADQL resources from a JSON
+config file and returns an array of AdqlResource objects.
+
+<pre>
+    import firethorn as ftpy
+    import firethorn-utils as utils
+
+    firethorn = ftpy.Firethorn(
+        'http://tap.metagrid.xyz/firethorn/'
+        )
+
+    configurator = utils.Configurator(
+        firethorn
+        )
+    resources = configurator.load_resources(
+        "https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/data/wsa-tap.json"
+        )
+
+</pre>
+
+@Validator@ is a toolkit for validating resources
+sending test queries and checking the responses.
+
+@validate@ validates an array of ADQL resources,
+walking down the tree of catalogs, schemas and tables
+sending test queries to each table to verify it
+returns what we expect (number of rows, number of
+columns, column data types etc.)
+
+<pre>
+    import firethorn as ftpy
+    import firethorn-utils as utils
+
+    firethorn = ftpy.Firethorn(
+        'http://tap.metagrid.xyz/firethorn/'
+        )
+
+    validator = utils.Validator(
+        firethorn
+        )
+    validator.validate(
+        resources
+        )
+</pre>
+
+

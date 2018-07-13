@@ -22,7 +22,7 @@
 # -----------------------------------------------------
 # Mark the current images as latest.
 
-    source "${HOME:?}/merge.settings"
+    source "${FIRETHORN_HOME:?}/merge.settings"
 
     docker tag "firethorn/fedora:${newversion:?}"     "firethorn/fedora:latest"
     docker tag "firethorn/java:${newversion:?}"       "firethorn/java:latest"

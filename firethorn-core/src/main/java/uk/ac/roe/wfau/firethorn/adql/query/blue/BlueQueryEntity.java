@@ -60,7 +60,6 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlTranslator;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryBase.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTask.TaskState;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryDelays;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryLimits;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryTimings;
@@ -269,6 +268,7 @@ implements BlueQuery
      * {@link BlueQuery.EntityFactory} implementation.
      * 
      */
+    @Slf4j
     @Repository
     public static class EntityFactory
     extends BlueTaskEntity.EntityFactory<BlueQuery>
@@ -285,52 +285,25 @@ implements BlueQuery
             {
             return BlueQueryEntity.class;
             }
-
-/*
- * 
-        @Override
-        @CreateMethod
-        public BlueQuery create(final AdqlResource source, final String input)
-        throws ProtectionException, InvalidRequestException, InternalServerErrorException
-            {
-            log.debug("create(AdqlResource, String)");
-            return create(
-                source,
-                null,
-                null,
-                input,
-                AdqlQueryBase.Mode.AUTO,
-                AdqlQueryBase.Syntax.Level.STRICT,
-                null,
-                null,
-                null,
-                null
-                );
-            }
- * 
- */
         
         @Override
         @CreateMethod
         public BlueQuery create(final AdqlResource source, final JdbcSchema jdbcschema, final AdqlSchema adqlschema, final String input, final AdqlQueryBase.Mode mode, final AdqlQueryBase.Syntax.Level syntax, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final BlueQuery.TaskState next, final Long wait)
         throws ProtectionException, InvalidRequestException, InternalServerErrorException
             {
-            log.debug("-- Oi0ieNga Qua8ev1a");
-            log.debug("create(AdqlResource, JdbcSchema, AdqlSchema, String, Mode, Syntax, Limits, Delays, TaskState, Long)");
-            log.debug("  wait for [{}]", next);
-            log.debug("  wait for [{}]", wait);
+            log.debug("create() [{}][{}]", next, wait);
 
 /*
- * Reason for doing this inside a new Thread is to force a new Hibernate session.
- * Ensuring that the new Entity is committed to the database when the method returns.
+ * Reason for doing steps in new Threads is to force a new Hibernate session.
+ * Ensuring that the new Entity is committed to the database before the method returns.
+ * TODO Push this to a separate microservice ?
  *             
  */
 
             final Identity outerid = services().contexts().current().oper().identities().primary();
-            log.debug("Owner (outer) [{}][{}]", outerid.ident(), outerid.name());
+            log.trace("Owner (outer) [{}][{}]", outerid.ident(), outerid.name());
             
-            log.debug("Before BlueQuery.Creator");
-            log.debug("-- ieCh0naj oH2cah4A");
+            log.trace("Before BlueQuery.Creator() [ieCh0naj]");
             final BlueQuery outerq = services().runner().thread(
                 new Creator()
                     {
@@ -338,12 +311,10 @@ implements BlueQuery
                     public BlueQuery create()
                     throws InvalidStateTransitionException, HibernateConvertException
                         {
-                        log.debug("-- een6Dae1 Eshohva5 []");
-                        log.debug("create.Creator.create()");
-                        log.debug("Creating BlueQuery");
+                        log.trace("create.Creator.create() [een6Dae1]");
 
                         final Identity innerid = outerid.rebase();
-                        log.debug("Owner (inner) [{}][{}]", innerid.ident(), innerid.name());
+                        log.trace("Owner (inner) [{}][{}]", innerid.ident(), innerid.name());
                         
                         return insert(
                     		new BlueQueryEntity(
@@ -361,13 +332,9 @@ implements BlueQuery
                         }
                     }
                 );
-
-            log.debug("After BlueQuery.Creator");
-            log.debug("-- Sohkue2b Cae5Aifa [{}]", outerq.ident());
-            log.debug("  ident [{}]", outerq.ident());
-            log.debug("  state [{}]", outerq.state());
+            log.trace("After BlueQuery.Creator [{}][{}]", outerq.ident(), outerq.state());
             
-            log.debug("Calling BlueQuery.Updator");
+            log.trace("Calling BlueQuery.Updator [{}]", outerq.ident());
             final TaskState after = services().runner().thread(
                 new Updator(outerq)
                     {
@@ -383,16 +350,10 @@ implements BlueQuery
                     public TaskState update()
                     throws ProtectionException
                         {
-                        log.debug("-- Joh6azi9 loolip2Y [{}]", innerq.ident());
-                        log.debug("create.Updator.update()");
-                        log.debug("Updating BlueQuery [{}]", innerq.ident());
-
-                        log.debug("  from [{}]", innerq.state());
-                        log.debug("  next [{}]", next);
+                        log.trace("Updator.update() [{}][{}][{}]", innerq.ident(), innerq.state(), next);
                         
                         if ((next != null) && (next != innerq.state()))
                             {
-                            log.debug("Advancing BlueQuery [{}]", innerq.ident());
                             try {
                                 innerq.advance(
                                     null,
@@ -400,59 +361,41 @@ implements BlueQuery
                                     wait
                                     );
                                 }
-                            catch (InvalidStateRequestException ouch)
+                            catch (InvalidStateException ouch)
                                 {
-                                log.debug("InvalidStateRequestException in update");
+                                log.warn(ouch.getMessage());
                                 }
                             }
-                        log.debug("Completing update");
-                        log.debug("  state [{}]", innerq.state());
+                        log.trace("Updator.update() done [{}][{}]", innerq.ident(), innerq.state());
                         return innerq.state();
                         }
                     }
                 );
+            log.trace("After BlueQuery.Updator [{}][{}]", outerq.ident(), outerq.state());
 
-            log.debug("-- ohx7aeRu raid3Sho [{}]", outerq.ident());
-            log.debug("After BlueQuery Updator");
-            log.debug("  state [{}]", outerq.state());
             final BlueQueryEntity result = (BlueQueryEntity) outerq.rebase();
-            log.debug("After BlueQuery rebase");
-            log.debug("  state [{}]", result.state());
+            log.trace("After BlueQuery.rebase [{}][{}]", result.ident(), result.state());
+
             result.refresh();
-            log.debug("After BlueQuery refresh");
-            log.debug("  state [{}]", result.state());
+            log.trace("After BlueQuery.refresh [{}][{}]", result.ident(), result.state());
             
             if (next != null)
 	            {
-                log.debug("Before BlueQuery wait");
-                log.debug("  state [{}]", result.state());
+                log.trace("Before BlueQuery.waitfor [{}][{}]", result.ident(), result.state());
                 result.waitfor(
                     after,
                     next,
                     wait
                     );
-	            log.debug("After BlueQuery wait");
-                log.debug("  query  state [{}]", result.state());
-                log.debug("  result state [{}]", result.results().state());
-                log.debug("  result count [{}]", result.results().rowcount());
-                //result = result.rebase();
-                //result = result.refresh();
-                //result.refresh();
-	            //log.debug("After BlueQuery refresh");
-	            //log.debug("  state [{}]", result.state());
+	            log.trace("After BlueQuery.waitfor [{}][{}][{}][{}]", result.ident(), result.state(), result.results().state(), result.results().rowcount());
 
-                log.debug("Updating from Handle");
+                log.trace("Before BlueQuery.update(Handle) [{}]", result.ident());
 	            final Handle handle = (Handle) result.handle();
 	            result.update(handle);
-                log.debug("After Handle update");
-                log.debug("  query  state [{}]", result.state());
-                log.debug("  result state [{}]", result.results().state());
-                log.debug("  result count [{}]", result.results().rowcount());
+                log.trace("After BlueQuery.update(Handle) [{}][{}][{}][{}]", result.ident(), result.state(), result.results().state(), result.results().rowcount());
 	            
 	            }
-            log.debug("-- Eethia9o Moophie1 [{}]", outerq.ident());
-            log.debug("Returning BlueQuery");
-            log.debug("  state [{}]", result.state());
+            log.trace("Returning BlueQuery [{}][{}]", result.ident(), result.state());
             return result;
             }
 
@@ -461,13 +404,7 @@ implements BlueQuery
         public BlueQuery select(final Identifier ident, final TaskState prev, final TaskState next, final Long wait)
         throws ProtectionException, IdentifierNotFoundException
             {
-            log.debug("-- roo2Heef az9xe6Ei [{}]", ident);
-            log.debug("select(Identifier , TaskStatus, TaskStatus, Long)");
-            log.debug("  ident [{}]", ident);
-            log.debug("  prev  [{}]", next);
-            log.debug("  next  [{}]", next);
-            log.debug("  wait  [{}]", wait);
-
+            log.debug("select() [{}][{}][{}][{}]", ident, prev, next, wait);
             final BlueQuery query = services.entities().select(
                 ident
                 );
@@ -483,11 +420,12 @@ implements BlueQuery
                 }
             return query ;
             }
-
+/*
+ * 
         @Override
         @UpdateMethod
         public BlueQuery update(final Identifier ident, final String input, final TaskState prev, final TaskState next, final Long wait)
-        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateException
             {
             return update(
                 ident,
@@ -499,11 +437,12 @@ implements BlueQuery
                 wait
                 );
             }
-
+ *
+ * 
         @Override
         @UpdateMethod
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final TaskState prev, final TaskState next, final Long wait)
-        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateException
             {
             return update(
                 ident,
@@ -515,19 +454,15 @@ implements BlueQuery
                 wait
                 );
             }
+ * 
+ */
 
         @Override
         @UpdateMethod
         public BlueQuery update(final Identifier ident, final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays, final TaskState prev, final TaskState next, final Long wait)
-        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateException
             {
-            log.debug("-- neiLaey4 thei5Hee [{}]", ident);
-            log.debug("update(Identifier , String, TaskStatus, TaskStatus, Long)");
-            log.debug("  ident [{}]", ident);
-            log.debug("  prev  [{}]", prev);
-            log.debug("  next  [{}]", next);
-            log.debug("  wait  [{}]", wait);
-
+            log.debug("update() [{}][{}][{}][{}]", ident, prev, next, wait);
             final BlueQuery query = select(
                 ident
                 );
@@ -566,14 +501,9 @@ implements BlueQuery
         @Override
         @UpdateMethod
         public BlueQuery callback(final Identifier ident, final BlueQuery.CallbackEvent message)
-        throws ProtectionException, IdentifierNotFoundException, InvalidStateRequestException
+        throws ProtectionException, IdentifierNotFoundException, InvalidStateException
             {
-            log.debug("-- Aemei3te Nahs6ahy [{}]", ident);
-            log.debug("callback(Identifier, CallbackEvent)");
-            log.debug("  ident [{}]", ident);
-            log.debug("  event state  [{}]", message.state());
-            log.debug("  result state [{}]", message.results().state());
-            log.debug("  result count [{}]", message.results().count());
+            log.debug("callback() [{}][{}][{}][{}]", ident, message.state(), message.results().state(), message.results().count());
             final BlueQuery query = select(
                 ident
                 );
@@ -657,7 +587,7 @@ implements BlueQuery
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
+            log.trace("init()");
             if (BlueQueryEntity.EntityServices.instance == null)
                 {
                 BlueQueryEntity.EntityServices.instance = this ;
@@ -730,20 +660,17 @@ implements BlueQuery
     @Override
     protected BlueQuery.EntityFactory factory()
         {
-        log.debug("factory()");
         return BlueQueryEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected BlueQuery.EntityServices services()
         {
-        log.debug("services()");
         return BlueQueryEntity.EntityServices.instance() ; 
         }
 
 	protected BlueQuery.TaskRunner runner()
 		{
-        log.debug("runner()");
         return BlueQueryEntity.EntityServices.instance().runner() ; 
 		}
     
@@ -980,16 +907,18 @@ implements BlueQuery
     private ResultState resultstate = ResultState.NONE;
 
     /**
-     * Update the ResultState and row count.
+     * Update the ResultState and/or row count.
      * 
      */
     protected void transition(final ResultState next, final Long count)
         {
         final ResultState prev = this.resultstate;
-        log.debug("transition(ResultState, Long)");
-        log.debug("  ident [{}]", ident());
-        log.debug("  state [{}][{}]", prev.name(), (next != null) ? next.name() : null);
-        log.debug("  count [{}]", count);
+        log.debug("transition() [{}][{}][{}][{}]",
+            ident(),
+            ((prev != null) ? prev.name() : null),
+            ((next != null) ? next.name() : null),
+            count
+            );
         
         if (count != null)
             {
@@ -1017,7 +946,7 @@ implements BlueQuery
                         this.resultstate = next;
                         }
                     else {
-                        log.warn("Backward transition, state change rejected [{}][{}]", prev.name(), next.name());
+                        log.debug("Backward transition, state change rejected [{}][{}]", prev.name(), next.name());
                         }
                     }
                 else {
@@ -1247,8 +1176,10 @@ implements BlueQuery
             public void add(AdqlColumn column)
             throws ProtectionException
                 {
-                log.debug("add(AdqlColumn)");
-                log.debug("  Name [{}]", column.name());
+                log.debug("add(AdqlColumn) [{}][{}]",
+                    column.ident(),
+                    column.name()
+                    );
                 BlueQueryEntity.this.columns.add(
                     column
                     );
@@ -1261,21 +1192,24 @@ implements BlueQuery
             public void add(AdqlTable table)
             throws ProtectionException
                 {
-                log.debug("add(AdqlTable)");
-                log.debug("  Name [{}]", table.name());
+                log.debug("add(AdqlTable) [{}][{}]",
+                    table.ident(),
+                    table.name()
+                    );
                 BlueQueryEntity.this.tables.add(
                     table
                     );
                 this.add(
-                    //table.resource() - why did this work ?
                     table.root().resource()
                     );
                 }
 
             protected void add(final BaseResource<?> resource)
                 {
-                log.debug("add(BaseResource)");
-                log.debug("  Name [{}]", resource.name());
+                log.debug("add(BaseResource) [{}][{}]",
+                    resource.ident(),
+                    resource.name()
+                    );
                 BlueQueryEntity.this.resources.add(
                     resource
                     );
@@ -1285,10 +1219,11 @@ implements BlueQuery
             public void add(SelectField field)
             throws ProtectionException
                 {
-                log.debug("add(SelectField)");
-                log.debug("  Name [{}]", field.name());
-                log.debug("  Size [{}]", field.arraysize());
-                log.debug("  Type [{}]", field.type());
+                log.debug("add(SelectField) [{}][{}][{}]",
+                    field.name(),
+                    field.arraysize(),
+                    field.type()
+                    );
                 BlueQueryEntity.this.fields.add(
                     field
                     );
@@ -1519,7 +1454,7 @@ implements BlueQuery
 
     @Override
     public void update(final String input)
-    throws InvalidStateRequestException, ProtectionException
+    throws InvalidStateException, ProtectionException
         {
         update(
             input,
@@ -1530,7 +1465,7 @@ implements BlueQuery
 
     @Override
     public void update(final String input, final AdqlQueryBase.Limits limits)
-    throws InvalidStateRequestException, ProtectionException
+    throws InvalidStateException, ProtectionException
         {
         update(
             input,
@@ -1547,15 +1482,13 @@ implements BlueQuery
      */
     @Override
     public void update(final String input, final AdqlQueryBase.Limits limits, final AdqlQueryBase.Delays delays)
-    throws InvalidStateRequestException, ProtectionException
+    throws InvalidStateException, ProtectionException
         {
-        log.debug("-- Chuone1i Shokoh9w [{}]", this.ident());
-        log.debug("Starting update(String, Limits)");
-        log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", state().name());
+        log.debug("update() [{}][{}]", this.ident(), this.state().name());
 
         if ((this.state() == TaskState.EDITING) || (this.state() == TaskState.READY))
             {
+            log.trace("Before Updator.update() [{}][{}]", this.ident(), this.state().name());
             services().runner().thread(
                 new Updator(this)
                     {
@@ -1563,19 +1496,16 @@ implements BlueQuery
                     public TaskState update()
                     throws ProtectionException
                         {
-                        log.debug("-- jaeB0gi2 ga8Voo2O [{}]", this.ident());
                         try {
 // Need to initialise current context.                        
                             BlueQueryEntity query = (BlueQueryEntity) rebase();
                             if (input != null)
                                 {
-                                log.debug("Before prepare(String)");
-                                log.debug("  state [{}]", query.state().name());
+                                log.trace("Before BlueQuery.prepare() [{}][{}]", query.ident(), query.state().name());
                                 query.prepare(
                                     input
                                     );
-                                log.debug("After prepare(String)");
-                                log.debug("  state [{}]", query.state().name());
+                                log.trace("After BlueQuery.prepare() [{}][{}]", query.ident(), query.state().name());
                                 }
                             if (limits != null)
                                 {
@@ -1593,40 +1523,35 @@ implements BlueQuery
                             }
                     	catch (final InvalidStateTransitionException ouch)
         	    	    	{
-    	    	            log.error("InvalidStateTransitionException [{}]", BlueQueryEntity.this.ident());
+    	    	            log.error(ouch.getMessage());
                     		return TaskState.ERROR;
     	    	    	    }
                         catch (HibernateConvertException ouch)
                             {
-                            log.error("HibernateConvertException [{}]", BlueQueryEntity.this.ident());
+                            log.error(ouch.getMessage());
                             return TaskState.ERROR;
                             }
                         }
                     }
                 );
-
-            log.debug("-- peiduC4V eepi9Rie [{}]", this.ident());
-            log.debug("Finished thread()");
-            log.debug("  state [{}]", state().name());
+            log.trace("After Updator.update() [{}][{}]", this.ident(), this.state().name());
     
-            log.debug("Refreshing state");
             this.refresh();
-    
-            log.debug("Finished update(String, Limits)");
-            log.debug("  state [{}]", state().name());
+            log.trace("After refresh() [{}][{}]", this.ident(), this.state().name());
             }
         else {
-            throw new InvalidStateRequestException(
+            throw new InvalidStateException(
                 this, 
                 "Attempt to modify a read only query"
                 );
             }
         }
+
+    // TODO transient prepare flag/hash to prevent duplicate calls.
     
     protected void prepare(final String input)
     throws InvalidStateTransitionException
         {
-        log.debug("prepare(String)");
         this.input = input;
         prepare();
         }
@@ -1635,15 +1560,11 @@ implements BlueQuery
     protected void prepare()
     throws InvalidStateTransitionException
     	{
-        log.debug("-- EeCoo6oo Tui9Goog [{}]", this.ident());
-        log.debug("prepare()");
-        log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", state().name());
+        log.debug("prepare() [{}][{}]", this.ident(),this.state().name());
 
         // Check for empty query.
         if ((this.input() == null) || (this.input().trim().length() == 0))
             {
-            log.debug("Query is empty");
             this.transition(
                 TaskState.EDITING
                 );
@@ -1665,43 +1586,37 @@ implements BlueQuery
                 this.source()
                 );
 
-            log.debug("Query mode [{}]", this.mode);
-
+            //
+            // If the mode is set to direct.
             if (this.mode == Mode.DIRECT)
                 {
                 log.debug("Processing as [DIRECT] query");
                 direct.process(
                     this.parsable()
                     );
-                if (syntax().state() == Syntax.State.VALID)
+                if (syntax().state() != Syntax.State.VALID)
                 	{
-                    //
-                    // Use our primary resource.
-                    //this.mode   = Mode.DIRECT;
-                    //this.source = primary().ogsa().primary().ogsaid();
-                	}
-                else {
                 	log.debug("Query fails [DIRECT] validation.");
                     }
                 }
+            //
+            // If the mode is set to distributed.
             else if (this.mode == Mode.DISTRIBUTED)
                 {
                 log.debug("Processing as [DISTRIBUTED] query");
                 distrib.process(
                     this.parsable()
                     );
-                if (syntax().state() == Syntax.State.VALID)
+                if (syntax().state() != Syntax.State.VALID)
                 	{
-                    //
-                    // Use our DQP resource.
-                    //this.mode   = Mode.DISTRIBUTED;
-                    //this.source = this.dqp;
-                	}
-                else {
                 	log.debug("Query fails [DISTRIBUTED] validation.");
                 	}
                 }
+            //
+            // If we don't know what mode to use.
             else {
+                //
+                // Try processing as a direct query.
                 log.debug("Processing as [DIRECT] query");
                 direct.process(
                     this.parsable()
@@ -1712,26 +1627,18 @@ implements BlueQuery
                 	}
                 else if (this.resources.size() == 1)
                     {
-                	// Should we have input mode and query mode ?
                 	this.mode = Mode.DIRECT;
-                    //
-                    // Use our primary resource.
-                    //this.source = primary().ogsa().primary().ogsaid();
                     }
+                //
+                // Try processing as a distributed query.
                 else {
-                    //
-                    // Process as a distributed query.
                     log.debug("Processing as [DISTRIBUTED] query");
                     distrib.process(
                         this.parsable()
                         );
                     if (syntax().state() == Syntax.State.VALID)
 	                	{
-	                	// Should we have input mode and query mode ?
 	                	this.mode = Mode.DISTRIBUTED;
-	                    //
-	                    // Use our DQP resource.
-	                    //this.source = this.dqp;
 	                	}
                     else {
                     	log.debug("Query fails [DISTRIBUTED] validation.");
@@ -1761,10 +1668,7 @@ implements BlueQuery
     protected void execute()
     throws ProtectionException, InvalidStateTransitionException 
         {
-        log.debug("-- Doo7uuc3 Da0ohphu [{}]", this.ident());
-        log.debug("Starting execute()");
-        log.debug("  ident [{}]", this.ident());
-        log.debug("  state [{}]", this.state().name());
+        log.debug("execute() [{}][{}]", this.ident(), this.state().name());
 
         history().create(
             BlueTaskLogEntry.Level.INFO, 
@@ -1804,7 +1708,7 @@ implements BlueQuery
                         }
                     catch (HibernateConvertException ouch)
                         {
-                        log.error("HibernateConvertException [{}]", BlueQueryEntity.this.ident());
+                        log.error(ouch.getMessage());
                         return TaskState.ERROR;
                         }
                     }
@@ -1863,31 +1767,29 @@ implements BlueQuery
 
         //
         // Mark this query as RUNNING.
-        log.debug("-- ci3ooN5u Ohmei0Ga --");
-        log.debug("Setting state to [RUNNING]");
+        log.trace("Setting state to [RUNNING] [{}]", this.ident());
         transition(
             TaskState.RUNNING
             );
         //
         // Activate our event handler.
-        log.debug("Activating handler");
+        log.trace("Activating handler [{}]", this.ident());
         this.event(
             true
             );
         //
-        // Execute our workflow.
-        log.debug("Creating workflow ...");
+        // Create our workflow.
+        log.trace("Creating workflow [{}]", this.ident());
         final BlueWorkflow workflow = new BlueWorkflowClient(
 			service.endpoint(),
 			service.exec().primary().ogsaid()
     		);
-
         //
         // Fix for permission issues.
         final String source = from.ogsaid();
         final String sink   = dest.ogsaid();
 
-        log.debug("Executing workflow ...");        
+        log.trace("Executing workflow [{}]", this.ident());        
         final BlueWorkflow.Result result = workflow.execute(
 			new BlueWorkflow.Param()
 				{
@@ -1985,22 +1887,18 @@ implements BlueQuery
 					}
 				}
     		); 
-
-        log.debug("-- Meex9Lae OzoDei0b [{}]", this.ident());
-        log.debug("After workflow ...");
-        log.debug("  state [{}]", this.state().name());
+        log.trace("After workflow [{}]", this.ident(), this.state().name());
         
         //
         // We may have already received a callback by this point.
         // Update the entity to collect the callback results.
-        log.debug("Refreshing entity");
+        log.trace("Before refresh [{}][{}]", this.ident(), this.state().name());
         this.refresh();    
-        log.debug("After refresh");
-        log.debug("  state [{}]", this.state().name());
+        log.trace("After refresh [{}][{}]", this.ident(), this.state().name());
         
         //
         // Check the return status.
-        log.debug("Workflow result [{}]", result.status());
+        log.trace("Workflow result [{}][{}]", this.ident(), result.status());
         switch(result.status())
 			{
 			case RUNNING :
@@ -2034,12 +1932,10 @@ implements BlueQuery
 		    		);
 	        	break ;
 			}
-        log.debug("-- Fui7uiNe oVash5sh [{}]", this.ident());
-        log.debug("Finishing execute()");
-        log.debug("  ident [{}]", this.ident());
-        log.debug("  state [{}]", this.state().name());
+        log.trace("Finishing execute() [{}][{}]", this.ident(), this.state().name());
         }
 
+    @Slf4j
     protected static class Handle
     extends BlueTaskEntity.Handle
     implements BlueQuery.Handle
@@ -2075,22 +1971,20 @@ implements BlueQuery
          */
         public void update(final BlueQueryEntity query)
             {
-            log.debug("Updating Handle [{}]", query.ident());
-            log.debug("  query  state [{}]",  query.state());
-            log.debug("  handle state [{}]", this.state());
+            log.debug("update() [{}][{}][{}]", query.ident(), this.state(), query.state());
             if (query.state().compareTo(this.state()) > 0)
                 {
-                log.debug("Adopting query state [{}][{}]", query.state(), this.state());
+                log.debug("Adopting query state [{}][{}]", this.state(), query.state());
                 this.state = query.state();
                 }
             if (query.resultstate.compareTo(this.resultstate) > 0)
                 {
-                log.debug("Adopting result state [{}][{}]", query.resultstate, this.resultstate);
+                log.debug("Adopting result state [{}][{}]", this.resultstate, query.resultstate);
                 this.resultstate = query.resultstate ;
                 }
             if (query.resultcount > this.resultcount)
                 {
-                log.debug("Adopting result count [{}][{}]", query.resultcount, this.resultcount);
+                log.debug("Adopting result count [{}][{}]", this.resultcount, query.resultcount);
                 this.resultcount = query.resultcount ;
                 }
             }
@@ -2102,11 +1996,9 @@ implements BlueQuery
      */
     public void update(final Handle handle)
         {
-        log.debug("Checking Handle status [{}]", this.ident());
-        log.debug("  entity state [{}]", this.state());
+        log.debug("update(Handle) [{}][{}][{}]", this.ident(), this.state(), ((handle != null) ? handle.state() : null));
         if (handle != null)
             {
-            log.debug("  handle state [{}]", handle.state());
             if (handle.state().compareTo(this.state()) > 0)
                 {
                 log.debug("Adopting Handle state [{}][{}]", this.state(), handle.state());
@@ -2117,7 +2009,7 @@ implements BlueQuery
                     }
                 catch (InvalidStateTransitionException ouch)
                     {
-                    log.warn("Ignoring invalid state transition [{}][{}]", this.state(), handle.state());
+                    log.warn("Skipping invalid state transition [{}][{}]", this.state(), handle.state());
                     } 
                 }
             transition(
@@ -2135,30 +2027,32 @@ implements BlueQuery
             this
             );
         }
-
-    
     
     @Override
     public void waitfor(final TaskState prev, final TaskState next, final Long wait)
     throws ProtectionException
         {
-        log.debug("-- ohj0Toh3 Iequae3e [{}]", this.ident());
-        log.debug("waitfor(TaskState, Long)");
         super.waitfor(prev, next, wait);
         }
     
     @Override
     public void callback(final BlueQuery.CallbackEvent message)
-    throws InvalidStateRequestException, ProtectionException
+    throws InvalidStateException, ProtectionException
         {
-        log.debug("-- thoh3Jeu IRae8ahr [{}]", this.ident());
-        log.debug("callback(Callback)");
-        log.debug("  ident  [{}]", this.ident());
-        log.debug("  prev   [{}]", this.state());
-        log.debug("  next   [{}]", message.state());
-        log.debug("  result [{}]", message.results().state());
-        log.debug("  count  [{}]", message.results().count());
-
+        log.debug("callback(Callback) [{}][{}][{}][{}][{}]",
+            this.ident(),
+            this.state(),
+            message.state(),
+            message.results().state(),
+            message.results().count()
+            );
+        // Why does this need to be in a separate Thread ?
+        log.trace("Before Updator.update() [{}][{}][{}][{}]",
+            this.ident(),
+            this.state(),
+            this.resultstate,
+            this.resultcount
+            );
         services().runner().thread(
             new Updator(this)
                 {
@@ -2169,28 +2063,28 @@ implements BlueQuery
                     try {
                         //
                         // Get the current instance for this Thread.
-                        BlueQueryEntity entity = (BlueQueryEntity) rebase();
+                        BlueQueryEntity query = (BlueQueryEntity) rebase();
                         //
                         // Add a log entry.
-                        entity.history().create(
+                        query.history().create(
                             message.state(),
                             BlueTaskLogEntry.Level.INFO,
                             message.message()
                             );
                         //
                         // Update the result state.
-                        entity.transition(
+                        query.transition(
                             message.results().state(),
                             message.results().count()
                             );
                         //
                         // Update the task state.
-                        entity.transition(
+                        query.transition(
                             message.state()
                             );
                         //
                         // Update the results table.
-                        final AdqlTable results = entity.results().adql();
+                        final AdqlTable results = query.results().adql();
                         // BANG !!
                         // Fails if the query hasn't been prepared yet.
                         if (results == null)
@@ -2198,7 +2092,6 @@ implements BlueQuery
                             log.error("Callback with null results table");
                             }
                         else {
-                            log.debug("Updating results table");
                             results.meta().adql().count(
                                 message.results().count()
                                 );
@@ -2218,54 +2111,54 @@ implements BlueQuery
                                     break;
                                 }
                             }
-                        //log.debug("Notifying listeners");
-                        //entity.event();
-                        log.debug("-- Ci0liesu Eecha4ee [{}]", entity.state());
-                        log.debug("  query  state [{}]", entity.state());
-                        log.debug("  result state [{}]", entity.resultstate);
-                        log.debug("  result count [{}]", entity.resultcount);
-
                         //
                         // Update our Handle.
-                        final Handle handle = (Handle) entity.handle();
-                        handle.update(entity);
+                        final Handle handle = (Handle) query.handle();
+                        handle.update(query);
                         
-                        return entity.state();
+                        return query.state();
                         }
                     catch (InvalidStateTransitionException ouch)
                     	{
-	    	            log.error("InvalidStateTransitionException [{}]", BlueQueryEntity.this.ident());
+	    	            log.error(ouch.getMessage());
                 		return TaskState.ERROR;
                     	}
                     catch (HibernateConvertException ouch)
                         {
-                        log.error("HibernateConvertException [{}]", BlueQueryEntity.this.ident());
+                        log.error(ouch.getMessage());
                         return TaskState.ERROR;
                         }
                     }
                 }
             );
+        log.trace("After Updator.update() [{}][{}][{}][{}]",
+            this.ident(),
+            this.state(),
+            this.resultstate,
+            this.resultcount
+            );
 
-        log.debug("-- Cie4Dahf Mee0aeXo [{}]", this.state());
-        log.debug("Finished thread()");
-        log.debug("  query  state [{}]", this.state());
-        log.debug("  result state [{}]", this.resultstate);
-        log.debug("  result count [{}]", this.resultcount);
-
-        log.debug("Refreshing state");
         this.refresh();
-        log.debug("  query  state [{}]", this.state());
-        log.debug("  result state [{}]", this.resultstate);
-        log.debug("  result count [{}]", this.resultcount);
+        log.trace("After refresh() [{}][{}][{}][{}]",
+            this.ident(),
+            this.state(),
+            this.resultstate,
+            this.resultcount
+            );
 
-        log.debug("Notifying listeners");
+        log.trace("Before event() [{}][{}][{}][{}]",
+            this.ident(),
+            this.state(),
+            this.resultstate,
+            this.resultcount
+            );
         this.event();
-        log.debug("  query  state [{}]", this.state());
-        log.debug("  result state [{}]", this.resultstate);
-        log.debug("  result count [{}]", this.resultcount);
-
-        log.debug("Finished callback()");
-        
+        log.trace("After event() [{}][{}][{}][{}]",
+            this.ident(),
+            this.state(),
+            this.resultstate,
+            this.resultcount
+            );
         }
     
     /**
@@ -2297,25 +2190,36 @@ implements BlueQuery
 			}
         
         final Identity identity = this.owner();
-        log.debug(" Identity [{}]", identity);
-        log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
+        log.trace(" Owner [{}][{}]", identity.ident(), identity.name());
 
-        log.debug(" JDBC space [{}]", jdbcspace);
+        log.trace(" JDBC space [{}][{}]",
+            ((this.jdbcspace != null) ? this.jdbcspace.ident() : null),
+            ((this.jdbcspace != null) ? this.jdbcspace.name()  : null)
+            );
         if (this.jdbcspace == null)
             {
             this.jdbcspace = identity.spaces().jdbc().current();
             }
+        log.trace(" JDBC space [{}][{}]",
+            ((this.jdbcspace != null) ? this.jdbcspace.ident() : null),
+            ((this.jdbcspace != null) ? this.jdbcspace.name()  : null)
+            );
 // BUG fail the query if the jdbcspace is null.  
-        
-        log.debug(" JDBC space [{}][{}]", jdbcspace.ident(), jdbcspace.name());
 
-        log.debug(" ADQL space [{}]", adqlspace);
+        log.trace(" ADQL space [{}][{}]",
+            ((this.adqlspace != null) ? this.adqlspace.ident() : null),
+            ((this.adqlspace != null) ? this.adqlspace.name()  : null)
+            );
         if (this.adqlspace== null)
             {
             this.adqlspace = identity.spaces().adql().current();
             }
-        log.debug(" ADQL space [{}][{}]", adqlspace.ident(), adqlspace.name());
-
+        log.trace(" ADQL space [{}][{}]",
+            ((this.adqlspace != null) ? this.adqlspace.ident() : null),
+            ((this.adqlspace != null) ? this.adqlspace.name()  : null)
+            );
+     // BUG fail the query if the adqlspace is null.  
+        
         this.jdbctable = jdbcspace.tables().create(
             this
             );
@@ -2327,7 +2231,7 @@ implements BlueQuery
     	// TODO Add the row number index column.
         for(final SelectField field : this.fields)
         	{
-        	log.debug("Adding SelectField [{}]", field.name());
+            log.trace("Adding SelectField [{}]", field.name());
         	// TODO Adql details depend on the field type - calculated, local Jdbc, remote Ivoa etc ..
         	// TODO Split this into a separate function. 
         	final JdbcColumn.Metadata meta = new JdbcColumn.Metadata()
@@ -2420,12 +2324,12 @@ implements BlueQuery
 
         //
         // Should this be part of the table ?
-        log.debug("Creating JDBC table");
+        log.trace("Creating JDBC table");
         jdbctable.resource().connection().operator().create(
     		jdbctable
     		);
 // TODO catch SQLException ..
-        log.debug("JDBC table created");
+        log.trace("JDBC table created");
         //
         // Update the results status.
         this.resultcount = 0L;

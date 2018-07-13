@@ -1,0 +1,527 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Araybwyn]
+        INFO : Base name [fedora-28-docker-base-20180707.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180707.qcow]
+        INFO : Disc name [Araybwyn.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh Araybwyn
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    # cat $(which secret)
+
+    mkdir "${HOME:?}/bin"
+    vi "${HOME:?}/bin/secret"
+
+        ....
+        ....
+        ....
+
+    chmod u+x "${HOME:?}/bin/secret"
+    secret 'frog'
+
+# -----------------------------------------------------
+# Download our builder compose file
+#[user@virtual]
+     
+    wget -O builder.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.16-zrq-race-bug
+    branch=2.1.19-zrq-metadoc-parser
+    branch=2.1.20-zrq-metadoc-parser
+    branch=2.1.23-zrq-update-depends
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder 
+
+    # -----------------------------------------------------
+    # Add our secret function.
+    #[user@virtual]
+
+        # cat $(which secret)
+
+        vi "/bin/secret"
+
+            ....
+            ....
+            ....
+
+        chmod u+x "/bin/secret"
+        secret 'frog'
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        01.01-init.sh
+        
+    # -----------------------------------------------------
+    # Checkout a copy of our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Tag this version of builder as latest
+    # (this is only needed if we made significant chances to builder)
+    #[root@builder]
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            source 'bin/util.sh'
+            export buildtag=$(getbuildtag)
+
+            docker tag "firethorn/builder:${buildtag}" "firethorn/builder:latest"
+
+        popd
+
+    # -----------------------------------------------------
+    # Exit our builder
+    # (this is only needed if we made significant chances to builder)
+    #[root@builder]
+
+        exit
+
+# -----------------------------------------------------
+# Run a new copy of builder.
+# (this is only needed if we made significant chances to builder)
+#[user@virtual]
+
+    export branch
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder 
+
+    # -----------------------------------------------------
+    # Initialise our path.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        01.01-init.sh
+
+    # -----------------------------------------------------
+    # Update our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
+
+        05.01-javamaven.sh
+
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
+
+        05.02-javadocker.sh
+
+    # -----------------------------------------------------
+    # Fetch our Python code.
+    #[root@builder]
+
+        echo "Fetching client source"
+
+        ftpysrc='/var/local/build/client'
+        ftpygit='https://github.com/Zarquan/firethorn.py.git'
+        ftpygit='https://github.com/stvoutsin/firethorn.py.git'
+
+        if [  -e "${ftpysrc:?}" ]
+        then
+            pushd "${ftpysrc:?}"
+
+                echo "Updating Python code"
+                git pull
+            
+            popd
+        else
+            pushd "$(dirname ${ftpysrc:?})"
+
+                echo "Cloning Python code from [${ftpygit:?}]"
+                git clone "${ftpygit:?}" "$(basename ${ftpysrc:?})"
+
+            popd
+        fi
+
+    # -----------------------------------------------------
+    # Build our Python container.
+    #[root@builder]
+
+        echo "Building client image"
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            source 'bin/util.sh'
+            export buildtag=$(getbuildtag)
+            export buildsrc=$(pwd)
+            export ftpysrc
+
+            docker-compose \
+                --file docker/compose/client/firethorn-py.yml \
+                build
+
+        popd
+
+    # -----------------------------------------------------
+    # Exit our builder
+    #[root@builder]
+
+        exit
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${branch:-latest}
+
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        usertype=mssql
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datatype=mssql
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        tunneluser=$(secret 'ssh.tunnel.user')
+        tunnelhost=$(secret 'ssh.tunnel.host')
+
+        admingroup=Hyaenidae
+        adminuser=Aardwolf
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=Afrotheria
+        guestuser=Hyrax
+        guestpass=$(pwgen 20 1)
+
+        tapresource=Wilhelmina
+        tapschemadata=data-$(pwgen 10 1)
+        tapschemauser=user-$(pwgen 10 1)
+        tapschemapass=pass-$(pwgen 10 1)
+
+EOF
+
+# -----------------------------------------------------
+# Link our compose config.
+#[user@virtual]
+
+    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Download the latest version of our compose file.
+#[user@virtual]
+
+    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/baryptera/baryptera-local.yml'
+
+# -----------------------------------------------------
+# Start our containers ...
+#[user@virtual]
+
+    docker-compose \
+        --file "baryptera-local.yml" \
+        run \
+            angela
+
+# -----------------------------------------------------
+# Run our Python tests ...
+#[user@virtual]
+
+import os
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client (using named param).
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    '*',
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass')
+    )
+print(
+    atlas_jdbc
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+print(
+    atlas_adql
+    )
+
+#
+# Import the target JdbcSchema into AdqlSchema.
+schema_names = [
+    "ATLASDR1"
+    ]
+
+for schema_name in schema_names:
+    print(schema_name)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        schema_name,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + schema_name + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            schema_name,
+            metadoc=metadoc
+            )
+
+#
+# Errors scanning the databases need to be logged.
+# 2018-07-09 12:09:07,194 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR2][Database 'ATLASDR2' cannot be opened due to inaccessible files or insufficient memory or disk space ...]
+# 2018-07-09 12:09:07,194 WARN  [main-interface-4] [SQLServerScanner] SQLException [945][S1000][Database 'ATLASDR2' cannot be opened due to inaccessible files or insufficient memory or disk space ...]]
+# 
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using our guest account.
+firethorn.login(
+    os.environ.get('guestuser'),
+    os.environ.get('guestpass'),
+    os.environ.get('guestgroup')
+    )
+
+
+firethorn.login(
+    'Hyrax',
+    'frobengle23',
+    os.environ.get('guestgroup')
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+#
+# Loooong time scanning JDBC metadata for user space.
+# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_CDOOAW4PLHLBKAAAAFRLFEJJEQ][TABLE] 
+# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_4QH2URNMIQN3WAAAAFRKBAFIPI][TABLE] 
+# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_FV5FIQONFRMAYAAAAFRKXMS7JU][TABLE] 
+#
+# Need to use DROP rather than DELETE for old user data.
+# Check side effects ..
+#
+# Naming convention for table names - FT_USER_012345_FV5FIQONFRMAYAAAAFRKXMS7JU
+# Clean operation to DROP old orphaned tables.
+# 
+
+
+#
+# Iterate the metadata tree
+for schema in atlas_adql.select_schemas():
+    for table in schema.select_tables():
+        print(
+            "table  [{}][{}]".format(
+                schema.name(),
+                table.name()
+                )
+            )
+        query_str = "SELECT TOP 10 * FROM {}.{}".format(
+            schema.name(),
+            table.name()
+            )
+        query_obj = workspace.create_query(
+            query_str,
+            "COMPLETED",
+            None,
+            3000000
+            )
+        py_table = query_obj.table().as_astropy()
+        py_table.pprint()
+
+#
+# Run some queries in parallel
+
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+
+query_str = "SELECT TOP 10000 ra, dec FROM ATLASDR1.atlasSource"
+
+def do_query(workspace, query_str, limit, delay):
+    query_obj = workspace.create_query(
+        query_str,
+        "COMPLETED",
+        None,
+        200000,
+            {
+            "adql.query.limit.rows"  : limit,
+            "adql.query.delay.every" : delay
+            }
+        )
+    return query_obj.json_object.get("results").get("count")
+
+def do_queries(workspace, query_str, threads, delay):
+    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        futures = {
+            executor.submit(
+                do_query,
+                workspace,
+                query_str,
+                limit,
+                delay
+                ): limit for limit in range(threads, 0, -1)
+            }
+        for future in concurrent.futures.as_completed(futures):
+            print(
+                future.result()
+                )
+
+for threads in range(1, 20):
+    for delay in range(500, -100, -100):
+        print("---- ", threads, delay)
+        do_queries(
+            workspace,
+            query_str,
+            threads,
+            delay
+            )
+
+
+#
+# Exit the Python shell
+
+    Ctrl^D
+    
+# -----------------------------------------------------
+# Stop our containers ...
+#[user@virtual]
+
+    docker-compose \
+        --file "baryptera-local.yml" \
+        stop
+
+

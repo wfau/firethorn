@@ -127,13 +127,14 @@ implements BlueTask<TaskType>
         @Override
         @UpdateAtomicMethod
         public TaskType advance(final Identifier ident, final TaskState prev, final TaskState next, long wait)
-        throws IdentifierNotFoundException, InvalidStateRequestException, ProtectionException
+        throws IdentifierNotFoundException, InvalidStateException, ProtectionException
             {
-            log.debug("advance(Identifier, TaskState, TaskState, long)");
-            log.debug("  ident [{}]", ident);
-            log.debug("  prev  [{}]", prev);
-            log.debug("  next  [{}]", next);
-            log.debug("  wait  [{}]", wait);
+            log.debug("advance() [{}][{}][{}][{}]",
+                ident,
+                prev,
+                next,
+                wait
+                );
             TaskType task = select(
         		ident
             	);
@@ -175,25 +176,31 @@ implements BlueTask<TaskType>
         public TaskState thread(final Updator<?> updator)
         throws ProtectionException
             {
-            log.debug("thread(Updator)");
-            log.debug("  ident [{}]", updator.ident());
-            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
-
-            log.debug("Before future()");
-            log.debug("Setting current operation [{}]", ident(operations().current()));
+            log.debug("thread(Updator) [{}]",
+                updator.ident()
+                );
             updator.operation(
                 operations().current()
                 );            
+            log.trace("Before future() [{}]",
+                    updator.ident()
+                    );
             final Future<TaskState> future = services.runner().future(
                 updator
                 );
-            log.debug("After future()");
+            log.trace("Afterfuture() [{}]",
+                updator.ident()
+                );
             
             try {
-                log.debug("Before future.get()");
+                log.trace("Before future.get() [{}]",
+                    updator.ident()
+                    );
                 final TaskState result = future.get();
-                log.debug("After future.get()");
-                log.debug("  result [{}]", result);
+                log.trace("After future.get() [{}][{}]",
+                    updator.ident(),
+                    result.name()
+                    );
                 return result ;
                 }
 //TODO Much better error handling.
@@ -201,8 +208,6 @@ implements BlueTask<TaskType>
                 {
                 final Throwable cause = ouch.getCause();
                 log.error("ExecutionException executing Future [{}][{}]", cause.getClass().getName(), cause.getMessage());
-                log.debug("ExecutionException executing Future", cause);
-
                 return TaskState.ERROR;
                 }
             catch (InterruptedException ouch)
@@ -218,16 +223,14 @@ implements BlueTask<TaskType>
         public Future<TaskState> future(final Updator<?> updator)
         throws ProtectionException
             {
-            log.debug("future(Updator)");
-            log.debug("  ident [{}]", updator.ident());
-            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
-
-            log.debug("Getting current operation [{}]", ident(operations().current()));
-            log.debug("Setting current operation [{}]", ident(updator.operation()));
+            log.debug("future(Updator) [{}]",
+                updator.ident()
+                );
+            log.trace("Current operation [{}]", ident(operations().current()));
             operations().current(
                 updator.operation()
                 );            
-
+            log.trace("Current operation [{}]", ident(operations().current()));
             try {
                 return AsyncResult.forValue(
                     updator.update()
@@ -247,29 +250,18 @@ implements BlueTask<TaskType>
         throws InvalidStateTransitionException, ProtectionException
             {
             log.debug("thread(Creator)");
-            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
-            
-            log.debug("Before future()");
-            log.debug("Setting current operation [{}]", ident(operations().current()));
             creator.operation(
                 operations().current()
                 );            
+            log.trace("Before future() [{}]");
             final Future<TaskType> future = services.runner().future(
                 creator
                 );
-            log.debug("After future()");
-            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
-            
+            log.trace("After future()");
             try {
-                log.debug("Before future.get()");
+                log.trace("Before future.get()");
                 final TaskType result = future.get();
-                log.debug("After future.get()");
-// Easier to do the convert back in the calling Thread.
-                //log.debug("  initial [{}]", initial);
-                // Convert the initial result to the current thread/session
-            	//final TaskType result = (TaskType) initial.current();
-                //log.debug("After select()");
-                log.debug("  result [{}]", result);
+                log.trace("After future.get() [{}]", result.ident());
                 return result ;
                 }
 // TODO Much better error handling
@@ -292,15 +284,6 @@ implements BlueTask<TaskType>
                 // TODO Creator shouldn't return null ..
                 return null;
         	    }
-/*
- * 
-            catch (final HibernateConvertException ouch)
-	    	    {
-	            log.error("HibernateConvertException [{}]");
-	            return null;
-	    	    }
- * 
- */
             }
 
         @Async
@@ -310,35 +293,13 @@ implements BlueTask<TaskType>
         throws ProtectionException
             {
             log.debug("future(Creator)");
-            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
 
-            log.debug("Getting current operation [{}]", ident(operations().current()));
-            log.debug("Setting current operation [{}]", ident(creator.operation()));
+            log.trace("Current operation [{}]", ident(operations().current()));
             operations().current(
                 creator.operation()
                 );            
+            log.trace("Current operation [{}]", ident(operations().current()));
             // TODO Much better error handling
-/*
- * 
-            try {
-				return new AsyncResult<TaskType>(
-				    creator.create()
-				    );
-				}
-            catch (final InvalidStateTransitionException ouch)
-            	{
-                // TODO Much better error handling
-                // TODO Needs Spring 4.2
-            	return null ;
-            	}
-            catch (final HibernateConvertException ouch)
-            	{
-                // TODO Much better error handling
-                // TODO Needs Spring 4.2
-            	return null ;
-            	}
- * 
- */
             try {
             	return AsyncResult.forValue(
                     creator.create()
@@ -366,8 +327,6 @@ implements BlueTask<TaskType>
          */
         protected Operator()
             {
-            log.debug("Operator constructor");
-            log.debug("  thread [{}][{}]", Thread.currentThread().getId(), Thread.currentThread().getName());
             }
 
         /**
@@ -441,7 +400,7 @@ implements BlueTask<TaskType>
     // TODO Move this to base class
     protected void refresh()
     	{
-        log.debug("Refreshing Hibernate entity [{}]", ident());
+        log.trace("refresh() [{}]", this.ident());
         factories().hibernate().refresh(
     		this
     		);    	
@@ -450,7 +409,7 @@ implements BlueTask<TaskType>
     // TODO Move this to base class
     protected void flush()
         {
-        log.debug("Flushing Hibernate Session [{}]", ident());
+        log.trace("flush() [{}]", this.ident());
         factories().hibernate().flush();
         }
     
@@ -517,11 +476,11 @@ implements BlueTask<TaskType>
         {
         if (value.compareTo(this.state) > 0)
             {
-            log.debug("Forward state change [{}]", value);
+            log.trace("Forward state change [{}][{}]->[{}]", this.ident(), this.state(), value);
             this.state = value;
             }
         else {
-            log.error("Backward state change [{}][{}]", value, this.state);
+            log.error("Backward state change [{}][{}]->[{}]", this.ident(), this.state(), value);
             }
         }
 
@@ -582,6 +541,7 @@ implements BlueTask<TaskType>
      * {@link BlueTask.Handle} implementation.
      * 
      */
+    @Slf4j
     protected static class Handle
     implements BlueTask.Handle
         {
@@ -629,25 +589,48 @@ implements BlueTask<TaskType>
         @Override
         public synchronized void event(final TaskState next, final boolean sticky)
             {
-            log.debug("-- Ooj6Loqu gi8Hiej7 [{}]", this.ident());
-            log.debug("event(TaskState, boolean)");
-            log.debug("  state [{}][{}]", this.state, next);
-            log.debug("  sticky [{}][{}]", this.sticky, sticky);
-            
-            log.debug("Checking state");
+            log.debug("event() [{}]:[{}]->[{}]:[{}]->[{}]",
+                    this.ident,
+                    this.state,
+                    next,
+                    this.sticky,
+                    sticky
+                    );
             if (next.compareTo(this.state) > 0)
                 {
-                log.debug("Accepting forward state change");
+                log.trace("Accepting forward state change [{}]:[{}]->[{}]",
+                    this.ident,
+                    this.state,
+                    next
+                    );
                 this.state = next;
                 }
+            else if (next.compareTo(this.state) == 0)
+                {
+                log.trace("No state change [{}]:[{}]->[{}]",
+                    this.ident,
+                    this.state,
+                    next
+                    );
+                }
             else {
-                log.error("Ignoring backward state change");
+                log.error("Ignoring backward state change [{}]:[{}]->[{}]",
+                    this.ident,
+                    this.state,
+                    next
+                    );
                 }
             this.sticky |= sticky ;
 
-            log.debug("before notify");
+            log.trace("Before notify [{}][{}]",
+                this.ident,
+                this.state
+                );
             this.notifyAll();
-            log.debug("after notify");
+            log.trace("After notify [{}][{}]",
+                this.ident,
+                this.state
+                );
 
 // Two states, controller and processor.
 // Processor updates via callback.
@@ -662,25 +645,26 @@ implements BlueTask<TaskType>
 // Controller checks state and IF still active, updates state to running.
 // Controller releases handle IF no longer active..
             
-            log.debug("-- diHohj8a Reez1OeY [{}]", this.ident());
-            log.debug("Checking Handler");
-            log.debug("  state  [{}]", this.state);
-            log.debug("  sticky [{}]", this.sticky);
+            log.trace("Checking Handler [{}][{}][{}]",
+                this.ident,
+                this.state,
+                this.sticky
+                );
             if (this.state.active())
                 {
-                log.debug("TaskState is active, keeping Handler");
+                log.trace("TaskState is active, keeping Handler");
                 }
             else {
-                log.debug("TaskState is inactive, checking stickiness [{}]", this.sticky());
-                if (this.sticky())
+                log.trace("TaskState is inactive, checking stickiness [{}]", this.sticky);
+                if (this.sticky)
                     {
-                    log.debug("Handler is sticky");
+                    log.trace("Handler is sticky, retaining");
                     }
                 else {
-                    log.debug("Handler is not sticky, releasing");
-                handles.remove(
-                    this.ident
-                    );
+                    log.trace("Handler is not sticky, releasing");
+                    handles.remove(
+                        this.ident
+                        );
                     }
                 }
             }
@@ -723,38 +707,46 @@ implements BlueTask<TaskType>
         @Override
         public void waitfor(final BlueTask.Handle handle)
             {
-            log.debug("waitfor(Handle)");
-            log.debug("  ident [{}]", handle.ident());
-            log.debug("  state [{}]", handle.state());
-
+            log.debug("waitfor(Handle) [{}][{}]",
+                handle.ident(),
+                handle.state()
+                );
             synchronized(handle)
                 {
 				if (handle.state().active())
     				{
-				    log.debug("Handle state is active, starting loop");
+				    log.trace("Handle state is active, starting loop");
     				while (this.test(handle) == false)
                         {
-                        log.debug("Handle wait loop [{}]", this.count);
+                        log.trace("Handle wait loop [{}][{}][{}]",
+                            handle.ident(),
+                            handle.state(),
+                            this.count
+                            );
                         try {
                             this.count++;
                             long time = remaining();
                             if (time == Long.MAX_VALUE)
                                 {
-                                log.debug("starting wait, no time");
+                                log.trace("starting wait, no time");
                                 handle.wait();
                                 }
                             else {
-                                log.debug("starting wait [{}]", time);
+                                log.trace("starting wait [{}]", time);
                                 handle.wait(
                                     time
                                     );
                                 }
-                            log.debug("wait done");
                             }
                         catch (Exception ouch)
                             {
                             log.debug("Exception during wait [{}][{}]", ouch.getClass().getName(), ouch.getMessage());
                             }
+                        log.trace("Handle wait done [{}][{}][{}]",
+                            handle.ident(),
+                            handle.state(),
+                            this.count
+                            );
                         }
                     }
                 }
@@ -790,24 +782,24 @@ implements BlueTask<TaskType>
 
         protected boolean test(final BlueTask.Handle handle)
             {
-            log.debug("-- aseez2oJ Oa4oophu [{}]", handle.ident());
-            log.debug("test()");
-            log.debug("Checking elapsed time");
-            log.debug("  elapsed [{}]", elapsed());
-            log.debug("  timeout [{}]", timeout());
+            log.debug("test() [{}][{}][{}]",
+                handle.ident(),
+                elapsed(),
+                timeout()
+                );
             if (timeout() == Long.MAX_VALUE)
                 {
-                log.debug("timeout is MAX_VALUE, return true");
+                log.trace("timeout is MAX_VALUE [false]");
                 return false ;
                 }
             else {
                 if (elapsed() >= timeout())
                 	{
-                	log.debug("(elapsed >= timeout), return true");
+                	log.trace("(elapsed >= timeout) [true]");
                 	return true ;
                 	}
                 else {
-                    log.debug("(elapsed < timeout), return false");
+                    log.trace("(elapsed < timeout) [false]");
                 	return false ;
                 	}
                 }
@@ -828,14 +820,14 @@ implements BlueTask<TaskType>
         @Override
         public boolean test(final BlueTask.Handle handle)
             {
-            log.debug("-- taeP4aki ko6weiNe [{}]", handle.ident());
-            log.debug("test()");
-            log.debug("Checking count");
-            log.debug("  count [{}]", count);
+            log.debug("test() [{}][{}]",
+                handle.ident(),
+                count
+                );
             // Skip the first test.
         	if (count != 0)
         		{
-            	log.debug("done (count != 0)");
+            	log.trace("done (count != 0)");
         		return true ;
         		}
             // Check the timeout.
@@ -875,34 +867,30 @@ implements BlueTask<TaskType>
         @Override
         protected boolean test(final BlueTask.Handle handle)
             {
-            log.debug("-- fei9viGh rieR2soo [{}]", handle.ident());
-            log.debug("test()");
-            log.debug("Checking state");
-            log.debug("  prev  [{}]", this.prev);
-            log.debug("  state [{}]", handle.state());
-            log.debug("  next  [{}]", this.next);
+            log.debug("test() [{}][{}]->[{}]->[{}]",
+                handle.ident(),
+                this.prev,
+                handle.state(),
+                this.next
+                );
             // If the current state is not active
             if (handle.state().active() == false)
         		{
-            	log.debug("Handle state is not active, returning true");
+            	log.trace("Handle state is not active [true]");
         		return true ;
             	}
             else {
-                log.debug("Handle state is active");
+                log.trace("Handle state is active, checking for change");
                 // If the state has changed.
                 if ((prev != null) && (handle.state() != prev))
         		    {
-                    log.debug("Current state has changed, return true");
-                    log.debug("  prev  [{}]", this.prev);
-                    log.debug("  state [{}]", handle.state());
+                    log.trace("Current state has changed [true]");
         		    return true ;
             	    }
                 // If the next state has been reached. 
                 else if ((next != null) && (handle.state().ordinal() >= next.ordinal()))
         		    {
-                    log.debug("Current state is after next, return true");
-                    log.debug("  state [{}]", handle.state());
-                    log.debug("  next  [{}]", this.next);
+                    log.trace("Current state is after next [true]");
         		    return true ;
             	    }
                 // Check the timeout.
@@ -938,8 +926,6 @@ implements BlueTask<TaskType>
      */
     public static Handle handle(final String key)
         {
-        log.debug("handle(String)");
-        log.debug("  key [{}]", key);
         return handles.get(
             key
             );
@@ -953,7 +939,6 @@ implements BlueTask<TaskType>
     protected Handle newhandle()
     throws ProtectionException
         {
-        log.debug("newhandle()");
         return new Handle(
             this
             );
@@ -963,29 +948,30 @@ implements BlueTask<TaskType>
     public Handle handle()
     throws ProtectionException
         {
-        log.debug("handle()");
-        log.debug("  ident [{}]", ident());
+        log.debug("handle() []", ident());
 
         if (ident() != null)
             {
             synchronized (handles)
                 {
                 final String key = ident().toString();
-                log.debug("Checking for existing handle [{}]", key);
+                log.trace("Checking for existing handle [{}]", key);
                 final Handle found = handle(key);
                 if (found != null)
                     {
-                    log.debug("Found existing Handle [{}]", key);
-                    log.debug("  ident [{}]", found.ident());
-                    log.debug("  state [{}]", found.state());
+                    log.trace("Found existing Handle [{}][{}][{}]",
+                        key,
+                        found.ident(),
+                        found.state()
+                        );
                     return found;
                     }
                 else {
-                    log.debug("No Handle found, checking state [{}]", key);
+                    log.trace("No Handle found, checking state [{}]", key);
                     // Only create a new handle if the current state is active.
 					if (state().active())
 						{
-	                	log.debug("State is active, creating new Handle [{}]", key);
+	                	log.trace("State is active, creating new Handle [{}]", key);
 	                    final Handle created = newhandle();
 	                    handles.put(
 	                        created.ident,
@@ -994,7 +980,7 @@ implements BlueTask<TaskType>
 	                    return created;
 						}
 					else {
-	                	log.debug("State is not active, not creating a new Handle");
+	                	log.trace("State is not active, not creating a new Handle");
 	                    return null ;
 						}
                     }
@@ -1171,7 +1157,7 @@ implements BlueTask<TaskType>
     
     @Override
     public void advance(final TaskState prev, final TaskState next, final Long wait)
-    throws InvalidStateRequestException, ProtectionException
+    throws InvalidStateException, ProtectionException
         {
         log.debug("advance(TaskState, TaskState, Long)");
         log.debug("  ident [{}]", ident());
@@ -1338,43 +1324,47 @@ implements BlueTask<TaskType>
     public void waitfor(final TaskState prev, final TaskState next, final Long wait)
     throws ProtectionException
     	{
-        log.debug("-- CheaCh0X aew1aiSh [{}]", this.ident());
-        log.debug("waitfor(TaskState, Long)");
-        log.debug("  ident [{}]", ident());
-        log.debug("  state [{}]", state());
-        log.debug("  prev  [{}]", prev);
-        log.debug("  next  [{}]", next);
-        log.debug("  wait  [{}]", wait);
-
+        log.debug("waitfor() [{}]:[{}]->[{}]->[{}]:[{}]",
+            ident(),
+            prev,
+            state(),
+            next,
+            wait
+            );
         if (wait == null)
             {
-            log.debug("Wait is null - skipping wait");
+            log.trace("Wait is null - skipping wait");
             }
         else if (wait <= 0)
 			{
 			// TODO Do we need an absolute max value of -1 for sync TAP requests ?
-			log.debug("Wait is zero - skipping wait");
+			log.trace("Wait is <= zero - skipping wait");
 			}
 		else {
 			if (this.state().active())
 				{
-	            log.debug("State is active - getting handle");
+	            log.trace("State is active - getting handle");
 	            final BlueTaskEntity.Handle handle = handle();
 	            if (handle != null)
 	            	{
-		            log.debug("Before listener.waitfor()");
-		            log.debug("  ident [{}]", this.ident());
-		            log.debug("  ident [{}]", handle.ident());
-		            log.debug("  state [{}]", this.state());
-		            log.debug("  state [{}]", handle.state());
-
+                    log.trace("Before listener.waitfor() [{}][{}]:[{}]->[{}][{}]->[{}]",
+                        this.ident(),
+                        handle.ident(),
+                        prev,
+                        this.state(),
+                        handle.state(),
+                        next
+                        );
 		            //
 		            // Wait for a state change event.
 					if ((prev != null) || (next != null))
 						{
-			            log.debug("Waiting for state change event");
-			            log.debug("  prev  [{}]", prev);
-			            log.debug("  next  [{}]", next);
+			            log.trace("Waiting for state change event [{}]:[{}]->[{}]:[{}]",
+		                    this.ident(),
+		                    prev,
+		                    next,
+		                    wait
+			                );
 					    final Handle.Listener listener = new StatusEventListener(
 							prev,
 							next,
@@ -1387,7 +1377,7 @@ implements BlueTask<TaskType>
 		            //
 		            // Wait any event.
 					else {
-		            	log.debug("Waiting for any event");
+		            	log.trace("Waiting for any event");
 					    final Handle.Listener listener = new AnyEventListener(
 							wait
 					        );
@@ -1395,39 +1385,28 @@ implements BlueTask<TaskType>
 							handle
 							);
 						}
-
-					log.debug("After listener.waitfor()");
-		            log.debug("  this ident [{}]", this.ident());
-		            log.debug("  hand ident [{}]", handle.ident());
-		            log.debug("  prev state [{}]", prev);
-		            log.debug("  this state [{}]", this.state());
-		            log.debug("  hand state [{}]", handle.state());
-		            log.debug("  next state [{}]", next);
-
+					log.trace("After listener.waitfor() [{}][{}]:[{}]->[{}][{}]->[{}]",
+				        this.ident(),
+				        handle.ident(),
+				        prev,
+				        this.state(),
+				        handle.state(),
+				        next
+				        );
+					//
 		            // Update our state from the Handle.
 		            update(handle);
-/*
- * 
-		            log.debug("Checking Handle status");
-	                if (handle.state().compareTo(this.state()) > 0)
-	                    {
-	                    log.debug("Adopting Handle status");
-	                    this.state = handle.state(); 
-	                    }
- *                  
- */
-		
-		            //
+//
 //TODO Remove the sticky flag and possibly release the Handle.
 //
 
     				}
 	            else {
-	                log.debug("Null handle - skipping wait");
+	                log.trace("Null handle - skipping wait");
 	            	}
 				}
 			else {
-				log.debug("State is not active - skipping wait");
+				log.trace("State is inactive - skipping wait");
 				}
 			}
     	}
@@ -1438,8 +1417,12 @@ implements BlueTask<TaskType>
      */
     public void update(final BlueTaskEntity.Handle handle)
         {
-        log.debug("Checking Handle status [{}]", this.ident());
-        log.debug("  entity state [{}]", this.state());
+        log.debug("update(Handle) [{}][{}]:[{}][{}]",
+            this.ident(),
+            handle.ident(),
+            this.state(),
+            handle.state()
+            );
         if (handle != null)
             {
             log.debug("  handle state [{}]", handle.state());
@@ -1644,10 +1627,10 @@ implements BlueTask<TaskType>
      * 
      */
     private void reject(final TaskState prev, final TaskState next)
-    throws InvalidStateRequestException
+    throws InvalidStateException
         {
         log.warn("Invalid status change [{}][{}]", prev.name(), next.name());
-        throw new InvalidStateRequestException(
+        throw new InvalidStateException(
     		this,
     		prev,
     		next

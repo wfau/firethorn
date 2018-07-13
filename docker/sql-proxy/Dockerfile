@@ -15,12 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:2.1.23
+FROM firethorn/fedora:2.1.24
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 EXPOSE 1433
 
-RUN dnf -y install curl
 RUN dnf -y install socat
 RUN dnf -y install iproute
 RUN dnf -y install bind-utils

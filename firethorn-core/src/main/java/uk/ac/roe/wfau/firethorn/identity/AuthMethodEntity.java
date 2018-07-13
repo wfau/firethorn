@@ -38,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.access.Protector;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateProtector;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
 
@@ -52,7 +51,7 @@ import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
     AccessType.FIELD
     )
 @Table(
-    name = AuthenticationImplEntity.DB_TABLE_NAME
+    name = AuthMethodEntity.DB_TABLE_NAME
     )
 @Inheritance(
     strategy = InheritanceType.JOINED
@@ -61,15 +60,15 @@ import uk.ac.roe.wfau.firethorn.exception.NotImplementedException;
         {
         }
     )
-public class AuthenticationImplEntity
+public class AuthMethodEntity
 extends AbstractEntity
-implements AuthenticationImpl
+implements AuthMethod
     {
     /**
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AuthenticationEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AuthMethodEntity";
 
     /**
      * Hibernate column mapping.
@@ -81,8 +80,8 @@ implements AuthenticationImpl
 
     @Component
     public static class EntityFactory
-    extends AbstractEntityFactory<AuthenticationImpl>
-    implements AuthenticationImpl.EntityFactory
+    extends AbstractEntityFactory<AuthMethod>
+    implements AuthMethod.EntityFactory
         {
         @Override
         public Protector protector()
@@ -93,30 +92,26 @@ implements AuthenticationImpl
         @Override
         public Class<?> etype()
             {
-            return AuthenticationImplEntity.class ;
+            return AuthMethodEntity.class ;
             }
 
         @Override
         @CreateMethod
-        public AuthenticationImpl create(final Operation operation, final Identity identity, final String method)
+        public AuthMethod create(final Operation operation, final Identity identity, final String method)
            {
-           log.debug("create(Operation, Identity, String)");
-           log.debug("  Operation [{}]", operation.method());
-           log.debug("  Identity  [{}]", identity.name());
-           log.debug("  Method    [{}]", method);
+           log.debug("create() [{}][{}][{}][{}]",
+               operation.ident(),
+               identity.ident(),
+               identity.name(),
+               method
+               );
            return this.insert(
-                new AuthenticationImplEntity(
+                new AuthMethodEntity(
                     operation,
                     identity,
                     method
                     )
                 );
-            }
-
-        @Override
-        public AuthenticationImpl current()
-            {
-            throw new NotImplementedException();
             }
         }
 
@@ -127,13 +122,13 @@ implements AuthenticationImpl
     @Slf4j
     @Component
     public static class EntityServices
-    implements AuthenticationImpl.EntityServices
+    implements AuthMethod.EntityServices
         {
         /**
          * Our singleton instance.
          * 
          */
-        private static AuthenticationImplEntity.EntityServices instance ; 
+        private static AuthMethodEntity.EntityServices instance ; 
 
         /**
          * Our singleton instance.
@@ -141,7 +136,7 @@ implements AuthenticationImpl
          */
         public static EntityServices instance()
             {
-            return AuthenticationImplEntity.EntityServices.instance ;
+            return AuthMethodEntity.EntityServices.instance ;
             }
 
         /**
@@ -159,10 +154,9 @@ implements AuthenticationImpl
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
-            if (AuthenticationImplEntity.EntityServices.instance == null)
+            if (AuthMethodEntity.EntityServices.instance == null)
                 {
-                AuthenticationImplEntity.EntityServices.instance = this ;
+                AuthMethodEntity.EntityServices.instance = this ;
                 }
             else {
                 log.error("Setting instance more than once");
@@ -173,42 +167,40 @@ implements AuthenticationImpl
             }
         
         @Autowired
-        private AuthenticationImpl.IdentFactory idents;
+        private AuthMethod.IdentFactory idents;
         @Override
-        public AuthenticationImpl.IdentFactory idents()
+        public AuthMethod.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        private AuthenticationImpl.LinkFactory links;
+        private AuthMethod.LinkFactory links;
         @Override
-        public AuthenticationImpl.LinkFactory links()
+        public AuthMethod.LinkFactory links()
             {
             return this.links;
             }
 
         @Autowired
-        private AuthenticationImpl.EntityFactory entities;
+        private AuthMethod.EntityFactory entities;
         @Override
-        public AuthenticationImpl.EntityFactory entities()
+        public AuthMethod.EntityFactory entities()
             {
             return this.entities;
             }
         }
 
     @Override
-    protected AuthenticationImpl.EntityFactory factory()
+    protected AuthMethod.EntityFactory factory()
         {
-        log.debug("factory()");
-        return AuthenticationImplEntity.EntityServices.instance().entities() ; 
+        return AuthMethodEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
-    protected AuthenticationImpl.EntityServices services()
+    protected AuthMethod.EntityServices services()
         {
-        log.debug("services()");
-        return AuthenticationImplEntity.EntityServices.instance() ; 
+        return AuthMethodEntity.EntityServices.instance() ; 
         }
 
     @Override
@@ -223,7 +215,7 @@ implements AuthenticationImpl
      * Protected constructor.
      *
      */
-    protected AuthenticationImplEntity()
+    protected AuthMethodEntity()
         {
         }
 
@@ -231,17 +223,11 @@ implements AuthenticationImpl
      * Protected constructor.
      *
      */
-    protected AuthenticationImplEntity(final Operation operation, final Identity identity, final String method)
+    protected AuthMethodEntity(final Operation operation, final Identity identity, final String method)
         {
         super(
             true
             );
-
-        log.debug("AuthenticationEntity(Operation, Identity, String)");
-        log.debug("  Operation [{}]", operation.method());
-        log.debug("  Identity  [{}]", identity.name());
-        log.debug("  Method    [{}]", method);
-
         this.method    = method    ;
         this.identity  = identity  ;
         this.operation = operation ;
@@ -265,7 +251,7 @@ implements AuthenticationImpl
             @Override
             public String urn()
                 {
-                return AuthenticationImplEntity.this.method;
+                return AuthMethodEntity.this.method;
                 }
             };
         }
@@ -298,7 +284,7 @@ implements AuthenticationImpl
         updatable = false
         )
     private Operation operation ;
-    public Operation operation()
+    protected Operation operation()
         {
         return this.operation;
         }
