@@ -498,6 +498,12 @@ implements JdbcMetadataScanner
                                 {
                                 HsqldbScanner.this.handle(ouch);
                                 }
+                            @Override
+                            public long rowcount()
+                                {
+                                // TODO Auto-generated method stub
+                                return 0;
+                                }
                             };
                         }
                     @Override

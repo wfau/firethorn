@@ -119,7 +119,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create(final JdbcSchema parent)
+        public JdbcTable create(final JdbcSchema schema)
         throws ProtectionException;
 
         /**
@@ -127,16 +127,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final JdbcTable.Metadata meta)
-        throws ProtectionException;
-
-        /**
-         * Create a new {@link JdbcTable}.
-         * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-         *
-         */
-        @Deprecated
-        public JdbcTable create(final JdbcSchema parent, final String name)
+        public JdbcTable create(final JdbcSchema schema, final JdbcTable.Metadata meta)
         throws ProtectionException;
 
         /**
@@ -145,7 +136,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final String name, final JdbcType type)
+        public JdbcTable create(final JdbcSchema schema, final String name, final JdbcType type)
         throws ProtectionException;
 
         /**
@@ -154,7 +145,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final BlueQuery query)
+        public JdbcTable create(final JdbcSchema schema, final BlueQuery query)
         throws ProtectionException;
 
         /**
@@ -163,7 +154,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
          *
          */
-        public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page)
+        public Iterable<JdbcTable> pending(final JdbcSchema schema, final DateTime date, final int page)
         throws ProtectionException;
 
         }

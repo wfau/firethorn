@@ -54,26 +54,8 @@ extends AbstractComponent
 
     public UserDataCleaner()
         {
-        log.debug("UserDataCleaner()");
+        log.trace("UserDataCleaner()");
         }
-
-    /*
-    public void init()
-        {
-        log.debug("init()");
-        scheduler.scheduleWithFixedDelay(
-            new Runnable()
-                {
-                public void run()
-                    {
-                    log.debug("run()");
-                    something();
-                    }
-                },
-            new Long(60 * 1000)
-            );
-        }
-    */
 
     /**
      * The action to take to clean up a table.
@@ -93,7 +75,7 @@ extends AbstractComponent
      *
      */
     @Value("${firethorn.cleaner.action:DROP}")
-    Action action;
+    private Action action;
 
     /**
      *
@@ -106,7 +88,7 @@ extends AbstractComponent
      *
      */
     @Value("${firethorn.cleaner.lifetime:PT24H}")
-    String lifetime ;
+    private String lifetime ;
 
     /**
      * The number of rows to delete on each run.
@@ -115,7 +97,7 @@ extends AbstractComponent
      *
      */
     @Value("${firethorn.cleaner.pagesize:10}")
-    int pagesize ;
+    private int pagesize ;
 
     /**
      * The number of runs to skip at the start.
@@ -124,7 +106,7 @@ extends AbstractComponent
      *
      */
     @Value("${firethorn.cleaner.skipfirst:5}")
-    int skipfirst ;
+    private int skipfirst ;
 
     /**
      * The Spring Scheduled cron expression.
@@ -135,16 +117,6 @@ extends AbstractComponent
     @Scheduled(cron="${firethorn.cleaner.cron:0 0/10 * * * ?}")
     public void process()
         {
-        log.debug("");
-        log.debug("process()");
-        log.debug("  count [{}]", count);
-
-        /*
-         * try/catch IllegalArgumentException
-         * java.lang.IllegalArgumentException: Invalid format: "MUMBLE"
-         *
-         */
-
         /*
          * PT12H
          * https://en.wikipedia.org/wiki/ISO_8601#Durations
@@ -152,16 +124,21 @@ extends AbstractComponent
          * 
          */
         final ReadablePeriod period = MutablePeriod.parse(lifetime);
-        log.debug(" pagesize [{}]", pagesize);
-        log.debug(" lifetime [{}]", lifetime);
-        log.debug(" period   [{}]", period);
 
+        log.info("process() [{}][{}][{}][{}][{}]",
+            count,
+            pagesize,
+            lifetime,
+            period,
+            action
+            );
+        
         //
         // Skip the first few iterations.
         // Allow time for startup.
         if (count++ < skipfirst)
             {
-            log.debug("skipping");
+            log.debug("Skip first [{}][{}]", skipfirst, count);
             return ;
             }
 
@@ -185,20 +162,33 @@ extends AbstractComponent
                             for (final JdbcTable table : schema.tables().pending(date, pagesize))
                                 {
                                 log.debug("  table [{}][{}][{}]", table.ident(), table.name(), table.created());
-                                //table.drop();
-                                table.meta().jdbc().status(
-                                    JdbcTable.TableStatus.DROPPED
-                                    );
+                                switch (action)
+                                    {
+                                    case DELETE:
+                                        table.meta().jdbc().status(
+                                            JdbcTable.TableStatus.DELETED
+                                            );
+                                        break;
+
+                                    case DROP:
+                                        table.meta().jdbc().status(
+                                            JdbcTable.TableStatus.DROPPED
+                                            );
+                                        break;
+
+                                    default:
+                                        log.error("Unknown cleaner action [{}]", action);
+                                        break ;
+                                    }
                                 }
                             }
                         }
                     catch (final Exception ouch)
                         {
-                        log.warn("Exception in processing() [{}]", ouch.getMessage());
+                        log.warn("Exception [{}]", ouch.getMessage());
                         }
                     }
                 }
             );
-        log.debug("");
         }
     }

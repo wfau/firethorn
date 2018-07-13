@@ -309,20 +309,6 @@ implements JdbcTable
             }
 
         @Override
-        @Deprecated
-        @CreateMethod
-        public JdbcTable create(final JdbcSchema schema, final String name)
-        throws ProtectionException
-            {
-            return this.insert(
-                new JdbcTableEntity(
-                    schema,
-                    name
-                    )
-                );
-            }
-
-        @Override
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final String name, final JdbcType type)
         throws ProtectionException
@@ -862,14 +848,11 @@ implements JdbcTable
     protected void jdbcstatus(final JdbcTable.TableStatus next)
     throws ProtectionException
         {
-        JdbcTable.TableStatus prev = this.jdbcstatus; 
-        log.debug("status(JdbcTable.TableStatus)");
-        log.debug("  prev [{}]", prev);
-        log.debug("  next [{}]", next);
-        if (next == JdbcTable.TableStatus.UNKNOWN)
-            {
-            log.warn("Setting JdbcTable.JdbcStatus to UNKNOWN [{}]", this.ident());
-            }
+        final JdbcTable.TableStatus prev = this.jdbcstatus; 
+        log.debug("jdbcstatus() [{}]->[{}]",
+             prev,
+             next
+             );
         switch(prev)
             {
             case CREATED:
@@ -884,9 +867,9 @@ implements JdbcTable
                         break ;
 
                     case CREATED:
+                        break ;
                     case UPDATED:
-                    case UNKNOWN:
-                        this.jdbcstatus = next ;
+                        this.jdbcstatus = TableStatus.UPDATED ;
                         break ;
 
                     default:
@@ -910,11 +893,8 @@ implements JdbcTable
                         break ;
     
                     case UPDATED:
-                    case UNKNOWN:
-                        this.jdbcstatus = next ;
                         break ;
     
-                    case CREATED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -932,12 +912,8 @@ implements JdbcTable
                         break ;
     
                     case DELETED:
-                    case UNKNOWN:
-                        this.jdbcstatus = next ;
                         break ;
     
-                    case CREATED:
-                    case UPDATED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -947,48 +923,39 @@ implements JdbcTable
                     }
                 break ;
 
-        case DROPPED:
-            switch(next)
-                {
-                case DROPPED:
-                case UNKNOWN:
-                    this.jdbcstatus = next ;
-                    break ;
+            case DROPPED:
+                switch(next)
+                    {
+                    case DROPPED:
+                        break ;
+    
+                    default:
+                        throw new IllegalStateTransition(
+                            JdbcTableEntity.this,
+                            jdbcstatus(),
+                            next
+                            );
+                    }
+                break ;
 
-                case CREATED:
-                case UPDATED:
-                case DELETED:
-                default:
-                    throw new IllegalStateTransition(
-                        JdbcTableEntity.this,
-                        jdbcstatus(),
-                        next
-                        );
-                }
-            break ;
-
-        case UNKNOWN:
-            switch(next)
-                {
-                case UNKNOWN:
-                    this.jdbcstatus = next ;
-                    break ;
-
-                case CREATED:
-                case UPDATED:
-                case DELETED:
-                case DROPPED:
-                default:
-                    throw new IllegalStateTransition(
-                        JdbcTableEntity.this,
-                        jdbcstatus(),
-                        next
-                        );
-                }
-            break ;
-
-        default:
-            break ;
+            case UNKNOWN:
+                switch(next)
+                    {
+                    case UNKNOWN:
+                        break ;
+    
+                    default:
+                        throw new IllegalStateTransition(
+                            JdbcTableEntity.this,
+                            jdbcstatus(),
+                            next
+                            );
+                    }
+                break ;
+    
+            default:
+                log.error("Unknown TableStatus [{}]", prev);
+                break ;
 
             }
         }
@@ -1202,7 +1169,7 @@ implements JdbcTable
         log.debug("scanning table [{}]", (table != null) ? table.name() : null);
         if (table == null)
             {
-            log.warn("Null table");
+            log.debug("Null table, skipping scan");
             }
         else {
             try {

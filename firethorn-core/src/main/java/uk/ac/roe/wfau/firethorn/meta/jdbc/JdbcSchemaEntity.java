@@ -949,6 +949,10 @@ public class JdbcSchemaEntity
         // No match, so create a new one.
         else {
             log.trace("Creating new table [{}]", name);
+
+// TODO Add a 'SCANNED' status to indicate this table was loaded by a scan and not created.
+// TODO Add the size property as part of the Scanner function
+            
             matching.put(
                 name,
                 factories().jdbc().tables().entities().create(

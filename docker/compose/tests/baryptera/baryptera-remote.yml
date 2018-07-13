@@ -114,11 +114,6 @@ services:
             - /etc/localtime:/etc/localtime:ro
         networks:
             - miriam
-        depends_on:
-            elayne:
-                condition: service_started            
-            patricia:
-                condition: service_started            
         healthcheck:
             test: [
                 "CMD-SHELL",
@@ -197,7 +192,7 @@ services:
         networks:
             - miriam
         environment:
-            endpointurl: "http://gillian:8080/firethorn"
+            endpoint: "http://gillian:8080/firethorn"
 
             datatype:  "mssql"
             datahost:  "patricia"
@@ -210,6 +205,8 @@ services:
             admingroup: "${admingroup}"
 
             guestgroup: "${guestgroup}"
+            guestuser:  "${guestuser}"
+            guestpass:  "${guestpass}"
 
             tapresource:   "${tapresource}"
             tapschematype: "pgsql"

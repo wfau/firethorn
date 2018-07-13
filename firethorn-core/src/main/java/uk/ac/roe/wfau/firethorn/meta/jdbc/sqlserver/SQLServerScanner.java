@@ -22,6 +22,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,6 +45,12 @@ import uk.ac.roe.wfau.firethorn.util.ResultSetIterator;
 public class SQLServerScanner
     implements JdbcMetadataScanner
     {
+    /**
+     * Limit for executing COUNT(*) queries, {@value}.
+     * 
+     */
+    private static final Long ROWCOUNT_LIMIT = 100000L ;
+
     /**
      * Public constructor.
      * 
@@ -304,17 +311,24 @@ public class SQLServerScanner
                                         catalog().name()
                                         )
                                     );
-                                statement.setString(1, schema().name());
+                                statement.setString(
+                                    1,
+                                    schema().name()
+                                    );
                                 return new ResultSetIterator.Factory<Table>(statement.executeQuery())
                                     {
                                     @Override
                                     protected Table getNext()
                                         throws SQLException
                                         {
+                                        final String name = results().getString(
+                                            "TABLE_NAME"
+                                            );
                                         return table(
                                             schema(),
-                                            results().getString(
-                                                "TABLE_NAME"
+                                            name,
+                                            rowcount(
+                                                name
                                                 )
                                             );
                                         }
@@ -356,19 +370,118 @@ public class SQLServerScanner
                                     {
                                     return table(
                                         schema(),
-                                        results.getString(
-                                    		"TABLE_NAME"
-                                    		)
+                                        name,
+                                        rowcount(
+                                            name
+                                            )
                                         );
                                     }
                                 else {
                                     return null ;
                                     }
                                 }
+
+                            /**
+                             * Get the row count for a table.
+                             * Reads the system metadata first and only does a COUNT() for small tables (< {@link ROWCOUNT_LIMIT}).
+                             * http://www.sqlservercentral.com/blogs/spaghettidba/2015/05/18/counting-the-number-of-rows-in-a-table/ 
+                             * 
+                             */
+                            private Long rowcount(final String name)
+                                throws SQLException
+                                {
+                                log.debug("rowcount [{}][{}][{}]", catalog().name(), schema().name(), name);
+                                final String fullname = catalog().name() + "." + schema().name() + "." + name;
+
+                                long a, b, c, d ;
+                                
+                                Long guess = -1L;
+                                Long count = -1L;
+                                try {
+                                    log.trace("Querying cardinality");
+a = System.currentTimeMillis();
+                                    final PreparedStatement statement = connection().prepareStatement(
+                                        "SELECT OBJECTPROPERTYEX(OBJECT_ID(?),'cardinality') AS [rowcount]"
+                                        );
+                                    statement.setString(
+                                        1,
+                                        fullname
+                                        );
+                                    final ResultSet results = statement.executeQuery();
+                                    if (results.next())
+                                        {
+                                        guess = results.getLong("rowcount");
+                                        }
+                                    else {
+                                        log.trace("Empty result set");
+                                        }
+b = System.currentTimeMillis();
+                                    }
+                                catch (SQLException ouch)
+                                    {
+                                    log.warn("SQLException reading cardinality property [{}]", ouch.getMessage());
+                                    throw ouch;
+                                    }
+                                log.trace("rowcount guess [{}]", guess);
+                                if (guess > ROWCOUNT_LIMIT)
+                                    {
+                                    log.trace("rowcount guess above the threshold [{}][{}]",
+                                        guess,
+                                        ROWCOUNT_LIMIT
+                                        );
+                                    return guess ;
+                                    }
+                                else {
+                                    log.trace("rowcount guess below the threshold [{}][{}]",
+                                        guess,
+                                        ROWCOUNT_LIMIT
+                                        );
+                                    try {
+                                        log.trace("Querying SELECT COUNT(*)");
+c = System.currentTimeMillis();
+                                        final PreparedStatement statement = connection().prepareStatement(
+                                            (
+                                            "SELECT COUNT(*) AS [rowcount] FROM [{catalog}].[{schema}].[{table}]"
+                                            ).replace(
+                                                "{catalog}",
+                                                catalog().name()
+                                            ).replace(
+                                                "{schema}",
+                                                schema().name()
+                                            ).replace(
+                                                "{table}",
+                                                name
+                                                )
+                                            );
+                                        final ResultSet results = statement.executeQuery();
+                                        if (results.next())
+                                            {
+                                            count = results.getLong("rowcount");
+                                            }
+                                        else {
+                                            log.trace("Empty result set");
+                                            }
+d = System.currentTimeMillis();
+                                        }
+                                    catch (SQLException ouch)
+                                        {
+                                        log.warn("SQLException reading COUNT(*) [{}]", ouch.getMessage());
+                                        throw ouch;
+                                        }
+                                    log.debug("rowcount [{}][{}][{}] [{}][{}]", guess, count, (guess - count), (b - a), (d - c));
+                                    if (count > -1L)
+                                        {
+                                        return count ;
+                                        }
+                                    else {
+                                        return guess ;
+                                        }
+                                    }
+                                }
                             };
                         }
 
-                    protected Table table(final Schema schema, final String name)
+                    protected Table table(final Schema schema, final String name, final Long rowcount )
                     throws SQLException
                         {
                         return new Table()
@@ -382,12 +495,17 @@ public class SQLServerScanner
                                 {
                                 return this ;
                                 }
-
                             @Override
                             public String name()
                                 {
                                 return name ;
                                 }
+                            @Override
+                            public long rowcount()
+                                {
+                                return rowcount ;
+                                }
+                            
                             @Override
                             public Columns columns()
                                 {
