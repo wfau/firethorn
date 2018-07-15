@@ -43,19 +43,24 @@ public class SimpleEntityProtector
     @Override
     public boolean check(final Identity identity, final Action action)
         {
-        // Allow anyone to read.
-        if (action.type().select())
+        // Allow admin anything.
+        if (isAdmin(identity))
+            {
+            return true ;
+            }
+        // Allow owner anything.
+        else if (isOwner(identity))
+            {
+            return true ;
+            }
+        // Allow anyone with an identity to read.
+        else if (action.type().select())
             {
             return (identity != null);
             }
-        // Require owner to modify.
-        if (action.type().modify())
-            {
-            return isOwner(identity);
-            }
-        // Allow admin anything else.
+        // fail anything else.
         else {
-            return isAdmin(identity);
+            return false;
             }
         }
     }

@@ -72,7 +72,7 @@ implements BaseTable<TableType, ColumnType>
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_ADQL_COUNT_COL = "adqlcount" ;
+    protected static final String DB_ADQL_COUNT_COL = "adqlrowcount" ;
 
     /**
      * Hibernate column mapping, {@value}.
@@ -245,22 +245,22 @@ implements BaseTable<TableType, ColumnType>
         nullable = true,
         updatable = true
         )
-    protected Long adqlcount ;
-    protected Long adqlcount()
+    protected Long adqlrowcount ;
+    protected Long adqlrowcount()
     throws ProtectionException
         {
-        if (this.adqlcount != null)
+        if (this.adqlrowcount != null)
             {
-            return this.adqlcount;
+            return this.adqlrowcount;
             }
         else {
             return EMPTY_COUNT_VALUE;
             }
         }
-    protected void adqlcount(final Long count)
+    protected void adqlrowcount(final Long count)
     throws ProtectionException
         {
-        this.adqlcount = count;
+        this.adqlrowcount = count;
         }
 
     @Basic(
@@ -313,14 +313,14 @@ implements BaseTable<TableType, ColumnType>
             public Long count()
             throws ProtectionException
                 {
-                return adqlcount();
+                return adqlrowcount();
                 }
 
             @Override
             public void count(Long count)
             throws ProtectionException
                 {
-                adqlcount(count);
+                adqlrowcount(count);
                 }
 
             @Override

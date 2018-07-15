@@ -47,7 +47,7 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
-    public static final String METHOD_NAME = "anonymous" ;
+    public static final String METHOD_NAME = "urn:anonymous" ;
     public static final String NAME_PREFIX = "guest" ;
 
     @Override

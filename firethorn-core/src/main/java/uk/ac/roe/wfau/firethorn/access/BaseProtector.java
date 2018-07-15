@@ -70,7 +70,6 @@ implements Protector
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
             if (BaseProtector.EntityServices.instance == null)
                 {
                 BaseProtector.EntityServices.instance = this ;
@@ -143,8 +142,7 @@ implements Protector
     @Override
     public boolean check(final Action action)
         {
-        log.debug("check(Action)");
-        log.debug("  Action [{}]", action);
+        log.debug("check(Action) [{}]", action);
         final Operation operation = services().operation(); 
         if (null != operation)
             {
@@ -160,9 +158,7 @@ implements Protector
     @Override
     public boolean check(final Authentication authentication, final Action action)
         {
-        log.debug("check(Authentication, Action)");
-        log.debug("  Authentication [{}]", authentication);
-        log.debug("  Action [{}]", action);
+        log.debug("check(Authentication, Action) [{}][{}]", authentication, action);
         return check(
             authentication.identity(),
             action
@@ -172,8 +168,7 @@ implements Protector
     @Override
     public boolean check(final Operation.Authentications authentications, final Action action)
         {
-        log.debug("check(Authentications, Action)");
-        log.debug("  Action [{}]", action);
+        log.debug("check(Authentications, Action) [{}]", action);
         return check(
             authentications.select(),
             action
@@ -183,8 +178,7 @@ implements Protector
     @Override
     public boolean check(final Iterable<Authentication> authentications, final Action action)
         {
-        log.debug("check(Iterable<Authentication>, Action)");
-        log.debug("  Action [{}]", action);
+        log.debug("check(Iterable<Authentication>, Action) [{}]", action);
         for (final Authentication authentication: authentications)
             {
             if (check(authentication, action))
@@ -200,8 +194,7 @@ implements Protector
     public Protector affirm(final Action action)
     throws ProtectionException
         {
-        log.debug("affirm(Action)");
-        log.debug("  Action [{}]", action);
+        log.debug("affirm(Action) [{}]", action);
         final Operation operation = services().operation(); 
         if (null != operation)
             {
@@ -210,19 +203,20 @@ implements Protector
                 action
                 );
             }
-        throw new ProtectionException(
-            this,
-            action
-            );
+        else {
+            log.error("affirm(Action) for null operation");
+            throw new ProtectionException(
+                this,
+                action
+                );
+            }
         }
     
     @Override
     public Protector affirm(final Identity identity, final Action action)
     throws ProtectionException
         {
-        log.debug("affirm(Identity, Action)");
-        log.debug("  Identity [{}]", identity);
-        log.debug("  Action   [{}]", action);
+        log.debug("affirm(Identity, Action) [{}][{}]", identity, action);
         if (check(identity, action))
             {
             return this;
@@ -239,8 +233,7 @@ implements Protector
     public Protector affirm(final Authentication authentication, final Action action)
     throws ProtectionException
         {
-        log.debug("affirm(Authentication, Action)");
-        log.debug("  Action [{}]", action);
+        log.debug("affirm(Authentication, Action) [{}]", action);
         return affirm(
             authentication.identity(),
             action
@@ -251,8 +244,7 @@ implements Protector
     public Protector affirm(final Operation.Authentications authentications, final Action action)
     throws ProtectionException
         {
-        log.debug("affirm(Authentications, Action)");
-        log.debug("  Action [{}]", action);
+        log.debug("affirm(Authentications, Action) [{}]", action);
         return affirm(
             authentications.select(),
             action
@@ -263,8 +255,7 @@ implements Protector
     public Protector affirm(final Iterable<Authentication> authentications, final Action action)
     throws ProtectionException
         {
-        log.debug("affirm(Iterable<Authentication>, Action)");
-        log.debug("  Action [{}]", action);
+        log.debug("affirm(Iterable<Authentication>, Action) [{}]", action);
         for (final Authentication authentication: authentications)
             {
             if (check(authentication, action))
@@ -285,9 +276,9 @@ implements Protector
      */
     public boolean isAdmin(final Identity identity)
         {
-        log.debug("isAdmin(Identity)");
-        log.debug("  Identity [{}]", identity);
+        log.debug("isAdmin(Identity) [{}]", identity);
         try {
+// TODO Move the test into an identity service        
             return services().admin().ident().equals(identity.ident());
             }
         catch (final ProtectionException ouch)

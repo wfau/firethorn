@@ -147,6 +147,18 @@ implements JdbcTable
     protected static final String DB_BLUE_QUERY_COL  = "bluequery" ;
 
     /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_JDBC_COUNT_COL = "jdbcrowcount" ;
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_JDBC_GUESS_COL = "jdbcrowguess" ;
+
+    /**
      * {@link JdbcTable.Builder} implementation.
      *
      */
@@ -431,7 +443,7 @@ implements JdbcTable
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page)
         throws ProtectionException
             {
-            log.debug("pending(JdbcSchema, DateTime)");
+            log.debug("pending(JdbcSchema, DateTime) [{}][{}] [{}]", parent.ident(), parent.name(), date);
             return super.iterable(
                 page,
                 super.query(
@@ -660,7 +672,9 @@ implements JdbcTable
             schema,
             query,
             name,
-            JdbcType.TABLE
+            JdbcType.TABLE,
+            0L,
+            0L
             );
         }
 
@@ -670,6 +684,22 @@ implements JdbcTable
      */
     public JdbcTableEntity(final JdbcSchema schema, final BlueQuery query, final String name, final JdbcType type)
         {
+        this(
+            schema,
+            query,
+            name,
+            type,
+            0L,
+            0L
+            );
+        }
+
+    /**
+     * Protected constructor.
+     *
+     */
+    public JdbcTableEntity(final JdbcSchema schema, final BlueQuery query, final String name, final JdbcType type, final Long rowcount, final Long rowguess)
+        {
         super(
             schema,
             name
@@ -678,6 +708,9 @@ implements JdbcTable
         
         this.bluequery = query;
         this.schema = schema;
+
+        this.jdbcrowcount = rowcount;
+        this.jdbcrowguess = rowguess;
 
         this.jdbctype   = type ;
         this.jdbcstatus = JdbcTable.TableStatus.CREATED;
@@ -718,6 +751,68 @@ implements JdbcTable
         return self();
         }
 
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_JDBC_COUNT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected Long jdbcrowcount ;
+    protected Long jdbcrowcount()
+    throws ProtectionException
+        {
+        if (this.jdbcrowcount != null)
+            {
+            return this.jdbcrowcount;
+            }
+        else {
+            return this.jdbcrowguess();
+            }
+        }
+    protected void jdbcrowcount(final Long count)
+    throws ProtectionException
+        {
+        this.jdbcrowcount = count;
+        }
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_JDBC_GUESS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected Long jdbcrowguess ;
+    protected Long jdbcrowguess()
+    throws ProtectionException
+        {
+        if (this.jdbcrowguess != null)
+            {
+            return this.jdbcrowguess;
+            }
+        else {
+            return EMPTY_COUNT_VALUE;
+            }
+        }
+    protected void jdbcrowguess(final Long count)
+    throws ProtectionException
+        {
+        this.jdbcrowguess = count;
+        }
+
+    protected Long adqlrowcount()
+    throws ProtectionException
+        {
+        if (this.adqlrowcount != null)
+            {
+            return this.adqlrowcount;
+            }
+        else {
+            return this.jdbcrowcount();
+            }
+        }
+    
     @Override
     public JdbcTable.Columns columns()
     throws ProtectionException
@@ -1092,23 +1187,27 @@ implements JdbcTable
     protected void jdbcdelete()
     throws ProtectionException
         {
+        log.debug("jdbcdelete [{}][{}]", this.ident(), this.name());
         this.resource().connection().operator().delete(
             JdbcTableEntity.this
             );
-        this.adqlcount  = EMPTY_COUNT_VALUE;
         this.adqlstatus = AdqlTable.TableStatus.DELETED;
         this.jdbcstatus = JdbcTable.TableStatus.DELETED;
+        this.jdbcrowguess = EMPTY_COUNT_VALUE;
+        this.jdbcrowcount = EMPTY_COUNT_VALUE;
         }
 
     protected void jdbcdrop()
     throws ProtectionException
         {
+        log.debug("jdbcdrop[{}][{}]", this.ident(), this.name());
         this.resource().connection().operator().drop(
             JdbcTableEntity.this
             );
-        this.adqlcount  = EMPTY_COUNT_VALUE;
         this.adqlstatus = AdqlTable.TableStatus.DELETED;
         this.jdbcstatus = JdbcTable.TableStatus.DROPPED;
+        this.jdbcrowguess = EMPTY_COUNT_VALUE;
+        this.jdbcrowcount = EMPTY_COUNT_VALUE;
         }
 
     @Override
@@ -1255,7 +1354,7 @@ implements JdbcTable
             public Long count()
             throws ProtectionException
                 {
-                return adqlcount();
+                return adqlrowcount();
                 }
             
             @Override

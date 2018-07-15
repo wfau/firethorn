@@ -391,8 +391,10 @@ public class SQLServerScanner
                                 throws SQLException
                                 {
                                 log.debug("rowcount [{}][{}][{}]", catalog().name(), schema().name(), name);
+                                return 0l;
+/*
+ * 
                                 final String fullname = catalog().name() + "." + schema().name() + "." + name;
-
                                 long a, b, c, d ;
                                 
                                 Long guess = -1L;
@@ -468,7 +470,15 @@ d = System.currentTimeMillis();
                                         log.warn("SQLException reading COUNT(*) [{}]", ouch.getMessage());
                                         throw ouch;
                                         }
-                                    log.debug("rowcount [{}][{}][{}] [{}][{}]", guess, count, (guess - count), (b - a), (d - c));
+                                    log.debug("rowcount [{}][{}][{}] [{}][{}] {}{}",
+                                        guess,
+                                        count,
+                                        (guess - count),
+                                        (b - a),
+                                        (d - c),
+                                        (((guess - count) != 0) ? "**" : ""),
+                                        (((b - a) < (d - c)) ? "**" : "")
+                                        );
                                     if (count > -1L)
                                         {
                                         return count ;
@@ -477,6 +487,8 @@ d = System.currentTimeMillis();
                                         return guess ;
                                         }
                                     }
+ * 
+ */
                                 }
                             };
                         }

@@ -25,7 +25,7 @@ package uk.ac.roe.wfau.firethorn.identity;
 public interface Method
     {
     /**
-     * The URN for this method.
+     * The URN for this authentication method.
      *
      */
     public String urn();

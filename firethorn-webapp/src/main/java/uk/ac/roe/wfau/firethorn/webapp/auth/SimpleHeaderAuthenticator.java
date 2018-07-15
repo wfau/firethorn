@@ -44,7 +44,7 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
-    public static final String METHOD_NAME = "http:header" ;
+    public static final String METHOD_NAME = "urn:simple.http.header" ;
 
     public static final String COMMUNITY_ATTRIB = "firethorn.auth.community" ;
     public static final String USERNAME_ATTRIB  = "firethorn.auth.username"  ;

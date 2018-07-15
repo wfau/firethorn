@@ -80,7 +80,9 @@ implements EntityProtector
                 final Identity owner = this.entity.owner();
                 if (owner != null)
                     {
-                    return owner.equals(identity);
+                    return owner.equals(
+                        identity
+                        );
                     }
                 }
             }

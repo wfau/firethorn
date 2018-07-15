@@ -321,7 +321,6 @@ public class JdbcResourceEntity
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
             if (JdbcResourceEntity.EntityServices.instance == null)
                 {
                 JdbcResourceEntity.EntityServices.instance = this ;
@@ -378,14 +377,12 @@ public class JdbcResourceEntity
     @Override
     protected JdbcResource.EntityFactory factory()
         {
-        log.debug("factory()");
         return JdbcResourceEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected JdbcResource.EntityServices services()
         {
-        log.debug("services()");
         return JdbcResourceEntity.EntityServices.instance() ; 
         }
 
@@ -851,13 +848,6 @@ public class JdbcResourceEntity
                 }
             };
         }
-/*
-	@Override
-	public JdbcOperator operator()
-		{
-		return this.connection.operator();
-		}
- */
     
     @Override
     public AdqlTranslator translator()

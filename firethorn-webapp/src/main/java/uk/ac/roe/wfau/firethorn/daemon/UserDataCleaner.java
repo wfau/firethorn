@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.daemon;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.joda.time.DateTime;
 import org.joda.time.MutablePeriod;
 import org.joda.time.ReadablePeriod;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -148,6 +152,19 @@ extends AbstractComponent
                 @Override
                 public void run()
                     {
+// TODO Move this to a factory ?
+// operations.create.admin("urn:userdata.cleaner")
+                    final Operation operation = factories().operations().entities().create(
+                            "urn:userdata",
+                            "urn:cron",
+                            "urn:cron",
+                            0
+                            );
+                    operation.authentications().create(
+                        factories().identities().entities().admin(),
+                        "urn:system"
+                        );
+
                     try {
                         final DateTime date = new DateTime().minus(
                             period
@@ -165,12 +182,14 @@ extends AbstractComponent
                                 switch (action)
                                     {
                                     case DELETE:
+                                        log.debug("  deleting [{}][{}][{}]", table.ident(), table.name(), table.created());
                                         table.meta().jdbc().status(
                                             JdbcTable.TableStatus.DELETED
                                             );
                                         break;
 
                                     case DROP:
+                                        log.debug("  dropping [{}][{}][{}]", table.ident(), table.name(), table.created());
                                         table.meta().jdbc().status(
                                             JdbcTable.TableStatus.DROPPED
                                             );
@@ -185,8 +204,14 @@ extends AbstractComponent
                         }
                     catch (final Exception ouch)
                         {
-                        log.warn("Exception [{}]", ouch.getMessage());
+                        final StringWriter writer = new StringWriter();
+                        ouch.printStackTrace(
+                            new PrintWriter(writer)
+                            );
+                        log.error("Exception during clean [{}]", ouch);
+                        log.error("Exception during clean [{}]", writer.toString());
                         }
+                    log.trace("-- DONE --");;
                     }
                 }
             );
