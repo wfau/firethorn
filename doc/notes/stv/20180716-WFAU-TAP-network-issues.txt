@@ -1,0 +1,1452 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+########## Monday, July 26 2018 - TAP service not responding
+
+Target [http://tap.roe.ac.uk/osa/availability]    
+Result [curl: (22) The requested URL returned error: 502 Proxy Error]
+
+
+
+########## Check from local machine
+
+stelios@stelios-pc:~$ curl -v http://tap.roe.ac.uk/osa/availability
+* Hostname was NOT found in DNS cache
+*   Trying 129.215.175.100...
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /osa/availability HTTP/1.1
+> User-Agent: curl/7.35.0
+> Host: tap.roe.ac.uk
+> Accept: */*
+> 
+< HTTP/1.1 502 Proxy Error
+< Date: Mon, 16 Jul 2018 11:16:30 GMT
+* Server Apache/2.4.7 (Ubuntu) is not blacklisted
+< Server: Apache/2.4.7 (Ubuntu)
+< Content-Length: 489
+< Content-Type: text/html; charset=iso-8859-1
+< 
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>502 Proxy Error</title>
+</head><body>
+<h1>Proxy Error</h1>
+<p>The proxy server received an invalid
+response from an upstream server.<br />
+The proxy server could not handle the request <em><a href="/osa/availability">GET&nbsp;/osa/availability</a></em>.<p>
+Reason: <strong>Error reading from remote server</strong></p></p>
+<hr>
+<address>Apache/2.4.7 (Ubuntu) Server at tap.roe.ac.uk Port 80</address>
+</body></html>
+* Connection #0 to host tap.roe.ac.uk left intact
+
+### Response after several minutes
+
+
+
+########## Tracepath and compare with trop02 VM which has a running TAP service
+
+stelios@stelios-pc:~$ tracepath tap.roe.ac.uk
+ 1?: [LOCALHOST]                                         pmtu 1412
+ 1:  vlan4.kb9.net.ed.ac.uk                              119.418ms 
+ 1:  vlan4.kb9.net.ed.ac.uk                              111.427ms 
+ 2:  vlan663.acf2.net.ed.ac.uk                            80.949ms 
+ 3:  129.215.175.100                                      92.828ms !H
+     Resume: pmtu 1412 
+
+stelios@stelios-pc:~$ tracepath tap.metagrid.xyz
+ 1?: [LOCALHOST]                                         pmtu 1412
+ 1:  vlan4.kb9.net.ed.ac.uk                               78.568ms 
+ 1:  vlan4.kb9.net.ed.ac.uk                               79.294ms 
+ 2:  vlan663.acf2.net.ed.ac.uk                            80.327ms 
+ 3:  129.215.175.101                                      79.562ms !H
+     Resume: pmtu 1412 
+
+
+
+
+########### Check Docker containers are running on Gworewia
+
+stelios@stelios-pc:~$ ssh root@Gworewia
+Last login: Mon Jul 16 07:35:33 2018 from 192.168.201.1
+[root@Gworewia ~]# docker ps
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                 PORTS                    NAMES
+58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   4 weeks ago         Up 11 days (healthy)   0.0.0.0:8080->8080/tcp   root_gillian_1
+abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   4 weeks ago         Up 4 weeks             5432/tcp                 root_carolina_1
+9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   4 weeks ago         Up 4 weeks             5432/tcp                 root_bethany_1
+251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   4 weeks ago         Up 4 weeks (healthy)   8080/tcp                 root_jarmila_1
+
+
+
+########### Check Disk space
+
+[root@Gworewia ~]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  976K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        31G   25G  4.6G  85% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   78M  146M  35% /boot
+shm              64M  4.0K   64M   1% /var/lib/docker/containers/abe5ffa5e554887fcadd833062e2f105bd2326699c628c28a74a50fb9a904572/shm
+shm              64M     0   64M   0% /var/lib/docker/containers/251da737dc98b03c3dcff7e1a2f6b52aff39c0af9522fe5e3922d93b39d03478/shm
+shm              64M  4.0K   64M   1% /var/lib/docker/containers/9a8db568afa2d60d3d2b4a14edd1aa02bb789dd0bf812053137e8e23bebb517f/shm
+shm              64M     0   64M   0% /var/lib/docker/containers/58e622aa6ad01b65a1180e9375e6ba01c7795593062d8342914452c4462ef963/shm
+tmpfs           396M     0  396M   0% /run/user/0
+
+
+
+########### Try System info from Gworewia VM
+
+[root@Gworewia ~]# curl -v http://localhost:8080/firethorn/system/info
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8080 (#0)
+> GET /firethorn/system/info HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.51.0
+> Accept: */*
+> 
+^C
+#### Not responding
+
+
+[root@Gworewia ~]# docker inspect root_gillian_1 | grep "IPAddress"
+            "SecondaryIPAddresses": null,
+            "IPAddress": "",
+                    "IPAddress": "172.20.0.5",
+                    "IPAddress": "172.19.0.2",
+
+
+[root@Gworewia ~]# curl -v http://172.20.0.5:8080/firethorn/system/info
+*   Trying 172.20.0.5...
+* TCP_NODELAY set
+* Connected to 172.20.0.5 (172.20.0.5) port 8080 (#0)
+> GET /firethorn/system/info HTTP/1.1
+> Host: 172.20.0.5:8080
+> User-Agent: curl/7.51.0
+> Accept: */*
+> 
+^C
+
+#### Not responding
+
+
+[root@Gworewia ~]# curl -v http://172.19.0.2:8080/firethorn/system/info
+*   Trying 172.19.0.2...
+* TCP_NODELAY set
+* Connected to 172.19.0.2 (172.19.0.2) port 8080 (#0)
+> GET /firethorn/system/info HTTP/1.1
+> Host: 172.19.0.2:8080
+> User-Agent: curl/7.51.0
+> Accept: */*
+> 
+^C
+
+#### Not responding
+
+
+########### Can we access Ogsadai from the Gworewia VM?
+
+[root@Gworewia ~]# docker inspect root_jarmila_1 | grep "IPAddr"
+            "SecondaryIPAddresses": null,
+            "IPAddress": "",
+                    "IPAddress": "172.20.0.3",
+
+[root@Gworewia ~]# curl http://172.20.0.3:8080/ogsadai/services/dataResources/
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Available resources or properties</title></head><body><table><tr><td><a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-4870eb42-19f9-4af5-b6d9-47a18063e3b0">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-4870eb42-19f9-4af5-b6d9-47a18063e3b0</a></td></tr><tr><td><a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-36298941-05f0-4ce7-aa25-d9c27d8b16bb">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-36298941-05f0-4ce7-aa25-d9c27d8b16bb</a></td></tr><tr><td><a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-9c955d49-0772-4185-8cbf-03cb8a6f001b">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-9c955d49-0772-4185-8cbf-03cb8a6f001b</a></td></tr><tr><td><a href="http://172.20.0.3:8080/ogsadai/services/dataResources/firethorn-dqp-001">http://172.20.0.3:8080/ogsadai/services/dataResources/firethorn-dqp-001</a></td></tr><tr><td><a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-d73a1cc4-cb35-4d9e-a541-ece0b13614be">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-d73a1cc4-cb35-4d9e-a541-ece0b13614be</a></td></tr><tr><td><a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-d4d40aa9-ae60-4968-b024-c27b6c8c3fb5">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-d4d40aa9-ae60-4968-b024-c27b6c8c3fb5</a></td></tr></table></body></html>
+
+
+########### Check Firethorn Log
+
+[root@Gworewia ~]# docker exec -it root_gillian_1 bash
+
+	########### Can we see the system info page?
+
+	bash-4.4$ curl -v http://localhost:8080/firethorn/system/info
+	*   Trying ::1...
+	* TCP_NODELAY set
+	* Connected to localhost (::1) port 8080 (#0)
+	> GET /firethorn/system/info HTTP/1.1
+	> Host: localhost:8080
+	> User-Agent: curl/7.55.1
+	> Accept: */*
+	> 
+	^C
+
+        ### Not Responding  
+
+	bash-4.4$ curl -v http://127.0.0.1:8080/firethorn/system/info
+	*   Trying 127.0.0.1...
+	* TCP_NODELAY set
+	* Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
+	> GET /firethorn/system/info HTTP/1.1
+	> Host: 127.0.0.1:8080
+	> User-Agent: curl/7.55.1
+	> Accept: */*
+	> 
+	^C
+
+        ### Not Responding  
+
+	bash-4.4$ curl -v http://127.0.0.1:8080                      
+	* Rebuilt URL to: http://127.0.0.1:8080/
+	*   Trying 127.0.0.1...
+	* TCP_NODELAY set
+	* Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
+	> GET / HTTP/1.1
+	> Host: 127.0.0.1:8080
+	> User-Agent: curl/7.55.1
+	> Accept: */*
+	> 
+	^C
+
+        ### Not Responding  
+
+
+
+	bash-4.4$ tail -f -n 1000 logs/firethorn.log 
+	....	
+	2018-07-16 11:00:11,377 DEBUG [callback-interface-5] [OperationInterceptor] OperationInterceptor.preHandle() 
+	2018-07-16 11:00:11,377 DEBUG [callback-interface-5] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10283504] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [OperationInterceptor]   port [8081] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] preHandle() 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283504]]] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Community [null] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Username  [null] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Password  [null] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Primary   [null] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [AnonymousAuthenticator] preHandle() 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [AnonymousAuthenticator]  Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283504]]] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [AnonymousAuthenticator]  Primary [null] 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [AnonymousAuthenticator] Null primary, adding anonymous Authentication 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [CommunityEntity] guests() 
+	2018-07-16 11:00:11,384 DEBUG [callback-interface-5] [CommunityEntity] find (String) [friends] 
+	2018-07-16 11:00:11,385 DEBUG [callback-interface-5] [CommunityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.community.CommunityEntity] ident[102]]] 
+	2018-07-16 11:00:11,387 DEBUG [callback-interface-5] [CommunityEntity] services() 
+	2018-07-16 11:00:11,387 DEBUG [callback-interface-5] [IdentityEntity] create(Community) [friends] 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [OperationEntity] create(Identity, String) 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [OperationEntity]   Identity [anon-EFKQMFCFI7ROYAAAAFSKFP3L7M] 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [OperationEntity]   Method   [anonymous] 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [AuthenticationImplEntity] create(Operation, Identity, String) 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Identity  [anon-EFKQMFCFI7ROYAAAAFSKFP3L7M] 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [AuthenticationImplEntity] AuthenticationEntity(Operation, Identity, String) 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Identity  [anon-EFKQMFCFI7ROYAAAAFSKFP3L7M] 
+	2018-07-16 11:00:11,393 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:00:11,397 DEBUG [callback-interface-5] [OperationEntity] primary(Authentication) 
+	2018-07-16 11:00:11,397 DEBUG [callback-interface-5] [OperationEntity]   Authentication [Authentication[Ident[10283499]Identity[anon-EFKQMFCFI7ROYAAAAFSKFP3L7M]Method[anonymous]]] 
+	2018-07-16 11:00:11,397 DEBUG [callback-interface-5] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[10283449]]] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [AnonymousAuthenticator] postHandle() 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] postHandle() 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Operation [10283504] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Authentication [Authentication[Ident[10283499]Identity[anon-EFKQMFCFI7ROYAAAAFSKFP3L7M]Method[anonymous]]] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Identity  [10283449][anon-EFKQMFCFI7ROYAAAAFSKFP3L7M] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Community [102][friends] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [OperationInterceptor] OperationInterceptor.postHandle() 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10283504][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [HttpRequestDebug] postHandle() 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [HttpRequestDebug] Headers 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [HttpRequestDebug]   [firethorn.auth.username][anon-EFKQMFCFI7RO...] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+	2018-07-16 11:00:11,398 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+	2018-07-16 11:00:11,400 DEBUG [callback-interface-5] [AnonymousAuthenticator] afterCompletion() 
+	2018-07-16 11:00:11,400 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] afterCompletion() 
+	2018-07-16 11:00:11,400 DEBUG [callback-interface-5] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+	2018-07-16 11:00:11,400 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10283504][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:00:11,400 DEBUG [callback-interface-5] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:00:11,400 DEBUG [callback-interface-5] [HttpRequestDebug] afterCompletion() 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug] preHandle() 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug] Servlet 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   scheme      [http] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   serverName  [localhost] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPort  [8081] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/system/info] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   pathInfo    [null] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   pathTrans   [null] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/system/info] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   protocol    [HTTP/1.1] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   queryString [null] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   authType    [null] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   remoteAddr  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   remoteHost  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug] Headers 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [host][localhost:8081] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [user-agent][curl/7.55.1] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [accept][*/*] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug] Attributes 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.producibleMediaTypes][[application/json]] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.context.request.async.WebAsyncManager.WEB_ASYNC_MANAGER][org.springframewo...] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.CONTEXT][WebApplicationCon...] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.LOCALE_RESOLVER][org.springframewo...] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/system/info] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.OUTPUT_FLASH_MAP][FlashMap [attribu...] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/system/info] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.FLASH_MAP_MANAGER][org.springframewo...] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.uriTemplateVariables][{}] 
+	2018-07-16 11:00:41,569 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_RESOLVER][org.springframewo...] 
+	2018-07-16 11:00:41,570 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.core.convert.ConversionService][ConversionService...] 
+	2018-07-16 11:00:41,570 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_SOURCE][WebApplicationCon...] 
+	2018-07-16 11:00:41,570 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+	2018-07-16 11:00:41,570 DEBUG [callback-interface-2] [HttpRequestDebug] Parameters 
+	2018-07-16 11:00:41,570 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+	2018-07-16 11:00:41,570 DEBUG [callback-interface-2] [OperationInterceptor] OperationInterceptor.preHandle() 
+	2018-07-16 11:00:41,570 DEBUG [callback-interface-2] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10283505] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [OperationInterceptor]   port [8081] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] preHandle() 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283505]]] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] Community [null] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] Username  [null] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] Password  [null] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] Primary   [null] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [AnonymousAuthenticator] preHandle() 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [AnonymousAuthenticator]  Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283505]]] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [AnonymousAuthenticator]  Primary [null] 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [AnonymousAuthenticator] Null primary, adding anonymous Authentication 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [CommunityEntity] guests() 
+	2018-07-16 11:00:41,575 DEBUG [callback-interface-2] [CommunityEntity] find (String) [friends] 
+	2018-07-16 11:00:41,576 DEBUG [callback-interface-2] [CommunityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.community.CommunityEntity] ident[102]]] 
+	2018-07-16 11:00:41,577 DEBUG [callback-interface-2] [CommunityEntity] services() 
+	2018-07-16 11:00:41,577 DEBUG [callback-interface-2] [IdentityEntity] create(Community) [friends] 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [OperationEntity] create(Identity, String) 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [OperationEntity]   Identity [anon-4YUUJORAX32XWAAAAFSKFP7B5E] 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [OperationEntity]   Method   [anonymous] 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [AuthenticationImplEntity] create(Operation, Identity, String) 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [AuthenticationImplEntity]   Identity  [anon-4YUUJORAX32XWAAAAFSKFP7B5E] 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [AuthenticationImplEntity] AuthenticationEntity(Operation, Identity, String) 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [AuthenticationImplEntity]   Identity  [anon-4YUUJORAX32XWAAAAFSKFP7B5E] 
+	2018-07-16 11:00:41,580 DEBUG [callback-interface-2] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:00:41,583 DEBUG [callback-interface-2] [OperationEntity] primary(Authentication) 
+	2018-07-16 11:00:41,583 DEBUG [callback-interface-2] [OperationEntity]   Authentication [Authentication[Ident[10283500]Identity[anon-4YUUJORAX32XWAAAAFSKFP7B5E]Method[anonymous]]] 
+	2018-07-16 11:00:41,583 DEBUG [callback-interface-2] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[10283450]]] 
+	2018-07-16 11:00:41,583 DEBUG [callback-interface-2] [AnonymousAuthenticator] postHandle() 
+	2018-07-16 11:00:41,583 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] postHandle() 
+	2018-07-16 11:00:41,583 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] Operation [10283505] 
+	2018-07-16 11:00:41,583 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] Authentication [Authentication[Ident[10283500]Identity[anon-4YUUJORAX32XWAAAAFSKFP7B5E]Method[anonymous]]] 
+	2018-07-16 11:00:41,583 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] Identity  [10283450][anon-4YUUJORAX32XWAAAAFSKFP7B5E] 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] Community [102][friends] 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [OperationInterceptor] OperationInterceptor.postHandle() 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10283505][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [HttpRequestDebug] postHandle() 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [HttpRequestDebug] Headers 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [HttpRequestDebug]   [firethorn.auth.username][anon-4YUUJORAX32X...] 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+	2018-07-16 11:00:41,584 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+	2018-07-16 11:00:41,586 DEBUG [callback-interface-2] [AnonymousAuthenticator] afterCompletion() 
+	2018-07-16 11:00:41,586 DEBUG [callback-interface-2] [SimpleHeaderAuthenticator] afterCompletion() 
+	2018-07-16 11:00:41,586 DEBUG [callback-interface-2] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+	2018-07-16 11:00:41,586 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10283505][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:00:41,586 DEBUG [callback-interface-2] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:00:41,586 DEBUG [callback-interface-2] [HttpRequestDebug] afterCompletion() 
+	2018-07-16 11:01:11,735 DEBUG [callback-interface-6] [HttpRequestDebug] preHandle() 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug] Servlet 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   scheme      [http] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   serverName  [localhost] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPort  [8081] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/system/info] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   pathInfo    [null] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   pathTrans   [null] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/system/info] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   protocol    [HTTP/1.1] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   queryString [null] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   authType    [null] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   remoteAddr  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   remoteHost  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug] Headers 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [host][localhost:8081] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [user-agent][curl/7.55.1] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [accept][*/*] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug] Attributes 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.producibleMediaTypes][[application/json]] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.context.request.async.WebAsyncManager.WEB_ASYNC_MANAGER][org.springframewo...] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.CONTEXT][WebApplicationCon...] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.LOCALE_RESOLVER][org.springframewo...] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/system/info] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.OUTPUT_FLASH_MAP][FlashMap [attribu...] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/system/info] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.FLASH_MAP_MANAGER][org.springframewo...] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.uriTemplateVariables][{}] 
+	2018-07-16 11:01:11,736 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_RESOLVER][org.springframewo...] 
+	2018-07-16 11:01:11,737 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.core.convert.ConversionService][ConversionService...] 
+	2018-07-16 11:01:11,737 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_SOURCE][WebApplicationCon...] 
+	2018-07-16 11:01:11,737 DEBUG [callback-interface-6] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:11,737 DEBUG [callback-interface-6] [HttpRequestDebug] Parameters 
+	2018-07-16 11:01:11,737 DEBUG [callback-interface-6] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:11,737 DEBUG [callback-interface-6] [OperationInterceptor] OperationInterceptor.preHandle() 
+	2018-07-16 11:01:11,737 DEBUG [callback-interface-6] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10283506] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [OperationInterceptor]   port [8081] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] preHandle() 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283506]]] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] Community [null] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] Username  [null] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] Password  [null] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] Primary   [null] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [AnonymousAuthenticator] preHandle() 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [AnonymousAuthenticator]  Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283506]]] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [AnonymousAuthenticator]  Primary [null] 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [AnonymousAuthenticator] Null primary, adding anonymous Authentication 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [CommunityEntity] guests() 
+	2018-07-16 11:01:11,743 DEBUG [callback-interface-6] [CommunityEntity] find (String) [friends] 
+	2018-07-16 11:01:11,745 DEBUG [callback-interface-6] [CommunityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.community.CommunityEntity] ident[102]]] 
+	2018-07-16 11:01:11,747 DEBUG [callback-interface-6] [CommunityEntity] services() 
+	2018-07-16 11:01:11,747 DEBUG [callback-interface-6] [IdentityEntity] create(Community) [friends] 
+	2018-07-16 11:01:11,750 DEBUG [callback-interface-6] [OperationEntity] create(Identity, String) 
+	2018-07-16 11:01:11,750 DEBUG [callback-interface-6] [OperationEntity]   Identity [anon-MALNDBIBPSHFCAAAAFSKFQCXYM] 
+	2018-07-16 11:01:11,750 DEBUG [callback-interface-6] [OperationEntity]   Method   [anonymous] 
+	2018-07-16 11:01:11,750 DEBUG [callback-interface-6] [AuthenticationImplEntity] create(Operation, Identity, String) 
+	2018-07-16 11:01:11,750 DEBUG [callback-interface-6] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:01:11,750 DEBUG [callback-interface-6] [AuthenticationImplEntity]   Identity  [anon-MALNDBIBPSHFCAAAAFSKFQCXYM] 
+	2018-07-16 11:01:11,750 DEBUG [callback-interface-6] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:01:11,750 DEBUG [callback-interface-6] [AuthenticationImplEntity] AuthenticationEntity(Operation, Identity, String) 
+	2018-07-16 11:01:11,750 DEBUG [callback-interface-6] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:01:11,751 DEBUG [callback-interface-6] [AuthenticationImplEntity]   Identity  [anon-MALNDBIBPSHFCAAAAFSKFQCXYM] 
+	2018-07-16 11:01:11,751 DEBUG [callback-interface-6] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [OperationEntity] primary(Authentication) 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [OperationEntity]   Authentication [Authentication[Ident[10283501]Identity[anon-MALNDBIBPSHFCAAAAFSKFQCXYM]Method[anonymous]]] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[10283451]]] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [AnonymousAuthenticator] postHandle() 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] postHandle() 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] Operation [10283506] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] Authentication [Authentication[Ident[10283501]Identity[anon-MALNDBIBPSHFCAAAAFSKFQCXYM]Method[anonymous]]] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] Identity  [10283451][anon-MALNDBIBPSHFCAAAAFSKFQCXYM] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] Community [102][friends] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [OperationInterceptor] OperationInterceptor.postHandle() 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10283506][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [HttpRequestDebug] postHandle() 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [HttpRequestDebug] Headers 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [HttpRequestDebug]   [firethorn.auth.username][anon-MALNDBIBPSHF...] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+	2018-07-16 11:01:11,754 DEBUG [callback-interface-6] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:11,757 DEBUG [callback-interface-6] [AnonymousAuthenticator] afterCompletion() 
+	2018-07-16 11:01:11,757 DEBUG [callback-interface-6] [SimpleHeaderAuthenticator] afterCompletion() 
+	2018-07-16 11:01:11,757 DEBUG [callback-interface-6] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+	2018-07-16 11:01:11,757 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10283506][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:01:11,757 DEBUG [callback-interface-6] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:01:11,757 DEBUG [callback-interface-6] [HttpRequestDebug] afterCompletion() 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug] preHandle() 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug] Servlet 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   scheme      [http] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   serverName  [localhost] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPort  [8081] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/system/info] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   pathInfo    [null] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   pathTrans   [null] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/system/info] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   protocol    [HTTP/1.1] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   queryString [null] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   authType    [null] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   remoteAddr  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   remoteHost  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug] Headers 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [host][localhost:8081] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [user-agent][curl/7.55.1] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [accept][*/*] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug] Attributes 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.producibleMediaTypes][[application/json]] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.context.request.async.WebAsyncManager.WEB_ASYNC_MANAGER][org.springframewo...] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.CONTEXT][WebApplicationCon...] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.LOCALE_RESOLVER][org.springframewo...] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/system/info] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.OUTPUT_FLASH_MAP][FlashMap [attribu...] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/system/info] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.FLASH_MAP_MANAGER][org.springframewo...] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.uriTemplateVariables][{}] 
+	2018-07-16 11:01:41,914 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_RESOLVER][org.springframewo...] 
+	2018-07-16 11:01:41,915 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.core.convert.ConversionService][ConversionService...] 
+	2018-07-16 11:01:41,915 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_SOURCE][WebApplicationCon...] 
+	2018-07-16 11:01:41,915 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:41,915 DEBUG [callback-interface-4] [HttpRequestDebug] Parameters 
+	2018-07-16 11:01:41,915 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:41,915 DEBUG [callback-interface-4] [OperationInterceptor] OperationInterceptor.preHandle() 
+	2018-07-16 11:01:41,915 DEBUG [callback-interface-4] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10283507] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [OperationInterceptor]   port [8081] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] preHandle() 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283507]]] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Community [null] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Username  [null] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Password  [null] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Primary   [null] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [AnonymousAuthenticator] preHandle() 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [AnonymousAuthenticator]  Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283507]]] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [AnonymousAuthenticator]  Primary [null] 
+	2018-07-16 11:01:41,919 DEBUG [callback-interface-4] [AnonymousAuthenticator] Null primary, adding anonymous Authentication 
+	2018-07-16 11:01:41,920 DEBUG [callback-interface-4] [CommunityEntity] guests() 
+	2018-07-16 11:01:41,920 DEBUG [callback-interface-4] [CommunityEntity] find (String) [friends] 
+	2018-07-16 11:01:41,920 DEBUG [callback-interface-4] [CommunityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.community.CommunityEntity] ident[102]]] 
+	2018-07-16 11:01:41,921 DEBUG [callback-interface-4] [CommunityEntity] services() 
+	2018-07-16 11:01:41,921 DEBUG [callback-interface-4] [IdentityEntity] create(Community) [friends] 
+	2018-07-16 11:01:41,924 DEBUG [callback-interface-4] [OperationEntity] create(Identity, String) 
+	2018-07-16 11:01:41,924 DEBUG [callback-interface-4] [OperationEntity]   Identity [anon-5JKTYK72YBNK2AAAAFSKFQGNUE] 
+	2018-07-16 11:01:41,924 DEBUG [callback-interface-4] [OperationEntity]   Method   [anonymous] 
+	2018-07-16 11:01:41,924 DEBUG [callback-interface-4] [AuthenticationImplEntity] create(Operation, Identity, String) 
+	2018-07-16 11:01:41,924 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:01:41,924 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Identity  [anon-5JKTYK72YBNK2AAAAFSKFQGNUE] 
+	2018-07-16 11:01:41,924 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:01:41,925 DEBUG [callback-interface-4] [AuthenticationImplEntity] AuthenticationEntity(Operation, Identity, String) 
+	2018-07-16 11:01:41,925 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:01:41,925 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Identity  [anon-5JKTYK72YBNK2AAAAFSKFQGNUE] 
+	2018-07-16 11:01:41,925 DEBUG [callback-interface-4] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [OperationEntity] primary(Authentication) 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [OperationEntity]   Authentication [Authentication[Ident[10283602]Identity[anon-5JKTYK72YBNK2AAAAFSKFQGNUE]Method[anonymous]]] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[10283552]]] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [AnonymousAuthenticator] postHandle() 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] postHandle() 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Operation [10283507] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Authentication [Authentication[Ident[10283602]Identity[anon-5JKTYK72YBNK2AAAAFSKFQGNUE]Method[anonymous]]] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Identity  [10283552][anon-5JKTYK72YBNK2AAAAFSKFQGNUE] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] Community [102][friends] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [OperationInterceptor] OperationInterceptor.postHandle() 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10283507][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [HttpRequestDebug] postHandle() 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [HttpRequestDebug] Headers 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [HttpRequestDebug]   [firethorn.auth.username][anon-5JKTYK72YBNK...] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+	2018-07-16 11:01:41,928 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+	2018-07-16 11:01:41,930 DEBUG [callback-interface-4] [AnonymousAuthenticator] afterCompletion() 
+	2018-07-16 11:01:41,930 DEBUG [callback-interface-4] [SimpleHeaderAuthenticator] afterCompletion() 
+	2018-07-16 11:01:41,930 DEBUG [callback-interface-4] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+	2018-07-16 11:01:41,930 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10283507][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:01:41,930 DEBUG [callback-interface-4] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:01:41,930 DEBUG [callback-interface-4] [HttpRequestDebug] afterCompletion() 
+	2018-07-16 11:02:12,100 DEBUG [callback-interface-3] [HttpRequestDebug] preHandle() 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug] Servlet 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   scheme      [http] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   serverName  [localhost] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPort  [8081] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/system/info] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   pathInfo    [null] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   pathTrans   [null] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/system/info] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   protocol    [HTTP/1.1] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   queryString [null] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   authType    [null] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   remoteAddr  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   remoteHost  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug] Headers 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [host][localhost:8081] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [user-agent][curl/7.55.1] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [accept][*/*] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug] Attributes 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.producibleMediaTypes][[application/json]] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.context.request.async.WebAsyncManager.WEB_ASYNC_MANAGER][org.springframewo...] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.CONTEXT][WebApplicationCon...] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.LOCALE_RESOLVER][org.springframewo...] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/system/info] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.OUTPUT_FLASH_MAP][FlashMap [attribu...] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/system/info] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.FLASH_MAP_MANAGER][org.springframewo...] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.uriTemplateVariables][{}] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_RESOLVER][org.springframewo...] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.core.convert.ConversionService][ConversionService...] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_SOURCE][WebApplicationCon...] 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug] Parameters 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [OperationInterceptor] OperationInterceptor.preHandle() 
+	2018-07-16 11:02:12,101 DEBUG [callback-interface-3] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10283508] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [OperationInterceptor]   port [8081] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] preHandle() 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283508]]] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] Community [null] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] Username  [null] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] Password  [null] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] Primary   [null] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [AnonymousAuthenticator] preHandle() 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [AnonymousAuthenticator]  Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283508]]] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [AnonymousAuthenticator]  Primary [null] 
+	2018-07-16 11:02:12,105 DEBUG [callback-interface-3] [AnonymousAuthenticator] Null primary, adding anonymous Authentication 
+	2018-07-16 11:02:12,106 DEBUG [callback-interface-3] [CommunityEntity] guests() 
+	2018-07-16 11:02:12,106 DEBUG [callback-interface-3] [CommunityEntity] find (String) [friends] 
+	2018-07-16 11:02:12,108 DEBUG [callback-interface-3] [CommunityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.community.CommunityEntity] ident[102]]] 
+	2018-07-16 11:02:12,109 DEBUG [callback-interface-3] [CommunityEntity] services() 
+	2018-07-16 11:02:12,109 DEBUG [callback-interface-3] [IdentityEntity] create(Community) [friends] 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [OperationEntity] create(Identity, String) 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [OperationEntity]   Identity [anon-UD5LHHYHMP3ESAAAAFSKFQKDRU] 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [OperationEntity]   Method   [anonymous] 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [AuthenticationImplEntity] create(Operation, Identity, String) 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [AuthenticationImplEntity]   Identity  [anon-UD5LHHYHMP3ESAAAAFSKFQKDRU] 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [AuthenticationImplEntity] AuthenticationEntity(Operation, Identity, String) 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [AuthenticationImplEntity]   Identity  [anon-UD5LHHYHMP3ESAAAAFSKFQKDRU] 
+	2018-07-16 11:02:12,113 DEBUG [callback-interface-3] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:02:12,116 DEBUG [callback-interface-3] [OperationEntity] primary(Authentication) 
+	2018-07-16 11:02:12,116 DEBUG [callback-interface-3] [OperationEntity]   Authentication [Authentication[Ident[10283603]Identity[anon-UD5LHHYHMP3ESAAAAFSKFQKDRU]Method[anonymous]]] 
+	2018-07-16 11:02:12,116 DEBUG [callback-interface-3] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[10283553]]] 
+	2018-07-16 11:02:12,116 DEBUG [callback-interface-3] [AnonymousAuthenticator] postHandle() 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] postHandle() 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] Operation [10283508] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] Authentication [Authentication[Ident[10283603]Identity[anon-UD5LHHYHMP3ESAAAAFSKFQKDRU]Method[anonymous]]] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] Identity  [10283553][anon-UD5LHHYHMP3ESAAAAFSKFQKDRU] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] Community [102][friends] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [OperationInterceptor] OperationInterceptor.postHandle() 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10283508][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [HttpRequestDebug] postHandle() 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [HttpRequestDebug] Headers 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.username][anon-UD5LHHYHMP3E...] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+	2018-07-16 11:02:12,117 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:12,119 DEBUG [callback-interface-3] [AnonymousAuthenticator] afterCompletion() 
+	2018-07-16 11:02:12,119 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] afterCompletion() 
+	2018-07-16 11:02:12,119 DEBUG [callback-interface-3] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+	2018-07-16 11:02:12,119 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10283508][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:02:12,119 DEBUG [callback-interface-3] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:02:12,119 DEBUG [callback-interface-3] [HttpRequestDebug] afterCompletion() 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug] preHandle() 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug] Servlet 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   scheme      [http] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   serverName  [localhost] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPort  [8081] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/system/info] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   pathInfo    [null] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   pathTrans   [null] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/system/info] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   protocol    [HTTP/1.1] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   queryString [null] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   authType    [null] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   remoteAddr  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   remoteHost  [0:0:0:0:0:0:0:1] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug] Headers 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [host][localhost:8081] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [user-agent][curl/7.55.1] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [accept][*/*] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug] Attributes 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.producibleMediaTypes][[application/json]] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.context.request.async.WebAsyncManager.WEB_ASYNC_MANAGER][org.springframewo...] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.CONTEXT][WebApplicationCon...] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.LOCALE_RESOLVER][org.springframewo...] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/system/info] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.OUTPUT_FLASH_MAP][FlashMap [attribu...] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/system/info] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.FLASH_MAP_MANAGER][org.springframewo...] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.uriTemplateVariables][{}] 
+	2018-07-16 11:02:42,267 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_RESOLVER][org.springframewo...] 
+	2018-07-16 11:02:42,268 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.core.convert.ConversionService][ConversionService...] 
+	2018-07-16 11:02:42,268 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.DispatcherServlet.THEME_SOURCE][WebApplicationCon...] 
+	2018-07-16 11:02:42,268 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:42,268 DEBUG [callback-interface-5] [HttpRequestDebug] Parameters 
+	2018-07-16 11:02:42,268 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:42,268 DEBUG [callback-interface-5] [OperationInterceptor] OperationInterceptor.preHandle() 
+	2018-07-16 11:02:42,268 DEBUG [callback-interface-5] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10283509] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [OperationInterceptor]   port [8081] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] preHandle() 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283509]]] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Community [null] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Username  [null] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Password  [null] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Primary   [null] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [AnonymousAuthenticator] preHandle() 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [AnonymousAuthenticator]  Operation [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[10283509]]] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [AnonymousAuthenticator]  Primary [null] 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [AnonymousAuthenticator] Null primary, adding anonymous Authentication 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [CommunityEntity] guests() 
+	2018-07-16 11:02:42,273 DEBUG [callback-interface-5] [CommunityEntity] find (String) [friends] 
+	2018-07-16 11:02:42,274 DEBUG [callback-interface-5] [CommunityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.community.CommunityEntity] ident[102]]] 
+	2018-07-16 11:02:42,275 DEBUG [callback-interface-5] [CommunityEntity] services() 
+	2018-07-16 11:02:42,275 DEBUG [callback-interface-5] [IdentityEntity] create(Community) [friends] 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [OperationEntity] create(Identity, String) 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [OperationEntity]   Identity [anon-IN2QJWXRXYJ2UAAAAFSKFQNZMM] 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [OperationEntity]   Method   [anonymous] 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [AuthenticationImplEntity] create(Operation, Identity, String) 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Identity  [anon-IN2QJWXRXYJ2UAAAAFSKFQNZMM] 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [AuthenticationImplEntity] AuthenticationEntity(Operation, Identity, String) 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Operation [HEAD] 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Identity  [anon-IN2QJWXRXYJ2UAAAAFSKFQNZMM] 
+	2018-07-16 11:02:42,279 DEBUG [callback-interface-5] [AuthenticationImplEntity]   Method    [anonymous] 
+	2018-07-16 11:02:42,283 DEBUG [callback-interface-5] [OperationEntity] primary(Authentication) 
+	2018-07-16 11:02:42,283 DEBUG [callback-interface-5] [OperationEntity]   Authentication [Authentication[Ident[10283604]Identity[anon-IN2QJWXRXYJ2UAAAAFSKFQNZMM]Method[anonymous]]] 
+	2018-07-16 11:02:42,283 DEBUG [callback-interface-5] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[10283554]]] 
+	2018-07-16 11:02:42,283 DEBUG [callback-interface-5] [AnonymousAuthenticator] postHandle() 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] postHandle() 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Operation [10283509] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Authentication [Authentication[Ident[10283604]Identity[anon-IN2QJWXRXYJ2UAAAAFSKFQNZMM]Method[anonymous]]] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Identity  [10283554][anon-IN2QJWXRXYJ2UAAAAFSKFQNZMM] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] Community [102][friends] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [OperationInterceptor] OperationInterceptor.postHandle() 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10283509][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [HttpRequestDebug] postHandle() 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [HttpRequestDebug] Headers 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [HttpRequestDebug]   [firethorn.auth.username][anon-IN2QJWXRXYJ2...] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+	2018-07-16 11:02:42,284 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+	2018-07-16 11:02:42,286 DEBUG [callback-interface-5] [AnonymousAuthenticator] afterCompletion() 
+	2018-07-16 11:02:42,286 DEBUG [callback-interface-5] [SimpleHeaderAuthenticator] afterCompletion() 
+	2018-07-16 11:02:42,286 DEBUG [callback-interface-5] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+	2018-07-16 11:02:42,286 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10283509][http://localhost:8081/firethorn/system/info] 
+	2018-07-16 11:02:42,286 DEBUG [callback-interface-5] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+	2018-07-16 11:02:42,286 DEBUG [callback-interface-5] [HttpRequestDebug] afterCompletion() 
+
+
+
+	########### Check Last queries that appear in Firethorn Log
+
+	bash-4.4$ grep -r "/query" logs/firethorn.log 
+
+	2018-07-15 23:54:39,542 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,542 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,542 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,542 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:39,542 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:39,547 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,583 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10271927][http://172.20.0.5:8081/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,584 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10271927][http://172.20.0.5:8081/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,589 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,589 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,589 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,590 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:39,590 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:39,594 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,629 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10271928][http://172.20.0.5:8081/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:39,629 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10271928][http://172.20.0.5:8081/firethorn/blue/query/callback/9821576] 
+	2018-07-15 23:54:40,623 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,623 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,623 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,623 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:40,623 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:40,628 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,660 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10271939][http://172.20.0.5:8081/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,660 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10271939][http://172.20.0.5:8081/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,667 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,667 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,667 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,667 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:40,667 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:40,671 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,708 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10271940][http://172.20.0.5:8081/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:40,708 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10271940][http://172.20.0.5:8081/firethorn/blue/query/callback/9821577] 
+	2018-07-15 23:54:41,617 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,617 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,617 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,617 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:41,617 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:41,622 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,654 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10271951][http://172.20.0.5:8081/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,655 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10271951][http://172.20.0.5:8081/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,658 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,658 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,658 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,658 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:41,658 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:41,662 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,698 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272052][http://172.20.0.5:8081/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:41,698 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272052][http://172.20.0.5:8081/firethorn/blue/query/callback/9821578] 
+	2018-07-15 23:54:42,976 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821579] 
+	2018-07-15 23:54:42,976 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:42,976 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:42,976 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:42,976 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:42,981 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:43,020 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272063][http://172.20.0.5:8081/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:43,020 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272063][http://172.20.0.5:8081/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:43,026 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821579] 
+	2018-07-15 23:54:43,026 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:43,026 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:43,027 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:43,027 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:43,031 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:43,071 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272064][http://172.20.0.5:8081/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:43,072 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272064][http://172.20.0.5:8081/firethorn/blue/query/callback/9821579] 
+	2018-07-15 23:54:44,301 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,301 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,301 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,301 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:44,301 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:44,305 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,339 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272078][http://172.20.0.5:8081/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,339 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272078][http://172.20.0.5:8081/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,345 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,345 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,345 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,345 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:44,345 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:44,349 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,381 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272079][http://172.20.0.5:8081/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:44,381 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272079][http://172.20.0.5:8081/firethorn/blue/query/callback/9821580] 
+	2018-07-15 23:54:45,408 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,408 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,408 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,409 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:45,409 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:45,413 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,446 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272089][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,446 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272089][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,521 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,521 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,521 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,521 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:45,521 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:45,526 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,565 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272091][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,565 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272091][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,694 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,694 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,694 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,694 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:45,694 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:45,699 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,740 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272093][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,741 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272093][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,904 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,904 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,904 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,904 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:45,904 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:45,909 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,946 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272095][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:45,947 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272095][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,117 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,117 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,117 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,118 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:46,118 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:46,122 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,162 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272099][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,162 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272099][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,504 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,504 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,504 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,504 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:46,504 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:46,509 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,546 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272202][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,546 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272202][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,675 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,675 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,675 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,675 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:46,675 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:46,679 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,718 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272205][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:46,718 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272205][http://172.20.0.5:8081/firethorn/blue/query/callback/9821581] 
+	2018-07-15 23:54:48,073 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,073 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,073 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,073 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:48,073 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:48,078 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,110 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272216][http://172.20.0.5:8081/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,110 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272216][http://172.20.0.5:8081/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,116 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,116 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,116 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,116 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:48,116 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:48,121 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,153 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272217][http://172.20.0.5:8081/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:48,153 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272217][http://172.20.0.5:8081/firethorn/blue/query/callback/9821582] 
+	2018-07-15 23:54:49,133 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,133 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,133 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,133 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:49,133 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:49,138 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,170 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272228][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,171 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272228][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,258 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,258 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,258 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,258 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:49,258 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:49,263 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,303 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272229][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:49,311 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272229][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,109 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,109 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,109 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,110 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:50,110 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:50,114 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,147 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272238][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,147 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272238][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,305 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,305 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,305 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,305 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:50,305 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:50,310 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,344 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272239][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,344 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272239][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,597 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,597 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,597 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,597 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:50,597 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:50,601 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,633 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272244][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:50,634 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272244][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,018 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,018 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,018 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,018 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:51,018 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:51,023 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,056 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272248][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,056 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272248][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,864 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,864 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,864 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,864 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:51,864 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:51,869 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,903 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272404][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:51,903 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272404][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:52,062 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821583] 
+	2018-07-15 23:54:52,062 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:52,062 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:52,062 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:52,062 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:52,067 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:52,107 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272406][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:52,107 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272406][http://172.20.0.5:8081/firethorn/blue/query/callback/9821583] 
+	2018-07-15 23:54:54,047 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821584] 
+	2018-07-15 23:54:54,047 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821584] 
+	2018-07-15 23:54:54,047 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821584] 
+	2018-07-15 23:54:54,047 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:54,047 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:54,052 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821584] 
+	2018-07-15 23:54:54,087 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272424][http://172.20.0.5:8081/firethorn/blue/query/callback/9821584] 
+	2018-07-15 23:54:54,087 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272424][http://172.20.0.5:8081/firethorn/blue/query/callback/9821584] 
+	2018-07-15 23:54:54,968 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821585] 
+	2018-07-15 23:54:54,968 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821585] 
+	2018-07-15 23:54:54,968 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821585] 
+	2018-07-15 23:54:54,968 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:54,968 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:54,973 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821585] 
+	2018-07-15 23:54:55,013 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272434][http://172.20.0.5:8081/firethorn/blue/query/callback/9821585] 
+	2018-07-15 23:54:55,013 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272434][http://172.20.0.5:8081/firethorn/blue/query/callback/9821585] 
+	2018-07-15 23:54:56,111 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,111 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,111 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,112 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:56,112 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:56,117 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,153 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272446][http://172.20.0.5:8081/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,153 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272446][http://172.20.0.5:8081/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,159 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,159 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,159 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,159 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:56,159 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:56,164 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,196 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272448][http://172.20.0.5:8081/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:56,196 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272448][http://172.20.0.5:8081/firethorn/blue/query/callback/9821586] 
+	2018-07-15 23:54:57,348 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,348 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,348 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,348 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:57,348 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:57,353 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,387 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272609][http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,387 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272609][http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,463 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,463 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,463 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,463 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:57,463 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:57,469 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,505 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272610][http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,505 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272610][http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,530 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,530 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,530 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,530 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:57,530 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:57,536 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,569 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272611][http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:57,570 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272611][http://172.20.0.5:8081/firethorn/blue/query/callback/9821587] 
+	2018-07-15 23:54:58,637 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,637 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,637 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,637 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:58,637 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:58,642 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,673 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272622][http://172.20.0.5:8081/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,673 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272622][http://172.20.0.5:8081/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,685 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,685 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,685 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,685 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:58,685 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:58,692 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,723 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272624][http://172.20.0.5:8081/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:58,723 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272624][http://172.20.0.5:8081/firethorn/blue/query/callback/9821588] 
+	2018-07-15 23:54:59,971 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821589] 
+	2018-07-15 23:54:59,971 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:54:59,971 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:54:59,971 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:54:59,971 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:54:59,975 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:55:00,008 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272640][http://172.20.0.5:8081/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:55:00,009 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272640][http://172.20.0.5:8081/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:55:00,017 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821589] 
+	2018-07-15 23:55:00,017 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:55:00,017 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:55:00,017 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:55:00,017 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:55:00,022 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:55:00,054 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272641][http://172.20.0.5:8081/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:55:00,054 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272641][http://172.20.0.5:8081/firethorn/blue/query/callback/9821589] 
+	2018-07-15 23:55:00,921 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,921 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,921 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,921 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:55:00,921 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:55:00,925 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,925 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,925 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,925 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:55:00,925 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:55:00,926 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,930 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,968 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272649][http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,968 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272649][http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,970 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272650][http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,971 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272650][http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,986 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,986 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,986 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:00,986 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:55:00,986 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:55:00,991 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:01,028 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272803][http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:01,028 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10272803][http://172.20.0.5:8081/firethorn/blue/query/callback/9821590] 
+	2018-07-15 23:55:01,939 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821591] 
+	2018-07-15 23:55:01,939 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:01,939 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:01,939 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:55:01,939 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:55:01,944 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:01,975 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272812][http://172.20.0.5:8081/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:01,975 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10272812][http://172.20.0.5:8081/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:01,981 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821591] 
+	2018-07-15 23:55:01,982 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:01,982 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:01,982 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:55:01,982 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:55:01,986 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:02,016 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272813][http://172.20.0.5:8081/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:02,016 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10272813][http://172.20.0.5:8081/firethorn/blue/query/callback/9821591] 
+	2018-07-15 23:55:02,901 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,901 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,901 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,902 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:55:02,902 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:55:02,906 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,937 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272824][http://172.20.0.5:8081/firethorn/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,937 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10272824][http://172.20.0.5:8081/firethorn/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,943 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,943 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,943 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,943 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-15 23:55:02,943 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-15 23:55:02,948 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,980 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272825][http://172.20.0.5:8081/firethorn/blue/query/callback/9821592] 
+	2018-07-15 23:55:02,980 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10272825][http://172.20.0.5:8081/firethorn/blue/query/callback/9821592] 
+	2018-07-16 00:00:04,813 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,813 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,813 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,813 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-16 00:00:04,813 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-16 00:00:04,819 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,858 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10279266][http://172.20.0.5:8081/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,858 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10279266][http://172.20.0.5:8081/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,866 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,866 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,866 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,866 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-16 00:00:04,866 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-16 00:00:04,870 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,909 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10279267][http://172.20.0.5:8081/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:04,909 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10279267][http://172.20.0.5:8081/firethorn/blue/query/callback/9821594] 
+	2018-07-16 00:00:06,281 DEBUG [callback-interface-2] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,281 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,281 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,282 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-16 00:00:06,282 DEBUG [callback-interface-2] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-16 00:00:06,287 DEBUG [callback-interface-2] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,320 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10279275][http://172.20.0.5:8081/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,320 DEBUG [callback-interface-2] [OperationInterceptor] Operation [10279275][http://172.20.0.5:8081/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,328 DEBUG [callback-interface-3] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,328 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,328 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,328 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-16 00:00:06,328 DEBUG [callback-interface-3] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-16 00:00:06,333 DEBUG [callback-interface-3] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,367 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10279276][http://172.20.0.5:8081/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:06,367 DEBUG [callback-interface-3] [OperationInterceptor] Operation [10279276][http://172.20.0.5:8081/firethorn/blue/query/callback/9821596] 
+	2018-07-16 00:00:07,636 DEBUG [callback-interface-4] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,636 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,636 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,636 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-16 00:00:07,636 DEBUG [callback-interface-4] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-16 00:00:07,639 DEBUG [callback-interface-6] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,639 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,639 DEBUG [callback-interface-6] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,640 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-16 00:00:07,640 DEBUG [callback-interface-6] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-16 00:00:07,642 DEBUG [callback-interface-4] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,644 DEBUG [callback-interface-6] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,691 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10279283][http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,691 DEBUG [callback-interface-4] [OperationInterceptor] Operation [10279283][http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,705 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10279284][http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,705 DEBUG [callback-interface-6] [OperationInterceptor] Operation [10279284][http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,714 DEBUG [callback-interface-5] [HttpRequestDebug]   serverPath  [/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,714 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURI  [/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,714 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,714 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.bestMatchingPattern][/blue/query/callb...] 
+	2018-07-16 00:00:07,714 DEBUG [callback-interface-5] [HttpRequestDebug]   [org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping][/blue/query/callb...] 
+	2018-07-16 00:00:07,719 DEBUG [callback-interface-5] [OperationInterceptor]   url  [http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,764 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10279285][http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+	2018-07-16 00:00:07,764 DEBUG [callback-interface-5] [OperationInterceptor] Operation [10279285][http://172.20.0.5:8081/firethorn/blue/query/callback/9821597] 
+
+
+
+########### Check Netstat from Gworewia VM
+
+[root@Gworewia ~]# netstat 
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 Gworewia:ssh            gateway:45772           ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    71994397 /run/user/0/systemd/notify
+unix  2      [ ]         DGRAM                    17574    /var/run/chrony/chronyd.sock
+unix  3      [ ]         DGRAM                    11455    /run/systemd/notify
+unix  2      [ ]         DGRAM                    11457    /run/systemd/cgroups-agent
+unix  11     [ ]         DGRAM                    11464    /run/systemd/journal/dev-log
+unix  7      [ ]         DGRAM                    11474    /run/systemd/journal/socket
+unix  3      [ ]         STREAM     CONNECTED     55428612 /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     17560    
+unix  3      [ ]         STREAM     CONNECTED     71992012 /run/systemd/journal/stdout
+unix  2      [ ]         DGRAM                    18234    
+unix  2      [ ]         DGRAM                    55429644 
+unix  3      [ ]         STREAM     CONNECTED     17767    /run/systemd/journal/stdout
+unix  2      [ ]         DGRAM                    71994375 
+unix  3      [ ]         STREAM     CONNECTED     55429638 
+unix  3      [ ]         STREAM     CONNECTED     15665    /run/systemd/journal/stdout
+unix  2      [ ]         DGRAM                    17602    
+unix  3      [ ]         STREAM     CONNECTED     16606    
+unix  3      [ ]         STREAM     CONNECTED     17596    
+unix  3      [ ]         STREAM     CONNECTED     17595    
+unix  2      [ ]         STREAM     CONNECTED     55433493 /var/run/docker.sock
+unix  3      [ ]         STREAM     CONNECTED     16760    /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     15916    
+unix  3      [ ]         STREAM     CONNECTED     71991284 
+unix  3      [ ]         STREAM     CONNECTED     15290    
+unix  2      [ ]         DGRAM                    11902    
+unix  3      [ ]         STREAM     CONNECTED     12248    
+unix  2      [ ]         DGRAM                    16771    
+unix  3      [ ]         STREAM     CONNECTED     12249    
+unix  3      [ ]         STREAM     CONNECTED     16769    /run/dbus/system_bus_socket
+unix  2      [ ]         DGRAM                    12247    
+unix  3      [ ]         STREAM     CONNECTED     15140    
+unix  2      [ ]         DGRAM                    15676    
+unix  3      [ ]         STREAM     CONNECTED     17597    /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     14848    
+unix  3      [ ]         STREAM     CONNECTED     1924     /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     15695    
+unix  3      [ ]         STREAM     CONNECTED     71993015 
+unix  2      [ ]         DGRAM                    14471    
+unix  3      [ ]         STREAM     CONNECTED     17598    /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     16658    /run/systemd/journal/stdout
+unix  3      [ ]         DGRAM                    14483    
+unix  3      [ ]         STREAM     CONNECTED     15084    /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     15724    /run/systemd/journal/stdout
+unix  2      [ ]         DGRAM                    49162719 
+unix  3      [ ]         STREAM     CONNECTED     16552    /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     14921    
+unix  3      [ ]         STREAM     CONNECTED     55427998 
+unix  3      [ ]         STREAM     CONNECTED     16474    
+unix  3      [ ]         STREAM     CONNECTED     15083    
+unix  3      [ ]         STREAM     CONNECTED     15021    
+unix  3      [ ]         STREAM     CONNECTED     55429658 /run/dbus/system_bus_socket
+unix  2      [ ]         DGRAM                    14384    
+unix  3      [ ]         STREAM     CONNECTED     71993016 
+unix  3      [ ]         DGRAM                    14484    
+unix  2      [ ]         DGRAM                    71993012 
+unix  3      [ ]         STREAM     CONNECTED     15661    /run/systemd/journal/stdout
+unix  3      [ ]         STREAM     CONNECTED     14469    
+unix  2      [ ]         DGRAM                    15685    
+unix  2      [ ]         STREAM     CONNECTED     55430842 /var/run/docker.sock
+unix  2      [ ]         DGRAM                    15794    
+unix  2      [ ]         DGRAM                    16132    
+unix  3      [ ]         STREAM     CONNECTED     55428633 /var/run/docker/libcontainerd/docker-containerd.sock
+unix  3      [ ]         STREAM     CONNECTED     18593    /run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     16127    
+unix  2      [ ]         DGRAM                    71994378 
+unix  3      [ ]         STREAM     CONNECTED     55428632 
+unix  2      [ ]         STREAM     CONNECTED     55432656 /var/run/docker.sock
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+
+
+
+
+########### Check Proxy (Astoalith)
+stelios@stelios-pc:~$ ssh root@Astoalith
+Last login: Fri Jul 13 18:55:17 2018 from 192.168.201.1
+[root@float01 ~]# docker ps
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                NAMES
+a050cbd6960d        firethorn/apache:2.1.3   "/bin/sh -c '/usr/sbi"   7 months ago        Up 7 months         0.0.0.0:80->80/tcp   firepache
+
+
+[root@float01 ~]#  curl  -v http://192.168.201.15:8080/firethorn/tap/61/tables
+*   Trying 192.168.201.15...
+* Connected to 192.168.201.15 (192.168.201.15) port 8080 (#0)
+> GET /firethorn/tap/54/tables HTTP/1.1
+> Host: 192.168.201.15:8080
+> User-Agent: curl/7.47.1
+> Accept: */*
+> 
+^C
+
+### Not responding
+
+
+[root@float01 ~]#  curl  -v http://192.168.201.15:8080/firethorn/system/info
+*   Trying 192.168.201.15...
+* Connected to 192.168.201.15 (192.168.201.15) port 8080 (#0)
+> GET /firethorn/system/info HTTP/1.1
+> Host: 192.168.201.15:8080
+> User-Agent: curl/7.47.1
+> Accept: */*
+> 
+^C
+
+### Not responding
+
+
+
+
+
+########### Chech Apache Proxy logs
+
+	root@a050cbd6960d:/# tail -f -n 100 /var/log/apache2/error.log 
+
+	[Mon Jul 16 02:04:32.751146 2018] [proxy_http:error] [pid 1471:tid 139661884200704] (70007)The timeout specified has expired: [client 81.187.247.196:54694] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 02:04:32.751223 2018] [proxy:error] [pid 1471:tid 139661884200704] [client 81.187.247.196:54694] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 02:34:33.166529 2018] [proxy_http:error] [pid 1472:tid 139661984913152] (70007)The timeout specified has expired: [client 81.187.247.196:55840] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 02:34:33.166626 2018] [proxy:error] [pid 1472:tid 139661984913152] [client 81.187.247.196:55840] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 03:04:25.913259 2018] [proxy_http:error] [pid 1472:tid 139661850629888] (70007)The timeout specified has expired: [client 178.79.157.93:36578] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:04:25.913336 2018] [proxy:error] [pid 1472:tid 139661850629888] [client 178.79.157.93:36578] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 03:04:33.687435 2018] [proxy_http:error] [pid 1472:tid 139661909378816] (70007)The timeout specified has expired: [client 81.187.247.196:56890] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:04:33.687512 2018] [proxy:error] [pid 1472:tid 139661909378816] [client 81.187.247.196:56890] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 03:34:32.945756 2018] [proxy_http:error] [pid 1471:tid 139661942949632] (70007)The timeout specified has expired: [client 81.187.247.196:57956] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:34:32.945832 2018] [proxy:error] [pid 1471:tid 139661942949632] [client 81.187.247.196:57956] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 03:35:05.872800 2018] [proxy_http:error] [pid 1472:tid 139661951342336] (70007)The timeout specified has expired: [client 145.238.193.76:57397] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:35:05.872879 2018] [proxy:error] [pid 1472:tid 139661951342336] [client 145.238.193.76:57397] AH00898: Error reading from remote server returned by /wsa/sync
+	[Mon Jul 16 03:35:27.069502 2018] [proxy_http:error] [pid 1471:tid 139661917771520] (70007)The timeout specified has expired: [client 141.33.4.164:53930] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:35:27.069580 2018] [proxy:error] [pid 1471:tid 139661917771520] [client 141.33.4.164:53930] AH00898: Error reading from remote server returned by /osa/sync
+	[Mon Jul 16 03:35:55.080819 2018] [proxy_http:error] [pid 1472:tid 139662001698560] (70007)The timeout specified has expired: [client 129.206.110.245:40966] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:35:55.080896 2018] [proxy:error] [pid 1472:tid 139662001698560] [client 129.206.110.245:40966] AH00898: Error reading from remote server returned by /osa/sync
+	[Mon Jul 16 03:40:06.080994 2018] [proxy_http:error] [pid 1472:tid 139661842237184] (70007)The timeout specified has expired: [client 145.238.193.76:57572] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:40:06.081126 2018] [proxy:error] [pid 1472:tid 139661842237184] [client 145.238.193.76:57572] AH00898: Error reading from remote server returned by /wsa/tables
+	[Mon Jul 16 03:40:32.198172 2018] [proxy_http:error] [pid 1472:tid 139661859022592] (70007)The timeout specified has expired: [client 141.33.4.164:53931] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:40:32.198249 2018] [proxy:error] [pid 1472:tid 139661859022592] [client 141.33.4.164:53931] AH00898: Error reading from remote server returned by /osa/tables
+	[Mon Jul 16 03:40:55.236208 2018] [proxy_http:error] [pid 1471:tid 139661850629888] (70007)The timeout specified has expired: [client 129.206.110.245:40968] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:40:55.236285 2018] [proxy:error] [pid 1471:tid 139661850629888] [client 129.206.110.245:40968] AH00898: Error reading from remote server returned by /osa/tables
+	[Mon Jul 16 03:45:06.447351 2018] [proxy_http:error] [pid 1471:tid 139661993305856] (70007)The timeout specified has expired: [client 145.238.193.76:57776] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:45:06.447448 2018] [proxy:error] [pid 1471:tid 139661993305856] [client 145.238.193.76:57776] AH00898: Error reading from remote server returned by /ssa/sync
+	[Mon Jul 16 03:45:37.430834 2018] [proxy_http:error] [pid 1471:tid 139662001698560] (70007)The timeout specified has expired: [client 141.33.4.164:53932] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:45:37.430913 2018] [proxy:error] [pid 1471:tid 139662001698560] [client 141.33.4.164:53932] AH00898: Error reading from remote server returned by /vsa/sync
+	[Mon Jul 16 03:45:55.427142 2018] [proxy_http:error] [pid 1471:tid 139661800273664] (70007)The timeout specified has expired: [client 129.206.110.245:40972] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:45:55.427218 2018] [proxy:error] [pid 1471:tid 139661800273664] [client 129.206.110.245:40972] AH00898: Error reading from remote server returned by /vsa/sync
+	[Mon Jul 16 03:50:06.664263 2018] [proxy_http:error] [pid 1472:tid 139661808666368] (70007)The timeout specified has expired: [client 145.238.193.76:57938] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:50:06.664343 2018] [proxy:error] [pid 1472:tid 139661808666368] [client 145.238.193.76:57938] AH00898: Error reading from remote server returned by /ssa/tables
+	[Mon Jul 16 03:50:42.617923 2018] [proxy_http:error] [pid 1471:tid 139661859022592] (70007)The timeout specified has expired: [client 141.33.4.164:53933] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:50:42.617995 2018] [proxy:error] [pid 1471:tid 139661859022592] [client 141.33.4.164:53933] AH00898: Error reading from remote server returned by /vsa/tables
+	[Mon Jul 16 03:50:55.556016 2018] [proxy_http:error] [pid 1472:tid 139661825451776] (70007)The timeout specified has expired: [client 129.206.110.245:40974] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:50:55.556127 2018] [proxy:error] [pid 1472:tid 139661825451776] [client 129.206.110.245:40974] AH00898: Error reading from remote server returned by /vsa/tables
+	[Mon Jul 16 03:55:09.677179 2018] [proxy_http:error] [pid 1472:tid 139661968127744] (70007)The timeout specified has expired: [client 145.238.193.76:58124] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:55:09.677239 2018] [proxy:error] [pid 1472:tid 139661968127744] [client 145.238.193.76:58124] AH00898: Error reading from remote server returned by /osa/sync
+	[Mon Jul 16 03:55:55.697561 2018] [proxy_http:error] [pid 1472:tid 139661926164224] (70007)The timeout specified has expired: [client 129.206.110.245:40988] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:55:55.697642 2018] [proxy:error] [pid 1472:tid 139661926164224] [client 129.206.110.245:40988] AH00898: Error reading from remote server returned by /wsa/sync
+	[Mon Jul 16 03:55:59.262697 2018] [proxy_http:error] [pid 1471:tid 139661875808000] (70007)The timeout specified has expired: [client 141.33.4.164:53936] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 03:55:59.262774 2018] [proxy:error] [pid 1471:tid 139661875808000] [client 141.33.4.164:53936] AH00898: Error reading from remote server returned by /wsa/sync
+	[Mon Jul 16 04:00:09.950241 2018] [proxy_http:error] [pid 1471:tid 139661968127744] (70007)The timeout specified has expired: [client 145.238.193.76:58295] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:00:09.950313 2018] [proxy:error] [pid 1471:tid 139661968127744] [client 145.238.193.76:58295] AH00898: Error reading from remote server returned by /osa/tables
+	[Mon Jul 16 04:00:55.865711 2018] [proxy_http:error] [pid 1471:tid 139661951342336] (70007)The timeout specified has expired: [client 129.206.110.245:40990] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:00:55.865786 2018] [proxy:error] [pid 1471:tid 139661951342336] [client 129.206.110.245:40990] AH00898: Error reading from remote server returned by /wsa/tables
+	[Mon Jul 16 04:01:04.453787 2018] [proxy_http:error] [pid 1472:tid 139661900986112] (70007)The timeout specified has expired: [client 141.33.4.164:53937] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:01:04.453867 2018] [proxy:error] [pid 1472:tid 139661900986112] [client 141.33.4.164:53937] AH00898: Error reading from remote server returned by /wsa/tables
+	[Mon Jul 16 04:04:25.599380 2018] [proxy_http:error] [pid 1471:tid 139661817059072] (70007)The timeout specified has expired: [client 178.79.157.93:36584] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:04:25.599460 2018] [proxy:error] [pid 1471:tid 139661817059072] [client 178.79.157.93:36584] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 04:04:33.728338 2018] [proxy_http:error] [pid 1472:tid 139661942949632] (70007)The timeout specified has expired: [client 81.187.247.196:59216] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:04:33.728415 2018] [proxy:error] [pid 1472:tid 139661942949632] [client 81.187.247.196:59216] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 04:05:10.173328 2018] [proxy_http:error] [pid 1472:tid 139661976520448] (70007)The timeout specified has expired: [client 145.238.193.76:58492] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:05:10.173399 2018] [proxy:error] [pid 1472:tid 139661976520448] [client 145.238.193.76:58492] AH00898: Error reading from remote server returned by /vsa/sync
+	[Mon Jul 16 04:06:25.163185 2018] [proxy_http:error] [pid 1471:tid 139661867415296] (70007)The timeout specified has expired: [client 141.33.4.164:53943] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:06:25.163259 2018] [proxy:error] [pid 1471:tid 139661867415296] [client 141.33.4.164:53943] AH00898: Error reading from remote server returned by /ssa/sync
+	[Mon Jul 16 04:10:10.382698 2018] [proxy_http:error] [pid 1471:tid 139661976520448] (70007)The timeout specified has expired: [client 145.238.193.76:58672] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:10:10.382779 2018] [proxy:error] [pid 1471:tid 139661976520448] [client 145.238.193.76:58672] AH00898: Error reading from remote server returned by /vsa/tables
+	[Mon Jul 16 04:11:30.348877 2018] [proxy_http:error] [pid 1472:tid 139661867415296] (70007)The timeout specified has expired: [client 141.33.4.164:53944] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:11:30.348954 2018] [proxy:error] [pid 1472:tid 139661867415296] [client 141.33.4.164:53944] AH00898: Error reading from remote server returned by /ssa/tables
+	[Mon Jul 16 04:34:33.082523 2018] [proxy_http:error] [pid 1472:tid 139661892593408] (70007)The timeout specified has expired: [client 81.187.247.196:60528] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 04:34:33.082601 2018] [proxy:error] [pid 1472:tid 139661892593408] [client 81.187.247.196:60528] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 05:04:26.364318 2018] [proxy_http:error] [pid 1471:tid 139661884200704] (70007)The timeout specified has expired: [client 178.79.157.93:36594] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 05:04:26.364394 2018] [proxy:error] [pid 1471:tid 139661884200704] [client 178.79.157.93:36594] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 05:04:33.663792 2018] [proxy_http:error] [pid 1471:tid 139661984913152] (70007)The timeout specified has expired: [client 81.187.247.196:33324] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 05:04:33.663870 2018] [proxy:error] [pid 1471:tid 139661984913152] [client 81.187.247.196:33324] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 05:33:20.720551 2018] [proxy_http:error] [pid 1472:tid 139661909378816] (70007)The timeout specified has expired: [client 81.187.247.196:34490] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 05:33:20.720631 2018] [proxy:error] [pid 1472:tid 139661909378816] [client 81.187.247.196:34490] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 05:34:33.466539 2018] [proxy_http:error] [pid 1471:tid 139661808666368] (70007)The timeout specified has expired: [client 81.187.247.196:34576] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 05:34:33.466620 2018] [proxy:error] [pid 1471:tid 139661808666368] [client 81.187.247.196:34576] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 06:04:26.181261 2018] [proxy_http:error] [pid 1471:tid 139661800273664] (70007)The timeout specified has expired: [client 178.79.157.93:36598] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 06:04:26.181341 2018] [proxy:error] [pid 1471:tid 139661800273664] [client 178.79.157.93:36598] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 06:04:33.078320 2018] [proxy_http:error] [pid 1471:tid 139661859022592] (70007)The timeout specified has expired: [client 81.187.247.196:35726] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 06:04:33.078396 2018] [proxy:error] [pid 1471:tid 139661859022592] [client 81.187.247.196:35726] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 06:34:33.064056 2018] [proxy_http:error] [pid 1472:tid 139661942949632] (70007)The timeout specified has expired: [client 81.187.247.196:36786] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 06:34:33.064155 2018] [proxy:error] [pid 1472:tid 139661942949632] [client 81.187.247.196:36786] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 07:04:25.931295 2018] [proxy_http:error] [pid 1471:tid 139661842237184] (70007)The timeout specified has expired: [client 178.79.157.93:36608] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 07:04:25.931384 2018] [proxy:error] [pid 1471:tid 139661842237184] [client 178.79.157.93:36608] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 07:04:35.798211 2018] [proxy_http:error] [pid 1471:tid 139661867415296] (70007)The timeout specified has expired: [client 81.187.247.196:37922] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 07:04:35.798288 2018] [proxy:error] [pid 1471:tid 139661867415296] [client 81.187.247.196:37922] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 07:34:33.150834 2018] [proxy_http:error] [pid 1471:tid 139661926164224] (70007)The timeout specified has expired: [client 81.187.247.196:38568] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 07:34:33.150912 2018] [proxy:error] [pid 1471:tid 139661926164224] [client 81.187.247.196:38568] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 08:04:26.463055 2018] [proxy_http:error] [pid 1471:tid 139661984913152] (70007)The timeout specified has expired: [client 178.79.157.93:36618] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 08:04:26.463171 2018] [proxy:error] [pid 1471:tid 139661984913152] [client 178.79.157.93:36618] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 08:04:34.664707 2018] [proxy_http:error] [pid 1471:tid 139661825451776] (70007)The timeout specified has expired: [client 81.187.247.196:38760] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 08:04:34.664787 2018] [proxy:error] [pid 1471:tid 139661825451776] [client 81.187.247.196:38760] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 08:34:33.588159 2018] [proxy_http:error] [pid 1472:tid 139661951342336] (70007)The timeout specified has expired: [client 81.187.247.196:40138] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 08:34:33.588236 2018] [proxy:error] [pid 1472:tid 139661951342336] [client 81.187.247.196:40138] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 09:04:26.234846 2018] [proxy_http:error] [pid 1472:tid 139661842237184] (70007)The timeout specified has expired: [client 178.79.157.93:36626] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 09:04:26.234925 2018] [proxy:error] [pid 1472:tid 139661842237184] [client 178.79.157.93:36626] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 09:04:33.663734 2018] [proxy_http:error] [pid 1472:tid 139661859022592] (70007)The timeout specified has expired: [client 81.187.247.196:41476] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 09:04:33.663810 2018] [proxy:error] [pid 1472:tid 139661859022592] [client 81.187.247.196:41476] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 09:34:34.785168 2018] [proxy_http:error] [pid 1471:tid 139661859022592] (70007)The timeout specified has expired: [client 81.187.247.196:43368] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 09:34:34.785246 2018] [proxy:error] [pid 1471:tid 139661859022592] [client 81.187.247.196:43368] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 10:04:26.081137 2018] [proxy_http:error] [pid 1471:tid 139661934556928] (70007)The timeout specified has expired: [client 178.79.157.93:36630] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 10:04:26.081218 2018] [proxy:error] [pid 1471:tid 139661934556928] [client 178.79.157.93:36630] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 10:04:32.808691 2018] [proxy_http:error] [pid 1472:tid 139661976520448] (70007)The timeout specified has expired: [client 81.187.247.196:45188] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 10:04:32.808762 2018] [proxy:error] [pid 1472:tid 139661976520448] [client 81.187.247.196:45188] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 10:34:34.673231 2018] [proxy_http:error] [pid 1472:tid 139661984913152] (70007)The timeout specified has expired: [client 81.187.247.196:47058] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 10:34:34.673308 2018] [proxy:error] [pid 1472:tid 139661984913152] [client 81.187.247.196:47058] AH00898: Error reading from remote server returned by /osa/availability
+	[Mon Jul 16 11:00:41.606237 2018] [proxy_http:error] [pid 1472:tid 139661850629888] (70007)The timeout specified has expired: [client 2.84.46.182:54686] AH01102: error reading status line from remote server 192.168.201.15:8080
+	[Mon Jul 16 11:00:41.606329 2018] [proxy:error] [pid 1472:tid 139661850629888] [client 2.84.46.182:54686] AH00898: Error reading from remote server returned by /osa/availability
+
+
+
+
+## Try restarting using docker stop
+
+[root@Gworewia ~]# docker stop root_gillian_1 
+[root@Gworewia ~]# docker start root_gillian_1 
+
+
+
+
+## Check availability
+
+stelios@stelios-pc:~$ curl -v http://tap.roe.ac.uk/osa/availability
+* Hostname was NOT found in DNS cache
+*   Trying 129.215.175.100...
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /osa/availability HTTP/1.1
+> User-Agent: curl/7.35.0
+> Host: tap.roe.ac.uk
+> Accept: */*
+> 
+< HTTP/1.1 200 
+< Date: Mon, 16 Jul 2018 11:51:05 GMT
+* Server Apache/2.4.7 (Ubuntu) is not blacklisted
+< Server: Apache/2.4.7 (Ubuntu)
+< X-Clacks-Overhead: GNU Terry Pratchett
+< firethorn.auth.identity: http://tap.roe.ac.uk/firethorn/community-member/10283904
+< firethorn.auth.username: anon-TVFDQN7BH6ABOAAAAFSKF3QGKQ
+< firethorn.auth.community: friends
+< Content-Type: text/xml;charset=ISO-8859-1
+< Content-Length: 224
+< Vary: Accept-Encoding
+< 
+* Connection #0 to host tap.roe.ac.uk left intact
+<?xml version="1.0" encoding="UTF-8"?><vosi:availability xmlns:vosi="http://www.ivoa.net/xml/VOSIAvailability/v1.0"><vosi:available>true</vosi:available><vosi:note>service is accepting queries</vosi:note></vosi:availability>
+
+
+## TAP Service up and running
+
