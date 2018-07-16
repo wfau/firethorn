@@ -1062,10 +1062,11 @@ implements JdbcTable
     protected void adqlstatus(final AdqlTable.TableStatus next)
     throws ProtectionException
         {
-        AdqlTable.TableStatus prev = this.adqlstatus; 
-        log.debug("status(AdqlTable.TableStatus)");
-        log.debug("  prev [{}]", prev);
-        log.debug("  next [{}]", next);
+        final AdqlTable.TableStatus prev = this.adqlstatus; 
+        log.debug("adqlstatus() [{}]->[{}]",
+                prev,
+                next
+                );
         if (next == AdqlTable.TableStatus.UNKNOWN)
             {
             log.warn("Setting AdqlTable.AdqlStatus to UNKNOWN [{}]", this.ident());
@@ -1077,9 +1078,10 @@ implements JdbcTable
                 switch(next)
                     {
                     case CREATED:
+                        break ;
+                    case PARTIAL:
                     case COMPLETED:
                     case TRUNCATED:
-                    case UNKNOWN:
                         this.adqlstatus = next ;
                         break ;
 
@@ -1100,16 +1102,12 @@ implements JdbcTable
                 switch(next)
                     {
                     case COMPLETED:
-                    case UNKNOWN:
-                        this.adqlstatus = next ;
                         break ;
 
                     case DELETED:
                         jdbcdelete();
                         break ;
 
-                    case CREATED:
-                    case TRUNCATED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -1123,16 +1121,12 @@ implements JdbcTable
                 switch(next)
                     {
                     case TRUNCATED:
-                    case UNKNOWN:
-                        this.adqlstatus = next ;
                         break ;
 
                     case DELETED:
                         jdbcdelete();
                         break ;
 
-                    case CREATED:
-                    case COMPLETED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -1146,13 +1140,8 @@ implements JdbcTable
                 switch(next)
                     {
                     case DELETED:
-                    case UNKNOWN:
-                        this.adqlstatus = next ;
                         break ;
 
-                    case CREATED:
-                    case COMPLETED:
-                    case TRUNCATED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -1165,14 +1154,8 @@ implements JdbcTable
             case UNKNOWN:
                 switch(next)
                     {
-                    case CREATED:
-                    case COMPLETED:
-                    case TRUNCATED:
-                    case DELETED:
                     case UNKNOWN:
-                        this.adqlstatus = next ;
                         break ;
-
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,

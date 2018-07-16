@@ -2126,12 +2126,14 @@ implements BlueQuery
                         }
                     catch (InvalidStateTransitionException ouch)
                     	{
-	    	            log.error(ouch.getMessage());
+                        log.error(ouch.getMessage());
+                        log.error(ouch.toString());
                 		return TaskState.ERROR;
                     	}
                     catch (HibernateConvertException ouch)
                         {
                         log.error(ouch.getMessage());
+                        log.error(ouch.toString());
                         return TaskState.ERROR;
                         }
                     }
