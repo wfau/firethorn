@@ -504,8 +504,7 @@ public class IvoaTableEntity
             meta
             );
         }
-    
-    
+        
     @ManyToOne(
         fetch = FetchType.LAZY,
         targetEntity = IvoaSchemaEntity.class
@@ -540,7 +539,7 @@ public class IvoaTableEntity
         {
         return self();
         }
-
+    
     @Override
     public IvoaTable.Columns columns()
     throws ProtectionException
@@ -715,5 +714,12 @@ public class IvoaTableEntity
     throws ProtectionException
         {
         return null;
+        }
+
+    @Override
+    public Long rowcount()
+    throws ProtectionException
+        {
+        return EMPTY_COUNT_VALUE;
         }
     }

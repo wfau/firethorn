@@ -318,9 +318,23 @@ extends BaseTable<JdbcTable, JdbcColumn>
              * The table row count.
              *
              */
-            public Long count()
+            public Long rowcount()
             throws ProtectionException;
 
+            /**
+             * Set the table row count.
+             *
+             */
+            public void rowcount(final Long rowcount)
+            throws ProtectionException;
+
+            /**
+             * The table row count guess.
+             *
+             */
+            public Long rowguess()
+            throws ProtectionException;
+            
             /**
              * Get the JDBC table type.
              *

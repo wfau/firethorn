@@ -2084,7 +2084,7 @@ implements BlueQuery
                             );
                         //
                         // Update the results table.
-                        final AdqlTable results = query.results().adql();
+                        final JdbcTable results = query.results().jdbc();
                         // BANG !!
                         // Fails if the query hasn't been prepared yet.
                         if (results == null)
@@ -2092,17 +2092,23 @@ implements BlueQuery
                             log.error("Callback with null results table");
                             }
                         else {
-                            results.meta().adql().count(
+                            results.meta().jdbc().rowcount(
                                 message.results().count()
                                 );
                             switch (message.results().state())
                                 {
                                 case PARTIAL:
+                                    results.meta().jdbc().status(
+                                        JdbcTable.TableStatus.UPDATED
+                                        );
                                     results.meta().adql().status(
                                         AdqlTable.TableStatus.PARTIAL
                                         );
                                     break;
                                 case COMPLETED:
+                                    results.meta().jdbc().status(
+                                        JdbcTable.TableStatus.UPDATED
+                                        );
                                     results.meta().adql().status(
                                         AdqlTable.TableStatus.COMPLETED
                                         );

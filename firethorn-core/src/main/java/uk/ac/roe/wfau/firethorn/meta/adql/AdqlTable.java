@@ -230,15 +230,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
              * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
              *
              */
-            public Long count()
-            throws ProtectionException;
-
-            /**
-             * Set the table row count.
-             * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
-             *
-             */
-            public void count(Long count)
+            public Long rowcount()
             throws ProtectionException;
 
             /**

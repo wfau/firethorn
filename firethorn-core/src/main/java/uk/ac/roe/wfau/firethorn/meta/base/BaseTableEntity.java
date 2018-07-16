@@ -56,11 +56,6 @@ public abstract class BaseTableEntity<TableType extends BaseTable<TableType, Col
 extends TreeComponentEntity<TableType>
 implements BaseTable<TableType, ColumnType>
     {
-    /**
-     * Empty count value, {@value}.
-     *
-     */
-    protected static final Long EMPTY_COUNT_VALUE = new Long(0L);
 
     /**
      * Hibernate column mapping.
@@ -245,7 +240,7 @@ implements BaseTable<TableType, ColumnType>
         nullable = true,
         updatable = true
         )
-    protected Long adqlrowcount ;
+    protected Long adqlrowcount = null ;
     protected Long adqlrowcount()
     throws ProtectionException
         {
@@ -310,17 +305,10 @@ implements BaseTable<TableType, ColumnType>
                 }
 
             @Override
-            public Long count()
+            public Long rowcount()
             throws ProtectionException
                 {
                 return adqlrowcount();
-                }
-
-            @Override
-            public void count(Long count)
-            throws ProtectionException
-                {
-                adqlrowcount(count);
                 }
 
             @Override

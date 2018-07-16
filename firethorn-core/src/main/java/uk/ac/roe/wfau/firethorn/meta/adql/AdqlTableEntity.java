@@ -657,6 +657,19 @@ public class AdqlTableEntity
         }
 
     @Override
+    public Long rowcount()
+    throws ProtectionException
+        {
+        if (this.adqlrowcount != null)
+            {
+            return this.adqlrowcount();
+            }
+        else {
+            return base.rowcount();
+            }
+        }
+
+    @Override
     public AdqlTable.Columns columns()
     throws ProtectionException
         {

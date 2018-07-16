@@ -254,4 +254,19 @@ extends TreeComponent
     public AdqlTable.Metadata meta()
     throws ProtectionException;
 
+    /**
+     * Empty count value, {@value}.
+     *
+     */
+    public static final Long EMPTY_COUNT_VALUE = new Long(-1L);
+    
+    /**
+     * The {@link BaseTable} rowcount.
+     * @return The number of rows in the table, or {@link EMPTY_COUNT_VALUE} if the table is empty.
+     * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+     *
+     */
+    public Long rowcount()
+    throws ProtectionException;
+
     }

@@ -451,7 +451,7 @@ implements JdbcTable
                     ).setEntity(
                         "parent",
                         parent
-                        ).setDate(
+                        ).setTimestamp(
                             "date",
                             date.toDate()
                             )
@@ -614,6 +614,20 @@ implements JdbcTable
         {
         super();
         }
+
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcTableEntity(final JdbcSchema schema)
+        {
+        this(
+            schema,
+            null,
+            null,
+            JdbcType.TABLE
+            );
+        }
          
     /**
      * Protected constructor.
@@ -637,20 +651,6 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    protected JdbcTableEntity(final JdbcSchema schema)
-        {
-        this(
-            schema,
-            null,
-            null,
-            JdbcType.TABLE
-            );
-        }
-    
-    /**
-     * Protected constructor.
-     *
-     */
     @Deprecated
     protected JdbcTableEntity(final JdbcSchema schema, final String name)
         {
@@ -658,7 +658,9 @@ implements JdbcTable
             schema,
             null,
             name,
-            JdbcType.TABLE
+            JdbcType.TABLE,
+            null,
+            null
             );
         }
 
@@ -673,8 +675,8 @@ implements JdbcTable
             query,
             name,
             JdbcType.TABLE,
-            0L,
-            0L
+            null,
+            null
             );
         }
 
@@ -689,8 +691,8 @@ implements JdbcTable
             query,
             name,
             type,
-            0L,
-            0L
+            null,
+            null
             );
         }
 
@@ -704,7 +706,7 @@ implements JdbcTable
             schema,
             name
             );
-        log.debug("JdbcTableEntity [{}][{}][{}]", schema.name(), this.name(), type);
+        log.debug("JdbcTableEntity [{}][{}][{}]", schema.name(), this.name(), this.created());
         
         this.bluequery = query;
         this.schema = schema;
@@ -758,7 +760,7 @@ implements JdbcTable
         nullable = true,
         updatable = true
         )
-    protected Long jdbcrowcount ;
+    protected Long jdbcrowcount = null ;
     protected Long jdbcrowcount()
     throws ProtectionException
         {
@@ -783,7 +785,7 @@ implements JdbcTable
         nullable = true,
         updatable = true
         )
-    protected Long jdbcrowguess ;
+    protected Long jdbcrowguess = null ;
     protected Long jdbcrowguess()
     throws ProtectionException
         {
@@ -801,12 +803,13 @@ implements JdbcTable
         this.jdbcrowguess = count;
         }
 
-    protected Long adqlrowcount()
+    @Override
+    public Long rowcount()
     throws ProtectionException
         {
         if (this.adqlrowcount != null)
             {
-            return this.adqlrowcount;
+            return this.adqlrowcount();
             }
         else {
             return this.jdbcrowcount();
@@ -1351,24 +1354,40 @@ implements JdbcTable
                 }
 
             @Override
-            public Long count()
+            public Long rowcount()
             throws ProtectionException
                 {
-                return adqlrowcount();
+                return JdbcTableEntity.this.jdbcrowcount();
+                }
+
+            @Override
+            public void rowcount(final Long rowcount)
+            throws ProtectionException
+                {
+                JdbcTableEntity.this.jdbcrowcount(
+                    rowcount
+                    );
+                }
+
+            @Override
+            public Long rowguess()
+            throws ProtectionException
+                {
+                return JdbcTableEntity.this.jdbcrowguess();
                 }
             
             @Override
             public JdbcType type()
             throws ProtectionException
                 {
-                return jdbctype() ;
+                return JdbcTableEntity.this.jdbctype() ;
                 }
 
             @Override
             public void type(final JdbcType type)
             throws ProtectionException
                 {
-                jdbctype(
+                JdbcTableEntity.this.jdbctype(
                     type
                     );
                 }
@@ -1377,14 +1396,14 @@ implements JdbcTable
             public JdbcTable.TableStatus status()
             throws ProtectionException
                 {
-                return jdbcstatus();
+                return JdbcTableEntity.this.jdbcstatus();
                 }
 
             @Override
             public void status(final JdbcTable.TableStatus next)
             throws ProtectionException
                 {
-                jdbcstatus(
+                JdbcTableEntity.this.jdbcstatus(
                     next
                     );
                 }

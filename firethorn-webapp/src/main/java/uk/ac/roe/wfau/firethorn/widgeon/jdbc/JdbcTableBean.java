@@ -112,7 +112,7 @@ extends BaseTableBean<JdbcTable>
                     public Long getCount()
                     throws ProtectionException
                         {
-                        return entity().meta().adql().count();
+                        return entity().meta().adql().rowcount();
                         }
 
                     @Override
@@ -133,7 +133,7 @@ extends BaseTableBean<JdbcTable>
                     public Long getCount()
                     throws ProtectionException
                         {
-                        return entity().meta().jdbc().count();
+                        return entity().meta().jdbc().rowcount();
                         }
 
                     @Override

@@ -1,0 +1,1247 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@builder]
+
+    cat > "${FIRETHORN_HOME:?}/chain.properties" << EOF
+
+        metadata=$(pwgen 20 1)
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        usertype=mssql
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datatype=mssql
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        tunneluser=$(secret 'ssh.tunnel.user')
+        tunnelhost=$(secret 'ssh.tunnel.host')
+
+        admingroup=Hyaenidae
+        adminuser=Aardwolf
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=Afrotheria
+        guestuser=Hyrax
+        guestpass=$(pwgen 20 1)
+
+        tapresource=Wilhelmina
+        tapschemadata=data-$(pwgen 10 1)
+        tapschemauser=user-$(pwgen 10 1)
+        tapschemapass=pass-$(pwgen 10 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our Firethorn properties.
+#[user@builder]
+
+    cat > "${FIRETHORN_HOME:?}/firethorn.properties" << EOF
+
+firethorn.cleaner.skipfirst=2
+firethorn.cleaner.lifetime=PT10M
+firethorn.cleaner.cron=0 0/1 * * * ?
+
+EOF
+
+# -----------------------------------------------------
+# Link our compose config.
+#[user@builder]
+
+    ln -sf "${FIRETHORN_HOME:?}/chain.properties" "${FIRETHORN_HOME:?}/.env"
+
+# -----------------------------------------------------
+# take down our containers.
+#[user@builder]
+
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-remote.yml" \
+        down
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install eclipse:eclipse
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java container.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Start our test containers ...
+#[user@builder]
+
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-remote.yml" \
+        run \
+            angela
+
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Separate shell on the host VM, locate the logs volume.
+#[user@virtual]
+
+    sudo -s
+
+    container=baryptera_gillian_1
+    
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+    tail -f firethorn-debug.log
+
+
+
+# -----------------------------------------------------
+
+
+    The problem.
+    User data space filling up, possibly causing out of disc space errors on ramses2
+    First scan of JdbcRessource for user data space takes waaayyyy too long.
+
+    The cause, code in BaseProttector throws a ProtectionException for a null Operation.
+
+        if (null != operation)
+            {
+            return affirm(
+                operation.authentications(),
+                action
+                );
+            }
+        throw new ProtectionException(
+            this,
+            action
+            );
+
+    Problem is, UserDataCleaner doesn't have an Identity or an Operation (yet).
+    Result is, no data cleaned.
+    
+    Side issue - we haven't checked that this was working.
+
+    Temp fix
+        - return ok for the permission check ?
+
+    Better fix
+
+        Assign UserDataCleaner an Identity and an Operation
+
+    Improvements -
+
+        UserDataCleaner may clean _any_ table that does not have the 'permanent' flag set.
+        No need to start at a specific resource, just query all resources WHERE permanent == false
+
+        Mini report to the INFO channel on what UserDataCleaner does.
+
+        Include a sum of the size of everything WHERE permanent == false
+
+    Improvements -
+
+        Mini report to the INFO channel on data space used.
+        
+        TotalSize property on JdbSchema 
+            sum(table.jdbcsize) WHERE parent == this
+
+        TotalSize property on JdbcResource
+            sum(table.jdbcsize) WHERE parent == schema AND jdbc.schema.parent == this
+
+        VirtualSize property on AdqlSchema 
+            sum(base.jdbcsize) WHERE parent == this
+            
+        TotalSize property on JdbcResource
+            sum(table.base.jdbcsize) WHERE parent == adql.schema AND adql.schema.parent == this
+
+
+
+
+2018-07-15 01:03:41,224 TRACE [main] [UserDataCleaner] UserDataCleaner() 
+2018-07-15 01:03:41,245 DEBUG [main] [ScheduledAnnotationBeanPostProcessor] 1 @Scheduled methods processed on bean 'userDataCleaner': {public void uk.ac.roe.wfau.firethorn.daemon.UserDataCleaner.process()=[@org.springframework.scheduling.annotation.Scheduled(zone=, initialDelay=-1, cron=${firethorn.cleaner.cron:0 0/1 * * * ?}, fixedDelayString=, fixedDelay=-1, fixedRate=-1, fixedRateString=, initialDelayString=)]} 
+
+2018-07-15 01:10:00,002 INFO  [FireThornTaskScheduler-1] [UserDataCleaner] process() [0][10][PT20M][PT20M][DROP] 
+2018-07-15 01:10:00,002 DEBUG [FireThornTaskScheduler-1] [UserDataCleaner] Skip first [1][1] 
+
+2018-07-15 01:20:00,000 INFO  [FireThornTaskScheduler-1] [UserDataCleaner] process() [1][10][PT20M][PT20M][DROP] 
+2018-07-15 01:20:00,066 DEBUG [FireThornTaskScheduler-1] [UserDataCleaner]   cutoff   [2018-07-15T01:00:00.063Z] 
+2018-07-15 01:20:00,069 DEBUG [FireThornTaskScheduler-1] [UserDataCleaner]   resource [52][Userdata resource] 
+2018-07-15 01:20:00,571 DEBUG [FireThornTaskScheduler-1] [UserDataCleaner]   schema [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+
+2018-07-15 01:30:00,001 INFO  [FireThornTaskScheduler-2] [UserDataCleaner] process() [2][10][PT20M][PT20M][DROP] 
+2018-07-15 01:30:00,011 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   cutoff   [2018-07-15T01:10:00.011Z] 
+2018-07-15 01:30:00,016 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   resource [52][Userdata resource] 
+2018-07-15 01:30:00,026 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   schema [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+
+# -----------------------------------------------------
+
+2018-07-15 02:34:00,877 TRACE [FireThornTaskScheduler-2] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity] ident[null]]] 
+
+
+2018-07-15 02:59:00,018 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-15T02:39:00.008Z] 
+2018-07-15 02:59:00,056 TRACE [FireThornTaskScheduler-7] [UserDataCleaner] -- DONE -- 
+
+Create date 02:34:00 is before ending date 02:39:00
+So why isn't it being deleted ?
+
+
+# -----------------------------------------------------
+
+2018-07-15 09:30:33,100 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_DPBNLYKPN4624AAAAFRLK6ZPWE][2018-07-15T09:30:33.100Z] 
+
+2018-07-15 09:59:00,018 DEBUG [FireThornTaskScheduler-16] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-15T09:49:00.008Z] 
+2018-07-15 09:59:00,056 TRACE [FireThornTaskScheduler-16] [UserDataCleaner] -- DONE -- 
+
+09:30:33
+
+Still not getting picked up by the query - go figure.
+
+# -----------------------------------------------------
+# Ok, think I found it.
+# Using toDate() truncates the date
+# Need toDateTine at least
+
+                     ).setEntity(
+                         "parent",
+                         parent
+                         ).setDate(
+                             "date",
+                             date.toDate()
+                             )
+
+                     ).setEntity(
+                         "parent",
+                         parent
+                         ).setString(
+                             "date",
+                             date.toDateTimeISO()
+                             )
+
+
+# -----------------------------------------------------
+
+2018-07-16 01:54:35,153 TRACE [FireThornTaskScheduler-2] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity] ident[null]]] 
+2018-07-16 01:54:35,153 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 01:54:35,153 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 01:54:35,153 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 01:54:35,153 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 01:54:35,154 DEBUG [FireThornTaskScheduler-2] [JdbcSchemaEntity] tables() scan done for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 01:54:35,154 DEBUG [FireThornTaskScheduler-2] [JdbcSchemaEntity] Matching tables [200432] 
+2018-07-16 01:54:35,154 DEBUG [FireThornTaskScheduler-2] [JdbcSchemaEntity] Listed but not matched [0] 
+2018-07-16 01:54:35,154 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] Releasing locks [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 01:54:35,154 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] Found existing lock [252][FirethornUserdataZRQ20170621151245DEV.dbo][2018-07-16T01:53:00.537Z] 
+2018-07-16 01:54:35,154 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] Removing .... 
+2018-07-16 01:54:35,154 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] Notifying .... 
+
+2018-07-16 01:54:35,158 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:43:00.041Z] 
+2018-07-16 01:55:27,942 TRACE [FireThornTaskScheduler-2] [UserDataCleaner] -- DONE -- 
+
+    01:53 < 01:43 not yet
+
+2018-07-16 01:56:00,029 DEBUG [FireThornTaskScheduler-1] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:46:00.019Z] 
+2018-07-16 01:56:00,097 TRACE [FireThornTaskScheduler-1] [UserDataCleaner] -- DONE -- 
+
+2018-07-16 01:57:00,025 DEBUG [FireThornTaskScheduler-3] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:47:00.013Z] 
+2018-07-16 01:57:00,086 TRACE [FireThornTaskScheduler-3] [UserDataCleaner] -- DONE -- 
+
+2018-07-16 01:58:00,020 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:48:00.009Z] 
+2018-07-16 01:58:00,064 TRACE [FireThornTaskScheduler-2] [UserDataCleaner] -- DONE -- 
+
+2018-07-16 01:59:00,020 DEBUG [FireThornTaskScheduler-4] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:49:00.010Z] 
+2018-07-16 01:59:00,061 TRACE [FireThornTaskScheduler-4] [UserDataCleaner] -- DONE -- 
+
+
+
+2018-07-16 02:02:00,019 DEBUG [FireThornTaskScheduler-3] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:52:00.009Z] 
+2018-07-16 02:02:00,065 TRACE [FireThornTaskScheduler-3] [UserDataCleaner] -- DONE -- 
+
+2018-07-16 02:03:00,023 DEBUG [FireThornTaskScheduler-6] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:53:00.010Z] 
+2018-07-16 02:03:00,065 TRACE [FireThornTaskScheduler-6] [UserDataCleaner] -- DONE -- 
+
+
+
+2018-07-16 02:04:00,000 INFO  [FireThornTaskScheduler-2] [UserDataCleaner] process() [11][10][PT10M][PT10M][DROP] 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntity] init(Identity) 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntity] Using identity from context 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntity]   owner   [157][Aardwolf] 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntity]   created [2018-07-16T02:04:00.001Z] 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[null]]] 
+2018-07-16 02:04:00,001 DEBUG [FireThornTaskScheduler-2] [IdentityEntity] admin() 
+2018-07-16 02:04:00,002 TRACE [FireThornTaskScheduler-2] [CommunityEntity] admins() 
+2018-07-16 02:04:00,004 TRACE [FireThornTaskScheduler-2] [CommunityEntity]   found [103][Hyaenidae] 
+2018-07-16 02:04:00,004 DEBUG [FireThornTaskScheduler-2] [IdentityEntity] find (Community, String) [Aardwolf] 
+2018-07-16 02:04:00,006 DEBUG [FireThornTaskScheduler-2] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:04:00,008 DEBUG [FireThornTaskScheduler-2] [OperationEntity] authenticate() [37][157][Aardwolf][urn:system] 
+2018-07-16 02:04:00,008 DEBUG [FireThornTaskScheduler-2] [AuthMethodEntity] create() [37][157][Aardwolf][urn:system] 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntity] init(Identity) 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntity] Using identity from context 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntity]   owner   [null] 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntity]   created [2018-07-16T02:04:00.009Z] 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntityFactory] insert [Authentication[Ident[null]Identity[Aardwolf]Method[urn:system]]] 
+2018-07-16 02:04:00,009 DEBUG [FireThornTaskScheduler-2] [OperationEntity] primary(Authentication) 
+2018-07-16 02:04:00,009 DEBUG [FireThornTaskScheduler-2] [OperationEntity]   Authentication [Authentication[Ident[238]Identity[Aardwolf]Method[urn:system]]] 
+2018-07-16 02:04:00,009 DEBUG [FireThornTaskScheduler-2] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:04:00,010 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   cutoff   [2018-07-16T01:54:00.010Z] 
+2018-07-16 02:04:00,010 DEBUG [FireThornTaskScheduler-2] [JdbcResourceEntity] userdata() 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [JdbcResourceEntity] Userdata resource [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   resource [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [JdbcResourceEntity] schemas() for [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scan for [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scantest for [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] prevscan   [2018-07-16T01:53:00.496Z] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scanperiod [PT25H] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] prev scan is recent - skipping 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] affirm(Iterable<Authentication>, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] check(Authentication, Action) [Authentication[Ident[238]Identity[Aardwolf]Method[urn:system]]][uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [IdentityEntity] admin() 
+2018-07-16 02:04:00,013 TRACE [FireThornTaskScheduler-2] [CommunityEntity] admins() 
+2018-07-16 02:04:00,014 TRACE [FireThornTaskScheduler-2] [CommunityEntity]   found [103][Hyaenidae] 
+2018-07-16 02:04:00,014 DEBUG [FireThornTaskScheduler-2] [IdentityEntity] find (Community, String) [Aardwolf] 
+2018-07-16 02:04:00,015 DEBUG [FireThornTaskScheduler-2] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:04:00,017 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   schema [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:04:00,017 DEBUG [FireThornTaskScheduler-2] [JdbcSchemaEntity] tables() for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scan for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scantest for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [JdbcSchemaEntity] factory() 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] prevscan   [2018-07-16T01:54:35.154Z] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scanperiod [PT25H] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] prev scan is recent - skipping 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:54:00.010Z] 
+2018-07-16 02:04:00,023 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [302][XX_EMH35GZ7FJV5MAAAAFRLMAXKUU][2018-07-16T01:53:00.901Z] 
+2018-07-16 02:04:00,025 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [302][XX_EMH35GZ7FJV5MAAAAFRLMAXKUU][2018-07-16T01:53:00.901Z] 
+2018-07-16 02:04:00,026 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[302][XX_EMH35GZ7FJV5MAAAAFRLMAXKUU] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_EMH35GZ7FJV5MAAAAFRLMAXKUU] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_EMH35GZ7FJV5MAAAAFRLMAXKUU]] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] Source is null, updating to EMPTY 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is EMPTY, initialising DataSource 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:00,100 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [303][XX_YTDCXA43E2ER2AAAAFRKFAHGRQ][2018-07-16T01:53:00.903Z] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [303][XX_YTDCXA43E2ER2AAAAFRKFAHGRQ][2018-07-16T01:53:00.903Z] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[303][XX_YTDCXA43E2ER2AAAAFRKFAHGRQ] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_YTDCXA43E2ER2AAAAFRKFAHGRQ] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_YTDCXA43E2ER2AAAAFRKFAHGRQ]] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:00,490 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:00,490 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:00,490 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:01,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [304][XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU][2018-07-16T01:53:00.904Z] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [304][XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU][2018-07-16T01:53:00.904Z] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[304][XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU]] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:01,779 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:02,182 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:02,183 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,183 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:02,183 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,183 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [305][XX_6DIR57PVKBHO2AAAAFRLBEHD6E][2018-07-16T01:53:00.904Z] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [305][XX_6DIR57PVKBHO2AAAAFRLBEHD6E][2018-07-16T01:53:00.904Z] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[305][XX_6DIR57PVKBHO2AAAAFRLBEHD6E] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_6DIR57PVKBHO2AAAAFRLBEHD6E] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_6DIR57PVKBHO2AAAAFRLBEHD6E]] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:02,258 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [306][XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4][2018-07-16T01:53:00.905Z] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [306][XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4][2018-07-16T01:53:00.905Z] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[306][XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4]] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:02,736 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [307][XX_EHT7ZEKPIUBISAAAAFRKFBDXSM][2018-07-16T01:53:00.906Z] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [307][XX_EHT7ZEKPIUBISAAAAFRKFBDXSM][2018-07-16T01:53:00.906Z] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[307][XX_EHT7ZEKPIUBISAAAAFRKFBDXSM] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_EHT7ZEKPIUBISAAAAFRKFBDXSM] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_EHT7ZEKPIUBISAAAAFRKFBDXSM]] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:03,273 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,313 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [308][XX_ALZJEF5PVLU2EAAAAFRK7WVQMU][2018-07-16T01:53:00.908Z] 
+2018-07-16 02:04:03,313 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [308][XX_ALZJEF5PVLU2EAAAAFRK7WVQMU][2018-07-16T01:53:00.908Z] 
+2018-07-16 02:04:03,313 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:03,313 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[308][XX_ALZJEF5PVLU2EAAAAFRK7WVQMU] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_ALZJEF5PVLU2EAAAAFRK7WVQMU] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_ALZJEF5PVLU2EAAAAFRK7WVQMU]] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:03,384 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:03,437 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:03,438 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,438 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,438 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,438 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,439 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [309][XX_WATBICZETYY5KAAAAFRLDVGVAA][2018-07-16T01:53:00.909Z] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [309][XX_WATBICZETYY5KAAAAFRLDVGVAA][2018-07-16T01:53:00.909Z] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[309][XX_WATBICZETYY5KAAAAFRLDVGVAA] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_WATBICZETYY5KAAAAFRLDVGVAA] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_WATBICZETYY5KAAAAFRLDVGVAA]] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,441 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:03,441 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:03,441 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:03,441 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:03,511 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [310][XX_EYT5CJMOJYR42AAAAFRLOCXZJE][2018-07-16T01:53:00.910Z] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [310][XX_EYT5CJMOJYR42AAAAFRLOCXZJE][2018-07-16T01:53:00.910Z] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[310][XX_EYT5CJMOJYR42AAAAFRLOCXZJE] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_EYT5CJMOJYR42AAAAFRLOCXZJE] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_EYT5CJMOJYR42AAAAFRLOCXZJE]] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:03,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [311][XX_XKCHSDGPCR6DQAAAAFRH6QVCNE][2018-07-16T01:53:00.911Z] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [311][XX_XKCHSDGPCR6DQAAAAFRH6QVCNE][2018-07-16T01:53:00.911Z] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[311][XX_XKCHSDGPCR6DQAAAAFRH6QVCNE] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_XKCHSDGPCR6DQAAAAFRH6QVCNE] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_XKCHSDGPCR6DQAAAAFRH6QVCNE]] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:04,139 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,559 TRACE [FireThornTaskScheduler-2] [UserDataCleaner] -- DONE -- 
+
+
+
+
+
+
+
+2018-07-16 02:04:00,000 INFO  [FireThornTaskScheduler-2] [UserDataCleaner] process() [11][10][PT10M][PT10M][DROP] 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntity] init(Identity) 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntity] Using identity from context 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntity]   owner   [157][Aardwolf] 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntity]   created [2018-07-16T02:04:00.001Z] 
+2018-07-16 02:04:00,001 TRACE [FireThornTaskScheduler-2] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[null]]] 
+2018-07-16 02:04:00,001 DEBUG [FireThornTaskScheduler-2] [IdentityEntity] admin() 
+2018-07-16 02:04:00,002 TRACE [FireThornTaskScheduler-2] [CommunityEntity] admins() 
+2018-07-16 02:04:00,004 TRACE [FireThornTaskScheduler-2] [CommunityEntity]   found [103][Hyaenidae] 
+2018-07-16 02:04:00,004 DEBUG [FireThornTaskScheduler-2] [IdentityEntity] find (Community, String) [Aardwolf] 
+2018-07-16 02:04:00,006 DEBUG [FireThornTaskScheduler-2] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:04:00,008 DEBUG [FireThornTaskScheduler-2] [OperationEntity] authenticate() [37][157][Aardwolf][urn:system] 
+2018-07-16 02:04:00,008 DEBUG [FireThornTaskScheduler-2] [AuthMethodEntity] create() [37][157][Aardwolf][urn:system] 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntity] init(Identity) 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntity] Using identity from context 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntity]   owner   [null] 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntity]   created [2018-07-16T02:04:00.009Z] 
+2018-07-16 02:04:00,009 TRACE [FireThornTaskScheduler-2] [AbstractEntityFactory] insert [Authentication[Ident[null]Identity[Aardwolf]Method[urn:system]]] 
+2018-07-16 02:04:00,009 DEBUG [FireThornTaskScheduler-2] [OperationEntity] primary(Authentication) 
+2018-07-16 02:04:00,009 DEBUG [FireThornTaskScheduler-2] [OperationEntity]   Authentication [Authentication[Ident[238]Identity[Aardwolf]Method[urn:system]]] 
+2018-07-16 02:04:00,009 DEBUG [FireThornTaskScheduler-2] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:04:00,010 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   cutoff   [2018-07-16T01:54:00.010Z] 
+2018-07-16 02:04:00,010 DEBUG [FireThornTaskScheduler-2] [JdbcResourceEntity] userdata() 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [JdbcResourceEntity] Userdata resource [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   resource [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [JdbcResourceEntity] schemas() for [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scan for [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scantest for [52][Userdata resource] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-07-16 02:04:00,012 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] prevscan   [2018-07-16T01:53:00.496Z] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scanperiod [PT25H] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] prev scan is recent - skipping 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] affirm(Iterable<Authentication>, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] check(Authentication, Action) [Authentication[Ident[238]Identity[Aardwolf]Method[urn:system]]][uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:04:00,013 DEBUG [FireThornTaskScheduler-2] [IdentityEntity] admin() 
+2018-07-16 02:04:00,013 TRACE [FireThornTaskScheduler-2] [CommunityEntity] admins() 
+2018-07-16 02:04:00,014 TRACE [FireThornTaskScheduler-2] [CommunityEntity]   found [103][Hyaenidae] 
+2018-07-16 02:04:00,014 DEBUG [FireThornTaskScheduler-2] [IdentityEntity] find (Community, String) [Aardwolf] 
+2018-07-16 02:04:00,015 DEBUG [FireThornTaskScheduler-2] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:04:00,017 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   schema [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:04:00,017 DEBUG [FireThornTaskScheduler-2] [JdbcSchemaEntity] tables() for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scan for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scantest for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [JdbcSchemaEntity] factory() 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] prevscan   [2018-07-16T01:54:35.154Z] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] scanperiod [PT25H] 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [BaseComponentEntity] prev scan is recent - skipping 
+2018-07-16 02:04:00,018 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:54:00.010Z] 
+2018-07-16 02:04:00,023 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [302][XX_EMH35GZ7FJV5MAAAAFRLMAXKUU][2018-07-16T01:53:00.901Z] 
+2018-07-16 02:04:00,025 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [302][XX_EMH35GZ7FJV5MAAAAFRLMAXKUU][2018-07-16T01:53:00.901Z] 
+2018-07-16 02:04:00,026 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[302][XX_EMH35GZ7FJV5MAAAAFRLMAXKUU] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_EMH35GZ7FJV5MAAAAFRLMAXKUU] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_EMH35GZ7FJV5MAAAAFRLMAXKUU]] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] Source is null, updating to EMPTY 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is EMPTY, initialising DataSource 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:00,027 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:00,100 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,487 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [303][XX_YTDCXA43E2ER2AAAAFRKFAHGRQ][2018-07-16T01:53:00.903Z] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [303][XX_YTDCXA43E2ER2AAAAFRKFAHGRQ][2018-07-16T01:53:00.903Z] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[303][XX_YTDCXA43E2ER2AAAAFRKFAHGRQ] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_YTDCXA43E2ER2AAAAFRKFAHGRQ] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_YTDCXA43E2ER2AAAAFRKFAHGRQ]] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:00,489 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:00,490 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:00,490 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:00,490 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:01,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,704 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [304][XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU][2018-07-16T01:53:00.904Z] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [304][XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU][2018-07-16T01:53:00.904Z] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[304][XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,707 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_H7C5QUBLRJ5XQAAAAFRK7UCIZU]] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:01,708 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:01,779 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:02,182 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:02,183 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,183 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:02,183 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,183 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [305][XX_6DIR57PVKBHO2AAAAFRLBEHD6E][2018-07-16T01:53:00.904Z] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [305][XX_6DIR57PVKBHO2AAAAFRLBEHD6E][2018-07-16T01:53:00.904Z] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[305][XX_6DIR57PVKBHO2AAAAFRLBEHD6E] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_6DIR57PVKBHO2AAAAFRLBEHD6E] 
+2018-07-16 02:04:02,186 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_6DIR57PVKBHO2AAAAFRLBEHD6E]] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:02,187 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:02,258 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,662 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [306][XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4][2018-07-16T01:53:00.905Z] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [306][XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4][2018-07-16T01:53:00.905Z] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[306][XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_WIRC5PIKXYKJGAAAAFRLM7ZKV4]] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,665 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:02,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:02,736 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,201 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [307][XX_EHT7ZEKPIUBISAAAAFRKFBDXSM][2018-07-16T01:53:00.906Z] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [307][XX_EHT7ZEKPIUBISAAAAFRKFBDXSM][2018-07-16T01:53:00.906Z] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[307][XX_EHT7ZEKPIUBISAAAAFRKFBDXSM] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_EHT7ZEKPIUBISAAAAFRKFBDXSM] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_EHT7ZEKPIUBISAAAAFRKFBDXSM]] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:03,203 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:03,273 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,311 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,313 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [308][XX_ALZJEF5PVLU2EAAAAFRK7WVQMU][2018-07-16T01:53:00.908Z] 
+2018-07-16 02:04:03,313 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [308][XX_ALZJEF5PVLU2EAAAAFRK7WVQMU][2018-07-16T01:53:00.908Z] 
+2018-07-16 02:04:03,313 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:03,313 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[308][XX_ALZJEF5PVLU2EAAAAFRK7WVQMU] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_ALZJEF5PVLU2EAAAAFRK7WVQMU] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_ALZJEF5PVLU2EAAAAFRK7WVQMU]] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:03,314 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:03,384 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:03,437 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:03,438 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,438 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,438 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,438 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,439 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [309][XX_WATBICZETYY5KAAAAFRLDVGVAA][2018-07-16T01:53:00.909Z] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [309][XX_WATBICZETYY5KAAAAFRLDVGVAA][2018-07-16T01:53:00.909Z] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[309][XX_WATBICZETYY5KAAAAFRLDVGVAA] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_WATBICZETYY5KAAAAFRLDVGVAA] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_WATBICZETYY5KAAAAFRLDVGVAA]] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,440 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,441 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:03,441 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:03,441 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:03,441 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:03,511 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,593 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [310][XX_EYT5CJMOJYR42AAAAFRLOCXZJE][2018-07-16T01:53:00.910Z] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [310][XX_EYT5CJMOJYR42AAAAFRLOCXZJE][2018-07-16T01:53:00.910Z] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[310][XX_EYT5CJMOJYR42AAAAFRLOCXZJE] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_EYT5CJMOJYR42AAAAFRLOCXZJE] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_EYT5CJMOJYR42AAAAFRLOCXZJE]] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:03,595 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:03,666 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,066 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   table [311][XX_XKCHSDGPCR6DQAAAAFRH6QVCNE][2018-07-16T01:53:00.911Z] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [UserDataCleaner]   dropping [311][XX_XKCHSDGPCR6DQAAAAFRH6QVCNE][2018-07-16T01:53:00.911Z] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [JdbcTableEntity] jdbcdrop[311][XX_XKCHSDGPCR6DQAAAAFRH6QVCNE] 
+2018-07-16 02:04:04,068 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] Drop JdbcTable [XX_XKCHSDGPCR6DQAAAAFRH6QVCNE] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_XKCHSDGPCR6DQAAAAFRH6QVCNE]] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:04:04,069 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:04:04,139 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:04:04,558 DEBUG [FireThornTaskScheduler-2] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:04:04,559 TRACE [FireThornTaskScheduler-2] [UserDataCleaner] -- DONE -- 
+2018-07-16 02:05:00,001 INFO  [FireThornTaskScheduler-7] [UserDataCleaner] process() [12][10][PT10M][PT10M][DROP] 
+2018-07-16 02:05:00,001 TRACE [FireThornTaskScheduler-7] [AbstractEntity] init(Identity) 
+2018-07-16 02:05:00,001 TRACE [FireThornTaskScheduler-7] [AbstractEntity] Using identity from context 
+2018-07-16 02:05:00,001 TRACE [FireThornTaskScheduler-7] [AbstractEntity]   owner   [null] 
+2018-07-16 02:05:00,002 TRACE [FireThornTaskScheduler-7] [AbstractEntity]   created [2018-07-16T02:05:00.001Z] 
+2018-07-16 02:05:00,002 TRACE [FireThornTaskScheduler-7] [AbstractEntityFactory] insert [entity[class[uk.ac.roe.wfau.firethorn.identity.OperationEntity] ident[null]]] 
+2018-07-16 02:05:00,002 DEBUG [FireThornTaskScheduler-7] [IdentityEntity] admin() 
+2018-07-16 02:05:00,002 TRACE [FireThornTaskScheduler-7] [CommunityEntity] admins() 
+2018-07-16 02:05:00,004 TRACE [FireThornTaskScheduler-7] [CommunityEntity]   found [103][Hyaenidae] 
+2018-07-16 02:05:00,004 DEBUG [FireThornTaskScheduler-7] [IdentityEntity] find (Community, String) [Aardwolf] 
+2018-07-16 02:05:00,005 DEBUG [FireThornTaskScheduler-7] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:05:00,007 DEBUG [FireThornTaskScheduler-7] [OperationEntity] authenticate() [40][157][Aardwolf][urn:system] 
+2018-07-16 02:05:00,007 DEBUG [FireThornTaskScheduler-7] [AuthMethodEntity] create() [40][157][Aardwolf][urn:system] 
+2018-07-16 02:05:00,007 TRACE [FireThornTaskScheduler-7] [AbstractEntity] init(Identity) 
+2018-07-16 02:05:00,007 TRACE [FireThornTaskScheduler-7] [AbstractEntity] Using identity from context 
+2018-07-16 02:05:00,007 TRACE [FireThornTaskScheduler-7] [AbstractEntity]   owner   [null] 
+2018-07-16 02:05:00,007 TRACE [FireThornTaskScheduler-7] [AbstractEntity]   created [2018-07-16T02:05:00.007Z] 
+2018-07-16 02:05:00,007 TRACE [FireThornTaskScheduler-7] [AbstractEntityFactory] insert [Authentication[Ident[null]Identity[Aardwolf]Method[urn:system]]] 
+2018-07-16 02:05:00,008 DEBUG [FireThornTaskScheduler-7] [OperationEntity] primary(Authentication) 
+2018-07-16 02:05:00,008 DEBUG [FireThornTaskScheduler-7] [OperationEntity]   Authentication [Authentication[Ident[241]Identity[Aardwolf]Method[urn:system]]] 
+2018-07-16 02:05:00,008 DEBUG [FireThornTaskScheduler-7] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:05:00,008 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   cutoff   [2018-07-16T01:55:00.008Z] 
+2018-07-16 02:05:00,008 DEBUG [FireThornTaskScheduler-7] [JdbcResourceEntity] userdata() 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [JdbcResourceEntity] Userdata resource [52][Userdata resource] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   resource [52][Userdata resource] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [JdbcResourceEntity] schemas() for [52][Userdata resource] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] scan for [52][Userdata resource] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] scantest for [52][Userdata resource] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] prevscan   [2018-07-16T01:53:00.496Z] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] scanperiod [PT25H] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] prev scan is recent - skipping 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseProtector] affirm(Iterable<Authentication>, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseProtector] check(Authentication, Action) [Authentication[Ident[241]Identity[Aardwolf]Method[urn:system]]][uk.ac.roe.wfau.firethorn.access.BaseAction@572a488c] 
+2018-07-16 02:05:00,012 DEBUG [FireThornTaskScheduler-7] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:05:00,013 DEBUG [FireThornTaskScheduler-7] [IdentityEntity] admin() 
+2018-07-16 02:05:00,013 TRACE [FireThornTaskScheduler-7] [CommunityEntity] admins() 
+2018-07-16 02:05:00,014 TRACE [FireThornTaskScheduler-7] [CommunityEntity]   found [103][Hyaenidae] 
+2018-07-16 02:05:00,014 DEBUG [FireThornTaskScheduler-7] [IdentityEntity] find (Community, String) [Aardwolf] 
+2018-07-16 02:05:00,015 DEBUG [FireThornTaskScheduler-7] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[157]]] 
+2018-07-16 02:05:00,017 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   schema [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:05:00,017 DEBUG [FireThornTaskScheduler-7] [JdbcSchemaEntity] tables() for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:05:00,017 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] scan for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:05:00,018 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] scantest for [252][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-07-16 02:05:00,018 DEBUG [FireThornTaskScheduler-7] [JdbcSchemaEntity] factory() 
+2018-07-16 02:05:00,018 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-07-16 02:05:00,018 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-07-16 02:05:00,018 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-07-16 02:05:00,018 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] prevscan   [2018-07-16T01:54:35.154Z] 
+2018-07-16 02:05:00,018 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] scanperiod [PT25H] 
+2018-07-16 02:05:00,018 DEBUG [FireThornTaskScheduler-7] [BaseComponentEntity] prev scan is recent - skipping 
+2018-07-16 02:05:00,018 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-07-16T01:55:00.008Z] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [312][XX_DCOLVKZH6U7LGAAAAFRKFF6WOU][2018-07-16T01:53:00.912Z] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [312][XX_DCOLVKZH6U7LGAAAAFRKFF6WOU][2018-07-16T01:53:00.912Z] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[312][XX_DCOLVKZH6U7LGAAAAFRKFF6WOU] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_DCOLVKZH6U7LGAAAAFRKFF6WOU] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_DCOLVKZH6U7LGAAAAFRKFF6WOU]] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,021 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] Source is null, updating to EMPTY 
+2018-07-16 02:05:00,022 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is EMPTY, initialising DataSource 
+2018-07-16 02:05:00,022 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,022 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,022 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:00,022 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:00,022 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:00,094 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:00,487 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:00,487 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,487 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:00,487 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,487 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,489 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [313][XX_OAMDEPXSQ3YOCAAAAFRK7ZM6AQ][2018-07-16T01:53:00.913Z] 
+2018-07-16 02:05:00,489 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [313][XX_OAMDEPXSQ3YOCAAAAFRK7ZM6AQ][2018-07-16T01:53:00.913Z] 
+2018-07-16 02:05:00,489 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:00,489 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[313][XX_OAMDEPXSQ3YOCAAAAFRK7ZM6AQ] 
+2018-07-16 02:05:00,489 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_OAMDEPXSQ3YOCAAAAFRK7ZM6AQ] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_OAMDEPXSQ3YOCAAAAFRK7ZM6AQ]] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:00,490 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:00,560 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:00,968 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:00,968 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,968 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:00,968 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,968 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [314][XX_ICYYN6NAPKKW6AAAAFRLEAU2LU][2018-07-16T01:53:00.913Z] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [314][XX_ICYYN6NAPKKW6AAAAFRLEAU2LU][2018-07-16T01:53:00.913Z] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[314][XX_ICYYN6NAPKKW6AAAAFRLEAU2LU] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_ICYYN6NAPKKW6AAAAFRLEAU2LU] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_ICYYN6NAPKKW6AAAAFRLEAU2LU]] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:00,970 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:00,971 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:01,064 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:01,452 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:01,452 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,452 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:01,452 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,452 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [315][XX_TJXUL7KPUGLDEAAAAFRLPHAKEA][2018-07-16T01:53:00.914Z] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [315][XX_TJXUL7KPUGLDEAAAAFRLPHAKEA][2018-07-16T01:53:00.914Z] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[315][XX_TJXUL7KPUGLDEAAAAFRLPHAKEA] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_TJXUL7KPUGLDEAAAAFRLPHAKEA] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_TJXUL7KPUGLDEAAAAFRLPHAKEA]] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,454 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:01,455 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,455 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:01,455 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,455 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:01,455 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:05:01,455 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:01,455 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:01,455 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:01,526 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:01,986 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:01,986 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,986 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:01,986 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,986 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:01,988 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [316][XX_CLQ2CYMROXOGSAAAAFRJ7LQJGA][2018-07-16T01:53:00.915Z] 
+2018-07-16 02:05:01,988 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [316][XX_CLQ2CYMROXOGSAAAAFRJ7LQJGA][2018-07-16T01:53:00.915Z] 
+2018-07-16 02:05:01,988 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[316][XX_CLQ2CYMROXOGSAAAAFRJ7LQJGA] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_CLQ2CYMROXOGSAAAAFRJ7LQJGA] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_CLQ2CYMROXOGSAAAAFRJ7LQJGA]] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:01,989 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:02,060 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:02,472 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:02,472 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,472 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:02,472 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,472 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,474 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [317][XX_SFE2ANX2PEHQOAAAAFRKFMHIK4][2018-07-16T01:53:00.916Z] 
+2018-07-16 02:05:02,475 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [317][XX_SFE2ANX2PEHQOAAAAFRKFMHIK4][2018-07-16T01:53:00.916Z] 
+2018-07-16 02:05:02,475 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:02,475 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[317][XX_SFE2ANX2PEHQOAAAAFRKFMHIK4] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_SFE2ANX2PEHQOAAAAFRKFMHIK4] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_SFE2ANX2PEHQOAAAAFRKFMHIK4]] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:02,476 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:02,548 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:02,598 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:02,598 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,598 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:02,598 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,598 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [318][XX_ZGPZDOLVWH6ROAAAAFRK74KNCQ][2018-07-16T01:53:00.917Z] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [318][XX_ZGPZDOLVWH6ROAAAAFRK74KNCQ][2018-07-16T01:53:00.917Z] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[318][XX_ZGPZDOLVWH6ROAAAAFRK74KNCQ] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_ZGPZDOLVWH6ROAAAAFRK74KNCQ] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_ZGPZDOLVWH6ROAAAAFRK74KNCQ]] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:02,600 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:02,601 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:02,672 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:02,705 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:02,705 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,705 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:02,705 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,705 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,707 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [319][XX_J4OADZAKUDIXGAAAAFRLEPCUU4][2018-07-16T01:53:00.919Z] 
+2018-07-16 02:05:02,707 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [319][XX_J4OADZAKUDIXGAAAAFRLEPCUU4][2018-07-16T01:53:00.919Z] 
+2018-07-16 02:05:02,707 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:02,707 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[319][XX_J4OADZAKUDIXGAAAAFRLEPCUU4] 
+2018-07-16 02:05:02,707 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_J4OADZAKUDIXGAAAAFRLEPCUU4] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_J4OADZAKUDIXGAAAAFRLEPCUU4]] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:02,708 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:05:02,709 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:02,709 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:02,709 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:02,779 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:03,178 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:03,178 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,178 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:03,178 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,178 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [320][XX_X7ZGPKGNSVNICAAAAFRLQLT6X4][2018-07-16T01:53:00.920Z] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [320][XX_X7ZGPKGNSVNICAAAAFRLQLT6X4][2018-07-16T01:53:00.920Z] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[320][XX_X7ZGPKGNSVNICAAAAFRLQLT6X4] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_X7ZGPKGNSVNICAAAAFRLQLT6X4] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_X7ZGPKGNSVNICAAAAFRLQLT6X4]] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,180 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:03,181 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,181 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:03,181 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,181 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:03,181 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:05:03,181 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:03,181 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:03,181 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:03,250 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:03,310 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:03,310 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,310 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:03,310 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,310 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:03,312 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   table [321][XX_XV4RDKJL2FO6CAAAAFRKA57MPQ][2018-07-16T01:53:00.921Z] 
+2018-07-16 02:05:03,312 DEBUG [FireThornTaskScheduler-7] [UserDataCleaner]   dropping [321][XX_XV4RDKJL2FO6CAAAAFRKA57MPQ][2018-07-16T01:53:00.921Z] 
+2018-07-16 02:05:03,312 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcstatus() [CREATED]->[DROPPED] 
+2018-07-16 02:05:03,312 DEBUG [FireThornTaskScheduler-7] [JdbcTableEntity] jdbcdrop[321][XX_XV4RDKJL2FO6CAAAAFRKA57MPQ] 
+2018-07-16 02:05:03,312 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,312 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] Drop JdbcTable [XX_XV4RDKJL2FO6CAAAAFRKA57MPQ] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL statement [DROP TABLE [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_XV4RDKJL2FO6CAAAAFRKA57MPQ]] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-07-16 02:05:03,313 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] With user/pass 
+2018-07-16 02:05:03,314 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] connecting .... 
+2018-07-16 02:05:03,384 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] .... connected 
+2018-07-16 02:05:03,427 DEBUG [FireThornTaskScheduler-7] [SQLServerOperator] SQL result [0] 
+2018-07-16 02:05:03,427 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,427 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV][1] 
+2018-07-16 02:05:03,427 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] operator() for [mssql] 
+2018-07-16 02:05:03,427 DEBUG [FireThornTaskScheduler-7] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://patricia/FirethornUserdataZRQ20170621151245DEV] 
+2018-07-16 02:05:03,427 TRACE [FireThornTaskScheduler-7] [UserDataCleaner] -- DONE -- 
+

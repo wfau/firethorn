@@ -415,9 +415,7 @@ public class AdqlTableProxy
     @Override
     public EntityProtector protector()
         {
-        // TODO Auto-generated method stub
-        // No write operations, read controlled by base and parent. 
-        return null;
+        return base.protector();
         }
 
 	@Override
@@ -426,4 +424,11 @@ public class AdqlTableProxy
 	    {
 		return base.bluequery();
 	    }
+
+    @Override
+    public Long rowcount()
+    throws ProtectionException
+        {
+        return base.rowcount();
+        }
     }
