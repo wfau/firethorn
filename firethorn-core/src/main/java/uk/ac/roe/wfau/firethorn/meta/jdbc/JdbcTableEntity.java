@@ -513,7 +513,6 @@ implements JdbcTable
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
             if (JdbcTableEntity.EntityServices.instance == null)
                 {
                 JdbcTableEntity.EntityServices.instance = this ;
@@ -578,14 +577,12 @@ implements JdbcTable
     @Override
     protected JdbcTable.EntityFactory factory()
         {
-        log.debug("factory()");
         return JdbcTableEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected JdbcTable.EntityServices services()
         {
-        log.debug("services()");
         return JdbcTableEntity.EntityServices.instance() ; 
         }
 
@@ -764,10 +761,6 @@ implements JdbcTable
     protected Long jdbcrowcount()
     throws ProtectionException
         {
-        log.trace("jdbcrowcount() [{}][{}]",
-            this.ident(),
-            this.jdbcrowcount
-            );
         if (this.jdbcrowcount != null)
             {
             return this.jdbcrowcount;
@@ -779,11 +772,6 @@ implements JdbcTable
     protected void jdbcrowcount(final Long count)
     throws ProtectionException
         {
-        log.trace("jdbcrowcount(Long) [{}][{}]->[{}]",
-            this.ident(),
-            this.jdbcrowcount, 
-            count
-            );
         this.jdbcrowcount = count;
         }
 
@@ -798,10 +786,6 @@ implements JdbcTable
     protected Long jdbcrowguess()
     throws ProtectionException
         {
-        log.trace("jdbcrowcount() [{}][{}]",
-            this.ident(),
-            this.jdbcrowcount
-            );
         if (this.jdbcrowguess != null)
             {
             return this.jdbcrowguess;
@@ -813,21 +797,12 @@ implements JdbcTable
     protected void jdbcrowguess(final Long count)
     throws ProtectionException
         {
-        log.trace("jdbcrowcount(Long) [{}][{}]->[{}]",
-            this.ident(),
-            this.jdbcrowcount,
-            count
-            );
         this.jdbcrowguess = count;
         }
     @Override
     protected Long adqlrowcount()
     throws ProtectionException
         {
-        log.trace("adqlrowcount() [{}][{}]",
-            this.ident(),
-            this.adqlrowcount
-            );
         if (this.adqlrowcount != null)
             {
             return this.adqlrowcount;
@@ -840,9 +815,6 @@ implements JdbcTable
     public Long rowcount()
     throws ProtectionException
         {
-        log.trace("rowcount() [{}][{}]",
-            this.ident()
-            );
         return this.adqlrowcount();
         }
     
@@ -850,7 +822,7 @@ implements JdbcTable
     public JdbcTable.Columns columns()
     throws ProtectionException
         {
-        log.debug("columns() for [{}][{}]", ident(), namebuilder());
+        log.trace("columns() for [{}][{}]", ident(), namebuilder());
         scan();
         return new JdbcTable.Columns()
             {

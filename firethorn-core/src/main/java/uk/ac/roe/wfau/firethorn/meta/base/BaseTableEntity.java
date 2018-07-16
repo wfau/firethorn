@@ -215,10 +215,6 @@ implements BaseTable<TableType, ColumnType>
     protected AdqlTable.TableStatus adqlstatus()
     throws ProtectionException
         {
-        log.trace("adqlstatus() [{}][{}]",
-            this.ident(),
-            this.adqlstatus
-            );
         if (this.adqlstatus != null)
             {
             return this.adqlstatus ;
@@ -230,11 +226,6 @@ implements BaseTable<TableType, ColumnType>
     protected void adqlstatus(final AdqlTable.TableStatus next)
     throws ProtectionException
         {
-        log.trace("adqlstatus(TableStatus) [{}][{}]->[{}]",
-            this.ident(),
-            this.adqlstatus,
-            next
-            );
         if (next == AdqlTable.TableStatus.UNKNOWN)
             {
             log.warn("Setting AdqlTable.AdqlStatus to UNKNOWN [{}]", this.ident());
@@ -253,10 +244,6 @@ implements BaseTable<TableType, ColumnType>
     protected Long adqlrowcount()
     throws ProtectionException
         {
-        log.trace("adqlrowcount() [{}][{}]",
-            this.ident(),
-            this.adqlrowcount
-            );
         if (this.adqlrowcount != null)
             {
             return this.adqlrowcount;
@@ -268,11 +255,6 @@ implements BaseTable<TableType, ColumnType>
     protected void adqlrowcount(final Long count)
     throws ProtectionException
         {
-        log.trace("adqlrowcount() [{}][{}]->[{}]",
-            this.ident(),
-            this.adqlrowcount,
-            count
-            );
         this.adqlrowcount = count;
         }
 

@@ -660,10 +660,6 @@ public class AdqlTableEntity
     public Long adqlrowcount()
     throws ProtectionException
         {
-        log.trace("adqlrowcount() [{}][{}]",
-                this.ident(),
-                this.adqlrowcount 
-                );
         if (this.adqlrowcount != null)
             {
             return this.adqlrowcount();
@@ -676,9 +672,6 @@ public class AdqlTableEntity
     public Long rowcount()
     throws ProtectionException
         {
-        log.trace("rowcount() [{}][{}]",
-            this.ident()
-            );
         return this.adqlrowcount();
         }
 
@@ -686,10 +679,6 @@ public class AdqlTableEntity
     protected AdqlTable.TableStatus adqlstatus()
     throws ProtectionException
         {
-        log.trace("adqlstatus() [{}][{}]",
-            this.ident(),
-            this.adqlstatus
-            );
         if (this.adqlstatus != null)
             {
             return this.adqlstatus() ;
