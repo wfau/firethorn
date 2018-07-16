@@ -56,11 +56,6 @@ public abstract class BaseTableEntity<TableType extends BaseTable<TableType, Col
 extends TreeComponentEntity<TableType>
 implements BaseTable<TableType, ColumnType>
     {
-    /**
-     * Empty count value, {@value}.
-     *
-     */
-    protected static final Long EMPTY_COUNT_VALUE = new Long(0L);
 
     /**
      * Hibernate column mapping.
@@ -72,7 +67,7 @@ implements BaseTable<TableType, ColumnType>
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_ADQL_COUNT_COL = "adqlcount" ;
+    protected static final String DB_ADQL_COUNT_COL = "adqlrowcount" ;
 
     /**
      * Hibernate column mapping, {@value}.
@@ -245,22 +240,22 @@ implements BaseTable<TableType, ColumnType>
         nullable = true,
         updatable = true
         )
-    protected Long adqlcount ;
-    protected Long adqlcount()
+    protected Long adqlrowcount = null ;
+    protected Long adqlrowcount()
     throws ProtectionException
         {
-        if (this.adqlcount != null)
+        if (this.adqlrowcount != null)
             {
-            return this.adqlcount;
+            return this.adqlrowcount;
             }
         else {
             return EMPTY_COUNT_VALUE;
             }
         }
-    protected void adqlcount(final Long count)
+    protected void adqlrowcount(final Long count)
     throws ProtectionException
         {
-        this.adqlcount = count;
+        this.adqlrowcount = count;
         }
 
     @Basic(
@@ -310,30 +305,23 @@ implements BaseTable<TableType, ColumnType>
                 }
 
             @Override
-            public Long count()
+            public Long rowcount()
             throws ProtectionException
                 {
-                return adqlcount();
-                }
-
-            @Override
-            public void count(Long count)
-            throws ProtectionException
-                {
-                adqlcount(count);
+                return BaseTableEntity.this.adqlrowcount();
                 }
 
             @Override
             public TableStatus status()
             throws ProtectionException
                 {
-                return adqlstatus();
+                return BaseTableEntity.this.adqlstatus();
                 }
             @Override
-            public void status(AdqlTable.TableStatus status)
+            public void status(final AdqlTable.TableStatus status)
             throws ProtectionException
                 {
-                adqlstatus(
+                BaseTableEntity.this.adqlstatus(
                     status
                     );
                 }
@@ -341,13 +329,13 @@ implements BaseTable<TableType, ColumnType>
             public String utype()
             throws ProtectionException
                 {
-                return adqlutype();
+                return BaseTableEntity.this.adqlutype();
                 }
             @Override
             public void utype(final String utype)
             throws ProtectionException
                 {
-                adqlutype(
+                BaseTableEntity.this.adqlutype(
                     utype
                     );
                 }
@@ -361,11 +349,13 @@ implements BaseTable<TableType, ColumnType>
         return new AdqlTable.Metadata()
             {
             @Override
+            @Deprecated
             public String name()
             throws ProtectionException
                 {
                 return BaseTableEntity.this.name();
                 }
+
             @Override
             public AdqlTable.Metadata.Adql adql()
             throws ProtectionException

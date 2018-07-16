@@ -103,7 +103,7 @@
         <file>logs/firethorn-trace.log</file>
         <append>true</append>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-          <level>DEBUG</level>
+          <level>TRACE</level>
         </filter>
         <encoder>
             <pattern>%date{ISO8601} %-5level [%thread] [%logger{0}] %message %n</pattern>

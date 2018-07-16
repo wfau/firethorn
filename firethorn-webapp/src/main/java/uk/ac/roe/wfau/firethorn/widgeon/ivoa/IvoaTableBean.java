@@ -115,7 +115,7 @@ extends BaseTableBean<IvoaTable>
                     public Long getCount()
                     throws ProtectionException
                         {
-                        return entity().meta().adql().count();
+                        return entity().meta().adql().rowcount();
                         }
 
                     @Override

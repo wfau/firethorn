@@ -53,7 +53,7 @@ implements HandlerInterceptor
             request.getRemoteAddr(),
             request.getServerPort()
             );
-        log.trace("Operation [{}][{}]", oper.ident(), oper.url());
+        log.trace("Operation [{}][{}]", oper.ident(), oper.target());
         /*
         // Add the port number as a request attribute.
         request.setAttribute("adql.query.callback.port", new Integer(request.getServerPort()));
@@ -66,7 +66,7 @@ implements HandlerInterceptor
         {
         log.trace("postHandle()");
         final Operation oper = factories.operations().entities().current();
-        log.trace("Operation [{}][{}]", oper.ident(), oper.url());
+        log.trace("Operation [{}][{}]", oper.ident(), oper.target());
         }
 
     @Override
@@ -74,7 +74,7 @@ implements HandlerInterceptor
         {
         log.trace("afterCompletion()");
         final Operation oper = factories.operations().entities().current();
-        log.trace("Operation [{}][{}]", oper.ident(), oper.url());
+        log.trace("Operation [{}][{}]", oper.ident(), oper.target());
         if (ouch != null)
             {
             log.debug("Exception [{}][{}]", ouch.getClass().getName(), ouch.getMessage());

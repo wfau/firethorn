@@ -521,6 +521,11 @@ implements JdbcMetadataScanner
                                 {
                                 PostgresScanner.this.handle(ouch);
                                 }
+                            @Override
+                            public long rowcount()
+                                {
+                                return 0;
+                                }
                             };
                         }
                     @Override

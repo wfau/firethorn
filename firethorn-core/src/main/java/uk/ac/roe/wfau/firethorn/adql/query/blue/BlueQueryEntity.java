@@ -2084,7 +2084,7 @@ implements BlueQuery
                             );
                         //
                         // Update the results table.
-                        final AdqlTable results = query.results().adql();
+                        final JdbcTable results = query.results().jdbc();
                         // BANG !!
                         // Fails if the query hasn't been prepared yet.
                         if (results == null)
@@ -2092,17 +2092,31 @@ implements BlueQuery
                             log.error("Callback with null results table");
                             }
                         else {
-                            results.meta().adql().count(
-                                message.results().count()
+                            log.trace("Updating results [{}] [{}][{}]",
+                                results.ident(),
+                                message.results().count(),
+                                message.results().state()
                                 );
                             switch (message.results().state())
                                 {
                                 case PARTIAL:
+                                    results.meta().jdbc().rowcount(
+                                        message.results().count()
+                                        );
+                                    results.meta().jdbc().status(
+                                        JdbcTable.TableStatus.UPDATED
+                                        );
                                     results.meta().adql().status(
                                         AdqlTable.TableStatus.PARTIAL
                                         );
                                     break;
                                 case COMPLETED:
+                                    results.meta().jdbc().rowcount(
+                                        message.results().count()
+                                        );
+                                    results.meta().jdbc().status(
+                                        JdbcTable.TableStatus.UPDATED
+                                        );
                                     results.meta().adql().status(
                                         AdqlTable.TableStatus.COMPLETED
                                         );
@@ -2120,12 +2134,14 @@ implements BlueQuery
                         }
                     catch (InvalidStateTransitionException ouch)
                     	{
-	    	            log.error(ouch.getMessage());
+                        log.error(ouch.getMessage());
+                        log.error(ouch.toString());
                 		return TaskState.ERROR;
                     	}
                     catch (HibernateConvertException ouch)
                         {
                         log.error(ouch.getMessage());
+                        log.error(ouch.toString());
                         return TaskState.ERROR;
                         }
                     }

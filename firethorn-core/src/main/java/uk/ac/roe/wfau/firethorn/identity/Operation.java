@@ -17,12 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
-import uk.ac.roe.wfau.firethorn.access.ProtectionException;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
 
 /**
  * Public interface for a service {@link Operation} (request).
+ * TODO This is biased towards HTTP requests.
+ * Need a more generic interface for the basic operation, and more specific derrived interfaces.
+ * HttpOperation, ScheduledOperation ....
  *
  */
 public interface Operation
@@ -70,7 +72,7 @@ extends Entity
          *
          */
         public Operation create(final String target, final String method, final String source, final int port);
-
+        
         }
 
     /**
@@ -91,7 +93,7 @@ extends Entity
      * The target URL for the operation.
      *
      */
-    public String url();
+    public String target();
 
     /**
      * The HTTP method.
@@ -115,7 +117,7 @@ extends Entity
      * The list of Authentication(s) for this operation.
      *
      */
-    public static interface Authentications
+    public interface Authentications
         {
         /**
          * The primary Authentication for this operation.
@@ -147,7 +149,7 @@ extends Entity
      * The list of Identity(s) for this operation.
      *
      */
-    public static interface Identities
+    public interface Identities
         {
         /**
          * The primary Identity for this operation.

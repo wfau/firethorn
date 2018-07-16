@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.daemon;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.joda.time.DateTime;
 import org.joda.time.MutablePeriod;
 import org.joda.time.ReadablePeriod;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -54,26 +58,8 @@ extends AbstractComponent
 
     public UserDataCleaner()
         {
-        log.debug("UserDataCleaner()");
+        log.trace("UserDataCleaner()");
         }
-
-    /*
-    public void init()
-        {
-        log.debug("init()");
-        scheduler.scheduleWithFixedDelay(
-            new Runnable()
-                {
-                public void run()
-                    {
-                    log.debug("run()");
-                    something();
-                    }
-                },
-            new Long(60 * 1000)
-            );
-        }
-    */
 
     /**
      * The action to take to clean up a table.
@@ -93,7 +79,7 @@ extends AbstractComponent
      *
      */
     @Value("${firethorn.cleaner.action:DROP}")
-    Action action;
+    private Action action;
 
     /**
      *
@@ -106,7 +92,7 @@ extends AbstractComponent
      *
      */
     @Value("${firethorn.cleaner.lifetime:PT24H}")
-    String lifetime ;
+    private String lifetime ;
 
     /**
      * The number of rows to delete on each run.
@@ -115,7 +101,7 @@ extends AbstractComponent
      *
      */
     @Value("${firethorn.cleaner.pagesize:10}")
-    int pagesize ;
+    private int pagesize ;
 
     /**
      * The number of runs to skip at the start.
@@ -124,27 +110,17 @@ extends AbstractComponent
      *
      */
     @Value("${firethorn.cleaner.skipfirst:5}")
-    int skipfirst ;
+    private int skipfirst ;
 
     /**
      * The Spring Scheduled cron expression.
      * Property : firethorn.cleaner.cron
-     * Default  : 0 0/10 * * * ?
+     * Default  : 0 0/1 * * * ?
      *
      */
-    @Scheduled(cron="${firethorn.cleaner.cron:0 0/10 * * * ?}")
+    @Scheduled(cron="${firethorn.cleaner.cron:0 0/1 * * * ?}")
     public void process()
         {
-        log.debug("");
-        log.debug("process()");
-        log.debug("  count [{}]", count);
-
-        /*
-         * try/catch IllegalArgumentException
-         * java.lang.IllegalArgumentException: Invalid format: "MUMBLE"
-         *
-         */
-
         /*
          * PT12H
          * https://en.wikipedia.org/wiki/ISO_8601#Durations
@@ -152,16 +128,21 @@ extends AbstractComponent
          * 
          */
         final ReadablePeriod period = MutablePeriod.parse(lifetime);
-        log.debug(" pagesize [{}]", pagesize);
-        log.debug(" lifetime [{}]", lifetime);
-        log.debug(" period   [{}]", period);
 
+        log.info("process() [{}][{}][{}][{}][{}]",
+            count,
+            pagesize,
+            lifetime,
+            period,
+            action
+            );
+        
         //
         // Skip the first few iterations.
         // Allow time for startup.
         if (count++ < skipfirst)
             {
-            log.debug("skipping");
+            log.debug("Skip first [{}][{}]", skipfirst, count);
             return ;
             }
 
@@ -171,6 +152,19 @@ extends AbstractComponent
                 @Override
                 public void run()
                     {
+// TODO Move this to a factory ?
+// operations.create.admin("urn:userdata.cleaner")
+                    final Operation operation = factories().operations().entities().create(
+                            "urn:userdata",
+                            "urn:cron",
+                            "urn:cron",
+                            0
+                            );
+                    operation.authentications().create(
+                        factories().identities().entities().admin(),
+                        "urn:system"
+                        );
+
                     try {
                         final DateTime date = new DateTime().minus(
                             period
@@ -185,20 +179,41 @@ extends AbstractComponent
                             for (final JdbcTable table : schema.tables().pending(date, pagesize))
                                 {
                                 log.debug("  table [{}][{}][{}]", table.ident(), table.name(), table.created());
-                                //table.drop();
-                                table.meta().jdbc().status(
-                                    JdbcTable.TableStatus.DROPPED
-                                    );
+                                switch (action)
+                                    {
+                                    case DELETE:
+                                        log.debug("  deleting [{}][{}][{}]", table.ident(), table.name(), table.created());
+                                        table.meta().jdbc().status(
+                                            JdbcTable.TableStatus.DELETED
+                                            );
+                                        break;
+
+                                    case DROP:
+                                        log.debug("  dropping [{}][{}][{}]", table.ident(), table.name(), table.created());
+                                        table.meta().jdbc().status(
+                                            JdbcTable.TableStatus.DROPPED
+                                            );
+                                        break;
+
+                                    default:
+                                        log.error("Unknown cleaner action [{}]", action);
+                                        break ;
+                                    }
                                 }
                             }
                         }
                     catch (final Exception ouch)
                         {
-                        log.warn("Exception in processing() [{}]", ouch.getMessage());
+                        final StringWriter writer = new StringWriter();
+                        ouch.printStackTrace(
+                            new PrintWriter(writer)
+                            );
+                        log.error("Exception during clean [{}]", ouch);
+                        log.error("Exception during clean [{}]", writer.toString());
                         }
+                    log.trace("-- DONE --");;
                     }
                 }
             );
-        log.debug("");
         }
     }

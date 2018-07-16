@@ -189,6 +189,12 @@ extends JdbcExceptionHandler
         public String name();
 
         /**
+         * The table rowcount.
+         * 
+         */
+        public long rowcount();
+
+        /**
          * Interface to access the {@link Table} {@link Column}s. 
          * 
          */

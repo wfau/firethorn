@@ -78,6 +78,12 @@ EOF
             angela
 
 
+    docker-compose \
+        --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-remote.yml" \
+        run \
+            angela
+
+
 # -----------------------------------------------------
 # -----------------------------------------------------
 # Separate shell on the host VM, locate the logs volume.

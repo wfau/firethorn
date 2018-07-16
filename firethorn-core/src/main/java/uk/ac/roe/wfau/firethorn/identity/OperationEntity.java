@@ -275,7 +275,7 @@ implements Operation
         )
     private String url ;
     @Override
-    public String url()
+    public String target()
         {
         return this.url ;
         }

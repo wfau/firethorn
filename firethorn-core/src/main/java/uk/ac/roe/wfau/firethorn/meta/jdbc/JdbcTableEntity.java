@@ -147,6 +147,18 @@ implements JdbcTable
     protected static final String DB_BLUE_QUERY_COL  = "bluequery" ;
 
     /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_JDBC_COUNT_COL = "jdbcrowcount" ;
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_JDBC_GUESS_COL = "jdbcrowguess" ;
+
+    /**
      * {@link JdbcTable.Builder} implementation.
      *
      */
@@ -309,20 +321,6 @@ implements JdbcTable
             }
 
         @Override
-        @Deprecated
-        @CreateMethod
-        public JdbcTable create(final JdbcSchema schema, final String name)
-        throws ProtectionException
-            {
-            return this.insert(
-                new JdbcTableEntity(
-                    schema,
-                    name
-                    )
-                );
-            }
-
-        @Override
         @CreateMethod
         public JdbcTable create(final JdbcSchema schema, final String name, final JdbcType type)
         throws ProtectionException
@@ -445,7 +443,7 @@ implements JdbcTable
         public Iterable<JdbcTable> pending(final JdbcSchema parent, final DateTime date, final int page)
         throws ProtectionException
             {
-            log.debug("pending(JdbcSchema, DateTime)");
+            log.debug("pending(JdbcSchema, DateTime) [{}][{}] [{}]", parent.ident(), parent.name(), date);
             return super.iterable(
                 page,
                 super.query(
@@ -453,7 +451,7 @@ implements JdbcTable
                     ).setEntity(
                         "parent",
                         parent
-                        ).setDate(
+                        ).setTimestamp(
                             "date",
                             date.toDate()
                             )
@@ -515,7 +513,6 @@ implements JdbcTable
         @PostConstruct
         protected void init()
             {
-            log.debug("init()");
             if (JdbcTableEntity.EntityServices.instance == null)
                 {
                 JdbcTableEntity.EntityServices.instance = this ;
@@ -580,14 +577,12 @@ implements JdbcTable
     @Override
     protected JdbcTable.EntityFactory factory()
         {
-        log.debug("factory()");
         return JdbcTableEntity.EntityServices.instance().entities() ; 
         }
 
     @Override
     protected JdbcTable.EntityServices services()
         {
-        log.debug("services()");
         return JdbcTableEntity.EntityServices.instance() ; 
         }
 
@@ -616,6 +611,20 @@ implements JdbcTable
         {
         super();
         }
+
+    /**
+     * Protected constructor.
+     *
+     */
+    protected JdbcTableEntity(final JdbcSchema schema)
+        {
+        this(
+            schema,
+            null,
+            null,
+            JdbcType.TABLE
+            );
+        }
          
     /**
      * Protected constructor.
@@ -639,20 +648,6 @@ implements JdbcTable
      * Protected constructor.
      *
      */
-    protected JdbcTableEntity(final JdbcSchema schema)
-        {
-        this(
-            schema,
-            null,
-            null,
-            JdbcType.TABLE
-            );
-        }
-    
-    /**
-     * Protected constructor.
-     *
-     */
     @Deprecated
     protected JdbcTableEntity(final JdbcSchema schema, final String name)
         {
@@ -660,7 +655,9 @@ implements JdbcTable
             schema,
             null,
             name,
-            JdbcType.TABLE
+            JdbcType.TABLE,
+            null,
+            null
             );
         }
 
@@ -674,7 +671,9 @@ implements JdbcTable
             schema,
             query,
             name,
-            JdbcType.TABLE
+            JdbcType.TABLE,
+            null,
+            null
             );
         }
 
@@ -684,14 +683,33 @@ implements JdbcTable
      */
     public JdbcTableEntity(final JdbcSchema schema, final BlueQuery query, final String name, final JdbcType type)
         {
+        this(
+            schema,
+            query,
+            name,
+            type,
+            null,
+            null
+            );
+        }
+
+    /**
+     * Protected constructor.
+     *
+     */
+    public JdbcTableEntity(final JdbcSchema schema, final BlueQuery query, final String name, final JdbcType type, final Long rowcount, final Long rowguess)
+        {
         super(
             schema,
             name
             );
-        log.debug("JdbcTableEntity [{}][{}][{}]", schema.name(), this.name(), type);
+        log.debug("JdbcTableEntity [{}][{}][{}]", schema.name(), this.name(), this.created());
         
         this.bluequery = query;
         this.schema = schema;
+
+        this.jdbcrowcount = rowcount;
+        this.jdbcrowguess = rowguess;
 
         this.jdbctype   = type ;
         this.jdbcstatus = JdbcTable.TableStatus.CREATED;
@@ -732,11 +750,79 @@ implements JdbcTable
         return self();
         }
 
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_JDBC_COUNT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected Long jdbcrowcount = null ;
+    protected Long jdbcrowcount()
+    throws ProtectionException
+        {
+        if (this.jdbcrowcount != null)
+            {
+            return this.jdbcrowcount;
+            }
+        else {
+            return this.jdbcrowguess();
+            }
+        }
+    protected void jdbcrowcount(final Long count)
+    throws ProtectionException
+        {
+        this.jdbcrowcount = count;
+        }
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_JDBC_GUESS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected Long jdbcrowguess = null ;
+    protected Long jdbcrowguess()
+    throws ProtectionException
+        {
+        if (this.jdbcrowguess != null)
+            {
+            return this.jdbcrowguess;
+            }
+        else {
+            return EMPTY_COUNT_VALUE;
+            }
+        }
+    protected void jdbcrowguess(final Long count)
+    throws ProtectionException
+        {
+        this.jdbcrowguess = count;
+        }
+    @Override
+    protected Long adqlrowcount()
+    throws ProtectionException
+        {
+        if (this.adqlrowcount != null)
+            {
+            return this.adqlrowcount;
+            }
+        else {
+            return this.jdbcrowcount();
+            }
+        }
+    @Override
+    public Long rowcount()
+    throws ProtectionException
+        {
+        return this.adqlrowcount();
+        }
+    
     @Override
     public JdbcTable.Columns columns()
     throws ProtectionException
         {
-        log.debug("columns() for [{}][{}]", ident(), namebuilder());
+        log.trace("columns() for [{}][{}]", ident(), namebuilder());
         scan();
         return new JdbcTable.Columns()
             {
@@ -862,14 +948,12 @@ implements JdbcTable
     protected void jdbcstatus(final JdbcTable.TableStatus next)
     throws ProtectionException
         {
-        JdbcTable.TableStatus prev = this.jdbcstatus; 
-        log.debug("status(JdbcTable.TableStatus)");
-        log.debug("  prev [{}]", prev);
-        log.debug("  next [{}]", next);
-        if (next == JdbcTable.TableStatus.UNKNOWN)
-            {
-            log.warn("Setting JdbcTable.JdbcStatus to UNKNOWN [{}]", this.ident());
-            }
+        final JdbcTable.TableStatus prev = this.jdbcstatus; 
+        log.debug("jdbcstatus() [{}] [{}]->[{}]",
+            this.ident(),
+            prev,
+            next
+            );
         switch(prev)
             {
             case CREATED:
@@ -884,9 +968,9 @@ implements JdbcTable
                         break ;
 
                     case CREATED:
+                        break ;
                     case UPDATED:
-                    case UNKNOWN:
-                        this.jdbcstatus = next ;
+                        this.jdbcstatus = TableStatus.UPDATED ;
                         break ;
 
                     default:
@@ -910,11 +994,8 @@ implements JdbcTable
                         break ;
     
                     case UPDATED:
-                    case UNKNOWN:
-                        this.jdbcstatus = next ;
                         break ;
     
-                    case CREATED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -932,12 +1013,8 @@ implements JdbcTable
                         break ;
     
                     case DELETED:
-                    case UNKNOWN:
-                        this.jdbcstatus = next ;
                         break ;
     
-                    case CREATED:
-                    case UPDATED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -947,48 +1024,39 @@ implements JdbcTable
                     }
                 break ;
 
-        case DROPPED:
-            switch(next)
-                {
-                case DROPPED:
-                case UNKNOWN:
-                    this.jdbcstatus = next ;
-                    break ;
+            case DROPPED:
+                switch(next)
+                    {
+                    case DROPPED:
+                        break ;
+    
+                    default:
+                        throw new IllegalStateTransition(
+                            JdbcTableEntity.this,
+                            jdbcstatus(),
+                            next
+                            );
+                    }
+                break ;
 
-                case CREATED:
-                case UPDATED:
-                case DELETED:
-                default:
-                    throw new IllegalStateTransition(
-                        JdbcTableEntity.this,
-                        jdbcstatus(),
-                        next
-                        );
-                }
-            break ;
-
-        case UNKNOWN:
-            switch(next)
-                {
-                case UNKNOWN:
-                    this.jdbcstatus = next ;
-                    break ;
-
-                case CREATED:
-                case UPDATED:
-                case DELETED:
-                case DROPPED:
-                default:
-                    throw new IllegalStateTransition(
-                        JdbcTableEntity.this,
-                        jdbcstatus(),
-                        next
-                        );
-                }
-            break ;
-
-        default:
-            break ;
+            case UNKNOWN:
+                switch(next)
+                    {
+                    case UNKNOWN:
+                        break ;
+    
+                    default:
+                        throw new IllegalStateTransition(
+                            JdbcTableEntity.this,
+                            jdbcstatus(),
+                            next
+                            );
+                    }
+                break ;
+    
+            default:
+                log.error("Unknown TableStatus [{}]", prev);
+                break ;
 
             }
         }
@@ -997,10 +1065,12 @@ implements JdbcTable
     protected void adqlstatus(final AdqlTable.TableStatus next)
     throws ProtectionException
         {
-        AdqlTable.TableStatus prev = this.adqlstatus; 
-        log.debug("status(AdqlTable.TableStatus)");
-        log.debug("  prev [{}]", prev);
-        log.debug("  next [{}]", next);
+        final AdqlTable.TableStatus prev = this.adqlstatus; 
+        log.debug("adqlstatus() [{}] [{}]->[{}]",
+            this.ident(),
+            prev,
+            next
+            );
         if (next == AdqlTable.TableStatus.UNKNOWN)
             {
             log.warn("Setting AdqlTable.AdqlStatus to UNKNOWN [{}]", this.ident());
@@ -1012,9 +1082,10 @@ implements JdbcTable
                 switch(next)
                     {
                     case CREATED:
+                        break ;
+                    case PARTIAL:
                     case COMPLETED:
                     case TRUNCATED:
-                    case UNKNOWN:
                         this.adqlstatus = next ;
                         break ;
 
@@ -1031,20 +1102,40 @@ implements JdbcTable
                     }
                 break ;
 
+            case PARTIAL:
+            switch(next)
+                {
+                case PARTIAL:
+                    break ;
+
+                case COMPLETED:
+                case TRUNCATED:
+                    this.adqlstatus = next ;
+                    break ;
+
+                case DELETED:
+                    jdbcdelete();
+                    break ;
+
+                default:
+                    throw new IllegalStateTransition(
+                        JdbcTableEntity.this,
+                        adqlstatus(),
+                        next
+                        );
+                    }
+                break ;
+                
             case COMPLETED:
                 switch(next)
                     {
                     case COMPLETED:
-                    case UNKNOWN:
-                        this.adqlstatus = next ;
                         break ;
 
                     case DELETED:
                         jdbcdelete();
                         break ;
 
-                    case CREATED:
-                    case TRUNCATED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -1058,16 +1149,12 @@ implements JdbcTable
                 switch(next)
                     {
                     case TRUNCATED:
-                    case UNKNOWN:
-                        this.adqlstatus = next ;
                         break ;
 
                     case DELETED:
                         jdbcdelete();
                         break ;
 
-                    case CREATED:
-                    case COMPLETED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -1081,13 +1168,8 @@ implements JdbcTable
                 switch(next)
                     {
                     case DELETED:
-                    case UNKNOWN:
-                        this.adqlstatus = next ;
                         break ;
 
-                    case CREATED:
-                    case COMPLETED:
-                    case TRUNCATED:
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -1100,14 +1182,8 @@ implements JdbcTable
             case UNKNOWN:
                 switch(next)
                     {
-                    case CREATED:
-                    case COMPLETED:
-                    case TRUNCATED:
-                    case DELETED:
                     case UNKNOWN:
-                        this.adqlstatus = next ;
                         break ;
-
                     default:
                         throw new IllegalStateTransition(
                             JdbcTableEntity.this,
@@ -1118,6 +1194,10 @@ implements JdbcTable
                 break ;
 
             default:
+                log.error("Unknown AdqlTable.TableStatus [{}][{}]",
+                    this.ident(),
+                    prev
+                    );
                 break ;
             }
         }
@@ -1125,23 +1205,27 @@ implements JdbcTable
     protected void jdbcdelete()
     throws ProtectionException
         {
+        log.debug("jdbcdelete [{}][{}]", this.ident(), this.name());
         this.resource().connection().operator().delete(
             JdbcTableEntity.this
             );
-        this.adqlcount  = EMPTY_COUNT_VALUE;
         this.adqlstatus = AdqlTable.TableStatus.DELETED;
         this.jdbcstatus = JdbcTable.TableStatus.DELETED;
+        this.jdbcrowguess = EMPTY_COUNT_VALUE;
+        this.jdbcrowcount = EMPTY_COUNT_VALUE;
         }
 
     protected void jdbcdrop()
     throws ProtectionException
         {
+        log.debug("jdbcdrop[{}][{}]", this.ident(), this.name());
         this.resource().connection().operator().drop(
             JdbcTableEntity.this
             );
-        this.adqlcount  = EMPTY_COUNT_VALUE;
         this.adqlstatus = AdqlTable.TableStatus.DELETED;
         this.jdbcstatus = JdbcTable.TableStatus.DROPPED;
+        this.jdbcrowguess = EMPTY_COUNT_VALUE;
+        this.jdbcrowcount = EMPTY_COUNT_VALUE;
         }
 
     @Override
@@ -1152,6 +1236,11 @@ implements JdbcTable
         //
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = resource().connection().scanner();
+
+//
+// Read the rowcount here ... 
+        
+        
         //
         // Load our Map of known columns.
         Map<String, JdbcColumn> known = new HashMap<String, JdbcColumn>();
@@ -1202,7 +1291,7 @@ implements JdbcTable
         log.debug("scanning table [{}]", (table != null) ? table.name() : null);
         if (table == null)
             {
-            log.warn("Null table");
+            log.debug("Null table, skipping scan");
             }
         else {
             try {
@@ -1285,24 +1374,40 @@ implements JdbcTable
                 }
 
             @Override
-            public Long count()
+            public Long rowcount()
             throws ProtectionException
                 {
-                return adqlcount();
+                return JdbcTableEntity.this.jdbcrowcount();
+                }
+
+            @Override
+            public void rowcount(final Long rowcount)
+            throws ProtectionException
+                {
+                JdbcTableEntity.this.jdbcrowcount(
+                    rowcount
+                    );
+                }
+
+            @Override
+            public Long rowguess()
+            throws ProtectionException
+                {
+                return JdbcTableEntity.this.jdbcrowguess();
                 }
             
             @Override
             public JdbcType type()
             throws ProtectionException
                 {
-                return jdbctype() ;
+                return JdbcTableEntity.this.jdbctype() ;
                 }
 
             @Override
             public void type(final JdbcType type)
             throws ProtectionException
                 {
-                jdbctype(
+                JdbcTableEntity.this.jdbctype(
                     type
                     );
                 }
@@ -1311,14 +1416,14 @@ implements JdbcTable
             public JdbcTable.TableStatus status()
             throws ProtectionException
                 {
-                return jdbcstatus();
+                return JdbcTableEntity.this.jdbcstatus();
                 }
 
             @Override
             public void status(final JdbcTable.TableStatus next)
             throws ProtectionException
                 {
-                jdbcstatus(
+                JdbcTableEntity.this.jdbcstatus(
                     next
                     );
                 }
@@ -1332,6 +1437,7 @@ implements JdbcTable
         return new JdbcTable.Metadata()
             {
             @Override
+            @Deprecated
             public String name()
             throws ProtectionException
                 {
@@ -1342,14 +1448,14 @@ implements JdbcTable
             public Jdbc jdbc()
             throws ProtectionException
                 {
-                return jdbcmeta();
+                return JdbcTableEntity.this.jdbcmeta();
                 }
 
             @Override
             public Adql adql()
             throws ProtectionException
                 {
-                return adqlmeta();
+                return JdbcTableEntity.this.adqlmeta();
                 }
             };
         }
