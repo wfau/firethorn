@@ -764,6 +764,10 @@ implements JdbcTable
     protected Long jdbcrowcount()
     throws ProtectionException
         {
+        log.trace("jdbcrowcount() [{}][{}]",
+            this.ident(),
+            this.jdbcrowcount
+            );
         if (this.jdbcrowcount != null)
             {
             return this.jdbcrowcount;
@@ -775,6 +779,11 @@ implements JdbcTable
     protected void jdbcrowcount(final Long count)
     throws ProtectionException
         {
+        log.trace("jdbcrowcount(Long) [{}][{}]->[{}]",
+            this.ident(),
+            this.jdbcrowcount, 
+            count
+            );
         this.jdbcrowcount = count;
         }
 
@@ -789,6 +798,10 @@ implements JdbcTable
     protected Long jdbcrowguess()
     throws ProtectionException
         {
+        log.trace("jdbcrowcount() [{}][{}]",
+            this.ident(),
+            this.jdbcrowcount
+            );
         if (this.jdbcrowguess != null)
             {
             return this.jdbcrowguess;
@@ -800,20 +813,37 @@ implements JdbcTable
     protected void jdbcrowguess(final Long count)
     throws ProtectionException
         {
+        log.trace("jdbcrowcount(Long) [{}][{}]->[{}]",
+            this.ident(),
+            this.jdbcrowcount,
+            count
+            );
         this.jdbcrowguess = count;
         }
-
     @Override
-    public Long rowcount()
+    protected Long adqlrowcount()
     throws ProtectionException
         {
+        log.trace("adqlrowcount() [{}][{}]",
+            this.ident(),
+            this.adqlrowcount
+            );
         if (this.adqlrowcount != null)
             {
-            return this.adqlrowcount();
+            return this.adqlrowcount;
             }
         else {
             return this.jdbcrowcount();
             }
+        }
+    @Override
+    public Long rowcount()
+    throws ProtectionException
+        {
+        log.trace("rowcount() [{}][{}]",
+            this.ident()
+            );
+        return this.adqlrowcount();
         }
     
     @Override
@@ -947,10 +977,11 @@ implements JdbcTable
     throws ProtectionException
         {
         final JdbcTable.TableStatus prev = this.jdbcstatus; 
-        log.debug("jdbcstatus() [{}]->[{}]",
-             prev,
-             next
-             );
+        log.debug("jdbcstatus() [{}] [{}]->[{}]",
+            this.ident(),
+            prev,
+            next
+            );
         switch(prev)
             {
             case CREATED:
@@ -1063,10 +1094,11 @@ implements JdbcTable
     throws ProtectionException
         {
         final AdqlTable.TableStatus prev = this.adqlstatus; 
-        log.debug("adqlstatus() [{}]->[{}]",
-                prev,
-                next
-                );
+        log.debug("adqlstatus() [{}] [{}]->[{}]",
+            this.ident(),
+            prev,
+            next
+            );
         if (next == AdqlTable.TableStatus.UNKNOWN)
             {
             log.warn("Setting AdqlTable.AdqlStatus to UNKNOWN [{}]", this.ident());
@@ -1098,6 +1130,30 @@ implements JdbcTable
                     }
                 break ;
 
+            case PARTIAL:
+            switch(next)
+                {
+                case PARTIAL:
+                    break ;
+
+                case COMPLETED:
+                case TRUNCATED:
+                    this.adqlstatus = next ;
+                    break ;
+
+                case DELETED:
+                    jdbcdelete();
+                    break ;
+
+                default:
+                    throw new IllegalStateTransition(
+                        JdbcTableEntity.this,
+                        adqlstatus(),
+                        next
+                        );
+                    }
+                break ;
+                
             case COMPLETED:
                 switch(next)
                     {
@@ -1166,6 +1222,10 @@ implements JdbcTable
                 break ;
 
             default:
+                log.error("Unknown AdqlTable.TableStatus [{}][{}]",
+                    this.ident(),
+                    prev
+                    );
                 break ;
             }
         }
@@ -1204,6 +1264,11 @@ implements JdbcTable
         //
         // Create our metadata scanner.
         JdbcMetadataScanner scanner = resource().connection().scanner();
+
+//
+// Read the rowcount here ... 
+        
+        
         //
         // Load our Map of known columns.
         Map<String, JdbcColumn> known = new HashMap<String, JdbcColumn>();
@@ -1400,6 +1465,7 @@ implements JdbcTable
         return new JdbcTable.Metadata()
             {
             @Override
+            @Deprecated
             public String name()
             throws ProtectionException
                 {
@@ -1410,14 +1476,14 @@ implements JdbcTable
             public Jdbc jdbc()
             throws ProtectionException
                 {
-                return jdbcmeta();
+                return JdbcTableEntity.this.jdbcmeta();
                 }
 
             @Override
             public Adql adql()
             throws ProtectionException
                 {
-                return adqlmeta();
+                return JdbcTableEntity.this.adqlmeta();
                 }
             };
         }

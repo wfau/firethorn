@@ -21,8 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 
@@ -30,7 +28,6 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
  * Base class for IdentFactory implementations within the webapp.
  *
  */
-@Slf4j
 public abstract class WebappLinkFactory<EntityType extends Entity>
 extends AbstractLinkFactory<EntityType>
 implements Entity.LinkFactory<EntityType>
@@ -74,10 +71,6 @@ implements Entity.LinkFactory<EntityType>
     
     protected String link(final Integer port, final String path, final String ident)
         {
-        log.trace("link(....)");
-        log.trace("  port  [{}]", port);
-        log.trace("  path  [{}]", path);
-        log.trace("  ident [{}]", ident);
         UriComponentsBuilder builder ;
         if (baseurl() != null)
             {

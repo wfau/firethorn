@@ -238,6 +238,7 @@ extends TreeComponent
         /**
          * The table name.
          * @throws ProtectionException If the current {@link Identity} is not allowed to perform this action. 
+         * ** Fix and test IvoaTable constructor before we remove this ..
          * 
          */
         @Deprecated

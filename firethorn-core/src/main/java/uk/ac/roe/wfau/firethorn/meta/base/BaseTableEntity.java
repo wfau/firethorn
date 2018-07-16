@@ -215,6 +215,10 @@ implements BaseTable<TableType, ColumnType>
     protected AdqlTable.TableStatus adqlstatus()
     throws ProtectionException
         {
+        log.trace("adqlstatus() [{}][{}]",
+            this.ident(),
+            this.adqlstatus
+            );
         if (this.adqlstatus != null)
             {
             return this.adqlstatus ;
@@ -226,6 +230,11 @@ implements BaseTable<TableType, ColumnType>
     protected void adqlstatus(final AdqlTable.TableStatus next)
     throws ProtectionException
         {
+        log.trace("adqlstatus(TableStatus) [{}][{}]->[{}]",
+            this.ident(),
+            this.adqlstatus,
+            next
+            );
         if (next == AdqlTable.TableStatus.UNKNOWN)
             {
             log.warn("Setting AdqlTable.AdqlStatus to UNKNOWN [{}]", this.ident());
@@ -244,6 +253,10 @@ implements BaseTable<TableType, ColumnType>
     protected Long adqlrowcount()
     throws ProtectionException
         {
+        log.trace("adqlrowcount() [{}][{}]",
+            this.ident(),
+            this.adqlrowcount
+            );
         if (this.adqlrowcount != null)
             {
             return this.adqlrowcount;
@@ -255,6 +268,11 @@ implements BaseTable<TableType, ColumnType>
     protected void adqlrowcount(final Long count)
     throws ProtectionException
         {
+        log.trace("adqlrowcount() [{}][{}]->[{}]",
+            this.ident(),
+            this.adqlrowcount,
+            count
+            );
         this.adqlrowcount = count;
         }
 
@@ -308,20 +326,20 @@ implements BaseTable<TableType, ColumnType>
             public Long rowcount()
             throws ProtectionException
                 {
-                return adqlrowcount();
+                return BaseTableEntity.this.adqlrowcount();
                 }
 
             @Override
             public TableStatus status()
             throws ProtectionException
                 {
-                return adqlstatus();
+                return BaseTableEntity.this.adqlstatus();
                 }
             @Override
-            public void status(AdqlTable.TableStatus status)
+            public void status(final AdqlTable.TableStatus status)
             throws ProtectionException
                 {
-                adqlstatus(
+                BaseTableEntity.this.adqlstatus(
                     status
                     );
                 }
@@ -329,13 +347,13 @@ implements BaseTable<TableType, ColumnType>
             public String utype()
             throws ProtectionException
                 {
-                return adqlutype();
+                return BaseTableEntity.this.adqlutype();
                 }
             @Override
             public void utype(final String utype)
             throws ProtectionException
                 {
-                adqlutype(
+                BaseTableEntity.this.adqlutype(
                     utype
                     );
                 }
@@ -349,11 +367,13 @@ implements BaseTable<TableType, ColumnType>
         return new AdqlTable.Metadata()
             {
             @Override
+            @Deprecated
             public String name()
             throws ProtectionException
                 {
                 return BaseTableEntity.this.name();
                 }
+
             @Override
             public AdqlTable.Metadata.Adql adql()
             throws ProtectionException

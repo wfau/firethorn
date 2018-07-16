@@ -2092,12 +2092,17 @@ implements BlueQuery
                             log.error("Callback with null results table");
                             }
                         else {
-                            results.meta().jdbc().rowcount(
-                                message.results().count()
+                            log.trace("Updating results [{}] [{}][{}]",
+                                results.ident(),
+                                message.results().count(),
+                                message.results().state()
                                 );
                             switch (message.results().state())
                                 {
                                 case PARTIAL:
+                                    results.meta().jdbc().rowcount(
+                                        message.results().count()
+                                        );
                                     results.meta().jdbc().status(
                                         JdbcTable.TableStatus.UPDATED
                                         );
@@ -2106,6 +2111,9 @@ implements BlueQuery
                                         );
                                     break;
                                 case COMPLETED:
+                                    results.meta().jdbc().rowcount(
+                                        message.results().count()
+                                        );
                                     results.meta().jdbc().status(
                                         JdbcTable.TableStatus.UPDATED
                                         );
