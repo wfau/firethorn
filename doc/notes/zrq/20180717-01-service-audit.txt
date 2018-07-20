@@ -1,0 +1,69 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+-- trop01 --
+
+Gworewia  is running the OSA firethorn.
+Astoalith is running the OSA Apache proxy.
+Cadelicia is running the GUI/firethorn/ogsadai for the Genius demo
+
+What are the others running ?
+
+    Delild
+    Froeseth
+
+-- djer --
+
+The OSA user interface is runnng on djer itself.
+What do we need to do to move the OSA GUI into a VM/container on trop02 and configure it to ue the same firethorn services as the OSA TAP service ?
+
+There are six VMs on djer, only coccinea and pyracantha are still running.
+My guess is we can delete the others?
+
+Coccinea is running the firethorn service.
+    Originally installed in 2013, last updated Jan 2015.
+    There is a 2.2G catalina.out file that covers Jan 2016 to now.
+    It is using FirethornUserdataDJER011128LIVE for the user data.
+
+Pyracantha is running the ogsadai service.
+    Originally installed in 2013, last updated Jan 2015.
+    There is a 94M catalina.log file that covers Jan 2015 to now.
+    Looks like it handles around 10 to 20 queries per month.
+
+-- shep --
+ 
+There were three VMs still running on shep.
+
+    pyratest1
+    pyratest2
+    pyratest3
+
+I have shut them down but not deleted them yet. Do we need anythng from them ?
+
+
+
+
+
+
+
+
