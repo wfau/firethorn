@@ -1,0 +1,39 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+osa.roe.ac.uk
+    Metadata: FirethornMetadataDJER011128LIVE (ramses9)
+    Userdata: FirethornUserdataDJER011128LIVE (ramses9)
+
+tap.roe.ac.uk
+    Userdata=TESTFirethornUserdataSHEP20170525 (ramses2)
+    Metadata=PostgreSQL
+
+genius.roe.ac.uk
+    Metadata=DEVFirethornMetadataSHEP20160831 (ramses2)
+    Userdata=DEVFirethornUserdataSHEP20160831 (ramses2)
+
+tap.metagrid.xyz (Ulov)
+    Userdata=LIVEFirethornUserdataULOV20180719 (ramses2)
+    Metadata=PostgreSQL
+
+

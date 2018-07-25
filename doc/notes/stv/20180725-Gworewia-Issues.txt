@@ -1,0 +1,189 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+########### Via Web browser 
+http://tap.roe.ac.uk/osa/availability
+
+Type Exception Report
+
+Message Request processing failed; nested exception is org.springframework.transaction.CannotCreateTransactionException: Could not open Hibernate Session for transaction; nested exception is org.hibernate.exception.GenericJDBCException: Unable to acquire JDBC Connection
+
+Description The server encountered an unexpected condition that prevented it from fulfilling the request.
+
+Exception
+
+org.springframework.web.util.NestedServletException: Request processing failed; nested exception is org.springframework.transaction.CannotCreateTransactionException: Could not open Hibernate Session for transaction; nested exception is org.hibernate.exception.GenericJDBCException: Unable to acquire JDBC Connection
+	org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:986)
+	org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:870)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:635)
+	org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:855)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:742)
+	org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	uk.ac.roe.wfau.firethorn.webapp.catalina.ConnectionConfigFilter.doFilter(ConnectionConfigFilter.java:50)
+	uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58)
+Root Cause
+
+org.springframework.transaction.CannotCreateTransactionException: Could not open Hibernate Session for transaction; nested exception is org.hibernate.exception.GenericJDBCException: Unable to acquire JDBC Connection
+	org.springframework.orm.hibernate5.HibernateTransactionManager.doBegin(HibernateTransactionManager.java:564)
+	org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:374)
+	org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:474)
+	org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:289)
+	org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:98)
+	org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:689)
+	uk.ac.roe.wfau.firethorn.identity.OperationEntity$EntityFactory$$EnhancerBySpringCGLIB$$d9e7f2c2.create(<generated>)
+	uk.ac.roe.wfau.firethorn.webapp.oper.OperationInterceptor.preHandle(OperationInterceptor.java:52)
+	org.springframework.web.servlet.HandlerExecutionChain.applyPreHandle(HandlerExecutionChain.java:136)
+	org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:986)
+	org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:925)
+	org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:978)
+	org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:870)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:635)
+	org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:855)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:742)
+	org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	uk.ac.roe.wfau.firethorn.webapp.catalina.ConnectionConfigFilter.doFilter(ConnectionConfigFilter.java:50)
+	uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58)
+Root Cause
+
+org.hibernate.exception.GenericJDBCException: Unable to acquire JDBC Connection
+	org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:47)
+	org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:111)
+	org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:97)
+	org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:109)
+	org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:136)
+	org.hibernate.internal.SessionImpl.connection(SessionImpl.java:523)
+	org.springframework.orm.hibernate5.HibernateTransactionManager.doBegin(HibernateTransactionManager.java:470)
+	org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:374)
+	org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:474)
+	org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:289)
+	org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:98)
+	org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:689)
+	uk.ac.roe.wfau.firethorn.identity.OperationEntity$EntityFactory$$EnhancerBySpringCGLIB$$d9e7f2c2.create(<generated>)
+	uk.ac.roe.wfau.firethorn.webapp.oper.OperationInterceptor.preHandle(OperationInterceptor.java:52)
+	org.springframework.web.servlet.HandlerExecutionChain.applyPreHandle(HandlerExecutionChain.java:136)
+	org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:986)
+	org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:925)
+	org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:978)
+	org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:870)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:635)
+	org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:855)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:742)
+	org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	uk.ac.roe.wfau.firethorn.webapp.catalina.ConnectionConfigFilter.doFilter(ConnectionConfigFilter.java:50)
+	uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58)
+Root Cause
+
+java.sql.SQLException: Connections could not be acquired from the underlying database!
+	com.mchange.v2.sql.SqlUtils.toSQLException(SqlUtils.java:106)
+	com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool.checkoutPooledConnection(C3P0PooledConnectionPool.java:529)
+	com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource.getConnection(AbstractPoolBackedDataSource.java:128)
+	org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122)
+	org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:35)
+	org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:106)
+	org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:136)
+	org.hibernate.internal.SessionImpl.connection(SessionImpl.java:523)
+	org.springframework.orm.hibernate5.HibernateTransactionManager.doBegin(HibernateTransactionManager.java:470)
+	org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:374)
+	org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:474)
+	org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:289)
+	org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:98)
+	org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:689)
+	uk.ac.roe.wfau.firethorn.identity.OperationEntity$EntityFactory$$EnhancerBySpringCGLIB$$d9e7f2c2.create(<generated>)
+	uk.ac.roe.wfau.firethorn.webapp.oper.OperationInterceptor.preHandle(OperationInterceptor.java:52)
+	org.springframework.web.servlet.HandlerExecutionChain.applyPreHandle(HandlerExecutionChain.java:136)
+	org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:986)
+	org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:925)
+	org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:978)
+	org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:870)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:635)
+	org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:855)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:742)
+	org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	uk.ac.roe.wfau.firethorn.webapp.catalina.ConnectionConfigFilter.doFilter(ConnectionConfigFilter.java:50)
+	uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58)
+Root Cause
+
+com.mchange.v2.resourcepool.CannotAcquireResourceException: A ResourcePool could not acquire a resource from its primary factory or source.
+	com.mchange.v2.resourcepool.BasicResourcePool.awaitAvailable(BasicResourcePool.java:1319)
+	com.mchange.v2.resourcepool.BasicResourcePool.prelimCheckoutResource(BasicResourcePool.java:557)
+	com.mchange.v2.resourcepool.BasicResourcePool.checkoutResource(BasicResourcePool.java:477)
+	com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool.checkoutPooledConnection(C3P0PooledConnectionPool.java:525)
+	com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource.getConnection(AbstractPoolBackedDataSource.java:128)
+	org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122)
+	org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:35)
+	org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:106)
+	org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:136)
+	org.hibernate.internal.SessionImpl.connection(SessionImpl.java:523)
+	org.springframework.orm.hibernate5.HibernateTransactionManager.doBegin(HibernateTransactionManager.java:470)
+	org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:374)
+	org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:474)
+	org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:289)
+	org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:98)
+	org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:689)
+	uk.ac.roe.wfau.firethorn.identity.OperationEntity$EntityFactory$$EnhancerBySpringCGLIB$$d9e7f2c2.create(<generated>)
+	uk.ac.roe.wfau.firethorn.webapp.oper.OperationInterceptor.preHandle(OperationInterceptor.java:52)
+	org.springframework.web.servlet.HandlerExecutionChain.applyPreHandle(HandlerExecutionChain.java:136)
+	org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:986)
+	org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:925)
+	org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:978)
+	org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:870)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:635)
+	org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:855)
+	javax.servlet.http.HttpServlet.service(HttpServlet.java:742)
+	org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	uk.ac.roe.wfau.firethorn.webapp.catalina.ConnectionConfigFilter.doFilter(ConnectionConfigFilter.java:50)
+	uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58)
+Note The full stack trace of the root cause is available in the server logs.
+
+Apache Tomcat/8.5.24
+
+
+
+stelios@stelios-pc:~$ ssh root@Gworewia
+
+[Stevedore@Gworewia ~]$ docker ps
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                  PORTS                    NAMES
+58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   5 weeks ago         Up 8 days (unhealthy)   0.0.0.0:8080->8080/tcp   root_gillian_1
+abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   5 weeks ago         Up 5 weeks              5432/tcp                 root_carolina_1
+9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   5 weeks ago         Up 5 weeks              5432/tcp                 root_bethany_1
+251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   5 weeks ago         Up 5 weeks (healthy)    8080/tcp                 root_jarmila_1
+[Stevedore@Gworewia ~]$ 
+
+[Stevedore@Gworewia ~]$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  1.1M  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        31G   30G     0 100% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   78M  146M  35% /boot
+tmpfs           396M     0  396M   0% /run/user/1010
+
+### Disk space used 100%
+
+### Fix: Clear firethorn.log and ogsadai.log
+
