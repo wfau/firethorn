@@ -1,0 +1,293 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#----------------------------------------------------------------
+# Login to the VM as root (old VM configuration, no sudo).
+#[user@laptop]
+
+    ssh root@Gworewia
+
+#----------------------------------------------------------------
+# List the containers.
+#[root@Gworewia]
+
+    docker ps -a
+
+        CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                   PORTS                    NAMES
+        c6687035a4f5        firethorn-py                 "bash"                   5 weeks ago         Exited (0) 5 weeks ago                            root_firethorn-py_run_1
+        58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   5 weeks ago         Up 11 days (healthy)     0.0.0.0:8080->8080/tcp   root_gillian_1
+        abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   5 weeks ago         Up 5 weeks               5432/tcp                 root_carolina_1
+        9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   5 weeks ago         Up 5 weeks               5432/tcp                 root_bethany_1
+        251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   5 weeks ago         Up 5 weeks (healthy)     8080/tcp                 root_jarmila_1
+
+#----------------------------------------------------------------
+# Inspect the firethorn container volumes.
+#[root@Gworewia]
+   
+    container=root_gillian_1
+    
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+    tail -f firethorn.log
+
+        #
+        # Firethorn is receiving and responding to healthcheck calls ...
+
+        2018-07-27 12:57:10,768 DEBUG [callback-interface-8] [OperationInterceptor] OperationInterceptor.postHandle() 
+        2018-07-27 12:57:10,768 DEBUG [callback-interface-8] [OperationInterceptor] Operation [15746395][http://localhost:8081/firethorn/system/info] 
+        2018-07-27 12:57:10,768 DEBUG [callback-interface-8] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+
+
+#----------------------------------------------------------------
+# Get the firethorn service addresses.
+#[root@Gworewia]
+   
+    container=root_gillian_1
+
+    docker inspect \
+        "${container:?}" \
+    | jq -r '
+        .[].NetworkSettings | .Networks | .[] | .IPAddress
+        '
+
+        172.20.0.5
+        172.19.0.2
+
+#----------------------------------------------------------------
+# Test the firethorn service addresses.
+#[root@Gworewia]
+
+    container=root_gillian_1
+
+    for address in $(
+        docker inspect \
+            "${container:?}" \
+        | jq -r '
+            .[].NetworkSettings | .Networks | .[] | .IPAddress
+            '
+        )
+        do
+            echo "Address [$address]"
+            curl -v "http://$address:8080/firethorn/system/info"
+        done
+
+        Address [172.20.0.5]
+        *   Trying 172.20.0.5...
+        * TCP_NODELAY set
+        * Connected to 172.20.0.5 (172.20.0.5) port 8080 (#0)
+        > GET /firethorn/system/info HTTP/1.1
+        > Host: 172.20.0.5:8080
+        > User-Agent: curl/7.51.0
+        > Accept: */*
+
+        -- locks up, no response --
+
+
+#----------------------------------------------------------------
+# Test the ogsadai service addresses.
+#[root@Gworewia]
+
+    container=root_jarmila_1
+
+    for address in $(
+        docker inspect \
+            "${container:?}" \
+        | jq -r '
+            .[].NetworkSettings | .Networks | .[] | .IPAddress
+            '
+        )
+        do
+            echo "Address [$address]"
+            curl -s "http://$address:8080/ogsadai/services/dataResources/" | xmllint --format -
+        done
+
+        -- immediate response --
+
+        Address [172.20.0.3]
+        <?xml version="1.0"?>
+        <html xmlns="http://www.w3.org/1999/xhtml">
+          <head>
+            <title>Available resources or properties</title>
+          </head>
+          <body>
+            ....
+          </body>
+        </html>
+
+#----------------------------------------------------------------
+# Test the firethorn callback interface.
+#[root@Gworewia]
+
+    container=root_gillian_1
+
+    for address in $(
+        docker inspect \
+            "${container:?}" \
+        | jq -r '
+            .[].NetworkSettings | .Networks | .[] | .IPAddress
+            '
+        )
+        do
+            echo "Address [$address]"
+            curl -s "http://$address:8081/firethorn/system/info" | jq '.'
+        done
+
+        -- immediate response --
+
+        Address [172.20.0.5]
+        {
+          "java": {
+            "name": "OpenJDK 64-Bit Server VM",
+            "build": "25.171-b10",
+            "version": "1.8.0_171",
+            "memory": {
+              "total": 260046848,
+              "free": 46345064,
+              "max": 921174016
+            }
+          },
+          "build": {
+            "name": "firethorn-core",
+            "version": "2.1.23",
+            "timestamp": "1528381457627",
+            "changeset": "74d616f5e611693b8d0243f8"
+          },
+          ....
+        }
+
+        Address [172.19.0.2]
+        {
+          "java": {
+            "name": "OpenJDK 64-Bit Server VM",
+            "build": "25.171-b10",
+            "version": "1.8.0_171",
+            "memory": {
+              "total": 260046848,
+              "free": 45388352,
+              "max": 921174016
+            }
+          },
+          "build": {
+            "name": "firethorn-core",
+            "version": "2.1.23",
+            "timestamp": "1528381457627",
+            "changeset": "74d616f5e611693b8d0243f8"
+          },
+          ....
+        }
+
+
+So the problem is specific to the main 8080 interface of firethorn, not to the callback interface 8081.
+
+Initial guess - suspect this is due to the request processing Thread queue getting filled up with incomplete jobs, leaving no room for new Threads to handle new requests ?
+
+#----------------------------------------------------------------
+# Try restarting using docker stop/start
+#[root@Gworewia]
+
+    docker stop root_gillian_1 
+
+    docker start root_gillian_1 
+
+#----------------------------------------------------------------
+# Test the firethorn service addresses.
+#[root@Gworewia]
+
+    container=root_gillian_1
+
+    for address in $(
+        docker inspect \
+            "${container:?}" \
+        | jq -r '
+            .[].NetworkSettings | .Networks | .[] | .IPAddress
+            '
+        )
+        do
+            echo "Address [$address]"
+            curl -s "http://$address:8080/firethorn/system/info" | jq '.'
+        done
+
+        -- immediate response --
+
+        Address [172.20.0.5]
+        {
+          "java": {
+            "name": "OpenJDK 64-Bit Server VM",
+            "build": "25.171-b10",
+            "version": "1.8.0_171",
+            "memory": {
+              "total": 397934592,
+              "free": 213422056,
+              "max": 921174016
+            }
+          },
+          "build": {
+            "name": "firethorn-core",
+            "version": "2.1.23",
+            "timestamp": "1528381457627",
+            "changeset": "74d616f5e611693b8d0243f8"
+          },
+          ....
+        }
+        Address [172.19.0.2]
+        {
+          "java": {
+            "name": "OpenJDK 64-Bit Server VM",
+            "build": "25.171-b10",
+            "version": "1.8.0_171",
+            "memory": {
+              "total": 397934592,
+              "free": 211482096,
+              "max": 921174016
+            }
+          },
+          "build": {
+            "name": "firethorn-core",
+            "version": "2.1.23",
+            "timestamp": "1528381457627",
+            "changeset": "74d616f5e611693b8d0243f8"
+          },
+          ....
+        }
+
+-------------------------------------------------
+
+Another clue to the possible causes of the problem.
+It no longer looks like random network issues, and more like firethorn internal problems.
+
+TODO
+Add diagnostic data endpoints that lists active jobs active threasd etc.
+
+
+
+
+
+
+
+
