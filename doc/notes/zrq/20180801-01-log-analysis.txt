@@ -1,0 +1,175 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#----------------------------------------------------------------
+# Login to the VM as root (old VM configuration, no sudo).
+#[user@desktop]
+
+    ssh root@Gworewia
+
+#----------------------------------------------------------------
+# List the containers.
+#[root@Gworewia]
+
+    docker ps -a
+
+        CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                   PORTS                    NAMES
+        c6687035a4f5        firethorn-py                 "bash"                   6 weeks ago         Exited (0) 6 weeks ago                            root_firethorn-py_run_1
+        58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   6 weeks ago         Up 4 days (healthy)      0.0.0.0:8080->8080/tcp   root_gillian_1
+        abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   6 weeks ago         Up 6 weeks               5432/tcp                 root_carolina_1
+        9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   6 weeks ago         Up 6 weeks               5432/tcp                 root_bethany_1
+        251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   6 weeks ago         Up 6 weeks (healthy)     8080/tcp                 root_jarmila_1
+
+#----------------------------------------------------------------
+# Check the available disc space.
+#[root@Gworewia]
+
+    df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        devtmpfs        2.0G     0  2.0G   0% /dev
+        tmpfs           2.0G     0  2.0G   0% /dev/shm
+        tmpfs           2.0G  1.1M  2.0G   1% /run
+        tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+        /dev/vda3        31G   30G  136M 100% /
+        tmpfs           2.0G  4.0K  2.0G   1% /tmp
+        /dev/vda1       240M   78M  146M  35% /boot
+        shm              64M  4.0K   64M   1% /var/lib/docker/containers/abe5ffa5e554887fcadd833062e2f105bd2326699c628c28a74a50fb9a904572/shm
+        shm              64M     0   64M   0% /var/lib/docker/containers/251da737dc98b03c3dcff7e1a2f6b52aff39c0af9522fe5e3922d93b39d03478/shm
+        shm              64M  4.0K   64M   1% /var/lib/docker/containers/9a8db568afa2d60d3d2b4a14edd1aa02bb789dd0bf812053137e8e23bebb517f/shm
+        shm              64M     0   64M   0% /var/lib/docker/containers/58e622aa6ad01b65a1180e9375e6ba01c7795593062d8342914452c4462ef963/shm
+        tmpfs           396M     0  396M   0% /run/user/0
+
+
+    #
+    # Out of space on the main disc
+
+        /dev/vda3        31G   30G  136M 100% /
+
+#----------------------------------------------------------------
+# Locate the firethorn container log volume.
+#[root@Gworewia]
+   
+    container=root_gillian_1
+    
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+#----------------------------------------------------------------
+# Check the directoru contents ...
+#[root@Gworewia]
+
+    ls -al
+
+        #
+        # Looks like side effects of a failed clean up ?
+        ....    
+        ....    
+        -rw-r--r--. 1 chrony cgred           0 Jul 25 10:37 --delete
+        -rw-r--r--. 1 chrony cgred           0 Jul 25 10:38 firethorn.
+        -rw-r-----. 1 chrony cgred 15753429134 Aug  1 14:47 firethorn.log
+        -rw-r--r--. 1 chrony cgred           0 Jul 25 10:33 firethorn.tar.gz
+        ....    
+        ....    
+
+#----------------------------------------------------------------
+# Remove the duff files.
+# https://unix.stackexchange.com/questions/1519/how-do-i-delete-a-file-whose-name-begins-with-hyphen-a-k-a-dash-or-minus
+#[root@Gworewia]
+
+    rm -- '--delete'
+    rm -- 'firethorn.'
+    rm -- 'firethorn.tar.gz'
+
+#----------------------------------------------------------------
+# Remove the localhost files.
+#[root@Gworewia]
+
+    rm localhost*
+
+        ....
+        ....
+
+# -----------------------------------------------------
+# Transfer a copy of firethorn.log.
+#[root@virtual]
+
+        scp "firethorn.log" \
+            "dave@shepseskaf.roe.ac.uk:storage/firethorn/$(date '+%Y%m%d')-firethorn.log"
+
+# -----------------------------------------------------
+# Truncate the contents of firethorn.log.
+#[root@virtual]
+
+        echo '' > "firethorn.log"
+
+# -----------------------------------------------------
+# Tail the log to check Tomcat is ok.
+#[root@virtual]
+
+        tail -f firethorn.log 
+
+        #
+        # Not fixed.
+        # No response to requests.
+        # Nothing in the logs ..
+    
+#----------------------------------------------------------------
+# Try restarting using docker stop/start
+#[root@Gworewia]
+
+    docker stop root_gillian_1 
+
+    docker start root_gillian_1 
+
+# -----------------------------------------------------
+# Tail the log to check Tomcat is ok.
+#[root@virtual]
+
+        tail -f firethorn.log 
+
+            #
+            # Back up and running ok.
+
+            2018-08-01 14:08:17,027 DEBUG [main-interface-1] [HttpRequestDebug] preHandle() 
+            2018-08-01 14:08:17,027 DEBUG [main-interface-1] [HttpRequestDebug] ---- 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug] Servlet 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   scheme      [http] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   serverName  [tap.roe.ac.uk] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   serverPort  [80] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   serverPath  [/tap/61/availability] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   pathInfo    [null] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   pathTrans   [null] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   requestURI  [/firethorn/tap/61/availability] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk/firethorn/tap/61/availability] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   protocol    [HTTP/1.1] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   queryString [null] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   authType    [null] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   remoteAddr  [192.168.201.13] 
+            2018-08-01 14:08:17,028 DEBUG [main-interface-1] [HttpRequestDebug]   remoteHost  [192.168.201.13] 
+
+
