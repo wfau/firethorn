@@ -1,0 +1,366 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Ssh into VM (Gworewia)
+# -----------------------------------------------------
+
+ssh Gworewia
+
+
+
+# -----------------------------------------------------
+# Check Containers
+# -----------------------------------------------------
+
+[root@Gworewia ~]#     docker ps -a
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                   PORTS                    NAMES
+c6687035a4f5        firethorn-py                 "bash"                   7 weeks ago         Exited (0) 7 weeks ago                            root_firethorn-py_run_1
+58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   7 weeks ago         Up 12 hours (healthy)    0.0.0.0:8080->8080/tcp   root_gillian_1
+abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   7 weeks ago         Up 7 weeks               5432/tcp                 root_carolina_1
+9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   7 weeks ago         Up 7 weeks               5432/tcp                 root_bethany_1
+251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   7 weeks ago         Up 7 weeks (healthy)     8080/tcp                 root_jarmila_1
+[root@Gworewia ~]# 
+
+
+# -----------------------------------------------------
+# Check Available Disk Space
+# -----------------------------------------------------
+
+[root@Gworewia _data]# 
+[root@Gworewia _data]# ^C
+[root@Gworewia _data]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  1.0M  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        31G   15G   15G  49% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   78M  146M  35% /boot
+shm              64M  4.0K   64M   1% /var/lib/docker/containers/abe5ffa5e554887fcadd833062e2f105bd2326699c628c28a74a50fb9a904572/shm
+shm              64M     0   64M   0% /var/lib/docker/containers/251da737dc98b03c3dcff7e1a2f6b52aff39c0af9522fe5e3922d93b39d03478/shm
+shm              64M  4.0K   64M   1% /var/lib/docker/containers/9a8db568afa2d60d3d2b4a14edd1aa02bb789dd0bf812053137e8e23bebb517f/shm
+shm              64M     0   64M   0% /var/lib/docker/containers/58e622aa6ad01b65a1180e9375e6ba01c7795593062d8342914452c4462ef963/shm
+tmpfs           396M     0  396M   0% /run/user/0
+
+
+
+# Using checks from dmr from: http://wfau.metagrid.co.uk/code/firethorn/raw-file/6b1f99b57aa8/doc/notes/zrq/20180727-01-log-analysis.txt
+#----------------------------------------------------------------
+# Inspect the firethorn container volumes.
+   
+ container=root_gillian_1
+    
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+[root@Gworewia _data]#     tail -f firethorn.log
+2018-08-03 16:04:05,830 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2018-08-03 16:04:05,830 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.username][anon-2IF5VTDREYIV...] 
+2018-08-03 16:04:05,830 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+2018-08-03 16:04:05,830 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+2018-08-03 16:04:05,832 DEBUG [callback-interface-3] [AnonymousAuthenticator] afterCompletion() 
+2018-08-03 16:04:05,833 DEBUG [callback-interface-3] [SimpleHeaderAuthenticator] afterCompletion() 
+2018-08-03 16:04:05,833 DEBUG [callback-interface-3] [OperationInterceptor] OperationInterceptor.afterCompletion() 
+2018-08-03 16:04:05,833 DEBUG [callback-interface-3] [OperationInterceptor] Operation [19578363][http://localhost:8081/firethorn/system/info] 
+2018-08-03 16:04:05,833 DEBUG [callback-interface-3] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+2018-08-03 16:04:05,833 DEBUG [callback-interface-3] [HttpRequestDebug] afterCompletion() 
+
+
+#----------------------------------------------------------------
+# Get the firethorn service addresses.
+[root@Gworewia _data]#  
+[root@Gworewia _data]#     container=root_gillian_1
+[root@Gworewia _data]# 
+[root@Gworewia _data]#     docker inspect \
+>         "${container:?}" \
+>     | jq -r '
+>         .[].NetworkSettings | .Networks | .[] | .IPAddress
+>         '
+172.20.0.5
+172.19.0.2
+
+
+
+#----------------------------------------------------------------
+# Test the firethorn service addresses.
+
+[root@Gworewia _data]#     container=root_gillian_1
+[root@Gworewia _data]# 
+[root@Gworewia _data]#     for address in $(
+>         docker inspect \
+>             "${container:?}" \
+>         | jq -r '
+>             .[].NetworkSettings | .Networks | .[] | .IPAddress
+>             '
+>         )
+>         do
+>             echo "Address [$address]"
+>             curl -v "http://$address:8080/firethorn/system/info"
+>         done
+Address [172.20.0.5]
+*   Trying 172.20.0.5...
+* TCP_NODELAY set
+* Connected to 172.20.0.5 (172.20.0.5) port 8080 (#0)
+> GET /firethorn/system/info HTTP/1.1
+> Host: 172.20.0.5:8080
+> User-Agent: curl/7.51.0
+> Accept: */*
+> 
+^C
+
+## Request Hang, no response
+
+
+#----------------------------------------------------------------
+# Test the ogsadai service addresses.
+
+[root@Gworewia _data]#  container=root_jarmila_1
+[root@Gworewia _data]# 
+[root@Gworewia _data]#     for address in $(
+>         docker inspect \
+>             "${container:?}" \
+>         | jq -r '
+>             .[].NetworkSettings | .Networks | .[] | .IPAddress
+>             '
+>         )
+>         do
+>             echo "Address [$address]"
+>             curl -s "http://$address:8080/ogsadai/services/dataResources/" | xmllint --format -
+>         done
+Address [172.20.0.3]
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Available resources or properties</title>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td>
+          <a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-174c9c3d-43f1-4cd8-963d-11d001d03b99">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-174c9c3d-43f1-4cd8-963d-11d001d03b99</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="http://172.20.0.3:8080/ogsadai/services/dataResources/firethorn-dqp-001">http://172.20.0.3:8080/ogsadai/services/dataResources/firethorn-dqp-001</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-9ed6561a-b5ab-41b1-a850-bc84f258bcb8">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-9ed6561a-b5ab-41b1-a850-bc84f258bcb8</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-d73a1cc4-cb35-4d9e-a541-ece0b13614be">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-d73a1cc4-cb35-4d9e-a541-ece0b13614be</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-36298941-05f0-4ce7-aa25-d9c27d8b16bb">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-36298941-05f0-4ce7-aa25-d9c27d8b16bb</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-4870eb42-19f9-4af5-b6d9-47a18063e3b0">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-4870eb42-19f9-4af5-b6d9-47a18063e3b0</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-9c955d49-0772-4185-8cbf-03cb8a6f001b">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-9c955d49-0772-4185-8cbf-03cb8a6f001b</a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-d4d40aa9-ae60-4968-b024-c27b6c8c3fb5">http://172.20.0.3:8080/ogsadai/services/dataResources/ogsadai-d4d40aa9-ae60-4968-b024-c27b6c8c3fb5</a>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+
+
+
+#----------------------------------------------------------------
+# Test the firethorn callback interface.
+[root@Gworewia _data]# 
+[root@Gworewia _data]#     container=root_gillian_1
+[root@Gworewia _data]# 
+[root@Gworewia _data]#     for address in $(
+>         docker inspect \
+>             "${container:?}" \
+>         | jq -r '
+>             .[].NetworkSettings | .Networks | .[] | .IPAddress
+>             '
+>         )
+>         do
+>             echo "Address [$address]"
+>             curl -s "http://$address:8081/firethorn/system/info" | jq '.'
+>         done
+Address [172.20.0.5]
+{
+  "java": {
+    "name": "OpenJDK 64-Bit Server VM",
+    "build": "25.171-b10",
+    "version": "1.8.0_171",
+    "memory": {
+      "total": 490733568,
+      "free": 86286888,
+      "max": 921174016
+    }
+  },
+  "build": {
+    "name": "firethorn-core",
+    "version": "2.1.23",
+    "timestamp": "1528381457627",
+    "changeset": "74d616f5e611693b8d0243f8"
+  },
+  "system": {
+    "time": "2018-08-03T16:05:13.122Z",
+    "name": "Linux",
+    "arch": "amd64",
+    "version": "4.10.5-200.fc25.x86_64",
+    "platform": "Fedora release 27 (Twenty Seven)"
+  },
+  "servlet": {
+    "server": "Apache Tomcat/8.5.24",
+    "context": "/firethorn"
+  },
+  "jdbc": {
+    "drivers": [
+      {
+        "class": "org.postgresql.Driver"
+      },
+      {
+        "class": "net.sourceforge.jtds.jdbc.Driver"
+      }
+    ]
+  }
+}
+Address [172.19.0.2]
+{
+  "java": {
+    "name": "OpenJDK 64-Bit Server VM",
+    "build": "25.171-b10",
+    "version": "1.8.0_171",
+    "memory": {
+      "total": 490733568,
+      "free": 85324688,
+      "max": 921174016
+    }
+  },
+  "build": {
+    "name": "firethorn-core",
+    "version": "2.1.23",
+    "timestamp": "1528381457627",
+    "changeset": "74d616f5e611693b8d0243f8"
+  },
+  "system": {
+    "time": "2018-08-03T16:05:13.149Z",
+    "name": "Linux",
+    "arch": "amd64",
+    "version": "4.10.5-200.fc25.x86_64",
+    "platform": "Fedora release 27 (Twenty Seven)"
+  },
+  "servlet": {
+    "server": "Apache Tomcat/8.5.24",
+    "context": "/firethorn"
+  },
+  "jdbc": {
+    "drivers": [
+      {
+        "class": "org.postgresql.Driver"
+      },
+      {
+        "class": "net.sourceforge.jtds.jdbc.Driver"
+      }
+    ]
+  }
+}
+
+#----------------------------------------------------------------
+# Restart containers
+
+[root@Gworewia ~]# docker stop root_gillian_1 
+[root@Gworewia ~]# docker start root_gillian_1
+
+
+#----------------------------------------------------------------
+# Check Containers
+
+[root@Gworewia ~]# docker ps
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                            PORTS                    NAMES
+58e622aa6ad0        firethorn/firethorn:2.1.23   "/bin/sh -c '/var/..."   7 weeks ago         Up 2 seconds (health: starting)   0.0.0.0:8080->8080/tcp   root_gillian_1
+abe5ffa5e554        firethorn/postgres:2.1.23    "docker-entrypoint..."   7 weeks ago         Up 7 weeks                        5432/tcp                 root_carolina_1
+9a8db568afa2        firethorn/postgres:2.1.23    "docker-entrypoint..."   7 weeks ago         Up 7 weeks                        5432/tcp                 root_bethany_1
+251da737dc98        firethorn/ogsadai:2.1.23     "/bin/sh -c '/var/..."   7 weeks ago         Up 7 weeks (healthy)              8080/tcp                 root_jarmila_1
+
+#----------------------------------------------------------------
+# Curl firethorn/system/info from local machine
+stelios@stelios-pc:~$ curl http://tap.roe.ac.uk/firethorn/system/info
+{
+"java": {
+    "name" : "OpenJDK 64-Bit Server VM",
+    "build" : "25.171-b10",
+    "version" : "1.8.0_171",
+    "memory" : {
+        "total" : 394264576,
+        "free" : 178296624,
+        "max" : 921174016
+        }
+    },
+"build": {
+    "name" : "firethorn-core",
+    "version" : "2.1.23",
+    "timestamp" : "1528381457627",
+    "changeset" : "74d616f5e611693b8d0243f8"
+    },
+"system": {
+    "time" : "2018-08-03T16:19:23.460Z",
+    "name" : "Linux",
+    "arch" : "amd64",
+    "version"  : "4.10.5-200.fc25.x86_64",
+    "platform" : "Fedora release 27 (Twenty Seven)"
+    },
+"servlet": {
+    "server" : "Apache Tomcat/8.5.24",
+    "context" : "/firethorn"
+    },
+"jdbc": {
+    "drivers": [
+        
+            {
+            "class" : "org.postgresql.Driver"
+            }
+            
+        ]
+    }
+}
+
