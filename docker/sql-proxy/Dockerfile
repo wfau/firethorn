@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:2.1.25
+FROM firethorn/fedora:2.1.25-zrq-tap-controller
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 EXPOSE 1433

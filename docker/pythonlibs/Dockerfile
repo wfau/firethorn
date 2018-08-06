@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.25
+FROM firethorn/python:2.1.25-zrq-tap-controller
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs

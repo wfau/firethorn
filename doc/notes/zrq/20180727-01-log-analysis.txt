@@ -43,9 +43,9 @@
 #----------------------------------------------------------------
 # Inspect the firethorn container volumes.
 #[root@Gworewia]
-   
+
     container=root_gillian_1
-    
+
     pushd $(
         docker inspect \
             "${container:?}" \
@@ -59,15 +59,15 @@
         #
         # Firethorn is receiving and responding to healthcheck calls ...
 
-        2018-07-27 12:57:10,768 DEBUG [callback-interface-8] [OperationInterceptor] OperationInterceptor.postHandle() 
-        2018-07-27 12:57:10,768 DEBUG [callback-interface-8] [OperationInterceptor] Operation [15746395][http://localhost:8081/firethorn/system/info] 
-        2018-07-27 12:57:10,768 DEBUG [callback-interface-8] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod] 
+        2018-07-27 12:57:10,768 DEBUG [callback-interface-8] [OperationInterceptor] OperationInterceptor.postHandle()
+        2018-07-27 12:57:10,768 DEBUG [callback-interface-8] [OperationInterceptor] Operation [15746395][http://localhost:8081/firethorn/system/info]
+        2018-07-27 12:57:10,768 DEBUG [callback-interface-8] [OperationInterceptor] Handler   [org.springframework.web.method.HandlerMethod]
 
 
 #----------------------------------------------------------------
 # Get the firethorn service addresses.
 #[root@Gworewia]
-   
+
     container=root_gillian_1
 
     docker inspect \
@@ -211,9 +211,11 @@ Initial guess - suspect this is due to the request processing Thread queue getti
 # Try restarting using docker stop/start
 #[root@Gworewia]
 
-    docker stop root_gillian_1 
+    docker stop root_gillian_1
 
-    docker start root_gillian_1 
+    sleep 20
+
+    docker start root_gillian_1
 
 #----------------------------------------------------------------
 # Test the firethorn service addresses.
