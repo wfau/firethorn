@@ -1,0 +1,573 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+########################################################
+# Date/Time Occurences of Recent TAP Service Failures:
+########################################################
+
+Aug 4 (8/4/2018 10:12 AM)
+Aug 2 (8/2/2018 3:07 PM) 	 
+Aug 1 (8/1/2018 4:54 AM)
+July 27 (7/27/2018 2:11 AM)		
+
+########################################################
+# Get Log info from Apache proxy during those times
+########################################################
+
+Aug 4
+-----
+
+[Sat Aug 04 00:21:35.551608 2018] [proxy_http:error] [pid 1978:tid 139661800273664] (70007)The timeout specified has expired: [client 145.238.193.18:14870] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 00:21:35.551687 2018] [proxy:error] [pid 1978:tid 139661800273664] [client 145.238.193.18:14870] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 00:26:38.941302 2018] [proxy_http:error] [pid 1810:tid 139661968127744] (70007)The timeout specified has expired: [client 145.238.193.18:47643] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 00:26:38.941378 2018] [proxy:error] [pid 1810:tid 139661968127744] [client 145.238.193.18:47643] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:05.543325 2018] [proxy_http:error] [pid 1978:tid 139661984913152] (70007)The timeout specified has expired: [client 133.40.215.44:57394] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 08:33:05.543407 2018] [proxy:error] [pid 1978:tid 139661984913152] [client 133.40.215.44:57394] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:05.555558 2018] [proxy_http:error] [pid 1978:tid 139661859022592] (70007)The timeout specified has expired: [client 133.40.215.44:57396] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 08:33:05.555599 2018] [proxy:error] [pid 1978:tid 139661859022592] [client 133.40.215.44:57396] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:05.926220 2018] [proxy_http:error] [pid 1810:tid 139661917771520] (70007)The timeout specified has expired: [client 133.40.215.44:57400] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 08:33:05.926270 2018] [proxy:error] [pid 1810:tid 139661917771520] [client 133.40.215.44:57400] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:05.982615 2018] [proxy_http:error] [pid 1782:tid 139661842237184] (70007)The timeout specified has expired: [client 133.40.215.44:57403] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 08:33:05.982660 2018] [proxy:error] [pid 1782:tid 139661842237184] [client 133.40.215.44:57403] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:05.986366 2018] [proxy_http:error] [pid 1782:tid 139661984913152] (70007)The timeout specified has expired: [client 133.40.215.44:57401] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 08:33:05.986410 2018] [proxy:error] [pid 1782:tid 139661984913152] [client 133.40.215.44:57401] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:06.093324 2018] [proxy_http:error] [pid 1810:tid 139661842237184] (70007)The timeout specified has expired: [client 133.40.215.44:57402] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 08:33:06.093364 2018] [proxy:error] [pid 1810:tid 139661842237184] [client 133.40.215.44:57402] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:06.157193 2018] [proxy_http:error] [pid 1782:tid 139661917771520] (70007)The timeout specified has expired: [client 133.40.215.44:57398] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 08:33:06.157238 2018] [proxy:error] [pid 1782:tid 139661917771520] [client 133.40.215.44:57398] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:07.359961 2018] [proxy_http:error] [pid 1978:tid 139661959735040] (70007)The timeout specified has expired: [client 133.40.215.44:57405] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 08:33:07.360049 2018] [proxy:error] [pid 1978:tid 139661959735040] [client 133.40.215.44:57405] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:07.389561 2018] [proxy_http:error] [pid 1978:tid 139661942949632] (70007)The timeout specified has expired: [client 133.40.215.44:57404] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Sat Aug 04 08:33:07.389602 2018] [proxy:error] [pid 1978:tid 139661942949632] [client 133.40.215.44:57404] AH00898: Error reading from remote server returned by /osa/sync
+[Sat Aug 04 08:33:16.307891 2018] [proxy_http:error] [pid 1782:tid 139661859022592] (70007)The timeout specified has expired: [client 133.40.215.44:57416] AH01102: error reading 
+
+
+
+## Looks like a validator with IP address:
+## 133.40.215.44
+
+
+Aug 2
+-----
+[Thu Aug 02 13:57:42.411737 2018] [proxy_http:error] [pid 1838:tid 139661934556928] (20014)Internal error: [client 133.40.215.44:55575] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 13:57:42.411793 2018] [proxy:error] [pid 1838:tid 139661934556928] [client 133.40.215.44:55575] AH00898: Error reading from remote server returned by /firethorn/adql/table/19475703/votable
+[Thu Aug 02 14:02:13.726227 2018] [proxy_http:error] [pid 1782:tid 139661867415296] (70007)The timeout specified has expired: [client 133.40.215.44:55422] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:13.726299 2018] [proxy:error] [pid 1782:tid 139661867415296] [client 133.40.215.44:55422] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:13.792380 2018] [proxy_http:error] [pid 1810:tid 139661842237184] (70007)The timeout specified has expired: [client 133.40.215.44:55423] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:13.792425 2018] [proxy:error] [pid 1810:tid 139661842237184] [client 133.40.215.44:55423] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:48.914201 2018] [proxy_http:error] [pid 1838:tid 139661942949632] (70007)The timeout specified has expired: [client 133.40.215.44:55607] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:48.914273 2018] [proxy:error] [pid 1838:tid 139661942949632] [client 133.40.215.44:55607] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:48.917231 2018] [proxy_http:error] [pid 1810:tid 139661976520448] (70007)The timeout specified has expired: [client 133.40.215.44:55608] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:48.917296 2018] [proxy:error] [pid 1810:tid 139661976520448] [client 133.40.215.44:55608] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:48.926204 2018] [proxy_http:error] [pid 1838:tid 139661976520448] (70007)The timeout specified has expired: [client 133.40.215.44:55609] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:48.926246 2018] [proxy:error] [pid 1838:tid 139661976520448] [client 133.40.215.44:55609] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:49.172466 2018] [proxy_http:error] [pid 1838:tid 139661808666368] (70007)The timeout specified has expired: [client 133.40.215.44:55606] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:49.172507 2018] [proxy:error] [pid 1838:tid 139661808666368] [client 133.40.215.44:55606] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:50.876553 2018] [proxy_http:error] [pid 1838:tid 139661800273664] (70007)The timeout specified has expired: [client 133.40.215.44:55616] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:50.876608 2018] [proxy:error] [pid 1838:tid 139661800273664] [client 133.40.215.44:55616] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:50.921932 2018] [proxy_http:error] [pid 1782:tid 139661808666368] (70007)The timeout specified has expired: [client 133.40.215.44:55617] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:50.921977 2018] [proxy:error] [pid 1782:tid 139661808666368] [client 133.40.215.44:55617] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:51.277839 2018] [proxy_http:error] [pid 1782:tid 139661884200704] (70007)The timeout specified has expired: [client 133.40.215.44:55618] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:51.277881 2018] [proxy:error] [pid 1782:tid 139661884200704] [client 133.40.215.44:55618] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:52.179683 2018] [proxy_http:error] [pid 1838:tid 139661900986112] (70007)The timeout specified has expired: [client 133.40.215.44:55619] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:52.179765 2018] [proxy:error] [pid 1838:tid 139661900986112] [client 133.40.215.44:55619] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:52.190268 2018] [proxy_http:error] [pid 1810:tid 139661993305856] (70007)The timeout specified has expired: [client 133.40.215.44:55620] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Thu Aug 02 14:02:52.190315 2018] [proxy:error] [pid 1810:tid 139661993305856] [client 133.40.215.44:55620] AH00898: Error reading from remote server returned by /osa/sync
+[Thu Aug 02 14:02:55.898205 2018] [proxy_http:error] [pid 1782:tid 139661850629888] (70007)The timeout specified has expired: [client 133.40.215.44:55623] AH01102: error reading status line from remote server 192.168.201.15:8080
+
+## Same validator with IP address:
+## 133.40.215.44
+
+
+Aug 1
+-----
+[Wed Aug 01 00:27:51.352368 2018] [proxy:error] [pid 1472:tid 139661959735040] [client 145.238.193.18:18249] AH00898: Error reading from remote server returned by /osa/sync
+[Wed Aug 01 00:32:55.322070 2018] [proxy_http:error] [pid 1472:tid 139661909378816] (70007)The timeout specified has expired: [client 145.238.193.18:19196] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 00:32:55.322149 2018] [proxy:error] [pid 1472:tid 139661909378816] [client 145.238.193.18:19196] AH00898: Error reading from remote server returned by /osa/sync
+[Wed Aug 01 00:42:06.271541 2018] [proxy_http:error] [pid 1472:tid 139661884200704] (20014)Internal error: [client 145.238.193.18:56842] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 00:50:26.842274 2018] [proxy_http:error] [pid 1471:tid 139661884200704] (20014)Internal error: [client 145.238.193.18:49938] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 00:51:50.138389 2018] [proxy_http:error] [pid 1472:tid 139661917771520] (104)Connection reset by peer: [client 145.238.193.18:49988] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 01:23:14.085935 2018] [proxy_http:error] [pid 1472:tid 139661993305856] (104)Connection reset by peer: [client 145.238.193.18:65222] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 01:30:50.226455 2018] [proxy_http:error] [pid 1472:tid 139661934556928] (20014)Internal error: [client 145.238.193.18:36445] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 01:34:40.610219 2018] [proxy_http:error] [pid 1471:tid 139661942949632] (104)Connection reset by peer: [client 145.238.193.18:55605] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 02:08:27.402041 2018] [proxy_http:error] [pid 1472:tid 139661926164224] (104)Connection reset by peer: [client 145.238.193.18:11489] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 02:28:13.783372 2018] [proxy_http:error] [pid 1471:tid 139662001698560] (20014)Internal error: [client 145.238.193.18:24765] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 02:29:02.129679 2018] [proxy_http:error] [pid 1471:tid 139661808666368] (20014)Internal error: [client 145.238.193.18:24794] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 03:21:21.846190 2018] [proxy_http:error] [pid 1471:tid 139661842237184] (104)Connection reset by peer: [client 133.40.215.109:42352] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 03:21:30.384684 2018] [proxy_http:error] [pid 1471:tid 139661859022592] (104)Connection reset by peer: [client 145.238.193.18:23367] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 03:23:18.510965 2018] [proxy_http:error] [pid 1472:tid 139661968127744] (104)Connection reset by peer: [client 133.40.215.109:42506] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 03:23:18.511008 2018] [proxy:error] [pid 1472:tid 139661968127744] [client 133.40.215.109:42506] AH00898: Error reading from remote server returned by /osa/sync
+[Wed Aug 01 03:23:18.511005 2018] [proxy_http:error] [pid 1471:tid 139661817059072] (104)Connection reset by peer: [client 133.40.215.109:42502] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 03:23:18.511053 2018] [proxy:error] [pid 1471:tid 139661817059072] [client 133.40.215.109:42502] AH00898: Error reading from remote server returned by /osa/sync
+[Wed Aug 01 03:23:18.511140 2018] [proxy_http:error] [pid 1472:tid 139661917771520] (104)Connection reset by peer: [client 133.40.215.109:42514] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 03:23:18.511164 2018] [proxy:error] [pid 1472:tid 139661917771520] [client 133.40.215.109:42514] AH00898: Error reading from remote server returned by /osa/sync
+[Wed Aug 01 03:26:34.035571 2018] [proxy_http:error] [pid 1472:tid 139661833844480] (70007)The timeout specified has expired: [client 133.40.215.109:42460] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 03:26:34.035648 2018] [proxy:error] [pid 1472:tid 139661833844480] [client 133.40.215.109:42460] AH00898: Error reading from remote server returned by /osa/sync
+[Wed Aug 01 03:26:34.344678 2018] [proxy_http:error] [pid 1472:tid 139661892593408] (70007)The timeout specified has expired: [client 133.40.215.109:42462] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 03:26:34.344721 2018] [proxy:error] [pid 1472:tid 139661892593408] [client 133.40.215.109:42462] AH00898: Error reading from remote server returned by /osa/sync
+[Wed Aug 01 03:26:34.902224 2018] [proxy_http:error] [pid 1472:tid 139661875808000] (70007)The timeout specified has expired: [client 133.40.215.109:42472] AH01102: error reading status line from remote server 192.168.201.15:8080
+[Wed Aug 01 03:26:34.902268 2018] [proxy:error] [pid 1472:tid 139661875808000] [client 133.40.215.109:42472] AH00898: Error reading from remote server returned by /osa/sync
+
+
+## Looks like two IP Addresses during this time:
+## 145.238.193.18
+## 133.40.215.109
+
+
+
+IP results for 133.40.215.109
+IP Information
+COUNTRY	ASN	
+Japan 	AS2907 Research Organization of Information and Systems, National Institute of Informatics
+
+
+IP results for 145.238.193.18
+IP Information
+COUNTRY	ASN	BAD IP?
+France 	AS2200 Reseau National de telecommunications pour la Technologie
+
+
+
+########################################################
+# Databases causing Fatal error 823
+########################################################
+jdbc:jtds:sqlserver://192.168.137.53/ATLASDR3
+192.168.137.53 : ramses15
+
+
+
+##############################################################################
+# Run firethorn.py tests on Development TAP service: tap.metagrid.xyz (Ulov)
+##############################################################################
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client (using named param).
+firethorn = ftpy.Firethorn(
+    endpoint = "http://tap.metagrid.xyz/firethorn"
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+
+
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    "ATLASDR1",
+    '*',
+    os.environ.get('datatype'),
+    "192.168.137.53",
+    os.environ.get('datauser'),
+    os.environ.get('datapass')
+    )
+print(
+    atlas_jdbc
+    )
+
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+print(
+    atlas_adql
+    )
+
+#
+# Import the target JdbcSchema into AdqlSchema.
+schema_names = [
+    "ATLASDR1",
+    "2MASS",
+    "2XMM",
+    ]
+
+for schema_name in schema_names:
+    print(schema_name)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        schema_name,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + schema_name + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            schema_name,
+            metadoc=metadoc
+            )
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+#
+# Iterate the metadata tree
+for schema in atlas_adql.select_schemas():
+    for table in schema.select_tables():
+        print(
+            "table  [{}][{}]".format(
+                schema.name(),
+                table.name()
+                )
+            )
+        query_str = "SELECT TOP 10 * FROM {}.{}".format(
+            schema.name(),
+            table.name()
+            )
+        query_obj = workspace.create_query(
+            query_str,
+            "COMPLETED",
+            None,
+            3000000
+            )
+        py_table = query_obj.table().as_astropy()
+        py_table.pprint()
+
+#
+# Run some queries in parallel
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+
+query_str = "SELECT TOP 10000 ra, dec FROM ATLASDR1.atlasSource"
+
+def do_query(workspace, query_str, limit, delay):
+    query_obj = workspace.create_query(
+        query_str,
+        "COMPLETED",
+        None,
+        200000,
+            {
+            "adql.query.limit.rows"  : limit,
+            "adql.query.delay.every" : delay
+            }
+        )
+    return query_obj.json_object.get("results").get("count")
+
+def do_queries(workspace, query_str, threads, delay):
+    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        futures = {
+            executor.submit(
+                do_query,
+                workspace,
+                query_str,
+                limit,
+                delay
+                ): limit for limit in range(threads, 0, -1)
+            }
+        for future in concurrent.futures.as_completed(futures):
+            print(
+                future.result()
+                )
+
+for threads in range(1, 20):
+    for delay in range(500, -100, -100):
+        print("---- ", threads, delay)
+        do_queries(
+            workspace,
+            query_str,
+            threads,
+            delay
+            )
+
+
+######################### Concurrent TAP queries
+
+try:
+    import logging
+    import firethorn
+    import concurrent.futures
+    import urllib.request
+    import urllib.parse
+    import random
+except Exception as e:
+    logging.exception(e)
+
+
+sync_base_url = "http://tap.metagrid.xyz/osa/sync?QUERY="
+sync_params = "&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE"
+urls = [(sync_base_url + urllib.parse.quote_plus("SELECT TOP " +  str(random.randint(1,1000)) +  " * FROM ATLASDR1.atlasSource") + sync_params) for _ in range(50)]
+
+# Retrieve a single page and report the url and contents
+def load_url(url):
+    rd = None
+    response = None
+    try:
+        print(url)
+        with urllib.request.urlopen(url) as response:
+            rd = response.read()
+    except Exception as e:
+        print(rd)
+        print (response.getcode())
+        print(e)
+
+    print("--------------")
+       
+    return rd
+
+# We can use a with statement to ensure threads are cleaned up promptly
+with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+    # Start the load operations and mark each future with its URL
+    future_to_url = {executor.submit(load_url, url): url for url in urls}
+    for future in concurrent.futures.as_completed(future_to_url):
+        url = future_to_url[future]
+        try:
+            data = future.result() 
+            # do json processing here
+        except Exception as exc:
+            print('%r generated an exception: %s' % (url, exc))
+        else:
+            print('%r page is %d bytes' % (url, len(data)))
+        pass
+
+
+
+### All pass on Ulov
+
+
+### Run Concurrent TAP query test on live TAP, test a database that raised an 823 Fatal error exception (2XMM)
+
+
+
+try:
+    import logging
+    import firethorn
+    import concurrent.futures
+    import urllib.request
+    import urllib.parse
+    import random
+except Exception as e:
+    logging.exception(e)
+
+
+sync_base_url = "http://tap.roe.ac.uk/osa/sync?QUERY="
+sync_params = "&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE"
+urls = [(sync_base_url + urllib.parse.quote_plus('SELECT TOP ' +  str(random.randint(1,1000)) +  ' * FROM TWOXMM.twoxmm') + sync_params) for _ in range(50)]
+
+# Retrieve a single page and report the url and contents
+def load_url(url):
+    rd = None
+    response = None
+    try:
+        print(url)
+        with urllib.request.urlopen(url) as response:
+            rd = response.read()
+    except Exception as e:
+        print(rd)
+        print (response.getcode())
+        print(e)
+
+    print("--------------")
+       
+    return rd
+
+# We can use a with statement to ensure threads are cleaned up promptly
+with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+    # Start the load operations and mark each future with its URL
+    future_to_url = {executor.submit(load_url, url): url for url in urls}
+    for future in concurrent.futures.as_completed(future_to_url):
+        url = future_to_url[future]
+        try:
+            data = future.result() 
+            # do json processing here
+        except Exception as exc:
+            print('%r generated an exception: %s' % (url, exc))
+        else:
+            print('%r page is %d bytes' % (url, len(data)))
+        pass	
+
+
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+416+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+136+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+253+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+846+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+250+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+103+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+250+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+718+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+970+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+479+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+344+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+224+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+
+
+## These request hang,
+## Meanwhile in the OGSA-DAI log the threads have terminated with an expetion:
+2018-08-06 20:47:01,571 WARN  activity.MatchedIterativeActivity [pool-1-thread-3050,warnExceptionAndChildren:343] #1533588421570:587610# java.sql.SQLException: Already closed.
+2018-08-06 20:47:01,572 DEBUG event.LoggingActivityListener [pool-1-thread-3050,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:293)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.sql.SQLException: Warning: Fatal error 823 occurred at Aug  6 2018  9:48PM. Note the error and time, and contact your system administrator.
+	at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+	at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+	at net.sourceforge.jtds.jdbc.TdsCore.isDataInResultSet(TdsCore.java:838)
+	at net.sourceforge.jtds.jdbc.JtdsResultSet.<init>(JtdsResultSet.java:149)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:511)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+	at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:30)
+	... 4 more
+
+2018-08-06 20:47:01,572 WARN  event.LoggingActivityListener [pool-1-thread-3050,warnExceptionAndChildren:343] #1533588421570:587607# A problem has occurred during processing of activity uk.org.ogsadai.SQLQuery with instance name uk.org.ogsadai.SQLQuery-ogsadai-f5118ea1-5540-414e-9a1c-242f1f5c09b8.
+2018-08-06 20:47:01,572 WARN  event.LoggingActivityListener [pool-1-thread-3050,warnExceptionAndChildren:343] #1533588421570:587607# The activity encountered a problem while interacting with a relational database.
+2018-08-06 20:47:01,573 WARN  event.LoggingActivityListener [pool-1-thread-3050,warnExceptionAndChildren:343] #1533588421570:587607# java.sql.SQLException: Warning: Fatal error 823 occurred at Aug  6 2018  9:48PM. Note the error and time, and contact your system administrator.
+2018-08-06 20:47:01,573 DEBUG activity.MatchedIterativeActivity [pool-1-thread-3052,debug:84] performing clean-up
+2018-08-06 20:47:01,573 DEBUG event.LoggingActivityListener [pool-1-thread-3052,debug:84] uk.org.ogsadai.activity.io.DataError: The pipe has been closed due to an error that occurred at the data producer.
+	at uk.org.ogsadai.activity.io.BufferedPipe.read(BufferedPipe.java:154)
+	at uk.org.ogsadai.activity.event.EventfulPipe.read(EventfulPipe.java:118)
+	at uk.org.ogsadai.activity.io.TupleListActivityInput.read(TupleListActivityInput.java:77)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.performNextIteration(MatchedIterativeActivity.java:183)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:88)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2018-08-06 20:47:01,574 WARN  event.LoggingActivityListener [pool-1-thread-3052,warnExceptionAndChildren:343] #1533588421573:587613# A problem has occurred during processing of activity uk.ac.roe.wfau.firethorn.Delays with instance name uk.ac.roe.wfau.firethorn.Delays-ogsadai-f930a4cc-2b0a-4e05-a174-d07a4fae3086.
+2018-08-06 20:47:01,574 WARN  event.LoggingActivityListener [pool-1-thread-3052,warnExceptionAndChildren:343] #1533588421573:587613# The pipe has been closed due to an error that occurred at the data producer.
+2018-08-06 20:47:01,574 DEBUG activity.MatchedIterativeActivity [pool-1-thread-3048,debug:84] performing clean-up
+2018-08-06 20:47:01,575 DEBUG event.LoggingActivityListener [pool-1-thread-3048,debug:84] uk.org.ogsadai.activity.io.DataError: The pipe has been closed due to an error that occurred at the data producer.
+	at uk.org.ogsadai.activity.io.BufferedPipe.read(BufferedPipe.java:154)
+	at uk.org.ogsadai.activity.event.EventfulPipe.read(EventfulPipe.java:118)
+	at uk.org.ogsadai.activity.io.TupleListActivityInput.read(TupleListActivityInput.java:77)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.performNextIteration(MatchedIterativeActivity.java:183)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:88)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2018-08-06 20:47:01,575 WARN  event.LoggingActivityListener [pool-1-thread-3048,warnExceptionAndChildren:343] #1533588421574:587616# A problem has occurred during processing of activity uk.ac.roe.wfau.firethorn.Limits with instance name uk.ac.roe.wfau.firethorn.Limits-ogsadai-4e48ef24-cb3b-4d31-8ce7-19e4d278bc7d.
+2018-08-06 20:47:01,575 WARN  event.LoggingActivityListener [pool-1-thread-3048,warnExceptionAndChildren:343] #1533588421574:587616# The pipe has been closed due to an error that occurred at the data producer.
+2018-08-06 20:47:01,576 DEBUG activity.MatchedIterativeActivity [pool-1-thread-3049,debug:84] performing clean-up
+2018-08-06 20:47:01,577 DEBUG event.LoggingActivityListener [pool-1-thread-3049,debug:84] uk.org.ogsadai.activity.io.DataError: The pipe has been closed due to an error that occurred at the data producer.
+	at uk.org.ogsadai.activity.io.BufferedPipe.read(BufferedPipe.java:154)
+	at uk.org.ogsadai.activity.event.EventfulPipe.read(EventfulPipe.java:118)
+	at uk.org.ogsadai.activity.io.TupleListActivityInput.read(TupleListActivityInput.java:77)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.performNextIteration(MatchedIterativeActivity.java:183)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:88)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2018-08-06 20:47:01,577 WARN  event.LoggingActivityListener [pool-1-thread-3049,warnExceptionAndChildren:343] #1533588421575:587619# A problem has occurred during processing of activity uk.ac.roe.wfau.firethorn.JdbcInsertData with instance name uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-2c914817-b309-493d-9234-106288cf6bd2.
+2018-08-06 20:47:01,577 WARN  event.LoggingActivityListener [pool-1-thread-3049,warnExceptionAndChildren:343] #1533588421575:587619# The pipe has been closed due to an error that occurred at the data producer.
+2018-08-06 20:47:01,578 DEBUG event.LoggingActivityListener [pool-1-thread-3051,debug:84] uk.org.ogsadai.activity.io.DataError: The pipe has been closed due to an error that occurred at the data producer.
+	at uk.org.ogsadai.activity.io.BufferedPipe.read(BufferedPipe.java:154)
+	at uk.org.ogsadai.activity.event.EventfulPipe.read(EventfulPipe.java:118)
+	at uk.org.ogsadai.activity.delivery.DeliverToRequestStatusActivity.process(DeliverToRequestStatusActivity.java:138)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2018-08-06 20:47:01,578 WARN  event.LoggingActivityListener [pool-1-thread-3051,warnExceptionAndChildren:343] #1533588421578:587622# A problem has occurred during processing of activity uk.org.ogsadai.DeliverToRequestStatus with instance name uk.org.ogsadai.DeliverToRequestStatus-ogsadai-84a3c6a4-a844-4c23-8d9d-c23992515a57.
+2018-08-06 20:47:01,579 WARN  event.LoggingActivityListener [pool-1-thread-3051,warnExceptionAndChildren:343] #1533588421578:587622# The pipe has been closed due to an error that occurred at the data producer.
+
+
+## By running the above concurrent test from another client while the previous queries are hanging, Gworewia stops responding to requests.
+## Same as what we've seen happen with recent issues.
+
+## So it looks like exception is not propagating correctly to Firethorn
+## Would adding a delay do anything here? Assuming query terminates immediately due to 823 SQL Server Error
+
+
+
+
