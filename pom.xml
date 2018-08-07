@@ -352,7 +352,6 @@
 
             <!--+
                 | Java Servlet libraries.
-                +-->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
@@ -363,6 +362,7 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>4.0.1</version>
             </dependency>
+                +-->
 
 	        <!--+
 	            | Servlet libraries.
