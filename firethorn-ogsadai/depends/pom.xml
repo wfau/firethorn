@@ -51,6 +51,14 @@
         <org.slf4j.version>1.5.6</org.slf4j.version>
     </properties>
 
+    <dependencyManagement>
+
+        <dependencies>
+
+        </dependencies>
+
+    </dependencyManagement>
+
     <dependencies>
 
         <!--+
@@ -75,6 +83,24 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${org.slf4j.version}</version>
+        </dependency>
+
+        <!--+
+            | The StarLink VOTable library, used by our TAP client Activity.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-stil</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | The Apache HttpComponent libraries, used by our TAP client Activity.
+            +-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
 
     </dependencies>

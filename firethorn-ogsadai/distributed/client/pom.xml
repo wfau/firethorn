@@ -52,7 +52,7 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI DQP common components.
+            | Firethorn/OGSA-DAI DQP common components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

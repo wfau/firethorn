@@ -135,7 +135,7 @@
             <id>temp-repo</id>
             <url>file:///tmp/firethorn/repo</url>
             <name>temp-repo</name>
- 
+
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>daily</updatePolicy>
@@ -147,7 +147,7 @@
                 <updatePolicy>always</updatePolicy>
                 <checksumPolicy> fail</checksumPolicy>
             </snapshots>
- 
+
         </repository-->
 
         <site>
@@ -173,7 +173,7 @@
             | Skip tests by default.
             | https://maven.apache.org/surefire/maven-surefire-plugin/examples/skipping-test.html
             | Explicitly enable on the command line when we want them.
-            | mvn install -D skipTests=false 
+            | mvn install -D skipTests=false
             +-->
         <skipTests>true</skipTests>
 
@@ -182,7 +182,7 @@
             | https://maven.apache.org/plugins/maven-install-plugin/examples/installing-checksums.html
             +-->
         <createChecksum>true</createChecksum>
-    
+
         <!--+
             | Build for Java 1.7.
             | Build for 1.8 triggers a problem in Eclipse.
@@ -232,7 +232,7 @@
                     | daily, the default value;
                     | interval:XXX: an interval in minutes (XXX)
                     | never: Maven will never try to retrieve another version.
-                    | It will do that only if it doesn't exist locally. With the configuration, 
+                    | It will do that only if it doesn't exist locally. With the configuration,
                     | SNAPSHOT version will be handled as the stable libraries.
                     +-->
                 <updatePolicy>always</updatePolicy>
@@ -274,7 +274,7 @@
             | https://maven.apache.org/ref/3.0.4/maven-model/maven.html#class_dependencyManagement
             | http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html
             | http://www.sonatype.com/people/2009/10/maven-tips-and-tricks-grouping-dependencies/
-            +-->	
+            +-->
 
         <dependencies>
 
@@ -324,7 +324,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.5.5</version>
+                <version>4.5.6</version>
             </dependency>
 
 		    <!--+
@@ -334,7 +334,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>25.1-jre</version>
+                <version>26.0-jre</version>
             </dependency>
 
 		    <!--+
@@ -364,12 +364,22 @@
                 <version>4.0.1</version>
             </dependency>
 
+	        <!--+
+	            | Servlet libraries.
+                | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
+	            +-->
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-web-api</artifactId>
+                <version>8.0</version>
+            </dependency>
+
 		    <!--+
 		        | Joda Time Libraries.
 		        | http://joda-time.sourceforge.net/
 		        | http://joda-time.sourceforge.net/api-release/index.html
                 | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJodaTime
-		        +-->	
+		        +-->
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
@@ -384,7 +394,7 @@
             <!--+
                 | Jadira Type Libraries.
                 | http://blog.jadira.co.uk/
-                +-->	
+                +-->
             <dependency>
                 <groupId>org.jadira.usertype</groupId>
                 <artifactId>usertype.core</artifactId>
@@ -423,8 +433,8 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.0</version>
-            </dependency> 
+                <version>1.18.2</version>
+            </dependency>
 
             <!--+
                 | JUnit test framework.
@@ -710,7 +720,7 @@
                 <configuration>
 
                     <archiveClasses>true</archiveClasses>
-        
+
                     <archive>
 
                         <manifest>
@@ -775,7 +785,7 @@
             <plugin>
                 <groupId>org.basepom.maven</groupId>
                 <artifactId>duplicate-finder-maven-plugin</artifactId>
-            </plugin>        
+            </plugin>
 
         </plugins>
     </build>

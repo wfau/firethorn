@@ -44,11 +44,11 @@
         Client (OGSA-DAI) components for the FireThorn OGSA-DAI metadata service.
         ]]>
     </description>
-    
+
     <dependencies>
 
         <!--+
-            | OGSA-DAI DQP server components.
+            | Firethorn/OGSA-DAI DQP server components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -57,16 +57,7 @@
         </dependency>
 
         <!--+
-            | Firethorn Activity components.
-            +-->
-        <!--dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-context-server</artifactId>
-            <version>${project.version}</version>
-        </dependency-->
-
-        <!--+
-            | Firethorn Activity context.
+            | Firethorn/OGSA-DAI Activity context.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

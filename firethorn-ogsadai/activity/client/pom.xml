@@ -44,7 +44,7 @@
         Client (Firethorn) components for the FireThorn OGSA-DAI activities.
         ]]>
     </description>
-    
+
     <properties>
     </properties>
 
@@ -140,6 +140,7 @@
 
 	    <!--+
 	        | The Google Guava libraries.
+	        | https://github.com/google/guava
 	        +-->
         <dependency>
             <groupId>com.google.guava</groupId>

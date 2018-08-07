@@ -61,7 +61,7 @@
         </dependency>
 
         <!--+
-            | Our metadata components.
+            | Firethorn/OGSA-DAI metadata components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -70,7 +70,7 @@
         </dependency>
 
         <!--+
-            | Our Activity components.
+            | Firethorn/OGSA-DAI Activity components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -79,7 +79,7 @@
         </dependency>
 
         <!--+
-            | Our DQP components.
+            | Firethorn/OGSA-DAI DQP components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -88,7 +88,7 @@
         </dependency>
 
         <!--+
-            | Our Astronomy extenstions.
+            | Firethorn/OGSA-DAI Astronomy extenstions.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -97,7 +97,7 @@
         </dependency>
 
         <!--+
-            | Our FireThorn extenstions.
+            | Firethorn/OGSA-DAI Firethorn extenstions.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -111,21 +111,11 @@
         </dependency>
 
         <!--+
-            | FireThorn JDBC drivers.
+            | Firethorn JDBC drivers.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-jdbc</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <!--+
-            | Starlink Tables library.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-stil</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>

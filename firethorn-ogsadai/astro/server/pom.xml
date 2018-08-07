@@ -91,23 +91,23 @@
         </dependency>
 
         <!--+
-	        | The Apache HttpComponent libraries, used by our TAP client. 
-            +-->
+	        | The Apache HttpComponent libraries, used by our TAP client.
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.0.1</version>
         </dependency>
+            +-->
 
         <!--+
-            | The StarLink VOTAble library, used by our TAP client. 
-            +-->
+            | The StarLink VOTAble library, used by our TAP client.
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-stil</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
+            +-->
 
     </dependencies>
 

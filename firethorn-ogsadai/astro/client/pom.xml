@@ -69,8 +69,9 @@
             <artifactId>ogsadai-client</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
+
         <!--+
-	        | The Apache HttpComponent libraries, used by our TAP client. 
+	        | The Apache HttpComponent libraries, used by our TAP client.
             +-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -78,7 +79,7 @@
         </dependency>
 
         <!--+
-            | The StarLink VOTable library, used by our TAP client. 
+            | The StarLink VOTable library, used by our TAP client.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

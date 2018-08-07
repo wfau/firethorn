@@ -51,20 +51,20 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI activity components.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-activity-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!--+
-            | OGSA-DAI FireThorn common classes.
+            | Firethorn/OGSA-DAI Firethorn common classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
+            | Firethorn/OGSA-DAI Activity client classes.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-activity-client</artifactId>
             <version>${project.version}</version>
         </dependency>
 
