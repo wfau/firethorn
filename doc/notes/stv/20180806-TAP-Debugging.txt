@@ -158,6 +158,9 @@ jdbc:jtds:sqlserver://192.168.137.53/ATLASDR3
 ##############################################################################
 # Run firethorn.py tests on Development TAP service: tap.metagrid.xyz (Ulov)
 ##############################################################################
+[Stevedore@Siamond ~]$ docker exec -it stevedore_firethorn-py_run_2 bash
+root@firethorn-py:/home# python3
+
 import os
 import uuid
 import time
@@ -339,8 +342,14 @@ for threads in range(1, 20):
             delay
             )
 
+>>> exit()
 
-######################### Concurrent TAP queries
+
+########################################################
+# Concurrent Queries Tests
+########################################################
+
+root@firethorn-py:/home# python3
 
 try:
     import logging
@@ -390,13 +399,17 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
         pass
 
 
+>>> exit()
 
 ### All pass on Ulov
 
 
-### Run Concurrent TAP query test on live TAP, test a database that raised an 823 Fatal error exception (2XMM)
+################################################################################################################
+# Run Concurrent TAP query test on live TAP, test a database that raised an 823 Fatal error exception (2XMM)
+################################################################################################################
 
 
+root@firethorn-py:/home# python3
 
 try:
     import logging
@@ -459,6 +472,7 @@ http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+479+%2A+FROM+TWOXMM.twoxmm&REQUES
 http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+344+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
 http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+224+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
 
+...
 
 ## These request hang,
 ## Meanwhile in the OGSA-DAI log the threads have terminated with an expetion:
@@ -570,4 +584,113 @@ Caused by: java.sql.SQLException: Warning: Fatal error 823 occurred at Aug  6 20
 
 
 
+###################################################################
+# Run Linear Queries on problematic database (TWOXMM on ramses15).
+###################################################################
 
+root@firethorn-py:/home# python3
+
+
+
+try:
+    import logging
+    import firethorn
+    import concurrent.futures
+    import urllib.request
+    import urllib.parse
+    import random
+    import requests
+except Exception as e:
+    logging.exception(e)
+
+
+def load_url(url):
+    r = None
+    response = None
+    try:
+        print(url)
+        r = requests.get(url, timeout=5)
+    except Exception as e:
+        print(e)
+    return r
+
+sync_base_url = "http://tap.roe.ac.uk/osa/sync?QUERY="
+sync_params = "&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE"
+urls = [(sync_base_url + urllib.parse.quote_plus("SELECT TOP " +  str(random.randint(1,1000)) +  " * FROM TWOXMM.twoxmm") + sync_params) for _ in range(50)]
+
+for syncjob in urls:
+    load_url(syncjob)
+    load_url("http://tap.roe.ac.uk/firethorn/system/info")
+
+        
+
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+847+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+451+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+801+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+628+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+656+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+453+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+847+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+323+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+757+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+300+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+912+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+155+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+356+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+687+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+66+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+<Response [200]>
+http://tap.roe.ac.uk/osa/sync?QUERY=SELECT+TOP+939+%2A+FROM+TWOXMM.twoxmm&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+http://tap.roe.ac.uk/firethorn/system/info
+HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout=5)
+
+
+
+## Firethorn stops responding after 15 Queries
+## Second Run: Firethorn stops responding after 19 Queries
+## Second Run: Firethorn stops responding after 20 Queries
