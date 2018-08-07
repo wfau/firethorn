@@ -255,24 +255,14 @@
 	    </dependency>
 
         <!--+
-            | Java Persistence API (included by hibernate/spring)
-            | http://download.oracle.com/javaee/5/api/javax/persistence/package-summary.html
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-            +-->
-
-        <!--+
             | JSTL libraries (required by Spring MVC).
             | http://www.mularien.com/blog/2008/02/19/tutorial-how-to-set-up-tomcat-6-to-work-with-jstl-12/
             | http://forum.springsource.org/showthread.php?83953-pizza-shop-example-can-t-run-on-tomcat-5.5.15/page2
-            +-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
+            +-->
 
 	    <!--+
 	        | Jackson JSON Mapper

@@ -262,6 +262,16 @@
             <layout>default</layout>
         </repository>
 
+        <!--+
+            | Repository for Java EE dependencies.
+            | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
+            +-->
+        <repository>
+            <id>java.net2</id>
+            <name>Repository hosting the Java EE dependencies</name>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+
     </repositories>
 
     <pluginRepositories>
@@ -349,7 +359,6 @@
 	            <version>1</version>
             </dependency>
 
-
             <!--+
                 | Java Servlet libraries.
             <dependency>
@@ -372,6 +381,7 @@
                 <groupId>javax</groupId>
                 <artifactId>javaee-web-api</artifactId>
                 <version>8.0</version>
+                <scope>provided</scope>
             </dependency>
 
 		    <!--+
@@ -399,6 +409,23 @@
                 <groupId>org.jadira.usertype</groupId>
                 <artifactId>usertype.core</artifactId>
                 <version>6.0.1.GA</version>
+                <!--+
+                    | Exclude Hibernate dependencies because they import a different version.
+                    | https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html
+                    | [WARNING] Found duplicate and different classes in [javax.persistence:javax.persistence-api:2.2, org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final]:
+                    | [WARNING] Found duplicate and different classes in [org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1, org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final]:
+                    | ** This is less of an issue in
+                    +-->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-entitymanager</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
 		    <!--+
