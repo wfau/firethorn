@@ -38,13 +38,13 @@
     <artifactId>firethorn-cds-adql</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn CDS ADQL library</name>
+    <name>Firethorn CDS ADQL library</name>
     <description>
         <![CDATA[
         Local build of the CDS ADQL library.
         ]]>
     </description>
-    
+
     <dependencies>
     </dependencies>
 

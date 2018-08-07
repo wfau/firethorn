@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-dqp-common</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed queries (common)</name>
+    <name>Firethorn OGSA-DAI distributed queries (common)</name>
     <description>
         <![CDATA[
-        Commion (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.
+        Commion (OGSA-DAI) components for the Firethorn OGSA-DAI distributed query processor.
         Based on a clone of the OGSA-DAI code in svn.
         ]]>
     </description>

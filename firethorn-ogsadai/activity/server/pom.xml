@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-activity-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI activity (server)</name>
+    <name>Firethorn OGSA-DAI activity (server)</name>
     <description>
         <![CDATA[
-        Server (OGSA-DAI) components for the FireThorn OGSA-DAI activities.
+        Server (OGSA-DAI) components for the Firethorn OGSA-DAI activities.
         ]]>
     </description>
 

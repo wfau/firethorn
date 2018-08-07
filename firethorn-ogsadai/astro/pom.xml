@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-astro</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI astronomy extensions</name>
+    <name>Firethorn OGSA-DAI astronomy extensions</name>
     <description>
         <![CDATA[
-        Astronomy extensions for the FireThorn OGSA-DAI service.
+        Astronomy extensions for the Firethorn OGSA-DAI service.
         Based on a clone of the OGSA-DAI code in svn.
         ]]>
     </description>

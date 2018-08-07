@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-dqp</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI distributed queries</name>
+    <name>Firethorn OGSA-DAI distributed queries</name>
     <description>
         <![CDATA[
-        Components for the FireThorn OGSA-DAI distributed query processor.
+        Components for the Firethorn OGSA-DAI distributed query processor.
         Based on a clone of the OGSA-DAI code in svn.
         ]]>
     </description>

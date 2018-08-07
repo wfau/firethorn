@@ -20,7 +20,7 @@
     +-->
 <Context
     path="/firethorn"
-    displayName="ROE WFAU FireThorn service"
+    displayName="ROE WFAU Firethorn service"
     >
 
     <!--+
@@ -28,9 +28,9 @@
         | http://dwark.blogspot.co.uk/2006/10/maven-2-hibernate-hsqldb.html
         | https://numberformat.wordpress.com/2010/06/03/creating-and-using-hsqldb-database-using-maven-in-10-minutes/
     <Resource
-        name="firethorn/database" 
+        name="firethorn/database"
         auth="Container"
-        type="javax.sql.DataSource" 
+        type="javax.sql.DataSource"
         driverClassName="org.hsqldb.jdbcDriver"
         url="jdbc:hsqldb:mem:firethorn"
         username="sa"
@@ -41,9 +41,9 @@
     <!--+
         | File based HSQLDB test database.
     <Resource
-        name="firethorn/database" 
+        name="firethorn/database"
         auth="Container"
-        type="javax.sql.DataSource" 
+        type="javax.sql.DataSource"
         driverClassName="org.hsqldb.jdbcDriver"
         url="jdbc:hsqldb:file:target/database/testdata"
         username="sa"
@@ -55,14 +55,14 @@
         | PostgreSQL test database.
         | http://pro-programmers.blogspot.com/2008/07/spring-datasource-jndi-lookup-from.html
     <Resource
-        name="firethorn/database" 
+        name="firethorn/database"
         auth="Container"
-        type="javax.sql.DataSource" 
+        type="javax.sql.DataSource"
         driverClassName="org.postgresql.Driver"
         url="jdbc:postgresql://localhost/firethorn"
         username="xxxx"
         password="xxxx-xxxx-xxxx-xxxx"
-        maxActive="8" 
+        maxActive="8"
         maxIdle="4"
         />
         +-->

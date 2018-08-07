@@ -34,14 +34,14 @@
         <artifactId>firethorn-ogsadai-activity</artifactId>
         <version project='firethorn'>2.1.25-zrq-tap-controller</version>
 	</parent>
-	
+
     <artifactId>firethorn-ogsadai-activity-context</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI activity (context)</name>
+    <name>Firethorn OGSA-DAI activity (context)</name>
     <description>
         <![CDATA[
-        Server (OGSA-DAI) context for the FireThorn OGSA-DAI activities.
+        Server (OGSA-DAI) context for the Firethorn OGSA-DAI activities.
         Split into a separate package to prevent circular references.
         ]]>
     </description>

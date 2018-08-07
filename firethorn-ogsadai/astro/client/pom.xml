@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-astro-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI astronomy extensions (client)</name>
+    <name>Firethorn OGSA-DAI astronomy extensions (client)</name>
     <description>
         <![CDATA[
-        Client (OGSA-DAI) components for the FireThorn OGSA-DAI Astronomy extensions.
+        Client (OGSA-DAI) components for the Firethorn OGSA-DAI Astronomy extensions.
         Based on a clone of the OGSA-DAI code in svn.
         ]]>
     </description>

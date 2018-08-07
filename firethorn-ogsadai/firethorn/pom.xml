@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-firethorn</artifactId>
     <packaging>pom</packaging>
 
-    <name>OGSA-DAI FireThorn components</name>
+    <name>OGSA-DAI Firethorn components</name>
     <description>
         <![CDATA[
-        OGSA-DAI FireThorn components.
+        OGSA-DAI Firethorn components.
         ]]>
     </description>
 
@@ -54,7 +54,7 @@
         <module>common</module>
         <module>server</module>
     </modules>
-    
+
 </project>
 
 

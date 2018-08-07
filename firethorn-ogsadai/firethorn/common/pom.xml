@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI FireThorn components (common)</name>
+    <name>OGSA-DAI Firethorn components (common)</name>
     <description>
         <![CDATA[
-        Common (OGSA-DAI) components for FireThorn.
+        Common (OGSA-DAI) components for Firethorn.
         ]]>
     </description>
 

@@ -31,14 +31,14 @@ import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.CallbackParam;
 
 /**
- * Toolkit for sending a callback message to FireThorn. 
+ * Toolkit for sending a callback message to Firethorn.
  *
  */
 public class CallbackHandler
     {
     /**
      * The callback URL path, {@value}.
-     * 
+     *
      */
     protected static final String CALLBACK_PATH = "/blue/query/callback/" ;
 
@@ -115,7 +115,7 @@ public class CallbackHandler
            count
            );
        }
-   
+
 	public void failed()
 		{
 		callback(
@@ -151,14 +151,14 @@ public class CallbackHandler
             count
             );
         }
-	
+
 	protected void callback(final String taskState, final String resultState, final Long count)
 		{
         logger.debug("callback(String, Long)");
         logger.debug("  task    [" + taskState + "]");
         logger.debug("  results [" + resultState + "]");
         logger.debug("  count   [" + count + "]");
-        
+
 		if (context == null)
 			{
 	        logger.debug("null context - skipping callback");
@@ -256,7 +256,7 @@ public class CallbackHandler
 
     /**
      * JavaBean to handle the REST/JSON request.
-     *  
+     *
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
     public abstract static class RequestBean
@@ -266,7 +266,7 @@ public class CallbackHandler
 
     /**
      * JavaBean to handle the REST/JSON response.
-     *  
+     *
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class ResponseBean
@@ -297,7 +297,7 @@ public class CallbackHandler
             {
             this.name = value;
             }
-        
+
     	private String self;
 		@Override
         public String getSelf()

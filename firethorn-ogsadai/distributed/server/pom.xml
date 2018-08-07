@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-dqp-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed queries (server)</name>
+    <name>Firethorn OGSA-DAI distributed queries (server)</name>
     <description>
         <![CDATA[
-        Server (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.
+        Server (OGSA-DAI) components for the Firethorn OGSA-DAI distributed query processor.
         Based on a clone of the OGSA-DAI code in svn.
         ]]>
     </description>

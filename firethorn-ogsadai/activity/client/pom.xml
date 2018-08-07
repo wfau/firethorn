@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-activity-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI activity (client)</name>
+    <name>Firethorn OGSA-DAI activity (client)</name>
     <description>
         <![CDATA[
-        Client (Firethorn) components for the FireThorn OGSA-DAI activities.
+        Client (Firethorn) components for the Firethorn OGSA-DAI activities.
         ]]>
     </description>
 
@@ -60,7 +60,7 @@
         </dependency>
 
         <!--+
-            | FireThorn logging dependencies.
+            | Firethorn logging dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -70,7 +70,7 @@
         </dependency>
 
         <!--+
-            | FireThorn spring dependencies.
+            | Firethorn spring dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -80,7 +80,7 @@
         </dependency>
 
         <!--+
-            | FireThorn testing dependencies.
+            | Firethorn testing dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

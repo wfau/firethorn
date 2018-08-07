@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | IMPORTANT - importing external jars .. 
+        | IMPORTANT - importing external jars ..
         | http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them/764684#764684
         +-->
 
@@ -43,10 +43,10 @@
     <artifactId>firethorn-ogsadai</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI</name>
+    <name>Firethorn OGSA-DAI</name>
     <description>
         <![CDATA[
-        FireThorn OGSA-DAI components.
+        Firethorn OGSA-DAI components.
         ]]>
     </description>
 
@@ -63,7 +63,7 @@
         <module>metadata</module>
         <module>webapp</module>
     </modules>
-    
+
     <properties>
 
 		<ogsadai.spring.version>3.0.1.RELEASE</ogsadai.spring.version>

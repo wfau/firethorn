@@ -38,7 +38,7 @@
     <artifactId>firethorn-ogsadai-firethorn-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI FireThorn components (server)</name>
+    <name>OGSA-DAI Firethorn components (server)</name>
     <description>
         <![CDATA[
         Server (OGSA-DAI) components for Firehorn.

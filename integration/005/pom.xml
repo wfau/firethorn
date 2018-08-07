@@ -38,15 +38,15 @@
     <artifactId>firethorn-integration-tests</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn integration tests</name>
+    <name>Firethorn integration tests</name>
     <description>
         <![CDATA[
-        The FireThorn integration tests.
+        The Firethorn integration tests.
         ]]>
     </description>
 
     <url>http://redmine.roe.ac.uk/projects/wva</url>
-    
+
     <properties>
     </properties>
 

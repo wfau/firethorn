@@ -38,7 +38,7 @@
     <artifactId>firethorn-ogsadai-webapp</artifactId>
     <packaging>war</packaging>
 
-    <name>FireThorn OGSA-DAI webapp</name>
+    <name>Firethorn OGSA-DAI webapp</name>
     <description>
         <![CDATA[
         This Maven build takes the standard OGSA-DAI webapp and adds the modifications we need to implement our service.

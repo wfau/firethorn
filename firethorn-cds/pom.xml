@@ -38,7 +38,7 @@
     <artifactId>firethorn-cds</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn CDS components</name>
+    <name>Firethorn CDS components</name>
     <description>
         <![CDATA[
         Maven build for components from CDS.

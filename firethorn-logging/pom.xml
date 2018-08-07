@@ -48,7 +48,7 @@
         | http://blog.frankel.ch/configuring-maven-to-use-slf4j
         | http://www.jaxzin.com/2010/09/simplifying-logging-with-maven-and.html
         +-->
-    <name>FireThorn logging</name>
+    <name>Firethorn logging</name>
     <description>
         <![CDATA[
         A placeholder POM to include all of the logging related dependencies in one place.
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency> 
+        </dependency>
 
         <!--+
             | JUnit test framework.
@@ -321,7 +321,7 @@
                     <version>${commons.logging.version}</version>
                     <scope>provided</scope>
                 </dependency>
-  
+
             </dependencies>
 
         </profile>
@@ -412,7 +412,7 @@
 
                 <!--+
                     | Include the logback libraries.
-                    | 
+                    |
                     +-->
                 <dependency>
                     <groupId>ch.qos.logback</groupId>

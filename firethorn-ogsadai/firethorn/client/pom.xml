@@ -38,10 +38,10 @@
     <artifactId>firethorn-ogsadai-firethorn-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI FireThorn components (client)</name>
+    <name>OGSA-DAI Firethorn components (client)</name>
     <description>
         <![CDATA[
-        Client (OGSA-DAI) components for FireThorn.
+        Client (OGSA-DAI) components for Firethorn.
         ]]>
     </description>
 

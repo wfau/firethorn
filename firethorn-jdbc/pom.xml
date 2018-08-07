@@ -38,10 +38,10 @@
     <artifactId>firethorn-jdbc</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn JDBC database drivers</name>
+    <name>Firethorn JDBC database drivers</name>
     <description>
         <![CDATA[
-        FireThorn JDBC database drivers.
+        Firethorn JDBC database drivers.
         ]]>
     </description>
 

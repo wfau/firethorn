@@ -38,10 +38,10 @@
     <artifactId>firethorn-testing</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn testing</name>
+    <name>Firethorn testing</name>
     <description>
         <![CDATA[
-        FireThorn testing components.
+        Firethorn testing components.
         ]]>
     </description>
 
@@ -51,7 +51,7 @@
     <dependencies>
 
         <!--+
-            | FireThorn logging dependencies.
+            | Firethorn logging dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

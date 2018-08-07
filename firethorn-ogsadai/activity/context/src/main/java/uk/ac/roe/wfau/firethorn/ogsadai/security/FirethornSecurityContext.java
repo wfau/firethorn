@@ -30,7 +30,7 @@ extends SecurityContext
     {
 
     /**
-     * The FireThorn callback endpoint.
+     * The Firethorn callback endpoint.
      *
      */
     public String endpoint();

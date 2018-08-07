@@ -38,10 +38,10 @@
     <artifactId>firethorn-webapp</artifactId>
     <packaging>war</packaging>
 
-    <name>FireThorn webapp</name>
+    <name>Firethorn webapp</name>
     <description>
         <![CDATA[
-        The FireThorn webapp.
+        The Firethorn webapp.
         ]]>
     </description>
 
@@ -54,7 +54,7 @@
     <dependencies>
 
         <!--+
-            | FireThorn Spring dependencies.
+            | Firethorn Spring dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -64,7 +64,7 @@
         </dependency>
 
         <!--+
-            | FireThorn logging dependencies.
+            | Firethorn logging dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -74,7 +74,7 @@
         </dependency>
 
         <!--+
-            | FireThorn JDBC dependencies.
+            | Firethorn JDBC dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -84,7 +84,7 @@
         </dependency>
 
         <!--+
-            | FireThorn testing dependencies.
+            | Firethorn testing dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -95,7 +95,7 @@
         </dependency>
 
         <!--+
-            | FireThorn core components.
+            | Firethorn core components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
