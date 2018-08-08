@@ -208,9 +208,7 @@ print(
 #
 # Import the target JdbcSchema into AdqlSchema.
 schema_names = [
-    "ATLASDR1",
-    "2MASS",
-    "2XMM",
+    "TWOXMM",
     ]
 
 for schema_name in schema_names:
@@ -694,3 +692,114 @@ HTTPConnectionPool(host='tap.roe.ac.uk', port=80): Read timed out. (read timeout
 ## Firethorn stops responding after 15 Queries
 ## Second Run: Firethorn stops responding after 19 Queries
 ## Second Run: Firethorn stops responding after 20 Queries
+
+
+
+
+##################################################################################
+# Run firethorn.py tests on Live TAP service: tap.roe.ac.uk on Broken DB (TWOXMM)
+##################################################################################
+[Stevedore@Siamond ~]$ docker exec -it stevedore_firethorn-py_run_2 bash
+root@firethorn-py:/home# python3
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client (using named param).
+firethorn = ftpy.Firethorn(
+    endpoint = "http://tap.roe.ac.uk/firethorn"
+    )
+
+
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+
+twoxmm_schema=ftpy.models.adql_resource.AdqlResource(account=firethorn.identity(), url="http://tap.roe.ac.uk/firethorn/adql/resource/61").select_schema_by_name("TWOXMM")
+
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the TWOXMM database into our workspace
+
+workspace.import_adql_schema(
+    twoxmm_schema,
+    "TWOXMM"
+)
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 1000 * FROM TWOXMM.twoxmm"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+## Hangs
+
+
+
+##################################################################################
+## Run Blue Queries to TWOXMM concurrently
+##################################################################################
+
+try:
+    import logging
+    import firethorn
+    import concurrent.futures
+    import urllib.request
+    import urllib.parse
+    import random
+except Exception as e:
+    logging.exception(e)
+
+
+queries = [('SELECT TOP ' +  str(random.randint(1,1000)) +  ' * FROM TWOXMM.twoxmm') for _ in range(50)]
+
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+    # Start the load operations and mark each future with its URL
+    future_to_url = {executor.submit(workspace.create_query, query, "COMPLETED", None, 3000000): query for query in queries}
+    for future in concurrent.futures.as_completed(future_to_url):
+        url = future_to_url[future]
+        data = ""
+        try:
+            data = future.result() 
+            # do json processing here
+        except Exception as exc:
+            print('%r generated an exception: %s' % (url, exc))
+        else:
+            print(data)
+        pass	
+
+
+## Also Hangs..
+
