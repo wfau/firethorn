@@ -26,6 +26,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataClient;
 import uk.org.ogsadai.client.toolkit.DataRequestExecutionResource;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
@@ -118,10 +119,12 @@ implements BlueWorkflow
             context
             );
         context.input(
-    		param.query()
+    		param.select().query()
     		);
         //
         // Add our SQLQuery Activity.
+/*
+ * 
         final SQLQuery select = new SQLQuery();
         pipeline.add(
             select
@@ -134,10 +137,16 @@ implements BlueWorkflow
         select.connectExpressionInput(
             context.output()
             );
+ * 
+ */
+        final JdbcSelectDataClient select = new JdbcSelectDataClient(
+            context.output(),
+            param.select()
+            ); 
         //
         // Add our Delays Activity.
         final DelaysClient delay = new DelaysClient(
-            select.getDataOutput(),
+            select.output(),
             param.delays()
             );
         pipeline.add(

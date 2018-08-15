@@ -227,7 +227,7 @@ implements Activity
         }
 
     /**
-     * Set the pipeline inout. 
+     * Set the pipeline input. 
      * 
      */
     public void input(final String value)

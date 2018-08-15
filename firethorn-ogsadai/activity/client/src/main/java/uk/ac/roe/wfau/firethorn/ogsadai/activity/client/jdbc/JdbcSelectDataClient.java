@@ -19,6 +19,7 @@
 
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcSelectDataParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
@@ -48,6 +49,13 @@ implements ResourceActivity
     public static interface Param
         {
         /**
+         * The source resource ID, as a String.
+         * @return The source resource ID.
+         *
+         */
+        public String resource();
+        
+        /**
          * The SQL select query.
          * @return The SQL select query.
          *
@@ -73,7 +81,7 @@ implements ResourceActivity
      * @param param The activity parameters.
      * 
      */
-    public JdbcSelectDataClient(final ResourceID source, final Param param)
+    public JdbcSelectDataClient(final SingleActivityOutput source, final Param param)
         {
         super(
             new ActivityName(
@@ -81,9 +89,19 @@ implements ResourceActivity
                 )
             );
         this.setResourceID(
-            source
+            new ResourceID(
+                param.resource()
+                )
             );
 
+        this.query= new SimpleActivityInput(
+            JdbcSelectDataParam.DATABASE_QUERY
+            );
+        this.query.connect(
+            source
+            );
+/*
+ * 
         this.query = new SimpleActivityInput(
             JdbcSelectDataParam.DATABASE_QUERY,
             false
@@ -96,6 +114,8 @@ implements ResourceActivity
                     )
                 );
             }
+ *         
+ */
 
         this.results = new SimpleActivityOutput(
             JdbcSelectDataParam.TUPLE_OUTPUT
@@ -107,7 +127,7 @@ implements ResourceActivity
      * @return The query results.
      *
      */
-    public SingleActivityOutput results()
+    public SingleActivityOutput output()
         {
         return results.getSingleActivityOutputs()[0];
         }

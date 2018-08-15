@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 /**
@@ -38,14 +39,14 @@ public interface BlueWorkflow
     	/**
     	 * The source resource identifier.
     	 * 
-    	 */
     	public String source();
+         */
         
     	/**
     	 * The ADQL/SQL query.
     	 * 
-    	 */
     	public String query();
+         */
 
     	/**
     	 * The context Activity parameters.
@@ -56,13 +57,27 @@ public interface BlueWorkflow
     		{}
 
     	/**
-    	 * The context Activity parameters.
+    	 * The Context Activity parameters.
     	 * 
     	 */
     	public ContextParam context();
 
+        /**
+         * The Select Activity parameters.
+         * 
+         */
+        public interface SelectParam
+        extends JdbcSelectDataClient.Param 
+            {}
+
+        /**
+         * The Select Activity parameters.
+         * 
+         */
+        public SelectParam select();
+    	
     	/**
-    	 * The insert Activity parameters.
+    	 * The Insert Activity parameters.
     	 * 
     	 */
         public interface InsertParam

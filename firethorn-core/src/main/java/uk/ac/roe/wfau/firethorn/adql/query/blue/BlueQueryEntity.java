@@ -1793,17 +1793,24 @@ implements BlueQuery
         final BlueWorkflow.Result result = workflow.execute(
 			new BlueWorkflow.Param()
 				{
-				@Override
-				public String source()
-					{
-					return source;
-					}
-					
-				@Override
-				public String query()
-					{
-					return BlueQueryEntity.this.osql();
-					}
+                @Override
+                public SelectParam select()
+                    {
+                    return new SelectParam()
+                        {
+                        @Override
+                        public String resource()
+                            {
+                            return source;
+                            }
+
+                        @Override
+                        public String query()
+                            {
+                            return BlueQueryEntity.this.osql();
+                            }
+                        };
+                    }
 
 				@Override
 				public InsertParam insert()
