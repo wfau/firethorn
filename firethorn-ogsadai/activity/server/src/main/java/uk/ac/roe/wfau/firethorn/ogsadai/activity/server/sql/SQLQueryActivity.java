@@ -52,12 +52,15 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
+import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.org.ogsadai.activity.ActivityContractName;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
 import uk.org.ogsadai.activity.MatchedIterativeActivity;
 import uk.org.ogsadai.activity.extension.ResourceActivity;
+import uk.org.ogsadai.activity.extension.SecureActivity;
 import uk.org.ogsadai.activity.extension.ServiceAddresses;
 import uk.org.ogsadai.activity.extension.ServiceAddressesActivity;
 import uk.org.ogsadai.activity.io.ActivityIOException;
@@ -71,6 +74,7 @@ import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
 import uk.org.ogsadai.activity.sql.CallableStatement;
 import uk.org.ogsadai.activity.sql.SQLUtilities;
+import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.common.msgs.DAILogger;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.EnhancedJDBCConnectionProvider;
@@ -86,7 +90,7 @@ import uk.org.ogsadai.resource.dataresource.jdbc.JDBCSettings;
  */
 public class SQLQueryActivity 
     extends MatchedIterativeActivity 
-    implements ResourceActivity, ServiceAddressesActivity
+    implements ResourceActivity, SecureActivity, ServiceAddressesActivity
     {
     /**
      * Debug logger.
@@ -134,7 +138,29 @@ public class SQLQueryActivity
     /** Executor service. */
     private ExecutorService mExecutorService =
         Executors.newSingleThreadExecutor();
-        
+
+    
+    /**
+     * Our request context.
+     * 
+     */
+    private RequestContext context ;
+
+    @Override
+    public void setSecurityContext(SecurityContext context)
+        {
+        if ((context != null) && (context instanceof RequestContext))
+            {
+            this.context = (RequestContext) context; 
+            }
+        }
+
+    /**
+     * Our callback handler.
+     * 
+     */
+    private CallbackHandler callback;
+    
     /**
      * Constructor.
      */
@@ -193,6 +219,9 @@ public class SQLQueryActivity
     protected void preprocess() throws ActivityUserException,
         ActivityProcessingException, ActivityTerminatedException
     {
+        this.callback = new CallbackHandler(
+            this.context
+            );          
         validateOutput(OUTPUT_SQL_RESULTS);
         try
         {
@@ -243,6 +272,18 @@ public class SQLQueryActivity
                 mSettings.getFetchSize()
                 );
 
+            logger.debug("Checking monkey");
+            if (this.getClass().getName().equals(this.context.monkey().name()))
+                {
+                if ("uche2aNa".equals(this.context.monkey().data()))
+                    {
+                    logger.debug("Monkey params match - invoking ChaosMonkey");
+                    throw new SQLException(
+                        this.context.monkey().toString()
+                        ); 
+                    }
+                }
+            
             logger.debug("Executing query");
             ResultSet resultSet = executeQuery(expression);
 
@@ -290,6 +331,7 @@ public class SQLQueryActivity
 
         catch (SQLException e)
             {
+            //callback.failed();
             throw new ActivitySQLUserException(e);
             }
         catch (PipeIOException e)

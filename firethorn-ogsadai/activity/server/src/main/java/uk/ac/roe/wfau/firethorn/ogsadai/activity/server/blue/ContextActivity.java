@@ -89,6 +89,14 @@ implements SecureActivity
             new TypedActivityInput(
                 ContextParam.CONTEXT_PIPELINE_INPUT,
                 String.class
+                ),
+            new TypedActivityInput(
+                ContextParam.MONKEY_PARAM_NAME,
+                String.class
+                ),
+            new TypedActivityInput(
+                ContextParam.MONKEY_PARAM_DATA,
+                String.class
                 )
             };
         }
@@ -186,7 +194,13 @@ implements SecureActivity
             writer.write(
         		value
                 );
-        	}
+
+            //
+            // Add the ChaosMonkey parameters.
+            this.context.monkey().name(inputs[6]);
+            this.context.monkey().data(inputs[7]);
+        
+            }
         catch (final PipeClosedException ouch)
             {
             logger.warn("PipeClosed during processing");

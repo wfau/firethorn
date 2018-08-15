@@ -101,4 +101,42 @@ extends SecurityContext
      */
     public void ident(final String ident);
 
+    /**
+     * Public interface for the ChaosMonkey parameter.
+     *
+     */
+    public interface MonkeyParam
+        {
+        /**
+         * Get the parameter name.
+         * 
+         */
+        public String name();
+    
+        /**
+         * Set the parameter name.
+         *
+         */
+        public void name(final Object name);
+
+        /**
+         * Get the parameter value.
+         * 
+         */
+        public Object data();
+    
+        /**
+         * Set the parameter value.
+         *
+         */
+        public void data(final Object data);
+
+        }
+
+    /**
+     * Get the ChaosMonkey parameter.
+     *
+     */
+    public MonkeyParam monkey();
+
 	}

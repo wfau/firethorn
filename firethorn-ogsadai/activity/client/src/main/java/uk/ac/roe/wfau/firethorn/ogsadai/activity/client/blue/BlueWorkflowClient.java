@@ -122,6 +122,12 @@ implements BlueWorkflow
     		param.select().query()
     		);
         //
+        // Set the ChaosMonkey parameter.
+        context.monkey(
+            "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity",
+            "uche2aNa"
+            );
+        //
         // Add our SQLQuery Activity.
         final SQLQuery select = new SQLQuery();
         pipeline.add(

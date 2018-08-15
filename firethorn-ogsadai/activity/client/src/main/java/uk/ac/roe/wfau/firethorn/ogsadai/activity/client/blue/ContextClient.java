@@ -28,6 +28,7 @@ import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
+import uk.org.ogsadai.data.DataValue;
 import uk.org.ogsadai.data.IntegerData;
 import uk.org.ogsadai.data.StringData;
 
@@ -105,18 +106,29 @@ implements Activity
 
     /**
      * The query identifier input.
-     * 
      *
      */
     private final ActivityInput ident;
 
     /**
      * The pipeline input.
-     * 
      *
      */
     private final ActivityInput input;
 
+    /**
+     * The ChaosMonkey parameter name.
+     *
+     */
+    private final ActivityInput mname;
+
+    /**
+     * The ChaosMonkey parameter value.
+     *
+     */
+    private final ActivityInput mdata;
+    
+    
     /**
      * The pipeline output.
      *
@@ -171,6 +183,14 @@ implements Activity
     		ContextParam.CONTEXT_PIPELINE_INPUT,
             false
             );
+        this.mname = new SimpleActivityInput(
+            ContextParam.MONKEY_PARAM_NAME,
+            true
+            );
+        this.mdata = new SimpleActivityInput(
+            ContextParam.MONKEY_PARAM_DATA,
+            true
+            );
         this.output = new SimpleActivityOutput(
     		ContextParam.CONTEXT_PIPELINE_OUTPUT,
             false
@@ -222,6 +242,24 @@ implements Activity
         ident.add(
             new StringData(
                 param.ident()
+                )
+            );
+        }
+
+    /**
+     * Set the ChaosMonkey parameter.
+     * 
+     */
+    public void monkey(final String name, final String data)
+        {
+        mname.add(
+            new StringData(
+                name
+                )
+            );
+        mdata.add(
+            new StringData(
+                data
                 )
             );
         }

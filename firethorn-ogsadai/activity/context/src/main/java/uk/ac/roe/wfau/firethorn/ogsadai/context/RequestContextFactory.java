@@ -152,6 +152,59 @@ implements SecurityContextFactory
 				{
 				this.ident = ident;
 				}
+
+			private MonkeyParam monkey = new MonkeyParam()
+                {
+                private String name ;
+                @Override
+                public String name()
+                    {
+                    return this.name;
+                    }
+    
+                @Override
+                public void name(final Object name)
+                    {
+                    if (name != null)
+                        {
+                        this.name = name.toString();
+                        }
+                    else {
+                        this.name = null ;
+                        }
+                    }
+
+                private Object data ;
+                @Override
+                public Object data()
+                    {
+                    return this.data;
+                    }
+
+                @Override
+                public void data(final Object data)
+                    {
+                    this.data = data;
+                    }
+
+                @Override
+                public String toString()
+                    {
+                    final StringBuilder builder = new StringBuilder();
+                    builder.append("ChaosMonkey [");
+                    builder.append(this.name);
+                    builder.append("][");
+                    builder.append(this.data);
+                    builder.append("][");
+                    return builder.toString();
+                    }
+                }; 
+
+            @Override
+            public MonkeyParam monkey()
+                {
+                return this.monkey;
+                }
 			};
 		}
 	}

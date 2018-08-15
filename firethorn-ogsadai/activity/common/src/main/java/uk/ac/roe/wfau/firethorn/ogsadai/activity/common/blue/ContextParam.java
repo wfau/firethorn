@@ -72,5 +72,17 @@ public interface ContextParam
      */
     public static final String CONTEXT_PIPELINE_OUTPUT = "context.pipeline.output"  ;
 
+    /**
+     * Activity input name for the ChaosMonkey parameter name, {@value}.
+     * 
+     */
+    public static final String MONKEY_PARAM_NAME = "monkey.param.name"  ;
+
+    /**
+     * Activity input name for the ChaosMonkey parameter value, {@value}.
+     * 
+     */
+    public static final String MONKEY_PARAM_DATA = "monkey.param.data"  ;
+    
     }
 
