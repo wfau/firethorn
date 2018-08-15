@@ -25,6 +25,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -47,6 +48,8 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.FactoryAllowCreateP
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.ac.roe.wfau.firethorn.util.GenericIterable;
 
 /**
@@ -474,5 +477,24 @@ implements Operation
     			ouch
     			);
         	}
+        }
+
+    @Embedded
+    private MonkeyParamEntity monkey;
+    
+    @Override
+    public MonkeyParamEntity monkey()
+        {
+        return this.monkey;
+        }
+
+    @Override
+    public void monkey(final String name, final Object data)
+        {
+        this.monkey = new MonkeyParamEntity(
+            this,
+            name,
+            data
+            );
         }
     }

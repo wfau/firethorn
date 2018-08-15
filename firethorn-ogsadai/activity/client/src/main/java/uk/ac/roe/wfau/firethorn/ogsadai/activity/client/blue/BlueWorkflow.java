@@ -22,7 +22,8 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.OgsaContextParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 /**
@@ -41,7 +42,7 @@ public interface BlueWorkflow
     	 * The Context Activity parameters.
     	 * 
     	 */
-    	public ContextParam context();
+    	public OgsaContextParam context();
 
         /**
          * The Select Activity parameters.
@@ -83,6 +84,12 @@ public interface BlueWorkflow
     	 */
         public LimitsClient.Param limits();
 
+        /**
+         * The ChaosMonkey parameters.
+         * 
+         */
+        public MonkeyParam monkey();
+        
     	}
 
     /**

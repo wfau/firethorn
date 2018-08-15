@@ -112,7 +112,7 @@ implements BlueWorkflow
         final PipelineWorkflow pipeline = new PipelineWorkflow();
         //
         // Add our context Activity.
-        final ContextClient context = new ContextClient(
+        final OgsaContextClient context = new OgsaContextClient(
     		param.context()
     		);
         pipeline.add(
@@ -121,13 +121,8 @@ implements BlueWorkflow
         context.input(
     		param.select().query()
     		);
-        //
-        // Set the ChaosMonkey parameter.
         context.monkey(
-            new MonkeyParamImpl(
-                "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity",
-                "uche2aNa"
-                )
+            param.monkey()
             );
         //
         // Add our SQLQuery Activity.

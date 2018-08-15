@@ -91,7 +91,8 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflow;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflowClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.OgsaContextParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
@@ -1857,9 +1858,9 @@ implements BlueQuery
 					}
 
 				@Override
-				public ContextParam context()
+				public OgsaContextParam context()
 					{
-					return new ContextParam()
+					return new OgsaContextParam()
 						{
 						@Override
 						public String protocol()
@@ -1893,6 +1894,12 @@ implements BlueQuery
 							}
 						};
 					}
+
+                @Override
+                public MonkeyParam monkey()
+                    {
+                    return BlueQueryEntity.this.monkey();
+                    }
 				}
     		); 
         log.trace("After workflow [{}]", this.ident(), this.state().name());

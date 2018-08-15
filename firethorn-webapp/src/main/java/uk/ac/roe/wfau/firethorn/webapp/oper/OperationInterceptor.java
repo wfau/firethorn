@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamImpl;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
@@ -36,6 +37,9 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 public class OperationInterceptor
 implements HandlerInterceptor
     {
+    public static final String MONKEY_NAME_ATTRIB = "firethorn.monkey.name" ;
+    public static final String MONKEY_DATA_ATTRIB = "firethorn.monkey.data" ;
+    
     /**
      * Autowired system services.
      *
@@ -54,6 +58,14 @@ implements HandlerInterceptor
             request.getServerPort()
             );
         log.trace("Operation [{}][{}]", oper.ident(), oper.target());
+
+        final String mname = request.getHeader(MONKEY_NAME_ATTRIB);
+        final String mdata = request.getHeader(MONKEY_DATA_ATTRIB);
+        log.trace("Monkey headers [{}][{}]", mname, mdata);
+        oper.monkey(
+            mname,
+            mdata
+            );
         /*
         // Add the port number as a request attribute.
         request.setAttribute("adql.query.callback.port", new Integer(request.getServerPort()));

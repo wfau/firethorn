@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.OgsaContextParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamImpl;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
@@ -68,35 +68,35 @@ implements SecureActivity
         {
         return new ActivityInput[] {
             new TypedOptionalActivityInput(
-                ContextParam.CALLBACK_PROTOCOL_INPUT,
+                OgsaContextParam.CALLBACK_PROTOCOL_INPUT,
                 String.class
                 ),
             new TypedOptionalActivityInput(
-                ContextParam.CALLBACK_HOST_INPUT,
+                OgsaContextParam.CALLBACK_HOST_INPUT,
                 String.class
                 ),
             new TypedOptionalActivityInput(
-                ContextParam.CALLBACK_PORT_INPUT,
+                OgsaContextParam.CALLBACK_PORT_INPUT,
                 String.class
                 ),
             new TypedOptionalActivityInput(
-                ContextParam.CALLBACK_BASE_INPUT,
+                OgsaContextParam.CALLBACK_BASE_INPUT,
                 String.class
                 ),
             new TypedActivityInput(
-                ContextParam.CONTEXT_IDENT_INPUT,
+                OgsaContextParam.CONTEXT_IDENT_INPUT,
                 String.class
                 ),
             new TypedActivityInput(
-                ContextParam.CONTEXT_PIPELINE_INPUT,
+                OgsaContextParam.CONTEXT_PIPELINE_INPUT,
                 String.class
                 ),
             new TypedOptionalActivityInput(
-                ContextParam.MONKEY_PARAM_NAME,
+                OgsaContextParam.MONKEY_PARAM_NAME,
                 String.class
                 ),
             new TypedOptionalActivityInput(
-                ContextParam.MONKEY_PARAM_DATA,
+                OgsaContextParam.MONKEY_PARAM_DATA,
                 String.class
                 )
             };
@@ -126,10 +126,10 @@ implements SecureActivity
         logger.debug("preprocess()");
         try {
             validateOutput(
-        		ContextParam.CONTEXT_PIPELINE_OUTPUT
+        		OgsaContextParam.CONTEXT_PIPELINE_OUTPUT
                 );
             writer = getOutput(
-        		ContextParam.CONTEXT_PIPELINE_OUTPUT
+        		OgsaContextParam.CONTEXT_PIPELINE_OUTPUT
                 );
             }
         catch (final Exception ouch)

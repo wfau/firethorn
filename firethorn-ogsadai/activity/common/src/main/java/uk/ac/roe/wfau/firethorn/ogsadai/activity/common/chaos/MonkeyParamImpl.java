@@ -22,21 +22,17 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos;
  * 
  * 
  */
-public class MonkeyParamImpl implements MonkeyParam
+public class MonkeyParamImpl
+extends MonkeyParamBase
+implements MonkeyParam
     {
-    public static final String DEFAULT_NAME = "no-name";
-    public static final Object DEFAULT_DATA = null;
-    
     /**
      * Public constructor.
      * 
      */
     public MonkeyParamImpl()
         {
-        this(
-            DEFAULT_NAME,
-            DEFAULT_DATA
-            );
+        super();
         }
 
     /**
@@ -45,67 +41,39 @@ public class MonkeyParamImpl implements MonkeyParam
      */
     public MonkeyParamImpl(final Object name, final Object data)
         {
-        this(
-            ((name != null) ? name.toString() : DEFAULT_NAME),
+        super(
+            name,
             data
             );
         }
-
-    /**
-     * Public constructor.
-     * 
-     */
-    public MonkeyParamImpl(final String name, final Object data)
-        {
-        super();
-        this.name = name;
-        this.data = data;
-        }
     
     private String name ;
-    
     @Override
     public String name()
         {
         return this.name;
         }
+    @Override
+    public void name(final Object name)
+        {
+        if (name != null)
+            {
+            this.name = name.toString();
+            }
+        else {
+            this.name = null ;
+            }
+        }
     
     private Object data ;
-
     @Override
     public Object data()
         {
         return this.data;
         }
-
     @Override
-    public String toString()
+    public void data(final Object data)
         {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("ChaosMonkey [");
-        builder.append(this.name);
-        builder.append("][");
-        builder.append(this.data);
-        builder.append("]");
-        return builder.toString();
-        }
-
-    @Override
-    public boolean test(final Object owner, final Object value)
-        {
-        if ((this.name != null) && (owner != null))
-            {
-            if (this.name.equals(owner.getClass().getName()))
-                {
-                if (this.data != null)
-                    {
-                    return this.data.equals(value);
-                    }
-                else {
-                    return (value == null);
-                    }
-                }
-            }
-        return false;
+        this.data = data ;
         }
     }

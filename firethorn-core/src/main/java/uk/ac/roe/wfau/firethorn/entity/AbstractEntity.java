@@ -41,8 +41,10 @@ import uk.ac.roe.wfau.firethorn.entity.access.EntityProtector;
 import uk.ac.roe.wfau.firethorn.entity.access.SimpleEntityProtector;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
+import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
  * Generic base class for a persistent Entity.
@@ -253,6 +255,15 @@ implements Entity
         this.init(
             owner
             );
+        }
+
+    /**
+     * The ChaosMonkey {@link MonkeyParam} from the current {@link Context}.
+     * 
+     */
+    protected MonkeyParam monkey()
+        {
+        return factories().contexts().current().monkey();
         }
     
     /**

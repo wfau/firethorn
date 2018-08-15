@@ -24,6 +24,9 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos;
  */
 public interface MonkeyParam
     {
+    public static final String DEFAULT_NAME = "no-name";
+    public static final Object DEFAULT_DATA = null;
+    
     /**
      * Get the parameter name.
      *

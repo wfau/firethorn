@@ -19,11 +19,13 @@ package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.hibernate.HibernateConvertException;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
+import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
  * Public interface for a service {@link Operation} (request).
  * TODO This is biased towards HTTP requests.
- * Need a more generic interface for the basic operation, and more specific derrived interfaces.
+ * Need a more generic interface for the basic operation, and more specific derived interfaces.
  * HttpOperation, ScheduledOperation ....
  *
  */
@@ -172,5 +174,17 @@ extends Entity
      */
     public Operation rebase()
 	throws HibernateConvertException;
+
+    /**
+     * The ChaosMonkey {@link MonkeyParam} for this {@link Operation}.
+     *
+     */
+    public MonkeyParam monkey();
+
+    /**
+     * Set the ChaosMonkey {@link MonkeyParam} for this {@link Operation}.
+     *
+     */
+    public void monkey(final String name, final Object data);
     
     }
