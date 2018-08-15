@@ -90,11 +90,11 @@ implements SecureActivity
                 ContextParam.CONTEXT_PIPELINE_INPUT,
                 String.class
                 ),
-            new TypedActivityInput(
+            new TypedOptionalActivityInput(
                 ContextParam.MONKEY_PARAM_NAME,
                 String.class
                 ),
-            new TypedActivityInput(
+            new TypedOptionalActivityInput(
                 ContextParam.MONKEY_PARAM_DATA,
                 String.class
                 )
