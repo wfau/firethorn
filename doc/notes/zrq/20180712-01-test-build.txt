@@ -12,7 +12,7 @@
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
-#  
+#
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #   </meta:licence>
@@ -57,7 +57,7 @@
 # -----------------------------------------------------
 # Download our builder compose file
 #[user@virtual]
-     
+
     wget -O builder.yml \
         http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
 
@@ -69,30 +69,24 @@
     branch=2.1.19-zrq-metadoc-parser
     branch=2.1.20-zrq-metadoc-parser
     branch=2.1.23-zrq-update-depends
+    branch=2.1.25-zrq-tap-controller
 
 # -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
 
     export branch
+    export secretsh=$(which secret)
+
     docker-compose \
         --file "builder.yml" \
         run \
-            builder 
+            builder
 
     # -----------------------------------------------------
-    # Add our secret function.
+    # Test our secret function.
     #[user@virtual]
 
-        # cat $(which secret)
-
-        vi "/bin/secret"
-
-            ....
-            ....
-            ....
-
-        chmod u+x "/bin/secret"
         secret 'frog'
 
     # -----------------------------------------------------
@@ -105,8 +99,14 @@
     # Initialise our paths.
     #[root@builder]
 
-        01.01-init.sh
-        
+        PATH=${PATH}:/builder/bin
+
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
+
     # -----------------------------------------------------
     # Checkout a copy of our source code.
     #[root@builder]
@@ -124,7 +124,6 @@
     # (this is only needed if we made significant chances to builder)
     #[root@builder]
 
-        source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"
 
             source 'bin/util.sh'
@@ -150,7 +149,7 @@
     docker-compose \
         --file "builder.yml" \
         run \
-            builder 
+            builder
 
     # -----------------------------------------------------
     # Initialise our path.
@@ -158,11 +157,11 @@
 
         PATH=${PATH}:/builder/bin
 
-    # -----------------------------------------------------
-    # Initialise our paths.
-    #[root@builder]
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
 
-        01.01-init.sh
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
 
     # -----------------------------------------------------
     # Update our source code.
@@ -198,7 +197,7 @@
 
                 echo "Updating Python code"
                 git pull
-            
+
             popd
         else
             pushd "$(dirname ${ftpysrc:?})"
@@ -371,7 +370,7 @@ for schema_name in schema_names:
 # Errors scanning the databases need to be logged.
 # 2018-07-09 12:09:07,194 WARN  [main-interface-4] [JdbcResourceEntity] Exception while scanning catalog [53][ATLASDR2][Database 'ATLASDR2' cannot be opened due to inaccessible files or insufficient memory or disk space ...]
 # 2018-07-09 12:09:07,194 WARN  [main-interface-4] [SQLServerScanner] SQLException [945][S1000][Database 'ATLASDR2' cannot be opened due to inaccessible files or insufficient memory or disk space ...]]
-# 
+#
 
 #
 # Admin user
@@ -428,16 +427,16 @@ print(
 
 #
 # Loooong time scanning JDBC metadata for user space.
-# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_CDOOAW4PLHLBKAAAAFRLFEJJEQ][TABLE] 
-# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_4QH2URNMIQN3WAAAAFRKBAFIPI][TABLE] 
-# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_FV5FIQONFRMAYAAAAFRKXMS7JU][TABLE] 
+# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_CDOOAW4PLHLBKAAAAFRLFEJJEQ][TABLE]
+# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_4QH2URNMIQN3WAAAAFRKBAFIPI][TABLE]
+# 2018-07-09 12:21:49,629 DEBUG [FireThornTaskExecutor-4] [JdbcTableEntity] JdbcTableEntity [FirethornUserdataZRQ20170621151245DEV.dbo][XX_FV5FIQONFRMAYAAAAFRKXMS7JU][TABLE]
 #
 # Need to use DROP rather than DELETE for old user data.
 # Check side effects ..
 #
 # Naming convention for table names - FT_USER_012345_FV5FIQONFRMAYAAAAFRKXMS7JU
 # Clean operation to DROP old orphaned tables.
-# 
+#
 
 
 #
@@ -515,7 +514,7 @@ for threads in range(1, 20):
 # Exit the Python shell
 
     Ctrl^D
-    
+
 # -----------------------------------------------------
 # Stop our containers ...
 #[user@virtual]
