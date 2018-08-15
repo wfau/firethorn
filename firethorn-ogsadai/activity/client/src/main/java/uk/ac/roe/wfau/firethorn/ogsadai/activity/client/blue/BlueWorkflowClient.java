@@ -123,30 +123,34 @@ implements BlueWorkflow
     		);
         //
         // Add our SQLQuery Activity.
-/*
- * 
         final SQLQuery select = new SQLQuery();
         pipeline.add(
             select
             );
         select.setResourceID(
             new ResourceID(
-                param.source()
+                param.select().resource()
                 )
             );
         select.connectExpressionInput(
             context.output()
             );
+/*
+ * 
  * 
  */
+/*
+ * 
         final JdbcSelectDataClient select = new JdbcSelectDataClient(
             context.output(),
             param.select()
             ); 
+ *         
+ */
         //
         // Add our Delays Activity.
         final DelaysClient delay = new DelaysClient(
-            select.output(),
+            select.getDataOutput(),
             param.delays()
             );
         pipeline.add(

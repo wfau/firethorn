@@ -19,7 +19,6 @@
 
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcInsertDataParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.jdbc.JdbcSelectDataParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
@@ -30,7 +29,6 @@ import uk.org.ogsadai.client.toolkit.activity.BaseResourceActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
-import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
