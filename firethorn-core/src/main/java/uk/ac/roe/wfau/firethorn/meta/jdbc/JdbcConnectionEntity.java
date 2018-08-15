@@ -198,7 +198,6 @@ implements JdbcConnector
     /**
      * Get/Set methods for Hibernate.
      * 
-     * @return
      */
     protected JdbcResourceEntity getResource()
         {

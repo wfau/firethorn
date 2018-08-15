@@ -28,6 +28,7 @@ import javax.persistence.FetchType;
 import org.hibernate.annotations.Parent;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamBase;
 
@@ -95,7 +96,20 @@ implements MonkeyParam
         {
         return this.operation;
         }
-    
+
+    /**
+     * Get/Set methods for Hibernate.
+     * 
+     */
+    protected OperationEntity getOperation()
+        {
+        return this.operation;
+        }
+    protected void setOperation(final OperationEntity operation)
+        {
+        this.operation = operation;
+        }
+
     @Basic(
         fetch = FetchType.EAGER
         )
