@@ -19,6 +19,7 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.org.ogsadai.activity.ActivityName;
 import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
@@ -28,8 +29,6 @@ import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
-import uk.org.ogsadai.data.DataValue;
-import uk.org.ogsadai.data.IntegerData;
 import uk.org.ogsadai.data.StringData;
 
 /**
@@ -45,40 +44,10 @@ implements Activity
     /**
      * Public interface for the Activity parameters.
      *
-     */
     public static interface Param
-        {
-        /**
-         * Get the protocol name.
-         *
-         */
-        public String protocol();
-
-    	/**
-         * Get the host name.
-         *
-         */
-        public String host();
-
-        /**
-         * Get the port number.
-         *
-         */
-        public String port();
-        
-        /**
-         * Get the base URL path.
-         *
-         */
-        public String base();
-        
-        /**
-		 * The query identifier.
-		 * 
-		 */
-        public String ident();
-        
-        }
+    extends ContextParam
+        {}
+     */
 
     /**
      * The protocol input.
@@ -128,7 +97,6 @@ implements Activity
      */
     private final ActivityInput mdata;
     
-    
     /**
      * The pipeline output.
      *
@@ -140,7 +108,7 @@ implements Activity
      * @param param The Activity parameters.
      * 
      */
-    public ContextClient(final Param param)
+    public ContextClient(final ContextParam param)
         {
         this();
         this.param(
@@ -202,7 +170,7 @@ implements Activity
      * @param param The Activity parameters.
      * 
      */
-    public void param(final Param param)
+    public void param(final ContextParam param)
         {
 		if (param.protocol() != null)
 			{
@@ -250,16 +218,16 @@ implements Activity
      * Set the ChaosMonkey parameter.
      * 
      */
-    public void monkey(final String name, final String data)
+    public void monkey(final MonkeyParam param)
         {
         mname.add(
             new StringData(
-                name
+                param.name()
                 )
             );
         mdata.add(
             new StringData(
-                data
+                param.data().toString()
                 )
             );
         }

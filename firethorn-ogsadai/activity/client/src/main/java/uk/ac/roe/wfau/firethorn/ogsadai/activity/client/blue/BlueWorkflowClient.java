@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamImpl;
 import uk.org.ogsadai.client.toolkit.DataRequestExecutionResource;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
@@ -46,8 +46,8 @@ public class BlueWorkflowClient
 implements BlueWorkflow
     {
     
-    @Deprecated
-    protected static final String DEFAULT_DRER_IDENT = "DataRequestExecutionResource" ;
+    //@Deprecated
+    //protected static final String DEFAULT_DRER_IDENT = "DataRequestExecutionResource" ;
 
     /**
      * Our OGSA-DAI service endpoint.
@@ -124,8 +124,10 @@ implements BlueWorkflow
         //
         // Set the ChaosMonkey parameter.
         context.monkey(
-            "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity",
-            "uche2aNa"
+            new MonkeyParamImpl(
+                "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity",
+                "uche2aNa"
+                )
             );
         //
         // Add our SQLQuery Activity.
@@ -142,11 +144,8 @@ implements BlueWorkflow
             context.output()
             );
 /*
- * 
- * 
- */
-/*
- * 
+ * NullPointer during server side request processing.
+ * No error log details.  
         final JdbcSelectDataClient select = new JdbcSelectDataClient(
             context.output(),
             param.select()

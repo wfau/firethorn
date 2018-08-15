@@ -83,6 +83,36 @@ public interface ContextParam
      * 
      */
     public static final String MONKEY_PARAM_DATA = "monkey.param.data"  ;
+
+    /**
+     * Get the protocol name.
+     *
+     */
+    public String protocol();
+
+    /**
+     * Get the host name.
+     *
+     */
+    public String host();
+
+    /**
+     * Get the port number.
+     *
+     */
+    public String port();
     
+    /**
+     * Get the base URL path.
+     *
+     */
+    public String base();
+    
+    /**
+     * The query identifier.
+     * 
+     */
+    public String ident();
+
     }
 

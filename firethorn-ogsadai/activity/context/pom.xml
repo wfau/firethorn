@@ -52,6 +52,15 @@
     <dependencies>
 
         <!--+
+            | Our common activity classes.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-activity-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
             | OGSA-DAI 3rd party dependencies.
             +-->
         <dependency>

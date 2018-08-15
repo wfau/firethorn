@@ -134,10 +134,10 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-        </dependency>
+        </dependency-->
 
         <!--+
             | Tomcat specific classes.

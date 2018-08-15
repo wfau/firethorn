@@ -22,6 +22,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 /**
@@ -36,26 +37,6 @@ public interface BlueWorkflow
      */
     public interface Param
     	{
-    	/**
-    	 * The source resource identifier.
-    	 * 
-    	public String source();
-         */
-        
-    	/**
-    	 * The ADQL/SQL query.
-    	 * 
-    	public String query();
-         */
-
-    	/**
-    	 * The context Activity parameters.
-    	 * 
-    	 */
-    	public interface ContextParam
-    	extends ContextClient.Param 
-    		{}
-
     	/**
     	 * The Context Activity parameters.
     	 * 

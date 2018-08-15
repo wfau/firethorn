@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamImpl;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
@@ -197,8 +198,12 @@ implements SecureActivity
 
             //
             // Add the ChaosMonkey parameters.
-            this.context.monkey().name(inputs[6]);
-            this.context.monkey().data(inputs[7]);
+            this.context.monkey(
+                new MonkeyParamImpl(
+                    inputs[6],
+                    inputs[7]
+                    )
+                );
         
             }
         catch (final PipeClosedException ouch)

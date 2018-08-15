@@ -273,14 +273,17 @@ public class SQLQueryActivity
                 );
 
             logger.debug("Checking monkey");
-            if (this.getClass().getName().equals(this.context.monkey().name()))
+            if (this.context.monkey() != null)
                 {
-                if ("uche2aNa".equals(this.context.monkey().data()))
+                if (this.getClass().getName().equals(this.context.monkey().name()))
                     {
-                    logger.debug("Monkey params match - invoking ChaosMonkey");
-                    throw new SQLException(
-                        this.context.monkey().toString()
-                        ); 
+                    if ("uche2aNa".equals(this.context.monkey().data()))
+                        {
+                        logger.debug("Monkey params match - invoking ChaosMonkey");
+                        throw new SQLException(
+                            this.context.monkey().toString()
+                            ); 
+                        }
                     }
                 }
             
