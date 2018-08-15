@@ -183,8 +183,8 @@ implements BlueTask<TaskType>
                 operations().current()
                 );            
             log.trace("Before future() [{}]",
-                    updator.ident()
-                    );
+                updator.ident()
+                );
             final Future<TaskState> future = services.runner().future(
                 updator
                 );

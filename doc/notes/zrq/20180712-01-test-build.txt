@@ -246,6 +246,7 @@
 
         buildtag=${branch:-latest}
 
+        metadata=$(pwgen 20 1)
         metauser=$(pwgen 20 1)
         metapass=$(pwgen 20 1)
 

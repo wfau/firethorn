@@ -1447,9 +1447,15 @@ implements BlueQuery
          * "Hibernate considers (embedded) component to be NULL if all its properties are NULL (and vice versa)."
          * http://stackoverflow.com/a/1324391
          */
-        if (this.stats== null)
+        if (this.stats == null)
             {
-            this.stats= new AdqlQueryTimings();
+            synchronized(this)
+                {
+                if (this.stats == null)
+                    {
+                    this.stats = new AdqlQueryTimings();
+                    }
+                }
             }
         return this.stats;
         }
@@ -1719,7 +1725,9 @@ implements BlueQuery
 
         //
         // Pull changes from database.
+        log.debug("before refresh()");
         this.refresh();
+        log.debug("after refresh()");
         
         //
         // Select our target OGSA-DAI service.  

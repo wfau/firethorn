@@ -58,20 +58,36 @@ implements AdqlQueryBase.Timings
     protected AdqlQueryTimings(boolean init)
         {
         log.debug("AdqlQueryTimings(boolean)");
-        if (init)
-            {
-            start();
-            }
         }
 
     /**
-     * Hibernate column mapping.
+     * Hibernate column mapping. {@value}.
      *
      */
     protected static final String DB_TIMING_START_COL = "timingstart" ;
+
+    /**
+     * Hibernate column mapping. {@value}.
+     *
+     */
     protected static final String DB_TIMING_TOTAL_COL = "timingtotal" ;
+
+    /**
+     * Hibernate column mapping. {@value}.
+     *
+     */
     protected static final String DB_TIMING_ADQL_COL  = "timingadql"  ;
+
+    /**
+     * Hibernate column mapping. {@value}.
+     *
+     */
     protected static final String DB_TIMING_JDBC_COL  = "timingjdbc"  ;
+
+    /**
+     * Hibernate column mapping. {@value}.
+     *
+     */
     protected static final String DB_TIMING_OGSA_COL  = "timingogsa"  ;
 
     @Basic(

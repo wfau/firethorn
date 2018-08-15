@@ -60,27 +60,25 @@ implements MonkeyParam
      * Public constructor.
      * 
      */
-    public MonkeyParamEntity(final OperationEntity operation, final String name, final Object data)
+    public MonkeyParamEntity(final MonkeyParam param)
+        {
+        super(
+            param
+            );
+        }
+    
+    /**
+     * Public constructor.
+     * 
+     */
+    public MonkeyParamEntity(final String name, final Object data)
         {
         super(
             name,
             data
             );
-        this.operation = operation;
         }
 
-    /**
-     * Public constructor.
-     * 
-     */
-    public MonkeyParamEntity(final OperationEntity operation, final MonkeyParam param)
-        {
-        super(
-            param
-            );
-        this.operation = operation;
-        }
-    
     /**
      * Protected constructor.
      * 
@@ -88,26 +86,6 @@ implements MonkeyParam
     protected MonkeyParamEntity()
         {
         super();
-        }
-    
-    @Parent
-    protected OperationEntity operation ;
-    protected OperationEntity operation()
-        {
-        return this.operation;
-        }
-
-    /**
-     * Get/Set methods for Hibernate.
-     * 
-     */
-    protected OperationEntity getOperation()
-        {
-        return this.operation;
-        }
-    protected void setOperation(final OperationEntity operation)
-        {
-        this.operation = operation;
         }
 
     @Basic(

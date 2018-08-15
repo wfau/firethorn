@@ -18,6 +18,7 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.OgsaContextParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.org.ogsadai.activity.ActivityName;
@@ -36,6 +37,7 @@ import uk.org.ogsadai.data.StringData;
  * 
  *
  */
+@Slf4j
 public class OgsaContextClient
 extends BaseActivity
 implements Activity
@@ -212,6 +214,7 @@ implements Activity
      */
     public void monkey(final MonkeyParam param)
         {
+        log.debug("monkey(MonkeyParam)");
         mname.add(
             new StringData(
                 param.name()

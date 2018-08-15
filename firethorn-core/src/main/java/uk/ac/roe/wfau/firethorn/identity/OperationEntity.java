@@ -492,7 +492,6 @@ implements Operation
     public void monkey(final String name, final Object data)
         {
         this.monkey = new MonkeyParamEntity(
-            this,
             name,
             data
             );
