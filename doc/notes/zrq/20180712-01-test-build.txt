@@ -146,6 +146,8 @@
 #[user@virtual]
 
     export branch
+    export secretsh=$(which secret)
+
     docker-compose \
         --file "builder.yml" \
         run \
