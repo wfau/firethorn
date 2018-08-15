@@ -215,16 +215,22 @@ implements Activity
     public void monkey(final MonkeyParam param)
         {
         log.debug("monkey(MonkeyParam)");
-        mname.add(
-            new StringData(
-                param.name()
-                )
-            );
-        mdata.add(
-            new StringData(
-                param.data().toString()
-                )
-            );
+        if (param.name() != null)
+            {
+            mname.add(
+                new StringData(
+                    param.name()
+                    )
+                );
+            if (param.data() != null)
+                {
+                mdata.add(
+                    new StringData(
+                        param.data().toString()
+                        )
+                    );
+                }
+            }
         }
 
     /**

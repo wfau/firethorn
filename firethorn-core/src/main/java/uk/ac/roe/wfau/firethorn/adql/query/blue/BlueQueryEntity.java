@@ -1800,116 +1800,124 @@ implements BlueQuery
         final String sink   = dest.ogsaid();
 
         log.trace("Executing workflow [{}]", this.ident());        
-        final BlueWorkflow.Result result = workflow.execute(
-			new BlueWorkflow.Param()
-				{
-                @Override
-                public SelectParam select()
-                    {
-                    return new SelectParam()
+        BlueWorkflow.Result result = null ;
+        try {
+            result = workflow.execute(
+    			new BlueWorkflow.Param()
+    				{
+                    @Override
+                    public SelectParam select()
                         {
-                        @Override
-                        public String resource()
+                        return new SelectParam()
                             {
-                            return source;
-                            }
-
-                        @Override
-                        public String query()
-                            {
-                            return BlueQueryEntity.this.osql();
-                            }
-                        };
-                    }
-
-				@Override
-				public InsertParam insert()
-					{
-					return new InsertParam()
-						{
-						@Override
-						public String resource()
-							{
-							return sink;
-							}
-
-						@Override
-						public String table()
-							{
-							return into;
-							}
-
-						@Override
-						public Integer first()
-							{
-							return null;
-							}
-
-						@Override
-						public Integer block()
-							{
-							return null;
-							}
-						};
-					}
-
-				@Override
-				public AdqlQueryBase.Limits limits()
-					{
-					return BlueQueryEntity.this.limits();
-					}
-					
-				@Override
-				public AdqlQueryBase.Delays delays()
-					{
-					return BlueQueryEntity.this.delays() ;
-					}
-
-				@Override
-				public OgsaContextParam context()
-					{
-					return new OgsaContextParam()
-						{
-						@Override
-						public String protocol()
-							{
-							return null;
-							}
-
-						@Override
-						public String host()
-							{
-							return null;
-							}
-						@Override
-						public String port()
-							{
-							// HARD CODED PORT NUMBER !!!
-							return "8081";
-                            //return null;
-							}
-
-						@Override
-						public String base()
-							{
-							return null;
-							}
-
-						@Override
-						public String ident()
-							{
-							return BlueQueryEntity.this.ident().toString();
-							}
-						};
-					}
-
-                @Override
-                public MonkeyParam monkey()
-                    {
-                    return BlueQueryEntity.this.monkey();
-                    }
-				}
-    		); 
+                            @Override
+                            public String resource()
+                                {
+                                return source;
+                                }
+    
+                            @Override
+                            public String query()
+                                {
+                                return BlueQueryEntity.this.osql();
+                                }
+                            };
+                        }
+    
+    				@Override
+    				public InsertParam insert()
+    					{
+    					return new InsertParam()
+    						{
+    						@Override
+    						public String resource()
+    							{
+    							return sink;
+    							}
+    
+    						@Override
+    						public String table()
+    							{
+    							return into;
+    							}
+    
+    						@Override
+    						public Integer first()
+    							{
+    							return null;
+    							}
+    
+    						@Override
+    						public Integer block()
+    							{
+    							return null;
+    							}
+    						};
+    					}
+    
+    				@Override
+    				public AdqlQueryBase.Limits limits()
+    					{
+    					return BlueQueryEntity.this.limits();
+    					}
+    					
+    				@Override
+    				public AdqlQueryBase.Delays delays()
+    					{
+    					return BlueQueryEntity.this.delays() ;
+    					}
+    
+    				@Override
+    				public OgsaContextParam context()
+    					{
+    					return new OgsaContextParam()
+    						{
+    						@Override
+    						public String protocol()
+    							{
+    							return null;
+    							}
+    
+    						@Override
+    						public String host()
+    							{
+    							return null;
+    							}
+    						@Override
+    						public String port()
+    							{
+    							// HARD CODED PORT NUMBER !!!
+    							return "8081";
+                                //return null;
+    							}
+    
+    						@Override
+    						public String base()
+    							{
+    							return null;
+    							}
+    
+    						@Override
+    						public String ident()
+    							{
+    							return BlueQueryEntity.this.ident().toString();
+    							}
+    						};
+    					}
+    
+                    @Override
+                    public MonkeyParam monkey()
+                        {
+                        return BlueQueryEntity.this.monkey();
+                        }
+    				}
+        		); 
+            }
+        catch (final Exception ouch)
+            {
+            log.error("Exception during workflow.execute()");
+            log.error(ouch.toString());
+            }
         log.trace("After workflow [{}]", this.ident(), this.state().name());
         
         //
@@ -1955,6 +1963,7 @@ implements BlueQuery
 		    		);
 	        	break ;
 			}
+        
         log.trace("Finishing execute() [{}][{}]", this.ident(), this.state().name());
         }
 
