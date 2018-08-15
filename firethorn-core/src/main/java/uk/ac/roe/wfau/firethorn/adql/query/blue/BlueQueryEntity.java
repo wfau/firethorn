@@ -91,6 +91,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaBaseResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaService;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflow;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflowClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.ContextParam;
 import uk.ac.roe.wfau.firethorn.spring.Context;
 
 /**
