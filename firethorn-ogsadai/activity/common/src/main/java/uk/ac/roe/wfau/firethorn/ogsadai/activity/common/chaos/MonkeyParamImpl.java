@@ -86,7 +86,7 @@ public class MonkeyParamImpl implements MonkeyParam
         builder.append(this.name);
         builder.append("][");
         builder.append(this.data);
-        builder.append("][");
+        builder.append("]");
         return builder.toString();
         }
 
