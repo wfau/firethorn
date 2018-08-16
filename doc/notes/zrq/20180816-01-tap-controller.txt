@@ -27,7 +27,7 @@
 
 # -----------------------------------------------------
 # Standard Python test ...
-#[user@virtual]
+#[root@firethorn-py]
 
 import os
 import time
@@ -141,8 +141,8 @@ print(
     )
 
 # -----------------------------------------------------
-# Hack the Python code to add an extra param.
-#[user@virtual]
+# Hack the Python code to add an extra param ?
+#[root@firethorn-py]
 
 vi /home/firethorn-py/firethorn/core/query_engine.py
 
@@ -160,8 +160,8 @@ vi /home/firethorn-py/firethorn/core/query_engine.py
 pip3 install /home/firethorn-py
 
 # -----------------------------------------------------
-# Create and run a query.
-#[user@virtual]
+# Actually, we can just provide params to workspace.create_query()
+#[root@firethorn-py]
 
 params = {}
 params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
@@ -1907,12 +1907,72 @@ print(
 
     5) ActivitySQLUserException implies the cause is thrown as a SQLException
 
+    6) Adding just one ChaosMonkey SQLException doesn't replicate the issue.
+
+    7) Suspect it is the second SQLException, during cleanUp(), that is causing the problem.
+
+
+# -----------------------------------------------------
+# Trying more the ChaosMonkey calls ...
+#[root@firethorn-py]
+
+#
+# This doesn't trigger the Exception :-(
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+params.update({"firethorn.monkey.data" : "baivahP0"})
+
+print(
+    params
+    )
+
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+print(
+    query_obj
+    )
+
+
+
+#
+# This triggers an Exception, and replicates the same symptoms as the issue we are tracking.
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement"})
+params.update({"firethorn.monkey.data" : "Eoph9xie"})
+
+    2018-08-16 17:55:07,472 DEBUG sql.SQLQueryActivity [pool-1-thread-16,debug:84] Initiating CallableStatement and starting background execution
+    2018-08-16 17:55:07,472 DEBUG sql.SQLQueryActivity [pool-1-thread-16,debug:84] CallableStatement encountered problem in query execution
+    2018-08-16 17:55:07,473 DEBUG sql.SQLQueryActivity [pool-1-thread-16,debug:84] Caught a SQLException, wrapping it in an ActivitySQLUserException
+    2018-08-16 17:55:07,473 DEBUG activity.MatchedIterativeActivity [pool-1-thread-16,debug:84] performing clean-up
+    2018-08-16 17:55:07,473 DEBUG sql.SQLQueryActivity [pool-1-thread-16,debug:84] Shutting down ExecutorService
+    2018-08-16 17:55:07,473 DEBUG sql.SQLQueryActivity [pool-1-thread-16,debug:84] Closing Statement
+    2018-08-16 17:55:07,481 DEBUG sql.SQLQueryActivity [pool-1-thread-16,debug:84] Releasing Connection
+    2018-08-16 17:55:07,482 DEBUG event.LoggingActivityListener [pool-1-thread-16,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	    at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:323)
+	    at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	    at java.lang.Thread.run(Thread.java:748)
+    Caused by: java.sql.SQLException: ChaosMonkey [uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement][Eoph9xie]
+	    at uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamBase.sqlException(MonkeyParamBase.java:106)
+	    at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:417)
+	    at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:407)
+	    ... 4 more
 
 
 
 
-#----------------------------------------------------------------
-# Try to reproduce the issue on the live server.
-#[root@Gworewia]
+
+
+
 
 

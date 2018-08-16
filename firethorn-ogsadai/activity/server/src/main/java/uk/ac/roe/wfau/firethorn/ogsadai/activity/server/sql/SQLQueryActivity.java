@@ -369,10 +369,7 @@ public class SQLQueryActivity
         ResultSet resultSet = null;
 
         logger.debug("Checking monkey");
-        if (this.mContext.monkey() != null)
-        {
-            this.mContext.monkey().sqlException(this, "uche2aNa");
-        }
+        this.mContext.monkey().sqlException(this, "uche2aNa");
         
         try
         {
@@ -414,7 +411,7 @@ public class SQLQueryActivity
         @Override
         public ResultSet call() throws Exception
         {
-        mContext.monkey().sqlException(this, "Eoph9xie");
+            mContext.monkey().sqlException(this, "Eoph9xie");
             final ResultSet results = super.call();
             mContext.monkey().sqlException(this, "oz4Kie0M");
             return results;
