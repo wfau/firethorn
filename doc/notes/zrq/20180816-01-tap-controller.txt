@@ -2025,6 +2025,10 @@ params.update({"firethorn.monkey.data" : "uche2aNa"})
     5) Secondary NullPointerException during cleanup because ??
 
 
+Questions
+    What is the difference between the two Exceptions ?
+    1) A SQLException inside a CallableStatement, thrown in the Future Thread, re-thrown in the Activity Thread.
+    2) A SQLException in SQLQueryActivity thrown in the Activity Thread.
 
 
 
