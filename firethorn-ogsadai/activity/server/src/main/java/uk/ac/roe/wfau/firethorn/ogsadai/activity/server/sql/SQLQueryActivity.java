@@ -256,8 +256,7 @@ public class SQLQueryActivity
         {
         final String expression = (String) iterationData[0];
         
-        if (LOG.isDebugEnabled())
-            LOG.debug("SQL QUERY: " + expression);
+        logger.debug("SQL QUERY: " + expression);
 
         try {
             logger.debug("Initialising query");
@@ -319,27 +318,27 @@ public class SQLQueryActivity
 
         catch (SQLException e)
             {
-            LOG.debug("Caught a SQLException, wrapping it in an ActivitySQLUserException");
+            logger.debug("Caught a SQLException, wrapping it in an ActivitySQLUserException");
             throw new ActivitySQLUserException(e);
             }
         catch (PipeIOException e)
             {
-            LOG.debug("Caught a PipeIOException, wrapping it in an ActivityPipeProcessingException");
+            logger.debug("Caught a PipeIOException, wrapping it in an ActivityPipeProcessingException");
             throw new ActivityPipeProcessingException(e);
             }
         catch (PipeTerminatedException e)
             {
-            LOG.debug("Caught a PipeTerminatedException, wrapping it in an ActivityTerminatedException");
+            logger.debug("Caught a PipeTerminatedException, wrapping it in an ActivityTerminatedException");
             throw new ActivityTerminatedException();
             }
         catch (IOException e)
             {
-            LOG.debug("Caught an IOException, wrapping it in an ActivityIOException");
+            logger.debug("Caught an IOException, wrapping it in an ActivityIOException");
             throw new ActivityIOException(e);
             }
         catch (Throwable e)
             {
-            LOG.debug("Caught a Throwable, wrapping it in an ActivityProcessingException");
+            logger.debug("Caught a Throwable, wrapping it in an ActivityProcessingException");
             throw new ActivityProcessingException(e);
             }
         }
@@ -360,20 +359,19 @@ public class SQLQueryActivity
     {
         // Create an object to use the Statement to execute the
         // query in the background - class definition is below.
-        LOG.debug("Creating CallableStatement for query");
+        logger.debug("Creating CallableStatement for query");
         Callable<ResultSet> statementCall = 
             new ChaoticCallableStatement(mStatement, expression);
+        this.mContext.monkey().sqlException(this, "rey9Po4i");
 
-        LOG.debug("Submitting CallableStatement to ExecutorService");
+        logger.debug("Submitting CallableStatement to ExecutorService");
         Future<ResultSet> future = mExecutorService.submit(statementCall);
-        ResultSet resultSet = null;
-
-        logger.debug("Checking monkey");
         this.mContext.monkey().sqlException(this, "uche2aNa");
+        ResultSet resultSet = null;
         
         try
         {
-            LOG.debug("Initiating CallableStatement and starting background execution");
+        logger.debug("Initiating CallableStatement and starting background execution");
             // This will initiate the Callable object and so
             // basically execute Statement.executeQuery in the
             // background. If execution is interrupted e.g. by
@@ -381,21 +379,23 @@ public class SQLQueryActivity
             // OGSA-DAI request is terminated, then an exception
             // will be thrown.
             resultSet = future.get();
-            LOG.debug("CallableStatement returned ResultSet");
+            logger.debug("CallableStatement returned ResultSet");
+            this.mContext.monkey().sqlException(this, "chahw2Ao");
         }
         catch (ExecutionException e)
         {
-            LOG.debug("CallableStatement encountered problem in query execution");
+            logger.debug("CallableStatement encountered problem in query execution");
+            logger.debug("Original cause [" + e.getCause().getClass().getName() + "]");
             throw e.getCause();
         }
         catch (InterruptedException e)
         {
-            LOG.debug("CallableStatement interrupted");
+            logger.debug("CallableStatement interrupted");
             cancelSQLStatement();
         }
         catch (CancellationException e)
         {
-            LOG.debug("CallableStatement cancelled");
+            logger.debug("CallableStatement cancelled");
             cancelSQLStatement();
         }
         return resultSet;
@@ -427,7 +427,7 @@ public class SQLQueryActivity
      */
     private void cancelSQLStatement() throws SQLException
     {
-        LOG.debug("Cancelling Statement");
+        logger.debug("Cancelling Statement");
         try
         {
             if (mStatement != null)
@@ -438,7 +438,7 @@ public class SQLQueryActivity
         catch (SQLException e)
         {
             // Don't care.
-            LOG.debug("Exception during Statement.cancel(): " + e);
+            logger.debug("Exception during Statement.cancel(): " + e);
         }
     }
 
@@ -460,19 +460,19 @@ public class SQLQueryActivity
     {
         super.cleanUp();
         
-        LOG.debug("Shutting down ExecutorService");
+        logger.debug("Shutting down ExecutorService");
         mExecutorService.shutdown();
         
         if (mStatement != null)
         {
-            LOG.debug("Closing Statement");
+            logger.debug("Closing Statement");
             mContext.monkey().sqlException(this, "baivahP0");
             mStatement.close();
         }
 
         if (mResource != null)
         {
-            LOG.debug("Releasing Connection");
+            logger.debug("Releasing Connection");
             mConnectionProvider.releaseConnection(mConnection);
         }
     }
