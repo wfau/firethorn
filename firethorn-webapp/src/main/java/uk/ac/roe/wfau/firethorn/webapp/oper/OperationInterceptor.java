@@ -58,7 +58,7 @@ implements HandlerInterceptor
             request.getServerPort()
             );
         log.trace("Operation [{}][{}]", oper.ident(), oper.target());
-
+// TODO Move this to a separate ChaosMonkeyInterceptor
         final String mname = request.getParameter(MONKEY_NAME_ATTRIB);
         final String mdata = request.getParameter(MONKEY_DATA_ATTRIB);
         log.trace("Monkey headers [{}][{}]", mname, mdata);

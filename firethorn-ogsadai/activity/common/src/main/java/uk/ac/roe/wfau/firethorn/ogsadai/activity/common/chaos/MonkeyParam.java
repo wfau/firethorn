@@ -20,7 +20,8 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos;
 
 /**
  * Public interface for the ChaosMonkey parameter.
- *
+ * TODO Move this to a separate Maven project
+ * 
  */
 public interface MonkeyParam
     {

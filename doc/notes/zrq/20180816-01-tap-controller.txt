@@ -1,0 +1,225 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # We have added the first ChaosMonkey code.
+    # Need to find a way of triggering it ...
+
+
+# -----------------------------------------------------
+# Standard Python test ...
+#[user@virtual]
+
+import os
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client (using named param).
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    '*',
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass')
+    )
+print(
+    atlas_jdbc
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+print(
+    atlas_adql
+    )
+
+#
+# Import the target JdbcSchema into AdqlSchema.
+schema_names = [
+    "ATLASDR1"
+    ]
+
+for schema_name in schema_names:
+    print(schema_name)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        schema_name,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + schema_name + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            schema_name,
+            metadoc=metadoc
+            )
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using our guest account.
+firethorn.login(
+    'Hyrax',
+    'frobengle23',
+    os.environ.get('guestgroup')
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+# -----------------------------------------------------
+# Hack the Python code to add an extra param.
+#[user@virtual]
+
+vi /home/firethorn-py/firethorn/core/query_engine.py
+
+    def create_query(self, ....)
+
+        urlenc.update(
+                {
+                "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity" : "uche2aNa"
+                }
+            )
+
+    +   urlenc.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+    +   urlenc.update({"firethorn.monkey.data" : "uche2aNa"})
+
+pip3 install /home/firethorn-py
+
+# -----------------------------------------------------
+# Create and run a query.
+#[user@virtual]
+
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+params.update({"firethorn.monkey.data" : "uche2aNa"})
+
+print(
+    params
+    )
+
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+print(
+    query_obj
+    )
+
+# -----------------------------------------------------
+# Client params trigger an Exception in OGSA-DAI code.
+
+    2018-08-16 11:35:45,770 DEBUG sql.SQLQueryActivity [pool-1-thread-4,processIteration:263] Initialising query
+    2018-08-16 11:35:45,770 DEBUG sql.SQLQueryActivity [pool-1-thread-4,processIteration:275] Checking monkey
+    2018-08-16 11:35:45,770 DEBUG sql.SQLQueryActivity [pool-1-thread-4,processIteration:278] Monkey params match - invoking ChaosMonkey
+    2018-08-16 11:35:45,771 DEBUG activity.MatchedIterativeActivity [pool-1-thread-4,debug:84] performing clean-up
+    2018-08-16 11:35:45,768 DEBUG event.LoggingActivityListener [pool-1-thread-5,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-0929a629-5b48-4ba5-b30b-6ac498a61aa1)
+    2018-08-16 11:35:45,772 DEBUG event.LoggingActivityListener [pool-1-thread-3,debug:84] PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-6576827c-4fd3-4ab8-a7d7-b309d1cd38f6)
+    2018-08-16 11:35:45,768 DEBUG activity.MatchedIterativeActivity [pool-1-thread-2,debug:84] performing first stage of processing
+    2018-08-16 11:35:45,772 DEBUG data.LimitsActivity [pool-1-thread-2,preprocess:144] preprocess()
+    2018-08-16 11:35:45,773 DEBUG activity.MatchedIterativeActivity [pool-1-thread-2,debug:84] performing iterative stage of processing
+    2018-08-16 11:35:45,773 DEBUG event.LoggingActivityListener [pool-1-thread-4,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	    at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:332)
+	    at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	    at java.lang.Thread.run(Thread.java:748)
+    Caused by: java.sql.SQLException: ChaosMonkey [uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity][uche2aNa]
+	    at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:280)
+	    ... 9 more
+
+    This isn't quite the same as the original.
+    The query status is set to FAILED, but nothng is added to the query history (separate issue).
+
+# -----------------------------------------------------
+# Compared to original exception ..
+
+    2018-08-10 09:39:41,958 WARN  activity.MatchedIterativeActivity [pool-1-thread-3949,warnExceptionAndChildren:343] #1533893981957:654825# java.sql.SQLException: Invalid state, the Connection object is closed.
+    2018-08-10 09:39:41,958 DEBUG event.LoggingActivityListener [pool-1-thread-3949,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+            at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:293)
+
+
+
+
+
