@@ -59,8 +59,8 @@ implements HandlerInterceptor
             );
         log.trace("Operation [{}][{}]", oper.ident(), oper.target());
 
-        final String mname = request.getHeader(MONKEY_NAME_ATTRIB);
-        final String mdata = request.getHeader(MONKEY_DATA_ATTRIB);
+        final String mname = request.getParameter(MONKEY_NAME_ATTRIB);
+        final String mdata = request.getParameter(MONKEY_DATA_ATTRIB);
         log.trace("Monkey headers [{}][{}]", mname, mdata);
         oper.monkey(
             mname,

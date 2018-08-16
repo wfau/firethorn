@@ -281,7 +281,7 @@
 EOF
 
 # -----------------------------------------------------
-# Link our compose config.
+# Link our chain properties as our compose config.
 #[user@virtual]
 
     ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
@@ -291,6 +291,16 @@ EOF
 #[user@virtual]
 
     wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/baryptera/baryptera-local.yml'
+
+# -----------------------------------------------------
+# Create our firethorn properties.
+#[user@virtual]
+
+    cat > "${HOME:?}/firethorn.properties" << 'EOF'
+
+firethorn.cleaner.lifetime=PT10M
+
+EOF
 
 # -----------------------------------------------------
 # Start our containers ...
