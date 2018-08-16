@@ -18,6 +18,8 @@
 
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos;
 
+import java.sql.SQLException;
+
 /**
  * 
  * 
@@ -93,5 +95,16 @@ implements MonkeyParam
                 }
             }
         return false;
+        }
+
+    @Override
+    public void sqlException(Object owner, Object value) throws SQLException
+        {
+        if (test(owner, value))
+            {
+            throw new SQLException(
+                this.toString()
+                ); 
+            }
         }
     }

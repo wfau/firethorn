@@ -52,6 +52,7 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
 import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.org.ogsadai.activity.ActivityContractName;
@@ -138,20 +139,19 @@ public class SQLQueryActivity
     /** Executor service. */
     private ExecutorService mExecutorService =
         Executors.newSingleThreadExecutor();
-
     
     /**
      * Our request context.
      * 
      */
-    private RequestContext context ;
+    private RequestContext mContext ;
 
     @Override
     public void setSecurityContext(SecurityContext context)
         {
         if ((context != null) && (context instanceof RequestContext))
             {
-            this.context = (RequestContext) context; 
+            this.mContext = (RequestContext) context; 
             }
         }
 
@@ -220,7 +220,7 @@ public class SQLQueryActivity
         ActivityProcessingException, ActivityTerminatedException
     {
         this.callback = new CallbackHandler(
-            this.context
+            this.mContext
             );          
         validateOutput(OUTPUT_SQL_RESULTS);
         try
@@ -271,19 +271,10 @@ public class SQLQueryActivity
             mStatement.setFetchSize(
                 mSettings.getFetchSize()
                 );
-
-            logger.debug("Checking monkey");
-            if (this.context.monkey().test(this, "uche2aNa"))
-                {
-                logger.debug("Monkey params match - invoking ChaosMonkey");
-                throw new SQLException(
-                    this.context.monkey().toString()
-                    ); 
-                }
             
             logger.debug("Executing query");
             ResultSet resultSet = executeQuery(expression);
-
+            
             logger.debug("Processing tuples");
             try {
                 SQLUtilities.createTupleList(
@@ -328,23 +319,27 @@ public class SQLQueryActivity
 
         catch (SQLException e)
             {
-            //callback.failed();
+            LOG.debug("Caught a SQLException, wrapping it in an ActivitySQLUserException");
             throw new ActivitySQLUserException(e);
             }
         catch (PipeIOException e)
             {
+            LOG.debug("Caught a PipeIOException, wrapping it in an ActivityPipeProcessingException");
             throw new ActivityPipeProcessingException(e);
             }
         catch (PipeTerminatedException e)
             {
+            LOG.debug("Caught a PipeTerminatedException, wrapping it in an ActivityTerminatedException");
             throw new ActivityTerminatedException();
             }
         catch (IOException e)
             {
+            LOG.debug("Caught an IOException, wrapping it in an ActivityIOException");
             throw new ActivityIOException(e);
             }
         catch (Throwable e)
             {
+            LOG.debug("Caught a Throwable, wrapping it in an ActivityProcessingException");
             throw new ActivityProcessingException(e);
             }
         }
@@ -367,11 +362,18 @@ public class SQLQueryActivity
         // query in the background - class definition is below.
         LOG.debug("Creating CallableStatement for query");
         Callable<ResultSet> statementCall = 
-            new CallableStatement(mStatement, expression);
+            new ChaoticCallableStatement(mStatement, expression);
 
         LOG.debug("Submitting CallableStatement to ExecutorService");
         Future<ResultSet> future = mExecutorService.submit(statementCall);
         ResultSet resultSet = null;
+
+        logger.debug("Checking monkey");
+        if (this.mContext.monkey() != null)
+        {
+            this.mContext.monkey().sqlException(this, "uche2aNa");
+        }
+        
         try
         {
             LOG.debug("Initiating CallableStatement and starting background execution");
@@ -402,6 +404,23 @@ public class SQLQueryActivity
         return resultSet;
     }
 
+    public class ChaoticCallableStatement
+    extends CallableStatement
+    {
+        public ChaoticCallableStatement(final Statement statement, final String query)
+        {
+            super(statement, query);
+        }
+        @Override
+        public ResultSet call() throws Exception
+        {
+        mContext.monkey().sqlException(this, "Eoph9xie");
+            final ResultSet results = super.call();
+            mContext.monkey().sqlException(this, "oz4Kie0M");
+            return results;
+        }
+    }
+
     /**
      * Cancel any running SQL statement. The statement is only
      * cancelled if the JDBC driver currently in use supports this.
@@ -411,10 +430,9 @@ public class SQLQueryActivity
      */
     private void cancelSQLStatement() throws SQLException
     {
-        LOG.debug("Cancelling statement...");
+        LOG.debug("Cancelling Statement");
         try
         {
-            LOG.debug("Cancelling SQL statement execution");
             if (mStatement != null)
             {
                 mStatement.cancel();
@@ -445,15 +463,19 @@ public class SQLQueryActivity
     {
         super.cleanUp();
         
+        LOG.debug("Shutting down ExecutorService");
         mExecutorService.shutdown();
         
         if (mStatement != null)
         {
+            LOG.debug("Closing Statement");
+            mContext.monkey().sqlException(this, "baivahP0");
             mStatement.close();
         }
 
         if (mResource != null)
         {
+            LOG.debug("Releasing Connection");
             mConnectionProvider.releaseConnection(mConnection);
         }
     }
