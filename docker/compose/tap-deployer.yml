@@ -126,12 +126,8 @@ services:
         networks:
             - miriam
         environment:
-            datatype:    "${datatype}" 
-            datahost:    "${datahost}"
-            datadata:    "${datadata}" 
             datauser:    "${datauser}"
             datapass:    "${datapass}"
-            datacatalog: "${datacatalog}"
             admingroup:  "${admingroup}"
             adminuser:   "${adminuser}"
             adminpass:   "${adminpass}"

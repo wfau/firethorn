@@ -147,8 +147,8 @@ EOF
 
         buildtag=${buildtag:?}
 
-        metadata=$(pwgen 20 1)
-        metauser=$(pwgen 20 1)
+        metadata=data_$(pwgen 10 1)
+        metauser=user_$(pwgen 10 1)
         metapass=$(pwgen 20 1)
 
         usertype=$(secret 'firethorn.user.type')
@@ -157,12 +157,8 @@ EOF
         useruser=$(secret 'firethorn.user.user')
         userpass=$(secret 'firethorn.user.pass')
 
-        datatype=$(secret 'firethorn.data.type')
-        datahost=$(secret 'firethorn.data.host')
-        datadata=$(secret 'firethorn.data.data')
         datauser=$(secret 'firethorn.data.user')
         datapass=$(secret 'firethorn.data.pass')
-        datacatalog='*'
 
         admingroup=group-$(pwgen 10 1)
         adminuser=admin-$(pwgen 10 1)
@@ -172,17 +168,16 @@ EOF
         guestuser=guest-$(pwgen 10 1)
         guestpass=$(pwgen 20 1)
 
-        tapschemadata=data-$(pwgen 10 1)
-        tapschemauser=user-$(pwgen 10 1)
+        #tapschemadata=data_$(pwgen 10 1)
+        tapschemadata=postgres
+        tapschemauser=user_$(pwgen 10 1)
         tapschemapass=$(pwgen 20 1)
-        tapschemajdbc=jdbc-$(pwgen 10 1)
+        tapschemajdbc=jdbc_$(pwgen 10 1)
 
         adql_query_delay_first=10
 
         firethorn_limits_rows_absolute=10000000
         firethorn_limits_rows_default=100000
-
-        endpoint=
 
 EOF
 
@@ -196,25 +191,206 @@ EOF
 # Download the latest version of our compose file.
 #[user@virtual]
 
-    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/baryptera/baryptera-local.yml'
-
-    wget https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/docker/tap-deployer.yml  -O  docker-compose.yml
-
-
-
-
+    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tap-deployer.yml'
 
 # -----------------------------------------------------
 # Start our containers ...
 #[user@virtual]
 
     docker-compose \
-        --file "baryptera-local.yml" \
+        --file "tap-deployer.yml" \
         run \
-            angela
+            firethorn-py
 
 # -----------------------------------------------------
-# Run our Python tests ...
-#[user@virtual]
+# Run our Python installer.
+#[python]
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+import firethorn_utils.configurator as configur
+
+#
+# Create our Firethorn client.
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create our Configurator.
+configurator = configur.Configurator(
+    firethorn
+    )
+
+#
+# Load the OSA configutarion.
+configurator.load_resources(
+    "https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/osa-tap.json"
+    )
+
+# -----------------------------------------------------
+# Run our Python tests.
+#[python]
+
+#
+# Get the Atlas AdqlResource from our Configurator.
+
+
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+#
+# Iterate the metadata tree
+for schema in atlas_adql.select_schemas():
+    for table in schema.select_tables():
+        print(
+            "table  [{}][{}]".format(
+                schema.name(),
+                table.name()
+                )
+            )
+        query_str = "SELECT TOP 10 * FROM {}.{}".format(
+            schema.name(),
+            table.name()
+            )
+        query_obj = workspace.create_query(
+            query_str,
+            "COMPLETED",
+            None,
+            3000000
+            )
+        py_table = query_obj.table().as_astropy()
+        py_table.pprint()
+
+
+
+
+#
+# Run some queries in parallel
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+
+query_str = "SELECT TOP 10000 ra, dec FROM ATLASDR1.atlasSource"
+
+def do_query(workspace, query_str, limit, delay):
+    query_obj = workspace.create_query(
+        query_str,
+        "COMPLETED",
+        None,
+        200000,
+            {
+            "adql.query.limit.rows"  : limit,
+            "adql.query.delay.every" : delay
+            }
+        )
+    return query_obj.json_object.get("results").get("count")
+
+def do_queries(workspace, query_str, threads, delay):
+    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        futures = {
+            executor.submit(
+                do_query,
+                workspace,
+                query_str,
+                limit,
+                delay
+                ): limit for limit in range(threads, 0, -1)
+            }
+        for future in concurrent.futures.as_completed(futures):
+            print(
+                future.result()
+                )
+
+for threads in range(1, 20):
+    for delay in range(500, -100, -100):
+        print("---- ", threads, delay)
+        do_queries(
+            workspace,
+            query_str,
+            threads,
+            delay
+            )
+
+
+#
+# Exit the Python shell
+
+    Ctrl^D
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Separate shell to monitor the logs
+#[user@trop]
+
+    ssh Siamond
+
+        su -s
+        
+            container=stevedore_gillian_1
+            
+            pushd $(
+                docker inspect \
+                    "${container:?}" \
+              | jq -r '
+                    .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+                    '
+                    )
+
+            tail -f firethorn-debug.log
 
 
