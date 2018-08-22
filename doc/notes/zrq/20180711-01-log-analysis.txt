@@ -57,7 +57,7 @@
     # Truncate the contents of firethorn.log.
     #[root@virtual]
 
-            echo /dev/null > "firethorn.log"
+            echo "---- log truncated $(date '+%Y%m%d') ---" > firethorn.log 
 
     # -----------------------------------------------------
     # Tail the log to check Tomcat is ok.

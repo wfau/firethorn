@@ -1,0 +1,152 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Gaia CU9 WP UK93 Timeline plan with milestones & deliverables, 2019 - 2023
+https://docs.google.com/document/d/1qoksPl8DJ4SNYBmnWzBLAFchb7vzamrqaWOyTeyWdPY/edit
+
+    'Delivering the promise of Gaia'
+    'Proposal for the Gaia Archive'
+    www.rssd.esa.int/doc_fetch.php?id=3165853
+
+    195 pages of good ideas
+
+    Most of them fairly specific.
+        Project to enable xxxx
+        Project to develop yyyy
+        Project to provide zzzz
+
+    Do we need to say what a Data Science Platform is ?
+
+    Oracle have bought 'datascience.com'
+
+        Oracle
+        What is a data science platform
+        https://www.datascience.com/blog/what-is-a-data-science-platform
+
+            "A data science platform is a software hub around which all data
+            science work takes place. That work usually includes integrating
+            and exploring data from various sources, coding and building models
+            that leverage that data, deploying those models into production,
+            and serving up results, whether that’s through model-powered
+            applications or reports."
+
+            "The best data science platforms offer the flexibility of
+            open-source tools and the scalability of elastic compute
+            resources."
+
+        Oracle
+        Platform features
+        https://www.datascience.com/blog/data-science-platform-cloud-machine-learning-on-premises
+
+            * Flexible deployments:
+                The platform can now be deployed on-premises, or through cloud providers such as
+                Amazon Web Services, Google Cloud, or Microsoft Azure. New features focused on
+                IT operations enable easy installation, monitoring, and maintenance.
+
+            * Improved project organization and collaboration among teams:
+                Platform users can organize data, code, and model outputs into projects, making it
+                easier to locate relevant files. The platform also removes the need to configure
+                new environments for every project; instead, users can set up repeatable,
+                standardized environments with Docker or other containers.
+
+            * Faster and higher-value analyses:
+                Data scientists can work in their code editors of choice and run that code seamlessly
+                in the platform. Infrastructure can be scaled up or down depending on the demands
+                of an analysis.
+
+            * More visible results:
+                Jupyter notebooks, R Markdown documents, and other files associated with a project
+                can be published as sharable reports. Code versioning allows teams to track changes
+                and project milestones, so work doesn’t get lost.
+
+            * Streamlined production:
+                Code can be run on a schedule to automate common data science tasks like data
+                cleaning and model retraining, as well as deployed behind a REST API for easy
+                integration with real-time applications or dashboards.
+
+
+        ComputerWorldUK
+        Best data science tools for modelling and deploying machine learning and predictive algorithms
+        https://www.computerworlduk.com/galleries/data/best-data-science-platforms-3656536/
+
+            Gartner defines data science platforms simply as "engines for creating machine-learning solutions".
+            For the sake of this article we have broadened Gartner's definition to include everything from data
+            science workbenches, where teams can collaborate on code and deploy it themselves, to guided data
+            science solutions.
+
+
+        Information Management
+        16 top platforms for data science and machine learning 
+        https://www.information-management.com/slideshow/16-top-platforms-for-data-science-and-machine-learning
+
+            Gartner defines a data science and machine-learning platform as
+            “A cohesive software application that offers a mixture of basic building blocks essential both for
+            creating many kinds of data science solution and incorporating such solutions into business processes,
+            surrounding infrastructure and products.”
+
+
+        Gaia Data Analytics Platform
+        https://gaia.ub.edu/twiki/pub/GENIUS/CU9SitgesPlenary/03-GDAF_-_Gaia_Data_Analytics_Platform.pdf
+
+            Data mining platform for the Gaia archive.
+            Cloudera/Hadoop/Spark 
+            
+            Using Apache Zeppelin for notebooks
+            https://zeppelin.apache.org/
+
+            Same question as us : "Will the platform be integrated at ESAC?"
+
+
+
+
+https://www.information-management.com/slideshow/16-top-platforms-for-data-science-and-machine-learning
+
+        
+https://blog.dominodatalab.com/what-is-a-data-science-platform/
+
+
+Key points from Oracle
+
+    * Integrating and exploring data from various sources
+    * Scalability of elastic compute resources
+    * Flexible deployments
+    * Collaboration among teams
+    * Visible results - Jupyter notebooks, R Markdown documents
+    * REST API for integration with other components
+
+Key points from ComputerWorldUK
+
+    * Engines for creating machine-learning solutions
+    * Teams collaborate on code
+
+
+
+
+
+
+
+
+
+
+
+Dark Energy Science Collaboration spring week in Edinburgh
+https://events.ph.ed.ac.uk/lsst-desc-autumn-2018
