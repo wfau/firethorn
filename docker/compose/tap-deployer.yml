@@ -21,7 +21,8 @@ services:
         networks:
             - miriam
         environment:
-            POSTGRES_USER: "${metauser}"
+            POSTGRES_DB:       "${metadata}"
+            POSTGRES_USER:     "${metauser}"
             POSTGRES_PASSWORD: "${metapass}"
 
     carolina:
@@ -35,9 +36,9 @@ services:
         networks:
             - miriam
         environment:
-            POSTGRES_USER: "${tapschemauser}"
+            POSTGRES_DB:       "${tapschemadata}"
+            POSTGRES_USER:     "${tapschemauser}"
             POSTGRES_PASSWORD: "${tapschemapass}"
-
 
     jarmila:
         image:
@@ -78,28 +79,25 @@ services:
             - "8080:8080"
         environment:
             firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
-            firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
-            firethorn.meta.url: "jdbc:postgresql://bethany/postgres"
-            firethorn.meta.user: "${metauser}"
-            firethorn.meta.pass: "${metapass}"
+            firethorn.meta.url:    "jdbc:postgresql://bethany/${metadata}"
+            firethorn.meta.user:   "${metauser}"
+            firethorn.meta.pass:   "${metapass}"
             firethorn.meta.driver: "org.postgresql.Driver"
-            firethorn.user.type: "mssql"
-            firethorn.user.host: "${userhost}"
-            firethorn.user.data: "${userdata}"
-            firethorn.user.user: "${useruser}"
-            firethorn.user.pass: "${userpass}"
+            firethorn.user.type:   "${usertype}"
+            firethorn.user.host:   "${userhost}"
+            firethorn.user.data:   "${userdata}"
+            firethorn.user.user:   "${useruser}"
+            firethorn.user.pass:   "${userpass}"
             firethorn.admin.community: "${admingroup}"
             firethorn.guest.community: "${guestgroup}"
             firethorn.admin.user.name: "${adminuser}"
             firethorn.admin.user.pass: "${adminpass}"
-            firethorn.tapschema.resource.name: "${tapschemajdbcname}"
-            firethorn.tapschema.database.name: "${tapschemadatabase}"
-            firethorn.tapschema.database.host: "${tapschemahost}"
-            firethorn.tapschema.database.post: "${tapschemaport}"
+            firethorn.tapschema.resource.name: "${tapschemajdbc}"
+            firethorn.tapschema.database.type: "pgsql"
+            firethorn.tapschema.database.name: "${tapschemadata}"
+            firethorn.tapschema.database.host: "carolina"
             firethorn.tapschema.database.user: "${tapschemauser}"
             firethorn.tapschema.database.pass: "${tapschemapass}"
-            firethorn.tapschema.database.type: "${tapschematype}"
-
 
         depends_on:
             bethany:
@@ -128,23 +126,21 @@ services:
         networks:
             - miriam
         environment:
-            datahost: "${datahost}"
-            datauser: "${datauser}"
-            datapass: "${datapass}"
-            datadata: "${datadata}" 
-            datacatalog: "${datadata}" 
-            datatype: "${datatype}" 
-            admingroup: "${admingroup}"
-            adminuser: "${adminuser}"
-            adminpass: "${adminpass}"
-            datadriver: "net.sourceforge.jtds.jdbc.Driver"
-            endpoint: "${endpoint}"
-            osa_endpoint: "${osa_endpoint}"
+            datatype:    "${datatype}" 
+            datahost:    "${datahost}"
+            datadata:    "${datadata}" 
+            datauser:    "${datauser}"
+            datapass:    "${datapass}"
+            datacatalog: "${datacatalog}"
+            admingroup:  "${admingroup}"
+            adminuser:   "${adminuser}"
+            adminpass:   "${adminpass}"
+            endpoint:    "http://gillian:8080/firethorn"
         depends_on:
             gillian:
                 condition: service_healthy
         command:
-            [bash]
+            [python3]
 
 
 
