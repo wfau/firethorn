@@ -1,4 +1,7 @@
 
+This issue happens if you set the TAP_SCHEMA PostgreSQL database catalog name to anything other than .postgres'.
+
+
 2018-08-22 16:52:53,770 DEBUG [main-interface-1] [HttpRequestDebug] ---- 
 2018-08-22 16:52:53,777 DEBUG [main-interface-3] [HttpRequestDebug] Request properties 
 2018-08-22 16:52:53,778 DEBUG [main-interface-3] [HttpRequestDebug]   requestURL  [http://gillian:8080/firethorn/tap/54/generateTapSchema] 

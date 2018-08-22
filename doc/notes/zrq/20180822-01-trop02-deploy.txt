@@ -104,14 +104,12 @@
 
     mkdir "${HOME:?}/bin"
     cat > "${HOME:?}/bin/secret" << 'EOF'
-
 secret()
     {
     local key=${1:?}
     local server='dave@shepseskaf.roe.ac.uk'
     ssh -o 'VisualHostKey=no' "${server:?}" "bin/secret \"${key:?}\""
     }
-
 if [ -n "${1}" ]
 then
     secret "${1}"
@@ -246,8 +244,7 @@ configurator.load_resources(
 
 #
 # Get the Atlas AdqlResource from our Configurator.
-
-
+resource = firethorn.firethorn_engine.select_adql_resources()[0]
 
 #
 # Login using a guest account.
@@ -258,22 +255,9 @@ firethorn.login(
     )
 
 #
-# Create a new workspace.
-workspace = firethorn.firethorn_engine.create_adql_resource(
-    "Query resource"
-    )
-
-#
-# Import the ATLAS schemas into our workspace
-for schema in atlas_adql.select_schemas():
-    workspace.import_adql_schema(
-        schema
-        )
-
-#
-# Create and run a query.
+# Create and run a query on the resource.
 query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
-query_obj = workspace.create_query(
+query_obj = resource.create_query(
     query_str,
     "COMPLETED",
     None,
@@ -291,12 +275,13 @@ print(
 
 #
 # Iterate the metadata tree
-for schema in atlas_adql.select_schemas():
+for schema in resource.select_schemas():
     for table in schema.select_tables():
         print(
-            "table  [{}][{}]".format(
+            "table  [{}][{}][{}]".format(
                 schema.name(),
-                table.name()
+                table.name(),
+                table.count(),
                 )
             )
         query_str = "SELECT TOP 10 * FROM {}.{}".format(
@@ -314,72 +299,13 @@ for schema in atlas_adql.select_schemas():
 
 
 
-
-#
-# Run some queries in parallel
-from concurrent.futures import ThreadPoolExecutor
-import concurrent.futures
-
-query_str = "SELECT TOP 10000 ra, dec FROM ATLASDR1.atlasSource"
-
-def do_query(workspace, query_str, limit, delay):
-    query_obj = workspace.create_query(
-        query_str,
-        "COMPLETED",
-        None,
-        200000,
-            {
-            "adql.query.limit.rows"  : limit,
-            "adql.query.delay.every" : delay
-            }
-        )
-    return query_obj.json_object.get("results").get("count")
-
-def do_queries(workspace, query_str, threads, delay):
-    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
-        futures = {
-            executor.submit(
-                do_query,
-                workspace,
-                query_str,
-                limit,
-                delay
-                ): limit for limit in range(threads, 0, -1)
-            }
-        for future in concurrent.futures.as_completed(futures):
-            print(
-                future.result()
-                )
-
-for threads in range(1, 20):
-    for delay in range(500, -100, -100):
-        print("---- ", threads, delay)
-        do_queries(
-            workspace,
-            query_str,
-            threads,
-            delay
-            )
-
-
-#
-# Exit the Python shell
-
-    Ctrl^D
-
-
-
-
-
-
-
 # -----------------------------------------------------
 # Separate shell to monitor the logs
 #[user@trop]
 
     ssh Siamond
 
-        su -s
+        sudo -s
         
             container=stevedore_gillian_1
             
