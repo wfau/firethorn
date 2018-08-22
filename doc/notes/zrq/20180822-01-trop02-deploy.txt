@@ -19,4 +19,202 @@
 # </meta:header>
 #
 #
+    
+    Delete all the virtual machines
+    Reboot the physical machine
+    Create a new set of virtual machines
+
+        Install OSA TAP service
+        Install Genius TAP service
+        Install Apache proxy
+
+    Test using metagrid DNS entry
+    
+    Move the external floating IP address from trop01 to trop02.
+    Test using roe DNS entry
+
+
+
+# -----------------------------------------------------
+# Check the local libvirt settings.
+#[user@trop]
+
+    cat "${HOME}/libvirt.settings"
+
+         : ${basepool:='base'}
+         : ${livepool:='live'}
+         : ${connection:='qemu:///system'}
+        export basepool
+        export livepool
+        export connection
+
+# -----------------------------------------------------
+# List the existing VMs.
+#[user@trop]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --quiet \
+        --connect "${connection}" \
+        list \
+    | sed 's/.*\([0-9]\{1,\}\) *\([a-zA-Z]\{1,\}\) *\([a-z]\{1,\}\).*/\2/' \
+    | tee vm-list.txt
+
+# -----------------------------------------------------
+# Delete the existing VMs.
+#[user@trop]
+
+    source "${HOME}/libvirt.settings"
+
+    for vmname in $(cat vm-list.txt)
+    do
+        echo "${vmname:?}"
+        virsh \
+            --quiet \
+            --connect "${connection}" \
+            destroy "${vmname:?}"
+
+        virsh \
+            --quiet \
+            --connect "${connection}" \
+            undefine "${vmname:?}"
+    done
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Siamond]
+        INFO : Base name [fedora-28-docker-base-20180708.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+        INFO : Disc name [Siamond.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh Siamond
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    mkdir "${HOME:?}/bin"
+    cat > "${HOME:?}/bin/secret" << 'EOF'
+
+secret()
+    {
+    local key=${1:?}
+    local server='dave@shepseskaf.roe.ac.uk'
+    ssh -o 'VisualHostKey=no' "${server:?}" "bin/secret \"${key:?}\""
+    }
+
+if [ -n "${1}" ]
+then
+    secret "${1}"
+fi
+EOF
+
+    chmod u+x "${HOME:?}/bin/secret"
+    secret 'frog'
+
+# -----------------------------------------------------
+# Set the target version.
+#[user@virtual]
+
+    export buildtag=2.1.25
+
+# -----------------------------------------------------
+# Remove existing containers. (Not needed for new VM)
+#[user@virtual]
+
+    #docker rm -vf $(docker ps -aq)
+
+# -----------------------------------------------------
+# Remove existing images. (Not needed for new VM)
+#[user@virtual]
+
+    #docker rmi -f $(docker images -q)
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${buildtag:?}
+
+        metadata=$(pwgen 20 1)
+        metauser=$(pwgen 20 1)
+        metapass=$(pwgen 20 1)
+
+        usertype=$(secret 'firethorn.user.type')
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datatype=$(secret 'firethorn.data.type')
+        datahost=$(secret 'firethorn.data.host')
+        datadata=$(secret 'firethorn.data.data')
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+        datacatalog='*'
+
+        admingroup=group-$(pwgen 10 1)
+        adminuser=admin-$(pwgen 10 1)
+        adminpass=$(pwgen 20 1)
+
+        guestgroup=group-$(pwgen 10 1)
+        guestuser=guest-$(pwgen 10 1)
+        guestpass=$(pwgen 20 1)
+
+        tapschemadata=data-$(pwgen 10 1)
+        tapschemauser=user-$(pwgen 10 1)
+        tapschemapass=$(pwgen 20 1)
+        tapschemajdbc=jdbc-$(pwgen 10 1)
+
+        adql_query_delay_first=10
+
+        firethorn_limits_rows_absolute=10000000
+        firethorn_limits_rows_default=100000
+
+        endpoint=
+
+EOF
+
+# -----------------------------------------------------
+# Link our compose config.
+#[user@virtual]
+
+    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Download the latest version of our compose file.
+#[user@virtual]
+
+    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/baryptera/baryptera-local.yml'
+
+    wget https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/docker/tap-deployer.yml  -O  docker-compose.yml
+
+
+
+
+
+# -----------------------------------------------------
+# Start our containers ...
+#[user@virtual]
+
+    docker-compose \
+        --file "baryptera-local.yml" \
+        run \
+            angela
+
+# -----------------------------------------------------
+# Run our Python tests ...
+#[user@virtual]
+
 

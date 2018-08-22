@@ -38,43 +38,6 @@ services:
             POSTGRES_USER: "${tapschemauser}"
             POSTGRES_PASSWORD: "${tapschemapass}"
 
-    patricia:
-        image:
-           "firethorn/sql-proxy:${buildtag:-latest}"
-        read_only:
-            false
-        tmpfs:
-            - /run
-            - /tmp
-        stdin_open:
-            true
-        volumes:
-            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
-        networks:
-            - miriam
-        environment:
-            targethost: "${userhost}"
-            tunneluser: "${tunneluser}"
-            tunnelhost: "${tunnelhost}"
-
-    elayne:
-        image:
-           "firethorn/sql-proxy:${buildtag:-latest}"
-        read_only:
-            false
-        tmpfs:
-            - /run
-            - /tmp
-        stdin_open:
-            true
-        volumes:
-            - ${SSH_AUTH_SOCK}:/tmp/ssh_auth_sock
-        networks:
-            - miriam
-        environment:
-            targethost: "${datahost}"
-            tunneluser: "${tunneluser}"
-            tunnelhost: "${tunnelhost}"
 
     jarmila:
         image:
@@ -88,11 +51,6 @@ services:
             - /etc/localtime:/etc/localtime:ro
         networks:
             - miriam
-        depends_on:
-            elayne:
-                condition: service_started            
-            patricia:
-                condition: service_started            
         healthcheck:
             test: [
                 "CMD-SHELL",
@@ -116,6 +74,8 @@ services:
         networks:
             - miriam
             - rosana
+        ports:
+            - "8080:8080"
         environment:
             firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
             firethorn.ogsadai.endpoint: "http://jarmila:8080/ogsadai/services"
@@ -124,7 +84,7 @@ services:
             firethorn.meta.pass: "${metapass}"
             firethorn.meta.driver: "org.postgresql.Driver"
             firethorn.user.type: "mssql"
-            firethorn.user.host: "patricia"
+            firethorn.user.host: "${userhost}"
             firethorn.user.data: "${userdata}"
             firethorn.user.user: "${useruser}"
             firethorn.user.pass: "${userpass}"
@@ -146,16 +106,14 @@ services:
                 condition: service_started
             carolina:
                 condition: service_started            
-            elayne:
-                condition: service_started            
-            patricia:
-                condition: service_started            
             jarmila:
                 condition: service_healthy            
 
-    tester:
+    firethorn-py:
+        hostname:
+            "firethorn-py"
         image:
-           "firethorn/tester:${buildtag}"
+           "firethorn/firethorn-py:${buildtag:-latest}"
         read_only:
             false
         stdin_open:
@@ -167,16 +125,24 @@ services:
             - /tmp
         volumes:
             - /etc/localtime:/etc/localtime:ro
-            - ${HOME}/tester.properties:/etc/tester.properties
         networks:
             - miriam
         environment:
-            datahost:    "patricia"
-            datadriver:  "net.sourceforge.jtds.jdbc.Driver"
-            endpointurl: "http://gillian:8080/firethorn"
+            datahost: "${datahost}"
+            datauser: "${datauser}"
+            datapass: "${datapass}"
+            datadata: "${datadata}" 
+            datacatalog: "${datadata}" 
+            datatype: "${datatype}" 
+            admingroup: "${admingroup}"
+            adminuser: "${adminuser}"
+            adminpass: "${adminpass}"
+            datadriver: "net.sourceforge.jtds.jdbc.Driver"
+            endpoint: "${endpoint}"
+            osa_endpoint: "${osa_endpoint}"
         depends_on:
             gillian:
-                condition: service_healthy            
+                condition: service_healthy
         command:
             [bash]
 
