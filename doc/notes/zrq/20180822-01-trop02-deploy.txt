@@ -126,18 +126,6 @@ EOF
     export buildtag=2.1.25
 
 # -----------------------------------------------------
-# Remove existing containers. (Not needed for new VM)
-#[user@virtual]
-
-    #docker rm -vf $(docker ps -aq)
-
-# -----------------------------------------------------
-# Remove existing images. (Not needed for new VM)
-#[user@virtual]
-
-    #docker rmi -f $(docker images -q)
-
-# -----------------------------------------------------
 # Create our chain properties.
 #[user@virtual]
 
@@ -244,6 +232,7 @@ configurator.load_resources(
 
 #
 # Get the Atlas AdqlResource from our Configurator.
+# 
 resource = firethorn.firethorn_engine.select_adql_resources()[0]
 
 #

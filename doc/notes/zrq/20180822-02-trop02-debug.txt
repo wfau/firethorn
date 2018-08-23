@@ -1,156 +1,156 @@
 
-This issue happens if you set the TAP_SCHEMA PostgreSQL database catalog name to anything other than .postgres'.
+This issue happens if you set the TAP_SCHEMA PostgreSQL database catalog name to anything other than 'postgres'.
 
 
-2018-08-22 16:52:53,770 DEBUG [main-interface-1] [HttpRequestDebug] ---- 
-2018-08-22 16:52:53,777 DEBUG [main-interface-3] [HttpRequestDebug] Request properties 
-2018-08-22 16:52:53,778 DEBUG [main-interface-3] [HttpRequestDebug]   requestURL  [http://gillian:8080/firethorn/tap/54/generateTapSchema] 
-2018-08-22 16:52:53,778 DEBUG [main-interface-3] [HttpRequestDebug]   queryString [null] 
-2018-08-22 16:52:53,778 DEBUG [main-interface-3] [HttpRequestDebug]   authType    [null] 
-2018-08-22 16:52:53,778 DEBUG [main-interface-3] [HttpRequestDebug]   remoteAddr  [172.18.0.6] 
-2018-08-22 16:52:53,779 DEBUG [main-interface-3] [HttpRequestDebug] Request headers 
-2018-08-22 16:52:53,779 DEBUG [main-interface-3] [HttpRequestDebug]   [accept-encoding][identity] 
-2018-08-22 16:52:53,779 DEBUG [main-interface-3] [HttpRequestDebug]   [accept][application/json] 
-2018-08-22 16:52:53,779 DEBUG [main-interface-3] [HttpRequestDebug]   [host][gillian:8080] 
-2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [firethorn.auth.community][group_sahGe4Chee] 
-2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [firethorn.auth.password][Pushis0iteez9ahS7Eib] 
-2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [user-agent][Python-urllib/3.5] 
-2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [firethorn.auth.username][admin_AhHu2AK9ai] 
-2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [connection][close] 
-2018-08-22 16:52:53,781 DEBUG [main-interface-3] [HttpRequestDebug] Request parameters 
-2018-08-22 16:52:53,781 DEBUG [main-interface-3] [HttpRequestDebug] ---- 
-
-    ....
-    ....
-    
-2018-08-22 16:52:53,841 DEBUG [main-interface-3] [AdqlTapSchemaController] Before JDBC 
-2018-08-22 16:52:53,861 DEBUG [main-interface-3] [AdqlTapSchemaComponent] Starting JDBC 
-2018-08-22 16:52:53,888 DEBUG [main-interface-3] [TapSchemaGeneratorImpl] Inserting resource records into the table... 
-2018-08-22 16:52:53,897 DEBUG [main-interface-3] [TapSchemaGeneratorImpl] Inserting resource records into the table... 
-2018-08-22 16:52:54,028 DEBUG [main-interface-3] [AdqlResourceEntity] schemas() for [54][OSA ADQL resource] 
-2018-08-22 16:52:54,028 DEBUG [main-interface-3] [BaseComponentEntity] scan for [54][OSA ADQL resource] 
-2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity] scantest for [54][OSA ADQL resource] 
-2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity$EntityFactory] scanperiod() 
-2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity$EntityFactory]   value [PT25H] 
-2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity] Factory scanperiod  [PT25H] 
-2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity] prevscan   [2018-08-22T16:47:57.268Z] 
-2018-08-22 16:52:54,030 DEBUG [main-interface-3] [BaseComponentEntity] scanperiod [PT25H] 
-2018-08-22 16:52:54,030 DEBUG [main-interface-3] [BaseComponentEntity] prev scan is recent - skipping 
-2018-08-22 16:52:54,056 DEBUG [main-interface-3] [AdqlSchemaEntity] tables() for [69079][ATLASDR1] 
-2018-08-22 16:52:54,056 DEBUG [main-interface-3] [BaseComponentEntity] scan for [69079][ATLASDR1] 
-2018-08-22 16:52:54,056 DEBUG [main-interface-3] [BaseComponentEntity] scantest for [69079][ATLASDR1] 
+    2018-08-22 16:52:53,770 DEBUG [main-interface-1] [HttpRequestDebug] ---- 
+    2018-08-22 16:52:53,777 DEBUG [main-interface-3] [HttpRequestDebug] Request properties 
+    2018-08-22 16:52:53,778 DEBUG [main-interface-3] [HttpRequestDebug]   requestURL  [http://gillian:8080/firethorn/tap/54/generateTapSchema] 
+    2018-08-22 16:52:53,778 DEBUG [main-interface-3] [HttpRequestDebug]   queryString [null] 
+    2018-08-22 16:52:53,778 DEBUG [main-interface-3] [HttpRequestDebug]   authType    [null] 
+    2018-08-22 16:52:53,778 DEBUG [main-interface-3] [HttpRequestDebug]   remoteAddr  [172.18.0.6] 
+    2018-08-22 16:52:53,779 DEBUG [main-interface-3] [HttpRequestDebug] Request headers 
+    2018-08-22 16:52:53,779 DEBUG [main-interface-3] [HttpRequestDebug]   [accept-encoding][identity] 
+    2018-08-22 16:52:53,779 DEBUG [main-interface-3] [HttpRequestDebug]   [accept][application/json] 
+    2018-08-22 16:52:53,779 DEBUG [main-interface-3] [HttpRequestDebug]   [host][gillian:8080] 
+    2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [firethorn.auth.community][group_sahGe4Chee] 
+    2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [firethorn.auth.password][Pushis0iteez9ahS7Eib] 
+    2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [user-agent][Python-urllib/3.5] 
+    2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [firethorn.auth.username][admin_AhHu2AK9ai] 
+    2018-08-22 16:52:53,780 DEBUG [main-interface-3] [HttpRequestDebug]   [connection][close] 
+    2018-08-22 16:52:53,781 DEBUG [main-interface-3] [HttpRequestDebug] Request parameters 
+    2018-08-22 16:52:53,781 DEBUG [main-interface-3] [HttpRequestDebug] ---- 
 
     ....
     ....
     
-2018-08-22 16:54:03,326 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener]  ident [79677] 
-2018-08-22 16:54:03,326 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener]  name  [cz] 
-2018-08-22 16:54:03,329 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
-2018-08-22 16:54:03,330 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener]  ident [79688] 
-2018-08-22 16:54:03,330 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener]  name  [htmID] 
-2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@5a10dfa2] 
-2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@5a10dfa2] 
-2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] affirm(Iterable<Authentication>, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@5a10dfa2] 
-2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] check(Authentication, Action) [Authentication[Ident[75580]Identity[admin_AhHu2AK9ai]Method[urn:simple.http.header]]][uk.ac.roe.wfau.firethorn.access.BaseAction@5a10dfa2] 
-2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]] 
-2018-08-22 16:54:03,341 DEBUG [main-interface-3] [IdentityEntity] admin() 
-2018-08-22 16:54:03,403 DEBUG [main-interface-3] [IdentityEntity] find (Community, String) [admin_AhHu2AK9ai] 
-2018-08-22 16:54:03,473 DEBUG [main-interface-3] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]] 
-2018-08-22 16:54:03,512 DEBUG [main-interface-3] [JdbcResourceEntity] schemas() for [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,512 DEBUG [main-interface-3] [BaseComponentEntity] scan for [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,512 DEBUG [main-interface-3] [BaseComponentEntity] scantest for [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,512 DEBUG [main-interface-3] [BaseComponentEntity$EntityFactory] scanperiod() 
-2018-08-22 16:54:03,512 DEBUG [main-interface-3] [BaseComponentEntity$EntityFactory]   value [PT25H] 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] Factory scanperiod  [PT25H] 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] prevscan   [null] 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] scanperiod [PT25H] 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] prev scan is null - scanning 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] Checking for existing lock [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] No existing lock found [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] Adding new lock [55][TAP_RESOURCE_54][2018-08-22T16:54:03.513Z] 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] Running scan [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [JdbcResourceEntity] scanimpl() for [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,513 DEBUG [main-interface-3] [JdbcConnectionEntity] scanner() for [pgsql] 
-2018-08-22 16:54:03,523 DEBUG [main-interface-3] [JdbcResourceEntity] Scanning catalog [data_iefae6xu6e] 
-2018-08-22 16:54:03,523 DEBUG [main-interface-3] [PostgresScanner] schemas() for [data_iefae6xu6e] 
-2018-08-22 16:54:03,524 DEBUG [main-interface-3] [PostgresScanner] Selecting schema for [data_iefae6xu6e] 
-2018-08-22 16:54:03,524 DEBUG [main-interface-3] [PostgresScanner] Openning a new connection 
-2018-08-22 16:54:03,524 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
-2018-08-22 16:54:03,526 DEBUG [main-interface-3] [JdbcConnectionEntity] open [jdbc:postgresql://carolina:5432/data_iefae6xu6E][1] 
-2018-08-22 16:54:03,526 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
-2018-08-22 16:54:03,526 DEBUG [main-interface-3] [JdbcConnectionEntity] get() [jdbc:postgresql://carolina:5432/data_iefae6xu6E] 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] initialValue() [jdbc:postgresql://carolina:5432/data_iefae6xu6E] 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] connect [jdbc:postgresql://carolina:5432/data_iefae6xu6E] 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] Source is null, updating to EMPTY 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] State is EMPTY, initialising DataSource 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] State is READY, initialising Connection 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] With user/pass 
-2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] connecting .... 
-2018-08-22 16:54:03,540 DEBUG [main-interface-3] [JdbcConnectionEntity] .... connected 
-2018-08-22 16:54:03,545 DEBUG [main-interface-3] [PostgresScanner] schema() [uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresScanner$2@4c9eb8cc][2200][public] 
-2018-08-22 16:54:03,546 DEBUG [main-interface-3] [PostgresScanner] schema() [uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresScanner$2@4c9eb8cc][16386][TAP_SCHEMA_54] 
-2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcResourceEntity] Scanning for schema [data_iefae6xu6e][public] 
-2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcResourceEntity] Creating new schema [data_iefae6xu6e][public] 
-2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchema create(JdbcResource, String, String) 
-2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcSchemaEntity]   Parent  [55] 
-2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcSchemaEntity]   Catalog [data_iefae6xu6e] 
-2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcSchemaEntity]   Schema  [public] 
-2018-08-22 16:54:03,547 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchemaEntity(JdbcResource, String, String, String) 
-2018-08-22 16:54:03,547 DEBUG [main-interface-3] [JdbcSchemaEntity]    JdbcResource [TAP_RESOURCE_54] 
-2018-08-22 16:54:03,547 DEBUG [main-interface-3] [JdbcSchemaEntity]    Catalog [data_iefae6xu6e] 
-2018-08-22 16:54:03,547 DEBUG [main-interface-3] [JdbcSchemaEntity]    Schema  [public] 
-2018-08-22 16:54:03,548 DEBUG [main-interface-3] [JdbcSchemaEntity]    Name    [data_iefae6xu6e.public] 
-2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcResourceEntity] Scanning for schema [data_iefae6xu6e][TAP_SCHEMA_54] 
-2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcResourceEntity] Creating new schema [data_iefae6xu6e][TAP_SCHEMA_54] 
-2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchema create(JdbcResource, String, String) 
-2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcSchemaEntity]   Parent  [55] 
-2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcSchemaEntity]   Catalog [data_iefae6xu6e] 
-2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcSchemaEntity]   Schema  [TAP_SCHEMA_54] 
-2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchemaEntity(JdbcResource, String, String, String) 
-2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity]    JdbcResource [TAP_RESOURCE_54] 
-2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity]    Catalog [data_iefae6xu6e] 
-2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity]    Schema  [TAP_SCHEMA_54] 
-2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity]    Name    [data_iefae6xu6e.TAP_SCHEMA_54] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcConnectionEntity] close [jdbc:postgresql://carolina:5432/data_iefae6xu6E][1] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcConnectionEntity] get() [jdbc:postgresql://carolina:5432/data_iefae6xu6E] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcResourceEntity] schemas() scan done for [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcResourceEntity] Matching schemas [2] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcResourceEntity] Listed but not matched [0] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [BaseComponentEntity] Releasing locks [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [BaseComponentEntity] Found existing lock [55][TAP_RESOURCE_54][2018-08-22T16:54:03.513Z] 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [BaseComponentEntity] Removing .... 
-2018-08-22 16:54:03,633 DEBUG [main-interface-3] [BaseComponentEntity] Notifying .... 
-2018-08-22 16:54:03,634 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchema select(JdbcResource, String) 
-2018-08-22 16:54:03,634 DEBUG [main-interface-3] [JdbcSchemaEntity]   Resource [55][TAP_RESOURCE_54] 
-2018-08-22 16:54:03,634 DEBUG [main-interface-3] [JdbcSchemaEntity]   Schema   [data_iefae6xu6E.TAP_SCHEMA_54] 
-2018-08-22 16:54:03,635 DEBUG [main-interface-3] [JdbcSchemaEntity] Unable to locate schema [TAP_RESOURCE_54][data_iefae6xu6E.TAP_SCHEMA_54] 
+    2018-08-22 16:52:53,841 DEBUG [main-interface-3] [AdqlTapSchemaController] Before JDBC 
+    2018-08-22 16:52:53,861 DEBUG [main-interface-3] [AdqlTapSchemaComponent] Starting JDBC 
+    2018-08-22 16:52:53,888 DEBUG [main-interface-3] [TapSchemaGeneratorImpl] Inserting resource records into the table... 
+    2018-08-22 16:52:53,897 DEBUG [main-interface-3] [TapSchemaGeneratorImpl] Inserting resource records into the table... 
+    2018-08-22 16:52:54,028 DEBUG [main-interface-3] [AdqlResourceEntity] schemas() for [54][OSA ADQL resource] 
+    2018-08-22 16:52:54,028 DEBUG [main-interface-3] [BaseComponentEntity] scan for [54][OSA ADQL resource] 
+    2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity] scantest for [54][OSA ADQL resource] 
+    2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity$EntityFactory] scanperiod() 
+    2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+    2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+    2018-08-22 16:52:54,029 DEBUG [main-interface-3] [BaseComponentEntity] prevscan   [2018-08-22T16:47:57.268Z] 
+    2018-08-22 16:52:54,030 DEBUG [main-interface-3] [BaseComponentEntity] scanperiod [PT25H] 
+    2018-08-22 16:52:54,030 DEBUG [main-interface-3] [BaseComponentEntity] prev scan is recent - skipping 
+    2018-08-22 16:52:54,056 DEBUG [main-interface-3] [AdqlSchemaEntity] tables() for [69079][ATLASDR1] 
+    2018-08-22 16:52:54,056 DEBUG [main-interface-3] [BaseComponentEntity] scan for [69079][ATLASDR1] 
+    2018-08-22 16:52:54,056 DEBUG [main-interface-3] [BaseComponentEntity] scantest for [69079][ATLASDR1] 
+
+    ....
+    ....
+    
+    2018-08-22 16:54:03,326 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener]  ident [79677] 
+    2018-08-22 16:54:03,326 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener]  name  [cz] 
+    2018-08-22 16:54:03,329 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+    2018-08-22 16:54:03,330 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener]  ident [79688] 
+    2018-08-22 16:54:03,330 DEBUG [main-interface-3] [JdbcColumnEntity$EntityListener]  name  [htmID] 
+    2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@5a10dfa2] 
+    2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@5a10dfa2] 
+    2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] affirm(Iterable<Authentication>, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@5a10dfa2] 
+    2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] check(Authentication, Action) [Authentication[Ident[75580]Identity[admin_AhHu2AK9ai]Method[urn:simple.http.header]]][uk.ac.roe.wfau.firethorn.access.BaseAction@5a10dfa2] 
+    2018-08-22 16:54:03,341 DEBUG [main-interface-3] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]] 
+    2018-08-22 16:54:03,341 DEBUG [main-interface-3] [IdentityEntity] admin() 
+    2018-08-22 16:54:03,403 DEBUG [main-interface-3] [IdentityEntity] find (Community, String) [admin_AhHu2AK9ai] 
+    2018-08-22 16:54:03,473 DEBUG [main-interface-3] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]] 
+    2018-08-22 16:54:03,512 DEBUG [main-interface-3] [JdbcResourceEntity] schemas() for [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,512 DEBUG [main-interface-3] [BaseComponentEntity] scan for [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,512 DEBUG [main-interface-3] [BaseComponentEntity] scantest for [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,512 DEBUG [main-interface-3] [BaseComponentEntity$EntityFactory] scanperiod() 
+    2018-08-22 16:54:03,512 DEBUG [main-interface-3] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] prevscan   [null] 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] scanperiod [PT25H] 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] prev scan is null - scanning 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] Checking for existing lock [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] No existing lock found [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] Adding new lock [55][TAP_RESOURCE_54][2018-08-22T16:54:03.513Z] 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [BaseComponentEntity] Running scan [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [JdbcResourceEntity] scanimpl() for [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,513 DEBUG [main-interface-3] [JdbcConnectionEntity] scanner() for [pgsql] 
+    2018-08-22 16:54:03,523 DEBUG [main-interface-3] [JdbcResourceEntity] Scanning catalog [data_iefae6xu6e] 
+    2018-08-22 16:54:03,523 DEBUG [main-interface-3] [PostgresScanner] schemas() for [data_iefae6xu6e] 
+    2018-08-22 16:54:03,524 DEBUG [main-interface-3] [PostgresScanner] Selecting schema for [data_iefae6xu6e] 
+    2018-08-22 16:54:03,524 DEBUG [main-interface-3] [PostgresScanner] Openning a new connection 
+    2018-08-22 16:54:03,524 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
+    2018-08-22 16:54:03,526 DEBUG [main-interface-3] [JdbcConnectionEntity] open [jdbc:postgresql://carolina:5432/data_iefae6xu6E][1] 
+    2018-08-22 16:54:03,526 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
+    2018-08-22 16:54:03,526 DEBUG [main-interface-3] [JdbcConnectionEntity] get() [jdbc:postgresql://carolina:5432/data_iefae6xu6E] 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] initialValue() [jdbc:postgresql://carolina:5432/data_iefae6xu6E] 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] connect [jdbc:postgresql://carolina:5432/data_iefae6xu6E] 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] Source is null, updating to EMPTY 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] State is EMPTY, initialising DataSource 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] State is READY, initialising Connection 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] With user/pass 
+    2018-08-22 16:54:03,527 DEBUG [main-interface-3] [JdbcConnectionEntity] connecting .... 
+    2018-08-22 16:54:03,540 DEBUG [main-interface-3] [JdbcConnectionEntity] .... connected 
+    2018-08-22 16:54:03,545 DEBUG [main-interface-3] [PostgresScanner] schema() [uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresScanner$2@4c9eb8cc][2200][public] 
+    2018-08-22 16:54:03,546 DEBUG [main-interface-3] [PostgresScanner] schema() [uk.ac.roe.wfau.firethorn.meta.jdbc.postgresql.PostgresScanner$2@4c9eb8cc][16386][TAP_SCHEMA_54] 
+    2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcResourceEntity] Scanning for schema [data_iefae6xu6e][public] 
+    2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcResourceEntity] Creating new schema [data_iefae6xu6e][public] 
+    2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchema create(JdbcResource, String, String) 
+    2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcSchemaEntity]   Parent  [55] 
+    2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcSchemaEntity]   Catalog [data_iefae6xu6e] 
+    2018-08-22 16:54:03,546 DEBUG [main-interface-3] [JdbcSchemaEntity]   Schema  [public] 
+    2018-08-22 16:54:03,547 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchemaEntity(JdbcResource, String, String, String) 
+    2018-08-22 16:54:03,547 DEBUG [main-interface-3] [JdbcSchemaEntity]    JdbcResource [TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,547 DEBUG [main-interface-3] [JdbcSchemaEntity]    Catalog [data_iefae6xu6e] 
+    2018-08-22 16:54:03,547 DEBUG [main-interface-3] [JdbcSchemaEntity]    Schema  [public] 
+    2018-08-22 16:54:03,548 DEBUG [main-interface-3] [JdbcSchemaEntity]    Name    [data_iefae6xu6e.public] 
+    2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcResourceEntity] Scanning for schema [data_iefae6xu6e][TAP_SCHEMA_54] 
+    2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcResourceEntity] Creating new schema [data_iefae6xu6e][TAP_SCHEMA_54] 
+    2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchema create(JdbcResource, String, String) 
+    2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcSchemaEntity]   Parent  [55] 
+    2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcSchemaEntity]   Catalog [data_iefae6xu6e] 
+    2018-08-22 16:54:03,597 DEBUG [main-interface-3] [JdbcSchemaEntity]   Schema  [TAP_SCHEMA_54] 
+    2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchemaEntity(JdbcResource, String, String, String) 
+    2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity]    JdbcResource [TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity]    Catalog [data_iefae6xu6e] 
+    2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity]    Schema  [TAP_SCHEMA_54] 
+    2018-08-22 16:54:03,598 DEBUG [main-interface-3] [JdbcSchemaEntity]    Name    [data_iefae6xu6e.TAP_SCHEMA_54] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcConnectionEntity] close [jdbc:postgresql://carolina:5432/data_iefae6xu6E][1] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcConnectionEntity] operator() for [pgsql] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcConnectionEntity] get() [jdbc:postgresql://carolina:5432/data_iefae6xu6E] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcResourceEntity] schemas() scan done for [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcResourceEntity] Matching schemas [2] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [JdbcResourceEntity] Listed but not matched [0] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [BaseComponentEntity] Releasing locks [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [BaseComponentEntity] Found existing lock [55][TAP_RESOURCE_54][2018-08-22T16:54:03.513Z] 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [BaseComponentEntity] Removing .... 
+    2018-08-22 16:54:03,633 DEBUG [main-interface-3] [BaseComponentEntity] Notifying .... 
+    2018-08-22 16:54:03,634 DEBUG [main-interface-3] [JdbcSchemaEntity] JdbcSchema select(JdbcResource, String) 
+    2018-08-22 16:54:03,634 DEBUG [main-interface-3] [JdbcSchemaEntity]   Resource [55][TAP_RESOURCE_54] 
+    2018-08-22 16:54:03,634 DEBUG [main-interface-3] [JdbcSchemaEntity]   Schema   [data_iefae6xu6E.TAP_SCHEMA_54] 
+    2018-08-22 16:54:03,635 DEBUG [main-interface-3] [JdbcSchemaEntity] Unable to locate schema [TAP_RESOURCE_54][data_iefae6xu6E.TAP_SCHEMA_54] 
 
 
 
 
 
-ERROR:root:HTTP Error 404: 
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.5/dist-packages/firethorn_utils/configurator.py", line 127, in create_tap_service
-    response = urllib.request.urlopen(req)
-  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
-    return opener.open(url, data, timeout)
-  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
-    response = meth(req, response)
-  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
-    'http', request, response, code, msg, hdrs)
-  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
-    return self._call_chain(*args)
-  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
-    result = func(*args)
-  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
-    raise HTTPError(req.full_url, code, msg, hdrs, fp)
-urllib.error.HTTPError: HTTP Error 404: 
-TAP Service available at: http://gillian:8080/firethorn/tap/54/
+    ERROR:root:HTTP Error 404: 
+    Traceback (most recent call last):
+      File "/usr/local/lib/python3.5/dist-packages/firethorn_utils/configurator.py", line 127, in create_tap_service
+        response = urllib.request.urlopen(req)
+      File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+        return opener.open(url, data, timeout)
+      File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+        response = meth(req, response)
+      File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+        'http', request, response, code, msg, hdrs)
+      File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+        return self._call_chain(*args)
+      File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+        result = func(*args)
+      File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+        raise HTTPError(req.full_url, code, msg, hdrs, fp)
+    urllib.error.HTTPError: HTTP Error 404: 
+    TAP Service available at: http://gillian:8080/firethorn/tap/54/
 
