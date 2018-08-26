@@ -186,9 +186,9 @@ tapschemajdbcname=$(secret 'firethorn.tapschema.jdbc.name')
 tunneluser=$(secret 'ssh.tunnel.user')
 tunnelhost=$(secret 'ssh.tunnel.host')
 
-admingroup=$(secret 'admingroup')
-adminuser=$(secret 'adminuser')
-adminpass=$(secret 'adminpass')
+admingroup=$(pwgen 20 1)	
+adminuser=$(pwgen 20 1)
+adminpass=$(pwgen 20 1)
 
 adql_query_delay_first=$(secret 'adql.query.delay.first')
  
@@ -302,7 +302,7 @@ EOF
 # -----------------------------------------------------
 
 
- wget https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/docker/tap-deployer.yml  -O  docker-compose.yml
+ wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/20b8901d807c/docker/compose/deploy/tap-deployer.yml  -O  docker-compose.yml
 
 
 
@@ -332,7 +332,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> ft = firethorn.Firethorn(endpoint="http://tap.metagrid.xyz/firethorn")
 >>> ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
 >>> configurator =  configur.Configurator(ft)
->>> configurator.load_resources("https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/firethorn/data/osa-tap.json")
+>>> configurator.load_resources("https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/osa-tap.json")
 
 Importing JDBC Schema: ATLASDR1
 Importing JDBC Schema: ATLASDR2
