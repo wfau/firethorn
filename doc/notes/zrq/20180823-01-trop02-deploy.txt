@@ -20,9 +20,29 @@
 #
 #
 
+
+# -----------------------------------------------------
+# Settings for float3 on trop03 ** edit for float2 on trop02 **
+#[user@trop02]
+
+    newnetname=ens5
+    newaddress=129.215.175.101
+    newmacaddr=52:54:00:00:01:01
+
+    vmname=Acilamwen
+    vmuser=Stevedore
+
+# -----------------------------------------------------
+# Generic settings for the ROE network.
+#[user@trop02]
+
+    roegateway=129.215.175.126
+    roenetwork=129.215.175.0
+    roenetmask=255.255.255.0
+
 # -----------------------------------------------------
 # Create a new VM.
-#[user@trop]
+#[user@trop02]
 
     createvm
 
@@ -31,6 +51,127 @@
         INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
         INFO : Disc name [Acilamwen.qcow]
         INFO : Disc size [16GiB]
+
+
+    vmname=Acilamwen
+    vmuser=Stevedore
+
+# -----------------------------------------------------
+# Login to the new VM and configure the network interface.
+#[user@trop02]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+        cat > /etc/sysconfig/network-scripts/ifcfg-${newnetname:?} << EOF
+NAME=${newnetname:?}
+DEVICE=${newnetname:?}
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=${newmacaddr:?}
+NETWORK=${roenetwork:?}
+NETMASK=${roenetmask:?}
+GATEWAY=${roegateway:?}
+IPADDR=${newaddress}
+EOF
+
+EOSH
+
+#---------------------------------------------------------------------
+# Use virsh to attach an new (virtual) network interface to the VM.
+#[user@trop02]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${newmacaddr:?}" \
+            --live \
+            --config
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}" \
+        | xmllint --xpath '//interface' -
+
+
+# -----------------------------------------------------
+# Login to the VM and initialise the interface.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+        ifup "${newnetname:?}"
+
+EOSH
+
+# -----------------------------------------------------
+# Reboot the new VM to force an update of the routing tables.
+# We should be able to avoid this .. but for now ..
+#[user@trop03]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        reboot "${vmname:?}"
+
+# -----------------------------------------------------
+# Login to the VM and run Apache test container.
+#[user@trop03]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        docker run -p 80:80 -d yrvafhom/docker-demo
+
+EOSH
+
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@desktop]
+
+    ssh -q trop01 'curl --silent --head http://129.215.175.101/'
+    ssh -q trop02 'curl --silent --head http://129.215.175.101/'
+    ssh -q trop03 'curl --silent --head http://129.215.175.101/'
+    ssh -q trop04 'curl --silent --head http://129.215.175.101/'
+    PASS
+
+    ssh -q shep 'curl --silent --head http://129.215.175.101/'
+    PASS
+
+    curl  --silent --head http://129.215.175.101/
+    FAIL
+
+    ssh -q data 'curl --silent --head http://129.215.175.101/'
+    FAIL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # -----------------------------------------------------
 # Login as Stevedore
@@ -79,6 +220,14 @@ EOF
         bash
 
 # -----------------------------------------------------
+# Install DNS lookup tools.
+#[root@container]
+#
+#        dnf install \
+#            --assumeyes \
+#            bind-utils
+#
+# -----------------------------------------------------
 # Install the Apache server.
 #[root@container]
 
@@ -100,7 +249,9 @@ EOF
                          : web server.
 
 
-        dnf install httpd
+        dnf install \
+            --assumeyes \
+            httpd
 
             ....
             ....
@@ -128,8 +279,75 @@ EOF
         proxy_wstunnel_module (shared)
         proxy_http2_module (shared)
 
+# -----------------------------------------------------
+# Add our virtual-host/proxy config file.
+# https://httpd.apache.org/docs/2.4/vhosts/examples.html
+# https://httpd.apache.org/docs/2.4/mod/mod_proxy.html
+#[root@container]
 
+globalname=tap.roe.ac.uk
+servername=tap.roe.ac.uk
+serveralias=tap.metagrid.xyz
+serveradmin=tap-admin@metagrid.xyz
 
+proxyhost=siamond
+proxyident=54
+
+cat > /etc/httpd/conf.d/${servername:?}.conf << EOF
+
+ServerName ${globalname:?}
+
+<VirtualHost *:80>
+
+    ServerName  ${servername:?}
+    ServerAlias ${serveralias:?}
+    ServerAdmin ${serveradmin:?}
+
+    ErrorLog  logs/${servername:?}-error.log
+    CustomLog logs/${servername:?}-access.log combined
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+
+    ## PROXY ENTRIES HERE ##
+    ProxyPassMatch    ^/osa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
+    ProxyPassReverse  ^/osa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
+
+    ProxyPassMatch    ^/ssa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
+    ProxyPassReverse  ^/ssa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
+
+    ProxyPassMatch    ^/vsa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
+    ProxyPassReverse  ^/vsa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
+
+    ProxyPassMatch    ^/wsa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
+    ProxyPassReverse  ^/wsa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
+    ## PROXY ENTRIES DONE ##
+
+</VirtualHost>
+EOF
+
+# -----------------------------------------------------
+# Test virtual-host/proxy config file.
+#[root@container]
+
+    apachectl -t
+
+        [Wed Aug 29 12:37:04.518817 2018] [core:warn] [pid 99:tid 140365554452736] AH00111: Config variable ${APACHE_LOG_DIR} is not defined
+        [Wed Aug 29 12:37:04.518916 2018] [core:warn] [pid 99:tid 140365554452736] AH00111: Config variable ${APACHE_LOG_DIR} is not defined
+        AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.2. Set the 'ServerName' directive globally to suppress this message
+        (2)No such file or directory: AH02291: Cannot access directory '/etc/httpd/${APACHE_LOG_DIR}/' for error log of vhost defined at /etc/httpd/conf.d/tap.roe.ac.uk.conf:1
+        AH00014: Configuration check failed
+
+# -----------------------------------------------------
+# Run the Apache service in the foreground.
+#[root@container]
+
+    httpd -D FOREGROUND
 
 
 

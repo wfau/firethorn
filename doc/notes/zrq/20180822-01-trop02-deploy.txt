@@ -19,7 +19,7 @@
 # </meta:header>
 #
 #
-    
+
     Delete all the virtual machines
     Reboot the physical machine
     Create a new set of virtual machines
@@ -29,7 +29,7 @@
         Install Apache proxy
 
     Test using metagrid DNS entry
-    
+
     Move the external floating IP address from trop01 to trop02.
     Test using roe DNS entry
 
@@ -58,7 +58,7 @@
         --connect "${connection}" \
         list \
     | sed 's/.*\([0-9]\{1,\}\) *\([a-zA-Z]\{1,\}\) *\([a-z]\{1,\}\).*/\2/' \
-    | tee vm-list.txt
+    | sort | tee vm-list.txt
 
 # -----------------------------------------------------
 # Delete the existing VMs.
@@ -104,15 +104,11 @@
 
     mkdir "${HOME:?}/bin"
     cat > "${HOME:?}/bin/secret" << 'EOF'
-secret()
-    {
-    local key=${1:?}
-    local server='dave@shepseskaf.roe.ac.uk'
-    ssh -o 'VisualHostKey=no' "${server:?}" "bin/secret \"${key:?}\""
-    }
+secretsource='dave@shepseskaf.roe.ac.uk'
+
 if [ -n "${1}" ]
 then
-    secret "${1}"
+    ssh -o 'VisualHostKey=no' "${secretsource:?}" "bin/secret \"${1:?}\""
 fi
 EOF
 
@@ -177,7 +173,7 @@ EOF
 # Download the latest version of our compose file.
 #[user@virtual]
 
-    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tap-deployer.yml'
+    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/deploy/tap-deployer.yml'
 
 # -----------------------------------------------------
 # Start our containers ...
@@ -232,7 +228,7 @@ configurator.load_resources(
 
 #
 # Get the Atlas AdqlResource from our Configurator.
-# 
+#
 resource = firethorn.firethorn_engine.select_adql_resources()[0]
 
 #
@@ -277,7 +273,7 @@ for schema in resource.select_schemas():
             schema.name(),
             table.name()
             )
-        query_obj = workspace.create_query(
+        query_obj = resource.create_query(
             query_str,
             "COMPLETED",
             None,
@@ -287,7 +283,6 @@ for schema in resource.select_schemas():
         py_table.pprint()
 
 
-
 # -----------------------------------------------------
 # Separate shell to monitor the logs
 #[user@trop]
@@ -295,9 +290,9 @@ for schema in resource.select_schemas():
     ssh Siamond
 
         sudo -s
-        
+
             container=stevedore_gillian_1
-            
+
             pushd $(
                 docker inspect \
                     "${container:?}" \
