@@ -135,32 +135,49 @@ EOSH
 # Test we can access the web server from outside the ROE network.
 #[user@desktop]
 
-    ssh -q trop01 'curl --silent --head http://129.215.175.101/'
-    ssh -q trop02 'curl --silent --head http://129.215.175.101/'
-    ssh -q trop03 'curl --silent --head http://129.215.175.101/'
-    ssh -q trop04 'curl --silent --head http://129.215.175.101/'
+    ssh -q trop01 'curl --head http://129.215.175.101/'
+    ssh -q trop02 'curl --head http://129.215.175.101/'
+    ssh -q trop03 'curl --head http://129.215.175.101/'
+    ssh -q trop04 'curl --head http://129.215.175.101/'
     PASS
 
-    ssh -q shep 'curl --silent --head http://129.215.175.101/'
+    ssh -q shep 'curl --head http://129.215.175.101/'
     PASS
 
-    curl  --silent --head http://129.215.175.101/
+    ssh -q data 'curl --head http://129.215.175.101/'
     FAIL
 
-    ssh -q data 'curl --silent --head http://129.215.175.101/'
+    curl  --head http://129.215.175.101/
     FAIL
 
 
+# -----------------------------------------------------
+# Compare settings on trop01 and trop02
+#[user@desktop]
 
+    pushd $(mktemp -d)
 
+        scp root@trop01:/var/lib/iptables/active trop01-active.txt
+        scp root@trop02:/var/lib/iptables/active trop02-active.txt
 
+            diff trop01-active.txt trop02-active.txt
+            meld trop01-active.txt trop02-active.txt
 
+        ssh -q root@trop01 iptables -L -n > trop01-iptables.txt
+        ssh -q root@trop02 iptables -L -n > trop02-iptables.txt
 
+            diff trop01-iptables.txt trop02-iptables.txt
+            meld trop01-iptables.txt trop02-iptables.txt
 
+        ssh -q root@trop01 sysctl --all --pattern 'net.bridge' > trop01-net.bridge.txt
+        ssh -q root@trop02 sysctl --all --pattern 'net.bridge' > trop02-net.bridge.txt
 
+            diff trop01-net.bridge.txt trop02-net.bridge.txt
 
+        ssh -q root@trop01 sysctl --all --pattern 'net.ipv4.ip_forward' > trop01-net.forward.txt
+        ssh -q root@trop02 sysctl --all --pattern 'net.ipv4.ip_forward' > trop02-net.forward.txt
 
-
+            diff trop01-net.forward.txt trop02-net.forward.txt
 
 
 
