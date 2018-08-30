@@ -103,7 +103,7 @@ EOSH
 
 # -----------------------------------------------------
 # Login to the VM and initialise the interface.
-#[user@trop03]
+#[user@trop02]
 
     ssh ${vmuser:?}@${vmname:?} << EOSH
 
@@ -122,17 +122,15 @@ EOSH
         reboot "${vmname:?}"
 
 # -----------------------------------------------------
-# Login to the VM and run Apache test container.
+# Login to the VM and run an Apache test container.
 #[user@trop03]
 
-    ssh ${vmuser:?}@${vmname:?} << EOSH
-
+    ssh ${vmuser:?}@${vmname:?} \
         docker run -p 80:80 -d yrvafhom/docker-demo
 
-EOSH
-
 # -----------------------------------------------------
-# Test we can access the web server from outside the ROE network.
+# -----------------------------------------------------
+# Test we can access the web server from inside the ROE network.
 #[user@desktop]
 
     ssh -q trop01 'curl --head http://129.215.175.101/'
@@ -143,6 +141,11 @@ EOSH
 
     ssh -q shep 'curl --head http://129.215.175.101/'
     PASS
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@desktop]
 
     ssh -q data 'curl --head http://129.215.175.101/'
     FAIL
@@ -182,14 +185,12 @@ EOSH
 
 
 
+*****************
+** The rest is redundant if we can't reach the VM from the outside ...
+*****************
 
 
-
-
-
-
-
-
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Login as Stevedore
 #[user@trop]
