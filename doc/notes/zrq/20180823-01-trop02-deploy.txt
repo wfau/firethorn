@@ -22,7 +22,7 @@
 
 
 # -----------------------------------------------------
-# Settings for float3 on trop03 ** edit for float2 on trop02 **
+# Settings for float2 on trop02
 #[user@trop02]
 
     newnetname=ens5
@@ -30,6 +30,18 @@
     newmacaddr=52:54:00:00:01:01
 
     vmname=Acilamwen
+    vmuser=Stevedore
+
+
+# -----------------------------------------------------
+# Settings for float3 on trop03
+#[user@trop02]
+
+    newnetname=ens5
+    newaddress=129.215.175.102
+    newmacaddr=52:54:00:00:01:02
+
+    vmname=Umiawyth
     vmuser=Stevedore
 
 # -----------------------------------------------------
@@ -142,15 +154,27 @@ EOSH
     ssh -q shep 'curl --head http://129.215.175.101/'
     PASS
 
+    ssh -q trop01 'curl --head http://129.215.175.102/'
+    ssh -q trop02 'curl --head http://129.215.175.102/'
+    ssh -q trop03 'curl --head http://129.215.175.102/'
+    ssh -q trop04 'curl --head http://129.215.175.102/'
+    PASS
+
+    ssh -q shep 'curl --head http://129.215.175.102/'
+    PASS
+
 # -----------------------------------------------------
 # -----------------------------------------------------
 # Test we can access the web server from outside the ROE network.
 #[user@desktop]
 
+    ssh -q data 'curl --head http://129.215.175.100/'
     ssh -q data 'curl --head http://129.215.175.101/'
+    ssh -q data 'curl --head http://129.215.175.102/'
     FAIL
 
     curl  --head http://129.215.175.101/
+    curl  --head http://129.215.175.102/
     FAIL
 
 
