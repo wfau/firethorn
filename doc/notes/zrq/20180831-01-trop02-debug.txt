@@ -1,0 +1,629 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Settings for float2 on trop02
+#[user@trop02]
+
+    newnetname=ens5
+    newaddress=129.215.175.101
+    newmacaddr=52:54:00:00:01:01
+
+    vmname=Acilamwen
+    vmuser=Stevedore
+
+# -----------------------------------------------------
+# Settings for float3 on trop03
+#[user@trop03]
+
+    newnetname=ens5
+    newaddress=129.215.175.102
+    newmacaddr=52:54:00:00:01:02
+
+    vmname=Umiawyth
+    vmuser=Stevedore
+    vmuser=root
+
+# -----------------------------------------------------
+# Generic settings for the ROE network.
+#[user@trop03]
+
+    roegateway=129.215.175.126
+    roenetwork=129.215.175.0
+    roenetmask=255.255.255.0
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop03]
+
+    createvm
+
+        INFO : Node name [Umiawyth]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [Umiawyth.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to the new VM and configure the network interface.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
+
+        sudo -s
+        cat > /etc/sysconfig/network-scripts/ifcfg-${newnetname:?} << EOF
+NAME=${newnetname:?}
+DEVICE=${newnetname:?}
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=${newmacaddr:?}
+NETWORK=${roenetwork:?}
+NETMASK=${roenetmask:?}
+GATEWAY=${roegateway:?}
+IPADDR=${newaddress}
+EOF
+
+EOSH
+
+#---------------------------------------------------------------------
+# Use virsh to attach an new (virtual) network interface to the VM.
+#[user@trop02]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c "${connection:?}" \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${newmacaddr:?}" \
+            --live \
+            --config
+
+    virsh -c "${connection:?}" \
+        dumpxml \
+            "${vmname:?}" \
+        | xmllint --xpath '//interface' -
+
+
+# -----------------------------------------------------
+# Login to the VM and initialise the interface.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
+
+        sudo -s
+        ifup "${newnetname:?}"
+
+EOSH
+
+# -----------------------------------------------------
+# Reboot the new VM to force an update of the routing tables.
+# We should be able to avoid this .. but for now ..
+#[user@trop03]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c "${connection:?}" \
+        reboot "${vmname:?}"
+
+# -----------------------------------------------------
+# Login to the VM and run an Apache test container.
+#[user@trop03]
+
+    ssh "${vmuser:?}@${vmname:?}" \
+        docker run -p 80:80 -d yrvafhom/docker-demo
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from inside the ROE network.
+#[user@desktop]
+
+    ssh -q trop01 'curl --head http://129.215.175.102/'
+    ssh -q trop02 'curl --head http://129.215.175.102/'
+    ssh -q trop03 'curl --head http://129.215.175.102/'
+    ssh -q trop04 'curl --head http://129.215.175.102/'
+    => PASS
+
+    ssh -q shep 'curl --head http://129.215.175.102/'
+    => PASS
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@desktop]
+
+    ssh -q data 'curl --head http://129.215.175.102/'
+    => PASS
+
+    curl  --head http://129.215.175.102/
+    => PASS
+
+# -----------------------------------------------------
+# Difference is in the virtual machines.
+#
+
+    > fedora-25-docker-16G-20170713.qcow
+    => PASS
+
+    > fedora-28-docker-base-20180708.qcow
+    => FAIL
+
+# -----------------------------------------------------
+# Compare settings on the virtual machines.
+#[user@desktop]
+
+    command="cat /etc/redhat-release"
+
+    vmuser=root
+    vmname=Umiawyth
+    vmsudo=
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > Fedora release 25 (Twenty Five)
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+    vmsudo=sudo
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > Fedora release 28 (Twenty Eight)
+
+# -----------------------------------------------------
+# Compare settings on the virtual machines.
+#[user@desktop]
+
+    command="ifconfig ens5"
+
+    vmuser=root
+    vmname=Umiawyth
+    vmsudo=
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        >     inet 129.215.175.102  netmask 255.255.255.0  broadcast 129.215.175.255
+        >     inet6 fe80::5054:ff:fe00:102  prefixlen 64  scopeid 0x20<link>
+        >     ether 52:54:00:00:01:02  txqueuelen 1000  (Ethernet)
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+    vmsudo=sudo
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        >     inet 129.215.175.101  netmask 255.255.255.0  broadcast 129.215.175.255
+        >     inet6 fe80::5054:ff:fe00:101  prefixlen 64  scopeid 0x20<link>
+        >     ether 52:54:00:00:01:01  txqueuelen 1000  (Ethernet)
+
+# -----------------------------------------------------
+# Compare settings on the virtual machines.
+#[user@desktop]
+
+    command="ip route"
+
+    vmuser=root
+    vmname=Umiawyth
+    vmsudo=
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > default via 129.215.175.126 dev ens5 proto static metric 100
+        > default via 192.168.203.1 dev ens3 proto static metric 101
+        > 129.215.175.0/24 dev ens5 proto kernel scope link src 129.215.175.102 metric 100
+        > 172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1
+        > 192.168.203.0/24 dev ens3 proto kernel scope link src 192.168.203.8 metric 100
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+    vmsudo=sudo
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > default via 192.168.202.1 dev ens3 proto dhcp metric 100
+        > default via 129.215.175.126 dev ens5 proto static metric 101
+        > 129.215.175.0/24 dev ens5 proto kernel scope link src 129.215.175.101 metric 101
+        > 172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1
+        > 192.168.202.0/24 dev ens3 proto kernel scope link src 192.168.202.15 metric 100
+
+    Default routes are swapped
+
+        > default via 129.215.175.126 dev ens5 proto static metric 100
+        > default via 192.168.203.1 dev ens3 proto static metric 101
+        => PASS
+
+        > default via 192.168.202.1 dev ens3 proto dhcp metric 100
+        > default via 129.215.175.126 dev ens5 proto static metric 101
+        => FAIL
+
+
+# -----------------------------------------------------
+# Compare settings on the virtual machines.
+#[user@desktop]
+
+    command="cat /etc/sysconfig/network-scripts/ifcfg-ens5"
+    vmuser=root
+    vmname=Umiawyth
+    vmsudo=
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > NAME=ens5
+        > DEVICE=ens5
+        > ONBOOT=yes
+        > TYPE=Ethernet
+        > BOOTPROTO=static
+        > IPV4INIT=yes
+        > IPV6INIT=yes
+        > HWADDR=52:54:00:00:01:02
+        > NETWORK=129.215.175.0
+        > NETMASK=255.255.255.0
+        > GATEWAY=129.215.175.126
+        > IPADDR=129.215.175.102
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+    vmsudo=sudo
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > NAME=ens5
+        > DEVICE=ens5
+        > ONBOOT=yes
+        > TYPE=Ethernet
+        > BOOTPROTO=static
+        > IPV4INIT=yes
+        > IPV6INIT=yes
+        > HWADDR=52:54:00:00:01:01
+        > NETWORK=129.215.175.0
+        > NETMASK=255.255.255.0
+        > GATEWAY=129.215.175.126
+        > IPADDR=129.215.175.101
+
+# -----------------------------------------------------
+# Compare settings on the virtual machines.
+#[user@desktop]
+
+    command="cat /etc/sysconfig/network-scripts/ifcfg-ens3"
+    vmuser=root
+    vmname=Umiawyth
+    vmsudo=
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > UUID="cd0888e1-4c1c-431d-a224-cab4cfa59f2f"
+        > IPV6INIT="yes"
+        > IPV6_AUTOCONF="yes"
+        > BOOTPROTO="dhcp"
+        > ONBOOT="yes"
+        > DEVICE="ens3"
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+    vmsudo=sudo
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > BOOTPROTO=dhcp
+        > DEVICE=ens3
+        > HWADDR=52:54:00:02:02:0f
+        > ONBOOT=yes
+        > TYPE=Ethernet
+        > USERCTL=no
+
+# -----------------------------------------------------
+# Compare settings on the virtual machines.
+#[user@desktop]
+
+    command="route"
+    vmuser=root
+    vmname=Umiawyth
+    vmsudo=
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > Kernel IP routing table
+        > Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        > default         vlan175.acf2.ne 0.0.0.0         UG    100    0        0 ens5
+        > default         gateway         0.0.0.0         UG    101    0        0 ens3
+        > 129.215.175.0   0.0.0.0         255.255.255.0   U     100    0        0 ens5
+        > 172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
+        > 192.168.203.0   0.0.0.0         255.255.255.0   U     100    0        0 ens3
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+    vmsudo=sudo
+
+    ssh "${vmuser:?}@${vmname:?}" "${vmsudo} ${command}"
+
+        > Kernel IP routing table
+        > Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        > default         _gateway        0.0.0.0         UG    100    0        0 ens3
+        > default         vlan175.acf2.ne 0.0.0.0         UG    101    0        0 ens5
+        > 129.215.175.0   0.0.0.0         255.255.255.0   U     101    0        0 ens5
+        > 172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
+        > 192.168.202.0   0.0.0.0         255.255.255.0   U     100    0        0 ens3
+
+    Default routes are swapped
+
+        > default         vlan175.acf2.ne 0.0.0.0         UG    100    0        0 ens5
+        > default         gateway         0.0.0.0         UG    101    0        0 ens3
+        => PASS
+
+        > default         _gateway        0.0.0.0         UG    100    0        0 ens3
+        > default         vlan175.acf2.ne 0.0.0.0         UG    101    0        0 ens5
+        => FAIL
+
+# -----------------------------------------------------
+# Solve the conflicting default routes.
+# https://access.redhat.com/sites/default/files/attachments/rh_ip_command_cheatsheet_1214_jcs_print.pdf
+# https://ask.fedoraproject.org/en/question/87740/how-to-change-metric-of-default-route/
+# https://baturin.org/docs/iproute2/#Route%20management
+#[user@desktop]
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+        sudo -s
+
+            ip route | grep '^default'
+
+                > default via 192.168.202.1 dev ens3 proto dhcp metric 100
+                > default via 129.215.175.126 dev ens5 proto static metric 101
+
+            internal=$(
+                ip route | sed -n '
+                    s/^default via \(192.168[0-9.]*\).*/\1/p
+                    '
+                )
+
+            external=129.215.175.126
+
+            echo "internal [${internal}]"
+            echo "external [${external}]"
+
+            ip route replace default dev ens3 via ${internal} metric 101
+            ip route replace default dev ens5 via ${external} metric 100
+
+            ip route | grep '^default'
+
+                > default via 129.215.175.126 dev ens5 metric 100
+                > default via 192.168.202.1 dev ens3 metric 101
+
+            exit
+        exit
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from inside the ROE network.
+#[user@desktop]
+
+    ssh -q trop01 'curl --head http://129.215.175.101/'
+    ssh -q trop02 'curl --head http://129.215.175.101/'
+    ssh -q trop03 'curl --head http://129.215.175.101/'
+    ssh -q trop04 'curl --head http://129.215.175.101/'
+    => PASS
+
+    ssh -q shep 'curl --head http://129.215.175.101/'
+    => PASS
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@desktop]
+
+    curl  --head http://129.215.175.101/
+    => PASS
+
+    ssh -q data 'curl --head http://129.215.175.101/'
+    => PASS
+
+# -----------------------------------------------------
+# Check if the default route settings survive a reboot.
+# Answer - nope
+#[user@desktop]
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+        ip route | grep '^default'
+
+            > default via 129.215.175.126 dev ens5 metric 100
+            > default via 192.168.202.1 dev ens3 metric 101
+
+        sudo reboot
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+        ip route | grep '^default'
+
+            > default via 192.168.202.1 dev ens3 proto dhcp metric 100
+            > default via 129.215.175.126 dev ens5 proto static metric 101
+
+        exit
+
+# -----------------------------------------------------
+# Try preventing the internal link from adding a default route.
+# ifcfg-ens3 DEFROUTE=no
+# https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s1-networkscripts-static-routes
+# https://www.thegeekdiary.com/understanding-the-network-interface-configuration-file-etc-sysconfig-network-scripts-ifcfg-eth/
+#[user@desktop]
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+        ip route | grep '^default'
+
+            > default via 192.168.202.1 dev ens3 proto dhcp metric 100
+            > default via 129.215.175.126 dev ens5 proto static metric 101
+
+        sudo -s
+
+            echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-ens3
+
+            reboot
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+        ip route | grep '^default'
+
+            > default via 129.215.175.126 dev ens5 proto static metric 100
+
+        exit
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Login to the VM and run an Apache test container.
+#[user@trop03]
+
+    ssh "${vmuser:?}@${vmname:?}" \
+        docker run -p 80:80 -d yrvafhom/docker-demo
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from inside the ROE network.
+#[user@desktop]
+
+    ssh -q trop01 'curl --head http://129.215.175.101/'
+    ssh -q trop02 'curl --head http://129.215.175.101/'
+    ssh -q trop03 'curl --head http://129.215.175.101/'
+    ssh -q trop04 'curl --head http://129.215.175.101/'
+    => PASS
+
+    ssh -q shep 'curl --head http://129.215.175.101/'
+    => PASS
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@desktop]
+
+    curl  --head http://129.215.175.101/
+    => PASS
+
+    ssh -q data 'curl --head http://129.215.175.101/'
+    => PASS
+
+#
+# Ok, that works, but we need to remember to remove it when we remove or shutdown the external interface.
+#
+
+
+
+# -----------------------------------------------------
+# Alternative - define the default route device.
+# network GATEWAYDEV=ens5
+# https://ask.fedoraproject.org/en/question/116224/default-route-magically-disappears/?answer=116234#post-id-116234
+#[user@desktop]
+
+    vmuser=Stevedore
+    vmname=Acilamwen
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+        ip route | grep '^default'
+
+            > default via 129.215.175.126 dev ens5 proto static metric 100
+
+        sudo -s
+
+            sed -i '
+                /^DEFROUTE/d
+                ' /etc/sysconfig/network-scripts/ifcfg-ens3
+
+            reboot
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+        ip route | grep '^default'
+
+            > default via 192.168.202.1 dev ens3 proto dhcp metric 100
+            > default via 129.215.175.126 dev ens5 proto static metric 101
+
+        sudo -s
+
+            echo "GATEWAYDEV=ens5" >> /etc/sysconfig/network
+
+            reboot
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+        ip route | grep '^default'
+
+            > default via 129.215.175.126 dev ens5 proto static metric 100
+
+        exit
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Login to the VM and run an Apache test container.
+#[user@trop03]
+
+    ssh "${vmuser:?}@${vmname:?}" \
+        docker run -p 80:80 -d yrvafhom/docker-demo
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from inside the ROE network.
+#[user@desktop]
+
+    ssh -q trop01 'curl --head http://129.215.175.101/'
+    ssh -q trop02 'curl --head http://129.215.175.101/'
+    ssh -q trop03 'curl --head http://129.215.175.101/'
+    ssh -q trop04 'curl --head http://129.215.175.101/'
+    => PASS
+
+    ssh -q shep 'curl --head http://129.215.175.101/'
+    => PASS
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@desktop]
+
+    curl  --head http://129.215.175.101/
+    => PASS
+
+    ssh -q data 'curl --head http://129.215.175.101/'
+    => PASS
+
+
+#
+# Ok, that works too.
+# Possibly a nicer form, because we don't modify the config for the internal interface.
+#
+
+
+
+
+
