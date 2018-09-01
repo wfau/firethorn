@@ -1,0 +1,10 @@
+#!/bin/sh
+# Based on example from the official httpd Docker container.
+# https://github.com/docker-library/httpd/blob/master/2.4/httpd-foreground
+set -e
+
+# Remove any existing PID file
+rm -f /var/run/httpd/httpd.pid
+
+exec httpd -D FOREGROUND
+

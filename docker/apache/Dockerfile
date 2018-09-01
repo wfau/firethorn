@@ -1,35 +1,43 @@
-FROM firethorn/pythonlibs
-MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
+#
+# Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+# All rights reserved.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Based on example from the official httpd Docker container.
+# https://github.com/docker-library/httpd/blob/master/2.4/Dockerfile
+FROM firethorn/fedora:2.1.25
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-RUN apt-get -y update
-RUN apt-get -y upgrade
+#
+# Install Apache web server
+RUN dnf -y install httpd
 
-# Install apache, PHP, and supplimentary programs.
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 curl libapache2-mod-proxy-html 
-# Enable apache mods.
-RUN a2enmod rewrite
+#
+# Install our startup script.
+COPY bin/httpd-foreground /usr/local/bin/
+RUN chmod a+x /usr/local/bin/httpd-foreground
 
+#
+# Install our template config.
+COPY cfg/proxy-template /etc/httpd/conf.d/
 
-RUN a2enmod proxy
-RUN a2enmod proxy_http
-
-
-RUN apt-get -y install libapache2-mod-wsgi
-RUN a2enmod wsgi
-
-
-# Manually set up the apache environment variables
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_LOG_DIR /var/log/apache2
-ENV APACHE_LOCK_DIR /var/lock/apache2
-ENV APACHE_PID_FILE /var/run/apache2.pid
-ENV TERM xterm
-
+#
+# Expose the HTTP port
 EXPOSE 80
 
-# Update the default apache site with the config we created.
-ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
+#
+# Call our startup script.
+CMD ["/usr/local/bin/httpd-foreground"]
 
-# By default, simply start apache.
-CMD /usr/sbin/apache2ctl -D FOREGROUND

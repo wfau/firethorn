@@ -30,6 +30,16 @@ services:
         depends_on:
             - java
 
+    apache:
+        image:
+            "firethorn/apache:${buildtag}"
+        labels:
+            uk.ac.roe.firethorn.buildtag: "${buildtag}"
+        build:
+            context: '../apache'
+        depends_on:
+            - fedora
+
     sql-proxy:
         image:
             "firethorn/sql-proxy:${buildtag}"

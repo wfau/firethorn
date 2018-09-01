@@ -145,22 +145,22 @@ EOSH
 # Test we can access the web server from inside the ROE network.
 #[user@desktop]
 
-    ssh -q trop01 'curl --head http://129.215.175.101/'
-    ssh -q trop02 'curl --head http://129.215.175.101/'
-    ssh -q trop03 'curl --head http://129.215.175.101/'
-    ssh -q trop04 'curl --head http://129.215.175.101/'
+    ssh -q trop01 'curl --silent --show-error --head http://129.215.175.101/'
+    ssh -q trop02 'curl --silent --show-error --head http://129.215.175.101/'
+    ssh -q trop03 'curl --silent --show-error --head http://129.215.175.101/'
+    ssh -q trop04 'curl --silent --show-error --head http://129.215.175.101/'
     PASS
 
-    ssh -q shep 'curl --head http://129.215.175.101/'
+    ssh -q shep 'curl --silent --show-error --head http://129.215.175.101/'
     PASS
 
-    ssh -q trop01 'curl --head http://129.215.175.102/'
-    ssh -q trop02 'curl --head http://129.215.175.102/'
-    ssh -q trop03 'curl --head http://129.215.175.102/'
-    ssh -q trop04 'curl --head http://129.215.175.102/'
+    ssh -q trop01 'curl --silent --show-error --head http://129.215.175.102/'
+    ssh -q trop02 'curl --silent --show-error --head http://129.215.175.102/'
+    ssh -q trop03 'curl --silent --show-error --head http://129.215.175.102/'
+    ssh -q trop04 'curl --silent --show-error --head http://129.215.175.102/'
     PASS
 
-    ssh -q shep 'curl --head http://129.215.175.102/'
+    ssh -q shep 'curl --silent --show-error --head http://129.215.175.102/'
     PASS
 
 # -----------------------------------------------------
@@ -168,13 +168,13 @@ EOSH
 # Test we can access the web server from outside the ROE network.
 #[user@desktop]
 
-    ssh -q data 'curl --head http://129.215.175.100/'
-    ssh -q data 'curl --head http://129.215.175.101/'
-    ssh -q data 'curl --head http://129.215.175.102/'
+    ssh -q data 'curl --silent --show-error --head http://129.215.175.100/'
+    ssh -q data 'curl --silent --show-error --head http://129.215.175.101/'
+    ssh -q data 'curl --silent --show-error --head http://129.215.175.102/'
     FAIL
 
-    curl  --head http://129.215.175.101/
-    curl  --head http://129.215.175.102/
+    curl --silent --show-error --head http://129.215.175.101/
+    curl --silent --show-error --head http://129.215.175.102/
     FAIL
 
 

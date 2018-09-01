@@ -1,0 +1,244 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Settings for float2 on trop02
+#[user@trop02]
+
+    newnetname=ens5
+    newaddress=129.215.175.101
+    newmacaddr=52:54:00:00:01:01
+
+    vmname=Acilamwen
+    vmuser=Stevedore
+
+# -----------------------------------------------------
+# Generic settings for the ROE network.
+#[user@trop02]
+
+    roegateway=129.215.175.126
+    roenetwork=129.215.175.0
+    roenetmask=255.255.255.0
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop02]
+
+    createvm
+
+        INFO : Node name [Acilamwen]
+        INFO : Base name [fedora-28-docker-base-20180708.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+        INFO : Disc name [Acilamwen.qcow]
+        INFO : Disc size [16GiB]
+
+
+    vmname=Acilamwen
+    vmuser=Stevedore
+
+# -----------------------------------------------------
+# Login to the new VM and configure the network interface.
+#[user@trop02]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+
+        cat > /etc/sysconfig/network-scripts/ifcfg-${newnetname:?} << EOF
+NAME=${newnetname:?}
+DEVICE=${newnetname:?}
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=${newmacaddr:?}
+NETWORK=${roenetwork:?}
+NETMASK=${roenetmask:?}
+GATEWAY=${roegateway:?}
+IPADDR=${newaddress}
+EOF
+
+        cat >> /etc/sysconfig/network << EOF
+GATEWAYDEV=${newnetname:?}
+EOF
+
+EOSH
+
+#---------------------------------------------------------------------
+# Use virsh to attach an new (virtual) network interface to the VM.
+#[user@trop02]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${newmacaddr:?}" \
+            --live \
+            --config
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}" \
+        | xmllint --xpath '//interface' -
+
+
+# -----------------------------------------------------
+# Login to the VM and initialise the interface.
+#[user@trop02]
+
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+        ifup "${newnetname:?}"
+
+EOSH
+
+# -----------------------------------------------------
+# Reboot the new VM to force an update of the routing tables.
+# We should be able to avoid this .. but for now ..
+#[user@trop02]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        reboot "${vmname:?}"
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Login to the VM.
+#[user@trop02]
+
+    ssh ${vmuser:?}@${vmname:?}
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+        mkdir "${HOME:?}/bin"
+        cat > "${HOME:?}/bin/secret" << 'EOF'
+secret()
+    {
+    local key=${1:?}
+    local server='dave@shepseskaf.roe.ac.uk'
+    ssh -o 'VisualHostKey=no' "${server:?}" "bin/secret \"${key:?}\""
+    }
+if [ -n "${1}" ]
+then
+    secret "${1}"
+fi
+EOF
+        chmod u+x "${HOME:?}/bin/secret"
+        secret 'frog'
+
+# -----------------------------------------------------
+# Set the target version.
+#[user@virtual]
+
+        export buildtag=2.1.25
+
+# -----------------------------------------------------
+# Deploy our Apache container.
+#[user@virtual]
+
+        docker run \
+            --detach \
+            --name 'apache' \
+            --publish '80:80' \
+            "firethorn/apache:${buildtag}"
+
+# -----------------------------------------------------
+# Use the proxy template to create our proxy config.
+#[user@virtual]
+
+        globalname=tap.roe.ac.uk
+        servername=tap.roe.ac.uk
+        serveralias=tap.metagrid.xyz
+        serveradmin=tap-admin@metagrid.xyz
+        confname=${servername:?}.conf
+
+        osahost=siamond
+        osaident=54
+
+        #
+        # Extract a copy of the template.
+        docker cp \
+            'apache:/etc/httpd/conf.d/proxy-template' \
+            "${confname:?}"
+
+        #
+        # Fill in the global values.
+        sed -i "
+            s/{globalname}/${globalname:?}/
+            s/{servername}/${servername:?}/
+            s/{serveralias}/${serveralias:?}/
+            s/{serveradmin}/${serveradmin:?}/
+            " "${confname:?}"
+
+        #
+        # Fill in the OSA values.
+        sed -i "
+            /PROXY ENTRIES HERE/,/PROXY ENTRIES DONE/ {
+                /osa/ {
+                    s/#\(Proxy\)/\1/
+                    s/{targethost}/${osahost:?}/
+                    s/{targetident}/${osaident:?}/
+                    }
+                }
+            " "${confname:?}"
+
+        #
+        # Install the config file.
+        docker cp \
+            "${confname:?}" \
+            "apache:/etc/httpd/conf.d/${confname:?}"
+
+        #
+        # Send Apache the 'reload' signal.
+        docker kill --signal 'USR1' 'apache'
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from inside the ROE network.
+#[user@desktop]
+
+    ssh -q trop01 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
+    ssh -q trop02 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
+    ssh -q trop03 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
+    ssh -q trop04 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
+    => PASS
+
+    ssh -q shep 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
+    => PASS
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@desktop]
+
+    ssh -q data 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
+    => PASS
+
+
