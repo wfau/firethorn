@@ -117,7 +117,7 @@ EOSH
 EOSH
 
 # -----------------------------------------------------
-# Reboot the new VM to force an update of the routing tables.
+# Reboot the new VM to force an update.
 # We should be able to avoid this .. but for now ..
 #[user@trop02]
 
@@ -178,11 +178,11 @@ EOF
         serveradmin=tap-admin@metagrid.xyz
         confname=${servername:?}.conf
 
-        osahost=siamond
-        osaident=54
+        firehost=siamond
+        tapident=54
 
         #
-        # Extract a copy of the template.
+        # Extract a copy of the template from the container.
         docker cp \
             'apache:/etc/httpd/conf.d/proxy-template' \
             "${confname:?}"
@@ -200,16 +200,27 @@ EOF
         # Fill in the OSA values.
         sed -i "
             /PROXY ENTRIES HERE/,/PROXY ENTRIES DONE/ {
-                /osa/ {
+                /\^\/osa/ {
                     s/#\(Proxy\)/\1/
-                    s/{targethost}/${osahost:?}/
-                    s/{targetident}/${osaident:?}/
+                    s/{tapident}/${tapident:?}/
                     }
                 }
             " "${confname:?}"
 
         #
-        # Install the config file.
+        # Fill in the firethorn values.
+        sed -i "
+            /PROXY ENTRIES HERE/,/PROXY ENTRIES DONE/ {
+                s/{firehost}/${firehost:?}/
+                /\^\/firethorn/ {
+                    s/#\(Proxy\)/\1/
+                    }
+                }
+            " "${confname:?}"
+
+
+        #
+        # Copy the new config file into the container.
         docker cp \
             "${confname:?}" \
             "apache:/etc/httpd/conf.d/${confname:?}"

@@ -35,17 +35,20 @@ ServerName {globalname}
     </Proxy>
 
     ## PROXY ENTRIES HERE ##
-    #ProxyPassMatch    ^/osa\/(.*)$  http://{targethost}:8080/firethorn/tap/{targetident}/$1
-    #ProxyPassReverse  ^/osa\/(.*)$  http://{targethost}:8080/firethorn/tap/{targetident}/$1
+    #ProxyPassMatch    ^/osa\/(.*)$  http://{firehost}:8080/firethorn/tap/{tapident}/$1
+    #ProxyPassReverse  ^/osa\/(.*)$  http://{firehost}:8080/firethorn/tap/{tapident}/$1
 
-    #ProxyPassMatch    ^/ssa\/(.*)$  http://{targethost}:8080/firethorn/tap/{targetident}/$1
-    #ProxyPassReverse  ^/ssa\/(.*)$  http://{targethost}:8080/firethorn/tap/{targetident}/$1
+    #ProxyPassMatch    ^/ssa\/(.*)$  http://{firehost}:8080/firethorn/tap/{tapident}/$1
+    #ProxyPassReverse  ^/ssa\/(.*)$  http://{firehost}:8080/firethorn/tap/{tapident}/$1
 
-    #ProxyPassMatch    ^/vsa\/(.*)$  http://{targethost}:8080/firethorn/tap/{targetident}/$1
-    #ProxyPassReverse  ^/vsa\/(.*)$  http://{targethost}:8080/firethorn/tap/{targetident}/$1
+    #ProxyPassMatch    ^/vsa\/(.*)$  http://{firehost}:8080/firethorn/tap/{tapident}/$1
+    #ProxyPassReverse  ^/vsa\/(.*)$  http://{firehost}:8080/firethorn/tap/{tapident}/$1
 
-    #ProxyPassMatch    ^/wsa\/(.*)$  http://{targethost}:8080/firethorn/tap/{targetident}/$1
-    #ProxyPassReverse  ^/wsa\/(.*)$  http://{targethost}:8080/firethorn/tap/{targetident}/$1
+    #ProxyPassMatch    ^/wsa\/(.*)$  http://{firehost}:8080/firethorn/tap/{tapident}/$1
+    #ProxyPassReverse  ^/wsa\/(.*)$  http://{firehost}:8080/firethorn/tap/{tapident}/$1
+
+    #ProxyPassMatch    ^/firethorn\/(.*)$  http://{firehost}:8080/firethorn/$1
+    #ProxyPassReverse  ^/firethorn\/(.*)$  http://{firehost}:8080/firethorn/$1
     ## PROXY ENTRIES DONE ##
 
 </VirtualHost>
