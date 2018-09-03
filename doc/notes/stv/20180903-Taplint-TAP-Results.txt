@@ -1,0 +1,158 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+
+
+
+stelios@stelios-pc:~$ java -Xmx4096m -jar stilts.jar -disk taplint tapurl=http://tap.metagrid.xyz/osa debug=true
+This is STILTS taplint, 3.1-4/a0c52d8 (2018-05-18)
+Static report types: ERROR(123), WARNING(47), INFO(20), SUMMARY(9), FAILURE(21)
+
+Section TMV: Validate table metadata against XML schema
+I-TMV-VURL-1 Validating http://tap.metagrid.xyz/osa/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+S-TMV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section TME: Check content of tables metadata from /tables
+I-TME-TURL-1 Reading table metadata from http://tap.metagrid.xyz/osa/tables
+S-TME-SUMM-1 Schemas: 13, Tables: 333, Columns: 9071, Foreign Keys: 0
+S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
+S-TME-FLGO-1 Other column flags: none
+
+Section TMS: Check content of tables metadata from TAP_SCHEMA
+I-TMS-QSUB-1 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.schemas
+I-TMS-QGET-1 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
+I-TMS-QSUB-2 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.tables
+I-TMS-QGET-2 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
+I-TMS-QSUB-3 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.columns
+I-TMS-QGET-3 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
+I-TMS-QSUB-4 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.keys
+I-TMS-QGET-4 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
+I-TMS-QSUB-5 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-5 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
+I-TMS-QSUB-6 Submitting query: SELECT principal, indexed, std, "size" FROM TAP_SCHEMA.columns
+I-TMS-QGET-6 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=9081
+I-TMS-QSUB-7 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.columns
+I-TMS-QGET-7 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+*+FROM+TAP_SCHEMA.columns&MAXREC=1
+I-TMS-QSUB-8 Submitting query: SELECT ft_column_id, std, indexed, principal, ts_column_id, datatype, utype, ucd, unit, description, column_name, table_name FROM TAP_SCHEMA.columns
+I-TMS-QGET-8 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+ft_column_id%2C+std%2C+indexed%2C+principal%2C+ts_column_id%2C+datatype%2C+utype%2C+ucd%2C+unit%2C+description%2C+column_name%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=9081
+I-TMS-QSUB-9 Submitting query: SELECT from_column, target_column, key_id FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-9 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=9081
+S-TMS-SUMM-1 Schemas: 13, Tables: 333, Columns: 9071, Foreign Keys: 0
+S-TMS-FLGS-1 Standard column flags: indexed: 0, principal: 7, std: 33
+S-TMS-QNUM-1 Successful/submitted TAP queries: 13/13
+S-TMS-QTIM-1 Average successful query time: 2.0s
+I-TMS-QSUB-x (4 more)
+I-TMS-QGET-x (4 more)
+
+Section TMC: Compare table metadata from /tables and TAP_SCHEMA
+
+Section CPV: Validate capabilities against XML schema
+I-CPV-VURL-1 Validating http://tap.metagrid.xyz/osa/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+E-CPV-DSRD-1 (l.1, c.2448): cvc-datatype-valid.1.2.1: 'null' is not a valid value for 'integer'.
+E-CPV-GDJL-1 (l.1, c.2448): cvc-complex-type.2.2: Element 'default' must have no element [children], and the value must be valid.
+E-CPV-DSRD-2 (l.1, c.2476): cvc-datatype-valid.1.2.1: 'null' is not a valid value for 'integer'.
+E-CPV-TGMQ-1 (l.1, c.2476): cvc-complex-type.2.2: Element 'hard' must have no element [children], and the value must be valid.
+S-CPV-VALI-1 SAX report: warnings 0, errors 4, fatal 0
+
+Section CAP: Check content of TAPRegExt capabilities record
+I-CAP-CURL-1 Reading capability metadata from http://tap.metagrid.xyz/osa/capabilities
+
+Section AVV: Validate availability against XML schema
+I-AVV-VURL-1 Validating http://tap.metagrid.xyz/osa/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section QGE: Make ADQL queries in sync GET mode
+I-QGE-QSUB-1 Submitting query: SELECT TOP 10 surveyID FROM ATLASDR3.Survey
+I-QGE-QGET-1 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+surveyID+FROM+ATLASDR3.Survey
+I-QGE-QSUB-2 Submitting query: SELECT surveyID FROM ATLASDR3.Survey
+I-QGE-QGET-2 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+surveyID+FROM+ATLASDR3.Survey&MAXREC=0
+I-QGE-QSUB-3 Submitting query: SELECT TOP 1 surveyID FROM ATLASDR3.Survey
+I-QGE-QGET-3 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+surveyID+FROM+ATLASDR3.Survey
+I-QGE-QSUB-4 Submitting query: SELECT TOP 1 surveyID FROM ATLASDR3.Survey
+I-QGE-QGET-4 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+surveyID+FROM+ATLASDR3.Survey
+I-QGE-QSUB-5 Submitting query: SELECT TOP 8 sdssPrimary, sdssType AS taplint_c_2, A.distanceMins, slaveObjID AS taplint_c_4, masterObjID FROM ATLASDR3.atlasSourceXDR5PhotoObj AS A
+I-QGE-QGET-5 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+sdssPrimary%2C+sdssType+AS+taplint_c_2%2C+A.distanceMins%2C+slaveObjID+AS+taplint_c_4%2C+masterObjID++FROM+ATLASDR3.atlasSourceXDR5PhotoObj+AS+A
+I-QGE-QSUB-6 Submitting query: SELECT masterObjID FROM ATLASDR3.atlasSourceXDR5PhotoObjAll
+I-QGE-QGET-6 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+masterObjID+FROM+ATLASDR3.atlasSourceXDR5PhotoObjAll&MAXREC=0
+I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
+I-QGE-QGET-7 Query GET URL: http://tap.metagrid.xyz/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
+S-QGE-QNUM-1 Successful/submitted TAP queries: 6/6
+S-QGE-QTIM-1 Average successful query time: 1.4s
+
+Section QPO: Make ADQL queries in sync POST mode
+I-QPO-QSUB-1 Submitting query: SELECT TOP 10 surveyID FROM ATLASDR3.Survey
+I-QPO-QSUB-2 Submitting query: SELECT surveyID FROM ATLASDR3.Survey
+I-QPO-QSUB-3 Submitting query: SELECT TOP 8 sdssPrimary, sdssType AS taplint_c_2, A.distanceMins, slaveObjID AS taplint_c_4, masterObjID FROM ATLASDR3.atlasSourceXDR5PhotoObj AS A
+I-QPO-QSUB-4 Submitting query: SELECT masterObjID FROM ATLASDR3.atlasSourceXDR5PhotoObjAll
+I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
+S-QPO-QNUM-1 Successful/submitted TAP queries: 4/4
+S-QPO-QTIM-1 Average successful query time: 1.4s
+
+Section QAS: Make ADQL queries in async mode
+I-QAS-QSUB-1 Submitting query: SELECT TOP 10 surveyID FROM ATLASDR3.Survey
+I-QAS-QJOB-1 Submitted query at http://tap.metagrid.xyz/firethorn/tap/54/async/347627
+I-QAS-QSUB-2 Submitting query: SELECT surveyID FROM ATLASDR3.Survey
+I-QAS-QJOB-2 Submitted query at http://tap.metagrid.xyz/firethorn/tap/54/async/347628
+I-QAS-QSUB-3 Submitting query: SELECT TOP 8 sdssPrimary, sdssType AS taplint_c_2, A.distanceMins, slaveObjID AS taplint_c_4, masterObjID FROM ATLASDR3.atlasSourceXDR5PhotoObj AS A
+I-QAS-QJOB-3 Submitted query at http://tap.metagrid.xyz/firethorn/tap/54/async/347629
+I-QAS-QSUB-4 Submitting query: SELECT masterObjID FROM ATLASDR3.atlasSourceXDR5PhotoObjAll
+I-QAS-QJOB-4 Submitted query at http://tap.metagrid.xyz/firethorn/tap/54/async/347630
+I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
+I-QAS-QJOB-5 Submitted query at http://tap.metagrid.xyz/firethorn/tap/54/async/347631
+S-QAS-QNUM-1 Successful/submitted TAP queries: 4/4
+S-QAS-QTIM-1 Average successful query time: 1.5s
+
+Section UWS: Test asynchronous UWS/TAP behaviour
+I-UWS-CJOB-1 Created new job http://tap.metagrid.xyz/firethorn/tap/54/async/347632
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://tap.metagrid.xyz/firethorn/tap/54/async/347632/parameters
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://tap.metagrid.xyz/firethorn/tap/54/async/347632/phase
+I-UWS-POPA-3 POSTed ACTION=DELETE to http://tap.metagrid.xyz/firethorn/tap/54/async/347632
+I-UWS-CJOB-2 Created new job http://tap.metagrid.xyz/firethorn/tap/54/async/347633
+I-UWS-CJOB-3 Created new job http://tap.metagrid.xyz/firethorn/tap/54/async/347634
+W-UWS-TFMT-1 Not ISO-8601 content "" from http://tap.metagrid.xyz/firethorn/tap/54/async/347634/destruction
+I-UWS-POPA-4 POSTed PHASE=RUN to http://tap.metagrid.xyz/firethorn/tap/54/async/347634/phase
+I-UWS-JOFI-1 Job completed immediately - can't test phase progression
+
+Section MDQ: Check table query result columns against declared metadata
+I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ArchiveCurationHistory
+I-MDQ-QSUB-2 Submitting query: SELECT TOP 1 * FROM ATLASDR1.AstrCalVers
+I-MDQ-QSUB-3 Submitting query: SELECT TOP 1 * FROM ATLASDR1.CurationTask
+I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM ATLASDR1.CurrentAstrometry
+I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ExternalSurvey
+I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ExternalSurveyTable
+I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM ATLASDR1.Filter
+I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM ATLASDR1.FilterSections
+I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM ATLASDR1.Multiframe
+S-MDQ-QNUM-1 Successful/submitted TAP queries: 333/333
+S-MDQ-QTIM-1 Average successful query time: 1.6s
+I-MDQ-QSUB-x (324 more)
+
+Section OBS: Test implementation of ObsCore Data Model
+I-OBS-NODM-1 Table capabilities lists no ObsCore DataModel - no ObsCore tests
+
+Section UPL: Make queries with table uploads
+F-UPL-NOUP-1 Table capabilities lists no upload methods - will not attempt upload tests
+
+Section EXA: Check content of examples document
+I-EXA-EURL-1 Reading examples document from http://tap.metagrid.xyz/osa/examples
+F-EXA-EXNO-1 No examples document at http://tap.metagrid.xyz/osa/examples
+
+Totals: Errors: 4; Warnings: 1; Infos: 403; Summaries: 18; Failures: 2
+
