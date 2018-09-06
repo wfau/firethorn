@@ -25,12 +25,67 @@
 # TODO - Make the containers start on boot.
 
 # -----------------------------------------------------
-# Settings for float2 on trop02
+# Shutdown the existing proxy VM on trop01
+#[user@trop01]
+
+    vmname=Astoalith
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        shutdown \
+            "${vmname:?}"
+
+
+# -----------------------------------------------------
+# Get the MAC address of the public interface.
+#[user@trop01]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}" \
+        | tee "${vmname:?}.xml"
+
+    devtype=$(
+        xmllint \
+            --xpath "string(//interface[source[@network='bridged']]/@type)" \
+            "${vmname:?}.xml"
+        )
+
+    macaddr=$(
+        xmllint \
+            --xpath "string(//interface[source[@network='bridged']]/mac/@address)" \
+            "${vmname:?}.xml"
+            )
+
+    echo "Interface [${devtype:?}][${macaddr:?}]"
+
+# -----------------------------------------------------
+# Remove the public interface.
+#[user@trop01]
+
+    source "${HOME}/libvirt.settings"
+    virsh -c ${connection:?} \
+        detach-interface \
+            "${vmname:?}" \
+            "${devtype:?}" \
+            --mac "${macaddr:?}" \
+            --config
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}" \
+        | xmllint --xpath '//interface' -
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Settings for float1 on trop02
 #[user@trop02]
 
-    newnetname=ens5
-    newaddress=129.215.175.101
-    newmacaddr=52:54:00:00:01:01
+    newnetname=ens7
+    newaddress=129.215.175.100
+    newmacaddr=52:54:00:00:01:00
 
     vmname=Acilamwen
     vmuser=Stevedore
@@ -42,22 +97,6 @@
     roegateway=129.215.175.126
     roenetwork=129.215.175.0
     roenetmask=255.255.255.0
-
-# -----------------------------------------------------
-# Create a new VM.
-#[user@trop02]
-
-    createvm
-
-        INFO : Node name [Acilamwen]
-        INFO : Base name [fedora-28-docker-base-20180708.qcow]
-        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
-        INFO : Disc name [Acilamwen.qcow]
-        INFO : Disc size [16GiB]
-
-
-    vmname=Acilamwen
-    vmuser=Stevedore
 
 # -----------------------------------------------------
 # Login to the new VM and configure the network interface.
@@ -81,11 +120,19 @@ NETMASK=${roenetmask:?}
 GATEWAY=${roegateway:?}
 IPADDR=${newaddress}
 EOF
+EOSH
 
-        cat >> /etc/sysconfig/network << EOF
-GATEWAYDEV=${newnetname:?}
-EOF
+# -----------------------------------------------------
+# Login to the new VM and configure the default route.
+#[user@trop02]
 
+    ssh ${vmuser:?}@${vmname:?} << EOSH
+
+        sudo -s
+
+        sed -i '
+            s/^GATEWAYDEV=.*/GATEWAYDEV=${newnetname:?}/
+            ' /etc/sysconfig/network
 EOSH
 
 #---------------------------------------------------------------------
@@ -137,26 +184,6 @@ EOSH
     ssh ${vmuser:?}@${vmname:?}
 
 # -----------------------------------------------------
-# Add our secret function.
-#[user@virtual]
-
-        mkdir "${HOME:?}/bin"
-        cat > "${HOME:?}/bin/secret" << 'EOF'
-secret()
-    {
-    local key=${1:?}
-    local server='dave@shepseskaf.roe.ac.uk'
-    ssh -o 'VisualHostKey=no' "${server:?}" "bin/secret \"${key:?}\""
-    }
-if [ -n "${1}" ]
-then
-    secret "${1}"
-fi
-EOF
-        chmod u+x "${HOME:?}/bin/secret"
-        secret 'frog'
-
-# -----------------------------------------------------
 # Set the target version.
 #[user@virtual]
 
@@ -170,6 +197,7 @@ EOF
             --detach \
             --name 'apache' \
             --publish '80:80' \
+            --restart 'always' \
             "firethorn/apache:${buildtag}"
 
 # -----------------------------------------------------
@@ -237,13 +265,16 @@ EOF
 # Test we can access the web server from inside the ROE network.
 #[user@desktop]
 
-    ssh -q trop01 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
-    ssh -q trop02 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
-    ssh -q trop03 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
-    ssh -q trop04 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
+    testname=tap.metagrid.xyz
+    testname=tap.roe.ac.uk
+
+    ssh -q trop01 "curl --silent --show-error --head http://${livename:?}/osa/availability"
+    ssh -q trop02 "curl --silent --show-error --head http://${livename:?}/osa/availability"
+    ssh -q trop03 "curl --silent --show-error --head http://${livename:?}/osa/availability"
+    ssh -q trop04 "curl --silent --show-error --head http://${livename:?}/osa/availability"
     => PASS
 
-    ssh -q shep 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
+    ssh -q shep "curl --silent --show-error --head http://${livename:?}/osa/availability"
     => PASS
 
 # -----------------------------------------------------
@@ -251,7 +282,13 @@ EOF
 # Test we can access the web server from outside the ROE network.
 #[user@desktop]
 
-    ssh -q data 'curl --silent --show-error --head http://tap.metagrid.xyz/osa/availability'
+    testname=tap.metagrid.xyz
+    livename=tap.roe.ac.uk
+
+    ssh -q data "curl --silent --show-error --head http://${testname:?}/osa/availability"
+    => FAIL (routing of respose packets via default route)
+
+    ssh -q data "curl --silent --show-error --head http://${livename:?}/osa/availability"
     => PASS
 
 # -----------------------------------------------------
@@ -259,50 +296,14 @@ EOF
 # Test we can access Firethorn from outside the ROE network.
 #[user@desktop]
 
-    curl --silent --show-error 'http://tap.metagrid.xyz/firethorn/system/info'
+    testname=tap.metagrid.xyz
+    livename=tap.roe.ac.uk
 
-        {
-        "java": {
-            "name" : "OpenJDK 64-Bit Server VM",
-            "build" : "25.172-b11",
-            "version" : "1.8.0_172",
-            "memory" : {
-                "total" : 401080320,
-                "free" : 240496664,
-                "max" : 919076864
-                }
-            },
-        "build": {
-            "name" : "firethorn-core",
-            "version" : "2.1.25",
-            "timestamp" : "1531735822805",
-            "changeset" : "3571719264096be46fb2b756"
-            },
-        "system": {
-            "time" : "2018-09-01T05:07:24.663Z",
-            "name" : "Linux",
-            "arch" : "amd64",
-            "version"  : "4.17.3-200.fc28.x86_64",
-            "platform" : "Fedora release 28 (Twenty Eight)"
-            },
-        "servlet": {
-            "server" : "Apache Tomcat/9.0.10",
-            "context" : "/firethorn"
-            },
-        "jdbc": {
-            "drivers": [
+    curl --silent --show-error "http://${testname:?}/firethorn/system/info"
+    => FAIL (routing of respose packets via default route)
 
-                    {
-                    "class" : "org.postgresql.Driver"
-                    },
-
-                    {
-                    "class" : "net.sourceforge.jtds.jdbc.Driver"
-                    }
-
-                ]
-            }
-        }
+    curl --silent --show-error "http://${livename:?}/firethorn/system/info"
+    => PASS
 
 # -----------------------------------------------------
 # -----------------------------------------------------
@@ -313,7 +314,7 @@ EOF
         --rm \
         --tty \
         --interactive \
-        --env 'endpoint=http://tap.metagrid.xyz/firethorn' \
+        --env 'endpoint=http://tap.roe.ac.uk/firethorn' \
         "firethorn/firethorn-py:latest" \
         python3
 
@@ -388,4 +389,49 @@ for schema in resource.select_schemas():
             )
         py_table = query_obj.table().as_astropy()
         py_table.pprint()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

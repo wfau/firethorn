@@ -1,0 +1,136 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Adding svn ignore settings to the time-domain data in volute
+
+
+# -----------------------------------------------------
+# Find and delete any hidden files.
+#[user@desktop]
+
+    find . -name '.*'
+
+        .
+        ./.svn
+        ./.settings
+        ./.project
+        ./.pydevproject
+
+    find . -name '.*' -delete
+
+        find: cannot delete ‘./.svn’: Directory not empty       <-- lucky escape
+        find: cannot delete ‘./.settings’: Directory not empty
+
+    rm -rf .settings
+
+# -----------------------------------------------------
+# Commit the changes.
+#[user@desktop]
+
+    svn status
+        !  .project
+        !  .pydevproject
+        !  .settings
+        !  .settings/org.eclipse.core.resources.prefs
+
+    svn rm \
+        .project \
+        .pydevproject \
+        .settings/org.eclipse.core.resources.prefs \
+        .settings
+
+    svn status
+        D  .project
+        D  .pydevproject
+        D  .settings
+        D  .settings/org.eclipse.core.resources.prefs
+
+    svn commit -m "Removing hidden files"
+
+    svn propget 'svn:ignore' . 2> /dev/null
+    svn propset 'svn:ignore' '.*' .
+
+    svn commit -m "Ignoring hidden files" .
+
+# -----------------------------------------------------
+# Check the ignore property.
+#[user@desktop]
+
+    for path in $(find time-series -type d)
+    do
+        echo "Path [${path}]"
+        props=$(
+            svn propget 'svn:ignore' "${path}" 2> /dev/null
+            )
+echo "new
+${props}"
+    done
+
+
+        ....
+        ....
+
+        Path [time-series/time-series-cube/ivoa-note-1.0]
+        *.aux
+        *.bbl
+        *.blg
+        *.bst
+        *.dvi
+        *.idx
+        *.lof
+        *.log
+        *.pdf
+        *.toc
+        *.out
+        *.gz
+        *.zip
+
+        ....
+        ....
+
+    #
+    # Ignoring pdf and html ?
+    # Whatever ...
+
+# -----------------------------------------------------
+# Delete python cache.
+#[user@desktop]
+
+    svn rm time-series/vodml-lite/python/__pycache__
+
+        D  time-series/vodml-lite/python/__pycache__
+        D  time-series/vodml-lite/python/__pycache__/globals_mapper.cpython-36.pyc
+        D  time-series/vodml-lite/python/__pycache__/iterator.cpython-36.pyc
+        D  time-series/vodml-lite/python/__pycache__/mapper.cpython-36.pyc
+
+    svn commit -m "Removed python cache pyc files"
+
+        Deleting       time-series/vodml-lite/python/__pycache__
+
+    svn propget 'svn:ignore' time-series/vodml-lite/python
+    svn propset 'svn:ignore' '__pycache__' time-series/vodml-lite/python
+
+
+
+
+

@@ -33,7 +33,9 @@
     Move the external floating IP address from trop01 to trop02.
     Test using roe DNS entry
 
-
+# -----------------------------------------------------
+# TODO - Make the virtual machines start on boot.
+# TODO - Make the contauners start on boot.
 
 # -----------------------------------------------------
 # Check the local libvirt settings.
