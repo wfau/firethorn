@@ -1,0 +1,124 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    vmname=Acilamwen
+    vmuser=Stevedore
+
+# -----------------------------------------------------
+# Login to the new VM and install our admin keys.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" << 'EOSH'
+
+        pushd "${HOME}/.ssh"
+            mkdir keys
+            pushd keys
+                wget 'http://data.metagrid.co.uk/sshkeys/firethorn-admin.keys'
+            popd
+            cat 'keys/firethorn-admin.keys' >> authorized_keys
+        popd
+EOSH
+
+# -----------------------------------------------------
+# Login to the new VM.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+# -----------------------------------------------------
+# Use the proxy template to create our proxy config.
+#[user@virtual]
+
+        servername=genius.roe.ac.uk
+        serveralias=genius.metagrid.xyz
+        serveradmin=genius-admin@metagrid.xyz
+        confname=${servername:?}.conf
+
+        firehost=siamond
+        tapident=54
+
+        #
+        # Extract a copy of the template from the container.
+        docker cp \
+            'apache:/etc/httpd/conf.d/proxy-template' \
+            "${confname:?}"
+
+        #
+        # Edit the proxy config
+        vi "${confname:?}"
+
+
+            ## PROXY ENTRIES HERE ##
+
+            ProxyPassMatch    ^/tap\/(.*)$  http://siamond:8080/firethorn/tap/{tapident}/$1
+            ProxyPassReverse  ^/tap\/(.*)$  http://siamond:8080/firethorn/tap/{tapident}/$1
+
+            ProxyPassMatch    ^/firethorn\/(.*)$  http://siamond:8080/firethorn/$1
+            ProxyPassReverse  ^/firethorn\/(.*)$  http://siamond:8080/firethorn/$1
+
+            ProxyPassMatch    ^/\/(.*)$  http://eterathiel:80/$1
+            ProxyPassReverse  ^/\/(.*)$  http://eterathiel:80/$1
+
+            ## PROXY ENTRIES DONE ##
+
+        #
+        # Copy the new config file into the container.
+        docker cp \
+            "${confname:?}" \
+            "apache:/etc/httpd/conf.d/${confname:?}"
+
+        #
+        # Send Apache the 'reload' signal.
+        docker kill --signal 'USR1' 'apache'
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from inside the ROE network.
+#[user@desktop]
+
+    livename=genius.roe.ac.uk
+
+    ssh -q trop01 "curl --silent --show-error --head http://${livename:?}/tap/availability"
+    ssh -q trop02 "curl --silent --show-error --head http://${livename:?}/tap/availability"
+    ssh -q trop03 "curl --silent --show-error --head http://${livename:?}/tap/availability"
+    ssh -q trop04 "curl --silent --show-error --head http://${livename:?}/tap/availability"
+    => PASS
+
+    ssh -q shep "curl --silent --show-error --head http://${livename:?}/osa/availability"
+    => PASS
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Test we can access the web server from outside the ROE network.
+#[user@desktop]
+
+    livename=genius.roe.ac.uk
+    testname=genius.metagrid.xyz
+
+    ssh -q data "curl --silent --show-error --head http://${testname:?}/osa/availability"
+    => FAIL (routing of respose packets via default route)
+
+    ssh -q data "curl --silent --show-error --head http://${livename:?}/osa/availability"
+    => PASS
+
+
