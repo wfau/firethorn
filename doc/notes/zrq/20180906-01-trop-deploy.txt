@@ -35,7 +35,6 @@
         shutdown \
             "${vmname:?}"
 
-
 # -----------------------------------------------------
 # Get the MAC address of the public interface.
 #[user@trop01]
@@ -87,9 +86,6 @@
     newaddress=129.215.175.100
     newmacaddr=52:54:00:00:01:00
 
-    vmname=Acilamwen
-    vmuser=Stevedore
-
 # -----------------------------------------------------
 # Generic settings for the ROE network.
 #[user@trop02]
@@ -99,10 +95,17 @@
     roenetmask=255.255.255.0
 
 # -----------------------------------------------------
+# Virtual machine name.
+#[user@trop02]
+
+    vmname=Acilamwen
+    vmuser=Stevedore
+
+# -----------------------------------------------------
 # Login to the new VM and configure the network interface.
 #[user@trop02]
 
-    ssh ${vmuser:?}@${vmname:?} << EOSH
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
 
         sudo -s
 
@@ -126,7 +129,7 @@ EOSH
 # Login to the new VM and configure the default route.
 #[user@trop02]
 
-    ssh ${vmuser:?}@${vmname:?} << EOSH
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
 
         sudo -s
 
@@ -160,7 +163,7 @@ EOSH
 # Login to the VM and initialise the interface.
 #[user@trop02]
 
-    ssh ${vmuser:?}@${vmname:?} << EOSH
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
 
         sudo -s
         ifup "${newnetname:?}"
@@ -181,7 +184,7 @@ EOSH
 # Login to the VM.
 #[user@trop02]
 
-    ssh ${vmuser:?}@${vmname:?}
+    ssh "${vmuser:?}@${vmname:?}"
 
 # -----------------------------------------------------
 # Set the target version.

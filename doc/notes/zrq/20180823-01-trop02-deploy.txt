@@ -69,10 +69,25 @@
     vmuser=Stevedore
 
 # -----------------------------------------------------
+# Login to the new VM and install our admin keys.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" << 'EOSH'
+
+        pushd "${HOME}/.ssh"
+            mkdir keys
+            pushd keys
+                wget 'http://data.metagrid.co.uk/sshkeys/firethorn-admin.keys'
+            popd
+            cat 'keys/firethorn-admin.keys' >> authorized_keys
+        popd
+EOSH
+
+# -----------------------------------------------------
 # Login to the new VM and configure the network interface.
 #[user@trop02]
 
-    ssh ${vmuser:?}@${vmname:?} << EOSH
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
 
         sudo -s
         cat > /etc/sysconfig/network-scripts/ifcfg-${newnetname:?} << EOF
@@ -137,7 +152,7 @@ EOSH
 # Login to the VM and run an Apache test container.
 #[user@trop03]
 
-    ssh ${vmuser:?}@${vmname:?} \
+    ssh "${vmuser:?}@${vmname:?}" \
         docker run -p 80:80 -d yrvafhom/docker-demo
 
 # -----------------------------------------------------
@@ -214,185 +229,6 @@ EOSH
 *****************
 
 
-
-
-
-# -----------------------------------------------------
-# -----------------------------------------------------
-# Login as Stevedore
-#[user@trop]
-
-    ssh Acilamwen
-
-# -----------------------------------------------------
-# Add our secret function.
-#[user@virtual]
-
-    mkdir "${HOME:?}/bin"
-    cat > "${HOME:?}/bin/secret" << 'EOF'
-secret()
-    {
-    local key=${1:?}
-    local server='dave@shepseskaf.roe.ac.uk'
-    ssh -o 'VisualHostKey=no' "${server:?}" "bin/secret \"${key:?}\""
-    }
-if [ -n "${1}" ]
-then
-    secret "${1}"
-fi
-EOF
-
-    chmod u+x "${HOME:?}/bin/secret"
-    secret 'frog'
-
-# -----------------------------------------------------
-# Set the target version.
-#[user@virtual]
-
-    export buildtag=2.1.25
-
-# -----------------------------------------------------
-# Start a new container to run the Apache proxy.
-#[user@trop]
-
-    docker run \
-        --rm \
-        --tty \
-        --interactive \
-        --expose '80' \
-        --publish '80:80' \
-        "firethorn/fedora:${buildtag}" \
-        bash
-
-# -----------------------------------------------------
-# Install DNS lookup tools.
-#[root@container]
-#
-#        dnf install \
-#            --assumeyes \
-#            bind-utils
-#
-# -----------------------------------------------------
-# Install the Apache server.
-#[root@container]
-
-        dnf info httpd
-
-            Last metadata expiration check: 38 days, 0:39:16 ago on Mon Jul 16 09:58:34 2018.
-            Available Packages
-            Name         : httpd
-            Version      : 2.4.33
-            Release      : 5.fc28
-            Arch         : x86_64
-            Size         : 1.2 M
-            Source       : httpd-2.4.33-5.fc28.src.rpm
-            Repo         : updates
-            Summary      : Apache HTTP Server
-            URL          : https://httpd.apache.org/
-            License      : ASL 2.0
-            Description  : The Apache HTTP Server is a powerful, efficient, and extensible
-                         : web server.
-
-
-        dnf install \
-            --assumeyes \
-            httpd
-
-            ....
-            ....
-
-
-# -----------------------------------------------------
-# Check to see if the proxy module is installed.
-#[root@container]
-
-    httpd -M | grep proxy
-
-        ....
-        proxy_module (shared)
-        proxy_ajp_module (shared)
-        proxy_balancer_module (shared)
-        proxy_connect_module (shared)
-        proxy_express_module (shared)
-        proxy_fcgi_module (shared)
-        proxy_fdpass_module (shared)
-        proxy_ftp_module (shared)
-        proxy_http_module (shared)
-        proxy_hcheck_module (shared)
-        proxy_scgi_module (shared)
-        proxy_uwsgi_module (shared)
-        proxy_wstunnel_module (shared)
-        proxy_http2_module (shared)
-
-# -----------------------------------------------------
-# Add our virtual-host/proxy config file.
-# https://httpd.apache.org/docs/2.4/vhosts/examples.html
-# https://httpd.apache.org/docs/2.4/mod/mod_proxy.html
-#[root@container]
-
-globalname=tap.roe.ac.uk
-servername=tap.roe.ac.uk
-serveralias=tap.metagrid.xyz
-serveradmin=tap-admin@metagrid.xyz
-
-proxyhost=siamond
-proxyident=54
-
-cat > /etc/httpd/conf.d/${servername:?}.conf << EOF
-
-ServerName ${globalname:?}
-
-<VirtualHost *:80>
-
-    ServerName  ${servername:?}
-    ServerAlias ${serveralias:?}
-    ServerAdmin ${serveradmin:?}
-
-    ErrorLog  logs/${servername:?}-error.log
-    CustomLog logs/${servername:?}-access.log combined
-
-    ProxyRequests Off
-    ProxyPreserveHost On
-
-    <Proxy *>
-        Order deny,allow
-        Allow from all
-    </Proxy>
-
-    ## PROXY ENTRIES HERE ##
-    ProxyPassMatch    ^/osa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
-    ProxyPassReverse  ^/osa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
-
-    ProxyPassMatch    ^/ssa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
-    ProxyPassReverse  ^/ssa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
-
-    ProxyPassMatch    ^/vsa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
-    ProxyPassReverse  ^/vsa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
-
-    ProxyPassMatch    ^/wsa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
-    ProxyPassReverse  ^/wsa\/(.*)\$  http://${proxyhost:?}:8080/firethorn/tap/${proxyident:?}/\$1
-    ## PROXY ENTRIES DONE ##
-
-</VirtualHost>
-EOF
-
-# -----------------------------------------------------
-# Test virtual-host/proxy config file.
-#[root@container]
-
-    apachectl -t
-
-        [Wed Aug 29 12:37:04.518817 2018] [core:warn] [pid 99:tid 140365554452736] AH00111: Config variable ${APACHE_LOG_DIR} is not defined
-        [Wed Aug 29 12:37:04.518916 2018] [core:warn] [pid 99:tid 140365554452736] AH00111: Config variable ${APACHE_LOG_DIR} is not defined
-        AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.2. Set the 'ServerName' directive globally to suppress this message
-        (2)No such file or directory: AH02291: Cannot access directory '/etc/httpd/${APACHE_LOG_DIR}/' for error log of vhost defined at /etc/httpd/conf.d/tap.roe.ac.uk.conf:1
-        AH00014: Configuration check failed
-
-# -----------------------------------------------------
-# Run the Apache service in the foreground.
-#[root@container]
-
-    httpd -D FOREGROUND
 
 
 

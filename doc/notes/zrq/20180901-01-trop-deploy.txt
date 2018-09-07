@@ -28,9 +28,6 @@
     newaddress=129.215.175.101
     newmacaddr=52:54:00:00:01:01
 
-    vmname=Acilamwen
-    vmuser=Stevedore
-
 # -----------------------------------------------------
 # Generic settings for the ROE network.
 #[user@trop02]
@@ -51,15 +48,29 @@
         INFO : Disc name [Acilamwen.qcow]
         INFO : Disc size [16GiB]
 
-
     vmname=Acilamwen
     vmuser=Stevedore
+
+# -----------------------------------------------------
+# Login to the new VM and install our admin keys.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" << 'EOSH'
+
+        pushd "${HOME}/.ssh"
+            mkdir keys
+            pushd keys
+                wget 'http://data.metagrid.co.uk/sshkeys/firethorn-admin.keys'
+            popd
+            cat 'keys/firethorn-admin.keys' >> authorized_keys
+        popd
+EOSH
 
 # -----------------------------------------------------
 # Login to the new VM and configure the network interface.
 #[user@trop02]
 
-    ssh ${vmuser:?}@${vmname:?} << EOSH
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
 
         sudo -s
 
@@ -109,7 +120,7 @@ EOSH
 # Login to the VM and initialise the interface.
 #[user@trop02]
 
-    ssh ${vmuser:?}@${vmname:?} << EOSH
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
 
         sudo -s
         ifup "${newnetname:?}"
@@ -130,7 +141,7 @@ EOSH
 # Login to the VM.
 #[user@trop02]
 
-    ssh ${vmuser:?}@${vmname:?}
+    ssh "${vmuser:?}@${vmname:?}"
 
 # -----------------------------------------------------
 # Add our secret function.
