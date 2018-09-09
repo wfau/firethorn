@@ -1,0 +1,728 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+# -----------------------------------------------------
+# Create VM (Eterathiel)
+# -----------------------------------------------------
+stv@trop02:~$ virsh -c 'qemu:///system' list
+setlocale: No such file or directory
+ Id    Name                           State
+----------------------------------------------------
+ 113   Siamond                        running
+ 115   Araybwyn                       running
+ 118   Acilamwen                      running
+ 119   Ibalehar                       running
+
+stv@trop02:~$ createvm
+
+INFO : Base pool  [base]
+INFO : Live pool  [live]
+INFO : Connection [qemu:///system]
+
+INFO : Data path  [/var/local/projects/ischnura/github/src/dat]
+
+INFO : Machines   [/var/local/projects/ischnura/github/src/dat/tropo-machines.txt]
+INFO : Template   [/var/local/projects/ischnura/github/src/dat/tropo-template.xml]
+
+[1] Araybwyn
+[2] Lothigometh
+[3] Ulov
+[4] Dwiema
+[5] Ibalehar
+[6] Eterathiel
+[7] Siamond
+[8] Acilamwen
+Select machine name (1) 6
+setlocale: No such file or directory
+
+[1] fedora-28-docker-base-20180708.qcow
+[2] fedora-27-docker-base-20180129.qcow
+[3] fedora-25-docker-16G-20170713.qcow
+Select base image (1) 1
+setlocale: No such file or directory
+
+INFO : Node name [Eterathiel]
+INFO : Base name [fedora-28-docker-base-20180708.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+INFO : Disc name [Eterathiel.qcow]
+INFO : Disc size [16GiB]
+
+INFO : MAC  [52:54:00:02:02:0D]
+INFO : IPv4 [192.168.202.13]
+INFO : IPv6 []
+
+Create virtual machine (Y/n)Y
+
+Found existing storage volume [Eterathiel.qcow]
+Delete storage volume (Y/n)Y
+Deleting storage volume [Eterathiel.qcow]
+setlocale: No such file or directory
+Vol Eterathiel.qcow deleted
+
+Creating new volume [Eterathiel.qcow]
+setlocale: No such file or directory
+Vol Eterathiel.qcow created
+setlocale: No such file or directory
+Name:           Eterathiel.qcow
+Type:           file
+Capacity:       16.00 GiB
+Allocation:     196.00 KiB
+
+setlocale: No such file or directory
+Vol Eterathiel.iso deleted
+setlocale: No such file or directory
+Vol Eterathiel.iso created
+setlocale: No such file or directory
+setlocale: No such file or directory
+setlocale: No such file or directory
+Creating new virtual machine [Eterathiel]
+setlocale: No such file or directory
+Domain Eterathiel defined from /tmp/tmp.mxLezmrCi0
+Starting new virtual machine [Eterathiel]
+setlocale: No such file or directory
+Domain Eterathiel started
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# SSH into VM (Eterathiel)
+# -----------------------------------------------------
+
+ssh Stevedore@Eterathiel
+
+
+
+
+# -----------------------------------------------------
+# Add secret function.
+# -----------------------------------------------------
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store.genius.20180724'
+
+    secret()
+    {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+    }
+
+    secret 'firethorn.user.host'
+
+
+
+
+# -----------------------------------------------------
+# Make properties folder
+# -----------------------------------------------------
+
+    mkdir -p ${HOME}/properties
+    properties_dir=${HOME}/properties
+    export properties_dir
+
+
+
+# -----------------------------------------------------
+# Set the Genius buildtag & Firethorn Branch and buildtag
+# -----------------------------------------------------
+
+    clearwing_buildtag=1.2.3-genius
+    buildtag=2.1.25
+    branch=default
+
+    export clearwing_buildtag
+    export branch
+    export buildtag
+
+
+
+
+# -----------------------------------------------------
+# Create our chain.properties file
+# -----------------------------------------------------
+
+cat > "${HOME:?}/chain.properties" << EOF
+
+metadata=postgres
+metauser=$(pwgen 20 1)
+metapass=$(pwgen 20 1)
+
+userhost=$(secret 'firethorn.user.host')
+userdata=$(secret 'firethorn.user.data')
+useruser=$(secret 'firethorn.user.user')
+userpass=$(secret 'firethorn.user.pass')
+
+datahost=$(secret 'firethorn.data.host')
+datadata=$(secret 'firethorn.data.data')
+datacatalog=$(secret 'firethorn.data.catalog')
+datatype=$(secret 'firethorn.data.type')
+datauser=$(secret 'firethorn.data.user')
+datapass=$(secret 'firethorn.data.pass')
+
+tapschemadatabase=$(secret 'firethorn.tapschema.database.name')
+tapschemauser=$(secret 'firethorn.tapschema.database.user')
+tapschemapass=$(secret 'firethorn.tapschema.database.pass')
+tapschemahost=$(secret 'firethorn.tapschema.database.host')
+tapschemaport=$(secret 'firethorn.tapschema.database.port')
+tapschematype=$(secret 'firethorn.tapschema.database.type')
+tapschemajdbcname=$(secret 'firethorn.tapschema.jdbc.name')
+
+tunneluser=$(secret 'ssh.tunnel.user')
+tunnelhost=$(secret 'ssh.tunnel.host')
+
+admingroup=$(secret 'admingroup')
+adminuser=$(secret 'adminuser')
+adminpass=$(secret 'adminpass')
+
+adql_query_delay_first=$(secret 'adql.query.delay.first')
+ 
+firethorn_limits_rows_absolute=$(secret 'firethorn.limits.rows.absolute')
+firethorn_limits_rows_default=$(secret 'firethorn.limits.rows.default')
+
+guestgroup=friends
+firethorn_base=$(secret 'firethorn_base')
+
+
+clearwing_host=$(secret 'clearwing_host')
+clearwing_port=$(secret 'clearwing_port')
+clearwing_host_alias=$(secret 'clearwing_host_alias')
+clearwing_tap_service=$(secret 'clearwing_tap_service')
+clearwing_tap_service_title=$(secret 'clearwing_tap_service_title')
+default_community=$(secret 'default_community')
+private_survey=$(secret 'private_survey')
+private_survey_vphas=$(secret 'private_survey_vphas')
+authentication_database=$(secret 'authentication_database')
+authentication_table=$(secret 'authentication_table')
+authentication_database_user=$(secret 'authentication_database_user')
+authentication_database_password=$(secret 'authentication_database_password')
+query_store_database_server=$(secret 'query_store_database_server')
+query_store_database=$(secret 'query_store_database')
+query_store_table=$(secret 'query_store_table')
+survey_database=$(secret 'survey_database')
+survey_database_user=$(secret 'survey_database_user')
+survey_database_password=$(secret 'survey_database_password')
+survey_database_server=$(secret 'survey_database_server')
+vphasdbuser=$(secret 'vphasdbuser')
+vphasdbpasswd=$(secret 'vphasdbpasswd')
+vphasdbserver=$(secret 'vphasdbserver')
+firethorn_tap_base=$(secret 'firethorn_tap_base')
+
+
+EOF
+
+
+
+# -----------------------------------------------------
+# Create our Firethorn properties.
+# -----------------------------------------------------
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.meta.type=pgsql
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.host=bethany
+firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
+firethorn.meta.data=postgres
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+
+firethorn.user.type=mssql
+firethorn.user.url=jdbc:jtds:sqlserver://${userhost:?}/${userdata:?}
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.host=${userhost:?}
+firethorn.user.data=${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+
+firethorn.tapschema.resource.name=${tapschemajdbcname}
+firethorn.tapschema.database.name=${tapschemadatabase}
+firethorn.tapschema.database.host=${tapschemahost}
+firethorn.tapschema.database.port=${tapschemaport}
+firethorn.tapschema.database.user=${tapschemauser}
+firethorn.tapschema.database.pass=${tapschemapass}
+
+firethorn.admin.community=${admingroup:?}
+firethorn.admin.user.name=${adminuser:?}
+firethorn.admin.user.pass=${adminpass:?}
+
+firethorn.guest.community=${guestgroup:?}
+
+adql.query.delay.first=${adql_query_delay_first:?}
+
+firethorn.limits.rows.absolute=${firethorn_limits_rows_absolute:?}
+firethorn.limits.rows.default=${firethorn_limits_rows_default:?}
+	
+
+EOF
+
+
+
+# -----------------------------------------------------
+# Create our compose env file.
+# -----------------------------------------------------
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/.env" << EOF
+
+	buildtag=${branch:?}
+
+	metadata=postgres
+	metauser=${metauser:?}
+	metapass=${metapass:?}
+
+        datadata=${datadata:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+	datahost=${datahost:?}
+	datacatalog=${datacatalog:?}
+	datatype=mssql
+
+	tapschemadatabase=${tapschemadatabase:?}
+	tapschemauser=${tapschemauser:?}
+	tapschemapass=${tapschemapass:?}
+	tapschemahost=${tapschemahost}
+	tapschemaport=${tapschemaport:?}
+	tapschemajdbcname=${tapschemajdbcname:?}
+	tapschematype=${tapschematype:?}
+
+	userhost=${userhost:?}
+	userdata=${userdata:?}
+	useruser=${useruser:?}
+	userpass=${userpass:?}
+
+	admingroup=${admingroup:?}
+	adminuser=${adminuser:?}
+	adminpass=${adminpass:?}
+	guestgroup=${guestgroup:?}
+
+	adql_query_delay_first=${adql_query_delay_first:?}
+
+	firethorn_limits_rows_absolute=${firethorn_limits_rows_absolute:?}
+	firethorn_limits_rows_default=${firethorn_limits_rows_default:?}
+
+	endpoint=${firethorn_base:?}
+EOF
+
+
+
+# -----------------------------------------------------
+# Get firethorn.py client compose file 
+# -----------------------------------------------------
+
+wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/f3d97f3d9a92/docker/compose/deploy/firethorn-py-standalone.yml  -O  firethorn-py.yml
+
+docker-compose --file "firethorn-py.yml" run firethorn-py
+
+
+Python 3.5.2 (default, Nov 23 2017, 16:37:01) 
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+..
+
+import firethorn
+import firethorn_utils.configurator as configur
+ft = firethorn.Firethorn(endpoint="http://tap.roe.ac.uk/firethorn")
+ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
+configurator =  configur.Configurator(ft)
+configurator.load_resources("https://raw.githubusercontent.com/stvoutsin/metadata/master/firethorn/config/genius.json")
+Importing IVOA Schema: gaiadr1
+Importing JDBC Schema: ATLASDR1
+Importing JDBC Schema: 2MASS
+Importing JDBC Schema: VHSDR1
+Importing JDBC Schema: SDSSDR9
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing JDBC Schema: VIKINGDR3
+Importing JDBC Schema: WISE
+TAP Service available at: http://tap.roe.ac.uk/firethorn/tap/1325358/
+
+>>> exit()
+
+
+source ${HOME}/chain.properties
+
+
+# -----------------------------------------------------
+# Set genius resource/schema ENV variables
+# -----------------------------------------------------
+
+genius_resource=http://tap.roe.ac.uk/firethorn/adql/resource/1325358
+gaiaschema=http://tap.roe.ac.uk/firethorn/adql/schema/1363703
+
+
+# -----------------------------------------------------
+# Create our config.py file for clearwing
+# -----------------------------------------------------
+cat > "${properties_dir:?}/config.py" << EOF
+
+import web
+import os
+import logging
+
+### Mail Information
+web.config.smtp_server = 'mail.roe.ac.uk'
+from_email = "stv@roe.ac.uk"
+
+### Survey Information
+survey_short = 'OSA';
+survey_full = 'GENIUS Web2.0 demonstrator prototype';
+
+### Template renders
+render = web.template.render('templates/')
+gloss_render = web.template.render('templates/schema_browser/gloss/')
+schema_browser_render = web.template.render('templates/schema_browser/')
+main_page_render = web.template.render('templates/main_page/')
+wfau_page_render = web.template.render('templates/wfau/')
+monitoring_render = web.template.render('templates/monitoring/')
+
+## Directory and URL Information
+host = "${clearwing_host:?}"
+port = "${clearwing_port:?}"
+base_host = host if port=='' else host + ':' + port
+sub_app_prefix="${clearwing_host_alias:-}"
+base_location = os.getcwd()
+userhomedir =  base_location
+survey_sub_path = sub_app_prefix + "/" if sub_app_prefix!='' else ''#""
+survey_prefix = '/' + sub_app_prefix if sub_app_prefix!='' else '' #""
+cur_static_dir = base_location + '/static/static_vo_tool/'
+vospace_dir = base_location + '/static/static_vospace'
+base_url = 'http://' +  base_host + '/' + survey_sub_path 
+publicly_visible_temp_dir = base_url + '/static/static_vo_tool/temp/'
+host_temp_directory = base_location + '/static/static_vo_tool/temp/'
+log_directory = base_location + '/log/'
+firethorn_base = "${firethorn_base:?}"
+firethorn_ini = base_location  + '/firethorn.ini'
+firethorn_tap_base = "${firethorn_tap_base:?}"
+
+try:
+    firethorn_base = dict(line.strip().split('=') for line in open(firethorn_ini ))['firethorn_base']
+except:
+    logging.exception("Error initializing firethorn base")
+
+### Set to false when launching
+web.config.debug = False 
+
+
+
+### Configurations
+live = True
+debug_mode = False
+no_users = True
+offline=False
+use_config = 'singletap'
+mode_global = 'async'
+request = 'doQuery'
+result_format = 'votable'
+lang = 'ADQL'
+MAX_FILE_SIZE = 4048576000 #use : 104857600
+MAX_ROW_SIZE = 5000000
+MAX_CELL_SIZE = 20000000
+delay = 3
+use_cached_endpoints = 0
+global_precision = 0.0000001
+MIN_ELAPSED_TIME_BEFORE_REDUCE = 40
+MAX_ELAPSED_TIME = 18000
+MAX_DELAY = 15
+INITIAL_DELAY = 1
+
+
+
+### Survey, Servlet and CGI URLs
+
+registry_url = 'http://registry.astrogrid.org/astrogrid-registry/main/xqueryresults.jsp'
+tap_factory = "http://admire3.epcc.ed.ac.uk:8081/TAPFactory/create"
+getImageURL = "http://seshat.roe.ac.uk:8080/osa/GetImage"
+multiGetImageURL = "http://seshat.roe.ac.uk:8080/osa/MultiGetImage"
+multiGetImageTempURL = 'http://seshat.roe.ac.uk/osa/tmp/MultiGetImage/'
+crossIDURL = "http://seshat.roe.ac.uk:8080/osa/CrossID"
+survey_cgi_bin = 'http://surveys.roe.ac.uk/wsa/cgi-bin/'
+radialURL = "http://surveys.roe.ac.uk:8080/ssa/SSASQL"
+
+
+## Database and TAP Information
+
+SURVEY_TAP =  "${clearwing_tap_service:?}"
+SURVEY_TAP_TITLE = "${clearwing_tap_service_title:?}"
+SURVEY_DB =  "${survey_database:?}"
+PRIVATE_SURVEY_DB = "${private_survey:?}"
+PRIVATE_SURVEY_DB_VPHAS = "${private_survey_vphas:?}"
+FULL_SURVEYDBS = ['', '']
+FULL_SURVEYDBS_INC_SYNC = ['OSA_DailySync']
+PRIVATE_FULL_SURVEYDBS = [""]
+PRIVATE_SURVEYDBS_VPHAS = ['${private_survey_vphas:?}']
+
+community = "${default_community:?}"
+dbuser = "${survey_database_user:?}"
+dbpasswd = "${survey_database_password:?}"
+dbserver = "${survey_database_server:?}"
+vphasdbuser = "${vphasdbuser:?}"
+vphasdbpasswd = "${vphasdbpasswd:?}"
+vphasdbserver = "${vphasdbserver:?}"
+
+
+database_users = "${authentication_database:?}"
+table_users = "${authentication_table:?}"
+userdb_user = "${authentication_database_user:?}"
+userdb_pw = "${authentication_database_password:?}"
+dbqueries = "${query_store_database_server:?}"
+dbnamequeries = "${query_store_database:?}"
+dbtablequeries = "${query_store_table:?}"
+
+database_imageList = SURVEY_DB
+
+db_to_tap_map = {SURVEY_DB : SURVEY_TAP, 'ATLASv20131127' : 'http://djer-p:8083/atlas20131127-dsa/TAP/', 'ATLASDR2' : 'http://djer-p:8083/atlasDR2-dsa/tap', 'VPHASv20160112' : 'http://djer.roe.ac.uk:8083/vphas20160112-dsa/TAP/'}
+taps_using_binary = ["http://dc.zah.uni-heidelberg.de"]
+
+firethorn_admin_username="${adminuser:?}"
+firethorn_admin_password="${adminpass:?}"
+firethorn_admin_community="${admingroup:?}"
+
+
+EOF
+
+
+
+
+cat > "${properties_dir:?}/firethorn.ini" << EOF
+adqlspace=${genius_resource:?}
+atlasschema=${gaiaschema:?}
+atlasprivate=${gaiaschema:?}
+firethorn_base=${firethorn_base:?}
+EOF
+
+
+
+### Create 000-default.conf file
+
+cat > "${properties_dir:?}/000-default.conf" << EOF
+<VirtualHost *:80>
+
+   
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/html
+
+	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+	# error, crit, alert, emerg.
+	# It is also possible to configure the loglevel for particular
+	# modules, e.g.
+	#LogLevel info ssl:warn
+
+	ErrorLog \${APACHE_LOG_DIR}/error.log
+	CustomLog \${APACHE_LOG_DIR}/access.log combined
+
+	# For most configuration files from conf-available/, which are
+	# enabled or disabled at a global level, it is possible to
+	# include a line for only one particular virtual host. For example the
+	# following line enables the CGI configuration for this host only
+	# after it has been globally disabled with "a2disconf".
+	#Include conf-available/serve-cgi-bin.conf
+
+      
+        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+        <Directory "/usr/lib/cgi-bin">
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Order allow,deny
+                Allow from all
+        </Directory>
+
+      ErrorLog /var/log/apache2/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog /var/log/apache2/access.log combined
+        ServerSignature On
+ 
+    #### VO Interface Setup ####
+        WSGIScriptAlias /${clearwing_host_alias:-} /var/www/html/app/app.py/
+
+        Alias ${clearwing_host_alias+/$clearwing_host_alias}/static   /var/www/html/app/static/
+        AddType text/css .css
+        AddType text/javascript .js
+        AddType text/html .htm
+        AddType image/gif .gif
+        AddType image/jpeg .jpeg .jpg
+
+        <Directory /var/www/html/app/static>
+                # directives to effect the static directory
+                Options +Indexes
+        </Directory>
+
+
+</VirtualHost>
+
+EOF
+
+
+
+
+# -----------------------------------------------------
+# Fetch the Genius Deployer
+# -----------------------------------------------------
+
+wget https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/docker/genius-compose.yml  -O  docker-compose.yml
+
+
+
+# -----------------------------------------------------
+# Run Clearwing 
+# -----------------------------------------------------
+
+docker-compose  --file "docker-compose.yml" run --service-ports  -d clearwing
+
+
+
+[Stevedore@Eterathiel ~]$ docker ps
+CONTAINER ID        IMAGE                              COMMAND                  CREATED             STATUS              PORTS                NAMES
+4294187a3b72        firethorn/clearwing:1.2.3-genius   "/bin/sh -c '/usr/sb…"   6 minutes ago       Up 6 minutes        0.0.0.0:80->80/tcp   stevedore_clearwing_run_1
+2b6162859e15        firethorn/firethorn-py:2.1.25      "python3"                4 hours ago         Up 4 hours                               stevedore_firethorn-py_run_3
+
+
+
+
+# -----------------------------------------------------
+# Start Apache in Clearwing Container
+# -----------------------------------------------------
+
+
+docker exec -it stevedore_clearwing_run_1 bash
+
+	chmod 755 -R /var/www/html/app/static/*
+	chmod 775 /var/www/html/app/sessions
+	chmod 755 -R /var/www/html/app/log/*
+        chmod 775 -R /var/www/html/app/static/temp
+	chown -R www-data:994 /var/www/html/app/log/
+	chown -R  www-data:994 /var/www/html/app/static/static_vo_tool/temp/
+	service apache2 start
+
+
+root@clearwing:/var/www/html/app# exit
+
+
+[Stevedore@Eterathiel ~]$ ifconfig
+..
+ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.202.13 
+...
+
+
+[Stevedore@Eterathiel ~]$ exit
+
+
+
+
+# -----------------------------------------------------
+# Setup Configuration for genius.roe ac uk in apache proxy
+# -----------------------------------------------------
+
+ssh Stevedore@Acilamwen
+
+
+docker exec -it apache bash
+
+
+
+nano /etc/httpd/conf.d/genius.roe.ac.uk.conf
+..
+
+	ServerName  genius.roe.ac.uk
+
+	<VirtualHost *:80>
+
+	    ServerName  genius.roe.ac.uk
+	    ServerAlias genius.metagrid.xyz
+	    ServerAdmin genius-admin@metagrid.xyz
+
+	    ErrorLog  logs/genius.roe.ac.uk-error.log
+	    CustomLog logs/genius.roe.ac.uk-access.log combined
+
+	    ProxyRequests Off
+	    ProxyPreserveHost On
+
+	    <Proxy *>
+		Order deny,allow
+		Allow from all
+	    </Proxy>
+
+	    ## PROXY ENTRIES HERE ##
+
+	    ProxyPassMatch    ^/tap\/(.*)$  http://siamond:8080/firethorn/tap/{tapident$
+	    ProxyPassReverse  ^/tap\/(.*)$  http://siamond:8080/firethorn/tap/{tapident$
+
+	    ProxyPassMatch    ^/firethorn\/(.*)$  http://siamond:8080/firethorn/$1
+	    ProxyPassReverse  ^/firethorn\/(.*)$  http://siamond:8080/firethorn/$1
+
+	    ProxyPassMatch ^/(.*)$  http://eterathiel:80/$1
+	    ProxyPassReverse ^/(.*)$  http://eterathiel:80/$1
+
+	    #ProxyPassMatch    ^/\/(.*)$  http://eterathiel:80/$1
+	    #ProxyPassReverse  ^/\/(.*)$  http://eterathiel:80/$1
+
+	    ## PROXY ENTRIES DONE ##
+
+	</VirtualHost>
+
+..
+
+
+[root@bc8d6979e451 /]# exit
+exit
+
+
+# Reload Apache
+[Stevedore@Acilamwen ~]$ docker kill --signal 'USR1' 'apache'
+
+
+# Exit
+[Stevedore@Acilamwen ~]$ exit
+logout
+Connection to acilamwen closed.
+
+
+
+stelios@stelios-pc:~$ curl http://genius.roe.ac.uk
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>GENIUS Web2.0 demonstrator prototype</title>
+<meta name="description" content=" GENIUS Web2.0 demonstrator prototype " />
+
+...
+
+
