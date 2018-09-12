@@ -175,13 +175,13 @@ datatype=$(secret 'firethorn.data.type')
 datauser=$(secret 'firethorn.data.user')
 datapass=$(secret 'firethorn.data.pass')
 
-tapschemadatabase=$(secret 'firethorn.tapschema.database.name')
+tapschemadata=$(secret 'firethorn.tapschema.database.name')
 tapschemauser=$(secret 'firethorn.tapschema.database.user')
 tapschemapass=$(secret 'firethorn.tapschema.database.pass')
 tapschemahost=$(secret 'firethorn.tapschema.database.host')
 tapschemaport=$(secret 'firethorn.tapschema.database.port')
 tapschematype=$(secret 'firethorn.tapschema.database.type')
-tapschemajdbcname=$(secret 'firethorn.tapschema.jdbc.name')
+tapschemajdbc=$(secret 'firethorn.tapschema.jdbc.name')
 
 tunneluser=$(secret 'ssh.tunnel.user')
 tunnelhost=$(secret 'ssh.tunnel.host')
@@ -225,8 +225,8 @@ firethorn.user.data=${userdata:?}
 firethorn.user.user=${useruser:?}
 firethorn.user.pass=${userpass:?}
 
-firethorn.tapschema.resource.name=${tapschemajdbcname}
-firethorn.tapschema.database.name=${tapschemadatabase}
+firethorn.tapschema.resource.name=${tapschemajdbc}
+firethorn.tapschema.database.name=${tapschemadata}
 firethorn.tapschema.database.host=${tapschemahost}
 firethorn.tapschema.database.port=${tapschemaport}
 firethorn.tapschema.database.user=${tapschemauser}
@@ -268,12 +268,12 @@ cat > "${HOME:?}/.env" << EOF
 	datacatalog=${datacatalog:?}
 	datatype=mssql
 
-	tapschemadatabase=${tapschemadatabase:?}
+	tapschemadata=${tapschemadata:?}
 	tapschemauser=${tapschemauser:?}
 	tapschemapass=${tapschemapass:?}
 	tapschemahost=${tapschemahost}
 	tapschemaport=${tapschemaport:?}
-	tapschemajdbcname=${tapschemajdbcname:?}
+	tapschemajdbc=${tapschemajdbc:?}
 	tapschematype=${tapschematype:?}
 
 	userhost=${userhost:?}
@@ -326,13 +326,13 @@ Python 3.6.5 (default, Mar 29 2018, 18:20:46)
 [GCC 8.0.1 20180317 (Red Hat 8.0.1-0.19)] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 
+import firethorn
+import firethorn_utils.configurator as configur
+ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
 
->>> import firethorn
->>> import firethorn_utils.configurator as configur
->>> ft = firethorn.Firethorn(endpoint="http://tap.metagrid.xyz/firethorn")
->>> ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
->>> configurator =  configur.Configurator(ft)
->>> configurator.load_resources("https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/osa-tap.json")
+ft.login("Chai6ietahsooPhavaS8", "wai3TooW9phohfoo7uCh","teeRe9zua8dootheirie")
+configurator =  configur.Configurator(ft)
+configurator.load_resources("https://raw.githubusercontent.com/stvoutsin/metadata/master/firethorn/config/osa-tap.json")
 
 Importing JDBC Schema: ATLASDR1
 Importing JDBC Schema: ATLASDR2

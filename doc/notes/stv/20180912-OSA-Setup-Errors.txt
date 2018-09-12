@@ -1,0 +1,760 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+ssh Stevedore@Araybwyn
+
+
+wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/f3d97f3d9a92/docker/compose/deploy/firethorn-py-standalone.yml  -O  firethorn-py.yml
+
+docker-compose --file "firethorn-py.yml" run firethorn-py bash
+
+
+
+root@firethorn-py:/home# nano firethorn.py/firethorn/data/osa-tap.json 
+
+..
+{
+    "AdqlResources" :[{
+       "id": "vie0DohJ",
+       "name": "OSA",
+       "Schemas": [
+            {
+                "jdbcid" : "avASDeA0",
+                "jdbcschema" : "dbo",
+                "jdbccatalog": "ATLASDR1",
+                "adqlschema": "ATLASDR1",
+                "metadata": {
+                    "metadoc": "https://raw.githubusercontent.com/wfau/metadata/master/metadocs/ATLASDR1_TablesSchema.xml",
+                    "catalog": "ATLASDR1"
+                }
+            },
+            {
+                "jdbcid" : "avASDeA0",
+                "jdbcschema" : "dbo",
+                "jdbccatalog": "BestDR7",
+                "adqlschema": "SDSSDR7",
+                "metadata": {
+                    "metadoc": "https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/BESTDR7_TablesSchema.xml",
+                    "catalog": "BestDR7"
+                }
+            },  
+            {
+                "jdbcid" : "avASDeA0",
+                "jdbcschema" : "dbo",
+                "jdbccatalog": "BestDR9",
+                "adqlschema": "SDSSDR9",
+                "metadata": {
+                    "metadoc": "https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/BESTDR9_TablesSchema.xml",
+                    "catalog": "BestDR9"
+                }
+             }  
+      
+        ]
+	   
+	}],
+...
+
+
+root@firethorn-py:/home# python3
+Python 3.5.2 (default, Nov 23 2017, 16:37:01) 
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+
+import firethorn
+import firethorn_utils.configurator as configur
+ft = firethorn.Firethorn(endpoint="http://tap.roe.ac.uk/firethorn")
+ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
+configurator =  configur.Configurator(ft)
+configurator.load_resources("/home/firethorn.py/firethorn/data/osa-tap.json")
+
+
+Importing JDBC Schema: ATLASDR1
+Importing JDBC Schema: ATLASDR2
+Importing JDBC Schema: ATLASDR3
+Importing JDBC Schema: 2MASS
+Importing JDBC Schema: 2XMM
+Importing JDBC Schema: WISE
+Importing JDBC Schema: VIKINGDR3
+Importing JDBC Schema: VHSDR1
+Importing JDBC Schema: MGC
+Importing JDBC Schema: GLIMPSE
+Importing JDBC Schema: FIRST
+Importing JDBC Schema: DENIS
+Importing JDBC Schema: VPHASDR3
+Importing JDBC Schema: VVVDR4
+Importing JDBC Schema: SDSSDR7
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing JDBC Schema: SDSSDR9
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+ERROR:root:HTTP Error 502: Proxy Error
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn_utils/configurator.py", line 127, in create_tap_service
+    response = urllib.request.urlopen(req)
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 502: Proxy Error
+TAP Service available at: http://tap.roe.ac.uk/firethorn/tap/1824174/
+
+exit
+
+
+# Proxy error when calling TAP Generation URL
+# Only caused when importing BESTDR7,9
+# Error during BestDR7 and BestDR9 Import is because the request returns:
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>502 Proxy Error</title>
+</head><body>
+<h1>Proxy Error</h1>
+<p>The proxy server received an invalid
+response from an upstream server.<br />
+The proxy server could not handle the request <em><a href="/firethorn/adql/resource/1824192/metadoc/import">POST&nbsp;/firethorn/adql/resource/1824192/metadoc/import</a></em>.<p>
+Reason: <strong>Error reading from remote server</strong></p></p>
+</body></html>
+
+..
+
+# Posssibly a timeout??
+
+
+# Checking Firethorn logs
+
+ssh Stevedore@Siamond
+[Stevedore@Siamond ~]$ docker exec -it stevedore_gillian_1 bash
+bash-4.4$ tail -f -n 1000 logs/firethorn-debug.log 
+
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.PhotoObj][TAI_r] 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2121401][BestDR9.PhotoObj] 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2121401][PhotoObj] 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2121401][PhotoObj] 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:17:18.834Z] 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:17:43,559 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2121401][PhotoObj] 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.PhotoObj][TAI_i] 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2121401][BestDR9.PhotoObj] 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2121401][PhotoObj] 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2121401][PhotoObj] 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:17:18.834Z] 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:17:43,597 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2121401][PhotoObj] 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.PhotoObj][TAI_z] 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2121401][BestDR9.PhotoObj] 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2121401][PhotoObj] 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2121401][PhotoObj] 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:17:18.834Z] 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:17:43,646 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2121401][PhotoObj] 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTableImporter) 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [AdqlTableImporter] Importing table [BestDR9.dbo][InsideMask] 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [AdqlSchemaEntity] tables() for [2069824][BestDR9] 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2069824][BestDR9] 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2069824][BestDR9] 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [AdqlSchemaEntity] factory() 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:06:29.120Z] 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:17:43,684 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:17:43,685 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2134552][InsideMask] 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [AdqlColumnImporter] Caching base columns for [BestDR9.InsideMask] 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2099523][InsideMask] 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2099523][InsideMask] 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [null] 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is null - scanning 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity] Checking for existing lock [2099523][InsideMask] 
+2018-09-12 16:17:43,734 DEBUG [main-interface-5] [BaseComponentEntity] No existing lock found [2099523][InsideMask] 
+2018-09-12 16:17:43,735 DEBUG [main-interface-5] [BaseComponentEntity] Adding new lock [2099523][InsideMask][2018-09-12T16:17:43.735Z] 
+2018-09-12 16:17:43,735 DEBUG [main-interface-5] [BaseComponentEntity] Running scan [2099523][InsideMask] 
+2018-09-12 16:17:43,735 DEBUG [main-interface-5] [JdbcTableEntity] scanimpl() for [2099523][BestDR9.dbo.InsideMask] 
+2018-09-12 16:17:43,735 DEBUG [main-interface-5] [JdbcConnectionEntity] scanner() for [mssql] 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] operator() for [mssql] 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://192.168.137.11/ATLASDR3][1] 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] operator() for [mssql] 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://192.168.137.11/ATLASDR3] 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] operator() for [mssql] 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://192.168.137.11/ATLASDR3] 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] operator() for [mssql] 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://192.168.137.11/ATLASDR3] 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] State is READY, initialising Connection 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] With user/pass 
+2018-09-12 16:17:43,737 DEBUG [main-interface-5] [JdbcConnectionEntity] connecting .... 
+2018-09-12 16:17:43,740 DEBUG [main-interface-5] [JdbcConnectionEntity] .... connected 
+2018-09-12 16:17:43,805 DEBUG [main-interface-5] [SQLServerScanner] Including schema [dbo] 
+2018-09-12 16:17:43,807 DEBUG [main-interface-5] [SQLServerScanner] rowcount [BestDR9][dbo][InsideMask] 
+2018-09-12 16:17:43,807 DEBUG [main-interface-5] [JdbcTableEntity] scanning table [InsideMask] 
+2018-09-12 16:17:43,809 DEBUG [main-interface-5] [JdbcTableEntity] Scanning for column [description] 
+2018-09-12 16:17:43,809 DEBUG [main-interface-5] [JdbcTableEntity] Creating new column [description] 
+2018-09-12 16:17:43,809 DEBUG [main-interface-5] [JdbcColumnEntity] JdbcColumnEntity [description][VARCHAR][2000] 
+2018-09-12 16:17:43,809 DEBUG [main-interface-5] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2018-09-12 16:17:43,809 DEBUG [main-interface-5] [JdbcColumnEntity$EntityListener]  ident [null] 
+2018-09-12 16:17:43,809 DEBUG [main-interface-5] [JdbcColumnEntity$EntityListener]  name  [description] 
+2018-09-12 16:17:43,858 DEBUG [main-interface-5] [JdbcTableEntity] Scanning for column [name] 
+2018-09-12 16:17:43,858 DEBUG [main-interface-5] [JdbcTableEntity] Creating new column [name] 
+2018-09-12 16:17:43,858 DEBUG [main-interface-5] [JdbcColumnEntity] JdbcColumnEntity [name][VARCHAR][128] 
+2018-09-12 16:17:43,858 DEBUG [main-interface-5] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2018-09-12 16:17:43,858 DEBUG [main-interface-5] [JdbcColumnEntity$EntityListener]  ident [null] 
+2018-09-12 16:17:43,858 DEBUG [main-interface-5] [JdbcColumnEntity$EntityListener]  name  [name] 
+2018-09-12 16:17:43,910 DEBUG [main-interface-5] [JdbcTableEntity] Scanning for column [value] 
+2018-09-12 16:17:43,910 DEBUG [main-interface-5] [JdbcTableEntity] Creating new column [value] 
+2018-09-12 16:17:43,910 DEBUG [main-interface-5] [JdbcColumnEntity] JdbcColumnEntity [value][BINARY][1] 
+2018-09-12 16:17:43,910 DEBUG [main-interface-5] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2018-09-12 16:17:43,910 DEBUG [main-interface-5] [JdbcColumnEntity$EntityListener]  ident [null] 
+2018-09-12 16:17:43,910 DEBUG [main-interface-5] [JdbcColumnEntity$EntityListener]  name  [value] 
+2018-09-12 16:17:43,948 DEBUG [main-interface-5] [JdbcConnectionEntity] operator() for [mssql] 
+2018-09-12 16:17:43,948 DEBUG [main-interface-5] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://192.168.137.11/ATLASDR3][1] 
+2018-09-12 16:17:43,948 DEBUG [main-interface-5] [JdbcConnectionEntity] operator() for [mssql] 
+2018-09-12 16:17:43,948 DEBUG [main-interface-5] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://192.168.137.11/ATLASDR3] 
+2018-09-12 16:17:43,948 DEBUG [main-interface-5] [JdbcTableEntity] columns() scan done for [2099523][BestDR9.dbo.InsideMask] 
+2018-09-12 16:17:43,948 DEBUG [main-interface-5] [JdbcTableEntity] Matching columns [3] 
+2018-09-12 16:17:43,948 DEBUG [main-interface-5] [JdbcTableEntity] Listed but not matched [0] 
+2018-09-12 16:17:43,948 DEBUG [main-interface-5] [BaseComponentEntity] Releasing locks [2099523][InsideMask] 
+2018-09-12 16:17:43,949 DEBUG [main-interface-5] [BaseComponentEntity] Found existing lock [2099523][InsideMask][2018-09-12T16:17:43.735Z] 
+2018-09-12 16:17:43,949 DEBUG [main-interface-5] [BaseComponentEntity] Removing .... 
+2018-09-12 16:17:43,949 DEBUG [main-interface-5] [BaseComponentEntity] Notifying .... 
+2018-09-12 16:17:43,950 DEBUG [main-interface-5] [AdqlColumnImporter] Caching base column [description] 
+2018-09-12 16:17:43,950 DEBUG [main-interface-5] [AdqlColumnImporter] Caching base column [name] 
+2018-09-12 16:17:43,950 DEBUG [main-interface-5] [AdqlColumnImporter] Caching base column [value] 
+2018-09-12 16:17:43,950 DEBUG [main-interface-5] [AdqlColumnImporter] Caching existing columns for [BestDR9.InsideMask] 
+2018-09-12 16:17:43,950 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2134552][BestDR9.InsideMask] 
+2018-09-12 16:17:43,950 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2134552][InsideMask] 
+2018-09-12 16:17:43,950 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2134552][InsideMask] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [null] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is null - scanning 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] Checking for existing lock [2134552][InsideMask] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] No existing lock found [2134552][InsideMask] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] Adding new lock [2134552][InsideMask][2018-09-12T16:17:43.951Z] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] Running scan [2134552][InsideMask] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] Releasing locks [2134552][InsideMask] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] Found existing lock [2134552][InsideMask][2018-09-12T16:17:43.951Z] 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] Removing .... 
+2018-09-12 16:17:43,951 DEBUG [main-interface-5] [BaseComponentEntity] Notifying .... 
+2018-09-12 16:17:43,952 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:17:43,952 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.InsideMask][name] 
+2018-09-12 16:17:43,952 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2134552][BestDR9.InsideMask] 
+2018-09-12 16:17:43,952 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2134552][InsideMask] 
+2018-09-12 16:17:43,952 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2134552][InsideMask] 
+2018-09-12 16:17:43,952 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:17:43,952 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:17:43,953 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:17:43,953 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:17:43.951Z] 
+2018-09-12 16:17:43,953 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:17:43,953 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:17:43,953 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2134552][InsideMask] 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.InsideMask][value] 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2134552][BestDR9.InsideMask] 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2134552][InsideMask] 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2134552][InsideMask] 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:17:44,000 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:17:43.951Z] 
+2018-09-12 16:17:44,001 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:17:44,001 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:17:44,001 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2134552][InsideMask] 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.InsideMask][description] 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2134552][BestDR9.InsideMask] 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2134552][InsideMask] 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2134552][InsideMask] 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:17:43.951Z] 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:17:44,038 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:17:44,039 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2134552][InsideMask] 
+2018-09-12 16:17:44,084 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:17:44,084 DEBUG [main-interface-5] [AbstractEntityController] Operation [2074848] 
+2018-09-12 16:17:44,084 DEBUG [main-interface-5] [AbstractEntityController] Authentication [Authentication[Ident[2079240]Identity[admin-Eeyaith2de]Method[urn:simple.http.header]]] 
+2018-09-12 16:17:44,084 DEBUG [main-interface-5] [AbstractEntityController] Identity  [154][admin-Eeyaith2de] 
+2018-09-12 16:17:44,084 DEBUG [main-interface-5] [AbstractEntityController] Community [103][group-an5Ejoeph4] 
+2018-09-12 16:17:44,085 DEBUG [main-interface-5] [AdqlSchemaEntity] services() 
+2018-09-12 16:17:44,085 DEBUG [main-interface-5] [AdqlSchemaEntity] services() 
+2018-09-12 16:17:44,085 DEBUG [main-interface-5] [JdbcSchemaEntity] services() 
+2018-09-12 16:17:44,085 DEBUG [main-interface-5] [JdbcSchemaEntity] services() 
+2018-09-12 16:17:44,085 DEBUG [main-interface-5] [AdqlSchemaEntity] services() 
+2018-09-12 16:17:44,085 DEBUG [main-interface-5] [AdqlSchemaEntity] services() 
+2018-09-12 16:17:44,086 DEBUG [main-interface-5] [HttpRequestDebug] Response headers 
+2018-09-12 16:17:44,086 DEBUG [main-interface-5] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2018-09-12 16:17:44,086 DEBUG [main-interface-5] [HttpRequestDebug]   [firethorn.auth.username][admin-Eeyaith2de] 
+2018-09-12 16:17:44,086 DEBUG [main-interface-5] [HttpRequestDebug]   [firethorn.auth.community][group-an5Ejoeph4] 
+2018-09-12 16:17:44,086 DEBUG [main-interface-5] [HttpRequestDebug]   [Content-Type][application/json;...] 
+2018-09-12 16:17:44,086 DEBUG [main-interface-5] [HttpRequestDebug]   [Transfer-Encoding][chunked] 
+2018-09-12 16:17:44,086 DEBUG [main-interface-5] [HttpRequestDebug]   [Date][Wed, 12 Sep 2018 ...] 
+2018-09-12 16:17:44,086 DEBUG [main-interface-5] [HttpRequestDebug]   [Connection][close] 
+2018-09-12 16:17:44,086 DEBUG [main-interface-5] [HttpRequestDebug] ---- 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug] Request properties 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug]   queryString [null] 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug]   authType    [null] 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug]   remoteAddr  [127.0.0.1] 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug] Request headers 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug]   [host][localhost:8081] 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug]   [user-agent][curl/7.59.0] 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug]   [accept][*/*] 
+2018-09-12 16:17:45,079 DEBUG [callback-interface-3] [HttpRequestDebug] Request parameters 
+2018-09-12 16:17:45,080 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+2018-09-12 16:17:45,084 DEBUG [callback-interface-3] [AnonymousAuthenticator] Adding anonymous Authentication 
+2018-09-12 16:17:45,086 DEBUG [callback-interface-3] [IdentityEntity] create(Community) [group-Iequu0Ao8e] 
+2018-09-12 16:17:45,100 DEBUG [callback-interface-3] [OperationEntity] authenticate() [2106383][2088380][anon-NDFSODZNKWFEOAAAAFS45EYAPY][urn:anonymous] 
+2018-09-12 16:17:45,100 DEBUG [callback-interface-3] [AuthMethodEntity] create() [2106383][2088380][anon-NDFSODZNKWFEOAAAAFS45EYAPY][urn:anonymous] 
+2018-09-12 16:17:45,103 DEBUG [callback-interface-3] [OperationEntity] primary(Authentication) 
+2018-09-12 16:17:45,104 DEBUG [callback-interface-3] [OperationEntity]   Authentication [Authentication[Ident[2115425]Identity[anon-NDFSODZNKWFEOAAAAFS45EYAPY]Method[urn:anonymous]]] 
+2018-09-12 16:17:45,104 DEBUG [callback-interface-3] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[2088380]]] 
+2018-09-12 16:17:45,104 DEBUG [callback-interface-3] [HttpRequestDebug] Response headers 
+2018-09-12 16:17:45,104 DEBUG [callback-interface-3] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2018-09-12 16:17:45,104 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2018-09-12 16:17:45,104 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.username][anon-NDFSODZNKWFE...] 
+2018-09-12 16:17:45,104 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.community][group-Iequu0Ao8e] 
+2018-09-12 16:17:45,104 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+2018-09-12 16:18:00,000 INFO  [FireThornTaskScheduler-29] [UserDataCleaner] process() [20307][10][PT24H][PT24H][DROP] 
+2018-09-12 16:18:00,001 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] admin() 
+2018-09-12 16:18:00,003 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] find (Community, String) [admin-Eeyaith2de] 
+2018-09-12 16:18:00,004 DEBUG [FireThornTaskScheduler-29] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:18:00,004 DEBUG [FireThornTaskScheduler-29] [OperationEntity] authenticate() [2106384][154][admin-Eeyaith2de][urn:system] 
+2018-09-12 16:18:00,004 DEBUG [FireThornTaskScheduler-29] [AuthMethodEntity] create() [2106384][154][admin-Eeyaith2de][urn:system] 
+2018-09-12 16:18:00,005 DEBUG [FireThornTaskScheduler-29] [OperationEntity] primary(Authentication) 
+2018-09-12 16:18:00,005 DEBUG [FireThornTaskScheduler-29] [OperationEntity]   Authentication [Authentication[Ident[2115426]Identity[admin-Eeyaith2de]Method[urn:system]]] 
+2018-09-12 16:18:00,005 DEBUG [FireThornTaskScheduler-29] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:18:00,005 DEBUG [FireThornTaskScheduler-29] [UserDataCleaner]   cutoff   [2018-09-11T16:18:00.005Z] 
+2018-09-12 16:18:00,005 DEBUG [FireThornTaskScheduler-29] [JdbcResourceEntity] userdata() 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [JdbcResourceEntity] Userdata resource [52][Userdata resource] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [UserDataCleaner]   resource [52][Userdata resource] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [JdbcResourceEntity] schemas() for [52][Userdata resource] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scan for [52][Userdata resource] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scantest for [52][Userdata resource] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prevscan   [2018-09-12T03:09:00.081Z] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseProtector] affirm(Iterable<Authentication>, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseProtector] check(Authentication, Action) [Authentication[Ident[2115426]Identity[admin-Eeyaith2de]Method[urn:system]]][uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:18:00,007 DEBUG [FireThornTaskScheduler-29] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:18:00,008 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] admin() 
+2018-09-12 16:18:00,008 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] find (Community, String) [admin-Eeyaith2de] 
+2018-09-12 16:18:00,009 DEBUG [FireThornTaskScheduler-29] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:18:00,010 DEBUG [FireThornTaskScheduler-29] [UserDataCleaner]   schema [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:18:00,010 DEBUG [FireThornTaskScheduler-29] [JdbcSchemaEntity] tables() for [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:18:00,010 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scan for [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:18:00,010 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scantest for [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:18:00,010 DEBUG [FireThornTaskScheduler-29] [JdbcSchemaEntity] factory() 
+2018-09-12 16:18:00,010 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:18:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:18:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:18:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prevscan   [2018-09-12T03:09:24.904Z] 
+2018-09-12 16:18:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:18:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:18:00,011 DEBUG [FireThornTaskScheduler-29] [JdbcTableEntity] pending(JdbcSchema, DateTime) [387][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-09-11T16:18:00.005Z] 
+2018-09-12 16:18:15,236 DEBUG [callback-interface-2] [HttpRequestDebug] Request properties 
+2018-09-12 16:18:15,236 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+2018-09-12 16:18:15,237 DEBUG [callback-interface-2] [HttpRequestDebug]   queryString [null] 
+2018-09-12 16:18:15,237 DEBUG [callback-interface-2] [HttpRequestDebug]   authType    [null] 
+2018-09-12 16:18:15,237 DEBUG [callback-interface-2] [HttpRequestDebug]   remoteAddr  [127.0.0.1] 
+2018-09-12 16:18:15,237 DEBUG [callback-interface-2] [HttpRequestDebug] Request headers 
+2018-09-12 16:18:15,237 DEBUG [callback-interface-2] [HttpRequestDebug]   [host][localhost:8081] 
+2018-09-12 16:18:15,237 DEBUG [callback-interface-2] [HttpRequestDebug]   [user-agent][curl/7.59.0] 
+2018-09-12 16:18:15,237 DEBUG [callback-interface-2] [HttpRequestDebug]   [accept][*/*] 
+2018-09-12 16:18:15,237 DEBUG [callback-interface-2] [HttpRequestDebug] Request parameters 
+2018-09-12 16:18:15,237 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+2018-09-12 16:18:15,241 DEBUG [callback-interface-2] [AnonymousAuthenticator] Adding anonymous Authentication 
+2018-09-12 16:18:15,242 DEBUG [callback-interface-2] [IdentityEntity] create(Community) [group-Iequu0Ao8e] 
+2018-09-12 16:18:15,259 DEBUG [callback-interface-2] [OperationEntity] authenticate() [2106385][2088381][anon-3G6HHI4V2ECVKAAAAFS45E3WJI][urn:anonymous] 
+2018-09-12 16:18:15,259 DEBUG [callback-interface-2] [AuthMethodEntity] create() [2106385][2088381][anon-3G6HHI4V2ECVKAAAAFS45E3WJI][urn:anonymous] 
+2018-09-12 16:18:15,261 DEBUG [callback-interface-2] [OperationEntity] primary(Authentication) 
+2018-09-12 16:18:15,262 DEBUG [callback-interface-2] [OperationEntity]   Authentication [Authentication[Ident[2115427]Identity[anon-3G6HHI4V2ECVKAAAAFS45E3WJI]Method[urn:anonymous]]] 
+2018-09-12 16:18:15,262 DEBUG [callback-interface-2] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[2088381]]] 
+2018-09-12 16:18:15,262 DEBUG [callback-interface-2] [HttpRequestDebug] Response headers 
+2018-09-12 16:18:15,262 DEBUG [callback-interface-2] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2018-09-12 16:18:15,262 DEBUG [callback-interface-2] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2018-09-12 16:18:15,262 DEBUG [callback-interface-2] [HttpRequestDebug]   [firethorn.auth.username][anon-3G6HHI4V2ECV...] 
+2018-09-12 16:18:15,262 DEBUG [callback-interface-2] [HttpRequestDebug]   [firethorn.auth.community][group-Iequu0Ao8e] 
+2018-09-12 16:18:15,263 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+2018-09-12 16:18:45,404 DEBUG [callback-interface-4] [HttpRequestDebug] Request properties 
+2018-09-12 16:18:45,404 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+2018-09-12 16:18:45,405 DEBUG [callback-interface-4] [HttpRequestDebug]   queryString [null] 
+2018-09-12 16:18:45,405 DEBUG [callback-interface-4] [HttpRequestDebug]   authType    [null] 
+2018-09-12 16:18:45,405 DEBUG [callback-interface-4] [HttpRequestDebug]   remoteAddr  [127.0.0.1] 
+2018-09-12 16:18:45,405 DEBUG [callback-interface-4] [HttpRequestDebug] Request headers 
+2018-09-12 16:18:45,405 DEBUG [callback-interface-4] [HttpRequestDebug]   [host][localhost:8081] 
+2018-09-12 16:18:45,405 DEBUG [callback-interface-4] [HttpRequestDebug]   [user-agent][curl/7.59.0] 
+2018-09-12 16:18:45,405 DEBUG [callback-interface-4] [HttpRequestDebug]   [accept][*/*] 
+2018-09-12 16:18:45,405 DEBUG [callback-interface-4] [HttpRequestDebug] Request parameters 
+2018-09-12 16:18:45,405 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+2018-09-12 16:18:45,411 DEBUG [callback-interface-4] [AnonymousAuthenticator] Adding anonymous Authentication 
+2018-09-12 16:18:45,413 DEBUG [callback-interface-4] [IdentityEntity] create(Community) [group-Iequu0Ao8e] 
+2018-09-12 16:18:45,432 DEBUG [callback-interface-4] [OperationEntity] authenticate() [2106386][2088382][anon-JJ5XEWDAT5JXKAAAAFS45E7MEU][urn:anonymous] 
+2018-09-12 16:18:45,433 DEBUG [callback-interface-4] [AuthMethodEntity] create() [2106386][2088382][anon-JJ5XEWDAT5JXKAAAAFS45E7MEU][urn:anonymous] 
+2018-09-12 16:18:45,437 DEBUG [callback-interface-4] [OperationEntity] primary(Authentication) 
+2018-09-12 16:18:45,437 DEBUG [callback-interface-4] [OperationEntity]   Authentication [Authentication[Ident[2115428]Identity[anon-JJ5XEWDAT5JXKAAAAFS45E7MEU]Method[urn:anonymous]]] 
+2018-09-12 16:18:45,437 DEBUG [callback-interface-4] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[2088382]]] 
+2018-09-12 16:18:45,437 DEBUG [callback-interface-4] [HttpRequestDebug] Response headers 
+2018-09-12 16:18:45,437 DEBUG [callback-interface-4] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2018-09-12 16:18:45,437 DEBUG [callback-interface-4] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2018-09-12 16:18:45,437 DEBUG [callback-interface-4] [HttpRequestDebug]   [firethorn.auth.username][anon-JJ5XEWDAT5JX...] 
+2018-09-12 16:18:45,437 DEBUG [callback-interface-4] [HttpRequestDebug]   [firethorn.auth.community][group-Iequu0Ao8e] 
+2018-09-12 16:18:45,438 DEBUG [callback-interface-4] [HttpRequestDebug] ---- 
+2018-09-12 16:19:00,000 INFO  [FireThornTaskScheduler-29] [UserDataCleaner] process() [20308][10][PT24H][PT24H][DROP] 
+2018-09-12 16:19:00,001 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] admin() 
+2018-09-12 16:19:00,003 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] find (Community, String) [admin-Eeyaith2de] 
+2018-09-12 16:19:00,004 DEBUG [FireThornTaskScheduler-29] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:19:00,005 DEBUG [FireThornTaskScheduler-29] [OperationEntity] authenticate() [2106387][154][admin-Eeyaith2de][urn:system] 
+2018-09-12 16:19:00,005 DEBUG [FireThornTaskScheduler-29] [AuthMethodEntity] create() [2106387][154][admin-Eeyaith2de][urn:system] 
+2018-09-12 16:19:00,006 DEBUG [FireThornTaskScheduler-29] [OperationEntity] primary(Authentication) 
+2018-09-12 16:19:00,006 DEBUG [FireThornTaskScheduler-29] [OperationEntity]   Authentication [Authentication[Ident[2115429]Identity[admin-Eeyaith2de]Method[urn:system]]] 
+2018-09-12 16:19:00,006 DEBUG [FireThornTaskScheduler-29] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:19:00,006 DEBUG [FireThornTaskScheduler-29] [UserDataCleaner]   cutoff   [2018-09-11T16:19:00.006Z] 
+2018-09-12 16:19:00,006 DEBUG [FireThornTaskScheduler-29] [JdbcResourceEntity] userdata() 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [JdbcResourceEntity] Userdata resource [52][Userdata resource] 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [UserDataCleaner]   resource [52][Userdata resource] 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [JdbcResourceEntity] schemas() for [52][Userdata resource] 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scan for [52][Userdata resource] 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scantest for [52][Userdata resource] 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prevscan   [2018-09-12T03:09:00.081Z] 
+2018-09-12 16:19:00,008 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:19:00,009 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:19:00,009 DEBUG [FireThornTaskScheduler-29] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:19:00,009 DEBUG [FireThornTaskScheduler-29] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:19:00,009 DEBUG [FireThornTaskScheduler-29] [BaseProtector] affirm(Iterable<Authentication>, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:19:00,009 DEBUG [FireThornTaskScheduler-29] [BaseProtector] check(Authentication, Action) [Authentication[Ident[2115429]Identity[admin-Eeyaith2de]Method[urn:system]]][uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:19:00,009 DEBUG [FireThornTaskScheduler-29] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:19:00,009 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] admin() 
+2018-09-12 16:19:00,010 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] find (Community, String) [admin-Eeyaith2de] 
+2018-09-12 16:19:00,011 DEBUG [FireThornTaskScheduler-29] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:19:00,013 DEBUG [FireThornTaskScheduler-29] [UserDataCleaner]   schema [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:19:00,013 DEBUG [FireThornTaskScheduler-29] [JdbcSchemaEntity] tables() for [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:19:00,013 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scan for [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:19:00,013 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scantest for [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:19:00,013 DEBUG [FireThornTaskScheduler-29] [JdbcSchemaEntity] factory() 
+2018-09-12 16:19:00,013 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:19:00,013 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:19:00,013 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:19:00,014 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prevscan   [2018-09-12T03:09:24.904Z] 
+2018-09-12 16:19:00,014 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:19:00,014 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:19:00,014 DEBUG [FireThornTaskScheduler-29] [JdbcTableEntity] pending(JdbcSchema, DateTime) [387][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-09-11T16:19:00.006Z] 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug] Request properties 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug]   queryString [null] 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug]   authType    [null] 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug]   remoteAddr  [127.0.0.1] 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug] Request headers 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug]   [host][localhost:8081] 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug]   [user-agent][curl/7.59.0] 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug]   [accept][*/*] 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug] Request parameters 
+2018-09-12 16:19:15,575 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+2018-09-12 16:19:15,604 DEBUG [callback-interface-5] [AnonymousAuthenticator] Adding anonymous Authentication 
+2018-09-12 16:19:15,606 DEBUG [callback-interface-5] [IdentityEntity] create(Community) [group-Iequu0Ao8e] 
+2018-09-12 16:19:15,611 DEBUG [callback-interface-5] [OperationEntity] authenticate() [2106388][2088383][anon-OIFTOGSKBBLYCAAAAFS45FDCCY][urn:anonymous] 
+2018-09-12 16:19:15,611 DEBUG [callback-interface-5] [AuthMethodEntity] create() [2106388][2088383][anon-OIFTOGSKBBLYCAAAAFS45FDCCY][urn:anonymous] 
+2018-09-12 16:19:15,625 DEBUG [callback-interface-5] [OperationEntity] primary(Authentication) 
+2018-09-12 16:19:15,625 DEBUG [callback-interface-5] [OperationEntity]   Authentication [Authentication[Ident[2115430]Identity[anon-OIFTOGSKBBLYCAAAAFS45FDCCY]Method[urn:anonymous]]] 
+2018-09-12 16:19:15,625 DEBUG [callback-interface-5] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[2088383]]] 
+2018-09-12 16:19:15,626 DEBUG [callback-interface-5] [HttpRequestDebug] Response headers 
+2018-09-12 16:19:15,626 DEBUG [callback-interface-5] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2018-09-12 16:19:15,626 DEBUG [callback-interface-5] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2018-09-12 16:19:15,626 DEBUG [callback-interface-5] [HttpRequestDebug]   [firethorn.auth.username][anon-OIFTOGSKBBLY...] 
+2018-09-12 16:19:15,626 DEBUG [callback-interface-5] [HttpRequestDebug]   [firethorn.auth.community][group-Iequu0Ao8e] 
+2018-09-12 16:19:15,626 DEBUG [callback-interface-5] [HttpRequestDebug] ---- 
+2018-09-12 16:19:45,759 DEBUG [callback-interface-3] [HttpRequestDebug] Request properties 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug]   queryString [null] 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug]   authType    [null] 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug]   remoteAddr  [127.0.0.1] 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug] Request headers 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug]   [host][localhost:8081] 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug]   [user-agent][curl/7.59.0] 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug]   [accept][*/*] 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug] Request parameters 
+2018-09-12 16:19:45,760 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+2018-09-12 16:19:45,823 DEBUG [callback-interface-3] [AnonymousAuthenticator] Adding anonymous Authentication 
+2018-09-12 16:19:45,828 DEBUG [callback-interface-3] [IdentityEntity] create(Community) [group-Iequu0Ao8e] 
+2018-09-12 16:19:45,832 DEBUG [callback-interface-3] [OperationEntity] authenticate() [2106389][2088384][anon-YFTFTK2ZP5PBIAAAAFS45FGYEQ][urn:anonymous] 
+2018-09-12 16:19:45,832 DEBUG [callback-interface-3] [AuthMethodEntity] create() [2106389][2088384][anon-YFTFTK2ZP5PBIAAAAFS45FGYEQ][urn:anonymous] 
+2018-09-12 16:19:45,850 DEBUG [callback-interface-3] [OperationEntity] primary(Authentication) 
+2018-09-12 16:19:45,850 DEBUG [callback-interface-3] [OperationEntity]   Authentication [Authentication[Ident[2115431]Identity[anon-YFTFTK2ZP5PBIAAAAFS45FGYEQ]Method[urn:anonymous]]] 
+2018-09-12 16:19:45,850 DEBUG [callback-interface-3] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[2088384]]] 
+2018-09-12 16:19:45,851 DEBUG [callback-interface-3] [HttpRequestDebug] Response headers 
+2018-09-12 16:19:45,851 DEBUG [callback-interface-3] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2018-09-12 16:19:45,851 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2018-09-12 16:19:45,851 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.username][anon-YFTFTK2ZP5PB...] 
+2018-09-12 16:19:45,851 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.community][group-Iequu0Ao8e] 
+2018-09-12 16:19:45,851 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+2018-09-12 16:20:00,000 INFO  [FireThornTaskScheduler-29] [UserDataCleaner] process() [20309][10][PT24H][PT24H][DROP] 
+2018-09-12 16:20:00,001 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] admin() 
+2018-09-12 16:20:00,003 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] find (Community, String) [admin-Eeyaith2de] 
+2018-09-12 16:20:00,003 DEBUG [FireThornTaskScheduler-29] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:20:00,004 DEBUG [FireThornTaskScheduler-29] [OperationEntity] authenticate() [2106390][154][admin-Eeyaith2de][urn:system] 
+2018-09-12 16:20:00,004 DEBUG [FireThornTaskScheduler-29] [AuthMethodEntity] create() [2106390][154][admin-Eeyaith2de][urn:system] 
+2018-09-12 16:20:00,005 DEBUG [FireThornTaskScheduler-29] [OperationEntity] primary(Authentication) 
+2018-09-12 16:20:00,005 DEBUG [FireThornTaskScheduler-29] [OperationEntity]   Authentication [Authentication[Ident[2115432]Identity[admin-Eeyaith2de]Method[urn:system]]] 
+2018-09-12 16:20:00,005 DEBUG [FireThornTaskScheduler-29] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:20:00,005 DEBUG [FireThornTaskScheduler-29] [UserDataCleaner]   cutoff   [2018-09-11T16:20:00.005Z] 
+2018-09-12 16:20:00,005 DEBUG [FireThornTaskScheduler-29] [JdbcResourceEntity] userdata() 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [JdbcResourceEntity] Userdata resource [52][Userdata resource] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [UserDataCleaner]   resource [52][Userdata resource] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [JdbcResourceEntity] schemas() for [52][Userdata resource] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scan for [52][Userdata resource] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scantest for [52][Userdata resource] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prevscan   [2018-09-12T03:09:00.081Z] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:20:00,007 DEBUG [FireThornTaskScheduler-29] [BaseProtector] affirm(Iterable<Authentication>, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:20:00,008 DEBUG [FireThornTaskScheduler-29] [BaseProtector] check(Authentication, Action) [Authentication[Ident[2115432]Identity[admin-Eeyaith2de]Method[urn:system]]][uk.ac.roe.wfau.firethorn.access.BaseAction@71058bd4] 
+2018-09-12 16:20:00,008 DEBUG [FireThornTaskScheduler-29] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:20:00,008 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] admin() 
+2018-09-12 16:20:00,008 DEBUG [FireThornTaskScheduler-29] [IdentityEntity] find (Community, String) [admin-Eeyaith2de] 
+2018-09-12 16:20:00,009 DEBUG [FireThornTaskScheduler-29] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[154]]] 
+2018-09-12 16:20:00,010 DEBUG [FireThornTaskScheduler-29] [UserDataCleaner]   schema [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [JdbcSchemaEntity] tables() for [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scan for [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scantest for [387][FirethornUserdataZRQ20170621151245DEV.dbo] 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [JdbcSchemaEntity] factory() 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prevscan   [2018-09-12T03:09:24.904Z] 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:20:00,011 DEBUG [FireThornTaskScheduler-29] [JdbcTableEntity] pending(JdbcSchema, DateTime) [387][FirethornUserdataZRQ20170621151245DEV.dbo] [2018-09-11T16:20:00.005Z] 
+2018-09-12 16:20:15,993 DEBUG [callback-interface-2] [HttpRequestDebug] Request properties 
+2018-09-12 16:20:15,993 DEBUG [callback-interface-2] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+2018-09-12 16:20:15,994 DEBUG [callback-interface-2] [HttpRequestDebug]   queryString [null] 
+2018-09-12 16:20:15,994 DEBUG [callback-interface-2] [HttpRequestDebug]   authType    [null] 
+2018-09-12 16:20:15,994 DEBUG [callback-interface-2] [HttpRequestDebug]   remoteAddr  [127.0.0.1] 
+2018-09-12 16:20:15,994 DEBUG [callback-interface-2] [HttpRequestDebug] Request headers 
+2018-09-12 16:20:15,994 DEBUG [callback-interface-2] [HttpRequestDebug]   [host][localhost:8081] 
+2018-09-12 16:20:15,994 DEBUG [callback-interface-2] [HttpRequestDebug]   [user-agent][curl/7.59.0] 
+2018-09-12 16:20:15,994 DEBUG [callback-interface-2] [HttpRequestDebug]   [accept][*/*] 
+2018-09-12 16:20:15,994 DEBUG [callback-interface-2] [HttpRequestDebug] Request parameters 
+2018-09-12 16:20:15,994 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+2018-09-12 16:20:16,028 DEBUG [callback-interface-2] [AnonymousAuthenticator] Adding anonymous Authentication 
+2018-09-12 16:20:16,030 DEBUG [callback-interface-2] [IdentityEntity] create(Community) [group-Iequu0Ao8e] 
+2018-09-12 16:20:16,035 DEBUG [callback-interface-2] [OperationEntity] authenticate() [2106391][2088385][anon-NSPUYJJA4UH34AAAAFS45FKODY][urn:anonymous] 
+2018-09-12 16:20:16,035 DEBUG [callback-interface-2] [AuthMethodEntity] create() [2106391][2088385][anon-NSPUYJJA4UH34AAAAFS45FKODY][urn:anonymous] 
+2018-09-12 16:20:16,053 DEBUG [callback-interface-2] [OperationEntity] primary(Authentication) 
+2018-09-12 16:20:16,053 DEBUG [callback-interface-2] [OperationEntity]   Authentication [Authentication[Ident[2115433]Identity[anon-NSPUYJJA4UH34AAAAFS45FKODY]Method[urn:anonymous]]] 
+2018-09-12 16:20:16,053 DEBUG [callback-interface-2] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[2088385]]] 
+2018-09-12 16:20:16,054 DEBUG [callback-interface-2] [HttpRequestDebug] Response headers 
+2018-09-12 16:20:16,054 DEBUG [callback-interface-2] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2018-09-12 16:20:16,054 DEBUG [callback-interface-2] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2018-09-12 16:20:16,054 DEBUG [callback-interface-2] [HttpRequestDebug]   [firethorn.auth.username][anon-NSPUYJJA4UH3...] 
+2018-09-12 16:20:16,054 DEBUG [callback-interface-2] [HttpRequestDebug]   [firethorn.auth.community][group-Iequu0Ao8e] 
+2018-09-12 16:20:16,054 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+
+
+
+
+## Searching through the log for the last instance of BestDR7
+
+
+DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:38:11,059 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.RC3][HUBBLE] 
+2018-09-12 16:38:11,059 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2174854][BestDR9.RC3] 
+2018-09-12 16:38:11,059 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2174854][RC3] 
+2018-09-12 16:38:11,059 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2174854][RC3] 
+2018-09-12 16:38:11,059 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:38:11,059 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:38:11,059 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:38:11,059 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:38:10.734Z] 
+2018-09-12 16:38:11,060 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:38:11,060 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:38:11,060 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2174854][RC3] 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [AdqlColumnImporter] Importing column [BestDR7.dbo.Sector2Tile][type] 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [AdqlTableEntity] columns() for [2174856][BestDR7.Sector2Tile] 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [BaseComponentEntity] scan for [2174856][Sector2Tile] 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [BaseComponentEntity] scantest for [2174856][Sector2Tile] 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [BaseComponentEntity] prevscan   [2018-09-12T16:38:11.051Z] 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:38:11,101 DEBUG [main-interface-1] [AdqlTableEntity] realize() [2174856][Sector2Tile] 
+2018-09-12 16:38:11,103 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:38:11,103 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:38:11,103 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.RC3][LOGD_25] 
+2018-09-12 16:38:11,103 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2174854][BestDR9.RC3] 
+2018-09-12 16:38:11,104 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2174854][RC3] 
+2018-09-12 16:38:11,104 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2174854][RC3] 
+2018-09-12 16:38:11,104 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:38:11,104 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:38:11,104 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:38:11,104 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:38:10.734Z] 
+2018-09-12 16:38:11,104 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:38:11,104 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:38:11,104 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2174854][RC3] 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [AdqlColumnImporter] Importing column [BestDR7.dbo.Sector2Tile][tile] 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [AdqlTableEntity] columns() for [2174856][BestDR7.Sector2Tile] 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [BaseComponentEntity] scan for [2174856][Sector2Tile] 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [BaseComponentEntity] scantest for [2174856][Sector2Tile] 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [BaseComponentEntity] prevscan   [2018-09-12T16:38:11.051Z] 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:38:11,150 DEBUG [main-interface-1] [AdqlTableEntity] realize() [2174856][Sector2Tile] 
+2018-09-12 16:38:11,152 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:38:11,152 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:38:11,152 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.RC3][LOGD_25Q] 
+2018-09-12 16:38:11,152 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2174854][BestDR9.RC3] 
+2018-09-12 16:38:11,152 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2174854][RC3] 
+2018-09-12 16:38:11,152 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2174854][RC3] 
+2018-09-12 16:38:11,152 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:38:11,152 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:38:11,152 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:38:11,153 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:38:10.734Z] 
+2018-09-12 16:38:11,153 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:38:11,153 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:38:11,153 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2174854][RC3] 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.RC3][LOGD_25ERR] 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2174854][BestDR9.RC3] 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2174854][RC3] 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2174854][RC3] 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:38:10.734Z] 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:38:11,200 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2174854][RC3] 
+2018-09-12 16:38:11,205 DEBUG [main-interface-1] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:38:11,205 DEBUG [main-interface-1] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:38:11,205 DEBUG [main-interface-1] [AdqlColumnImporter] Importing column [BestDR7.dbo.Sector2Tile][isMask] 
+2018-09-12 16:38:11,205 DEBUG [main-interface-1] [AdqlTableEntity] columns() for [2174856][BestDR7.Sector2Tile] 
+2018-09-12 16:38:11,205 DEBUG [main-interface-1] [BaseComponentEntity] scan for [2174856][Sector2Tile] 
+2018-09-12 16:38:11,206 DEBUG [main-interface-1] [BaseComponentEntity] scantest for [2174856][Sector2Tile] 
+2018-09-12 16:38:11,206 DEBUG [main-interface-1] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:38:11,206 DEBUG [main-interface-1] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:38:11,206 DEBUG [main-interface-1] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:38:11,207 DEBUG [main-interface-1] [BaseComponentEntity] prevscan   [2018-09-12T16:38:11.051Z] 
+2018-09-12 16:38:11,207 DEBUG [main-interface-1] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:38:11,207 DEBUG [main-interface-1] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:38:11,207 DEBUG [main-interface-1] [AdqlTableEntity] realize() [2174856][Sector2Tile] 
+2018-09-12 16:38:11,244 DEBUG [main-interface-5] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:38:11,244 DEBUG [main-interface-5] [MetaDocReader] inport(XMLEventReader, AdqlTable) 
+2018-09-12 16:38:11,244 DEBUG [main-interface-5] [AdqlColumnImporter] Importing column [BestDR9.dbo.RC3][PA] 
+2018-09-12 16:38:11,244 DEBUG [main-interface-5] [AdqlTableEntity] columns() for [2174854][BestDR9.RC3] 
+2018-09-12 16:38:11,245 DEBUG [main-interface-5] [BaseComponentEntity] scan for [2174854][RC3] 
+2018-09-12 16:38:11,245 DEBUG [main-interface-5] [BaseComponentEntity] scantest for [2174854][RC3] 
+2018-09-12 16:38:11,245 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory] scanperiod() 
+2018-09-12 16:38:11,245 DEBUG [main-interface-5] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2018-09-12 16:38:11,245 DEBUG [main-interface-5] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2018-09-12 16:38:11,246 DEBUG [main-interface-5] [BaseComponentEntity] prevscan   [2018-09-12T16:38:10.734Z] 
+2018-09-12 16:38:11,246 DEBUG [main-interface-5] [BaseComponentEntity] scanperiod [PT25H] 
+2018-09-12 16:38:11,246 DEBUG [main-interface-5] [BaseComponentEntity] prev scan is recent - skipping 
+2018-09-12 16:38:11,246 DEBUG [main-interface-5] [AdqlTableEntity] realize() [2174854][RC3] 
+2018-09-12 16:38:11,280 DEBUG [main-interface-1] [MetaDocReader] read(AdqlColumn, XMLEventReader) 
+2018-09-12 16:38:11,280 DEBUG [main-interface-1] [AbstractEntityController] Operation [2134628] 
+2018-09-12 16:38:11,280 DEBUG [main-interface-1] [AbstractEntityController] Authentication [Authentication[Ident[2134670]Identity[admin-Eeyaith2de]Method[urn:simple.http.header]]] 
+2018-09-12 16:38:11,280 DEBUG [main-interface-1] [AbstractEntityController] Identity  [154][admin-Eeyaith2de] 
+2018-09-12 16:38:11,280 DEBUG [main-interface-1] [AbstractEntityController] Community [103][group-an5Ejoeph4] 
+2018-09-12 16:38:11,281 DEBUG [main-interface-1] [AdqlSchemaEntity] services() 
+2018-09-12 16:38:11,281 DEBUG [main-interface-1] [AdqlSchemaEntity] services() 
+2018-09-12 16:38:11,281 DEBUG [main-interface-1] [JdbcSchemaEntity] services() 
+2018-09-12 16:38:11,281 DEBUG [main-interface-1] [JdbcSchemaEntity] services() 
+2018-09-12 16:38:11,281 DEBUG [main-interface-1] [AdqlSchemaEntity] services() 
+2018-09-12 16:38:11,281 DEBUG [main-interface-1] [AdqlSchemaEntity] services() 
+
+
+# Nothing popping out in Firethorn log
