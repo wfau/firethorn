@@ -28,52 +28,6 @@ wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/f3d97f3d9a92/docker/comp
 docker-compose --file "firethorn-py.yml" run firethorn-py bash
 
 
-
-root@firethorn-py:/home# nano firethorn.py/firethorn/data/osa-tap.json 
-
-..
-{
-    "AdqlResources" :[{
-       "id": "vie0DohJ",
-       "name": "OSA",
-       "Schemas": [
-            {
-                "jdbcid" : "avASDeA0",
-                "jdbcschema" : "dbo",
-                "jdbccatalog": "ATLASDR1",
-                "adqlschema": "ATLASDR1",
-                "metadata": {
-                    "metadoc": "https://raw.githubusercontent.com/wfau/metadata/master/metadocs/ATLASDR1_TablesSchema.xml",
-                    "catalog": "ATLASDR1"
-                }
-            },
-            {
-                "jdbcid" : "avASDeA0",
-                "jdbcschema" : "dbo",
-                "jdbccatalog": "BestDR7",
-                "adqlschema": "SDSSDR7",
-                "metadata": {
-                    "metadoc": "https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/BESTDR7_TablesSchema.xml",
-                    "catalog": "BestDR7"
-                }
-            },  
-            {
-                "jdbcid" : "avASDeA0",
-                "jdbcschema" : "dbo",
-                "jdbccatalog": "BestDR9",
-                "adqlschema": "SDSSDR9",
-                "metadata": {
-                    "metadoc": "https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/BESTDR9_TablesSchema.xml",
-                    "catalog": "BestDR9"
-                }
-             }  
-      
-        ]
-	   
-	}],
-...
-
-
 root@firethorn-py:/home# python3
 Python 3.5.2 (default, Nov 23 2017, 16:37:01) 
 [GCC 5.4.0 20160609] on linux
