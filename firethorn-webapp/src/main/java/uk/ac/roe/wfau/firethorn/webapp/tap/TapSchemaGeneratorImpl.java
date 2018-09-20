@@ -455,10 +455,21 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 				for (AdqlTable table : schema.tables().select()) {
 					String tableName = table.name().replace("'", "''");
 					String tableDescription = table.text();
+
+					if (tableName.toLowerCase().equals("region")
+					    ||  tableName.toLowerCase().equals("zone")
+					    ||  tableName.toLowerCase().equals("diagnostics")
+					    ||  tableName.toLowerCase().equals("first")
+					    ||  tableName.toLowerCase().equals("match")
+					){
+                                            tableName = '"' + tableName + '"';
+                                        }
+
 					if (tableDescription == null) {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
 								+ "\".tables (\"schema_name\", \"table_name\", \"table_type\", \"description\", \"utype\", \"ft_table_id\") VALUES ('"
 								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', NULL, '', 0);";
+                                                
 					} else {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
 								+ "\".tables (\"schema_name\", \"table_name\", \"table_type\", \"description\", \"utype\", \"ft_table_id\") VALUES ('"

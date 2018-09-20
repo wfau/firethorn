@@ -26,7 +26,11 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
             {
             %>
         <table type='table'>
-            <name><%= schema.name() %>.<%= table.name() %></name>
+            <% if (table.name().toLowerCase().equals("region") || table.name().toLowerCase().equals("match") || table.name().toLowerCase().equals("diagnostics") || table.name().toLowerCase().equals("first") { %>
+                <name><%= schema.name() %>.<%='"' + table.name() +'"' %></name>
+            <% } else {  %>
+               <name><%= table.name() %></name>
+            <% } %>
             <title></title>
             <utype></utype>
             <%
@@ -37,8 +41,8 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 {
                 %>
             <column>
-           		        <% if (column.name().equals("size")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
+		   		<% if (column.name().equals("size")) { %>
+						 <name><%= '"' + column.name() +'"'  %></name>
 				<% } else if (column.name().equals("timeStamp")) { %>
 					 <name><%= '"' + column.name() +'"'  %></name>
 				<% } else if (column.name().equals("coord1")) { %>
