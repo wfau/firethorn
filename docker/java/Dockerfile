@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:2.1.25
+FROM firethorn/fedora:2.1.25-stv-tap-fix
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 ENV JAVA_VERSION=10.0.1.10
