@@ -1,0 +1,555 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Login to the firethorn VM.
+#[user@desktop]
+
+    ssh Siamond
+
+# -----------------------------------------------------
+# Check the disk space.
+#[root@virtual]
+
+    df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        ....
+        /dev/vda3        15G   14G     0 100% /
+        ....
+
+# -----------------------------------------------------
+# Check how much space is used by Docker.
+#[root@virtual]
+
+    du -h /var/lib/docker
+
+        ....
+        43G	/var/lib/docker
+
+# -----------------------------------------------------
+# Check how what is running.
+#[root@virtual]
+
+    docker ps
+
+        CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                   PORTS                    NAMES
+        403b9abbfcf8        firethorn/firethorn:2.1.25   "/bin/sh -c '/var/lo…"   3 weeks ago         Up 3 weeks (unhealthy)   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+        d34c36a461dc        firethorn/postgres:2.1.25    "docker-entrypoint.s…"   3 weeks ago         Up 3 weeks               5432/tcp                 stevedore_bethany_1
+        b2ab73779a88        firethorn/ogsadai:2.1.25     "/bin/sh -c '/var/lo…"   3 weeks ago         Up 3 weeks (healthy)     8080/tcp                 stevedore_jarmila_1
+        c78636512635        firethorn/postgres:2.1.25    "docker-entrypoint.s…"   3 weeks ago         Up 3 weeks               5432/tcp                 stevedore_carolina_1
+
+# -----------------------------------------------------
+# Who is using G bytes.
+#[root@virtual]
+
+    du -h /var/lib/docker | sed -n '/^[.0-9]*G/p'
+
+        35G	/var/lib/docker/btrfs/subvolumes
+        35G	/var/lib/docker/btrfs
+        3.0G	/var/lib/docker/volumes/a026aca06ba2f9ed89e5b337c42065871056c99dc3c31c987330c228688308e1/_data/base/16384
+        3.0G	/var/lib/docker/volumes/a026aca06ba2f9ed89e5b337c42065871056c99dc3c31c987330c228688308e1/_data/base
+        3.4G	/var/lib/docker/volumes/a026aca06ba2f9ed89e5b337c42065871056c99dc3c31c987330c228688308e1/_data
+        3.4G	/var/lib/docker/volumes/a026aca06ba2f9ed89e5b337c42065871056c99dc3c31c987330c228688308e1
+        1.6G	/var/lib/docker/volumes/7f22a0ddfe67ab39e663d6f0e74d43da5163b5e6b29897a5dd19d41985f4073c/_data
+        1.6G	/var/lib/docker/volumes/7f22a0ddfe67ab39e663d6f0e74d43da5163b5e6b29897a5dd19d41985f4073c
+        2.4G	/var/lib/docker/volumes/3474110e8775ea175c1737ef97c2828c642677fa906dd98ca2cf2e4e9a1a1cce/_data
+        2.4G	/var/lib/docker/volumes/3474110e8775ea175c1737ef97c2828c642677fa906dd98ca2cf2e4e9a1a1cce
+        7.6G	/var/lib/docker/volumes
+        43G	/var/lib/docker
+
+# -----------------------------------------------------
+# Check for postgresql data.
+#[root@virtual]
+
+    du -h /var/lib/docker | sed -n '/postgres/p'
+
+    du -h /var/lib/docker | sed -n '/usr\/lib\/postgresql\/10$/p'
+
+        14M	/var/lib/docker/btrfs/subvolumes/aa1c3ad8c22e11072bb274c115233e6cd956b2d9e9d02e0b690d0b5ddf9a56f1/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/08692b659d4326a6b0e0205540ed2751a77caeaefab93d4c393f3b3b972dfb65/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/d40d1d249e9dbe680efed6afc75d7bfca861159fac9365fefe81891e8cc8bb81/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/f605950a85c66dacbddd8cbcf83bcca8b6a8ed4c355ec3feb7fb59ebeaca6401/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/b6e0dfd303800a1afcfafb503a615e3ff38a28be21bc99adbe3634d83c89f3b5/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/5e69291af558697f281cc643924965f956bfaf71b129bdca85a78e68fd89ba56/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/287874d9c8c594472d23d294dd532958796ea4125388c4331e079177c013fd12/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/e6346334438906948c77de959373f43554f7f95051254e35af07a30650414c4b-init/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/e6346334438906948c77de959373f43554f7f95051254e35af07a30650414c4b/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/b47cc964d6745602427dd86e34e14ed18601722374f36d5036ef2585361e7030-init/usr/lib/postgresql/10
+        14M	/var/lib/docker/btrfs/subvolumes/b47cc964d6745602427dd86e34e14ed18601722374f36d5036ef2585361e7030/usr/lib/postgresql/10
+
+# -----------------------------------------------------
+# Check the firethorn container - not too large.
+#[root@virtual]
+
+    docker exec -it stevedore_gillian_1 bash
+
+        du -h logs/
+
+            2.4G	logs/
+
+        ls -alh logs/
+
+            .... ....
+            .... ....
+            -rw-r-----. 1 tomcat tomcat  5.9K Aug 29 14:50 catalina.2018-08-29.log
+            -rw-r-----. 1 tomcat tomcat   30M Sep 26 12:13 catalina.2018-09-26.log
+            -rw-r-----. 1 tomcat tomcat  1.0G Sep 26 02:00 firethorn-debug-2018092600-0.log2373558319677549.tmp
+            -rw-r-----. 1 tomcat tomcat  320K Sep 26 04:00 firethorn-debug-2018092602-0.log2381406416605746.tmp
+            -rw-r-----. 1 tomcat tomcat  600K Sep 26 07:00 firethorn-debug-2018092605-0.log2394423287692121.tmp
+            -rw-r-----. 1 tomcat tomcat  1.9K Sep 26 07:55 firethorn-debug-2018092606-0.log2396062854305719.tmp
+            -rw-r-----. 1 tomcat tomcat     0 Sep 26 09:59 firethorn-debug-2018092607-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  1.9K Sep 26 09:59 firethorn-debug-2018092607-0.log2402350083212953.tmp
+            -rw-r-----. 1 tomcat tomcat     0 Sep 26 10:00 firethorn-debug-2018092608-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  1.6K Sep 26 09:59 firethorn-debug-2018092608-0.log2402365797507631.tmp
+            -rw-r-----. 1 tomcat tomcat  1.2K Sep 26 11:00 firethorn-debug-2018092609-0.log.gz
+            -rw-r-----. 1 tomcat tomcat     0 Sep 26 12:00 firethorn-debug-2018092610-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  4.1K Sep 26 11:59 firethorn-debug-2018092610-0.log2409558322152773.tmp
+            -rw-r-----. 1 tomcat tomcat  2.3K Sep 26 12:13 firethorn-debug.log
+            -rw-r-----. 1 tomcat tomcat   67K Sep 23 01:35 firethorn-error-20180922-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  103K Sep 24 01:00 firethorn-error-20180923-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  4.1K Sep 25 05:45 firethorn-error-20180924-0.log.gz
+            -rw-r-----. 1 tomcat tomcat   65K Sep 26 01:31 firethorn-error-20180925-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  528K Sep 26 12:13 firethorn-error.log
+            -rw-r-----. 1 tomcat tomcat  332K Sep 23 01:00 firethorn-info-20180922-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  356K Sep 24 01:00 firethorn-info-20180923-0.log.gz
+            -rw-r-----. 1 tomcat tomcat   26K Sep 25 01:00 firethorn-info-20180924-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  330K Sep 26 01:00 firethorn-info-20180925-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  2.9M Sep 26 12:13 firethorn-info.log
+            -rw-r-----. 1 tomcat tomcat 1013M Sep 26 02:00 firethorn-trace-2018092600-1.log2373558332087631.tmp
+            -rw-r-----. 1 tomcat tomcat  600K Sep 26 07:47 firethorn-trace-2018092605-0.log2394423314572310.tmp
+            -rw-r-----. 1 tomcat tomcat     0 Sep 26 09:59 firethorn-trace-2018092607-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  2.1K Sep 26 08:18 firethorn-trace-2018092607-0.log2402350056122358.tmp
+            -rw-r-----. 1 tomcat tomcat   519 Sep 26 10:00 firethorn-trace-2018092608-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  1.2K Sep 26 11:00 firethorn-trace-2018092609-0.log.gz
+            -rw-r-----. 1 tomcat tomcat     0 Sep 26 12:00 firethorn-trace-2018092610-0.log.gz
+            -rw-r-----. 1 tomcat tomcat  4.0K Sep 26 11:59 firethorn-trace-2018092610-0.log2409558416090905.tmp
+            -rw-r-----. 1 tomcat tomcat  1.9K Sep 26 12:13 firethorn-trace.log
+            .... ....
+            .... ....
+
+# -----------------------------------------------------
+# Check the ogsadai container
+#[root@virtual]
+
+    docker exec -it stevedore_jarmila_1 bash
+
+        du -h logs/
+
+            1.6G	logs/
+
+        ls -alh logs/
+
+            .... ....
+            .... ....
+            -rw-r-----. 1 tomcat tomcat 1.6G Sep 26 01:47 ogsadai.log
+            .... ....
+            .... ....
+
+# -----------------------------------------------------
+# Check the tapschema database container
+#[root@virtual]
+
+    docker exec -it stevedore_carolina_1 bash
+
+        du -h /var/lib/postgresql/
+
+            .... ....
+            .... ....
+            215M	/var/lib/postgresql/data
+            215M	/var/lib/postgresql/
+
+# -----------------------------------------------------
+# Check the metadata database container
+#[root@virtual]
+
+    docker exec -it stevedore_bethany_1 bash
+
+        Error response from daemon: Container d34c36a461dc6b16fae298238ec0581093398eea3357400e53c807fd9f74ab53 is not running
+
+# -----------------------------------------------------
+# A clue ... 35G in btrfs/subvolumes, 7.6G in volumes.
+# So most of the space is not in Docker volumes.
+#[root@virtual]
+
+    du -h /var/lib/docker | sed -n '/^[.0-9]*G/p'
+
+        35G	/var/lib/docker/btrfs/subvolumes
+        35G	/var/lib/docker/btrfs
+        3.0G	/var/lib/docker/volumes/a026aca06ba2f9ed89e5b337c42065871056c99dc3c31c987330c228688308e1/_data/base/16384
+        3.0G	/var/lib/docker/volumes/a026aca06ba2f9ed89e5b337c42065871056c99dc3c31c987330c228688308e1/_data/base
+        3.4G	/var/lib/docker/volumes/a026aca06ba2f9ed89e5b337c42065871056c99dc3c31c987330c228688308e1/_data
+        3.4G	/var/lib/docker/volumes/a026aca06ba2f9ed89e5b337c42065871056c99dc3c31c987330c228688308e1
+        1.6G	/var/lib/docker/volumes/7f22a0ddfe67ab39e663d6f0e74d43da5163b5e6b29897a5dd19d41985f4073c/_data
+        1.6G	/var/lib/docker/volumes/7f22a0ddfe67ab39e663d6f0e74d43da5163b5e6b29897a5dd19d41985f4073c
+        2.4G	/var/lib/docker/volumes/3474110e8775ea175c1737ef97c2828c642677fa906dd98ca2cf2e4e9a1a1cce/_data
+        2.4G	/var/lib/docker/volumes/3474110e8775ea175c1737ef97c2828c642677fa906dd98ca2cf2e4e9a1a1cce
+        7.6G	/var/lib/docker/volumes
+        43G	/var/lib/docker
+
+# -----------------------------------------------------
+# Check the Docker system statistics.
+#[root@virtual]
+
+    docker system info
+
+        Containers: 4
+         Running: 3
+         Paused: 0
+         Stopped: 1
+        Images: 4
+        Server Version: 18.03.1-ce
+        Storage Driver: btrfs
+         Build Version: Btrfs v4.15.1
+         Library Version: 102
+        Logging Driver: json-file
+        Cgroup Driver: cgroupfs
+        Plugins:
+         Volume: local
+         Network: bridge host macvlan null overlay
+         Log: awslogs fluentd gcplogs gelf journald json-file logentries splunk syslog
+        Swarm: inactive
+        Runtimes: runc
+        Default Runtime: runc
+        Init Binary: docker-init
+        containerd version: 773c489c9c1b21a6d78b5c538cd395416ec50f88
+        runc version: 4fc53a81fb7c994640722ac585fa9ca548971871
+        init version: 949e6fa
+        Security Options:
+         seccomp
+          Profile: default
+        Kernel Version: 4.17.3-200.fc28.x86_64
+        Operating System: Fedora 28 (Twenty Eight)
+        OSType: linux
+        Architecture: x86_64
+        CPUs: 4
+        Total Memory: 3.851GiB
+        Name: Siamond
+        ID: YEJG:RNJS:DI3V:QUYQ:OU2K:PS36:36FO:P43F:LVSU:JENA:YORO:53WW
+        Docker Root Dir: /var/lib/docker
+        Debug Mode (client): false
+        Debug Mode (server): false
+        Registry: https://index.docker.io/v1/
+        Labels:
+        Experimental: false
+        Insecure Registries:
+         127.0.0.0/8
+        Live Restore Enabled: false
+
+# -----------------------------------------------------
+# Check the Docker disk useage.
+#[root@virtual]
+
+    docker system df
+
+        TYPE                TOTAL               ACTIVE              SIZE                RECLAIMABLE
+        Images              4                   3                   1.928GB             1.597GB (82%)
+        Containers          4                   4                   22.43kB             0B (0%)
+        Local Volumes       8                   8                   8.056GB             0B (0%)
+        Build Cache                                                 0B                  0B
+
+# -----------------------------------------------------
+# Check the Docker disk useage.
+#[root@virtual]
+
+    docker system df -v
+
+        Images space usage:
+
+        REPOSITORY               TAG                 IMAGE ID            CREATED ago         SIZE                SHARED SIZE         UNIQUE SiZE         CONTAINERS
+        firethorn/firethorn-py   2.1.25              a6f283ff327b        5 weeks ago ago     631.5MB             0B                  631.5MB             0
+        firethorn/firethorn      2.1.25              a62687f25bcd        2 months ago ago    1.013GB             965.7MB             47.52MB             1
+        firethorn/ogsadai        2.1.25              5d941ecc59e9        2 months ago ago    1.013GB             965.7MB             47.04MB             1
+        firethorn/postgres       2.1.25              9023cc92f85f        2 months ago ago    236.4MB             0B                  236.4MB             2
+
+        Containers space usage:
+
+        CONTAINER ID        IMAGE                        COMMAND                  LOCAL VOLUMES       SIZE                CREATED ago         STATUS                   NAMES
+        403b9abbfcf8        firethorn/firethorn:2.1.25   "/bin/sh -c '/var/lo…"   3                   0B                  3 weeks ago ago     Up 3 weeks (unhealthy)   stevedore_gillian_1
+        d34c36a461dc        firethorn/postgres:2.1.25    "docker-entrypoint.s…"   1                   0B                  3 weeks ago ago     Up 3 weeks               stevedore_bethany_1
+        b2ab73779a88        firethorn/ogsadai:2.1.25     "/bin/sh -c '/var/lo…"   3                   22.4kB              3 weeks ago ago     Up 3 weeks (healthy)     stevedore_jarmila_1
+        c78636512635        firethorn/postgres:2.1.25    "docker-entrypoint.s…"   1                   0B                  3 weeks ago ago     Up 3 weeks               stevedore_carolina_1
+
+        Local Volumes space usage:
+
+        VOLUME NAME                                                        LINKS               SIZE
+        3474110e8775ea175c1737ef97c2828c642677fa906dd98ca2cf2e4e9a1a1cce   1                   2.497GB
+        1c41e7918497ab2f8fa27844e56de6c8184fdd602b7eb7af075c1a0235cc3b77   1                   0B
+        66c429c3738b35af75fb1ace7a7c2f3d92712ec5564ebca851ca3f16ed542ec5   1                   49.79kB
+        bf3066d1835aeeee4a4248800a2f74d230af2908a2a2c7ed6c3a62e49bbe026a   1                   224.6MB
+        de2cdbacbaf3961cc0faaf160c2ea9b85d292d875f8776cb8b39955182d2f77b   1                   86.02kB
+        16b7c3af706f70e2c9169a50367b750b5e999c47c05ba695de449ee753791b1f   1                   18.46kB
+        a026aca06ba2f9ed89e5b337c42065871056c99dc3c31c987330c228688308e1   1                   3.638GB
+        7f22a0ddfe67ab39e663d6f0e74d43da5163b5e6b29897a5dd19d41985f4073c   1                   1.696GB
+
+        Build cache usage: 0B
+
+
+
+# -----------------------------------------------------
+# So where is all this 35G ?
+#[root@virtual]
+
+    du -h /var/lib/docker | sed -n '/^[.0-9]*G/p'
+
+        .... ....
+        35G	/var/lib/docker/btrfs/subvolumes
+        .... ....
+
+# -----------------------------------------------------
+# Look at the top level mount points.
+#[root@virtual]
+
+    pushd /var/lib/docker/btrfs/subvolumes
+
+        du -h . |  sed -n '/.\/[0-9a-z]*$/p'
+
+    popd
+
+        65M	    ./876c5077145b20e5771a8d78ee7e1bb11af8d8016dfe3a7724ec539105c7ddc0
+        74M	    ./80b5192324ab176fba8151bde1ed28bf89dda2b23fd4bffbe045fc660275c009
+        75M	    ./7acc566cbeacdde43fd8dd909d427ed4704bcd2083b83db50b39023582b32421
+        76M	    ./5d956d2859d53da0aac74801e93e147f38febdb2ba764319e0312d5332997bb6
+        91M	    ./a38bef5df718844d3bc727e522755912b35fc267766a1e798c58fc35d0986581
+        91M	    ./6d75367c7a96e2fccad0451e2e18f8c95b31f40183c35ea98e725818c10997cc
+        91M	    ./87ba09e3a9a861ed3c60ca1f3cda4dea78c051eca67ff8c90a2b8c0ca3407246
+        91M	    ./bd0c0cba86ab99b60862a3fb047a2280539f9c55fcca8a3a4cab3472ca805a80
+        245M	./aa1c3ad8c22e11072bb274c115233e6cd956b2d9e9d02e0b690d0b5ddf9a56f1
+        245M	./08692b659d4326a6b0e0205540ed2751a77caeaefab93d4c393f3b3b972dfb65
+        245M	./d40d1d249e9dbe680efed6afc75d7bfca861159fac9365fefe81891e8cc8bb81
+        245M	./f605950a85c66dacbddd8cbcf83bcca8b6a8ed4c355ec3feb7fb59ebeaca6401
+        245M	./b6e0dfd303800a1afcfafb503a615e3ff38a28be21bc99adbe3634d83c89f3b5
+        245M	./5e69291af558697f281cc643924965f956bfaf71b129bdca85a78e68fd89ba56
+        245M	./287874d9c8c594472d23d294dd532958796ea4125388c4331e079177c013fd12
+        271M	./9a00ffef3a333fb3972db63775c01a643f6aef87ab91ec2d8da57a813c1066eb
+        442M	./1173ffa0bb26a7498d56babd5ccc13f8bbd4437060feaebe066b63f273dab38e
+        444M	./22cee9d17ff501136c2dfc49228548fb5cfa496db0b91427a0948e0cab260df6
+        455M	./fead81941367c79d448e24cb58bc5a309f110cba079ac27a89f754eac3551b44
+        455M	./446d395df4bf536cc94e66e533515321cbbce0907d0c7056852db087acd848f9
+        455M	./b266b5d71cfff1c4c97ff5ed7143a35996daa220a3bdfe694e87384f7dd694f9
+        403M	./dd426479fe235d4beaee3489e21247f88daf27c1c901241e6dcd5033148202e6
+        726M	./9e961a454ab2bab49372e77c60c3e2344d9c464e0030ea30d6c96e159c27d74b
+        726M	./ba0c7a0e703218305c2bf65ac76a250ca8721c01ecee714f1b1f7e29a21dd537
+        727M	./86546d4cc2ae02bc0cc2ebe5cffb653b567563e3bc31fee8514f912d27bf0443
+        736M	./cdb8e7ea3ca41512832534aa77d4e3db05b16733e60aa44d1bcad2e4d06c8e4e
+        736M	./f3a8b489866105ddc0cd5f243745086ae6ff5039f5509a2636dd692b95ed0b84
+        751M	./2f7b429e7499719544a649db6c8914f0132ee322ea416e0928c61df2f12496dc
+        741M	./aed41b0b6f2229369cc6702fc707e783048abe3b957caad9a9135b2133d57923
+        741M	./36a8758b79f14a7f204148223dc2507bf161d7912b3179fb33117a6695b95fb8
+        736M	./7135eae7e400363111a749b57a84e93959ad767b84b73b61b3e42ad8449287f7
+        736M	./15b0dac2f325eddb27c81fc34480e773d353db70e4ee4b3519a23daf36ea5139
+        736M	./34e7dc4b46108f45cffd25b4b4260bbe0a558405998f202b06d88afbaa770499
+        736M	./ed9ddeab91f990bdef46490467fac129d50d68b169a7836365b9d3511e5fab67
+        736M	./baa7e82a60473c9c0a36baa4495471d57e2e3ed73c49d95046caf3610626440e
+        736M	./53649572161dd1e38fa955f2d9f1578f796c245b5843408ba35c6d5235c84b6e
+        736M	./a8777d8661125f6cf10cf80b0a67aaeb28f8b9e5251e0eae587c6cff1b8f9826
+        736M	./d64bfae55dea64cf297fa533f7d04788c437344b7ad27c11f61d9c3c0f6b2cdb
+        736M	./0cceabf715cf19b329c15c171b8cb7efb43795bba645221d0144b45e028a18c3
+        736M	./ffdba63d128257e0a453746094d4cbe5f9562fab7e90823196eb02fe2c657cce
+        736M	./c04d9b40b573e0767d29b1ec17ac42cff49dd8377e27769555b023da66fe38e2
+        781M	./c9a351e002d28cc017224f280d40400f49ed6ffe9e4217948ef41e42387088bb
+        781M	./c55ab0deb17cc544f00589d43447feeebb671a3310b9ab2f01d43bcf73eb91f7
+        781M	./33e8faed365eb391e0688d7de1ec74fd09afe26dc9ccc932084b7d848e083a88
+        781M	./e53463a80f78282064e4276dd70b490571b28e45886b45326a077feb662fe4e3
+        781M	./3bd3d02b129a73c410fa7f3cad59295309096719656d4949954e13a6885c4beb
+        781M	./4c2d049c0624d157eda24a9c059bdde2b10175e0a7bf9ac17e4af61f60db3a33
+        781M	./105a209db9866303631c36bf0365a012ddebd4950cb2376d767001bb88a37877
+        781M	./80c898774f1f001667af9c5e2ba0091d7fb1d7e117893f2ba3d7a31591a23bb1
+        781M	./cc4d5abcc1959c0ace75beabf734eab3f26db819253eb7e026e5379d183d0838
+        245M	./e6346334438906948c77de959373f43554f7f95051254e35af07a30650414c4b
+        781M	./984f91a68644cf2fa1b99971c23f346e59ad91fd3014e3f4a4733a2bba5cd1b9
+        245M	./b47cc964d6745602427dd86e34e14ed18601722374f36d5036ef2585361e7030
+        781M	./d32409038e3fd0b9e6738ef53efe591d2faf8a598446bb10952bb19892380bad
+        122M	./808fbf0e5e5f3a95edf1c8140423f86e25034473c67f824c08d9beca26a3b0cc
+        122M	./4af343a30027bccf47da9afc9959530671b3593626ff1b583a2e267d60f9487d
+        94M	    ./a855cdf95bcb04451dab5e2de61aa3e7b197aa11ebffb7fb889ce46181cefeea
+        94M	    ./e632372dca8c253fad1475600881d5e467eb5e64251d195eb2b03d60f0f6fabd
+        94M	    ./7f03956184dc93146509d6caa3e83ffecf5006551e4320052cab39eaba65b3ba
+        472M	./73f8cbb423321ac6ac0a1f055d52db0092696b85e553725f8155d8361e783e8f
+        482M	./eba3e10ac5ab9259712492eae8f80167d5bf111111de3ce9b66da9de1a3137f8
+        512M	./2a742e8727f3de1a8d113c3a04f20a3e6733b528fc01584632aa78610a659d3e
+        512M	./62fba388fbcb901397f892af696358da536ab2716bee3df258cc9591a3a0b668
+        626M	./5f0d232b1f79912003e39c1c15aee8def94f332dee32a5e1fed355b67b240f19
+        626M	./25d9a02fe10f7d24d302413d9d866f58d04f7443dc721a72a742be4e5ea562bf
+
+# -----------------------------------------------------
+# Try pruning unused data.
+#[root@virtual]
+
+    docker system prune
+
+        Deleted Containers:
+        d34c36a461dc6b16fae298238ec0581093398eea3357400e53c807fd9f74ab53
+
+        Total reclaimed space: 0B
+
+# -----------------------------------------------------
+# I don't think this can be real.
+#[root@virtual]
+
+    du -h /var/lib/docker | sed -n '/^[.0-9]*G/p'
+
+        .... ....
+        35G	/var/lib/docker/btrfs/subvolumes
+        .... ....
+
+    df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        ....
+        /dev/vda3        15G   14G     0 100% /
+        ....
+
+    #
+    # Disc size is 15G, 'du' claims to see 35G.
+    #
+
+# -----------------------------------------------------
+# Interesting - the prune command removed the metadata database.
+#[root@virtual]
+
+    docker ps -a
+
+        CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                   PORTS                    NAMES
+        403b9abbfcf8        firethorn/firethorn:2.1.25   "/bin/sh -c '/var/lo…"   3 weeks ago         Up 3 weeks (unhealthy)   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+        b2ab73779a88        firethorn/ogsadai:2.1.25     "/bin/sh -c '/var/lo…"   3 weeks ago         Up 3 weeks (healthy)     8080/tcp                 stevedore_jarmila_1
+        c78636512635        firethorn/postgres:2.1.25    "docker-entrypoint.s…"   3 weeks ago         Up 3 weeks               5432/tcp                 stevedore_carolina_1
+
+# -----------------------------------------------------
+# Try removing the other containers and see what happens to the space.
+#[root@virtual]
+
+    docker stop stevedore_gillian_1
+
+    docker system prune
+
+        Deleted Containers:
+        403b9abbfcf8a1d3e24afb1a325ed89408d398c8a3c052e5cbd7890aa5426735
+
+        Deleted Networks:
+        stevedore_rosana
+
+        Total reclaimed space: 0B
+
+    df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G   14G  286M  98% /
+
+    docker stop stevedore_jarmila_1
+
+    docker system prune
+
+        Deleted Containers:
+        b2ab73779a88f84b622c248ed3d24e50c723f34d928588718bfaa7bd704aab81
+
+        Total reclaimed space: 22.43kB
+
+    df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G   14G  286M  98% /
+
+    docker stop stevedore_carolina_1
+
+    docker system prune
+
+        Deleted Containers:
+        c786365126356bd323cde59ad78c305c44d80d30967be606f8632851f45ba63e
+
+        Total reclaimed space: 0B
+
+    df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G   14G  286M  98% /
+
+# -----------------------------------------------------
+# Try removing the Docker images.
+#[root@virtual]
+
+    docker images
+
+        REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
+        firethorn/firethorn-py   2.1.25              a6f283ff327b        5 weeks ago         632MB
+        firethorn/firethorn      2.1.25              a62687f25bcd        2 months ago        1.01GB
+        firethorn/ogsadai        2.1.25              5d941ecc59e9        2 months ago        1.01GB
+        firethorn/postgres       2.1.25              9023cc92f85f        2 months ago        236MB
+
+    docker rmi a6f283ff327b
+
+    df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G   14G  286M  98% /
+
+    docker rmi a62687f25bcd
+
+    df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G   14G  286M  98% /
+
+    docker rmi 5d941ecc59e9
+
+    df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G   13G  947M  94% /
+
+    docker rmi 9023cc92f85f
+
+    df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G   12G  1.9G  86% /
+
+# -----------------------------------------------------
+# Check the top level mount points.
+#[root@virtual]
+
+    pushd /var/lib/docker/btrfs/subvolumes
+
+        du -h .
+
+        -- zero, nothing --
+
+    popd
+
+# -----------------------------------------------------
+# Check the disk space ....
+#[root@virtual]
+
+    df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G   11G  2.2G  84% /
+
+    #
+    # Are we just out of space ?
+    # 15G disc is small ...
+    #
+    # Double the disc size to 32G ?
+    #
+
+
+
