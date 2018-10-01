@@ -98,25 +98,22 @@
     vmuser=Stevedore
 
 # -----------------------------------------------------
-# Login to the new VM and install our admin keys.
-#[user@trop02]
-
-    ssh "${vmuser:?}@${vmname:?}" << 'EOSH'
-
-        pushd "${HOME}/.ssh"
-            mkdir keys
-            pushd keys
-                wget 'http://data.metagrid.co.uk/sshkeys/firethorn-admin.keys'
-            popd
-            cat 'keys/firethorn-admin.keys' >> authorized_keys
-        popd
-EOSH
-
-# -----------------------------------------------------
 # Login to the virtual machine.
 #[user@trop]
 
     ssh "${vmuser:?}@${vmname:?}"
+
+# -----------------------------------------------------
+# Install our admin keys.
+#[user@virtual]
+
+    pushd "${HOME}/.ssh"
+        mkdir keys
+        pushd keys
+            wget 'http://data.metagrid.co.uk/sshkeys/firethorn-admin.keys'
+        popd
+        cat 'keys/firethorn-admin.keys' >> authorized_keys
+    popd
 
 # -----------------------------------------------------
 # Add our secret function.
@@ -131,7 +128,6 @@ then
     ssh -o 'VisualHostKey=no' "${secretsource:?}" "bin/secret \"${1:?}\""
 fi
 EOF
-
     chmod u+x "${HOME:?}/bin/secret"
     secret 'frog'
 
@@ -184,7 +180,7 @@ EOF
 EOF
 
 # -----------------------------------------------------
-# Link our compose config.
+# Link our compose config ** DON'T SKIP THIS **
 #[user@virtual]
 
     ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
