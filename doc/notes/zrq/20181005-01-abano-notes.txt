@@ -1,0 +1,343 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Gaia DPAC consortium meeting #3
+https://indico.ict.inaf.it/event/636/
+
+    1st-5th October 2018
+    Abano Terme,
+    Padova,
+    Italy
+
+
+https://wiki.cosmos.esa.int/gaia-dpac/index.php/DPAC_Consortium_Meeting:2018
+https://wiki.cosmos.esa.int/gaia-dpac/index.php/DPAC_Consortium_Meeting:2018:CU9_Splinter_1
+
+Notes from Splinter session #1, Tuesday morning.
+[Analysis platforms: code-to-data, data mining, technologies ...]
+
+Talk#1
+[Gaia Science Analysis Platforms: what, when, where and how ]
+[SEPP/ESAP ]
+[https://stsci.app.box.com/s/5ypxsgpbdhr7r2x92o97ilsl91fe3uwo/file/281663291169]
+(previous presentation  - no presentation available for this session)
+
+Presentation talk
+
+    SEPP/ESAP collecting user requirements and use cases.
+
+    Slides show outline of the architecture in mind
+
+    User workspaces and data processing
+
+    * Kubenetes & Docker
+    * Spark [http://spark.apache.org/]
+    * Airflow [https://airflow.apache.org/]
+    * JupyterLab [https://jupyter.org/]
+    * Jenkins [https://jenkins.io/]
+    * Slack [https://slack.com/]
+    * Zabbix [https://www.zabbix.com/]
+      ....
+
+Comments from audience
+
+    #1 (back left)
+    This is an ESA initiative, outside the scope of Gaia.
+    NO GAIA MONEY WILL FLOW INTO THIS.
+    (over my dead body)
+
+    #Q
+    Scepticism about how realistic this is.
+    Not pheasable in our delivery schedule.
+
+    #Q
+    ESA will pass requirements to external software development companies to implement it.
+    Commercial development project.
+
+    #1 (back left)
+    This is an inverted project that went looking for customers.
+    A distraction from solving real use case problems.
+
+    #1 (back left)
+    Gaia has a limited budget for implementing things NOW.
+    NOT for maintaining long term archive infrastructure
+
+    #2 (Maria)
+    ESA internal meetings to collect requrements
+    This won't be in time for Gaia DR3/DR4 releases.
+
+
+Talk#2
+[GAVIP Spark infrastructure and validation interface at ESAC]
+[https://gavip.esac.esa.int/]
+(presentation not available yet)
+
+Presentation talk
+
+    Intended to support user contributed Added Value Interface (AVI).
+    [https://gavip.esac.esa.int/docs/user_manual/GAVIP-Overview.html#avi-added-value-interface]
+
+    Example AVIs
+        GACS
+        JupyterNotebooks
+
+    Multiuser access
+
+    Current deployment limited by the available computing power.
+    (single CPU core per user)
+
+    Current deployment limited by TAP access to data.
+    (TAP row limits)
+
+Comments from audience
+
+    #Q
+    What is the advantage ?
+    If this is using TAP to access the data, then what is the difference between running code on my own laptop ?
+    - This was intended as a proof of concept.
+
+    #Q
+    What is the timescale for providing additional access ?
+    - This was intended as a proof of concept.
+
+
+Talk#3
+[Spark infrastructure and validation interface at ESAC]
+(presentation not available yet)
+
+Presentation talk
+
+    HPC portal
+    Jupyter Notebook + pySpark (Spark Python client)
+    [https://spark.apache.org/docs/latest/api/python/index.html]
+
+    Spark jobs can last for a long time (several hours)
+    Users leave jobs idle for days (come back tomorrow)
+    Idle jobs keep reserved resources out of the pool
+
+    Solution -
+    Multi-user HPC platform
+
+    Priority on configuration management
+    Reproducable science important for validation
+
+    REST API decouples user code from Spark jobs.
+
+    All code (including user supplied code) is in version controlled jars.
+
+    Spark jobs
+        import dataset
+
+        filtering | mapping
+
+        actions
+            count, statistics, density map etc.
+            download as csv ....
+
+
+    Job definition looks a lot like OGSA-DAI
+
+    Currently only a simple scheduling algorithm:
+    One job at a time, gets 100% of the resources until done
+
+    Working on better scheduling algorithm with resource sharing and quotas.
+
+    API for defining custom actions and activities:
+    Written in Java/Scala (because Spark is)
+
+    First step is always slow.
+    First step loads all the data into memory.
+    Then Spark applies filters and actions.
+
+    Known alternative:
+    Apache Livy
+    [https://livy.incubator.apache.org/]
+    Current status Apache incubator (alpha version)
+
+    Future developments:
+    JOIN between two datasets.
+    Filtering based on uploaded source list.
+
+    Python client (Java only ATM)
+    Advanced tasks
+    e.g. clustering, outlier detection, data mining etc.
+
+Comments from audience
+
+    #1 (back left)
+    Developed for Gaia validation, specific use case in mind.
+    Part of the Gaia project, therefore serious hardware should be available for this.
+
+    #3 (Nigel H.)
+    How can we help ?
+    Can we help to extend for more generic use cases ?
+    #A
+    Gaia validation is the priority.
+    Concentrating on that for now.
+
+    #1 (back left)
+    Strong case for making this Gaia validation only.
+    Can't afford to dilute effort, MUST concentrate on validation.
+
+    #1 (back left)
+    IF it is successful, it may well become available to general users.
+    BUT that would require different budget and different hardware.
+
+    #Q
+    Why only Java/Scala ?
+    #A
+    Written in Java/Scala because Spark is.
+    Requirements driven by validation team.
+
+    Open system for general users may be possible in the longer term,
+    but the libraries we are developing are certainly useful to others
+
+    #Q
+    If you are handling all the user generated code personally, then that is a bottleneck.
+    #A
+    Code can in jar file be pushed to Nexus.
+
+    #Q
+    Need a short turn around (< 1min) to be able to support iterative develpment.
+
+    #A
+    Users can run a local Spark system to test their algorithms om, THEN push good to the main platform.
+
+    General concensus from audience is quick turn around for iterative development is a requirement.
+
+    #4 (validation lead ?)
+    Clarify that this is not THE only validation platform.
+    We have a year to evolve the validation platform.
+    This is an initial prototype, proof of concept.
+
+    #Q
+    We need quick turn around for iterative development.
+
+    #3 (Nigel H.)
+    Two different use cases ?
+
+    #A
+    For validation, reproducability is a priority, therefore strong configuration management, which causes slow deployment.
+
+    #4 (validation lead ?)
+    To clairify, validation is a HUGE effort.
+    For DR2, validation required two dedicated operational systems.
+    Validation is not a small task.
+
+
+Talk#4
+[Update on GDAF platfrom and validation framework interfaces]
+(presentation not available yet)
+
+Presentation talk
+
+    Spark [http://spark.apache.org/] and Zeppelin [https://zeppelin.apache.org/]
+
+    Uses Cloudera [https://www.cloudera.com/] packages to deploy Hadoop et al.
+
+    TGAS, GDR1, GDR2, UM, GOG deployed in a Hadoop filesystem, available as both
+    ASCII csv and Parquet [https://parquet.apache.org/] files.
+
+    Everyone gets a 'home' space in the Hadoop filesystem.
+
+Comments from audience
+
+    #5
+    Several talks have mentioned Parquet, should this be a Gaia output ?
+
+    #A
+    Not really useful outside local system. Not portable.
+
+    #6
+    Good format for analysis, not a good format for storage.
+
+    #6
+    Easy enough to generate locally from the standard Gaia release.
+
+    #5
+    Avoid multiple users doing the same thing ?
+    Should we distribute Parquet for DR3 ?
+
+    #Q
+    IF validation team have a need. To avoid everyone doing the same thing slightly differently.
+
+    #6
+    Validation specific perghaps, but not for general release.
+
+Presentation talk
+
+    Lots of algorithms are already available in Spark.
+
+    Non-trivial to adapt a Python algorithm to a Java/Scala Activity for Spark.
+
+    Dynamic allocation of RAM & CPU for running jobs is unique to GDAF.
+    Normally allocation is static (requested when job is created).
+    GDAF automatically allocates RAM & CPU.
+
+    Zeppelin
+
+    * Multiuser support
+    * Multi language support
+
+    Same notebook can swap between languages.
+    Example of SQL, Python etc .. (Java not yet)
+
+    GDAF demo virtual machine is available for download (VirtualBox)
+    Demo VM includes TGAS.
+
+    Suggest we use validation as beta testing for end user data access tools.
+    GDAF provides big data tools for data analysis.
+
+Comments from audience
+
+    #Q
+    As far as we know, no plans to deploy GDAF at ESAC.
+    Validation done at EASC, but GDAF is not intended for validation.
+
+    #Q
+    GDAF was/is aimed at end user science platform.
+
+    #Q
+    Several people have had issues getting access to GDAF.
+
+    #Q
+    Why Zeppelin rather than Jupyter ?
+
+    #A
+    Zeppelin allows multi-user and multi-language.
+
+    #Q
+    Even if Zeppelin is 'better' it mught have missed the boat (BetaMax).
+    Everyone seems to be using Jupyter (VHS).
+
+    #A
+    Jupyter users should not find it too hard to migrate.
+
+    #Q
+    What about version control ?
+
+    #A
+    You can do some level of version control using Git.
+    (not enough time for details)
+
+---- splinter session end ----
+
