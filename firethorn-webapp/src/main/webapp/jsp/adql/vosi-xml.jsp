@@ -26,10 +26,10 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
             {
             %>
         <table type='table'>
-            <% if (table.name().toLowerCase().equals("region") || table.name().toLowerCase().equals("match") || table.name().toLowerCase().equals("diagnostics") || table.name().toLowerCase().equals("first") { %>
+            <% if (table.name().toLowerCase().equals("region") || table.name().toLowerCase().equals("match") || table.name().toLowerCase().equals("diagnostics")  || table.name().toLowerCase().equals("zone")  || table.name().toLowerCase().equals("unknown") || table.name().toLowerCase().equals("first")) { %>
                 <name><%= schema.name() %>.<%='"' + table.name() +'"' %></name>
             <% } else {  %>
-               <name><%= table.name() %></name>
+               <name><%= schema.name() %>.<%= table.name() %></name>
             <% } %>
             <title></title>
             <utype></utype>

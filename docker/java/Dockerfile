@@ -18,7 +18,7 @@
 FROM firethorn/fedora:2.1.25-stv-tap-fix
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV JAVA_VERSION=10.0.1.10
+ENV JAVA_VERSION=10.0.2.13
 
 #
 # Install Java

@@ -458,6 +458,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 
 					if (tableName.toLowerCase().equals("region")
 					    ||  tableName.toLowerCase().equals("zone")
+					    ||  tableName.toLowerCase().equals("unknown")
 					    ||  tableName.toLowerCase().equals("diagnostics")
 					    ||  tableName.toLowerCase().equals("first")
 					    ||  tableName.toLowerCase().equals("match")
