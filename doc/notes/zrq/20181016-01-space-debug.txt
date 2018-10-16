@@ -1,0 +1,476 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Login to the firethorn VM.
+#[user@trop]
+
+    vmname=Siamond
+
+    ssh "${vmname:?}"
+
+        ssh: connect to host siamond port 22: No route to host
+
+# -----------------------------------------------------
+# List the active virtual machines.
+#[user@trop]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        list
+
+         Id    Name                           State
+        ----------------------------------------------------
+         118   Acilamwen                      running
+         119   Ibalehar                       running
+         120   Eterathiel                     running
+         121   Araybwyn                       running
+         122   Lothigometh                    running
+         125   Siamond                        running
+
+# -----------------------------------------------------
+# Reboot the firethorn VM.
+#[user@trop]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        reboot \
+            "${vmname:?}"
+
+        Domain Siamond is being rebooted
+
+# -----------------------------------------------------
+# Login to the firethorn VM.
+#[user@trop]
+
+    ssh "${vmname:?}"
+
+# -----------------------------------------------------
+# Check the disk space.
+#[user@virtual]
+
+    df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3        15G   14G     0 100% /
+
+# -----------------------------------------------------
+# Check how much space is used by Docker.
+#[user@virtual]
+
+  sudo du -h -d1 /var/lib/docker
+
+        212K    /var/lib/docker/containerd
+        97M     /var/lib/docker/containers
+        0       /var/lib/docker/plugins
+        35G     /var/lib/docker/btrfs
+        4.7M    /var/lib/docker/image
+        7.7G    /var/lib/docker/volumes
+        0       /var/lib/docker/trust
+        64K     /var/lib/docker/network
+        0       /var/lib/docker/swarm
+        16K     /var/lib/docker/builder
+        0       /var/lib/docker/tmp
+        0       /var/lib/docker/runtimes
+        43G     /var/lib/docker
+
+# -----------------------------------------------------
+# Check what containers are running (or not).
+#[user@virtual]
+
+    docker ps -a
+
+        CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                       PORTS                    NAMES
+        e28aeccf9639        firethorn/firethorn-py:2.1.25   "python3"                2 weeks ago         Exited (0) 2 weeks ago                                stevedore_firethorn-py_run_1
+        1ff7b4d55a59        firethorn/firethorn:2.1.25      "/bin/sh -c '/var/lo…"   2 weeks ago         Exited (255) 6 minutes ago   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+        a41574a8b02c        firethorn/ogsadai:2.1.25        "/bin/sh -c '/var/lo…"   2 weeks ago         Exited (255) 6 minutes ago   8080/tcp                 stevedore_jarmila_1
+        ec94c09e8b07        firethorn/postgres:2.1.25       "docker-entrypoint.s…"   2 weeks ago         Exited (255) 6 minutes ago   5432/tcp                 stevedore_bethany_1
+        eea740ba89cc        firethorn/postgres:2.1.25       "docker-entrypoint.s…"   2 weeks ago         Exited (255) 6 minutes ago   5432/tcp                 stevedore_carolina_1
+
+# -----------------------------------------------------
+# Who is using G bytes.
+#[user@virtual]
+
+    sudo du -h /var/lib/docker | sed -n '/^[.0-9]*G/p'
+
+        35G    /var/lib/docker/btrfs/subvolumes
+        35G    /var/lib/docker/btrfs
+        4.8G   /var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca/_data/base/16384
+        4.8G   /var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca/_data/base
+        5.0G   /var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca/_data
+        5.0G   /var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca
+        2.1G   /var/lib/docker/volumes/4fd23610f67e057d5ebf4ced82401bfc598b51dbd53327dac393f77a31d5ec42/_data
+        2.1G   /var/lib/docker/volumes/4fd23610f67e057d5ebf4ced82401bfc598b51dbd53327dac393f77a31d5ec42
+        7.7G   /var/lib/docker/volumes
+        43G    /var/lib/docker
+
+        #
+        # Most of the 43G is used in general btrfs subvolumes.
+        # Only 7G is allocated to specific Docker volumes.
+
+# -----------------------------------------------------
+# Check how much space is used in subvolumes.
+#[user@virtual]
+
+  sudo du -h -d1 /var/lib/docker/btrfs/subvolumes
+
+        65M     /var/lib/docker/btrfs/subvolumes/9d336a7af1940801fece718ee2a377cbcbda4eebf7b949fb261736072b04a0a6
+        74M     /var/lib/docker/btrfs/subvolumes/9daec5b3511a4486ae4bdd85549f538b3b83a20f9defd2b838fd6d29cc19826a
+        75M     /var/lib/docker/btrfs/subvolumes/63dd314d8d326df89fd24b3568845400e63d704618ce7bf5fcdfa9c54651b1fa
+        76M     /var/lib/docker/btrfs/subvolumes/2882fc99a39dc4f7d2f9bfa67c1340e832aef24fb29f55daa81d7607a3588bdc
+        91M     /var/lib/docker/btrfs/subvolumes/b5e85a79758ad84ae58f0f19e2c074cc0e7922ec92836b4258b7ebd20989f31a
+        91M     /var/lib/docker/btrfs/subvolumes/4155818523de647106578280a193c646d91abd5733a364698655550121d7fc53
+        91M     /var/lib/docker/btrfs/subvolumes/0f5570c2c25bc367698deb1a0992b6835e7ec286dace85ab7eda088b36b7d674
+        91M     /var/lib/docker/btrfs/subvolumes/ebc0dbd1cafebdffe21c775a465e8c7f9dedf788edf1160cd719c4b2d7e26020
+        245M    /var/lib/docker/btrfs/subvolumes/81cadd5938c7ae591783b5802236294a3d045cb1f3e196d0b91ee9bf839d2512
+        245M    /var/lib/docker/btrfs/subvolumes/b3236fb5520cf7c7b3b97771dd6449bcdb50ffe836d38c09ae66ffd6313581e1
+        245M    /var/lib/docker/btrfs/subvolumes/fbf3a57e0b3be7ace2307ac516b0d76ea67586e7a40c8cb4b106c1f0647724e5
+        245M    /var/lib/docker/btrfs/subvolumes/06b36ec64a603c0ffa8e5707aad6964312a6a6e078b05f1706d664302499b2d5
+        245M    /var/lib/docker/btrfs/subvolumes/f17635978e1c3dc7849b483f0ec3b5913cec755359966f4712d7787c6fb92e58
+        245M    /var/lib/docker/btrfs/subvolumes/180f16b3e24bb04f67f65dc9ca6a970bf8375a3883b69a3010f9f36731db0c9b
+        245M    /var/lib/docker/btrfs/subvolumes/ef3e395f9384695eff51dba747d8134fba9e52cd9f760261845a03baeee3a2f3
+        271M    /var/lib/docker/btrfs/subvolumes/f41f47a76d0228b939ce1a2dd10cda192838b559ad90004dae471ba2880a8708
+        442M    /var/lib/docker/btrfs/subvolumes/b7a7550bf34f337744572e19f59f43513a74c841a9087638984a6d2d2c248215
+        444M    /var/lib/docker/btrfs/subvolumes/af45209bbebd003f97756eed44d573bbd9a7eca80c364a1380506e98bd5aef42
+        455M    /var/lib/docker/btrfs/subvolumes/b658cbefe4ac271931b9249b40dc28438b5ac1d94e0dade435aaa580d20d17eb
+        455M    /var/lib/docker/btrfs/subvolumes/28f88425cd2d67b9cc442fa90c8d38fdd7e9673841f706603a91d426dfb77e5f
+        455M    /var/lib/docker/btrfs/subvolumes/792d2daeec37d2770905025d8cf412d1a0b47920df3d50f416e4a1bc5ba94d7e
+        403M    /var/lib/docker/btrfs/subvolumes/eb7cfc604b90d715f8664e4505404426553245bebfbfa0a93d1540c6dee7f346
+        726M    /var/lib/docker/btrfs/subvolumes/0329a7dd62cbb2a58bff3e2fe37d39381666b8733321f2debb26fe3a4075d6cb
+        726M    /var/lib/docker/btrfs/subvolumes/53a71575f4487f750038896e7dfd04b2125ad08936d1fcdd83d8189df65edc60
+        727M    /var/lib/docker/btrfs/subvolumes/bea2a3e9f978fa5484f5f85b6ad5fbfa3d2185d686d6437e437ee26275b710fd
+        736M    /var/lib/docker/btrfs/subvolumes/bb61e6b60c458ece3c5ca8c51c65df6c9a75374cf0ba81c233cac194621e6905
+        736M    /var/lib/docker/btrfs/subvolumes/c94ec07fc6676d7ceba974e15af6aff7ae466f20b8211c40155212c941e82582
+        751M    /var/lib/docker/btrfs/subvolumes/a2dbb67281222cf6420d2ac009e134dd33db9ec9a935d7613f3268543d746e51
+        741M    /var/lib/docker/btrfs/subvolumes/eaf2f2559ffd72fb3fe2a2a85e2143d4f8530e9b13bf1ab3353eeff512eb7d97
+        741M    /var/lib/docker/btrfs/subvolumes/76601c3946c67a0d7542e5a14bb3ae47288d5006d575853f8f375f640b4a2eff
+        736M    /var/lib/docker/btrfs/subvolumes/09385c4d8fd9ffc9e08579a3a89e6d1dfb848e0f1a07eb455f51e3111b75b641
+        736M    /var/lib/docker/btrfs/subvolumes/56341aee47075f7d5c63f80a31f4b6a1af9eec69ebef9a498f811d750b62b73b
+        736M    /var/lib/docker/btrfs/subvolumes/5c75def85507d9d0ce560597513ef0000aaba7aa489427076edf84c7931060ed
+        736M    /var/lib/docker/btrfs/subvolumes/ad0007a52cdc1a6f34943a33af474c3623f81ec7aa404149d4c5da12ed4aede2
+        736M    /var/lib/docker/btrfs/subvolumes/32fe8de61318d7c5133ff9e41e66fb2b60c65828a7fcebb4646aa52596a3277f
+        736M    /var/lib/docker/btrfs/subvolumes/52bfc58cca15a3a6351ba2116cde08ddd380c21c273d989fba039f49eae78c05
+        736M    /var/lib/docker/btrfs/subvolumes/231c54a85460e919dc7e80e3de03a196c28b5e6d58b73400a47f3d8172581abe
+        736M    /var/lib/docker/btrfs/subvolumes/80a61f759ebb0d8b112a742715dbd95dfe63f4660546c6c964dfcf68cd94f1c2
+        736M    /var/lib/docker/btrfs/subvolumes/bda0efd9713541039419f2fc84c4b21e5dee1a491e9bfd82c014261af1eeeb16
+        736M    /var/lib/docker/btrfs/subvolumes/3e4b7c19c88053dc08e5898466c2b6e02f54aeb43041fe0c0e4ae4354f0cf669
+        736M    /var/lib/docker/btrfs/subvolumes/8590bba6c3cf91b341662d1243e99f92532ca7dddcaccf9ce3a50c09ca672754
+        781M    /var/lib/docker/btrfs/subvolumes/ef6d28af6c55c3e0bd7852af1dd4982fadb65444fba3c5eb27c871cb7b052198
+        781M    /var/lib/docker/btrfs/subvolumes/d9aadd745f6d2cf6ad626bd690ba42b5bb0a5265e5f788d9d57fccf39659ba1d
+        781M    /var/lib/docker/btrfs/subvolumes/3d5e07414ef1805aed004860ffeae30d41b5f1b5fbdf31522db14a9a8a8e3305
+        781M    /var/lib/docker/btrfs/subvolumes/8591ef0e933dd8d2ad59d10677a339592455443217436151bb142d866a6193c9
+        781M    /var/lib/docker/btrfs/subvolumes/76330df7acf9b75b5262937794080e7780a925ac089e536ac6103a5f3ef0bcc3
+        781M    /var/lib/docker/btrfs/subvolumes/d1f17cef2d093d632da8e4fc2ba3fd9865d9284cb897dadef3607b2c7d981f62
+        781M    /var/lib/docker/btrfs/subvolumes/78ed753561a90fb022c83c1816f92ea974f976e8090590b318bf7ecd4c78b72a
+        781M    /var/lib/docker/btrfs/subvolumes/0e3ace2a35218dbc6e9a564c50f7bcc416f35262ac2df33ac1d903881e448166
+        781M    /var/lib/docker/btrfs/subvolumes/9d78d3cfa01a4218c117ac9689db287cc8f8dfab7ae0aa5753e3c4c7722412ed
+        245M    /var/lib/docker/btrfs/subvolumes/02e2ee069360e04a34ae24723baf756f178615c62bbe320afb431237adb6dc81-init
+        245M    /var/lib/docker/btrfs/subvolumes/02e2ee069360e04a34ae24723baf756f178615c62bbe320afb431237adb6dc81
+        245M    /var/lib/docker/btrfs/subvolumes/64e2c9d11ce56b92ee73fd4948084b957f266f4f1a496dfc96f69b690f730d0c-init
+        245M    /var/lib/docker/btrfs/subvolumes/64e2c9d11ce56b92ee73fd4948084b957f266f4f1a496dfc96f69b690f730d0c
+        781M    /var/lib/docker/btrfs/subvolumes/fb2dc49f1abd19e001c08adf13a6712ae726c90456a0d33345175f215ee32ca7-init
+        781M    /var/lib/docker/btrfs/subvolumes/fb2dc49f1abd19e001c08adf13a6712ae726c90456a0d33345175f215ee32ca7
+        781M    /var/lib/docker/btrfs/subvolumes/62883c50f682a2565669c029164de0283884ec573c28095b521576096cefc576-init
+        781M    /var/lib/docker/btrfs/subvolumes/62883c50f682a2565669c029164de0283884ec573c28095b521576096cefc576
+        122M    /var/lib/docker/btrfs/subvolumes/db08666925441f0890419415f998bc21d2b1741ea195fc4f37df21734c10944d
+        122M    /var/lib/docker/btrfs/subvolumes/6e93482d541d1a2589b2a6ba643f41f682ef94ff6dea90fe2439643f50a146e3
+        94M     /var/lib/docker/btrfs/subvolumes/42bfabc662762bd5e9cc66ce3365682a8ca721fa4f4bc854f53a7f404af881cd
+        94M     /var/lib/docker/btrfs/subvolumes/88e1d344eb007d34e2d6c70170e7272cb6e1945bd717f530ea00471491b1ec9c
+        94M     /var/lib/docker/btrfs/subvolumes/39a457120d0297f009768e9eea45e8a2a588e8bc160565e736d6c360083bf258
+        472M    /var/lib/docker/btrfs/subvolumes/f52bf58fd88a3b019dc904cfc8d88771e0d1bc84e22d784dab9bc226c6201a3f
+        482M    /var/lib/docker/btrfs/subvolumes/b344bd08414d82f88c4b2e83af41dd9770dccb1faeb9361770f0f2488ed40d86
+        512M    /var/lib/docker/btrfs/subvolumes/ddd73949991ab052d59788da7a34c9c8581ed86bf4ba24cb0d851ce702396919
+        512M    /var/lib/docker/btrfs/subvolumes/dc9aea8e5b5ac7cbeff655ede73423e35aa3f33a72954a2c938c2a53c5143f10
+        626M    /var/lib/docker/btrfs/subvolumes/0fa34a789d54d5cf0fdad903f209e59513a3e8de61d483fd5fc7adf04b26729d
+        626M    /var/lib/docker/btrfs/subvolumes/59972ea5abe1da25dc2008f9197e18842eaa202ca365f9c751595d51a8c70296
+        626M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7-init
+        626M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7
+        35G     /var/lib/docker/btrfs/subvolumes
+
+        #
+        # No single subvolume responsible for using most of the space.
+        # General spread over all of them.
+
+# -----------------------------------------------------
+# Check what containers are running (or not).
+#[user@virtual]
+
+    docker ps -a
+
+        CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                        PORTS                    NAMES
+        e28aeccf9639        firethorn/firethorn-py:2.1.25   "python3"                2 weeks ago         Exited (0) 2 weeks ago                                 stevedore_firethorn-py_run_1
+        1ff7b4d55a59        firethorn/firethorn:2.1.25      "/bin/sh -c '/var/lo…"   2 weeks ago         Exited (255) 32 minutes ago   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+        a41574a8b02c        firethorn/ogsadai:2.1.25        "/bin/sh -c '/var/lo…"   2 weeks ago         Exited (255) 32 minutes ago   8080/tcp                 stevedore_jarmila_1
+        ec94c09e8b07        firethorn/postgres:2.1.25       "docker-entrypoint.s…"   2 weeks ago         Exited (255) 32 minutes ago   5432/tcp                 stevedore_bethany_1
+        eea740ba89cc        firethorn/postgres:2.1.25       "docker-entrypoint.s…"   2 weeks ago         Exited (255) 32 minutes ago   5432/tcp                 stevedore_carolina_1
+
+# -----------------------------------------------------
+# Peek at the logs for each container.
+#[user@virtual]
+
+    for ident in $(docker ps -aq)
+    do
+        echo ""
+        echo "[${ident}] ---- ----"
+        docker logs \
+            --tail 20 \
+            "${ident}"
+    done
+
+
+        [e28aeccf9639] ---- ----
+        Traceback (most recent call last):
+          File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+            req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+          File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+            self.full_url = url
+          File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+            self._parse()
+          File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+            raise ValueError("unknown url type: %r" % self.full_url)
+        ValueError: unknown url type: 'None'
+        Traceback (most recent call last):
+          File "<stdin>", line 22, in <module>
+          File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_table.py", line 94, in as_astropy
+            if (self.count()>config.maxrows):
+        TypeError: unorderable types: NoneType() > int()
+        >>>
+        >>>
+        >>>
+        >>>
+        >>>
+
+        [1ff7b4d55a59] ---- ----
+	        at com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
+	        at com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
+	        at com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
+	        at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
+	        at com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+
+        16-Oct-2018 02:07:56.322 WARNING [Task-Thread-for-com.mchange.v2.async.ThreadPerTaskAsynchronousRunner@28bce7a1] org.postgresql.core.v3.ConnectionFactoryImpl.log IOException occurred while connecting to bethany:5432
+         java.net.NoRouteToHostException: No route to host (Host unreachable)
+	        at java.net.PlainSocketImpl.socketConnect(Native Method)
+	        at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	        at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	        at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	        at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	        at java.net.Socket.connect(Socket.java:589)
+	        at org.postgresql.core.PGStream.<init>(PGStream.java:69)
+	        at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:156)
+	        at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+	        at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:195)
+	        at org.postgresql.Driver.makeConnection(Driver.java:452)
+
+
+        [a41574a8b02c] ---- ----
+        27-Sep-2018 10:05:46.810 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/var/local/tomcat/webapps/ogsadai]
+        27-Sep-2018 10:05:51.971 INFO [main] org.apache.jasper.servlet.TldScanner.scanJars At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+        27-Sep-2018 10:05:52.044 INFO [main] com.sun.jersey.api.core.PackagesResourceConfig.init Scanning for root resource and provider classes in the packages:
+          uk.org.ogsadai.service.rest
+        27-Sep-2018 10:05:52.087 INFO [main] com.sun.jersey.api.core.ScanningResourceConfig.logClasses Root resource classes found:
+          class uk.org.ogsadai.service.rest.JerseyRequests
+          class uk.org.ogsadai.service.rest.JerseyDataSinks
+          class uk.org.ogsadai.service.rest.JerseyDataSources
+          class uk.org.ogsadai.service.rest.JerseyDRER
+          class uk.org.ogsadai.service.rest.JerseyDataResources
+          class uk.org.ogsadai.service.rest.JerseyRootService
+          class uk.org.ogsadai.service.rest.JerseySessions
+        27-Sep-2018 10:05:52.088 INFO [main] com.sun.jersey.api.core.ScanningResourceConfig.init No provider classes found.
+        27-Sep-2018 10:05:52.188 INFO [main] com.sun.jersey.server.impl.application.WebApplicationImpl._initiate Initiating Jersey application, version 'Jersey: 1.10 11/02/2011 04:41 PM'
+        27-Sep-2018 10:05:53.894 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/var/local/tomcat/webapps/ogsadai] has finished in [7,083] ms
+        27-Sep-2018 10:05:53.898 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
+        27-Sep-2018 10:05:53.917 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["ajp-nio-8009"]
+        27-Sep-2018 10:05:53.923 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in 7280 ms
+        SLF4J: This version of SLF4J requires log4j version 1.2.12 or later. See also http://www.slf4j.org/codes.html#log4j_version
+        Warning: Could not get charToByteConverterClass!
+
+        [ec94c09e8b07] ---- ----
+        2018-10-13 21:48:07.264 UTC [23894] WARNING:  terminating connection because of crash of another server process
+        2018-10-13 21:48:07.264 UTC [23894] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+        2018-10-13 21:48:07.264 UTC [23894] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+        2018-10-13 21:48:07.268 UTC [23914] WARNING:  terminating connection because of crash of another server process
+        2018-10-13 21:48:07.268 UTC [23914] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+        2018-10-13 21:48:07.268 UTC [23914] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+        2018-10-13 21:48:07.270 UTC [23907] WARNING:  terminating connection because of crash of another server process
+        2018-10-13 21:48:07.270 UTC [23907] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+        2018-10-13 21:48:07.270 UTC [23907] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+        2018-10-13 21:48:07.273 UTC [23845] WARNING:  terminating connection because of crash of another server process
+        2018-10-13 21:48:07.273 UTC [23845] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+        2018-10-13 21:48:07.273 UTC [23845] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+        2018-10-13 21:48:07.276 UTC [23908] WARNING:  terminating connection because of crash of another server process
+        2018-10-13 21:48:07.276 UTC [23908] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+        2018-10-13 21:48:07.276 UTC [23908] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+        2018-10-13 21:48:07.280 UTC [23880] WARNING:  terminating connection because of crash of another server process
+        2018-10-13 21:48:07.280 UTC [23880] DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+        2018-10-13 21:48:07.280 UTC [23880] HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+        2018-10-13 21:48:07.302 UTC [23934] FATAL:  the database system is in recovery mode
+        2018-10-13 21:48:07.328 UTC [23935] FATAL:  the database system is in recovery mode
+
+        [eea740ba89cc] ---- ----
+        2018-10-16 02:34:20.360 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:34:30.552 UTC [21353] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:34:50.254 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:35:00.448 UTC [21354] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:35:20.362 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:35:30.557 UTC [21355] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:35:50.263 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:36:00.459 UTC [21356] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:36:20.374 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:36:30.569 UTC [21357] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:36:50.273 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:37:00.468 UTC [21358] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:37:20.380 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:37:30.573 UTC [21359] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:37:50.281 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:38:00.475 UTC [21360] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:38:20.392 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:38:30.586 UTC [21361] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:38:50.289 UTC [74] LOG:  using stale statistics instead of current ones because stats collector is not responding
+        2018-10-16 02:39:00.481 UTC [21362] LOG:  using stale statistics instead of current ones because stats collector is not responding
+
+# -----------------------------------------------------
+# Check how much space is used by the logs.
+#[user@virtual]
+
+    sudo -s
+
+        for logfile in $(find '/var/lib/docker/' -name '*-json.log')
+        do
+            du -h "${logfile}"
+        done
+
+            736K    /var/lib/docker/containers/eea740ba89cc89217ed88c6b89ebf1447c061df59b5a4ed60bb79891ea85d5a5/eea740ba89cc89217ed88c6b89ebf1447c061df59b5a4ed60bb79891ea85d5a5-json.log
+            44K     /var/lib/docker/containers/ec94c09e8b07077ba120e10721295f8f710043b032f97003fd38ef5ebd39589f/ec94c09e8b07077ba120e10721295f8f710043b032f97003fd38ef5ebd39589f-json.log
+            12K     /var/lib/docker/containers/a41574a8b02c75f2f05e035130ec80d6e4961236782b83580c10d13400ed2c1d/a41574a8b02c75f2f05e035130ec80d6e4961236782b83580c10d13400ed2c1d-json.log
+            96M     /var/lib/docker/containers/1ff7b4d55a59d2991e6c70eba50d408ee3b45a65d8fa8783b05015dfad5489e0/1ff7b4d55a59d2991e6c70eba50d408ee3b45a65d8fa8783b05015dfad5489e0-json.log
+            716K    /var/lib/docker/containers/e28aeccf96399d19bea6c4ad2667502f55fa20112b696bd1fdd46f07b9a79d11/e28aeccf96399d19bea6c4ad2667502f55fa20112b696bd1fdd46f07b9a79d11-json.log
+
+        #
+        # Not that much then ...
+        # We can add the log limits to our compose files, but that won't solve this problem.
+
+
+# -----------------------------------------------------
+# Check how much space is used inside a subvolume.
+#[user@virtual]
+
+  sudo du -h -d1 /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7
+
+        8.2M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/bin
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/boot
+        28K     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/dev
+        3.7M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/etc
+        31M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/home
+        27M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/lib
+        4.0K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/lib64
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/media
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/mnt
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/opt
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/proc
+        21M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/root
+        8.0K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/run
+        4.6M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/sbin
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/srv
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/sys
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/tmp
+        484M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr
+        49M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/var
+        626M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7
+
+  sudo du -h -d1 /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr
+
+        42M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/bin
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/games
+        19M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/include
+        250M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib
+        103M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/local
+        1.8M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/sbin
+        70M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/share
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/src
+        484M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr
+
+  sudo du -h -d1 /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib
+
+        528K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/apt
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/binfmt.d
+        32K     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/dpkg
+        81M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/gcc
+        272K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/gnupg
+        56K     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/insserv
+        1.7M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/locale
+        28K     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/mime
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/modules-load.d
+        8.0K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/python2.7
+        3.2M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/python3
+        340K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/systemd
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/tar
+        40K     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/tmpfiles.d
+        71M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/x86_64-linux-gnu
+        4.0K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/compat-ld
+        17M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/git-core
+        4.0K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/gold-ld
+        8.0K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/initramfs-tools
+        1.1M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/ldscripts
+        760K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/openssh
+        74M     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/python3.5
+        0       /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/sasl2
+        52K     /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/ssl
+        124K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/tc
+        4.0K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/valgrind
+        250M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib
+
+    #
+    # Sort to find the largest ...
+    #
+
+         28K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/mime
+         32K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/dpkg
+         40K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/tmpfiles.d
+         52K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/ssl
+         56K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/insserv
+        124K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/tc
+        272K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/gnupg
+        340K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/systemd
+        528K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/apt
+        760K    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/openssh
+
+        1.1M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/ldscripts
+        1.7M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/locale
+        3.2M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/python3
+         17M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/git-core
+         71M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/x86_64-linux-gnu
+         74M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/python3.5
+         81M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib/gcc
+
+        250M    /var/lib/docker/btrfs/subvolumes/646f43474a010964cfc3873dcdbe6cf11382549f75796cc1e60d3cb6bf5f59d7/usr/lib
+
+    #
+    # Looks like gcc and python are the largest single consumers.
+    # Which doesn't really help tha much.
+    #
+
+
+
+

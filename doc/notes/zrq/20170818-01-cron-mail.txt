@@ -12,7 +12,7 @@
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
-#  
+#
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #   </meta:licence>
@@ -61,7 +61,7 @@ From: Checksite <checksite@$(hostname -f)>
 To: Checksite <checksite@dm93.uk>
 Subject: Checksite test failed
 
-Target [${target}]    
+Target [${target}]
 Result [${result}]
 EOM
 
@@ -91,7 +91,7 @@ chmod u=rwx,g=,o= "${HOME}/cron-check.sh"
 #[user@desktop]
 
 crontab -e
-*/30  *   *   *   *   ${HOME}/cron-check.sh
+*/30  *   *   *   *   ${HOME}/bin/cron-check.sh
 
 
 

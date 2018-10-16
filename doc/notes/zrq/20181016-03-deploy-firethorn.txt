@@ -1,0 +1,369 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop]
+
+    createvm
+
+        INFO : Node name [Siamond]
+        INFO : Base name [fedora-28-32G-docker-base-20181016.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-32G-docker-base-20181016.qcow]
+        INFO : Disc name [Siamond.qcow]
+        INFO : Disc size [32GiB]
+
+
+    vmname=Siamond
+    vmuser=Stevedore
+
+# -----------------------------------------------------
+# Login to the virtual machine.
+#[user@trop]
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+# -----------------------------------------------------
+# Install our admin keys.
+#[user@virtual]
+
+    pushd "${HOME}/.ssh"
+        mkdir keys
+        pushd keys
+            wget 'http://data.metagrid.co.uk/sshkeys/firethorn-admin.keys'
+        popd
+        cat 'keys/firethorn-admin.keys' >> authorized_keys
+    popd
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    mkdir "${HOME:?}/bin"
+    cat > "${HOME:?}/bin/secret" << 'EOF'
+secretsource='dave@shepseskaf.roe.ac.uk'
+
+if [ -n "${1}" ]
+then
+    ssh -o 'VisualHostKey=no' "${secretsource:?}" "bin/secret \"${1:?}\""
+fi
+EOF
+    chmod u+x "${HOME:?}/bin/secret"
+
+    secret 'frog'
+
+# -----------------------------------------------------
+# Set the target version.
+#[user@virtual]
+
+    export buildtag=2.1.25
+
+# -----------------------------------------------------
+# Create our chain properties.
+# ** BUG - intermittent - the heredoc seems to hang for no reason **
+# ** Ctrl^C exits the ssh shell, rather than the heredoc **
+#[user@virtual]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${buildtag:?}
+
+        metadata=data_$(pwgen 10 1)
+        metauser=user_$(pwgen 10 1)
+        metapass=pass_$(pwgen 10 1)
+
+        usertype=$(secret 'firethorn.user.type')
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        admingroup=group_$(pwgen 10 1)
+        adminuser=user_$(pwgen 10 1)
+        adminpass=pass_$(pwgen 20 1)
+
+        guestgroup=group_$(pwgen 10 1)
+        guestuser=user_$(pwgen 10 1)
+        guestpass=pass_$(pwgen 10 1)
+
+        #tapschemadata=data_$(pwgen 10 1)
+        tapschemadata=postgres
+        tapschemauser=user_$(pwgen 10 1)
+        tapschemapass=pass_$(pwgen 10 1)
+        tapschemajdbc=jdbc_$(pwgen 10 1)
+
+        adql_query_delay_first=10
+
+        firethorn_limits_rows_absolute=10000000
+        firethorn_limits_rows_default=100000
+
+EOF
+
+# -----------------------------------------------------
+# Link our compose config ** DON'T SKIP THIS **
+#[user@virtual]
+
+    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+# -----------------------------------------------------
+# Download the latest version of our compose file.
+#[user@virtual]
+
+    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/deploy/tap-deployer.yml'
+
+# -----------------------------------------------------
+# Start our containers ...
+#[user@virtual]
+
+    docker-compose \
+        --file "tap-deployer.yml" \
+        run \
+            firethorn-py
+
+# -----------------------------------------------------
+# Run our Python installer.
+#[python]
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+import firethorn_utils.configurator as configur
+
+#
+# Create our Firethorn client.
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create our Configurator.
+configurator = configur.Configurator(
+    firethorn
+    )
+
+#
+# Load the OSA configutarion.
+configurator.load_resources(
+    "https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/osa-tap.json"
+    )
+
+
+    Importing JDBC Schema: ATLASDR1
+    Importing JDBC Schema: ATLASDR2
+    Importing JDBC Schema: ATLASDR3
+    Importing JDBC Schema: 2MASS
+    Importing JDBC Schema: 2XMM
+    Importing JDBC Schema: WISE
+    Importing JDBC Schema: VIKINGDR3
+    Importing JDBC Schema: VHSDR1
+    Importing JDBC Schema: MGC
+    Importing JDBC Schema: GLIMPSE
+    Importing JDBC Schema: FIRST
+    Importing JDBC Schema: DENIS
+    Importing JDBC Schema: VPHASDR3
+    Importing JDBC Schema: VVVDR4
+    Importing JDBC Schema: SDSSDR7
+    Importing JDBC Schema: SDSSDR9
+    TAP Service available at: http://gillian:8080/firethorn/tap/54/
+
+# -----------------------------------------------------
+# Start another Python container ...
+#[user@virtual]
+
+    docker-compose \
+        --file "tap-deployer.yml" \
+        run \
+            firethorn-py
+
+# -----------------------------------------------------
+# Run our Python tests.
+#[python]
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+# Create our Firethorn client.
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Get the Atlas AdqlResource from our Configurator.
+#
+resource = firethorn.firethorn_engine.select_adql_resources()[0]
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+#
+# Create and run a query on the resource.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = resource.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+#
+# Iterate the metadata tree
+for schema in resource.select_schemas():
+    for table in schema.select_tables():
+        print(
+            "table  [{}][{}][{}]".format(
+                schema.name(),
+                table.name(),
+                table.count(),
+                )
+            )
+        query_str = "SELECT TOP 10 * FROM {}.{}".format(
+            schema.name(),
+            table.name()
+            )
+        query_obj = resource.create_query(
+            query_str,
+            "COMPLETED",
+            None,
+            3000000
+            )
+        py_table = query_obj.table().as_astropy()
+        py_table.pprint()
+
+    #
+    # Error with BestDR7 Region
+    # Several possible causes ...
+
+    table  [BestDR7][Region][-1]
+    ERROR:root:unknown url type: 'None'
+    Traceback (most recent call last):
+      File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+        req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+      File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+        self.full_url = url
+      File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+        self._parse()
+      File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+        raise ValueError("unknown url type: %r" % self.full_url)
+    ValueError: unknown url type: 'None'
+    ERROR:root:unknown url type: 'None'
+    Traceback (most recent call last):
+      File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+        req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+      File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+        self.full_url = url
+      File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+        self._parse()
+      File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+        raise ValueError("unknown url type: %r" % self.full_url)
+    ValueError: unknown url type: 'None'
+    ERROR:root:unknown url type: 'None'
+    Traceback (most recent call last):
+      File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+        req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+      File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+        self.full_url = url
+      File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+        self._parse()
+      File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+        raise ValueError("unknown url type: %r" % self.full_url)
+    ValueError: unknown url type: 'None'
+    Traceback (most recent call last):
+      File "<stdin>", line 22, in <module>
+      File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_table.py", line 94, in as_astropy
+        if (self.count()>config.maxrows):
+    TypeError: unorderable types: NoneType() > int()
+    >>>
+
+# -----------------------------------------------------
+# Separate shell to monitor the logs
+#[user@trop]
+
+    ssh Siamond
+
+        sudo -s
+
+            container=stevedore_gillian_1
+
+            pushd $(
+                docker inspect \
+                    "${container:?}" \
+              | jq -r '
+                    .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+                    '
+                    )
+
+            tail -f firethorn-debug.log
+
+# -----------------------------------------------------
+# Check the disk usage after the install.
+#[user@virtual]
+
+    df -h
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        devtmpfs        2.0G     0  2.0G   0% /dev
+        tmpfs           2.0G     0  2.0G   0% /dev/shm
+        tmpfs           2.0G  768K  2.0G   1% /run
+        tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+        /dev/vda3        31G  4.0G   25G  14% /
+        tmpfs           2.0G  4.0K  2.0G   1% /tmp
+        /dev/vda1       240M   89M  135M  40% /boot
+        tmpfs           395M     0  395M   0% /run/user/1001
+
+
+    #
+    # Nothing using up huge blocks of space yet ...
+    #
+
