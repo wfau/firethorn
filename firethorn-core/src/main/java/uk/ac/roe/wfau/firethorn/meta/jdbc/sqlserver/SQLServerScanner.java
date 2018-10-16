@@ -598,6 +598,8 @@ d = System.currentTimeMillis();
                                                 catalog().name()
                                                 )
                                             );
+			
+
                                         statement.setString(
                                             1,
                                             schema().name()
@@ -629,7 +631,9 @@ d = System.currentTimeMillis();
                             throws SQLException
                                 {
                                 final String  name = results.getString("COLUMN_NAME");
-                                final Integer strlen = results.getInt("CHARACTER_MAXIMUM_LENGTH");
+                                final Integer strlen = ((results.getInt("CHARACTER_MAXIMUM_LENGTH")>8000 || results.getInt("CHARACTER_MAXIMUM_LENGTH")<=0) ? 8000 : results.getInt("CHARACTER_MAXIMUM_LENGTH"));
+ 
+			
                                 final JdbcColumn.JdbcType type = SQLServerScanner.type(
                                     results.getInt(
                                         "NUMERIC_PRECISION"
@@ -665,6 +669,7 @@ d = System.currentTimeMillis();
                                     @Override
                                     public Integer strlen()
                                         {
+                                        
                                         return strlen;
                                         }
                                     @Override
@@ -753,7 +758,7 @@ d = System.currentTimeMillis();
         typemap.put("varbinary", JdbcColumn.JdbcType.VARBINARY); 
 
         //http://msdn.microsoft.com/en-GB/library/ms187993.aspx
-        typemap.put("image",     JdbcColumn.JdbcType.VARBINARY); 
+        typemap.put("image",     JdbcColumn.JdbcType.BLOB); 
         typemap.put("text",      JdbcColumn.JdbcType.VARCHAR);
         typemap.put("ntext",     JdbcColumn.JdbcType.NVARCHAR); 
 

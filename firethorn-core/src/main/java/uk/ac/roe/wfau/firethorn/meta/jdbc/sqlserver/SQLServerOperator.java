@@ -254,7 +254,7 @@ implements JdbcOperator
                 {
                 case CHAR:
                 case NCHAR:  
-                case VARCHAR:    
+                case VARCHAR: 
                 case NVARCHAR: 
                     if ((meta.arraysize() != null) && (meta.arraysize() > 0) && (meta.arraysize() < MAX_CHAR_SIZE))
                         {
@@ -269,6 +269,11 @@ implements JdbcOperator
                         }
                     break;
 
+                case BLOB:  
+		    tempbuilder.append(
+                        "VARBINARY(MAX)"
+                        );
+                    break ;
                 default :
                     if ((meta.arraysize() == null) || (meta.arraysize() == AdqlColumn.VAR_ARRAY_SIZE))
                         {
@@ -294,6 +299,11 @@ implements JdbcOperator
                         );
                     break ;
 
+                case BLOB:  
+		    tempbuilder.append(
+                        "VARBINARY(MAX)"
+                        );
+                    break ;
                 case DATE :
                 case TIME :
                 case TIMESTAMP :
