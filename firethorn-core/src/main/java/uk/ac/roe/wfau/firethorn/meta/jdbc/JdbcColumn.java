@@ -245,10 +245,10 @@ extends BaseColumn<JdbcColumn>
                     return JdbcColumn.JdbcType.BOOLEAN;
                 
                 case BIT :
-                    return JdbcColumn.JdbcType.BLOB;
+                    return JdbcColumn.JdbcType.BIT;
                 
                 case BYTE :
-                    return JdbcColumn.JdbcType.BLOB;
+                    return JdbcColumn.JdbcType.VARBINARY;
                 
                 case CHAR :
                     return JdbcColumn.JdbcType.CHAR;
