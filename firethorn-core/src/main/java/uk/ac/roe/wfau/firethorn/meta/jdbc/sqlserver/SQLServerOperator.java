@@ -270,6 +270,7 @@ implements JdbcOperator
                     break;
 
                 case BLOB:  
+		case VARBINARY:
 		    tempbuilder.append(
                         "VARBINARY(MAX)"
                         );
@@ -300,6 +301,7 @@ implements JdbcOperator
                     break ;
 
                 case BLOB:  
+		case VARBINARY:
 		    tempbuilder.append(
                         "VARBINARY(MAX)"
                         );

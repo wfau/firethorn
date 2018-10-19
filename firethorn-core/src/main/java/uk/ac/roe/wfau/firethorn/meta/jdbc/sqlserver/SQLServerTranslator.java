@@ -772,7 +772,7 @@ implements AdqlTranslator
 			return new DBType(DBDatatype.VARCHAR, lengthParam);
 		// BLOB
 		else if (dbmsTypeName.equals("image"))
-			return new DBType(DBDatatype.BLOB);
+			return new DBType(DBDatatype.VARBINARY, lengthParam);
 		// CLOB
 		else if (dbmsTypeName.equals("text") || dbmsTypeName.equals("ntext"))
 			return new DBType(DBDatatype.CLOB);

@@ -52,6 +52,12 @@ public class SQLServerScanner
     private static final Long ROWCOUNT_LIMIT = 100000L ;
 
     /**
+     * Maximum Character Size (Note: This probably needs to be improved/changed, not sure where).
+     * 
+     */
+    private static final Integer MAX_CHAR_LIMIT = 8000 ;
+
+    /**
      * Public constructor.
      * 
      */
@@ -631,7 +637,7 @@ d = System.currentTimeMillis();
                             throws SQLException
                                 {
                                 final String  name = results.getString("COLUMN_NAME");
-                                final Integer strlen = ((results.getInt("CHARACTER_MAXIMUM_LENGTH")>8000 || results.getInt("CHARACTER_MAXIMUM_LENGTH")<=0) ? 8000 : results.getInt("CHARACTER_MAXIMUM_LENGTH"));
+                                final Integer strlen = ((results.getInt("CHARACTER_MAXIMUM_LENGTH")>MAX_CHAR_LIMIT || results.getInt("CHARACTER_MAXIMUM_LENGTH")<=0) ? MAX_CHAR_LIMIT : results.getInt("CHARACTER_MAXIMUM_LENGTH"));
  
 			
                                 final JdbcColumn.JdbcType type = SQLServerScanner.type(
@@ -758,7 +764,7 @@ d = System.currentTimeMillis();
         typemap.put("varbinary", JdbcColumn.JdbcType.VARBINARY); 
 
         //http://msdn.microsoft.com/en-GB/library/ms187993.aspx
-        typemap.put("image",     JdbcColumn.JdbcType.BLOB); 
+        typemap.put("image",     JdbcColumn.JdbcType.VARBINARY); 
         typemap.put("text",      JdbcColumn.JdbcType.VARCHAR);
         typemap.put("ntext",     JdbcColumn.JdbcType.NVARCHAR); 
 
