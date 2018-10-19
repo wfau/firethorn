@@ -1,0 +1,77 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Fetch a copy of the source code.
+#[user@desktop]
+
+    mkdir taplib
+    pushd taplib/
+
+        git clone https://github.com/Zarquan/taplib.git zrq.github
+
+    popd
+
+# -----------------------------------------------------
+# Set the Postgresql environment variables.
+#[user@desktop]
+
+    mavendir=/var/local/cache/maven
+    pgsqljar=${mavendir:?}/org/postgresql/postgresql/42.2.2/postgresql-42.2.2.jar
+
+# -----------------------------------------------------
+# Set the Postgresql environment variables.
+#[user@desktop]
+
+    mavendir=/var/local/cache/maven
+    junitdir=$(mktemp -d)
+
+    pushd "${junitdir:?}"
+
+        ln -s "${mavendir:?}/junit/junit/4.12/junit-4.12.jar"
+        ln -s "${mavendir:?}/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"
+
+    popd
+
+# -----------------------------------------------------
+# Set the environment variables.
+#[user@desktop]
+
+    ant -DPOSTGRES=${pgsqljar} -DJUNIT-API=${junitdir:?} -buildfile buildADQL.xml
+
+
+
+    #
+    # Can't find the JUnit classes ..
+
+    [javac] /var/local/projects/edinburgh/taplib/zrq.github/test/adql/db/TestSubQueries.java:11: error: package org.junit does not exist
+    [javac] import org.junit.Test;
+
+    #
+    # Depends on the tap classes ..
+
+    [javac] /var/local/projects/edinburgh/taplib/zrq.github/test/adql/db/TestSubQueries.java:16: error: cannot find symbol
+    [javac] import tap.metadata.TAPMetadata;
+
+
+
+
