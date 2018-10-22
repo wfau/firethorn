@@ -24,12 +24,32 @@
 # Fetch a copy of the source code.
 #[user@desktop]
 
-    mkdir taplib
-    pushd taplib/
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
 
-        git clone https://github.com/Zarquan/taplib.git zrq.github
+        if [ ! -e 'taplib' ]
+        then
+            mkdir taplib
+        fi
+
+        pushd 'taplib'
+            if [ ! -e 'zrq.github' ]
+            then
+                git clone https://github.com/Zarquan/taplib.git 'zrq.github'
+            else
+                pushd 'zrq.github'
+                    git pull
+                popd
+            fi
+        popd
 
     popd
+
+# -----------------------------------------------------
+# ...
+#[user@desktop]
+
+
 
 # -----------------------------------------------------
 # Set the Postgresql environment variables.
@@ -42,21 +62,33 @@
 # Set the Postgresql environment variables.
 #[user@desktop]
 
+#   mavendir=/var/local/cache/maven
+#   junitdir=$(mktemp -d)
+#   pushd "${junitdir:?}"
+#
+#   #   ln -s "${mavendir:?}/junit/junit/4.12/junit-4.12.jar"
+#   #   ln -s "${mavendir:?}/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"
+#
+#       cp "${mavendir:?}/junit/junit/4.12/junit-4.12.jar" .
+#       cp "${mavendir:?}/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" .
+#
+#   popd
+
     mavendir=/var/local/cache/maven
-    junitdir=$(mktemp -d)
-
-    pushd "${junitdir:?}"
-
-        ln -s "${mavendir:?}/junit/junit/4.12/junit-4.12.jar"
-        ln -s "${mavendir:?}/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"
-
-    popd
+    junitjar="${mavendir:?}/junit/junit/4.12/junit-4.12.jar"
 
 # -----------------------------------------------------
 # Set the environment variables.
 #[user@desktop]
 
-    ant -DPOSTGRES=${pgsqljar} -DJUNIT-API=${junitdir:?} -buildfile buildADQL.xml
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd 'zrq.github'
+
+                ant -v -DPOSTGRES=${pgsqljar} -DJUNIT-API=${junitjar:?} -buildfile buildADQL.xml
+
+
 
 
 
