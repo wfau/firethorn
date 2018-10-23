@@ -52,29 +52,12 @@
 
 
 # -----------------------------------------------------
-# Set the Postgresql environment variables.
+# Set the classpath environment variables.
 #[user@desktop]
 
     mavendir=/var/local/cache/maven
+
     pgsqljar=${mavendir:?}/org/postgresql/postgresql/42.2.2/postgresql-42.2.2.jar
-
-# -----------------------------------------------------
-# Set the Postgresql environment variables.
-#[user@desktop]
-
-#   mavendir=/var/local/cache/maven
-#   junitdir=$(mktemp -d)
-#   pushd "${junitdir:?}"
-#
-#   #   ln -s "${mavendir:?}/junit/junit/4.12/junit-4.12.jar"
-#   #   ln -s "${mavendir:?}/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"
-#
-#       cp "${mavendir:?}/junit/junit/4.12/junit-4.12.jar" .
-#       cp "${mavendir:?}/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" .
-#
-#   popd
-
-    mavendir=/var/local/cache/maven
 
     junitjar=${mavendir:?}/junit/junit/4.12/junit-4.12.jar
     hamcrest=${mavendir:?}/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
@@ -96,26 +79,9 @@
         pushd 'taplib'
             pushd 'zrq.github'
 
-reset ; ant -DPOSTGRES=${pgsqljar} -DJUNIT-API=${junitjar:?}:${hamcrest:?} -DSERVLET-API=${servlet:?} -DJNDI-API=${jndijar:?} -buildfile buildTAP.xml
+                ant -DPOSTGRES=${pgsqljar} -DJUNIT-API=${junitjar:?}:${hamcrest:?} -DSERVLET-API=${servlet:?} -DJNDI-API=${jndijar:?} -buildfile buildTAP.xml
 
-reset ; ant -DPOSTGRES=${pgsqljar} -DJUNIT-API=${junitjar:?} -buildfile buildADQL.xml
-
-
-
-
-
-    #
-    # Can't find the JUnit classes ..
-
-    [javac] /var/local/projects/edinburgh/taplib/zrq.github/test/adql/db/TestSubQueries.java:11: error: package org.junit does not exist
-    [javac] import org.junit.Test;
-
-    #
-    # Depends on the tap classes ..
-
-    [javac] /var/local/projects/edinburgh/taplib/zrq.github/test/adql/db/TestSubQueries.java:16: error: cannot find symbol
-    [javac] import tap.metadata.TAPMetadata;
-
+                ant -DPOSTGRES=${pgsqljar} -DJUNIT-API=${junitjar:?} -buildfile buildADQL.xml
 
 
 
