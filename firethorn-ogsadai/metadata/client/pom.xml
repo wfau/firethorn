@@ -44,7 +44,7 @@
         Client (OGSA-DAI) components for the FireThorn OGSA-DAI metadata service.
         ]]>
     </description>
-    
+
     <dependencies>
 
         <!--+
@@ -75,14 +75,15 @@
         </dependency>
 
         <!--+
-            | JUnit test framework.
-            | http://www.junit.org/
+            | FireThorn testing dependencies.
             +-->
-    	<dependency>
-    		<groupId>junit</groupId>
-    		<artifactId>junit</artifactId>
-    		<scope>test</scope>
-    	</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-testing</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
 
         <!--+
             | Spring framework HTTP tools.

@@ -52,7 +52,7 @@
     #
     # Update dependencies
     -U
-    
+
     #
     # Display Dependency Updates
     mvn versions:display-dependency-updates

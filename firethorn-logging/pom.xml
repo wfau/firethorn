@@ -90,18 +90,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency> 
-
-        <!--+
-            | JUnit test framework.
-            | http://www.junit.org/
-            +-->
-    	<dependency>
-    		<groupId>junit</groupId>
-    		<artifactId>junit</artifactId>
-            <type>jar</type>
-            <scope>test</scope>
-    	</dependency>
+        </dependency>
 
     </dependencies>
 
@@ -321,7 +310,7 @@
                     <version>${commons.logging.version}</version>
                     <scope>provided</scope>
                 </dependency>
-  
+
             </dependencies>
 
         </profile>
@@ -412,7 +401,7 @@
 
                 <!--+
                     | Include the logback libraries.
-                    | 
+                    |
                     +-->
                 <dependency>
                     <groupId>ch.qos.logback</groupId>
