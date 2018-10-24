@@ -1,0 +1,163 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+
+    TODO - ADQL standard
+    Improve the UDF example, change name from 'match()' to 'my_match()'
+
+# -----------------------------------------------------
+
+    #
+    # Optional language features.
+
+        public interface LanguageFeature
+            {
+            URI getType();
+            String getName();
+            }
+
+        ivo://ivoa.net/std/TAPRegExt#features-adql-geo
+        AREA
+        BOX
+        CENTROID
+        CIRCLE
+        CONTAINS
+        COORD1
+        COORD2
+        COORDSYS
+        DISTANCE
+        INTERSECTS
+        POINT
+        POLYGON
+
+        ivo://ivoa.net/std/TAPRegExt#features-adql-string
+        LOWER
+        UPPER <-- new
+        ILIKE
+
+        ivo://ivoa.net/std/TAPRegExt#features-adql-sets
+        UNION
+        EXCEPT
+        INTERSECT
+
+        ivo://ivoa.net/std/TAPRegExt#features-adql-common-table
+        WITH
+
+        ivo://ivoa.net/std/TAPRegExt#features-adql-type
+        CAST <-- deprecated
+
+        ivo://ivoa.net/std/TAPRegExt#features-adql-unit
+        IN_UNIT
+
+        ivo://ivoa.net/std/TAPRegExt#features-adql-bitwise
+        BIT_AND
+        BIT_OR
+        BIT_NOT
+
+        ivo://ivoa.net/std/TAPRegExt#features-adql-offset
+        OFFSET
+
+
+    Parse the text into tree.
+    Walk the tree to check implementations.
+    Walk the tree to generate SQL.
+
+# -----------------------------------------------------
+
+        Existing code checks for geometric functions by name.
+
+        DBChecker
+
+            checkGeometries(ADQLQuery, UnresolvedIdentifiersException)
+
+            resolveGeometryFunctions(ADQLQuery, BinarySearch<String,String>, UnresolvedIdentifiersException)
+
+            checkGeometryFunction(String, ADQLFunction, BinarySearch<String,String>, UnresolvedIdentifiersException errors)
+
+            private static class SearchGeometryHandler extends SimpleSearchHandler {
+	            @Override
+	            protected boolean match(ADQLObject obj){
+		            return (obj instanceof GeometryFunction);
+	            }
+            }
+
+# -----------------------------------------------------
+# Maven build
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd 'zrq.github'
+
+                # ADQL only
+                # Tests fail due to missing dependency on the tap classses.
+
+                mvn -f adql-pom.xml compile
+
+                mvn -f adql-pom.xml test
+
+                mvn -f adql-pom.xml eclipse:eclipse
+
+
+                # Everything in TapLib
+                # Tests fail due to missing dependency on Ari AstroH2 classses.
+
+                mvn -f taplib-pom.xml compile
+
+                mvn -f taplib-pom.xml eclipse:eclipse
+
+
+# -----------------------------------------------------
+
+    Ant builds are interlinked.
+
+        ADQL tests require classes from TAP lib
+
+        TAP build includes all of the ADQL classes
+
+# -----------------------------------------------------
+# Push the AstroH2 jar into our local repository.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd 'zrq.github'
+
+                mvn install:install-file \
+                    -DgroupId=de.uni-heidelberg.zah \
+                    -DartifactId=astroh2 \
+                    -Dversion=0.3 \
+                    -Dpackaging=jar \
+                    -Dfile=lib/astroh2-0.3.jar
+
+
+
+
+
+
+
+
+    mvn install:install-file -DgroupId=uk.org.ogsadai -DartifactId=ogsadai-webapp -Dversion=4.2 -Dpackaging=war -Dfile=ogsadai-4.2-jersey-webapp-1.10.war
+
