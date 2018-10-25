@@ -18,6 +18,7 @@
 
 package uk.ac.roe.wfau.firethorn.adql.util;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class AdqlNameModifier
         {
         }
 
+
+
     /**
      * Public constructor.
      * 
@@ -49,7 +52,32 @@ public class AdqlNameModifier
      * Our list of reserved names.
      * 
      */
-    protected List<String> reserved = Collections.emptyList();
+    protected List<String> reserved = Arrays.asList(
+            "first",
+            "diagnostics",
+            "match",
+            "region",
+            "zone",
+            "timestamp",
+            "coord2",
+            "coord1",
+            "size",
+            "min",
+            "max",
+            "match",
+            "zone",
+            "time",
+            "distance",
+            "value",
+            "sql",
+            "first",
+            "date",
+            "area",
+            "key",
+            "count",
+            "when"
+            );
+    
 
     /**
      * Check for a reserved name.
