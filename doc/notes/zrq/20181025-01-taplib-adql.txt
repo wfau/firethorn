@@ -1,0 +1,335 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Exploring changes to the exsiting classes.
+    Meld diff between latest from GitHub and the copy embedded into Firethorn.
+
+# -----------------------------------------------------
+# adql.db
+
+public class DBChecker
+implements QueryChecker {
+    {
+
+    //-- Diff shows useful bug fixes and no conflicts.
+    //-- No 2.1 specific changes to transfer.
+
+	DBChecker(final Collection<? extends DBTable> tables, final Collection<? extends FunctionDef> allowedUdfs, final Collection<String> allowedGeoFcts, final Collection<String> allowedCoordSys)
+
+    void checkUDFs(final ADQLQuery query, final UnresolvedIdentifiersException errors)
+
+	void checkGeometries(final ADQLQuery query, final UnresolvedIdentifiersException errors)
+
+        void resolveGeometryFunctions(final ADQLQuery query, final BinarySearch<String,String> binSearch, final UnresolvedIdentifiersException errors)
+        void checkGeometryFunction(final String fctName, final ADQLFunction fct, final BinarySearch<String,String> binSearch, final UnresolvedIdentifiersException errors)
+
+    //-- TODO Add code to check for optional functionality.
+	void checkOptionals(final ADQLQuery query, final UnresolvedIdentifiersException errors)
+
+    }
+
+public interface DBColumn
+    {
+
+    //-- GitHub version has changes to comment, need to check our implementation matches this behaviour.
+	public String getADQLName();
+
+    }
+
+public interface DBTable extends Iterable<DBColumn>
+    {
+
+    //-- GitHub version has changes to comment, need to check our implementation matches this behaviour.
+	public String getADQLName();
+
+    }
+
+//- New class
+public class DBTableAlias extends DefaultDBTable
+    {
+    }
+
+public class DBType
+    {
+	public static enum DBDatatype
+	    {
+	    //- GitHub version has changes to the way that name can be changed for UNKNOWN and UNKNOWN_NUMERIC.
+	    //- BUG I think this doesn't work as expected.
+	    //- My guess is it is changing the name() for the DBDatatype enum global singleton, not a particular instance.
+	    //- Test to see if this is the case ?
+	    //- Clearer to put the name change in DBType rather than DBDatatype ?
+	    }
+    }
+
+public final class STCS
+    {
+	public static enum Frame
+	    {
+        //- GitHub version adds J2000
+        //- Does this work for EPN ?
+        }
+    }
+
+public class SearchColumnList extends TextualSearchList<DBColumn>
+    {
+    //- GitHub version moves to Collection interfaces.
+    //- ArrayList -> List
+    //- HashMap -> Map
+    }
+
+public interface SearchTableApi
+    {
+    //- Changes to comments only
+    }
+
+public class SearchTableList extends TextualSearchList<DBTable> implements SearchTableApi
+    {
+    //- GitHub version moves to Collection interfaces.
+    //- ArrayList -> List
+    //- HashMap -> Map
+    }
+
+# -----------------------------------------------------
+# adql.parser
+
+public class ADQLParser implements ADQLParserConstants
+    {
+    //- Generated code - lots of changes.
+    }
+
+public interface ADQLParserConstants
+    {
+    //- Generated code - lots of changes.
+    }
+
+public class ADQLParserTokenManager
+    {
+    //- Generated code - lots of changes.
+    }
+
+public class ADQLQueryFactory
+    {
+    //- Firethorn version [273,279] includes code for CAST - ignore
+	public CastFunction createCastFunction(Token type, ADQLOperand oper)
+
+	//- Both versions list this as deprecated.
+    //- Reason for deprecation is "ORDER BY item is either a regular/delimited column name or an integer, not a qualified column name".
+	public ADQLOrder createOrder(final IdentifierItems idItems, final boolean desc) throws Exception
+
+    //- Firethorn version has this deprecated, GitHub copy does not.
+    //- Reason for deprecation is "GROUP BY item is either a regular/delimited column name or an integer, not a qualified column name".
+	public ColumnReference createColRef(final IdentifierItems idItems) throws Exception{
+
+    }
+
+public class IdentifierItems
+    {
+    //- GitHub version has a bug fix for quotes in the identifier.
+    }
+
+public class ParseException
+    {
+    //- Generated code with manual changes, restore from backup.
+    //- GitHub version has regular expressions for ADQL and SQL reserved words.
+    }
+
+
+public class SQLServer_ADQLQueryFactory extends ADQLQueryFactory
+    {
+    //- New class in GitHub version.
+    //- Adds code to handle INNER and OUTER JOIN issues with SQLServer.
+    }
+
+public class SimpleCharStream
+    {
+    //- Generated code with manual changes, restore from backup.
+    }
+
+public class Token
+    {
+    //- Generated code with manual changes, restore from backup.
+    }
+
+public class TokenMgrError
+    {
+    //- Generated code with manual changes, restore from backup.
+    //- Think I prefer the Firethorn version (line and column rather than l. ad c.)
+    }
+
+public class ADQLParser
+    {
+    //- java-cc source file
+
+    //- GitHub version [358,362] catches TokenMgrError and re-throws it as ParseException
+    //- GitHub version [382,386] catches TokenMgrError and re-throws it as ParseException
+    //- GitHub version [406,410] catches TokenMgrError and re-throws it as ParseException
+
+    //- GitHub version [566,579] includes list of unused reserved words.
+
+    //- Firethorn version [520] includes modulo operator.
+    //- Firethorn version [524,533] includes bit wise operators.
+
+    //- GitHub version [660,663] includes better handling of 'BY' in 'ORDER BY' and 'GROUP BY'
+
+    //- Firethorn version [643,644] includes SQUARE and SIGN -- should these be UDFs ?
+
+    //- Firethorn version [666,673] includes CAST -- we agreed to drop this
+
+    //- GitHub version [382,386] catches TokenMgrError and re-throws it as ParseException
+
+    //- Firethorn version [712,719] includes hexadecimal numbers
+
+    //- GitHub version [885] changes handling of 'AS'
+
+    //- GitHub version [927,929] changes handling of 'ORDER BY'
+    //- GitHub version [942] changes handling of 'ORDER BY'
+
+    //- Firethorn version [956,971] includes deprecated code for complex column names in 'ORDER BY' clause
+
+    //- GitHub version [1071] uses SimpleTableRef rather than TableRef in JOIN code.
+    //- GitHub version [1078] uses SimpleTableRef rather than TableRef in JOIN code.
+
+    //- Firethorn version [1104] adds hexadecimal to NumericConstant
+    //- Firethorn version [1156] includes code for CAST
+
+    //- GitHub version [1196,1203] has changs to string value expression
+    //- GitHub version [1211,1229] has changs to value expression
+
+    //- Firethorn version [1254] includes code for bitwise and modulo operators
+    //- Firethorn version [1227,1224] includes code for bitwise operators
+    //- Firethorn version [1505,1523] includes code for CAST
+
+    //- Firethorn version [1675] includes extra check for null ?
+
+    //- Firethorn version [1680] includes code for SQUARE
+    //- Firethorn version [1681] includes code for SIGN
+
+    //- Firethorn version [1689] includes extra checks for nulls ?
+    //- Firethorn version [1693,1695] includes extra checks for nulls ?
+
+    //- Firethorn version [1713] includes extra checks for nulls ?
+    //- Firethorn version [1715,1718] includes extra checks for nulls ?
+
+    }
+
+
+# -----------------------------------------------------
+# adql.query
+
+    TODO
+
+# -----------------------------------------------------
+# adql.search
+
+    TODO
+
+# -----------------------------------------------------
+# adql.translator
+
+    TODO
+
+# -----------------------------------------------------
+# Firethorn classes
+
+MyQueryChecker
+    extends DBChecker
+    implements QueryChecker
+    {
+
+    //-- TODO - Override checkUDFs, check based on properties of the AdqlResource
+
+    //-- TODO - Override checkGeometries, check based on properties of the AdqlResource
+
+    }
+
+AdqlParserImpl
+    {
+
+    // Create an AdqlParser for a specific AdqlResource
+    AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQueryBase.Mode mode, final AdqlResource resource)
+        {
+
+        // TODO - Add list of allowed geometrics, features and functions.
+        this.parser = new ADQLParser(
+            new MyQueryChecker(
+                new MySearchTableList(
+                    resource,
+                    factory,
+                    mode
+                    )
+                ),
+            new AdqlQueryFactoryImpl()
+            );
+
+        }
+
+    public static class AdqlQueryFactoryImpl
+    extends ADQLQueryFactory
+        {
+
+        @Override
+        public UserDefinedFunction createUserDefinedFunction(final String name, final ADQLOperand[] params)
+            {
+            //-- Check - Why do we have code to skip SIGN() and SQUARE() ?
+            }
+
+        //-- TODO - catalog/schema/table specific user defined functions ?
+
+        @Override
+        public NumericConstant createNumericConstant(final String value)
+            {
+            //-- Add code for hexadecimal constants
+            }
+
+        public static class HexConstant
+        extends NumericConstant
+            {
+            //-- Add class for hexadecimal constants
+            }
+
+        }
+
+    @Override
+    public void process(final AdqlParserQuery subject)
+        {
+        }
+
+    }
+
+BlueQueryEntity
+    {
+
+    new AdqlParserQuery()
+        {
+        @Override
+        public String cleaned()
+            {
+            // Remove leading and trailing spaces
+            // Remove multiline spaces /* .. */
+            // Replace double dots '..'
+            // Replace 'AS distance'
+            }
+
+    }
+
+
+
