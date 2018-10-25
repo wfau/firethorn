@@ -481,7 +481,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 					for (AdqlColumn column : table.columns().select()) {
 						
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-								+ "\".\"columns\" (\"table_name\", \"column_name\", \"description\", \"unit\", \"ucd\", \"utype\", \"datatype\", \"size\", \"arraysize\", \"principal\", \"indexed\", \"std\", \"ft_column_id\") VALUES (?,?,?,?)";
+								+ "\".\"columns\" (\"table_name\", \"column_name\", \"description\", \"unit\", \"ucd\", \"utype\", \"datatype\", \"size\", \"arraysize\", \"principal\", \"indexed\", \"std\", \"ft_column_id\") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 						counter = 0;
 						PreparedStatement updateColumnStatement = con.prepareStatement(sql);
 						
