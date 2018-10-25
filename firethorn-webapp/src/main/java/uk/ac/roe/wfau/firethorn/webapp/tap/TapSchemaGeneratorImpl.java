@@ -291,7 +291,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 					}
 					
 					updateTableStatement.setObject(++counter, "");
-					updateSchemaStatement.setObject(++counter, Integer.parseInt(table.ident().toString()));
+					updateTableStatement.setObject(++counter, Integer.parseInt(table.ident().toString()));
 					updateTableStatement.executeUpdate();
 					
 					
@@ -366,7 +366,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 
 								if ((meta.adql().arraysize() != null) && (meta.adql().arraysize() != 0)) {
 									if (meta.adql().arraysize() == -1) {
-										updateSchemaStatement.setObject(++counter, null);
+										updateColumnStatement.setObject(++counter, null);
 										updateColumnStatement.setObject(++counter, null);
 
 									} else {
@@ -475,7 +475,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 					}
 					
 					updateTableStatement.setObject(++counter, "");
-					updateSchemaStatement.setObject(++counter, Integer.parseInt(table.ident().toString()));
+					updateTableStatement.setObject(++counter, Integer.parseInt(table.ident().toString()));
 					updateTableStatement.executeUpdate();
 
 					for (AdqlColumn column : table.columns().select()) {
@@ -570,10 +570,10 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 							}
 						}
 
-						updateSchemaStatement.setObject(++counter, 0);
 						updateColumnStatement.setObject(++counter, 0);
 						updateColumnStatement.setObject(++counter, 0);
-						updateSchemaStatement.setObject(++counter, Integer.parseInt(column.ident().toString()));
+						updateColumnStatement.setObject(++counter, 0);
+						updateColumnStatement.setObject(++counter, Integer.parseInt(column.ident().toString()));
 						updateColumnStatement.executeUpdate();
 
 					}
