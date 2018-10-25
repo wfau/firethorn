@@ -39,7 +39,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 {
                 %>
             <column>
-           		<name><%= '"' + new AdqlNameModifier().process(column.name()) +'"'  %></name>
+           		<name><%=  new AdqlNameModifier().process(column.name())  %></name>
 		   	
                 <%
                 if (column.text() != null)

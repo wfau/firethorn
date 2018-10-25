@@ -120,7 +120,7 @@ public class AdqlNameModifier
      */
     public String process(final String name)
         {
-        if (isReserved(name))
+        if (isReserved(name.toLowerCase()))
             {
             return escape(name);
             }
