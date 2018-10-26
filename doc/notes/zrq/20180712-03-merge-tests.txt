@@ -26,6 +26,8 @@
 
     cat > "${FIRETHORN_HOME:?}/chain.properties" << EOF
 
+        buildtag=${buildtag:?}
+
         metadata=$(pwgen 20 1)
         metauser=$(pwgen 20 1)
         metapass=$(pwgen 20 1)
@@ -72,17 +74,33 @@ EOF
 
     pushd "${FIRETHORN_HOME:?}"
 
-    docker-compose \
-        --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-local.yml" \
-        run \
-            angela
+#
+# Choose one.
+# 'local' if VM is inside UoE
+# 'remote' if VM is at outside UoE
+# TODO Change these to 'internal' and 'external'
 
+        external=$(curl -4 --silent 'http://icanhazip.com/')
 
-    docker-compose \
-        --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-remote.yml" \
-        run \
-            angela
+        EDINBURGH='129.215.*'
 
+        if [[ ${external:?} == ${EDINBURGH} ]]
+        then
+            echo "Address [${external:?}] is in Edinburgh"
+            #location=internal
+            location=local
+        else
+            echo "Address [${external:?}] is not in Edinburgh"
+            #location=external
+            location=remote
+        fi
+
+        # Check the env file is linked !!
+
+        docker-compose \
+            --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-${location:?}.yml" \
+            run \
+                angela
 
 # -----------------------------------------------------
 # -----------------------------------------------------
@@ -287,6 +305,53 @@ for threads in range(1, 20):
             threads,
             delay
             )
+
+# -------- -------- -------- --------
+# Bug testing.
+
+
+#
+# Trigger a ChaosMonkey Exception
+# This doesn't trigger the Exception :-(
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+params.update({"firethorn.monkey.data" : "baivahP0"})
+
+print(
+    params
+    )
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+print(
+    query_obj
+    )
+
+
+#
+# Trigger a ChaosMonkey Exception inside the CallableStatement.
+  1983 # Trigger the ChaosMonkey Exception between creating the Future and waiting for it.
+  1984 # This does NOT cause the same problem ..
+  1985 params = {}
+  1986 params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+  1987 params.update({"firethorn.monkey.data" : "uche2aNa"})
+
+
+#
+# Trigger a ChaosMonkey Exception inside the CallableStatement.
+# This replicates the same symptoms as the issue we are tracking.
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement"})
+params.update({"firethorn.monkey.data" : "Eoph9xie"})
+
+
+
+
 
 
 #

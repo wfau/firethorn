@@ -232,6 +232,7 @@
 
         pushd "${ftpysrc:?}"
 
+            du -h  firethorn/meta
             rm -rf firethorn/meta
 
         popd
