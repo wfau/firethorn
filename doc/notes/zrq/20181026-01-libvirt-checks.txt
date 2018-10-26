@@ -76,7 +76,7 @@
 
 # -----------------------------------------------------
 # Define a hosts lookup function.
-#
+# https://askubuntu.com/questions/627906/why-is-my-etc-hosts-file-not-queried-when-nslookup-tries-to-resolve-an-address#comment1536517_627909
 #[user@trop01]
 
     getipv4()
