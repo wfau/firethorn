@@ -26,12 +26,10 @@
 # -----------------------------------------------------
 # adql.db
 
-public class DBChecker
-implements QueryChecker {
+public class DBChecker implements QueryChecker
     {
 
-    //-- Diff shows useful bug fixes and no conflicts.
-    //-- No 2.1 specific changes to transfer.
+    //-- Diff shows several fixes and no conflicts.
 
 	DBChecker(final Collection<? extends DBTable> tables, final Collection<? extends FunctionDef> allowedUdfs, final Collection<String> allowedGeoFcts, final Collection<String> allowedCoordSys)
 
@@ -50,21 +48,21 @@ implements QueryChecker {
 public interface DBColumn
     {
 
-    //-- GitHub version has changes to comment, need to check our implementation matches this behaviour.
+    //-- GitHub version has changes to comments, need to check our implementation matches this behaviour.
 	public String getADQLName();
 
     }
 
-public interface DBTable extends Iterable<DBColumn>
+public interface DBTable
     {
 
-    //-- GitHub version has changes to comment, need to check our implementation matches this behaviour.
+    //-- GitHub version has changes to comments, need to check our implementation matches this behaviour.
 	public String getADQLName();
 
     }
 
-//- New class
-public class DBTableAlias extends DefaultDBTable
+//-- New class
+public class DBTableAlias
     {
     }
 
@@ -72,11 +70,11 @@ public class DBType
     {
 	public static enum DBDatatype
 	    {
-	    //- GitHub version has changes to the way that name can be changed for UNKNOWN and UNKNOWN_NUMERIC.
-	    //- BUG I think this doesn't work as expected.
-	    //- My guess is it is changing the name() for the DBDatatype enum global singleton, not a particular instance.
-	    //- Test to see if this is the case ?
-	    //- Clearer to put the name change in DBType rather than DBDatatype ?
+	    //-- GitHub version has changes to UNKNOWN and UNKNOWN_NUMERIC.
+	    //-- BUG I think this doesn't work as expected.
+	    //-- My guess is it is changing the name() for the DBDatatype enum global singleton, not a particular instance.
+	    //-- Test to see if this is the case ?
+	    //-- Clearer to put the name change in DBType rather than DBDatatype ?
 	    }
     }
 
@@ -84,150 +82,150 @@ public final class STCS
     {
 	public static enum Frame
 	    {
-        //- GitHub version adds J2000
-        //- Does this work for EPN ?
+        //-- GitHub version adds J2000
+        //-- Does this work for EPN ?
         }
     }
 
-public class SearchColumnList extends TextualSearchList<DBColumn>
+public class SearchColumnList
     {
-    //- GitHub version moves to Collection interfaces.
-    //- ArrayList -> List
-    //- HashMap -> Map
+    //-- GitHub version moves to Collection interfaces.
+    //-- ArrayList -> List
+    //-- HashMap -> Map
     }
 
 public interface SearchTableApi
     {
-    //- Changes to comments only
+    //-- Changes to comments only
     }
 
-public class SearchTableList extends TextualSearchList<DBTable> implements SearchTableApi
+public class SearchTableList
     {
-    //- GitHub version moves to Collection interfaces.
-    //- ArrayList -> List
-    //- HashMap -> Map
+    //-- GitHub version moves to Collection interfaces.
+    //-- ArrayList -> List
+    //-- HashMap -> Map
     }
 
 # -----------------------------------------------------
 # adql.parser
 
-public class ADQLParser implements ADQLParserConstants
+public class ADQLParser
     {
-    //- Generated code - lots of changes.
+    //-- Generated code - lots of changes.
     }
 
 public interface ADQLParserConstants
     {
-    //- Generated code - lots of changes.
+    //-- Generated code - lots of changes.
     }
 
 public class ADQLParserTokenManager
     {
-    //- Generated code - lots of changes.
+    //-- Generated code - lots of changes.
     }
 
 public class ADQLQueryFactory
     {
-    //- Firethorn version [273,279] includes code for CAST - ignore
+    //-- Firethorn version [273,279] includes code for CAST - ignore
 	public CastFunction createCastFunction(Token type, ADQLOperand oper)
 
-	//- Both versions list this as deprecated.
-    //- Reason for deprecation is "ORDER BY item is either a regular/delimited column name or an integer, not a qualified column name".
+	//-- Both versions list this as deprecated.
+    //-- Reason for deprecation is "ORDER BY item is either a regular/delimited column name or an integer, not a qualified column name".
 	public ADQLOrder createOrder(final IdentifierItems idItems, final boolean desc) throws Exception
 
-    //- Firethorn version has this deprecated, GitHub copy does not.
-    //- Reason for deprecation is "GROUP BY item is either a regular/delimited column name or an integer, not a qualified column name".
+    //-- Firethorn version has this deprecated, GitHub copy does not.
+    //-- Reason for deprecation is "GROUP BY item is either a regular/delimited column name or an integer, not a qualified column name".
 	public ColumnReference createColRef(final IdentifierItems idItems) throws Exception{
 
     }
 
 public class IdentifierItems
     {
-    //- GitHub version has a bug fix for quotes in the identifier.
+    //-- GitHub version has a bug fix for quotes in the identifier.
     }
 
 public class ParseException
     {
-    //- Generated code with manual changes, restore from backup.
-    //- GitHub version has regular expressions for ADQL and SQL reserved words.
+    //-- Generated code with manual changes, restore from backup.
+    //-- GitHub version has regular expressions for ADQL and SQL reserved words.
     }
 
 
-public class SQLServer_ADQLQueryFactory extends ADQLQueryFactory
+public class SQLServer_ADQLQueryFactory
     {
-    //- New class in GitHub version.
-    //- Adds code to handle INNER and OUTER JOIN issues with SQLServer.
+    //-- New class in GitHub version.
+    //-- Adds code to handle INNER and OUTER JOIN issues with SQLServer.
     }
 
 public class SimpleCharStream
     {
-    //- Generated code with manual changes, restore from backup.
+    //-- Generated code with manual changes, restore from backup.
     }
 
 public class Token
     {
-    //- Generated code with manual changes, restore from backup.
+    //-- Generated code with manual changes, restore from backup.
     }
 
 public class TokenMgrError
     {
-    //- Generated code with manual changes, restore from backup.
-    //- Think I prefer the Firethorn version (line and column rather than l. ad c.)
+    //-- Generated code with manual changes, restore from backup.
+    //-- Think I prefer the Firethorn version (line and column rather than l. ad c.)
     }
 
 public class ADQLParser
     {
-    //- java-cc source file
+    //-- java-cc source file
 
-    //- GitHub version [358,362] catches TokenMgrError and re-throws it as ParseException
-    //- GitHub version [382,386] catches TokenMgrError and re-throws it as ParseException
-    //- GitHub version [406,410] catches TokenMgrError and re-throws it as ParseException
+    //-- GitHub version [358,362] catches TokenMgrError and re-throws it as ParseException
+    //-- GitHub version [382,386] catches TokenMgrError and re-throws it as ParseException
+    //-- GitHub version [406,410] catches TokenMgrError and re-throws it as ParseException
 
-    //- GitHub version [566,579] includes list of unused reserved words.
+    //-- GitHub version [566,579] includes list of unused reserved words.
 
-    //- Firethorn version [520] includes modulo operator.
-    //- Firethorn version [524,533] includes bit wise operators.
+    //-- Firethorn version [520] includes modulo operator.
+    //-- Firethorn version [524,533] includes bit wise operators.
 
-    //- GitHub version [660,663] includes better handling of 'BY' in 'ORDER BY' and 'GROUP BY'
+    //-- GitHub version [660,663] includes better handling of 'BY' in 'ORDER BY' and 'GROUP BY'
 
-    //- Firethorn version [643,644] includes SQUARE and SIGN -- should these be UDFs ?
+    //-- Firethorn version [643,644] includes SQUARE and SIGN -- should these be UDFs ?
 
-    //- Firethorn version [666,673] includes CAST -- we agreed to drop this
+    //-- Firethorn version [666,673] includes CAST -- we agreed to drop this
 
-    //- GitHub version [382,386] catches TokenMgrError and re-throws it as ParseException
+    //-- GitHub version [382,386] catches TokenMgrError and re-throws it as ParseException
 
-    //- Firethorn version [712,719] includes hexadecimal numbers
+    //-- Firethorn version [712,719] includes hexadecimal numbers
 
-    //- GitHub version [885] changes handling of 'AS'
+    //-- GitHub version [885] changes handling of 'AS'
 
-    //- GitHub version [927,929] changes handling of 'ORDER BY'
-    //- GitHub version [942] changes handling of 'ORDER BY'
+    //-- GitHub version [927,929] changes handling of 'ORDER BY'
+    //-- GitHub version [942] changes handling of 'ORDER BY'
 
-    //- Firethorn version [956,971] includes deprecated code for complex column names in 'ORDER BY' clause
+    //-- Firethorn version [956,971] includes deprecated code for complex column names in 'ORDER BY' clause
 
-    //- GitHub version [1071] uses SimpleTableRef rather than TableRef in JOIN code.
-    //- GitHub version [1078] uses SimpleTableRef rather than TableRef in JOIN code.
+    //-- GitHub version [1071] uses SimpleTableRef rather than TableRef in JOIN code.
+    //-- GitHub version [1078] uses SimpleTableRef rather than TableRef in JOIN code.
 
-    //- Firethorn version [1104] adds hexadecimal to NumericConstant
-    //- Firethorn version [1156] includes code for CAST
+    //-- Firethorn version [1104] adds hexadecimal to NumericConstant
+    //-- Firethorn version [1156] includes code for CAST
 
-    //- GitHub version [1196,1203] has changs to string value expression
-    //- GitHub version [1211,1229] has changs to value expression
+    //-- GitHub version [1196,1203] has changs to string value expression
+    //-- GitHub version [1211,1229] has changs to value expression
 
-    //- Firethorn version [1254] includes code for bitwise and modulo operators
-    //- Firethorn version [1227,1224] includes code for bitwise operators
-    //- Firethorn version [1505,1523] includes code for CAST
+    //-- Firethorn version [1254] includes code for bitwise and modulo operators
+    //-- Firethorn version [1227,1224] includes code for bitwise operators
+    //-- Firethorn version [1505,1523] includes code for CAST
 
-    //- Firethorn version [1675] includes extra check for null ?
+    //-- Firethorn version [1675] includes extra check for null ?
 
-    //- Firethorn version [1680] includes code for SQUARE
-    //- Firethorn version [1681] includes code for SIGN
+    //-- Firethorn version [1680] includes code for SQUARE
+    //-- Firethorn version [1681] includes code for SIGN
 
-    //- Firethorn version [1689] includes extra checks for nulls ?
-    //- Firethorn version [1693,1695] includes extra checks for nulls ?
+    //-- Firethorn version [1689] includes extra checks for nulls ?
+    //-- Firethorn version [1693,1695] includes extra checks for nulls ?
 
-    //- Firethorn version [1713] includes extra checks for nulls ?
-    //- Firethorn version [1715,1718] includes extra checks for nulls ?
+    //-- Firethorn version [1713] includes extra checks for nulls ?
+    //-- Firethorn version [1715,1718] includes extra checks for nulls ?
 
     }
 
@@ -235,24 +233,148 @@ public class ADQLParser
 # -----------------------------------------------------
 # adql.query
 
-    TODO
+public abstract class ADQLJoin
+    {
+    //-- GitHub version moves to Collection interfaces.
+    //-- ArrayList -> List
+    }
+
+public class ADQLTable
+    {
+    //-- GitHub version moves to Collection interfaces.
+    //-- ArrayList -> List
+
+    //-- GitHub version has change to sub-query handling.
+
+    }
+
+public interface FromContent
+    {
+    //-- GitHub version moves to Collection interfaces.
+    //-- ArrayList -> List
+    }
+
+public class SQLServer_InnerJoin
+    {
+    //-- New in GitHub version
+    }
+
+public class SQLServer_OuterJoin
+    {
+    //-- New in GitHub version
+    }
+
+public class CentroidFunction
+    {
+    //-- GitHub version fixes CENTROID properties
+    }
+
+public class CastFunction
+    {
+    //-- Only in Firethorn version
+    }
+
+public enum CastFunctionType
+    {
+    //-- Only in Firethorn version
+    }
+
+public enum MathFunctionType
+    {
+    //-- Firethorn version adds SQUARE and SIGN
+    }
+
+public class Concatenation
+    {
+    //-- GitHub version fixes bugs
+    }
+
+public class NegativeOperand
+    {
+    //-- GitHub version fixes bugs
+    }
+
+public class NumericConstant
+    {
+    //-- GitHub version changed position from private to protected
+    //-- GitHub version removes final from methods
+    }
+
+public class Operation
+    {
+    }
+
+public enum OperationType
+    {
+    //-- Firethorn version adds modulo operation
+    //-- Firethorn version adds bitwise operations
+    }
+
+public class WrappedOperand
+    {
+    }
+
+public class ADQLQuery
+    {
+    //-- GitHub version changes GroupBy from ADQLOperand to ADQLColumn
+    //-- GitHub version fixes issue with name for column alias
+    //-- GitHub version treats CENTROID as POINT
+    }
+
+public class ClauseSelect
+    {
+    //-- GitHub version moves to Collection interfaces.
+    //-- ArrayList -> List
+    }
+
+public class ColumnReference
+    {
+    }
 
 # -----------------------------------------------------
 # adql.search
 
-    TODO
+public abstract class SimpleReplaceHandler
+    {
+    //-- GitHub version has changes to the search/replace algorithm
+    }
 
 # -----------------------------------------------------
 # adql.translator
 
-    TODO
+public abstract class JDBCTranslator
+    {
+    //-- GitHub version has changes to the aliases are handled
+    //-- GitHub version has ...
+
+    // Is this real ?
+    // SELECT COUNT(DISTINCT *) ..
+    }
+
+public class PostgreSQLTranslator
+    {
+    //-- GitHub version adds fix for 'numeric'
+    }
+
+public class MySQLTranslator
+    {
+    //-- New in GitHub version
+    }
+
+public class PgSphereTranslator
+    {
+    //-- New in GitHub version
+    }
+
+public class SQLServerTranslator
+    {
+    //-- New in GitHub version
+    }
 
 # -----------------------------------------------------
 # Firethorn classes
 
 MyQueryChecker
-    extends DBChecker
-    implements QueryChecker
     {
 
     //-- TODO - Override checkUDFs, check based on properties of the AdqlResource

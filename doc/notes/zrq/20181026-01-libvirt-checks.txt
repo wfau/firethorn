@@ -1,0 +1,508 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Check for existing VMs.
+#[user@trop01]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect ${connection:?} \
+        list
+
+         Id    Name                           State
+        ----------------------------------------------------
+         16    Delild                         paused
+         17    Abecien                        running
+         19    Cadelicia                      running
+         20    Froeseth                       running
+         21    Gworewia                       running
+
+    source "${HOME}/libvirt.settings"
+    unset vmlist
+    vmlist=$(
+        virsh \
+            --connect ${connection:?} \
+            list \
+                --state-running \
+                --name
+        )
+
+    echo "List [${vmlist[@]}]"
+
+        List [Abecien
+        Cadelicia
+        Froeseth
+        Gworewia]
+
+    for vmname in ${vmlist[@]}
+    do
+        echo "Name [${vmname:?}]"
+    done
+
+        Name [Abecien]
+        Name [Cadelicia]
+        Name [Froeseth]
+        Name [Gworewia]
+
+# -----------------------------------------------------
+# Define a lower function.
+# https://stackoverflow.com/a/2264537
+#[user@trop01]
+
+    lower()
+        {
+        echo "${1:?}" | tr '[:upper:]' '[:lower:]'
+        }
+
+# -----------------------------------------------------
+# Define a hosts lookup function.
+#
+#[user@trop01]
+
+    getipv4()
+        {
+        getent hosts "${1:?}" | cut -d ' ' -f 1
+        }
+
+# -----------------------------------------------------
+# Update the known_hosts fingerprints.
+# https://unix.stackexchange.com/a/276007
+#[user@trop01]
+
+    rm "${HOME}/.ssh/known_hosts"
+
+    for vmname in ${vmlist[@]}
+    do
+        echo "Name [${vmname:?}]"
+
+        # Remove the current key.
+        ssh-keygen -q -R "${vmname:?}"
+
+        # Add the host key(s) to known_hosts
+        ssh-keyscan "${vmname:?}" | tee --append "${HOME}/.ssh/known_hosts"
+
+        # Add the IP address key(s) to known_hosts
+        ssh-keyscan -t ecdsa $(getipv4 "${vmname:?}") | tee --append "${HOME}/.ssh/known_hosts"
+
+    done
+
+# -----------------------------------------------------
+# Check which VMs we can login to.
+#[user@trop01]
+
+    for vmname in ${vmlist[@]}
+    do
+        echo ""
+        echo "VM name [${vmname:?}]"
+        ssh "${vmname:?}" "
+            hostname
+            date
+            "
+    done
+
+        VM name [Abecien]
+        Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+
+        VM name [Cadelicia]
+        Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+
+        VM name [Froeseth]
+        Froeseth
+        Fri 26 Oct 14:51:59 BST 2018
+
+        VM name [Gworewia]
+        Gworewia
+        Fri 26 Oct 14:51:59 BST 2018
+
+# -----------------------------------------------------
+# Check when config files were created in the VMs.
+#[user@trop01]
+
+    for vmname in ${vmlist[@]}
+    do
+        echo ""
+        echo "VM name [${vmname:?}]"
+        ssh "${vmname:?}" "
+            stat -c '%y %n' .
+            stat -c '%y %n' docker-compose.yml
+            stat -c '%y %n' chain.properties
+            stat -c '%y %n' firethorn.settings
+            "
+    done
+
+        VM name [Abecien]
+        Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+
+        VM name [Cadelicia]
+        Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+
+        VM name [Froeseth]
+        2018-09-19 18:22:27.012376442 +0100 .
+        2018-09-20 10:49:29.893654722 +0100 docker-compose.yml
+        2018-09-20 14:25:49.940683344 +0100 chain.properties
+        2018-09-19 16:31:03.935542001 +0100 firethorn.settings
+
+        VM name [Gworewia]
+        2018-10-26 14:58:33.376930205 +0100 .
+        2018-10-05 11:46:47.106847341 +0100 docker-compose.yml
+        2018-10-19 11:35:46.739673171 +0100 chain.properties
+        2018-10-04 16:59:43.516958771 +0100 firethorn.settings
+
+#---------------------------------------------------------------------
+# Scan the list of live volumes.
+#[user@trop01]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-list \
+            --pool live \
+            --details
+
+         Name            Path                                         Type   Capacity  Allocation
+        ------------------------------------------------------------------------------------------
+         Abecien.qcow    /var/lib/libvirt/images/live/Abecien.qcow    file  16.00 GiB    2.24 GiB
+         Astoalith.qcow  /var/lib/libvirt/images/live/Astoalith.qcow  file  32.00 GiB   18.33 GiB
+         Cadelicia.qcow  /var/lib/libvirt/images/live/Cadelicia.qcow  file  16.00 GiB    3.06 GiB
+         Delild.qcow     /var/lib/libvirt/images/live/Delild.qcow     file  16.00 GiB  167.76 MiB
+         Froeseth.qcow   /var/lib/libvirt/images/live/Froeseth.qcow   file  16.00 GiB    7.98 GiB
+         Gworewia.qcow   /var/lib/libvirt/images/live/Gworewia.qcow   file  16.00 GiB   14.45 GiB
+
+#---------------------------------------------------------------------
+# List the live volumes.
+#[user@trop01]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-list \
+            --pool live \
+    | sed '
+        1,2  d
+        /^$/ d
+        s/^ \([^ ]*\) .*/\1/
+        ' \
+    | tee /tmp/vol-list.txt
+
+        Abecien.qcow
+        Astoalith.qcow
+        Cadelicia.qcow
+        Delild.qcow
+        Froeseth.qcow
+        Gworewia.qcow
+
+#---------------------------------------------------------------------
+# Get the base image for each live volume.
+#[user@trop01]
+
+    for volname in $(cat /tmp/vol-list.txt)
+        do
+            echo "volname [${volname:?}]"
+
+            volbase=$(
+                virsh \
+                    --connect "${connection:?}" \
+                    vol-dumpxml \
+                        --pool live \
+                        "${volname:?}" \
+                | xmlstarlet\
+                    sel \
+                        -t -m '//backingStore' -v 'path'
+                )
+
+            echo "volbase [${volbase:?}]"
+
+        done
+
+        volname [Abecien.qcow]
+        volbase [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+        volname [Astoalith.qcow]
+        volbase [/var/lib/libvirt/images/base/fedora-24-docker-32G-20170113.qcow]
+        volname [Cadelicia.qcow]
+        volbase [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+        volname [Delild.qcow]
+        volbase [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+        volname [Froeseth.qcow]
+        volbase [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+        volname [Gworewia.qcow]
+        volbase [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+
+#---------------------------------------------------------------------
+# List the base images.
+#[user@trop01]
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-list \
+            --pool base \
+    | sed '
+        1,2  d
+        /^$/ d
+        s/^ \([^ ]*\) .*/\1/
+        '
+
+        fedora-24-docker-32G-20170113.qcow
+        fedora-25-docker-32G-20170331.qcow
+        fedora-28-docker-base-20180708.qcow
+
+#---------------------------------------------------------------------
+# List all the VMs.
+#[user@trop01]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect ${connection:?} \
+        list \
+            --all
+
+         Id    Name                           State
+        ----------------------------------------------------
+         16    Delild                         paused
+         17    Abecien                        running
+         19    Cadelicia                      running
+         20    Froeseth                       running
+         21    Gworewia                       running
+         -     Astoalith                      shut off
+
+    Astoalith (shutdown) is using fedora-24-docker-32G-20170113.qcow
+    Delild (paused) is using fedora-28-docker-base-20180708.qcow
+
+    Nothing is using fedora-25-docker-32G-20170331.qcow
+
+#---------------------------------------------------------------------
+# Delete the inactive VMs.
+#[user@trop01]
+
+    vmname=Delild
+    vmname=Astoalith
+
+    virsh \
+        --connect "${connection:?}" \
+        destroy \
+            "${vmname:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        undefine \
+            --remove-all-storage \
+            "${vmname:?}"
+
+#---------------------------------------------------------------------
+# Delete the unused base images.
+#[user@trop01]
+
+    image=fedora-25-docker-32G-20170331.qcow
+    image=fedora-24-docker-32G-20170113.qcow
+
+    virsh \
+        --connect "${connection:?}" \
+        vol-delete \
+            --pool base \
+                "${image:?}"
+
+#---------------------------------------------------------------------
+# Use a temp directory.
+#[user@trop01]
+
+    pushd $(mktemp -d)
+
+#---------------------------------------------------------------------
+# Build settings
+#[user@trop01]
+
+        source "${HOME}/ischnura.settings"
+
+        basecpu=4
+        basemem=4096
+        #basesize=8G
+        #basesize=16G
+        basesize=32G
+        basearch=x86_64
+
+        basever=28
+        basedate=20181016
+        basedist=fedora-${basever:?}
+
+        basename=${basedist}-${basesize}-docker-base-${basedate:?}
+        basefile=${basename}.qcow
+        basegzip=${basefile}.gz
+
+#---------------------------------------------------------------------
+# Download a copy of the base image.
+#[user@trop01]
+
+        wget "http://data.metagrid.co.uk/ischnura/base/${basefile:?}"
+
+#---------------------------------------------------------------------
+# Check the image details.
+#[user@trop01]
+
+        qemu-img \
+            info \
+                "${basefile:?}"
+
+            image: fedora-28-32G-docker-base-20181016.qcow
+            file format: qcow2
+            virtual size: 32G (34359738368 bytes)
+            disk size: 992M
+            cluster_size: 65536
+            Format specific information:
+                compat: 1.1
+                lazy refcounts: false
+
+#---------------------------------------------------------------------
+# Delete any existing volume.
+#[user@trop01]
+
+        virsh \
+            --connect "${connection:?}" \
+            vol-delete \
+                --pool "${basepool}" \
+                "${basefile:?}"
+
+#---------------------------------------------------------------------
+# Create a new (empty) volume.
+#[user@trop01]
+
+        virsh \
+            --connect "${connection:?}" \
+            vol-create-as \
+                "${basepool:?}" \
+                "${basefile:?}" \
+                "${basesize:?}" \
+                --format qcow2
+
+#---------------------------------------------------------------------
+# Upload the image into the new volume.
+#[user@trop01]
+
+        virsh \
+            --connect "${connection:?}" \
+            vol-upload \
+                --pool "${basepool:?}" \
+                "${basefile:?}" \
+                "${basefile:?}"
+
+#---------------------------------------------------------------------
+# Delete the downloaded file.
+#[user@trop01]
+
+        rm "${basefile:?}"
+
+    popd
+
+#---------------------------------------------------------------------
+# Update the source code.
+#[user@trop02]
+
+    source "${HOME}/ischnura.settings"
+    pushd  "${ischcode:?}"
+
+        git pull
+
+    popd
+
+#---------------------------------------------------------------------
+# Run createvm and test ....
+#[user@trop01]
+
+    createvm
+
+        INFO : Node name [Delild]
+        INFO : Base name [fedora-28-8G-docker-base-20181016.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-28-8G-docker-base-20181016.qcow]
+        INFO : Disc name [Delild.qcow]
+        INFO : Disc size [8GiB]
+
+    vmname=Delild
+
+#---------------------------------------------------------------------
+# Update the ssh keys for the VM.
+#[user@trop01]
+
+    # Remove the current key.
+    ssh-keygen -q -R "${vmname:?}"
+
+    # Add the host key(s) to known_hosts
+    ssh-keyscan "${vmname:?}" | tee --append "${HOME}/.ssh/known_hosts"
+
+    # Add the IP address key(s) to known_hosts
+    ssh-keyscan -t ecdsa $(getipv4 "${vmname:?}") | tee --append "${HOME}/.ssh/known_hosts"
+
+#---------------------------------------------------------------------
+# Test login as the current user.
+#[user@trop01]
+
+    ssh "$(id -un)@${vmname:?}" "
+        date
+        df -h /
+        "
+
+        Fri 26 Oct 15:39:10 BST 2018
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3       6.8G  1.6G  4.7G  25% /
+
+#---------------------------------------------------------------------
+# Test login as the docker user.
+#[user@trop01]
+
+    ssh "Stevedore@${vmname:?}" "
+        date
+        df -h /
+        "
+
+        Fri 26 Oct 15:39:35 BST 2018
+        Filesystem      Size  Used Avail Use% Mounted on
+        /dev/vda3       6.8G  1.6G  4.7G  25% /
+
+#---------------------------------------------------------------------
+# Check docker works.
+#[user@trop02]
+
+    ssh "Stevedore@${vmname:?}" "
+        docker run --rm debian cat /etc/debian_version
+        "
+
+#---------------------------------------------------------------------
+# Check docker-compose is installed.
+#[user@trop02]
+
+    ssh "Stevedore@${vmname:?}" "
+        docker-compose -version
+        "
+
+#---------------------------------------------------------------------
+# Shutdown and delete the instance.
+#[user@trop02]
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        -c "${connection:?}" \
+        destroy \
+            "${vmname:?}"
+
+    virsh \
+        -c "${connection:?}" \
+        undefine \
+            --remove-all-storage \
+            "${vmname:?}"
+

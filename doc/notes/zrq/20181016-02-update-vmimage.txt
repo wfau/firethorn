@@ -306,7 +306,7 @@
     basearch=x86_64
 
     basever=28
-    basedate=$(date +%Y%m%d)
+    basedate=20181016
     basedist=fedora-${basever:?}
 
     basename=${basedist}-${basesize}-docker-base-${basedate:?}
