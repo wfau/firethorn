@@ -104,7 +104,7 @@ EOF
 
 # -----------------------------------------------------
 # -----------------------------------------------------
-# Separate shell on the host VM, locate the logs volume.
+# Separate shell on the host VM, locate the logs volume and tail the firethorn log.
 #[user@virtual]
 
     sudo -s
@@ -120,6 +120,25 @@ EOF
             )
 
     tail -f firethorn-debug.log
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Separate shell on the host VM, locate the logs volume and tail the ogsadai log.
+#[user@virtual]
+
+    sudo -s
+
+    container=baryptera_jarmila_1
+
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+    tail -f ogsadai.log
 
 # -----------------------------------------------------
 # -----------------------------------------------------
