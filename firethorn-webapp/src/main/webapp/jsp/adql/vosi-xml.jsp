@@ -18,7 +18,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
     for(AdqlSchema schema : resource.schemas().select())
         {
         %><schema>
-        <name><%= schema.name() %></name>
+        <name><%= new AdqlNameModifier().process(schema.name())  %></name>
         <title></title>
         <utype></utype>
         <% 
