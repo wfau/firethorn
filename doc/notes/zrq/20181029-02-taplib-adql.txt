@@ -1,0 +1,133 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    merge 2.1.25-zrq-tap-controller branch
+
+    create new branch
+
+        remove existing ADQLParser package
+
+        add taplib (in Eclipse)
+        add tests
+        add changes
+
+        add Docker databases for testing ?
+
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.25-zrq-tap-controller
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    export secretsh=$(which secret)
+
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+    # -----------------------------------------------------
+    # Test our secret function.
+    #[root@builder]
+
+        secret 'frog'
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
+
+    # -----------------------------------------------------
+    # Check our branch status.
+    #[root@builder]
+
+        pushd "${FIRETHORN_CODE:?}"
+
+            hg status
+
+                M .hgignore
+                M doc/notes/zrq/20180712-01-test-build.txt
+                M doc/notes/zrq/20180712-03-merge-tests.txt
+                ....
+                ....
+                R firethorn-ogsadai/activity/client/src/test/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/client/jdbc/JdbcSelectDataWorkflowTestCase.java
+                R firethorn-ogsadai/activity/common/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/common/blue/ContextParam.java
+
+
+            hg branch
+
+                default
+
+        popd
+
+    # -----------------------------------------------------
+    # Update our Mercurial config.
+    #[root@builder]
+
+        07.02-mercurial-user.sh
+
+    # -----------------------------------------------------
+    # Commit our merged code.
+    #[root@builder]
+
+        07.03-merge-commit.sh
+
+    # -----------------------------------------------------
+    # Push changes to Mercurial
+    #[root@builder]
+
+        08.03-mercurial-push.sh
+
+    # -----------------------------------------------------
+    # Tag our new images
+    #[root@builder]
+
+        08.01-docker-latest.sh
+
+    # -----------------------------------------------------
+    # Push images to Docker.
+    #[root@builder]
+
+        08.02-docker-push.sh
+
+    # -----------------------------------------------------
+    # Push binaries to Maven repo.
+    #[root@builder]
+
+        08.04-maven-push.sh
+
+
+
