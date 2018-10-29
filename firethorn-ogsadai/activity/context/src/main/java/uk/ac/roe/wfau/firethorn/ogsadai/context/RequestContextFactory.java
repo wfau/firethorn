@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.context;
 
@@ -8,13 +8,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamImpl;
 import uk.org.ogsadai.service.rest.authorisation.SecurityContextFactory;
 
 /**
  *
  */
 public class RequestContextFactory
-implements SecurityContextFactory 
+implements SecurityContextFactory
 	{
     /**
      * Debug logger.
@@ -24,31 +26,31 @@ implements SecurityContextFactory
 
     /**
 	 * The default protocol, {@value}.
-	 * 
+	 *
 	 */
 	protected static final String DEFAULT_PROTOCOL = "http" ;
 
 	/**
 	 * The default host name, {@value}.
-	 * 
+	 *
 	 */
 	protected static final String DEFAULT_HOST = "localhost" ;
 
 	/**
 	 * The default port number, {@value}.
-	 * 
+	 *
 	 */
 	protected static final String DEFAULT_PORT = "8080" ;
 
 	/**
 	 * The default path, {@value}.
-	 * 
+	 *
 	 */
 	protected static final String DEFAULT_BASE = "firethorn" ;
-	
+
 	/**
-	 * Public constructor. 
-	 * 
+	 * Public constructor.
+	 *
 	 */
 	public RequestContextFactory()
 		{
@@ -60,7 +62,7 @@ implements SecurityContextFactory
         log.debug("createContext(HttpServletRequest)");
 		final String remote = request.getRemoteHost();
         log.debug("remote [" + remote + "]");
-        
+
         return new RequestContext()
 			{
 			private EndpointBuilder builder = new EndpointBuilder()
@@ -152,6 +154,19 @@ implements SecurityContextFactory
 				{
 				this.ident = ident;
 				}
+
+			private MonkeyParam monkey = new MonkeyParamImpl();
+
+            @Override
+            public MonkeyParam monkey()
+                {
+                return this.monkey;
+                }
+            @Override
+            public void monkey(final MonkeyParam monkey)
+                {
+                this.monkey = monkey;
+                }
 			};
 		}
 	}

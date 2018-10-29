@@ -32,23 +32,23 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-metadata</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI metadata service (client)</name>
+    <name>Firethorn OGSA-DAI metadata service (client)</name>
     <description>
         <![CDATA[
-        Client (OGSA-DAI) components for the FireThorn OGSA-DAI metadata service.
+        Client (OGSA-DAI) components for the Firethorn OGSA-DAI metadata service.
         ]]>
     </description>
 
     <dependencies>
 
         <!--+
-            | OGSA-DAI DQP server components.
+            | Firethorn/OGSA-DAI DQP server components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -57,16 +57,7 @@
         </dependency>
 
         <!--+
-            | Firethorn Activity components.
-            +-->
-        <!--dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-context-server</artifactId>
-            <version>${project.version}</version>
-        </dependency-->
-
-        <!--+
-            | Firethorn Activity context.
+            | Firethorn/OGSA-DAI Activity context.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

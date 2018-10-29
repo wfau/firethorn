@@ -24,6 +24,7 @@ import uk.ac.roe.wfau.firethorn.identity.AuthMethod;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 
 /**
  * Factory for accessing the current {@link Operation}, {@link AuthMethod} and {@link Identity}.  
@@ -66,6 +67,12 @@ implements Context.Factory
                     return auth.identity();
                     }
                 return null ;
+                }
+
+            @Override
+            public MonkeyParam monkey()
+                {
+                return oper().monkey();
                 }
             };
         }

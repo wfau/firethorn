@@ -32,16 +32,16 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-activity</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
-	
+
     <artifactId>firethorn-ogsadai-activity-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI activity (server)</name>
+    <name>Firethorn OGSA-DAI activity (server)</name>
     <description>
         <![CDATA[
-        Server (OGSA-DAI) components for the FireThorn OGSA-DAI activities.
+        Server (OGSA-DAI) components for the Firethorn OGSA-DAI activities.
         ]]>
     </description>
 
@@ -51,7 +51,17 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI Astronomy extensions.
+            | Firethorn/OGSA-DAI dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-depends</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | Firethorn/OGSA-DAI Astronomy extensions.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -60,7 +70,7 @@
         </dependency>
 
         <!--+
-            | Our common activity classes.
+            | Firethorn/OGSA-DAI common Activity classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -69,7 +79,7 @@
         </dependency>
 
         <!--+
-            | Our activity context classes.
+            | Firethorn/OGSA-DAI Activity context classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -78,7 +88,7 @@
         </dependency>
 
         <!--+
-            | The OGSA-DAI components used by our activity.
+            | The OGSA-DAI components used by our Activity.
             | http://data.metagrid.co.uk/wfau/maven/external/uk/org/ogsadai/
             +-->
         <dependency>
@@ -123,24 +133,6 @@
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
             <version>${ogsadai.jackson.version}</version>
-        </dependency>
-
-        <!--+
-            | The StarLink VOTAble library, used by our TAP client Activity. 
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-stil</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-	    <!--+
-	        | The Apache HttpComponent libraries, used by our TAP client Activity. 
-	        +-->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
         </dependency>
 
     </dependencies>

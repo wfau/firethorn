@@ -32,19 +32,19 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-activity</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-activity-common</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI activity (common)</name>
+    <name>Firethorn OGSA-DAI activity (common)</name>
     <description>
         <![CDATA[
-        Common components for the FireThorn OGSA-DAI activities.
+        Common components for the Firethorn OGSA-DAI activities.
         ]]>
     </description>
-    
+
     <properties>
     </properties>
 

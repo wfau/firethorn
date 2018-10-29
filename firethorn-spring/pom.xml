@@ -32,13 +32,13 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-spring</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn Spring</name>
+    <name>Firethorn Spring</name>
     <description>
         <![CDATA[
         A placeholder POM to include all of the Spring and Hibernate related dependencies in one place.
@@ -49,9 +49,9 @@
 
     <properties>
 
-		<spring.version>5.0.7.RELEASE</spring.version>
+		<spring.version>5.0.8.RELEASE</spring.version>
         <hibernate.version>5.3.1.Final</hibernate.version>
-	    <hibernate.validator>6.0.10.Final</hibernate.validator>
+	    <hibernate.validator>6.0.11.Final</hibernate.validator>
 		<aspectj.version>1.9.1</aspectj.version>
 
         <jackson.version>2.9.6</jackson.version>
@@ -227,7 +227,7 @@
         <!--+
             | Spring runtime weaving.
             | http://stackoverflow.com/questions/7996800/running-unit-tests-using-maven-in-spring-ltw-environment
-            +-->	
+            +-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-instrument</artifactId>
@@ -239,11 +239,11 @@
             | http://ralf.schaeftlein.de/2010/03/10/migrating-a-hibernate-application-from-jpa-1-0-to-2-0/
             | http://docs.jboss.org/hibernate/core/3.6/quickstart/en-US/html/hibernate-gsg-obtain.html#hibernate-gsg-setup-mavenRepoArtifacts
             +-->
-        <dependency>  
-            <groupId>org.hibernate</groupId>  
-            <artifactId>hibernate-core</artifactId>  
-            <version>${hibernate.version}</version>  
-        </dependency>  
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
 
 	    <!--+
 	        | JSR 303 and Hibernate Validator
@@ -255,24 +255,14 @@
 	    </dependency>
 
         <!--+
-            | Java Persistence API (included by hibernate/spring)
-            | http://download.oracle.com/javaee/5/api/javax/persistence/package-summary.html
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-            +-->
-
-        <!--+
             | JSTL libraries (required by Spring MVC).
             | http://www.mularien.com/blog/2008/02/19/tutorial-how-to-set-up-tomcat-6-to-work-with-jstl-12/
             | http://forum.springsource.org/showthread.php?83953-pizza-shop-example-can-t-run-on-tomcat-5.5.15/page2
-            +-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
+            +-->
 
 	    <!--+
 	        | Jackson JSON Mapper

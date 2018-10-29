@@ -3,6 +3,7 @@ package uk.ac.roe.wfau.firethorn.spring;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 
 /**
  * The current context.
@@ -34,6 +35,12 @@ public interface Context
      * 
     public DataSpace space();
      */
+
+    /**
+     * The ChaosMonkey {@link MonkeyParam} for this {@link Context}.
+     *
+     */
+    public MonkeyParam monkey();
     
     /**
      * Factory interface.

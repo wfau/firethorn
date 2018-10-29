@@ -343,6 +343,9 @@ extends AdqlQueryBase, BlueTask<BlueQuery>
 
     /**
      * The query results status.
+     * @ TODO We have two flags that mean the same thing.
+     * @ TODO Merge these with the JdbcTable status.
+     * 
      * 
      */
     public enum ResultState

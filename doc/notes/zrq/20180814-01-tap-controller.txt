@@ -1,0 +1,84 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#----------------------------------------------------------------
+#
+
+    Latest clues from Stelio's notes is that it might not be TAP controller that is causing the problem.
+    http://wfau.metagrid.co.uk/code/firethorn/file/2fc28a83fc7f/doc/notes/stv/20180806-TAP-Debugging.txt#l747
+
+    Emails confirm that BlueQueery requests also 'hang' but built in timeout prevents the incomplete query bringing down the rest of the service.
+
+    To re-create the issue, we need to make a query fail with an SQLException in the right place.
+
+#----------------------------------------------------------------
+#
+
+    Test notes have lots of examples of stack trace from the taplint client, but not many examples of stack trace from the OGSA-DAI logs.
+
+    None of the notes contain the key issue 'Fatal error 823' in an SQL query.
+    The only instances of the error occur during the metadata scan in Firethorn, not executing a query in OGSA-DAI.
+
+    grep -r '[Ff]atal error 823' *
+
+        doc/notes/zrq/20180522-01-debugging.txt:    2018-05-22 14:19:29,158 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR1PLUS][Warning: Fatal error 823 ....
+        doc/notes/zrq/20180522-01-debugging.txt:    2018-05-22 14:19:30,691 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR2PLUS][Warning: Fatal error 823 ....
+        doc/notes/zrq/20180522-01-debugging.txt:    2018-05-22 14:19:32,220 WARN  [main-interface-5] [JdbcResourceEntity] Exception while scanning catalog [53][UKIDSSDR3PLUS][Warning: Fatal error 823 ....
+
+
+#----------------------------------------------------------------
+#
+
+    Managed to find an example from the live server.
+
+        2018-08-10 09:39:41,958 WARN  activity.MatchedIterativeActivity [pool-1-thread-3949,warnExceptionAndChildren:343] #1533893981957:654825# java.sql.SQLException: Invalid state, the Connection object is closed.
+        2018-08-10 09:39:41,958 DEBUG event.LoggingActivityListener [pool-1-thread-3949,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+                at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:293)
+                at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+                at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+                at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+                at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+                at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+                at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+                at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+                at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+                at java.lang.Thread.run(Thread.java:748)
+        Caused by: java.sql.SQLException: Warning: Fatal error 823 occurred at Aug 10 2018 10:40AM. Note the error and time, and contact your system administrator.
+                at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+                at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+                at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+                at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:671)
+                at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:505)
+                at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+                at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+                at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+                at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+                at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:30)
+                ... 4 more
+
+
+#----------------------------------------------------------------
+#
+
+        uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:293)
+
+

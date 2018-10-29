@@ -32,16 +32,16 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-firethorn</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-firethorn-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI FireThorn components (client)</name>
+    <name>OGSA-DAI Firethorn components (client)</name>
     <description>
         <![CDATA[
-        Client (OGSA-DAI) components for FireThorn.
+        Client (OGSA-DAI) components for Firethorn.
         ]]>
     </description>
 
@@ -51,20 +51,20 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI activity components.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-activity-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!--+
-            | OGSA-DAI FireThorn common classes.
+            | Firethorn/OGSA-DAI Firethorn common classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--+
+            | Firethorn/OGSA-DAI Activity client classes.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-activity-client</artifactId>
             <version>${project.version}</version>
         </dependency>
 

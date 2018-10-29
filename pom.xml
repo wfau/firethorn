@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version project='firethorn'>2.1.25</version>
+    <version project='firethorn'>2.1.26</version>
 
     <prerequisites>
         <maven>3.3.1</maven>
@@ -262,6 +262,16 @@
             <layout>default</layout>
         </repository>
 
+        <!--+
+            | Repository for Java EE dependencies.
+            | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
+            +-->
+        <repository>
+            <id>java.net2</id>
+            <name>Repository hosting the Java EE dependencies</name>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+
     </repositories>
 
     <pluginRepositories>
@@ -324,7 +334,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.5.5</version>
+                <version>4.5.6</version>
             </dependency>
 
 		    <!--+
@@ -334,7 +344,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>25.1-jre</version>
+                <version>26.0-jre</version>
             </dependency>
 
 		    <!--+
@@ -349,9 +359,8 @@
 	            <version>1</version>
             </dependency>
 
-
             <!--+
-                | Java Servlet libraries.
+                | JavaServer Pages(TM) Standard Tag Library.
                 +-->
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -363,6 +372,17 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>4.0.1</version>
             </dependency>
+
+	        <!--+
+	            | Servlet libraries.
+                | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-web-api</artifactId>
+                <version>8.0</version>
+                <scope>provided</scope>
+            </dependency>
+	            +-->
 
 		    <!--+
 		        | Joda Time Libraries.
@@ -389,6 +409,23 @@
                 <groupId>org.jadira.usertype</groupId>
                 <artifactId>usertype.core</artifactId>
                 <version>6.0.1.GA</version>
+                <!--+
+                    | Exclude Hibernate dependencies because they import a different version.
+                    | https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html
+                    | [WARNING] Found duplicate and different classes in [javax.persistence:javax.persistence-api:2.2, org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final]:
+                    | [WARNING] Found duplicate and different classes in [org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1, org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final]:
+                    | ** This is less of an issue in
+                    +-->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-entitymanager</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
 		    <!--+
@@ -423,7 +460,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.0</version>
+                <version>1.18.2</version>
             </dependency>
 
             <!--+

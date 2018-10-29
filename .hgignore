@@ -1,13 +1,16 @@
 syntax: glob
 
+# Hidden files.
+*/.*
+
 # Text editor backups
 *~
 *.*~
 
-# Python code.
+# Compiled Python files.
 *.pyc
 
-# Java .classe
+# Java .class files.
 *.class
 
 # Webpy sessions
@@ -21,42 +24,31 @@ target
 */tmp
 
 # External zip files.
-*/zip
-*/war
+*/*.zip
+*/*.war
 
 # Experiments
 *.frog
 
 # Eclipse junk
-.project
-.classpath
-.settings
-.factorypath
-.recommenders
-.metadata
+#*/.project
+#*/.classpath
+#*/.settings
+#*/.factorypath
+#*/.recommenders
+#*/.metadata
 
 # Java core dumps
 hs_err_*.log
 
 #
 # SVN version control
-*/.svn
+#*/.svn
 
 #
 # Docker compose config
-.env
+#.env
 
 #
 # Generated Docker files
-#docker/tester/Dockerfile
-#docker/builder/Dockerfile
-#docker/java/8/Dockerfile
-#docker/tomcat/8/Dockerfile
-#docker/sql-proxy/Dockerfile
-#docker/sql-tunnel/Dockerfile
-#docker/ssh-client/Dockerfile
-#integration/tester/Dockerfile
-#firethorn-webapp/src/main/docker/firethorn/Dockerfile
-#firethorn-ogsadai/webapp/src/main/docker/ogsadai/Dockerfile
-
 

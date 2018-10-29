@@ -31,7 +31,7 @@
     mvnlocal=${mvnlocal:-'/var/local/cache/maven'}
 
     #
-    # Sync the FireThorn binaries.
+    # Sync the Firethorn binaries.
     rsync \
         --verbose \
         --checksum \

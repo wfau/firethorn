@@ -32,21 +32,21 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-annotations</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn annotations</name>
+    <name>Firethorn annotations</name>
     <description>
         <![CDATA[
-        The FireThorn annotations.
+        The Firethorn annotations.
         ]]>
     </description>
 
     <url>http://redmine.roe.ac.uk/projects/wva</url>
-    
+
     <properties>
     </properties>
 
@@ -56,7 +56,7 @@
     <dependencies>
 
         <!--+
-            | FireThorn Spring dependencies.
+            | Firethorn Spring dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -66,7 +66,7 @@
         </dependency>
 
         <!--+
-            | FireThorn logging dependencies.
+            | Firethorn logging dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -78,7 +78,7 @@
         <!--+
             | Joda Time Libraries.
             | http://joda-time.sourceforge.net/
-            +-->	
+            +-->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
@@ -87,7 +87,7 @@
         <!--+
             | Jadira Type Libraries.
             | http://blog.jadira.co.uk/
-            +-->	
+            +-->
         <dependency>
             <groupId>org.jadira.usertype</groupId>
             <artifactId>usertype.core</artifactId>

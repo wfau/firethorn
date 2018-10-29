@@ -32,16 +32,16 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-dqp</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-dqp-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI distributed queries (server)</name>
+    <name>Firethorn OGSA-DAI distributed queries (server)</name>
     <description>
         <![CDATA[
-        Server (OGSA-DAI) components for the FireThorn OGSA-DAI distributed query processor.
+        Server (OGSA-DAI) components for the Firethorn OGSA-DAI distributed query processor.
         Based on a clone of the OGSA-DAI code in svn.
         ]]>
     </description>
@@ -52,7 +52,7 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI 3rd party dependencies.
+            | Firethorn/OGSA-DAI 3rd party dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -62,7 +62,7 @@
         </dependency>
 
         <!--+
-            | OGSA-DAI DQP common components.
+            | Firethorn/OGSA-DAI DQP common components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

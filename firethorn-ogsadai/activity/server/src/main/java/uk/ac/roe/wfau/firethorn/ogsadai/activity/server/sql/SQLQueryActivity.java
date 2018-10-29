@@ -52,12 +52,16 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.server.blue.CallbackHandler;
+import uk.ac.roe.wfau.firethorn.ogsadai.context.RequestContext;
 import uk.org.ogsadai.activity.ActivityContractName;
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
 import uk.org.ogsadai.activity.MatchedIterativeActivity;
 import uk.org.ogsadai.activity.extension.ResourceActivity;
+import uk.org.ogsadai.activity.extension.SecureActivity;
 import uk.org.ogsadai.activity.extension.ServiceAddresses;
 import uk.org.ogsadai.activity.extension.ServiceAddressesActivity;
 import uk.org.ogsadai.activity.io.ActivityIOException;
@@ -71,6 +75,7 @@ import uk.org.ogsadai.activity.sql.ActivitySQLException;
 import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
 import uk.org.ogsadai.activity.sql.CallableStatement;
 import uk.org.ogsadai.activity.sql.SQLUtilities;
+import uk.org.ogsadai.authorization.SecurityContext;
 import uk.org.ogsadai.common.msgs.DAILogger;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.EnhancedJDBCConnectionProvider;
@@ -86,7 +91,7 @@ import uk.org.ogsadai.resource.dataresource.jdbc.JDBCSettings;
  */
 public class SQLQueryActivity 
     extends MatchedIterativeActivity 
-    implements ResourceActivity, ServiceAddressesActivity
+    implements ResourceActivity, SecureActivity, ServiceAddressesActivity
     {
     /**
      * Debug logger.
@@ -134,7 +139,28 @@ public class SQLQueryActivity
     /** Executor service. */
     private ExecutorService mExecutorService =
         Executors.newSingleThreadExecutor();
-        
+    
+    /**
+     * Our request context.
+     * 
+     */
+    private RequestContext mContext ;
+
+    @Override
+    public void setSecurityContext(SecurityContext context)
+        {
+        if ((context != null) && (context instanceof RequestContext))
+            {
+            this.mContext = (RequestContext) context; 
+            }
+        }
+
+    /**
+     * Our callback handler.
+     * 
+     */
+    private CallbackHandler callback;
+    
     /**
      * Constructor.
      */
@@ -193,6 +219,9 @@ public class SQLQueryActivity
     protected void preprocess() throws ActivityUserException,
         ActivityProcessingException, ActivityTerminatedException
     {
+        this.callback = new CallbackHandler(
+            this.mContext
+            );          
         validateOutput(OUTPUT_SQL_RESULTS);
         try
         {
@@ -227,8 +256,7 @@ public class SQLQueryActivity
         {
         final String expression = (String) iterationData[0];
         
-        if (LOG.isDebugEnabled())
-            LOG.debug("SQL QUERY: " + expression);
+        logger.debug("SQL QUERY: " + expression);
 
         try {
             logger.debug("Initialising query");
@@ -242,10 +270,10 @@ public class SQLQueryActivity
             mStatement.setFetchSize(
                 mSettings.getFetchSize()
                 );
-
+            
             logger.debug("Executing query");
             ResultSet resultSet = executeQuery(expression);
-
+            
             logger.debug("Processing tuples");
             try {
                 SQLUtilities.createTupleList(
@@ -290,22 +318,27 @@ public class SQLQueryActivity
 
         catch (SQLException e)
             {
+            logger.debug("Caught a SQLException, wrapping it in an ActivitySQLUserException");
             throw new ActivitySQLUserException(e);
             }
         catch (PipeIOException e)
             {
+            logger.debug("Caught a PipeIOException, wrapping it in an ActivityPipeProcessingException");
             throw new ActivityPipeProcessingException(e);
             }
         catch (PipeTerminatedException e)
             {
+            logger.debug("Caught a PipeTerminatedException, wrapping it in an ActivityTerminatedException");
             throw new ActivityTerminatedException();
             }
         catch (IOException e)
             {
+            logger.debug("Caught an IOException, wrapping it in an ActivityIOException");
             throw new ActivityIOException(e);
             }
         catch (Throwable e)
             {
+            logger.debug("Caught a Throwable, wrapping it in an ActivityProcessingException");
             throw new ActivityProcessingException(e);
             }
         }
@@ -326,16 +359,19 @@ public class SQLQueryActivity
     {
         // Create an object to use the Statement to execute the
         // query in the background - class definition is below.
-        LOG.debug("Creating CallableStatement for query");
+        logger.debug("Creating CallableStatement for query");
         Callable<ResultSet> statementCall = 
-            new CallableStatement(mStatement, expression);
+            new ChaoticCallableStatement(mStatement, expression);
+        this.mContext.monkey().sqlException(this, "rey9Po4i");
 
-        LOG.debug("Submitting CallableStatement to ExecutorService");
+        logger.debug("Submitting CallableStatement to ExecutorService");
         Future<ResultSet> future = mExecutorService.submit(statementCall);
+        this.mContext.monkey().sqlException(this, "uche2aNa");
         ResultSet resultSet = null;
+        
         try
         {
-            LOG.debug("Initiating CallableStatement and starting background execution");
+        logger.debug("Initiating CallableStatement and starting background execution");
             // This will initiate the Callable object and so
             // basically execute Statement.executeQuery in the
             // background. If execution is interrupted e.g. by
@@ -343,24 +379,43 @@ public class SQLQueryActivity
             // OGSA-DAI request is terminated, then an exception
             // will be thrown.
             resultSet = future.get();
-            LOG.debug("CallableStatement returned ResultSet");
+            logger.debug("CallableStatement returned ResultSet");
+            this.mContext.monkey().sqlException(this, "chahw2Ao");
         }
         catch (ExecutionException e)
         {
-            LOG.debug("CallableStatement encountered problem in query execution");
+            logger.debug("CallableStatement encountered problem in query execution");
+            logger.debug("Original cause [" + e.getCause().getClass().getName() + "]");
             throw e.getCause();
         }
         catch (InterruptedException e)
         {
-            LOG.debug("CallableStatement interrupted");
+            logger.debug("CallableStatement interrupted");
             cancelSQLStatement();
         }
         catch (CancellationException e)
         {
-            LOG.debug("CallableStatement cancelled");
+            logger.debug("CallableStatement cancelled");
             cancelSQLStatement();
         }
         return resultSet;
+    }
+
+    public class ChaoticCallableStatement
+    extends CallableStatement
+    {
+        public ChaoticCallableStatement(final Statement statement, final String query)
+        {
+            super(statement, query);
+        }
+        @Override
+        public ResultSet call() throws Exception
+        {
+            mContext.monkey().sqlException(this, "Eoph9xie");
+            final ResultSet results = super.call();
+            mContext.monkey().sqlException(this, "oz4Kie0M");
+            return results;
+        }
     }
 
     /**
@@ -372,10 +427,9 @@ public class SQLQueryActivity
      */
     private void cancelSQLStatement() throws SQLException
     {
-        LOG.debug("Cancelling statement...");
+        logger.debug("Cancelling Statement");
         try
         {
-            LOG.debug("Cancelling SQL statement execution");
             if (mStatement != null)
             {
                 mStatement.cancel();
@@ -384,7 +438,7 @@ public class SQLQueryActivity
         catch (SQLException e)
         {
             // Don't care.
-            LOG.debug("Exception during Statement.cancel(): " + e);
+            logger.debug("Exception during Statement.cancel(): " + e);
         }
     }
 
@@ -406,15 +460,19 @@ public class SQLQueryActivity
     {
         super.cleanUp();
         
+        logger.debug("Shutting down ExecutorService");
         mExecutorService.shutdown();
         
         if (mStatement != null)
         {
+            logger.debug("Closing Statement");
+            mContext.monkey().sqlException(this, "baivahP0");
             mStatement.close();
         }
 
         if (mResource != null)
         {
+            logger.debug("Releasing Connection");
             mConnectionProvider.releaseConnection(mConnection);
         }
     }

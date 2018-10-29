@@ -26,6 +26,7 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleWorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamImpl;
 import uk.org.ogsadai.client.toolkit.DataRequestExecutionResource;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
@@ -45,8 +46,8 @@ public class BlueWorkflowClient
 implements BlueWorkflow
     {
     
-    @Deprecated
-    protected static final String DEFAULT_DRER_IDENT = "DataRequestExecutionResource" ;
+    //@Deprecated
+    //protected static final String DEFAULT_DRER_IDENT = "DataRequestExecutionResource" ;
 
     /**
      * Our OGSA-DAI service endpoint.
@@ -111,15 +112,18 @@ implements BlueWorkflow
         final PipelineWorkflow pipeline = new PipelineWorkflow();
         //
         // Add our context Activity.
-        final ContextClient context = new ContextClient(
+        final OgsaContextClient context = new OgsaContextClient(
     		param.context()
     		);
         pipeline.add(
             context
             );
         context.input(
-    		param.query()
+    		param.select().query()
     		);
+        context.monkey(
+            param.monkey()
+            );
         //
         // Add our SQLQuery Activity.
         final SQLQuery select = new SQLQuery();
@@ -128,12 +132,21 @@ implements BlueWorkflow
             );
         select.setResourceID(
             new ResourceID(
-                param.source()
+                param.select().resource()
                 )
             );
         select.connectExpressionInput(
             context.output()
             );
+/*
+ * NullPointer during server side request processing.
+ * No error log details.  
+        final JdbcSelectDataClient select = new JdbcSelectDataClient(
+            context.output(),
+            param.select()
+            ); 
+ *         
+ */
         //
         // Add our Delays Activity.
         final DelaysClient delay = new DelaysClient(

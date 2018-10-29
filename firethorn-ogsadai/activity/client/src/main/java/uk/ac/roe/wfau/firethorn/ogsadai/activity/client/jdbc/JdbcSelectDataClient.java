@@ -29,7 +29,6 @@ import uk.org.ogsadai.client.toolkit.activity.BaseResourceActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
-import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
@@ -47,6 +46,13 @@ implements ResourceActivity
      */
     public static interface Param
         {
+        /**
+         * The source resource ID, as a String.
+         * @return The source resource ID.
+         *
+         */
+        public String resource();
+        
         /**
          * The SQL select query.
          * @return The SQL select query.
@@ -73,7 +79,7 @@ implements ResourceActivity
      * @param param The activity parameters.
      * 
      */
-    public JdbcSelectDataClient(final ResourceID source, final Param param)
+    public JdbcSelectDataClient(final SingleActivityOutput source, final Param param)
         {
         super(
             new ActivityName(
@@ -81,9 +87,19 @@ implements ResourceActivity
                 )
             );
         this.setResourceID(
-            source
+            new ResourceID(
+                param.resource()
+                )
             );
 
+        this.query= new SimpleActivityInput(
+            JdbcSelectDataParam.DATABASE_QUERY
+            );
+        this.query.connect(
+            source
+            );
+/*
+ * 
         this.query = new SimpleActivityInput(
             JdbcSelectDataParam.DATABASE_QUERY,
             false
@@ -96,6 +112,8 @@ implements ResourceActivity
                     )
                 );
             }
+ *         
+ */
 
         this.results = new SimpleActivityOutput(
             JdbcSelectDataParam.TUPLE_OUTPUT
@@ -107,7 +125,7 @@ implements ResourceActivity
      * @return The query results.
      *
      */
-    public SingleActivityOutput results()
+    public SingleActivityOutput output()
         {
         return results.getSingleActivityOutputs()[0];
         }

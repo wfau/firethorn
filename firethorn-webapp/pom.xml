@@ -32,38 +32,29 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-webapp</artifactId>
     <packaging>war</packaging>
 
-    <name>FireThorn webapp</name>
+    <name>Firethorn webapp</name>
     <description>
         <![CDATA[
-        The FireThorn webapp.
+        The Firethorn webapp.
         ]]>
     </description>
-    
+
     <properties>
     </properties>
 
     <repositories>
-        <!--+
-            | Repository for Java EE dependencies.
-            | https://stackoverflow.com/questions/1979957/maven-dependency-for-servlet-3-0-api
-            +-->
-        <repository>
-            <id>java.net2</id>
-            <name>Repository hosting the Java EE dependencies</name>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
     </repositories>
 
     <dependencies>
 
         <!--+
-            | FireThorn Spring dependencies.
+            | Firethorn Spring dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -73,7 +64,7 @@
         </dependency>
 
         <!--+
-            | FireThorn logging dependencies.
+            | Firethorn logging dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -83,7 +74,7 @@
         </dependency>
 
         <!--+
-            | FireThorn JDBC dependencies.
+            | Firethorn JDBC dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -93,7 +84,7 @@
         </dependency>
 
         <!--+
-            | FireThorn testing dependencies.
+            | Firethorn testing dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -104,7 +95,7 @@
         </dependency>
 
         <!--+
-            | FireThorn core components.
+            | Firethorn core components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -135,6 +126,18 @@
             <groupId>org.jsoftbiz</groupId>
             <artifactId>os-platform-finder</artifactId>
         </dependency>
+
+        <!--+
+            | JavaServer Pages(TM) Standard Tag Library.
+            +-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <!--dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency-->
 
         <!--+
             | Tomcat specific classes.

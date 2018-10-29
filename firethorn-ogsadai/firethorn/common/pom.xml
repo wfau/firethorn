@@ -32,16 +32,16 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-firethorn</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-firethorn-common</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI FireThorn components (common)</name>
+    <name>OGSA-DAI Firethorn components (common)</name>
     <description>
         <![CDATA[
-        Common (OGSA-DAI) components for FireThorn.
+        Common (OGSA-DAI) components for Firethorn.
         ]]>
     </description>
 
@@ -51,7 +51,7 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI DQP components.
+            | Firethorn/OGSA-DAI DQP components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

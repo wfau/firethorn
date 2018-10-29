@@ -32,16 +32,16 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai-astro</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-astro-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn OGSA-DAI astronomy extensions (server)</name>
+    <name>Firethorn OGSA-DAI astronomy extensions (server)</name>
     <description>
         <![CDATA[
-        Server (OGSA-DAI) components for the FireThorn OGSA-DAI Astronomy extensions.
+        Server (OGSA-DAI) components for the Firethorn OGSA-DAI Astronomy extensions.
         Based on a clone of the OGSA-DAI code in svn.
         ]]>
     </description>
@@ -91,23 +91,23 @@
         </dependency>
 
         <!--+
-	        | The Apache HttpComponent libraries, used by our TAP client. 
-            +-->
+	        | The Apache HttpComponent libraries, used by our TAP client.
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.0.1</version>
         </dependency>
+            +-->
 
         <!--+
-            | The StarLink VOTAble library, used by our TAP client. 
-            +-->
+            | The StarLink VOTAble library, used by our TAP client.
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-stil</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
+            +-->
 
     </dependencies>
 

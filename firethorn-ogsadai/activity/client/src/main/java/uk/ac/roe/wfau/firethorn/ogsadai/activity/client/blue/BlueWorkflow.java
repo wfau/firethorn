@@ -21,6 +21,9 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.WorkflowResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.DelaysClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.data.LimitsClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcSelectDataClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.blue.OgsaContextParam;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.jdbc.JdbcInsertDataClient;
 
 /**
@@ -36,33 +39,27 @@ public interface BlueWorkflow
     public interface Param
     	{
     	/**
-    	 * The source resource identifier.
+    	 * The Context Activity parameters.
     	 * 
     	 */
-    	public String source();
-        
-    	/**
-    	 * The ADQL/SQL query.
-    	 * 
-    	 */
-    	public String query();
+    	public OgsaContextParam context();
 
-    	/**
-    	 * The context Activity parameters.
-    	 * 
-    	 */
-    	public interface ContextParam
-    	extends ContextClient.Param 
-    		{}
+        /**
+         * The Select Activity parameters.
+         * 
+         */
+        public interface SelectParam
+        extends JdbcSelectDataClient.Param 
+            {}
 
+        /**
+         * The Select Activity parameters.
+         * 
+         */
+        public SelectParam select();
+    	
     	/**
-    	 * The context Activity parameters.
-    	 * 
-    	 */
-    	public ContextParam context();
-
-    	/**
-    	 * The insert Activity parameters.
+    	 * The Insert Activity parameters.
     	 * 
     	 */
         public interface InsertParam
@@ -87,6 +84,12 @@ public interface BlueWorkflow
     	 */
         public LimitsClient.Param limits();
 
+        /**
+         * The ChaosMonkey parameters.
+         * 
+         */
+        public MonkeyParam monkey();
+        
     	}
 
     /**

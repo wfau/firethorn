@@ -1,0 +1,202 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+Add alias to AdqlResource
+    unique String
+
+
+
+
+
+/orange/{alias}/availability
+    JSP XML view
+/orange/{alias}/capabilities
+    JSP XML view
+/orange/{alias}/tables
+    JSP XML view
+/orange/{alias}/registration
+    JSP XML view
+/orange/{alias}/examples
+    JSP XML view
+
+/orange/{alias}/sync
+    GET
+        ????
+    POST
+        LANG
+        QUERY
+        FORMAT/RESPONSEFORMAT
+        MAXREC
+        RUNID
+        UPLOAD (later)
+
+        load AdqlResource {alias}
+        load AdqlResource {ident}
+
+        create BlueQuery
+            next = COMPLETED
+            adql = SELECT ...
+            wait = sync-wait
+
+            .... wait ....
+
+        303 redirect to view for FORMAT
+            CSV
+            VOTable
+            DataTable
+
+/orange/{alias}/async
+    GET ????
+    POST
+        LANG
+        QUERY
+        FORMAT/RESPONSEFORMAT
+        MAXREC
+        RUNID
+        UPLOAD (later)
+
+        mapping alias => ident
+        load AdqlResource {ident}
+
+        create BlueQuery
+            next = RUNNING
+            adql = SELECT ...
+            wait = small
+
+        303 redirect to view jobid
+
+/orange-tap/{alias}/{jobid}
+    GET
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+        JSP XML view
+            <job>
+
+    POST ????
+
+/orange-tap/{alias}/{jobid}/phase
+    GET
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+        JSP text view
+            mapping TaskState => TapState
+
+    POST
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+
+        update BlueQuery
+            mapping TapState => TaskState
+
+        303 redirect to view jobid
+
+/orange-tap/{alias}/{jobid}/error
+    GET
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+        JSP XML view
+            implementation specific error message
+
+    POST ????
+
+/orange-tap/{alias}/{jobid}/parameters
+    GET
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+        JSP XML view
+            <params>
+
+    POST ????
+        allow edits before run ?
+
+/orange-tap/{alias}/{jobid}/owner
+    GET
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+        JSP text view
+            URL of the owner
+
+    POST ????
+
+/orange-tap/{alias}/{jobid}/quote
+    GET
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+        JSP text view
+            completion time = now + max duration
+
+    POST ????
+
+/orange-tap/{alias}/{jobid}/executionduration
+    GET
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+        JSP text view
+            max duration (seconds)
+
+    POST ????
+
+/orange-tap/{alias}/{jobid}/destruction
+    GET
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+        JSP text view
+            expiry time of the results
+
+    POST ????
+
+/orange-tap/{alias}/{jobid}/results
+    GET
+        mapping alias => ident
+        load AdqlResource {ident}
+        load BlueQuery {jobid}
+        JSP XML view
+            <results>
+
+    POST ????
+
+/orange-tap/{alias}/{jobid}/results/result
+
+    303 redirect to view of the AdqlTable
+        CSV
+        VOTable
+        DataTable
+
+
+
+
+
+
+Stage #2 AsyncListener
+https://www.journaldev.com/2008/async-servlet-example
+
+

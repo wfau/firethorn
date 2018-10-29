@@ -32,16 +32,16 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version project='firethorn'>2.1.25</version>
+        <version project='firethorn'>2.1.26</version>
     </parent>
 
     <artifactId>firethorn-admin-webapp</artifactId>
     <packaging>war</packaging>
 
-    <name>FireThorn admin webapp</name>
+    <name>Firethorn admin webapp</name>
     <description>
         <![CDATA[
-        This Maven build takes the FireThorn webapp and adds the admin interface pages.
+        This Maven build takes the Firethorn webapp and adds the admin interface pages.
         ]]>
     </description>
 
@@ -51,7 +51,7 @@
     <dependencies>
 
         <!--+
-            | The FireThorn webapp.
+            | The Firethorn webapp.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -59,7 +59,7 @@
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
-    
+
     </dependencies>
 
     <build>

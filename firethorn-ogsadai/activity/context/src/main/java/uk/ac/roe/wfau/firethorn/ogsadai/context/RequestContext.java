@@ -1,20 +1,21 @@
 /**
- * 
+ *
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.context;
 
-import uk.org.ogsadai.authorization.SecurityContext;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 
+import uk.org.ogsadai.authorization.SecurityContext;
 
 /**
  * Public interface for context information that gets passed
- * to each of the OGSA-DAI components in the workflow pipeline. 
+ * to each of the OGSA-DAI components in the workflow pipeline.
  *
  */
 public interface RequestContext
 extends SecurityContext
 	{
-	
+
     /**
      * Public interface for a callback endpoint builder.
      *
@@ -50,13 +51,13 @@ extends SecurityContext
          *
          */
         public String port();
-        
+
         /**
          * Set the port number.
          *
          */
         public void port(final String port);
-        
+
         /**
          * Get the base URL path.
          *
@@ -71,21 +72,21 @@ extends SecurityContext
 
         /**
          * The callback endpoint.
-         * 
+         *
          */
         public StringBuilder endpoint();
     	}
 
     /**
      * Our callback endpoint builder.
-     * 
+     *
      */
     @Deprecated
     public EndpointBuilder builder();
 
     /**
      * Our callback endpoint.
-     * 
+     *
      */
     public StringBuilder endpoint();
 
@@ -101,4 +102,16 @@ extends SecurityContext
      */
     public void ident(final String ident);
 
+    /**
+     * Get the ChaosMonkey parameter.
+     *
+     */
+    public MonkeyParam monkey();
+
+    /**
+     * Set the ChaosMonkey parameter.
+     *
+     */
+    public void monkey(final MonkeyParam param);
+    
 	}

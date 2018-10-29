@@ -155,6 +155,7 @@ implements JdbcConnector
      */
     protected JdbcConnectionEntity()
         {
+        super();
         }
 
     /**
@@ -163,6 +164,7 @@ implements JdbcConnector
      */
     protected JdbcConnectionEntity(final JdbcResourceEntity resource, final JdbcProductType type, final String database, final String catalog, final String host, final Integer port, final String user, final String pass)
         {
+        super();
         this.resource = resource;
         this.database = database;
         this.catalog = catalog;
@@ -196,7 +198,6 @@ implements JdbcConnector
     /**
      * Get/Set methods for Hibernate.
      * 
-     * @return
      */
     protected JdbcResourceEntity getResource()
         {

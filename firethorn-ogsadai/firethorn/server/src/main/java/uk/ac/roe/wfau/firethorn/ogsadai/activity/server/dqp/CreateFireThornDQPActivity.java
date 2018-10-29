@@ -74,12 +74,12 @@ import uk.org.ogsadai.resource.event.ResourceEventListener;
 import uk.org.ogsadai.tools.DQPEditor;
 
 /**
- * An activity to create a FireThorn DQP resource.
- * 
+ * An activity to create a Firethorn DQP resource.
+ *
  */
 public class CreateFireThornDQPActivity
     extends MatchedIterativeActivity
-    implements ResourceManagerActivity, 
+    implements ResourceManagerActivity,
                ResourceFactoryActivity,
                ConfigurableActivity
     {
@@ -87,39 +87,39 @@ public class CreateFireThornDQPActivity
      * Copyright
      *
      */
-    private static final String COPYRIGHT_NOTICE = 
+    private static final String COPYRIGHT_NOTICE =
         "Copyright (c) 2015, ROE (http://www.roe.ac.uk/)";
 
     /**
      * Logger.
-     * 
+     *
      */
     private static final DAILogger LOG = DAILogger.getLogger(
         CreateFireThornDQPActivity.class
         );
-    
-    /** 
+
+    /**
      * Key into activities configuration file denoting the
      * default template resource ID (<code>dai.template.id</code>).
      */
     public static final Key TEMPLATE_ID = new Key("dai.template.id");
-    
-    /** 
+
+    /**
      * Key into activities configuration file denoting the directory into
      * which new DQP configuration files are placed (<code>dqp.config.dir</code>).
      */
     private static final Key CONFIG_DIR = new Key("dqp.config.dir");
 
-    /** 
-     * Key into activities configuration file denoting the path of the context 
-     * template. 
+    /**
+     * Key into activities configuration file denoting the path of the context
+     * template.
      */
     private static final Key CONTEXT_TEMPLATE = new Key("dqp.context.template");
-    /** 
+    /**
      * Key into activities configuration file specifying the EvaluationNode
-     * factory class.      
+     * factory class.
      */
-    private static final Key EVALUATION_NODE_FACTORY_CLASS = 
+    private static final Key EVALUATION_NODE_FACTORY_CLASS =
         new Key("dqp.evaluation.node.factory");
 
     /** Configuration path key. */
@@ -128,25 +128,25 @@ public class CreateFireThornDQPActivity
 
     /**
      * Activity input name (<code>templateId</code>)
-     * - ID of the resource template (<code>String</code>). 
+     * - ID of the resource template (<code>String</code>).
     public static final String INPUT_TEMPLATE_ID = "templateId";
      */
 
     /**
      * Activity input name (<code>configuration</code>)
-     * - ID of the new resource to create (<code>String</code>). 
+     * - ID of the new resource to create (<code>String</code>).
     public static final String INPUT_CONFIG = "configuration";
      */
 
     /**
      * Activity output name (<code>result</code>)
-     * - ID of the newly created resource (<code>String</code>). 
+     * - ID of the newly created resource (<code>String</code>).
     public static final String RESULT = "result";
      */
 
     /** Result block writer. */
     private BlockWriter mResult;
-    
+
     /** OGSA-DAI resource manager. */
     private ResourceManager mResourceManager;
 
@@ -167,19 +167,19 @@ public class CreateFireThornDQPActivity
     @Override
     public void setResourceManager(ResourceManager resourceManager)
         {
-        mResourceManager = resourceManager;        
+        mResourceManager = resourceManager;
         }
 
     @Override
     public void setResourceFactory(ResourceFactory resourceFactory)
         {
-        mResourceFactory = resourceFactory;        
+        mResourceFactory = resourceFactory;
         }
-    
+
     @Override
     protected ActivityInput[] getIterationInputs()
         {
-        return new ActivityInput[] 
+        return new ActivityInput[]
             {
             new TypedOptionalActivityInput(
                 CreateFireThornDQPParam.TARGET_RESOURCES,
@@ -189,9 +189,9 @@ public class CreateFireThornDQPActivity
         }
 
     @Override
-    protected void preprocess() 
+    protected void preprocess()
     throws ActivityUserException,
-        ActivityProcessingException, 
+        ActivityProcessingException,
         ActivityTerminatedException
         {
         validateOutput(
@@ -202,7 +202,7 @@ public class CreateFireThornDQPActivity
 
     @Override
     protected void processIteration(Object[] iterationData)
-    throws ActivityProcessingException, 
+    throws ActivityProcessingException,
         ActivityTerminatedException,
         ActivityUserException
         {
@@ -240,7 +240,7 @@ public class CreateFireThornDQPActivity
             {
             throw new ActivityProcessingException(e);
             }
-        catch (FileNotFoundException e) 
+        catch (FileNotFoundException e)
             {
             throw new ActivityProcessingException(e);
             }
@@ -254,7 +254,7 @@ public class CreateFireThornDQPActivity
             DQPResource resource = null;
             try {
                 resource = createResource(templateID, contextFilename);
-                } 
+                }
             catch (ResourceUnknownException ouch)
                 {
                 throw new ActivityUserException(
@@ -270,19 +270,19 @@ public class CreateFireThornDQPActivity
                 );
             DQPFederation federation = resource.getFederation();
             LOG.debug("Federation [" + federation + "]");
-            
+
             //
             // Add data nodes.
 /*
  * DataNode is generated on a per request basis ..
  * No longer part of the DQP.
- * 
+ *
             if (federation instanceof MetadataServiceDQPFederation)
                 {
                 LOG.debug(" Adding DataNode");
-                String nodename = (String)iterationData[0];                
+                String nodename = (String)iterationData[0];
                 LOG.debug(" Adding DataNode [" +nodename + "]");
-                
+
                 Map<String, DataNode> map = ((MetadataServiceDQPFederation) federation).getDataNodesMap();
                 DataNode node = new SimpleDataNode(
                     nodename,
@@ -291,7 +291,7 @@ public class CreateFireThornDQPActivity
                 map.put(
                     node.getResourceID().toString(),
                     node
-                    );                
+                    );
                 }
             else {
                 throw new ResourceTypeException(
@@ -333,7 +333,7 @@ public class CreateFireThornDQPActivity
             throw new ActivityProcessingException(e);
             }
         }
-    
+
     private File getResourceDir(ResourceID resourceID)
     throws IOException
         {
@@ -345,7 +345,7 @@ public class CreateFireThornDQPActivity
             }
         return resourceDir;
         }
-    
+
     private String getConfigDir()
     throws IOException
         {
@@ -370,7 +370,7 @@ public class CreateFireThornDQPActivity
         {
         File resourceDir = getResourceDir(resourceID);
         // Set up file name for resource configuration file only.
-        String configFileName = 
+        String configFileName =
             mConfigDir + "/" + resourceID.toString() + "/DQPResourceConfig.xml";
         // Set up file name for writing configuration.
         File configFile = new File(resourceDir, "DQPResourceConfig.xml");
@@ -389,7 +389,7 @@ public class CreateFireThornDQPActivity
         LOG.debug("Wrote configuration to " + file);
         return configFileName;
         }
-    
+
     private String writeContext(ResourceID resourceID)
     throws IOException, FileNotFoundException
         {
@@ -398,9 +398,9 @@ public class CreateFireThornDQPActivity
         File contextFile = new File(resourceDir, "DQPContext.xml");
         File contextTemplate = new File(getConfigDir(), mContextTemplate);
         FileUtilities.copyFile(contextTemplate, contextFile);
-        
+
         // insert the file name of the DQP federation into the config
-        File ogsadaiConfigDir = 
+        File ogsadaiConfigDir =
             (File)OGSADAIContext.getInstance().get(OGSADAIConstants.CONFIG_DIR);
         DQPEditor editor = new DQPEditor();
         editor.initialize(ogsadaiConfigDir);
@@ -409,16 +409,16 @@ public class CreateFireThornDQPActivity
                 resourceID.toString(),
                 mEvaluationNodeFactoryClass,
                 configFileName);
- */        
+ */
         LOG.debug("Wrote context to " + contextFile);
-        
+
         return mConfigDir + "/" + resourceID.toString() + "/DQPContext.xml";
         }
 
     @Override
-    protected void postprocess() 
+    protected void postprocess()
     throws ActivityUserException,
-        ActivityProcessingException, 
+        ActivityProcessingException,
         ActivityTerminatedException
         {
         // No post-processing.
@@ -426,7 +426,7 @@ public class CreateFireThornDQPActivity
 
     /**
      * Create a new resource from the specified template.
-     * 
+     *
      * @param templateResourceID
      *            Resource template ID.
      * @param config
@@ -439,9 +439,9 @@ public class CreateFireThornDQPActivity
      * @throws DAIClassMissingInterfaceException
      *             if the template doesn't create DQP resources
      */
-    protected DQPResource createResource(ResourceID templateResourceID, String contextFilename) 
-    throws ResourceUnknownException, 
-        ResourceTypeException, 
+    protected DQPResource createResource(ResourceID templateResourceID, String contextFilename)
+    throws ResourceUnknownException,
+        ResourceTypeException,
         DAIClassMissingInterfaceException
         {
         LOG.debug("Context file [" + contextFilename + "]");
@@ -449,7 +449,7 @@ public class CreateFireThornDQPActivity
         state.getConfiguration().put(CONFIG_PATH, contextFilename);
 
         String resourceClassName = state.getDataResourceClass();
-        DataResource resource = 
+        DataResource resource =
             mResourceFactory.createDataResource(resourceClassName);
         resource.initialize(state);
         if (! (resource instanceof DQPResource))

@@ -32,19 +32,19 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-cds</artifactId>
-		<version project='firethorn'>2.1.25</version>
+		<version project='firethorn'>2.1.26</version>
 	</parent>
 
     <artifactId>firethorn-cds-adql</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn CDS ADQL library</name>
+    <name>Firethorn CDS ADQL library</name>
     <description>
         <![CDATA[
         Local build of the CDS ADQL library.
         ]]>
     </description>
-    
+
     <dependencies>
     </dependencies>
 

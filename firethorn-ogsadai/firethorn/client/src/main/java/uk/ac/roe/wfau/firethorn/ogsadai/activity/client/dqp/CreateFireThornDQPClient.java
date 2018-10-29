@@ -34,8 +34,8 @@ import uk.org.ogsadai.data.StringData;
 import uk.org.ogsadai.resource.ResourceID;
 
 /**
- * An activity to create a FireThorn DQP resource.
- * 
+ * An activity to create a Firethorn DQP resource.
+ *
  */
 public class CreateFireThornDQPClient
 extends BaseActivity
@@ -48,7 +48,7 @@ extends BaseActivity
         {
         /**
          * Target resource(s).
-         * 
+         *
          */
         public String target();
         }
@@ -58,7 +58,7 @@ extends BaseActivity
      *
      */
     private final ActivityInput input;
-    
+
     /**
      * Resource name output.
      *
@@ -86,15 +86,15 @@ extends BaseActivity
                 param.target()
                 )
             );
-        
+
         output = new SimpleActivityOutput(
             CreateFireThornDQPParam.OUTPUT_ID
             );
         }
-    
+
     /**
      * Adds a resource ID input.
-     * 
+     *
      */
     public void add(final ResourceID resourceID)
         {
@@ -104,10 +104,10 @@ extends BaseActivity
                 )
             );
         }
-    
+
     /**
      * Connects the resource ID input to the given output.
-     * 
+     *
      */
     public void connect(final SingleActivityOutput output)
         {
@@ -115,35 +115,35 @@ extends BaseActivity
             output
             );
         }
-    
+
     /**
      * Get the activity's result output.
-     * 
+     *
      */
     public SingleActivityOutput output()
         {
         return output.getSingleActivityOutputs()[0];
         }
-    
+
     /**
      * Check if there are any unread output values.
-     * 
+     *
      */
-    public boolean hasNextResult() 
-    throws DataStreamErrorException, 
-           UnexpectedDataValueException, 
+    public boolean hasNextResult()
+    throws DataStreamErrorException,
+           UnexpectedDataValueException,
            DataSourceUsageException
         {
         return output.getDataValueIterator().hasNext();
         }
-    
+
     /**
      * Get the next resource ID from the output.
-     * 
+     *
      */
-    public ResourceID getNextResult() 
-    throws DataStreamErrorException, 
-           UnexpectedDataValueException, 
+    public ResourceID getNextResult()
+    throws DataStreamErrorException,
+           UnexpectedDataValueException,
            DataSourceUsageException
         {
         return new ResourceID(
