@@ -1909,7 +1909,6 @@ implements AdqlParser
             case LOG:
             case LOG10:
             case POWER:
-            case SQUARE:
             case DEGREES:
             case RADIANS:
             case RAND:
@@ -1925,8 +1924,6 @@ implements AdqlParser
             case SQRT:
             case EXP:
                 return AdqlColumn.AdqlType.DOUBLE;
-            case SIGN:
-            	 return AdqlColumn.AdqlType.INTEGER;
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"
@@ -1972,7 +1969,6 @@ implements AdqlParser
             case LOG:
             case LOG10:
             case POWER:
-            case SQUARE:
             case DEGREES:
             case RADIANS:
             case RAND:
@@ -1991,11 +1987,6 @@ implements AdqlParser
                     funct.getName(),
                     AdqlColumn.AdqlType.DOUBLE
                     );
-            case SIGN:
-          	  return new MySelectFieldImpl(
-                        funct.getName(),
-                        AdqlColumn.AdqlType.INTEGER
-                        );
             default :
                 throw new AdqlParserException(
                     "Unknown MathFunction type [" + funct.getName() + "][" + funct.getType() + "]"

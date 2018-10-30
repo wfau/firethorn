@@ -115,6 +115,14 @@
     http://redmine.roe.ac.uk/issues/450
 
     Remove CastFunction
+    Remove SQUARE
+    Remove SIGN
+
+    Add support for SQUARE and SIGN fromas user defined functions.
+
+
+
+
 
 
 
