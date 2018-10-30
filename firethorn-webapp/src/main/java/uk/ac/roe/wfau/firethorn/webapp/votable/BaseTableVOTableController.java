@@ -32,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.AbstractFormatter;
 
 /**
  * Spring MVC controller to format a {@link BaseTable} as a <a href='http://www.ivoa.net/documents/VOTable/'>VOTable</a>.
@@ -136,6 +137,32 @@ extends AbstractTableController
             }
         }
 
+    public static class ByteFormatter
+    extends AbstractFormatter
+        {
+        public ByteFormatter(final BaseColumn<?> column)
+            {
+            super(
+                column
+                );
+            }
+
+        @Override
+        public String format(final ResultSet results)
+        throws SQLException
+            {
+    		
+	        	if (results.getObject(index())!=null){
+	        		return results.getString(
+	                            index()
+	                            );
+		   		} else {
+		   			return "";
+		   		}
+            
+            }
+        }
+    
     @Override
     public void head(final PrintWriter writer, final BaseTable<?,?> table)
     throws ProtectionException
@@ -394,7 +421,10 @@ extends AbstractTableController
                 return new XmlStringFormatter(
                     column
                     );
-    
+            case BYTE:
+                return new ByteFormatter(
+                    column
+                    );
             case DATE :
             case TIME:
             case DATETIME :
@@ -409,3 +439,4 @@ extends AbstractTableController
             }
         }
     }
+

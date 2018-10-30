@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
+import uk.ac.roe.wfau.firethorn.adql.util.AdqlNameModifier;
 
 /**
  * Generate TAP_SCHEMA of a resource
@@ -188,6 +190,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 
 	}
 
+
 	/**
 	 * Create the initial TAP_SCHEMA structure & data
 	 * 
@@ -230,93 +233,85 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 		}
 	}
 
+
 	/**
 	 * Insert resource metadata into the TAP_SCHEMA schema
 	 * 
 	 */
 	public void insertMetadataMSSQL() {
-		java.sql.Statement stmt = null;
 		java.sql.Connection con = null;
 
 		try {
-			stmt = null;
 			Class.forName(this.properties.getDriver());
 			con = DriverManager.getConnection(this.properties.getConnectionURL(), this.properties.getUsername(),
 					this.properties.getPassword());
 
 			System.out.println("Inserting resource records into the table...");
-			stmt = con.createStatement();
 
 			for (AdqlSchema schema : this.adqlresource.schemas().select()) {
-
-				String schemaName = schema.name().replace("'", "''");
-
+				Integer counter = 0;
+				
+				String schemaName = new AdqlNameModifier().process(schema.name());
 				String schemaDescription = schema.text();
-				String sql;
-				if (schemaDescription == null) {
-					sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-							+ "\".\"schemas\" (\"schema_name\",\"description\",\"utype\",\"ft_schema_id\") VALUES ('"
-							+ schemaName + "', NULL, NULL," + schema.ident().toString() + ");";
-				} else {
-					sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-							+ "\".\"schemas\" (\"schema_name\",\"description\",\"utype\",\"ft_schema_id\") VALUES ('"
-							+ schemaName + "', '" + schemaDescription.replace("'", "''") + "', NULL,"
-							+ schema.ident().toString() + ");";
-				}
+				
+				String sql = "INSERT INTO \"" + this.tapSchemaJDBCName
+						+ "\".\"schemas\" (\"schema_name\",\"description\",\"utype\",\"ft_schema_id\") VALUES (?,?,?,?);";
+				
+				PreparedStatement updateSchemaStatement = con.prepareStatement(sql);
+				updateSchemaStatement.setObject(++counter, schemaName);
 
-				stmt.executeUpdate(sql);
+				if (schemaDescription == null) {
+					updateSchemaStatement.setObject(++counter, null);
+				} else {
+					updateSchemaStatement.setObject(++counter, schemaDescription.replace("'", "''"));
+				}
+				
+				updateSchemaStatement.setObject(++counter, null);
+				updateSchemaStatement.setObject(++counter, Integer.parseInt(schema.ident().toString()));
+				updateSchemaStatement.executeUpdate();
 
 				for (AdqlTable table : schema.tables().select()) {
-					String tableName = table.name().replace("'", "''");
+					
+					String tableName = new AdqlNameModifier().process(table.name());
 					String tableDescription = table.text();
+					counter = 0;
+					
+					sql = "INSERT INTO \"" + this.tapSchemaJDBCName
+							+ "\".\"tables\"  (\"schema_name\", \"table_name\", \"table_type\", \"description\", \"utype\", \"ft_table_id\") VALUES (?,?,?,?,?,?);";
+					
+					PreparedStatement updateTableStatement = con.prepareStatement(sql);
+					updateTableStatement.setObject(++counter, schemaName);
+					updateTableStatement.setObject(++counter, schemaName + "." + tableName);
+					updateTableStatement.setObject(++counter, "table");
+
 					if (tableDescription == null) {
-						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-								+ "\".\"tables\"  (\"schema_name\", \"table_name\", \"table_type\", \"description\", \"utype\", \"ft_table_id\") VALUES ('"
-								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', NULL, '',"
-								+ table.ident().toString() + ");";
+						updateTableStatement.setObject(++counter, null);
 					} else {
-						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-								+ "\".\"tables\"  (\"schema_name\", \"table_name\", \"table_type\", \"description\", \"utype\", \"ft_table_id\") VALUES ('"
-								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
-								+ tableDescription.replace("'", "''") + "', ''," + table.ident().toString() + ");";
+						updateTableStatement.setObject(++counter, tableDescription.replace("'", "''"));
 					}
-
-					stmt.executeUpdate(sql);
-
+					
+					updateTableStatement.setObject(++counter, "");
+					updateTableStatement.setObject(++counter, Integer.parseInt(table.ident().toString()));
+					updateTableStatement.executeUpdate();
+					
+					
 					for (AdqlColumn column : table.columns().select()) {
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-								+ "\".\"columns\" (\"table_name\", \"column_name\", \"description\", \"unit\", \"ucd\", \"utype\", \"datatype\", \"size\", \"arraysize\", \"principal\", \"indexed\", \"std\", \"ft_column_id\") VALUES (";
-						String columnName = column.name().replace("'", "''");
-						if (columnName.toLowerCase().equals("timestamp") 
-                                                                || columnName.toLowerCase().equals("coord2")
-								|| columnName.toLowerCase().equals("coord1") 
-								|| columnName.toLowerCase().equals("size") 
-                                                                || columnName.toLowerCase().equals("min")
-								|| columnName.toLowerCase().equals("min")
-                                                                || columnName.toLowerCase().equals("max")
-								|| columnName.toLowerCase().equals("match")
-								|| columnName.toLowerCase().equals("zone")
-								|| columnName.toLowerCase().equals("time")
-								|| columnName.toLowerCase().equals("distance")
-								|| columnName.toLowerCase().equals("value")
-								|| columnName.toLowerCase().equals("sql")
-								|| columnName.toLowerCase().equals("first")
-								|| columnName.toLowerCase().equals("MATCH")
-								|| columnName.toLowerCase().equals("DATE")
-								|| columnName.toLowerCase().equals("area")
-								|| columnName.toLowerCase().equals("key")
-								|| columnName.toLowerCase().equals("count")
-								|| columnName.toLowerCase().equals("when")
-                                                                || columnName.toLowerCase().equals("date") ) {
-							columnName = '"' + column.name() + '"';
-						}
+								+ "\".\"columns\" (\"table_name\", \"column_name\", \"description\", \"unit\", \"ucd\", \"utype\", \"datatype\", \"size\", \"arraysize\", \"principal\", \"indexed\", \"std\", \"ft_column_id\") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+						counter = 0;
+						PreparedStatement updateColumnStatement = con.prepareStatement(sql);
+						
+						
+						String columnName = new AdqlNameModifier().process(column.name());
 						String columnDescription = column.text();
-						sql += "'" + schemaName + "." + tableName + "',";
-						sql += "'" + columnName + "',";
+						
+						updateColumnStatement.setObject(++counter, schemaName + "." + tableName);
+						updateColumnStatement.setObject(++counter, columnName);
+
 						if (columnDescription == null) {
-							sql += "NULL, ";
+							updateColumnStatement.setObject(++counter, null);
 						} else {
-							sql += "'" + columnDescription.replace("'", "''") + "',";
+							updateColumnStatement.setObject(++counter, columnDescription.replace("'", "''"));
 						}
 
 						AdqlColumn.Metadata meta = column.meta();
@@ -324,21 +319,22 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 						if ((meta != null) && (meta.adql() != null)) {
 
 							if (meta.adql().units() != null) {
-								sql += "'" + meta.adql().units().replace("'", "''") + "',";
+								updateColumnStatement.setObject(++counter,  meta.adql().units().replace("'", "''"));
 							} else {
-								sql += "'',";
+								updateColumnStatement.setObject(++counter,  "");
 							}
 
 							if (meta.adql().ucd() != null) {
-								sql += "'" + meta.adql().ucd().replace("'", "''") + "',";
+								updateColumnStatement.setObject(++counter, meta.adql().ucd().replace("'", "''"));
 							} else {
-								sql += "'',";
+								updateColumnStatement.setObject(++counter, "");
 							}
 
 							if (meta.adql().utype() != null) {
-								sql += "'" + meta.adql().utype().replace("'", "''") + "',";
+								updateColumnStatement.setObject(++counter, meta.adql().utype().replace("'", "''"));
 							} else {
-								sql += "'',";
+								updateColumnStatement.setObject(++counter, "");
+
 							}
 
 							if (meta.adql().type() != null) {
@@ -363,28 +359,33 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 								}
 
 								if (votableType != null) {
-									sql += "'" + votableType.toLowerCase() + "',";
+									updateColumnStatement.setObject(++counter, votableType.toLowerCase());
 								} else {
-									sql += "'',";
+									updateColumnStatement.setObject(++counter, "");
 								}
 
 								if ((meta.adql().arraysize() != null) && (meta.adql().arraysize() != 0)) {
 									if (meta.adql().arraysize() == -1) {
-										sql += "null, null,";
-									} else {
-										sql += "'" + meta.adql().arraysize().toString().replace("'", "''") + "',";
+										updateColumnStatement.setObject(++counter, null);
+										updateColumnStatement.setObject(++counter, null);
 
-										sql += "'" + meta.adql().arraysize().toString().replace("'", "''") + "',";
+									} else {
+										updateColumnStatement.setObject(++counter, Integer.parseInt(meta.adql().arraysize().toString().replace("'", "''")));
+										updateColumnStatement.setObject(++counter, Integer.parseInt(meta.adql().arraysize().toString().replace("'", "''")));
 									}
+									
 								} else {
-									sql += "null, null,";
+									updateColumnStatement.setObject(++counter, null);
+									updateColumnStatement.setObject(++counter, null);
 								}
 							}
 						}
+						
+						updateColumnStatement.setObject(++counter, 0);
+						updateColumnStatement.setObject(++counter, 0);
+						updateColumnStatement.setObject(++counter, Integer.parseInt(column.ident().toString()));
+						updateColumnStatement.executeUpdate();
 
-						sql += " 0, 0,''";
-						sql += ")";
-						stmt.executeUpdate(sql);
 
 					}
 				}
@@ -401,8 +402,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 		} finally {
 
 			try {
-				if (stmt != null)
-					con.close();
+				con.close();
 			} catch (SQLException e) {
 				log.error("Exception: ", e);
 			}
@@ -422,108 +422,103 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 	 * 
 	 */
 	public void insertMetadata() {
-		java.sql.Statement stmt = null;
 		java.sql.Connection con = null;
 
 		try {
-			stmt = null;
 			Class.forName(this.properties.getDriver());
 			con = DriverManager.getConnection(this.properties.getConnectionURL(), this.properties.getUsername(),
 					this.properties.getPassword());
 
 			System.out.println("Inserting resource records into the table...");
-			stmt = con.createStatement();
 
 			for (AdqlSchema schema : this.adqlresource.schemas().select()) {
 
-				String schemaName = schema.name().replace("'", "''");
-
+				String schemaName = new AdqlNameModifier().process(schema.name());
 				String schemaDescription = schema.text();
-				String sql;
+				Integer counter = 0;
+				
+				String sql = "INSERT INTO \"" + this.tapSchemaJDBCName
+						+ "\".\"schemas\" (\"schema_name\",\"description\",\"utype\",\"ft_schema_id\") VALUES (?,?,?,?);";
+				
+				PreparedStatement updateSchemaStatement = con.prepareStatement(sql);
+				updateSchemaStatement.setObject(++counter, schemaName);
+
 				if (schemaDescription == null) {
-					sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-							+ "\".schemas (\"schema_name\",\"description\",\"utype\",\"ft_schema_id\") VALUES ('"
-							+ schemaName + "', NULL, NULL, 0);";
+
+					updateSchemaStatement.setObject(++counter, null);
 				} else {
-					sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-							+ "\".schemas (\"schema_name\",\"description\",\"utype\",\"ft_schema_id\") 	VALUES ('"
-							+ schemaName + "', '" + schemaDescription.replace("'", "''") + "', NULL, 0);";
+					updateSchemaStatement.setObject(++counter, schemaDescription.replace("'", "''"));
 				}
 				
-				stmt.executeUpdate(sql);
-
+				updateSchemaStatement.setObject(++counter, null);
+				updateSchemaStatement.setObject(++counter, Integer.parseInt(schema.ident().toString()));
+				updateSchemaStatement.executeUpdate();
+				
+				
 				for (AdqlTable table : schema.tables().select()) {
-					String tableName = table.name().replace("'", "''");
+					String tableName = new AdqlNameModifier().process(table.name());
 					String tableDescription = table.text();
-					if (tableDescription == null) {
-						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-								+ "\".tables (\"schema_name\", \"table_name\", \"table_type\", \"description\", \"utype\", \"ft_table_id\") VALUES ('"
-								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', NULL, '', 0);";
-					} else {
-						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-								+ "\".tables (\"schema_name\", \"table_name\", \"table_type\", \"description\", \"utype\", \"ft_table_id\") VALUES ('"
-								+ schemaName + "', '" + schemaName + "." + tableName + "', 'table', '"
-								+ tableDescription.replace("'", "''") + "', '', 0);";
-					}
+					counter = 0 ;
+					
+					sql = "INSERT INTO \"" + this.tapSchemaJDBCName
+							+ "\".\"tables\"  (\"schema_name\", \"table_name\", \"table_type\", \"description\", \"utype\", \"ft_table_id\") VALUES (?,?,?,?,?,?);";
+					
+					PreparedStatement updateTableStatement = con.prepareStatement(sql);
+					updateTableStatement.setObject(++counter, schemaName);
+					updateTableStatement.setObject(++counter, schemaName + "." + tableName);
+					updateTableStatement.setObject(++counter, "table");
 
-					stmt.executeUpdate(sql);
+					if (tableDescription == null) {
+						updateTableStatement.setObject(++counter, null);
+					} else {
+						updateTableStatement.setObject(++counter, tableDescription.replace("'", "''"));
+					}
+					
+					updateTableStatement.setObject(++counter, "");
+					updateTableStatement.setObject(++counter, Integer.parseInt(table.ident().toString()));
+					updateTableStatement.executeUpdate();
 
 					for (AdqlColumn column : table.columns().select()) {
+						
 						sql = "INSERT INTO \"" + this.tapSchemaJDBCName
-								+ "\".columns (\"table_name\", \"column_name\", \"description\", \"unit\", \"ucd\", \"utype\", \"datatype\", \"size\", \"arraysize\", \"principal\", \"indexed\", \"std\", \"ft_column_id\") VALUES (";
-						String columnName = column.name().replace("'", "''");
-						if (columnName.toLowerCase().equals("timestamp") 
-                                                                || columnName.toLowerCase().equals("coord2")
-								|| columnName.toLowerCase().equals("coord1") 
-								|| columnName.toLowerCase().equals("size") 
-                                                                || columnName.toLowerCase().equals("min")
-								|| columnName.toLowerCase().equals("min")
-                                                                || columnName.toLowerCase().equals("max")
-								|| columnName.toLowerCase().equals("match")
-								|| columnName.toLowerCase().equals("zone")
-								|| columnName.toLowerCase().equals("time")
-								|| columnName.toLowerCase().equals("distance")
-								|| columnName.toLowerCase().equals("value")
-								|| columnName.toLowerCase().equals("sql")
-								|| columnName.toLowerCase().equals("first")
-								|| columnName.toLowerCase().equals("MATCH")
-								|| columnName.toLowerCase().equals("DATE")
-								|| columnName.toLowerCase().equals("area")
-								|| columnName.toLowerCase().equals("key")
-								|| columnName.toLowerCase().equals("count")
-								|| columnName.toLowerCase().equals("when")
-                                                                || columnName.toLowerCase().equals("date") ) {
-							columnName = '"' + column.name() + '"';
-						}
+								+ "\".\"columns\" (\"table_name\", \"column_name\", \"description\", \"unit\", \"ucd\", \"utype\", \"datatype\", \"size\", \"arraysize\", \"principal\", \"indexed\", \"std\", \"ft_column_id\") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+						counter = 0;
+						PreparedStatement updateColumnStatement = con.prepareStatement(sql);
+						
+						
+						String columnName = new AdqlNameModifier().process(column.name());
 						String columnDescription = column.text();
-						sql += "'" + schemaName + "." + tableName + "',";
-						sql += "'" + columnName + "',";
-						if (columnDescription == null) {
-							sql += "NULL, ";
-						} else {
-							sql += "'" + columnDescription.replace("'", "''") + "',";
-						}
+						
+						updateColumnStatement.setObject(++counter, schemaName + "." + tableName);
+						updateColumnStatement.setObject(++counter, columnName);
 
+						if (columnDescription == null) {
+							updateColumnStatement.setObject(++counter, null);
+						} else {
+							updateColumnStatement.setObject(++counter, columnDescription.replace("'", "''"));
+						}
+				
 						AdqlColumn.Metadata meta = column.meta();
 
 						if ((meta != null) && (meta.adql() != null)) {
 
 							if (meta.adql().units() != null) {
-								sql += "'" + meta.adql().units().replace("'", "''") + "',";
+								updateColumnStatement.setObject(++counter, meta.adql().units().replace("'", "''"));
 							} else {
-								sql += "'',";
+								updateColumnStatement.setObject(++counter, "");
 							}
 
 							if (meta.adql().ucd() != null) {
-								sql += "'" + meta.adql().ucd().replace("'", "''") + "',";
+								updateColumnStatement.setObject(++counter, meta.adql().ucd().replace("'", "''"));
 							} else {
-								sql += "'',";
+								updateColumnStatement.setObject(++counter, "");
+
 							}
 
 							if (meta.adql().utype() != null) {
-								sql += "'" + meta.adql().utype().replace("'", "''") + "',";
+								updateColumnStatement.setObject(++counter, meta.adql().utype().replace("'", "''"));
 							} else {
-								sql += "'',";
+								updateColumnStatement.setObject(++counter, "");
 							}
 
 							if (meta.adql().type() != null) {
@@ -553,29 +548,33 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 								}
 
 								if (votableType != null) {
-									sql += "'" + votableType + "',";
+									updateColumnStatement.setObject(++counter, votableType);
 								} else {
-									sql += "'',";
+									updateColumnStatement.setObject(++counter, "");
 								}
 
 								if ((meta.adql().arraysize() != null) && (meta.adql().arraysize() != 0)) {
+									
 									if (meta.adql().arraysize() == -1) {
-										sql += "null, null,";
+										updateColumnStatement.setObject(++counter, null);
+										updateColumnStatement.setObject(++counter, null);
 									} else {
-										sql += "'" + meta.adql().arraysize().toString().replace("'", "''") + "',";
-
-										sql += "'" + meta.adql().arraysize().toString().replace("'", "''") + "',";
+										updateColumnStatement.setObject(++counter, Integer.parseInt(meta.adql().arraysize().toString().replace("'", "''")));
+										updateColumnStatement.setObject(++counter, Integer.parseInt(meta.adql().arraysize().toString().replace("'", "''")));
 									}
+									
 								} else {
-									sql += "null, null,";
+									updateColumnStatement.setObject(++counter, null);
+									updateColumnStatement.setObject(++counter, null);
 								}
 							}
 						}
 
-						sql += " 0, 0, 0, ";
-						sql += column.ident().toString();
-						sql += ")";
-						stmt.executeUpdate(sql);
+						updateColumnStatement.setObject(++counter, 0);
+						updateColumnStatement.setObject(++counter, 0);
+						updateColumnStatement.setObject(++counter, 0);
+						updateColumnStatement.setObject(++counter, Integer.parseInt(column.ident().toString()));
+						updateColumnStatement.executeUpdate();
 
 					}
 				}
@@ -592,8 +591,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 		} finally {
 
 			try {
-				if (stmt != null)
-					con.close();
+				con.close();
 			} catch (SQLException e) {
 				log.error("Exception: ", e);
 			}

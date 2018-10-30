@@ -159,7 +159,7 @@ extends BaseColumn<JdbcColumn>
         BIGINT(         Types.BIGINT,       true,   false),
         BINARY(         Types.BINARY,       false,  true),
         BIT(            Types.BIT,          true,   false),
-        BLOB(           Types.BLOB,         false,  false),
+        BLOB(           Types.BLOB,         false,  true),
         BOOLEAN(        Types.BOOLEAN,      true,   false),
         CHAR(           Types.CHAR,         true,   true),
         CLOB(           Types.CLOB,         false,  false),
@@ -190,7 +190,7 @@ extends BaseColumn<JdbcColumn>
         TIME(           Types.TIME,         true,   false),
         TIMESTAMP(      Types.TIMESTAMP,    true,   false),
         TINYINT(        Types.TINYINT,      true,   false),
-        VARBINARY(      Types.VARBINARY,    false,  false),
+        VARBINARY(      Types.VARBINARY,    false,  true),
         VARCHAR(        Types.VARCHAR,      true,   true),
         UNKNOWN(        Types.OTHER,        false,  false);
 
@@ -245,10 +245,10 @@ extends BaseColumn<JdbcColumn>
                     return JdbcColumn.JdbcType.BOOLEAN;
                 
                 case BIT :
-                    return JdbcColumn.JdbcType.BLOB;
+                    return JdbcColumn.JdbcType.BIT;
                 
                 case BYTE :
-                    return JdbcColumn.JdbcType.TINYINT;
+                    return JdbcColumn.JdbcType.VARBINARY;
                 
                 case CHAR :
                     return JdbcColumn.JdbcType.CHAR;

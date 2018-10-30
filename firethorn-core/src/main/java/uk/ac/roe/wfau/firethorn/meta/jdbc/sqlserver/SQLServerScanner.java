@@ -52,6 +52,12 @@ public class SQLServerScanner
     private static final Long ROWCOUNT_LIMIT = 100000L ;
 
     /**
+     * Maximum Character Size (Note: This probably needs to be improved/changed, not sure where).
+     * 
+     */
+    private static final Integer MAX_CHAR_LIMIT = 8000 ;
+
+    /**
      * Public constructor.
      * 
      */
@@ -598,6 +604,8 @@ d = System.currentTimeMillis();
                                                 catalog().name()
                                                 )
                                             );
+			
+
                                         statement.setString(
                                             1,
                                             schema().name()
@@ -629,7 +637,9 @@ d = System.currentTimeMillis();
                             throws SQLException
                                 {
                                 final String  name = results.getString("COLUMN_NAME");
-                                final Integer strlen = results.getInt("CHARACTER_MAXIMUM_LENGTH");
+                                final Integer strlen = ((results.getInt("CHARACTER_MAXIMUM_LENGTH")>MAX_CHAR_LIMIT || results.getInt("CHARACTER_MAXIMUM_LENGTH")<=0) ? MAX_CHAR_LIMIT : results.getInt("CHARACTER_MAXIMUM_LENGTH"));
+ 
+			
                                 final JdbcColumn.JdbcType type = SQLServerScanner.type(
                                     results.getInt(
                                         "NUMERIC_PRECISION"
@@ -665,6 +675,7 @@ d = System.currentTimeMillis();
                                     @Override
                                     public Integer strlen()
                                         {
+                                        
                                         return strlen;
                                         }
                                     @Override

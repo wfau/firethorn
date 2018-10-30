@@ -4,6 +4,7 @@
     import="uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable"
     import="uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn"
     import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceController"
+    import="uk.ac.roe.wfau.firethorn.adql.util.AdqlNameModifier"
 
 
     contentType="text/xml; charset=UTF-8" 
@@ -17,7 +18,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
     for(AdqlSchema schema : resource.schemas().select())
         {
         %><schema>
-        <name><%= schema.name() %></name>
+        <name><%= new AdqlNameModifier().process(schema.name())  %></name>
         <title></title>
         <utype></utype>
         <% 
@@ -26,7 +27,8 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
             {
             %>
         <table type='table'>
-            <name><%= schema.name() %>.<%= table.name() %></name>
+            <name><%= new AdqlNameModifier().process(schema.name()) %>.<%= new AdqlNameModifier().process(table.name()) %></name>
+           
             <title></title>
             <utype></utype>
             <%
@@ -37,49 +39,8 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 {
                 %>
             <column>
-           		        <% if (column.name().equals("size")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("timeStamp")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("coord1")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("coord2")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>				
-				<% } else if (column.name().equals("date")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("min")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("max")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name> 
-				<% } else if (column.name().equals("distance")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("value")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("zone")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("match")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("time")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("count")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("key")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("when")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("area")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("sql")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("first")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("DATE")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else if (column.name().equals("MATCH")) { %>
-					 <name><%= '"' + column.name() +'"'  %></name>
-				<% } else { %>
-					 <name><%= column.name() %></name>
-				<% } %>
+           		<name><%=  new AdqlNameModifier().process(column.name())  %></name>
+		   	
                 <%
                 if (column.text() != null)
                     {
