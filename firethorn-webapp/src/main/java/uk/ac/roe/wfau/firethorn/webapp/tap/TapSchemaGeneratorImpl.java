@@ -433,7 +433,7 @@ public class TapSchemaGeneratorImpl implements TapSchemaGenerator {
 
 			for (AdqlSchema schema : this.adqlresource.schemas().select()) {
 
-				String schemaName = schema.name().replace("'", "''");
+				String schemaName = new AdqlNameModifier().process(schema.name());
 				String schemaDescription = schema.text();
 				Integer counter = 0;
 				
