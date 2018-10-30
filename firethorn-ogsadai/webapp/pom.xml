@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>2.1.26</version>
+        <version project='firethorn'>2.1.27</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-webapp</artifactId>
@@ -61,7 +61,7 @@
         </dependency>
 
         <!--+
-            | Firethorn/OGSA-DAI metadata components.
+            | Our metadata components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -70,7 +70,7 @@
         </dependency>
 
         <!--+
-            | Firethorn/OGSA-DAI Activity components.
+            | Our Activity components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -79,7 +79,7 @@
         </dependency>
 
         <!--+
-            | Firethorn/OGSA-DAI DQP components.
+            | Our DQP components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -88,7 +88,7 @@
         </dependency>
 
         <!--+
-            | Firethorn/OGSA-DAI Astronomy extenstions.
+            | Our Astronomy extenstions.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -97,7 +97,7 @@
         </dependency>
 
         <!--+
-            | Firethorn/OGSA-DAI Firethorn extenstions.
+            | Our FireThorn extenstions.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -111,11 +111,21 @@
         </dependency>
 
         <!--+
-            | Firethorn JDBC drivers.
+            | FireThorn JDBC drivers.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-jdbc</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | Starlink Tables library.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-stil</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>

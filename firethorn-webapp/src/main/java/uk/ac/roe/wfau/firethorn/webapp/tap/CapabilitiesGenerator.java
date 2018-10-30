@@ -117,11 +117,14 @@ public class CapabilitiesGenerator extends AbstractComponent{
 	    	"     </language>" +
     		"     <outputFormat ivo-id=\"ivo://ivoa.net/std/TAPRegEXT#output-votable-td\">" +
     		"       <mime>application/x-votable+xml;serialization=tabledata</mime><alias>votable/td</alias>" +
-    		"     </outputFormat><executionDuration><default>" + 0 + "</default></executionDuration>" +
-    		"     <outputLimit><default unit=\"row\">" + factories().blues().limits().defaults().rows() + "</default><hard unit=\"row\">" + factories().blues().limits().absolute().rows() + "</hard></outputLimit>" +
-	    	"    </capability>" +
-		    "  </cap:capabilities>" 
-		);
+    		"     </outputFormat><executionDuration><default>" + 0 + "</default></executionDuration>");
+
+		if (factories().blues().limits().defaults().rows()!=null){
+	    		writer.append("     <outputLimit><default unit=\"row\">" + factories().blues().limits().defaults().rows() + "</default><hard unit=\"row\">" + factories().blues().limits().absolute().rows() + "</hard></outputLimit>");
+		    	
+		}
+                 
+                writer.append("</capability></cap:capabilities>");
     	/*
         "  <capability standardID=\"ivo://ivoa.net/std/TAP#sync-1.1\">" +
  		    "    <interface xsi:type=\"vs:ParamHTTP\" role=\"std\" version=\"1.0\">" +
