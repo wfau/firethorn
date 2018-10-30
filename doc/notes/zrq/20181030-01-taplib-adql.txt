@@ -38,4 +38,75 @@
 
     doc/notes/zrq/20180302-02-hg-branch.txt
 
+# -----------------------------------------------------
+# Maven build of taplib
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd 'zrq.github'
+
+                mvn -f adql-pom.xml clean
+
+                # Compile the adql library (tests depend on the tap classses).
+                mvn -f adql-pom.xml compile
+
+                # Compile the tap library.
+                mvn -f taplib-pom.xml compile
+
+                # Test the adql library.
+                mvn -f adql-pom.xml test
+
+                # Update the Eclipse project.
+                mvn -f adql-pom.xml eclipse:eclipse
+
+                # Install the adql library.
+                mvn -f adql-pom.xml install
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install eclipse:eclipse
+
+    popd
+
+#---------------------------------------------------------------------
+# Add the ADQL lib and remove the firethorn-cds component.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd firethorn-core
+
+            gedit pom.xml
+
+                <!--+
+                    | Firethorn CDS ADQL parser.
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>firethorn-cds-adql</artifactId>
+                    <version>${project.version}</version>
+                    <type>jar</type>
+                </dependency>
+                    +-->
+
+                <!--+
+                    | CDS ADQL parser.
+                    +-->
+                <dependency>
+                    <groupId>cds</groupId>
+                    <artifactId>adql</artifactId>
+                    <version>1.4</version>
+                </dependency>
+
+
+            mvn clean install eclipse:eclipse
+
+
 

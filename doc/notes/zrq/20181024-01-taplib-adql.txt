@@ -159,5 +159,3 @@
 
 
 
-    mvn install:install-file -DgroupId=uk.org.ogsadai -DartifactId=ogsadai-webapp -Dversion=4.2 -Dpackaging=war -Dfile=ogsadai-4.2-jersey-webapp-1.10.war
-

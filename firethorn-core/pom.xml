@@ -98,12 +98,21 @@
 
         <!--+
             | Firethorn CDS ADQL parser.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-cds-adql</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
+        </dependency>
+            +-->
+
+        <!--+
+            | CDS ADQL parser.
+            +-->
+        <dependency>
+            <groupId>cds</groupId>
+            <artifactId>adql</artifactId>
+            <version>1.4</version>
         </dependency>
 
         <!--+
