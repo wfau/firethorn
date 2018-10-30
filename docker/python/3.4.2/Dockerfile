@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.26
+FROM firethorn/ubuntu:2.1.26-zrq-taplib-adql
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #

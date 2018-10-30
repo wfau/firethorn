@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.26
+FROM firethorn/python:2.1.26-zrq-taplib-adql
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs

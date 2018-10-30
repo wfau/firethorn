@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tester:2.1.26
+FROM firethorn/tester:2.1.26-zrq-taplib-adql
 LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 ENV pysrc=/home/firethorn-py
