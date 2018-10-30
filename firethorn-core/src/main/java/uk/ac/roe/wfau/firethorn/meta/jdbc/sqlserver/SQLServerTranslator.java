@@ -31,7 +31,6 @@ import adql.query.IdentifierField;
 import adql.query.constraint.ConstraintsGroup;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
-import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.query.operand.function.geometry.AreaFunction;
@@ -227,38 +226,6 @@ implements AdqlTranslator
 			builder.append(translate(function.getParameter(param)));
 		    }
 		builder.append(")");
-		return builder.toString();
-	    }
-
-    /**
-     * Override the {@link JDBCTranslator} method to add support for CAST. 
-     * 
-     */
-	@Override
-	public String translate(final ADQLFunction function)
-    throws TranslationException
-        {
-		if (function instanceof CastFunction)
-            {
-			return translate((CastFunction) function);
-		    }
-        else {
-			return super.translate(function);
-		    }
-	    }
-
-	public String translate(final CastFunction function)
-    throws TranslationException
-        {
-		final StringBuilder builder = new StringBuilder();
-
-		builder.append("CAST");
-		builder.append("(");
-		builder.append(translate(function.oper()));
-		builder.append(" AS ");
-		builder.append(function.type().name());
-		builder.append(")");
-
 		return builder.toString();
 	    }
 

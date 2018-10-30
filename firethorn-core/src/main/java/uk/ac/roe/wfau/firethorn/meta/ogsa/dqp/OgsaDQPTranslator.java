@@ -38,7 +38,6 @@ import adql.query.from.ADQLJoin;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.function.ADQLFunction;
-import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
@@ -332,27 +331,6 @@ public class OgsaDQPTranslator
 		return translation.toString();
 	}
 
-    public String translate(final CastFunction function)
-    throws TranslationException
-    	{
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append("CAST");
-        builder.append("(");
-        builder.append(
-    		translate(
-				function.oper()
-				)
-    		);
-        builder.append(" AS ");
-        builder.append(
-    		function.type().name()
-    		);
-        builder.append(")");
-
-        return builder.toString();
-    	}
-    
     @Override
 	public String translate(final UserDefinedFunction function)
     throws TranslationException
@@ -401,23 +379,6 @@ public class OgsaDQPTranslator
         builder.append(")");
 		return builder.toString();
         }
-
-    @Override
-    public String translate(final ADQLFunction function)
-    throws TranslationException
-		{
-    	if (function instanceof CastFunction)
-    		{
-    		return translate(
-				(CastFunction) function
-				);
-    		}
-    	else {
-    		return super.translate(
-				function
-				);
-    		}
-		}
 
 	@Override
 	public String translate(ADQLTable table) throws TranslationException{

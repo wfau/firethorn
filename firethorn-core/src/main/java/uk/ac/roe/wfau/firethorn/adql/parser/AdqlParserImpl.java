@@ -42,7 +42,6 @@ import adql.query.operand.OperationType;
 import adql.query.operand.StringConstant;
 import adql.query.operand.WrappedOperand;
 import adql.query.operand.function.ADQLFunction;
-import adql.query.operand.function.CastFunction;
 import adql.query.operand.function.MathFunction;
 import adql.query.operand.function.SQLFunction;
 import adql.query.operand.function.UserDefinedFunction;
@@ -1747,10 +1746,6 @@ implements AdqlParser
             {
             return type((MathFunction) funct);
             }
-        else if (funct instanceof CastFunction)
-	        {
-	        return type((CastFunction) funct);
-	        }
         else if (funct instanceof UserDefinedFunction)
             {
             return type((UserDefinedFunction) funct);
@@ -1781,10 +1776,6 @@ implements AdqlParser
             {
             return wrap((MathFunction) funct);
             }
-        else if (funct instanceof CastFunction)
-	        {
-	        return wrap((CastFunction) funct);
-	        }
         else if (funct instanceof UserDefinedFunction)
             {
             return wrap((UserDefinedFunction) funct);
@@ -1944,41 +1935,6 @@ implements AdqlParser
         }
 
     /**
-     * Get the type of a CastFunction.
-     *
-     */
-    public static AdqlColumn.AdqlType type(final CastFunction funct)
-    throws ProtectionException, AdqlParserException
-        {
-        log.debug("type(CastFunction)");
-        switch(funct.type())
-        	{
-        	case SHORT:
-        	case SMALLINT:
-        		return AdqlColumn.AdqlType.SHORT;
-        	
-        	case INT :
-        	case INTEGER :
-        		return AdqlColumn.AdqlType.INTEGER;
-
-        	case LONG:
-        	case BIGINT:
-        		return AdqlColumn.AdqlType.LONG;
-
-        	case FLOAT:
-        		return AdqlColumn.AdqlType.FLOAT;
-
-        	case DOUBLE:
-        		return AdqlColumn.AdqlType.DOUBLE;
-
-        	default :
-                throw new AdqlParserException(
-                    "Unknown CastFunction type [" + funct.type() + "]"
-                    );
-        	}
-        }
-
-    /**
      * Wrap a MathFunction.
      *
      */
@@ -2047,42 +2003,6 @@ implements AdqlParser
             }
         }
 
-    /**
-     * Wrap a CastFunction.
-     *
-     */
-    public static MySelectField wrap(final CastFunction funct)
-    throws ProtectionException, AdqlParserException
-        {
-        log.trace("wrap(castFunction)");
-        log.trace("  name   [{}]", funct.type());
-
-        final ADQLOperand inner = funct.oper(); 
-        if (inner instanceof ADQLColumn)
-        	{
-            return new MySelectFieldWrapper(
-                inner.getName(),
-                type(
-            		funct
-            		),
-                wrap(
-                    funct.oper()
-                    )
-                );
-        	}
-        else {
-            return new MySelectFieldWrapper(
-                "CASTED",
-                type(
-            		funct
-            		),
-                wrap(
-                    funct.oper()
-                    )
-                );
-        	}
-        
-        }
     /**
      * Hard coded set of UserDefinedFunctions for the OSA Altas catalog.
      *
