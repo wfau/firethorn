@@ -23,17 +23,6 @@
 
     merge 2.1.25-zrq-tap-controller branch
 
-    create new branch
-
-        remove existing ADQLParser package
-
-        add taplib (in Eclipse)
-        add tests
-        add changes
-
-        add Docker databases for testing ?
-
-
 # -----------------------------------------------------
 # Set the target branch
 #[user@virtual]
