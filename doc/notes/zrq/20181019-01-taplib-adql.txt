@@ -24,6 +24,9 @@
 # Fetch a copy of the source code.
 #[user@desktop]
 
+    copyname=zrq.final
+    copyname=zrq.working
+
     source "${HOME:?}/projects.settings"
     pushd "${EDINBURGH_PROJECTS:?}"
 
@@ -33,11 +36,11 @@
         fi
 
         pushd 'taplib'
-            if [ ! -e 'zrq.github' ]
+            if [ ! -e "${copyname:?}" ]
             then
-                git clone https://github.com/Zarquan/taplib.git 'zrq.github'
+                git clone https://github.com/Zarquan/taplib.git "${copyname:?}"
             else
-                pushd 'zrq.github'
+                pushd "${copyname:?}"
                     git pull
                 popd
             fi
@@ -74,10 +77,13 @@
 # Set the environment variables.
 #[user@desktop]
 
+    copyname=zrq.final
+    copyname=zrq.working
+
     source "${HOME:?}/projects.settings"
     pushd "${EDINBURGH_PROJECTS:?}"
         pushd 'taplib'
-            pushd 'zrq.github'
+            pushd "${copyname:?}"
 
                 ant -DPOSTGRES=${pgsqljar} -DJUNIT-API=${junitjar:?}:${hamcrest:?} -DSERVLET-API=${servlet:?} -DJNDI-API=${jndijar:?} -buildfile buildTAP.xml
 

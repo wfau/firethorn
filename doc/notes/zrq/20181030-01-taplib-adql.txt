@@ -42,11 +42,15 @@
 # Maven build of taplib
 #[user@desktop]
 
+    copyname=zrq.final
+    copyname=zrq.working
+
     source "${HOME:?}/projects.settings"
     pushd "${EDINBURGH_PROJECTS:?}"
         pushd 'taplib'
-            pushd 'zrq.github'
+            pushd "${copyname:?}"
 
+                # Remove the outputs
                 mvn -f adql-pom.xml clean
 
                 # Compile the adql library (tests depend on the tap classses).
@@ -114,18 +118,59 @@
     Need to watch issue 450
     http://redmine.roe.ac.uk/issues/450
 
+    Need to watch issue 450
+    http://redmine.roe.ac.uk/issues/445
+
     Remove CastFunction
     Remove SQUARE
     Remove SIGN
 
+    Add MOD to CDS library.
+
+TODO
+
+    Add BIT_OR, BIT_AND, BIT_XOR to CDS library.
+
+    Add support for hexadecimal literals
+
+    Check syntax for ORDER BY
+    Check syntax for GROUP BY
+
     Add support for SQUARE and SIGN fromas user defined functions.
 
 
+# -----------------------------------------------------
+# Compile the Java CC grammar ..
+#[user@desktop]
+
+    copyname=zrq.final
+    copyname=working.001
+    copyname=working.002
+
+    cp -r zrq.final "${copyname:?}"
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                # Remove the outputs
+                mvn -f adql-pom.xml clean
+
+                # Compile the JavaCC grammar
+                mvn -f adql-pom.xml javacc:javacc
 
 
 
+                # Compile the tap library.
+                mvn -f taplib-pom.xml compile
 
+                # Test the adql library.
+                mvn -f adql-pom.xml test
 
+                # Update the Eclipse project.
+                mvn -f adql-pom.xml eclipse:eclipse
 
-
+                # Install the adql library.
+                mvn -f adql-pom.xml install
 
