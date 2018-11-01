@@ -12,7 +12,7 @@
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
-#  
+#
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #   </meta:licence>
@@ -43,21 +43,172 @@
 
 
 # -----------------------------------------------------
-# Compare the generated classes with their originals ..
+# Manual check to compare the generated classes with their originals ..
 #[user@desktop]
-
 
     srcdir=src/adql/parser
     gendir=target/generated-sources/javacc/adql/parser
-
-    filename=ADQLParser
-    filename=ADQLParserConstants
-    filename=ADQLParserTokenManager
 
     filename=ParseException
     filename=SimpleCharStream
     filename=Token
     filename=TokenMgrError
 
+    filename=ADQLParserTokenManager
+    filename=ADQLParserConstants
+    filename=ADQLParser
+
+    # For each filename ...
     meld "${srcdir:?}/${filename}.orig" "${gendir:?}/${filename}.java"
+
+
+    ParseException          // Keep original - modified to report text position.
+    SimpleCharStream        // Keep original - modified to add boolean trackLineColumn (as far as I can see this isn't actually used anywhere).
+    Token                   // Keep original - modified to report text position (as far as I can see, only the comment is added, the code is the same).
+    TokenMgrError           // Keep original - modified to keep a record of errorLine and errorColumn.
+
+    ADQLParserTokenManager  // Use generated - no manual changes, lots of generated token numbers.
+    ADQLParserConstants     // Use generated - no manual changes, lots of generated token numbers.
+    ADQLParser              // Use generated - no manual changes, lots of generated token numbers.
+
+
+# -----------------------------------------------------
+# Create a new working copy.
+#[user@desktop]
+
+    copyname=working.003
+    cp -r zrq.final "${copyname:?}"
+
+# -----------------------------------------------------
+# Check the list of modified files.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                git status
+
+	                modified:   adql-pom.xml
+	                modified:   src/adql/parser/adqlGrammar.jj
+	                modified:   src/adql/query/operand/OperationType.java
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Compile the Java CC grammar.
+#[user@desktop]
+
+    #
+    # The generated files we want to use.
+    uselist=(
+        ADQLParserTokenManager
+        ADQLParserConstants
+        ADQLParser
+        )
+
+    #
+    # The modified files we want to keep.
+    keeplist=(
+        ParseException
+        SimpleCharStream
+        TokenMgrError
+        Token
+        )
+
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                srcdir=src/adql/parser
+                gendir=target/generated-sources/javacc/adql/parser
+
+                #
+                # Remove any generated files
+                echo ""
+                echo "Removing generated files"
+                mvn -f adql-pom.xml clean
+
+                #
+                # Remove the Java files we want to generate.
+                echo ""
+                echo "Removing existing Java files"
+                for filename in ${uselist[@]}
+                do
+                    echo "  [${filename:?}]"
+                    rm "${srcdir:?}/${filename:?}.java"
+                done
+
+                # Compile the JavaCC grammar
+                echo ""
+                echo "Compiling JavaCC grammar"
+                mvn -f adql-pom.xml javacc:javacc
+
+                #
+                # JavaCC won't generate duplicates for the existing Java files in the source directory.
+                #
+
+                echo ""
+                echo "Importing generated Java files"
+                for filename in ${uselist[@]}
+                do
+                    echo "  [${filename:?}]"
+                    cp "${gendir:?}/${filename:?}.java" "${srcdir:?}/"
+                done
+
+                #
+                # Remove the remaining generated files
+                echo ""
+                echo "Removing generated files"
+                mvn -f adql-pom.xml clean
+
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Check the list of modified files.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                git status
+
+	                modified:   adql-pom.xml
+	                modified:   src/adql/parser/ADQLParser.java
+	                modified:   src/adql/parser/ADQLParserConstants.java
+	                modified:   src/adql/parser/ADQLParserTokenManager.java
+	                modified:   src/adql/parser/adqlGrammar.jj
+	                modified:   src/adql/query/operand/OperationType.java
+
+            popd
+        popd
+    popd
+
+
+# -----------------------------------------------------
+# Compile the Java code.
+#[user@desktop]
+
+
+# -----------------------------------------------------
+# Install the jara in our Maven repository.
+#[user@desktop]
+
+
+
+# -----------------------------------------------------
+# Compile the Firethorn code.
+#[user@desktop]
+
+
 
