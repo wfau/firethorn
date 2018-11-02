@@ -123,9 +123,9 @@
                 # Everything in TapLib
                 # Tests fail due to missing dependency on Ari AstroH2 classses.
 
-                mvn -f taplib-pom.xml compile
+                mvn -f tap-pom.xml compile
 
-                mvn -f taplib-pom.xml eclipse:eclipse
+                mvn -f tap-pom.xml eclipse:eclipse
 
 
 # -----------------------------------------------------

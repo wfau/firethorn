@@ -80,6 +80,51 @@
     cp -r zrq.final "${copyname:?}"
 
 # -----------------------------------------------------
+# Modify the Maven build file.
+#[user@desktop]
+
+cat > /tmp/adql-pom-patch.txt << 'EOF'
+*** adql-pom.xml	2018-11-02 10:22:26.663081187 +0000
+--- adql-pom.xml	2018-11-01 18:49:58.218846581 +0000
+***************
+*** 187,200 ****
+                  <version>2.6</version>
+                  <configuration>
+                      <sourceDirectory>${basedir}/src/adql/parser</sourceDirectory>
+                  </configuration>
+-                 <!--executions>
+-                     <execution>
+-                         <goals>
+-                             <goal>javacc</goal>
+-                         </goals>
+-                     </execution>
+-                 </executions-->
+              </plugin>
+
+              <plugin>
+--- 187,196 ----
+                  <version>2.6</version>
+                  <configuration>
+                      <sourceDirectory>${basedir}/src/adql/parser</sourceDirectory>
++                     <outputDirectory>${project.build.directory}/generated-sources/javacc</outputDirectory>
++                     <buildParser>true</buildParser>
++                     <buildTokenManager>true</buildTokenManager>
+                  </configuration>
+              </plugin>
+EOF
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                patch < /tmp/adql-pom-patch.txt
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
 # Check the list of modified files.
 #[user@desktop]
 
@@ -119,7 +164,6 @@
         Token
         )
 
-
     source "${HOME:?}/projects.settings"
     pushd "${EDINBURGH_PROJECTS:?}"
         pushd 'taplib'
@@ -144,15 +188,26 @@
                     rm "${srcdir:?}/${filename:?}.java"
                 done
 
+##              #
+##              # Remove the Java files we want to keep.
+##              # We don't need to do this because JavaCC won't generate
+##              # duplicates for files that are in the source directory.
+##              echo ""
+##              echo "Removing existing Java files"
+##              for filename in ${keeplist[@]}
+##              do
+##                  echo "  [${filename:?}]"
+##                  rm "${srcdir:?}/${filename:?}.java"
+##              done
+
+                #
                 # Compile the JavaCC grammar
                 echo ""
                 echo "Compiling JavaCC grammar"
                 mvn -f adql-pom.xml javacc:javacc
 
                 #
-                # JavaCC won't generate duplicates for the existing Java files in the source directory.
-                #
-
+                # Import the generated Java files we want to use.
                 echo ""
                 echo "Importing generated Java files"
                 for filename in ${uselist[@]}
@@ -161,12 +216,33 @@
                     cp "${gendir:?}/${filename:?}.java" "${srcdir:?}/"
                 done
 
+##              #
+##              # Compare the generated files with their backups.
+##              echo ""
+##              echo "Comparing backup Java files"
+##              for filename in ${keeplist[@]}
+##              do
+##                  echo "  [${filename:?}]"
+##                  meld "${srcdir:?}/${filename:?}.java.backup" "${gendir:?}/${filename:?}.java"
+##              done
+##
+##              #
+##              # Restore the Java files we want to keep.
+##              # We don't need to do this because JavaCC won't generate
+##              # duplicates for files that are in the source directory.
+##              echo ""
+##              echo "Restoring backup Java files"
+##              for filename in ${keeplist[@]}
+##              do
+##                  echo "  [${filename:?}]"
+##                  cp "${srcdir:?}/${filename:?}.java.backup" "${srcdir:?}/${filename:?}.java"
+##              done
+
                 #
                 # Remove the remaining generated files
                 echo ""
                 echo "Removing generated files"
                 mvn -f adql-pom.xml clean
-
 
             popd
         popd
@@ -194,21 +270,68 @@
         popd
     popd
 
+# -----------------------------------------------------
+# Fix ambiguous constructor reference.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                sed -i '
+                    /ADQLParser(java.io.InputStream stream)/,/}/ {
+                        s/null/(String)null/
+                        }
+                    ' src/adql/parser/ADQLParser.java
+
+            popd
+        popd
+    popd
 
 # -----------------------------------------------------
 # Compile the Java code.
 #[user@desktop]
 
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
 
-# -----------------------------------------------------
-# Install the jara in our Maven repository.
-#[user@desktop]
+                # Clean the target directory.
+                mvn -f adql-pom.xml clean
 
+                # Compile the adql library.
+                mvn -f adql-pom.xml compile
 
+                # Compile the tap library.
+                mvn -f tap-pom.xml compile
+
+                # Test the adql library.
+                mvn -f adql-pom.xml test
+
+##
+## Really weird side effects.
+## The tests fail because STCS.COORD_SYS_SYNTAX gets a null value for Frame.regexp.
+## Only IF TestPgSphereTranslator is run before TestSTCS.
+##
+##              # FAIL
+##              mvn -f adql-pom.xml test -Dtest=TestPgSphereTranslator,TestSTCS
+##              # PASS
+##              mvn -f adql-pom.xml test -Dtest=TestSTCS
+
+                # Update the Eclipse project.
+                mvn -f adql-pom.xml eclipse:eclipse
+
+                # Install the jar in our Maven repository.
+                mvn -f adql-pom.xml install
+
+            popd
+        popd
+    popd
 
 # -----------------------------------------------------
 # Compile the Firethorn code.
 #[user@desktop]
-
 
 

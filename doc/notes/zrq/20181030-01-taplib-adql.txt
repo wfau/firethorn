@@ -57,7 +57,7 @@
                 mvn -f adql-pom.xml compile
 
                 # Compile the tap library.
-                mvn -f taplib-pom.xml compile
+                mvn -f tap-pom.xml compile
 
                 # Test the adql library.
                 mvn -f adql-pom.xml test
@@ -163,7 +163,7 @@ TODO
 
 
                 # Compile the tap library.
-                mvn -f taplib-pom.xml compile
+                mvn -f tap-pom.xml compile
 
                 # Test the adql library.
                 mvn -f adql-pom.xml test
