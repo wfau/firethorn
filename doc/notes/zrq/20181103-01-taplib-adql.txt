@@ -1,0 +1,258 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Compile the Java CC grammar ..
+#[user@desktop]
+
+    prevname=working.003
+    copyname=working.004
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+
+            cp -r "${prevname:?}" "${copyname:?}"
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Check the list of modified files.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                git status
+
+                    ....
+                    ....
+                    nothing to commit, working directory clean
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Make the new changes ....
+#[user@desktop]
+
+
+# -----------------------------------------------------
+# Check the list of modified files.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                git status
+
+                    ....
+                    ....
+                    modified:   src/adql/parser/adqlGrammar.jj
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Compile the Java CC grammar.
+#[user@desktop]
+
+    #
+    # The generated files we want to use.
+    uselist=(
+        ADQLParserTokenManager
+        ADQLParserConstants
+        ADQLParser
+        )
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                srcdir=src/adql/parser
+                gendir=target/generated-sources/javacc/adql/parser
+
+                #
+                # Remove any existing generated files
+                mvn -f adql-pom.xml clean
+
+                #
+                # Remove the Java files we want to generate.
+                echo ""
+                echo "Removing existing Java files"
+                for filename in ${uselist[@]}
+                do
+                    echo "  [${filename:?}]"
+                    rm "${srcdir:?}/${filename:?}.java"
+                done
+
+                #
+                # Compile the JavaCC grammar
+                echo ""
+                echo "Compiling JavaCC grammar"
+                mvn -f adql-pom.xml javacc:javacc
+
+                #
+                # Import the generated Java files we want to use.
+                echo ""
+                echo "Importing generated Java files"
+                for filename in ${uselist[@]}
+                do
+                    echo "  [${filename:?}]"
+                    cp "${gendir:?}/${filename:?}.java" "${srcdir:?}/"
+                done
+
+                #
+                # Remove any remaining generated files
+                mvn -f adql-pom.xml clean
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Check the list of modified files.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                git status
+
+                    ....
+                    ....
+                    modified:   src/adql/parser/ADQLParser.java
+                    modified:   src/adql/parser/ADQLParserConstants.java
+                    modified:   src/adql/parser/ADQLParserTokenManager.java
+                    modified:   src/adql/parser/adqlGrammar.jj
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Fix ambiguous constructor in the generated ADQLParser.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                sed -n '
+                    /ADQLParser(java.io.InputStream stream)/,/}/ {
+                        p
+                        }
+                    ' src/adql/parser/ADQLParser.java
+
+                sed -i '
+                    /ADQLParser(java.io.InputStream stream)/,/}/ {
+                        s/null/(String)null/
+                        }
+                    ' src/adql/parser/ADQLParser.java
+
+                sed -n '
+                    /ADQLParser(java.io.InputStream stream)/,/}/ {
+                        p
+                        }
+                    ' src/adql/parser/ADQLParser.java
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Compile the Java code.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                # Clean the target directory.
+                mvn -f adql-pom.xml clean
+
+                # Compile the adql library.
+                mvn -f adql-pom.xml compile
+
+                # Compile the tap library.
+                mvn -f tap-pom.xml compile
+
+                # Test the adql library.
+                mvn -f adql-pom.xml test
+
+mvn -f adql-pom.xml clean
+mvn -f adql-pom.xml compile
+mvn -f tap-pom.xml  compile
+mvn -f adql-pom.xml test -Dtest=TestADQLParser
+mvn -f adql-pom.xml test
+
+                # Update the Eclipse project.
+                mvn -f adql-pom.xml eclipse:eclipse
+
+                # Install the jar in our repository.
+                mvn -f adql-pom.xml install
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Check the list of changes and commit to Git.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd "${copyname:?}"
+
+                git add .
+
+                git status
+
+                    ....
+                    ....
+	                modified:   src/adql/parser/ADQLParser.java
+	                modified:   src/adql/parser/ADQLParserConstants.java
+	                modified:   src/adql/parser/ADQLParserTokenManager.java
+	                modified:   src/adql/parser/ADQLQueryFactory.java
+	                modified:   src/adql/parser/adqlGrammar.jj
+	                new file:   src/adql/query/operand/HexadecimalConstant.java
+	                modified:   test/adql/parser/TestADQLParser.java
+
+                git commit -m "..."
+
+            popd
+        popd
+    popd
+

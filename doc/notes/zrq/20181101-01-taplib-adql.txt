@@ -330,8 +330,5 @@ EOF
         popd
     popd
 
-# -----------------------------------------------------
-# Compile the Firethorn code.
-#[user@desktop]
 
 
