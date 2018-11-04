@@ -250,7 +250,7 @@ mvn -f adql-pom.xml test
 	                new file:   src/adql/query/operand/HexadecimalConstant.java
 	                modified:   test/adql/parser/TestADQLParser.java
 
-                git commit -m "..."
+                git commit -m "Added support for hexadecimal literals"
 
             popd
         popd
