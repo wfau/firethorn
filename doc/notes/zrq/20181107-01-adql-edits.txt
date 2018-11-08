@@ -1,0 +1,355 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+# -----------------------------------------------------
+# Create our settings for the ADQL document.
+#[user@desktop]
+
+    if [ ! -e "${HOME:?}/adqltex.settings" ]
+    then
+        cat > "${HOME:?}/adqltex.settings" << EOF
+VOLUTE_HOME=/var/local/projects/edinburgh/volute/svn
+ADQLTEXT_CODE=\${VOLUTE_HOME:?}/ADQL
+EOF
+    fi
+
+# -----------------------------------------------------
+# Update our ADQL document source.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+        svn update
+
+    popd
+
+# -----------------------------------------------------
+# Run an ivoatext container and build the document.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+        docker run \
+            --rm  \
+            --tty \
+            --interactive \
+            --user "$(id -u):$(id -g)" \
+            --volume "$(pwd):/texdata" \
+            ivoa/ivoatex
+
+                make clean
+                make biblio
+                make
+
+    popd
+    
+# -----------------------------------------------------
+# Build is broken :-(
+
+    Package natbib Warning: Citation `std:RFC2119' on page 2 undefined on input line 63.
+
+    LaTeX Warning: Reference `fig:archdiag' on page 4 undefined on input line 118.
+
+    Package natbib Warning: Citation `note:VOARCH' on page 4 undefined on input line 119.
+
+    Package natbib Warning: Citation `2010ivoa.spec.0327D' on page 16 undefined on input line 763.
+
+    Package natbib Warning: Citation `2017ivoa.spec.0524G' on page 16 undefined on input line 764.
+
+    Package natbib Warning: Citation `2017ivoa.spec.0517D' on page 16 undefined on input line 777.
+
+    Package natbib Warning: Citation `2013ivoa.spec.0920O' on page 16 undefined on input line 778.
+
+    Package natbib Warning: Citation `std:STCS' on page 20 undefined on input line 1246.
+
+    Package natbib Warning: Citation `2017ivoa.spec.0509L' on page 22 undefined on input line 1457.
+
+    Package natbib Warning: Citation `2012ivoa.spec.0827D' on page 23 undefined on input line 1483.
+
+    Package natbib Warning: Citation `2007ivoa.spec.1030R' on page 24 undefined on input line 1539.
+
+    Package natbib Warning: Citation `2014ivoa.spec.1208D' on page 42 undefined on input line 2538.
+
+    Package natbib Warning: Citation `std:UNICODE' on page 44 undefined on input line 2611.
+
+    Package natbib Warning: Citation `std:UNICODE' on page 44 undefined on input line 2637.
+
+    Package natbib Warning: Citation `2014ivoa.spec.0523D' on page 49 undefined on input line 2864.
+
+    Package natbib Warning: Citation `note:TAPNotes' on page 72 undefined on input line 3959.
+
+    Package natbib Warning: There were undefined citations.
+
+# -----------------------------------------------------
+# Current changes.
+#[user@desktop]
+
+    svn diff
+
+        Index: ADQL.tex
+        ===================================================================
+        --- ADQL.tex	(revision 5215)
+        +++ ADQL.tex	(working copy)
+        @@ -396,6 +396,12 @@
+         
+         Boolean literals are not case-sensitive.
+         
+        +\subsubsection{Whitespace and Comments}
+        +\label{sec:whitespace}
+        +
+        +The rules on where whitespace is allowed and required are as in SQL-92;
+        +essentially, any \verb:<token>: may be followed by a \verb:<separator>:.
+        +
+         \clearpage
+         \subsection{Query syntax}
+         \label{sec:syntax}
+        Index: Makefile
+        ===================================================================
+        --- Makefile	(revision 5215)
+        +++ Makefile	(working copy)
+        @@ -22,6 +22,9 @@
+         # List of PDF figures (for vector graphics)
+         VECTORFIGURES = 
+         
+        +# Resposible for upload.
+        +AUTHOR_EMAIL=dmr@roe.ac.uk
+        +
+         include ivoatex/Makefile
+         
+         # Shortcut aliases
+
+# -----------------------------------------------------
+# Revert to the svn version.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+        svn revert --recursive .
+
+            Reverted 'ADQL.tex'
+            Reverted 'Makefile'
+
+        svn update .
+
+            Updating '.':
+            ....
+            ....
+            At revision 5215.
+
+    popd
+
+# -----------------------------------------------------
+
+    Last (good) version of ADQL.tex was 4758
+
+        ADQL.tex r4758 yrvafhom
+        Added TODO item from IvoaTCG-2018-02-22
+
+        ADQL.tex r4708 msdemlei
+        Making ivoa-cite work with TTH.
+
+        ADQL.tex 4659 yrvafhom
+        Updated DOCTYPE to PR
+
+
+# -----------------------------------------------------
+# Revert both ADQL and ivoatex to 4659 and rebuild.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+        svn update -r 4659 .
+            ....
+
+        svn update -r 4659 ivoatex
+            ....
+
+        docker run \
+            --rm  \
+            --tty \
+            --interactive \
+            --user "$(id -u):$(id -g)" \
+            --volume "$(pwd):/texdata" \
+            ivoa/ivoatex
+
+                make clean
+                make biblio
+                make
+
+                    ....
+                    ....
+                    ....
+                    Output written on ADQL.pdf (75 pages, 806117 bytes).
+                    Transcript written on ADQL.log.
+
+# -----------------------------------------------------
+# Revert just ADQL to 4659 and rebuild.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+        svn update -r 4659 .
+
+            Updating '.':
+
+                Fetching external item into 'ivoatex':
+                    ....
+                Updated external to revision 5215.
+
+            At revision 4659.
+
+        docker run \
+            --rm  \
+            --tty \
+            --interactive \
+            --user "$(id -u):$(id -g)" \
+            --volume "$(pwd):/texdata" \
+            ivoa/ivoatex
+
+                make clean
+                make biblio
+                make
+
+                    ....
+                    ....
+                    ....
+                    Output written on ADQL.pdf (75 pages, 806117 bytes).
+                    Transcript written on ADQL.log.
+
+# -----------------------------------------------------
+# Identify the changes in 4708.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+        svn diff -r 4659:4708
+
+            -- Lots of changes to the way the macros work
+            -- "Markus would prefer this version, but it breaks current tth"
+
+
+# -----------------------------------------------------
+# Remove the changes in 4708.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+        prev=4659
+        next=4708
+
+        svn update .
+        svn update ivoatex
+
+        svn diff -r "${prev}:${next}" > "/tmp/adql-${prev}.patch"
+
+        patch -R < "/tmp/adql-${prev}.patch"
+
+        docker run \
+            --rm  \
+            --tty \
+            --interactive \
+            --user "$(id -u):$(id -g)" \
+            --volume "$(pwd):/texdata" \
+            ivoa/ivoatex
+
+                make clean
+                make biblio
+                make
+
+            #
+            # Works :-)
+
+        svn commit -m "Undo changes from revision ${prev} (fix them later)."
+
+    popd
+
+# -----------------------------------------------------
+# Add the changes we need to make.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+        docker run \
+            --rm  \
+            --tty \
+            --interactive \
+            --user "$(id -u):$(id -g)" \
+            --volume "$(pwd):/texdata" \
+            ivoa/ivoatex
+
+                make clean
+                make biblio
+                make
+
+    popd
+
+# -----------------------------------------------------
+# Log the changes we made.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+         svn diff
+              
+            +\subsubsection{Whitespace}
+            +\label{sec:whitespace}
+            +
+            +The rules on where whitespace is allowed and required are as in SQL-92;
+            +essentially, any \verb:<token>: may be followed by a \verb:<separator>:.
+            +
+
+            -    \item 20180222-001 Add section on spaces and comments from ADQL-2.0 Erratum 1
+
+                 \item Changes from PR-ADQL-2.1-20180112
+                     \begin{itemize}
+            +            \item Added section on whitespace from ADQL-2.0 Erratum 1\\
+            +            (svn version 5217, 07 Nov 2018)
+                     \end{itemize}
+         
+    popd
+
+# -----------------------------------------------------
+# Commit the changes.
+#[user@desktop]
+
+    source "${HOME:?}/adqltex.settings"
+    pushd "${ADQLTEXT_CODE:?}"
+
+         svn commit -m "Added text on whitespace from ADQL-2.0 Erratum 1"
+
+*/30  *   *   *   *   ${HOME}/bin/cron-check.sh
+
+         svn commit -m "Deprecated BOX"
+
+
+
