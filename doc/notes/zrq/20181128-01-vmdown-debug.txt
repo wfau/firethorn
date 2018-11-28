@@ -1,0 +1,733 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# List the active virtual machines.
+#[user@trop]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        list
+
+
+         Id    Name                           State
+        ----------------------------------------------------
+         118   Acilamwen                      running
+         119   Ibalehar                       running
+         120   Eterathiel                     running
+         122   Lothigometh                    running
+         131   Siamond                        running
+         132   Ulov                           running
+
+# -----------------------------------------------------
+# Login to the firethorn VM.
+#[user@trop]
+
+    vmlist=(Acilamwen Ibalehar Eterathiel Lothigometh Siamond Ulov)
+
+    for vmname in ${vmlist[*]}
+    do
+        echo "--"
+        echo "Name [${vmname}]"
+        ssh "${vmname:?}" \
+            "
+            df -h
+            "
+    done
+
+
+            Name [Acilamwen]
+            Warning: Permanently added 'acilamwen' (ECDSA) to the list of known hosts.
+            Filesystem      Size  Used Avail Use% Mounted on
+            devtmpfs        2.0G     0  2.0G   0% /dev
+            tmpfs           2.0G     0  2.0G   0% /dev/shm
+            tmpfs           2.0G  608K  2.0G   1% /run
+            tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+            /dev/vda3        15G  8.5G  4.6G  66% /
+            tmpfs           2.0G  4.0K  2.0G   1% /tmp
+            /dev/vda1       240M   89M  135M  40% /boot
+            tmpfs           395M     0  395M   0% /run/user/1001
+            --
+            Name [Ibalehar]
+            Warning: Permanently added 'ibalehar' (ECDSA) to the list of known hosts.
+            Filesystem      Size  Used Avail Use% Mounted on
+            devtmpfs        2.0G     0  2.0G   0% /dev
+            tmpfs           2.0G     0  2.0G   0% /dev/shm
+            tmpfs           2.0G  840K  2.0G   1% /run
+            tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+            /dev/vda3        15G  6.1G  7.2G  47% /
+            tmpfs           2.0G  4.0K  2.0G   1% /tmp
+            /dev/vda1       240M   89M  135M  40% /boot
+            tmpfs           395M     0  395M   0% /run/user/1001
+            --
+            Name [Eterathiel]
+            Warning: Permanently added 'eterathiel' (ECDSA) to the list of known hosts.
+            Filesystem      Size  Used Avail Use% Mounted on
+            devtmpfs        2.0G     0  2.0G   0% /dev
+            tmpfs           2.0G     0  2.0G   0% /dev/shm
+            tmpfs           2.0G  660K  2.0G   1% /run
+            tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+            /dev/vda3        15G  3.9G  9.2G  30% /
+            tmpfs           2.0G  4.0K  2.0G   1% /tmp
+            /dev/vda1       240M   89M  135M  40% /boot
+            tmpfs           395M     0  395M   0% /run/user/1001
+            --
+            Name [Lothigometh]
+            Warning: Permanently added 'lothigometh' (ECDSA) to the list of known hosts.
+            Filesystem      Size  Used Avail Use% Mounted on
+            devtmpfs        2.0G     0  2.0G   0% /dev
+            tmpfs           2.0G     0  2.0G   0% /dev/shm
+            tmpfs           2.0G  576K  2.0G   1% /run
+            tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+            /dev/vda3        15G  3.5G  9.6G  27% /
+            tmpfs           2.0G  4.0K  2.0G   1% /tmp
+            /dev/vda1       240M   89M  135M  40% /boot
+            tmpfs           395M     0  395M   0% /run/user/1001
+            --
+            Name [Siamond]
+            Warning: Permanently added 'siamond' (ECDSA) to the list of known hosts.
+            Filesystem      Size  Used Avail Use% Mounted on
+            devtmpfs        2.0G     0  2.0G   0% /dev
+            tmpfs           2.0G     0  2.0G   0% /dev/shm
+            tmpfs           2.0G  840K  2.0G   1% /run
+            tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+            /dev/vda3        31G  7.4G   22G  26% /
+            tmpfs           2.0G  4.0K  2.0G   1% /tmp
+            /dev/vda1       240M   89M  135M  40% /boot
+            tmpfs           395M     0  395M   0% /run/user/1001
+            --
+            Name [Ulov]
+            ssh: connect to host ulov port 22: No route to host
+
+
+# -----------------------------------------------------
+# Reboot the firethorn VM.
+#[user@trop]
+
+    vmname=Ulov
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        reboot \
+            "${vmname:?}"
+
+    >   Domain Ulov is being rebooted
+
+# -----------------------------------------------------
+# Login to the firethorn VM.
+#[user@trop]
+
+    vmname=Ulov
+
+    ssh "${vmname:?}"
+
+        ssh: connect to host ulov port 22: No route to host
+
+        ssh: connect to host ulov port 22: No route to host
+
+# -----------------------------------------------------
+# Check the VM status.
+#[user@trop]
+
+    vmname=Ulov
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        dominfo \
+            "${vmname:?}"
+
+
+        Id:             132
+        Name:           Ulov
+        UUID:           9c650ff7-1593-4470-b6e8-7b16516a97bb
+        OS Type:        hvm
+        State:          running
+        CPU(s):         4
+        CPU time:       1647392.7s
+        Max memory:     4194304 KiB
+        Used memory:    4194304 KiB
+        Persistent:     yes
+        Autostart:      disable
+        Managed save:   no
+        Security model: none
+        Security DOI:   0
+
+    virsh \
+        --connect "${connection}" \
+        domstate \
+            "${vmname:?}"
+
+    >   running
+
+
+    virsh \
+        --connect "${connection}" \
+        domstats \
+            "${vmname:?}"
+
+        state.state=1
+        state.reason=1
+        cpu.time=1650923922540438
+        cpu.user=57747620000000
+        cpu.system=224584040000000
+        balloon.current=4194304
+        balloon.maximum=4194304
+        vcpu.current=4
+        vcpu.maximum=4
+        vcpu.0.state=1
+        vcpu.0.time=263386000000000
+        vcpu.1.state=1
+        vcpu.1.time=311284430000000
+        vcpu.2.state=1
+        vcpu.2.time=348285250000000
+        vcpu.3.state=1
+        vcpu.3.time=481332300000000
+        net.count=1
+        net.0.name=vnet1
+        net.0.rx.bytes=22495011523
+        net.0.rx.pkts=75097730
+        net.0.rx.errs=0
+        net.0.rx.drop=0
+        net.0.tx.bytes=45021512003
+        net.0.tx.pkts=74704811
+        net.0.tx.errs=0
+        net.0.tx.drop=0
+        block.count=2
+        block.0.name=vda
+        block.0.rd.reqs=8679215
+        block.0.rd.bytes=287930113024
+        block.0.rd.times=9618373869669
+        block.0.wr.reqs=731415899
+        block.0.wr.bytes=78035662787584
+        block.0.wr.times=378136922192344
+        block.0.fl.reqs=96427831
+        block.0.fl.times=213623268046186
+        block.1.name=vdb
+        block.1.rd.reqs=48
+        block.1.rd.bytes=186368
+        block.1.rd.times=3212138
+        block.1.wr.reqs=0
+        block.1.wr.bytes=0
+        block.1.wr.times=0
+        block.1.fl.reqs=0
+        block.1.fl.times=0
+
+
+    virsh \
+        --connect "${connection}" \
+        dommemstat \
+            "${vmname:?}"
+
+
+        actual 4194304
+        swap_in 12237684
+        swap_out 11557516
+        major_fault 1829038
+        minor_fault 1579062902
+        unused 111788
+        available 4038224
+        rss 4358708
+
+
+    virsh \
+        --connect "${connection}" \
+        dommemstat \
+            "${vmname:?}"
+
+    virsh \
+        --connect "${connection}" \
+        domblklist \
+            "${vmname:?}"
+
+
+        Target     Source
+        ------------------------------------------------
+        vda        /libvirt/storage/live/Ulov.qcow
+        vdb        /var/lib/libvirt/images/init/Ulov.iso
+
+
+    virsh \
+        --connect "${connection}" \
+        domblkinfo \
+            "${vmname:?}" \
+            'vda'
+
+    >   Capacity:       34359738368
+    >   Allocation:     27628085248
+    >   Physical:       27628085248
+
+    virsh \
+        --connect "${connection}" \
+        domblkerror \
+            "${vmname:?}"
+
+    >   No errors found
+
+    virsh \
+        --connect "${connection}" \
+        domblkstat \
+            "${vmname:?}" \
+            'vda'
+
+
+#
+# Looks like the reboot didn't reboot.
+# virsh reported that the instance was _being_rebooted, but not if it worked or not.
+#
+
+# -----------------------------------------------------
+# Reboot the firethorn VM.
+#[user@trop]
+
+    vmname=Ulov
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        reboot \
+            "${vmname:?}"
+
+    >   Domain Ulov is being rebooted
+
+# -----------------------------------------------------
+# Try a shutdown ...
+#[user@trop]
+
+    vmname=Ulov
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+         shutdown \
+            "${vmname:?}"
+
+    >   Domain Ulov is being shutdown
+
+    # Ask niceley, nothing happened
+
+# -----------------------------------------------------
+# Try pulling the power cord ...
+#[user@trop]
+
+    vmname=Ulov
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+         destroy \
+            "${vmname:?}"
+
+    >   Domain Ulov destroyed
+
+    # Not nice - killed it.
+
+# -----------------------------------------------------
+# Try start it up again ...
+#[user@trop]
+
+    vmname=Ulov
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+         start \
+            "${vmname:?}"
+
+    >   Domain Ulov started
+
+
+# -----------------------------------------------------
+# Login to the firethorn VM.
+#[user@trop]
+
+    vmname=Ulov
+
+    ssh "${vmname:?}"
+
+    # -----------------------------------------------------
+    # Check the available disc.
+    #[user@virtual]
+
+        df -h
+
+            Filesystem      Size  Used Avail Use% Mounted on
+            devtmpfs        2.0G     0  2.0G   0% /dev
+            tmpfs           2.0G     0  2.0G   0% /dev/shm
+            tmpfs           2.0G  528K  2.0G   1% /run
+            tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+            /dev/vda3        31G   24G  5.8G  81% /
+            tmpfs           2.0G  4.0K  2.0G   1% /tmp
+            /dev/vda1       240M   89M  135M  40% /boot
+            tmpfs           395M     0  395M   0% /run/user/1001
+
+    # -----------------------------------------------------
+    # Check the containers.
+    #[user@virtual]
+
+        docker ps -a
+
+            CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                                PORTS                    NAMES
+            9831167ba59f        firethorn/firethorn-py:2.1.27   "python3"                4 weeks ago         Exited (255) Less than a second ago                            stevedore_firethorn-py_run_1
+            464c0f9b872e        firethorn/firethorn:2.1.27      "/bin/sh -c '/var/lo…"   4 weeks ago         Exited (255) Less than a second ago   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+            03dd05d5b07f        firethorn/ogsadai:2.1.27        "/bin/sh -c '/var/lo…"   4 weeks ago         Exited (255) Less than a second ago   8080/tcp                 stevedore_jarmila_1
+            9fe9ecc88998        firethorn/postgres:2.1.27       "docker-entrypoint.s…"   4 weeks ago         Exited (255) Less than a second ago   5432/tcp                 stevedore_carolina_1
+            c48b1a944ca6        firethorn/postgres:2.1.27       "docker-entrypoint.s…"   4 weeks ago         Exited (255) Less than a second ago   5432/tcp                 stevedore_bethany_1
+
+    # -----------------------------------------------------
+    # Check the container logs.
+    #[user@virtual]
+
+        docker logs \
+            stevedore_gillian_1
+
+            INSERT INTO "TAP_SCHEMA_64"."columns" ("table_name", "column_name", "description", "unit", "ucd", "utype", "datatype", "size", "arraysize", "principal", "indexed", "std", "ft_column_id")  VALUES ('TAP_SCHEMA.tables', 'ft_table_id', 'ft_table_id', '', '', '', 'int', -1, -1, 0, 0, 0, 0)
+            INSERT INTO "TAP_SCHEMA_64"."columns" ("table_name", "column_name", "description", "unit", "ucd", "utype", "datatype", "size", "arraysize", "principal", "indexed", "std", "ft_column_id")  VALUES ('TAP_SCHEMA.columns', 'ft_column_id', 'ft_column_id', '', '', '', 'int', -1, -1, 0, 0, 0, 0)
+
+        docker logs \
+            stevedore_jarmila_1
+
+            31-Oct-2018 13:40:14.324 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/var/local/tomcat/webapps/ogsadai] has finished in [7,754] ms
+            31-Oct-2018 13:40:14.329 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
+            31-Oct-2018 13:40:14.346 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["ajp-nio-8009"]
+            31-Oct-2018 13:40:14.352 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in 7959 ms
+            SLF4J: This version of SLF4J requires log4j version 1.2.12 or later. See also http://www.slf4j.org/codes.html#log4j_version
+            Warning: Could not get charToByteConverterClass!
+
+        docker logs \
+            stevedore_carolina_1
+
+            2018-10-31 13:40:13.475 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+            2018-10-31 13:40:13.475 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+            2018-10-31 13:40:13.478 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+            2018-10-31 13:40:13.496 UTC [53] LOG:  database system was shut down at 2018-10-31 13:40:13 UTC
+            2018-10-31 13:40:13.514 UTC [1] LOG:  database system is ready to accept connections
+
+        docker logs \
+            stevedore_bethany_1
+
+            2018-10-31 13:40:13.410 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+            2018-10-31 13:40:13.410 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+            2018-10-31 13:40:13.413 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+            2018-10-31 13:40:13.431 UTC [57] LOG:  database system was shut down at 2018-10-31 13:40:13 UTC
+            2018-10-31 13:40:13.439 UTC [1] LOG:  database system is ready to accept connections
+
+    # -----------------------------------------------------
+    # Check the environment properties.
+    #
+
+        # The compose YML file uses buildtag to select the version.
+
+        less docker-compose.yml
+
+            ....
+            services:
+                bethany:
+                    image:
+                       "firethorn/postgres:${buildtag:-latest}"
+                    read_only:
+                        true
+                    ....
+
+
+        # buildtag is set in the environment
+        # http://wfau.metagrid.co.uk/code/firethorn/file/e14f9305957b/doc/notes/stv/20181031-TAP-Ulov-deploy.txt#l144
+
+            export buildtag=2.1.27
+            export branch=default
+
+        # buildtag is NOT set in chain.properties
+
+        # buildtag is set to 'default' in .env file
+        # http://wfau.metagrid.co.uk/code/firethorn/file/e14f9305957b/doc/notes/stv/20181031-TAP-Ulov-deploy.txt#l251
+
+        less .env
+
+            ....
+            buildtag=default
+            ....
+
+        #
+        # Looks like environment value is overriding the .env value.
+
+
+    # -----------------------------------------------------
+    # Use the same command from our notes to restart the compose set.
+    # http://wfau.metagrid.co.uk/code/firethorn/file/e14f9305957b/doc/notes/stv/20181031-TAP-Ulov-deploy.txt#l309
+    #[user@virtual]
+
+        export buildtag=2.1.27
+
+        source "${HOME:?}/chain.properties"
+
+        docker-compose --file "docker-compose.yml" run firethorn-py
+
+            Starting stevedore_carolina_1 ... done
+            Starting stevedore_jarmila_1  ... done
+            Starting stevedore_bethany_1  ... done
+            ....
+            Python 3.5.2 (default, Nov 23 2017, 16:37:01)
+            [GCC 5.4.0 20160609] on linux
+            Type "help", "copyright", "credits" or "license" for more information.
+            >>>
+
+
+
+
+
+
+    # -----------------------------------------------------
+    # Check the container logs - look ok.
+    #[user@virtual]
+
+        docker logs \
+            stevedore_gillian_1
+
+            28-Nov-2018 18:10:34.791 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
+            28-Nov-2018 18:10:34.794 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8081"]
+            28-Nov-2018 18:10:34.795 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["ajp-nio-8009"]
+            28-Nov-2018 18:10:34.798 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in 16698 ms
+
+        docker logs \
+            stevedore_jarmila_1
+
+            28-Nov-2018 18:09:55.692 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
+            28-Nov-2018 18:09:55.719 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["ajp-nio-8009"]
+            28-Nov-2018 18:09:55.724 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in 9063 ms
+
+        docker logs \
+            stevedore_carolina_1
+
+            2018-11-28 18:09:48.998 UTC [24] LOG:  redo starts at 0/6A5BF10
+            2018-11-28 18:09:48.998 UTC [24] LOG:  invalid record length at 0/6A5BFF0: wanted 24, got 0
+            2018-11-28 18:09:48.998 UTC [24] LOG:  redo done at 0/6A5BFB8
+            2018-11-28 18:09:49.089 UTC [1] LOG:  database system is ready to accept connections
+
+
+# -----------------------------------------------------
+# Run a quick Python test.
+#[python]
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+# Create our Firethorn client.
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+#
+# Get a list of AdqlResources.
+for resource in firethorn.firethorn_engine.select_adql_resources():
+    print(
+        resource.name()
+        )
+
+    #
+    # Lots of user space resources.
+    #
+
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    mySpace
+    OSA ADQL resource
+    OSA ADQL resource
+    SSA ADQL resource
+    user space
+    ....
+    ....
+    user space
+    user space
+    user space
+    user space
+    VSA ADQL resource
+    WSA ADQL resource
+
+#
+# Get the Atlas AdqlResource.
+resource = firethorn.firethorn_engine.select_adql_resources()[28]
+
+#
+# Create and run a query on the resource.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = resource.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+#
+# Iterate the metadata tree
+for schema in resource.select_schemas():
+    for table in schema.select_tables():
+        print(
+            "table  [{}][{}][{}]".format(
+                schema.name(),
+                table.name(),
+                table.count(),
+                )
+            )
+        query_str = "SELECT TOP 10 * FROM {}.{}".format(
+            schema.name(),
+            table.name()
+            )
+        query_obj = resource.create_query(
+            query_str,
+            "COMPLETED",
+            None,
+            3000000
+            )
+        py_table = query_obj.table().as_astropy()
+        py_table.pprint()
+
+
+    #
+    # Runs for the first few .. then stack trace in Python ..
+    #
+
+        table  [ATLASDR1][ArchiveCurationHistory][-1]
+        Downloading http://gillian:8080/firethorn/adql/table/46877605/votable
+        |========================================================================================================================| 4.2k/4.2k (100.00%)         0s
+        cuEventID [1] cuID              logFile              ...     curator                                      comment                                  rolledBack
+        ------------- ---- --------------------------------- ... ---------------- ------------------------------------------------------------------------ ----------
+                    1   -1                              NONE ... $Author: Eckhard $Id: OSA_InitiateArchive.sql 9091 2012-03-08 15:22:10Z EckhardSutorius $        [0]
+                  872    3 /disk40/osa/logs/OSA_cu3id872.log ...             etws                                  ingested: Running CU0/CU3 20110816_v0.9        [0]
+                  873    3 /disk40/osa/logs/OSA_cu3id873.log ...             etws                                  ingested: Running CU0/CU3 20110817_v0.9        [0]
+                  874    3 /disk40/osa/logs/OSA_cu3id874.log ...             etws                                  ingested: Running CU0/CU3 20110819_v0.9        [0]
+                  875    3 /disk40/osa/logs/OSA_cu3id875.log ...             etws                                  ingested: Running CU0/CU3 20110821_v0.9        [0]
+                  876    3 /disk40/osa/logs/OSA_cu3id876.log ...             etws                                  ingested: Running CU0/CU3 20110820_v0.9        [0]
+                  877    3 /disk40/osa/logs/OSA_cu3id877.log ...             etws                                  ingested: Running CU0/CU3 20110822_v0.9        [0]
+                  878    3 /disk40/osa/logs/OSA_cu3id878.log ...             etws                                  ingested: Running CU0/CU3 20110823_v0.9        [0]
+                  879    3 /disk40/osa/logs/OSA_cu3id879.log ...             etws                                  ingested: Running CU0/CU3 20110824_v0.9        [0]
+                  880    3 /disk40/osa/logs/OSA_cu3id880.log ...             etws                                  ingested: Running CU0/CU3 20110825_v0.9        [0]
+        table  [ATLASDR1][AstrCalVers][-1]
+        Downloading http://gillian:8080/firethorn/adql/table/46877607/votable
+        |========================================================================================================================| 1.3k/1.3k (100.00%)         0s
+        versNum [1] cuEventID [1] startDate endDate
+        ----------- ------------- --------- -------
+        table  [ATLASDR1][CurationTask][-1]
+        Downloading http://gillian:8080/firethorn/adql/table/46877617/votable
+        |========================================================================================================================| 1.6k/1.6k (100.00%)         0s
+         cuID                                  description
+        ----- ------------------------------------------------------------------------------
+        -9999                                                                           NONE
+           -1 Initialise the OMEGACAM Science Archive (T-SQL script OSA_InitiateArchive.sql)
+            0                                        CU0: Run CU 1 to 4 in parallelised mode
+            1                                             CU1: Obtain science data from CASU
+            2                            CU2: Create library compressed image frame products
+            3         CU3: Ingest details of transfered images and library compressed images
+            4                                     CU4: Ingest single frame source detections
+            5                            CU5: Create library difference image frame products
+            6                                  CU6: Create/update synoptic source catalogues
+            7                                    CU7: Create/update merged source catalogues
+        table  [ATLASDR1][CurrentAstrometry][-1]
+        Downloading http://gillian:8080/firethorn/adql/table/46877623/votable [Done]
+        Traceback (most recent call last):
+          File "<stdin>", line 22, in <module>
+          File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_table.py", line 97, in as_astropy
+            return astropy_Table.read(self.url + "/votable", format="votable",use_names_over_ids=True)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/table/table.py", line 2534, in read
+            out = io_registry.read(cls, *args, **kwargs)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/registry.py", line 517, in read
+            data = reader(*args, **kwargs)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/connect.py", line 73, in read_table_votable
+            input = parse(input, table_id=table_id)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/table.py", line 137, in parse
+            config=config, pos=(1, 1)).parse(iterator, config)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3390, in parse
+            iterator, tag, data, config, pos)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3319, in _add_resource
+            resource.parse(self, iterator, config)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3141, in parse
+            iterator, tag, data, config, pos)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3092, in _add_table
+            table.parse(iterator, config)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2382, in parse
+            iterator, colnumbers, fields, config)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2497, in _parse_tabledata
+            vo_reraise(e, config, pos)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/exceptions.py", line 116, in vo_reraise
+            raise exc
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2494, in _parse_tabledata
+            fields[i].ID))
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/exceptions.py", line 116, in vo_reraise
+            raise exc
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2488, in _parse_tabledata
+            data, config, pos)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/converters.py", line 543, in parse
+            value, mask = parse(x, config, pos)
+          File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/converters.py", line 815, in parse
+            value = int(value, 10)
+        ValueError: http://gillian:8080/firethorn/adql/table/46877623/votable:1:21852: ValueError: invalid literal for int() with base 10: '0000000a' (in row 9, col 'column.46877953')
+        >>>
+
+
