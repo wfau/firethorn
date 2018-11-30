@@ -1,0 +1,109 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Follow-up on notes from Stelios
+    # 20181130-TAP-Issues.txt
+
+        TAP_SCHEMA has quotes
+        TopCat uses quotes from TAP_SCHEMA
+
+        firethorn JSON doesn't have quotes
+        firethorn validator uses raw from JSON
+        firethorn validator fails
+
+        not having quotes in JSON means client needs to know the reserved words
+
+    Fix :
+
+        add quotes to firethorn JSON name
+        add quotes to firethorn JSON full name (is this used ?)
+        add justname to firethorn JSON
+
+        add quotes to firethorn name() - might cause issues
+
+
+        firethorn name() - plain
+        firethorn adqlname() - quoted escaped
+        firethorn fullname() - deprecated
+
+        # Move the adql name into the adql metadata ?
+
+        firethorn meta.adql.name() - quoted escaped
+
+Initial investigation .. we might have a problem with the metadata database overflowing due to the size and number of the test queries - because we expand '*' into the full list of columns every time.
+
+    "adql": "SELECT TOP 10 *\nFROM BestDR9.stellarMassPCAWisc",
+    "osql": "SELECT TOP 10 [BestDR9].[dbo].[stellarMassPCAWisc].[specObjID] AS \"specObjID\",[BestDR9].[dbo].[stellarMassPCAWisc].[plate] AS \"plate\",[BestDR9].[dbo].[stellarMassPCAWisc].[fiberID] AS \"fiberID\",[BestDR9].[dbo].[stellarMassPCAWisc].[mjd] AS \"mjd\",[BestDR9].[dbo].[stellarMassPCAWisc].[ra] AS \"ra\",[BestDR9].[dbo].[stellarMassPCAWisc].[dec] AS \"dec\",[BestDR9].[dbo].[stellarMassPCAWisc].[z] AS \"z\",[BestDR9].[dbo].[stellarMassPCAWisc].[zErr] AS \"zErr\",[BestDR9].[dbo].[stellarMassPCAWisc].[zNum] AS \"zNum\",[BestDR9].[dbo].[stellarMassPCAWisc].[mstellar_median] AS \"mstellar_median\",[BestDR9].[dbo].[stellarMassPCAWisc].[mstellar_err] AS \"mstellar_err\",[BestDR9].[dbo].[stellarMassPCAWisc].[mstellar_p2p5] AS \"mstellar_p2p5\",[BestDR9].[dbo].[stellarMassPCAWisc].[mstellar_p16] AS \"mstellar_p16\",[BestDR9].[dbo].[stellarMassPCAWisc].[mstellar_p84] AS \"mstellar_p84\",[BestDR9].[dbo].[stellarMassPCAWisc].[mstellar_p97p5] AS \"mstellar_p97p5\",[BestDR9].[dbo].[stellarMassPCAWisc].[vdisp_median] AS \"vdisp_median\",[BestDR9].[dbo].[stellarMassPCAWisc].[vdisp_err] AS \"vdisp_err\",[BestDR9].[dbo].[stellarMassPCAWisc].[vdisp_p2p5] AS \"vdisp_p2p5\",[BestDR9].[dbo].[stellarMassPCAWisc].[vdisp_p16] AS \"vdisp_p16\",[BestDR9].[dbo].[stellarMassPCAWisc].[vdisp_p84] AS \"vdisp_p84\",[BestDR9].[dbo].[stellarMassPCAWisc].[vdisp_p97p5] AS \"vdisp_p97p5\",[BestDR9].[dbo].[stellarMassPCAWisc].[calpha_0] AS \"calpha_0\",[BestDR9].[dbo].[stellarMassPCAWisc].[calpha_1] AS \"calpha_1\",[BestDR9].[dbo].[stellarMassPCAWisc].[calpha_2] AS \"calpha_2\",[BestDR9].[dbo].[stellarMassPCAWisc].[calpha_3] AS \"calpha_3\",[BestDR9].[dbo].[stellarMassPCAWisc].[calpha_4] AS \"calpha_4\",[BestDR9].[dbo].[stellarMassPCAWisc].[calpha_5] AS \"calpha_5\",[BestDR9].[dbo].[stellarMassPCAWisc].[calpha_6] AS \"calpha_6\",[BestDR9].[dbo].[stellarMassPCAWisc].[calpha_norm] AS \"calpha_norm\",[BestDR9].[dbo].[stellarMassPCAWisc].[warning] AS \"warning\"\nFROM [BestDR9].[dbo].[stellarMassPCAWisc]",
+
+Which means that this metadata query returns 195 Mbytes of JSON
+
+    curl http://tap.roe.ac.uk/firethorn/adql/resource/64/queries/select | jq '.'
+        % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+        100  195M    0  195M    0     0   719k      0 --:--:--  0:04:39 --:--:-- 1105k
+
+We also expand all of the TAP_SCHEMA queries
+
+    "adql": "SELECT *\nFROM TAP_SCHEMA.columns AS t0\nWHERE t0.table_name = 'gcsFrameSets' OR t0.table_name = 'UKIDSSDR3PLUS.gcsFrameSets'",
+    "osql": "SELECT t0.\"ts_column_id\" AS \"ts_column_id\",t0.\"table_name\" AS \"table_name\",t0.\"column_name\" AS \"column_name\",t0.\"description\" AS \"description\",t0.\"unit\" AS \"unit\",t0.\"ucd\" AS \"ucd\",t0.\"utype\" AS \"utype\",t0.\"datatype\" AS \"datatype\",t0.\"size\" AS \"size\",t0.\"arraysize\" AS \"arraysize\",t0.\"principal\" AS \"principal\",t0.\"indexed\" AS \"indexed\",t0.\"std\" AS \"std\",t0.\"ft_column_id\" AS \"ft_column_id\"\nFROM \"postgres\".\"TAP_SCHEMA_64\".\"columns\" AS t0\nWHERE t0.\"table_name\" = 'gcsFrameSets' OR t0.\"table_name\" = 'UKIDSSDR3PLUS.gcsFrameSets'",
+
+
+We are also creating waaayyy too many anon identities
+
+    http://tap.roe.ac.uk/firethorn/community-member/48194401
+
+Noticed the live TAP service default community
+
+    http://tap.roe.ac.uk/firethorn/community/102
+
+is using a 'DEV' database for the user data
+
+    http://tap.roe.ac.uk/firethorn/jdbc/resource/52
+
+    {
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json",
+      "connection": {
+        "pass": "########",
+        "uri": "jdbc:jtds:sqlserver://ramses2/FirethornUserdataZRQ20170621151245DEV",
+        "user": "FirethornUserdataZRQ20170621151245DEVLogin"
+      },
+      "schemas": "http://tap.roe.ac.uk/firethorn/jdbc/resource/52/schemas/select",
+      "queries": "http://tap.roe.ac.uk/firethorn/jdbc/resource/52/queries/select",
+      "fullname": "Userdata resource",
+      "text": null,
+      "name": "Userdata resource",
+      "owner": null,
+      "url": "http://tap.roe.ac.uk/firethorn/jdbc/resource/52",
+      "self": "http://tap.roe.ac.uk/firethorn/jdbc/resource/52",
+      "ident": "52",
+      "created": "2018-10-31T13:41:07.612",
+      "modified": "2018-10-31T13:41:07.613"
+    }
+
+
+
+
+
+
+
+
