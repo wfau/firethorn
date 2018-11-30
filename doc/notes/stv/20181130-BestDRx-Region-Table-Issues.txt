@@ -329,4 +329,28 @@ query_obj.error()
 # So there is no escaping "Region" in Firethorn
 # How do we query it then using Ft???
 
+# The following works:
+acc = firethorn.identity()
+
+resource = ftpy.models.resource.Resource(
+    adql_resource = ftpy.models.adql.adql_resource.AdqlResource(
+        account = acc,
+        url = "http://tap.roe.ac.uk/firethorn/adql/resource/64",
+        )
+    )
+query_str = "SELECT TOP 10 * FROM {}.{}".format(
+'BestDR8',
+'"Region"'
+)
+query_obj = resource.query(
+query_str
+)
+
+query_obj.results()
+<table.Table object at 0x7fd32e3d24e0>
+
+
+
+# Do we need to quote these Tables before querying them using Firethorn as well (firethorn-utils/validator)
+
 # To be continued..
