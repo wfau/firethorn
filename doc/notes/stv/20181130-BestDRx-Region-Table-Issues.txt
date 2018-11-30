@@ -1,0 +1,332 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# Check Inconsistencies with BestDRx.Region Table columns
+
+When running the firethorn-utils/validator we get the following Tables with failed queries:
+Exceptions: 
+{'BestDR8.Region': <class 'TypeError'>, 'BestDR3.Region': <class 'TypeError'>, 'BestDR7.Region': <class 'TypeError'>, 'BestDR5.Region': <class 'TypeError'>, 'BestDR9.Region': <class 'TypeError'>, 'BestDR1.Region': <class 'TypeError'>}
+
+
+
+# -------------------------------
+# Check wfau/metadata XML metadoc
+# -------------------------------
+ 
+  <Table ID="Region">
+      <Name>Region</Name>
+      <Description><![CDATA[ Definition of the different region]]></Description>
+      <Column ID="Region.regionid" indexed="false">
+         <Name>regionid</Name>
+         <Datatype>long</Datatype>
+         <Description><![CDATA[ ]]></Description>
+         <Units> </Units>
+         <UCD version="1"></UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="Region.id" indexed="false">
+         <Name>id</Name>
+         <Datatype>long</Datatype>
+         <Description><![CDATA[key of the region pointing into other tables]]></Description>
+         <Units> </Units>
+         <UCD version="1"></UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="Region.type" indexed="false">
+         <Name>type</Name>
+         <Datatype>string</Datatype>
+         <Description><![CDATA[type of the region (STRIPE|STAVE|...)]]></Description>
+         <Units> </Units>
+         <UCD version="1"></UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="Region.comment" indexed="false">
+         <Name>comment</Name>
+         <Datatype>string</Datatype>
+         <Description><![CDATA[description of the region]]></Description>
+         <Units> </Units>
+         <UCD version="1"></UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="Region.ismask" indexed="false">
+         <Name>ismask</Name>
+         <Datatype>int</Datatype>
+         <Description><![CDATA[0: region, 1: to be excluded]]></Description>
+         <Units> </Units>
+         <UCD version="1"></UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="Region.area" indexed="false">
+         <Name>area</Name>
+         <Datatype>double</Datatype>
+         <Description><![CDATA[area of region]]></Description>
+         <Units>deg^2</Units>
+         <UCD version="1">EXTENSION_AREA</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="Region.regionString" indexed="false">
+         <Name>regionString</Name>
+         <Datatype>string</Datatype>
+         <Description><![CDATA[the string representation of the region]]></Description>
+         <Units> </Units>
+         <UCD version="1"></UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="Region.regionBinary" indexed="false">
+         <Name>regionBinary</Name>
+         <Datatype>int</Datatype>
+         <Description><![CDATA[the precompiled XML description of region]]></Description>
+         <Units> </Units>
+         <UCD version="1"></UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+   </Table>
+
+
+#------- Types ------
+
+regionid  --  long
+id  --  long
+type  --  string
+comment  --  string
+ismask  --  int
+area  --  double
+regionString  --  string
+regionBinary  --  int
+
+
+
+
+# -------------------------------
+# Check SQL Server database Columns
+# -------------------------------
+
+ssh -X shep 'rdesktop -ken-gb -g1024x768 -x l -u stelios ramses2'
+
+
+#------- Types ------
+
+
+regionid  --  bigint
+id  --  bigint
+type  --  varchar(16)
+comment  --  varchar(1024)
+ismask  --  tinyint
+area  --  float
+regionString  --  varchar(max)
+regionBinary  --  varbinary(max)
+
+
+
+
+
+# -------------------------------
+# Check Firethorn Resource for WSA - BestDR8 - Region
+# http://tap.roe.ac.uk/firethorn/adql/table/589206/columns/select
+# -------------------------------
+
+#------- Types ------
+
+
+regionid  --  LONG
+id  --  LONG
+type  --  CHAR 
+comment -- CHAR
+ismask  --  BYTE
+area  --  DOUBLE
+regionString  --  CHAR
+regionBinary  --  BYTE
+
+
+
+
+# -------------------------------
+# Run Query via TAP 
+# http://tap.roe.ac.uk/ssa/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+*+FROM+BestDR8."Region"
+# -------------------------------
+
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" version="1.3">
+<RESOURCE type="results">
+<INFO name="QUERY_STATUS" value="OK"/>
+<INFO name="link" value="http://tap.roe.ac.uk/firethorn/adql/table/48166375"/>
+<TABLE ID="table.48166375" name="XX_LFXKBGIT45AN6AAAAFTWK6JYWI">
+<FIELD ID="column.48167563" name="regionid" datatype="long" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/48167563"/>
+</FIELD>
+<FIELD ID="column.48167565" name="id" datatype="long" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/48167565"/>
+</FIELD>
+<FIELD ID="column.48167567" name="type" datatype="char" arraysize="16" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/48167567"/>
+</FIELD>
+<FIELD ID="column.48167569" name="comment" datatype="char" arraysize="1024" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/48167569"/>
+</FIELD>
+<FIELD ID="column.48167571" name="ismask" datatype="unsignedByte" arraysize="*" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/48167571"/>
+</FIELD>
+<FIELD ID="column.48167573" name="area" datatype="double" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/48167573"/>
+</FIELD>
+<FIELD ID="column.48167575" name="regionString" datatype="char" arraysize="8000" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/48167575"/>
+</FIELD>
+<FIELD ID="column.48167577" name="regionBinary" datatype="unsignedByte" arraysize="*" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/48167577"/>
+</FIELD>
+<DATA>
+<TABLEDATA>
+<TR>
+<TD>5808120</TD>
+<TD>4680887</TD>
+<TD>POLYGON</TD>
+<TD/>
+<TD>00000000</TD>
+<TD>-1.0</TD>
+<TD/>
+<TD>
+560100000001D8233F502D89163F0100000043040000000101D8233F502D89163F05000000A55B971F722BD3BF61E74B343CC69ABFE86259DEF384EEBF00B099E670AB923FC1EAE469A3FEEF3FE21DB0D75E80D03F740E23E2EE0C973F7BF5360FDFE8EE3FC08474DDBA0F8E3F7790B1101EFFEF3FEACDEC05CBDEE4BF12C8BE1CA2BBE73FA9294A6F4212C43F0000000000000000000000000000F03F1347CE81ED9DE43F9F05A39C3AC5E7BFE86CAB7AFE4AC7BF0000000000000000000000000000F03F722A85C5DD2BD33FBE9B331FDACB9A3FC6273FBBE184EE3F00CE70BDE8BC92BF212758DCA0FEEF3F0100000050E690FE075AAEE6BF2D8DFF1EB56DE5BF2566F04DBC64CC3F8EA573D3FFFFEF3F6B41B270A2B23A3FD8233F502D89163F82AAD0D3C0B75B3F0400000041A55B971F722BD3BF61E74B343CC69ABFE86259DEF384EEBF00B099E670AB923FC1EAE469A3FEEF3F9C38B2242BACE6BF568EE6192D70E5BF0C651D0BD162CC3F31ABA97976B0E6BF3645FDA43A6BE5BF6400EC2DAB67CC3F904168EE50AEE6BF7E0528FDB36DE5BFD38301473E65CC3FB00584B26380E6BF2D9FDBC42E6DE5BFDE8326FAE79DCE3FF6D2B7719DA2E4BFA72E8BF1C4C0E73FE4B8C3135F51C73FCEE19C83AA0C273EFE494CB44DA74A3F411347CE81ED9DE43F9F05A39C3AC5E7BFE86CAB7AFE4AC7BF0000000000000000000000000000F03F31ABA97976B0E6BF3645FDA43A6BE5BF6400EC2DAB67CC3F4C7E14D289B0E6BFCBC4C0953B6BE5BF1148DE91A866CC3F7CB2EB2580B0E6BFE2ED6A1D3B6BE5BF44EFF4DF2967CC3F31ABA97976B0E6BF3645FDA43A6BE5BF6400EC2DAB67CC3F3CA79ADC6C58D2BF70DCF9678C8F8CBF94F699C766A7EEBF00000000000000005C02DEA26FDF003F41722A85C5DD2BD33FBE9B331FDACB9A3FC6273FBBE184EE3F00CE70BDE8BC92BF212758DCA0FEEF3F4C7E14D289B0E6BFCBC4C0953B6BE5BF1148DE91A866CC3F3A092D573DACE6BFFC29585D2F70E5BF20B4E61ECD61CC3F50AEEBB363AEE6BF6A7B5297B56DE5BF4B8FF7023B64CC3FC14509829984E6BFD8580C463A68E5BF6A7207FDD5A3CE3F5AC14330EC9DE43F1D9108AD3AC5E7BF07EB1C1B104BC7BFB7D87A08D33427BE0B1E5B2471AE4A3F41EACDEC05CBDEE4BF12C8BE1CA2BBE73FA9294A6F4212C43F0000000000000000000000000000F03F3A092D573DACE6BFFC29585D2F70E5BF20B4E61ECD61CC3F9C38B2242BACE6BF568EE6192D70E5BF0C651D0BD162CC3FE23EFC3D34ACE6BF434AAB3B2E70E5BF31D811154F62CC3F3A092D573DACE6BFFC29585D2F70E5BF20B4E61ECD61CC3FDADD35FA873FD13F5AA6BDE39128A13FFF8B05601DCCEE3F00000000000000003F663A462FE1003F45
+</TD>
+</TR>
+</TABLEDATA>
+</DATA>
+</TABLE>
+</RESOURCE>
+</VOTABLE>
+
+
+
+#------- Types ------
+
+regionid  --  long
+id  --  long
+type  --  char
+comment  --  char
+ismask  --  unsignedByte
+area  --  double
+regionString  --  char
+regionBinary  -- unsignedByte
+
+..
+
+
+
+
+# ----------------------------------------------------------------------------------------------------------
+# Run a quick Python test using firethorn.py testing Region on tap.roe.ac.uk (WSA, resource:64)
+# ----------------------------------------------------------------------------------------------------------
+
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+# Create our Firethorn client.
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+# Get the WSA AdqlResource.
+resource = resource = firethorn.firethorn_engine.select_adql_resource_by_ident("http://tap.roe.ac.uk/firethorn/adql/resource/64")
+#
+# Create and run a query on the resource.
+query_str = 'SELECT TOP 10 * FROM BESTDR8.Region'
+query_obj = resource.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+
+query_obj.error()
+> ' Encountered "Region". Was expecting one of: "\\"" <REGULAR_IDENTIFIER> '
+
+query_str = 'SELECT TOP 10 * FROM BESTDR8."Region"'
+query_obj = resource.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+
+query_obj.error()
+> '1 unresolved identifiers: Region [l.1 c.22 - l.1 c.38]!\n  - Unknown table "BESTDR8."Region"" !'
+
+
+# Can't query Region using ftpy?
+
+# Check what Region looks like in firethorn (tap.roe.ac.uk)
+# http://tap.roe.ac.uk/firethorn/adql/schema/512871/tables/select
+
+..
+
+
+{
+"type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+"formats": {
+"datatable": "http://tap.roe.ac.uk/firethorn/adql/table/589206/datatable",
+"votable": "http://tap.roe.ac.uk/firethorn/adql/table/589206/votable"
+},
+"metadata": {
+"adql": {
+"count": -1,
+"status": "CREATED"
+}
+},
+"query": null,
+"schema": "http://tap.roe.ac.uk/firethorn/adql/schema/512871",
+"base": "http://tap.roe.ac.uk/firethorn/jdbc/table/583727",
+"depth": "PARTIAL",
+"columns": "http://tap.roe.ac.uk/firethorn/adql/table/589206/columns/select",
+"fullname": "BestDR8.Region",
+"resource": "http://tap.roe.ac.uk/firethorn/adql/resource/64",
+"parent": "http://tap.roe.ac.uk/firethorn/adql/schema/512871",
+"root": "http://tap.roe.ac.uk/firethorn/jdbc/table/583727",
+"text": "Definition of the different region",
+"name": "Region",
+"owner": "http://tap.roe.ac.uk/firethorn/community-member/162",
+"url": "http://tap.roe.ac.uk/firethorn/adql/table/589206",
+"self": "http://tap.roe.ac.uk/firethorn/adql/table/589206",
+"ident": "589206",
+"created": "2018-10-31T18:24:07.099",
+"modified": "2018-10-31T18:24:07.100"
+},
+
+..
+
+# So there is no escaping "Region" in Firethorn
+# How do we query it then using Ft???
+
+# To be continued..
