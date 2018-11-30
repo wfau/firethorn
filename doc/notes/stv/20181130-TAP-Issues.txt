@@ -2813,6 +2813,13 @@ FROM [UKIDSSDR5PLUS].[dbo].[lasSourceXrosat_fsc]
 
 .... --> Logs Stops here
 
+## Try running last query seen in logs
+..
+SELECT TOP 10 [UKIDSSDR5PLUS].[dbo].[lasSourceXrosat_fsc].[masterObjID] AS "masterObjID",[UKIDSSDR5PLUS].[dbo].[lasSourceXrosat_fsc].[slaveObjID] AS "slaveObjID",[UKIDSSDR5PLUS].[dbo].[lasSourceXrosat_fsc].[distanceMins] AS "distanceMins"
+FROM [UKIDSSDR5PLUS].[dbo].[lasSourceXrosat_fsc] 
 
+## Runs and Returns Fine
 
+## Latest logs before crash where probably firethorn.log though, thus we can't see them as they were overwrittern after redeploy
+## The above is just the latest that got logrotated..
 
