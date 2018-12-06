@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.27
+FROM firethorn/ubuntu:2.1.27-stv-diskspace
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
