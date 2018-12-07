@@ -1,0 +1,254 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# Need to add comments..
+
+
+stelios@stelios-pc:~$ ssh Stevedore@Siamond 
+Last login: Wed Oct  3 12:08:20 2018 from 192.168.202.1
+[Stevedore@Siamond ~]$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G   17M  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        15G   14G     0 100% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   89M  135M  40% /boot
+tmpfs           395M     0  395M   0% /run/user/1001
+[Stevedore@Siamond ~]$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+[Stevedore@Siamond ~]$ ls^C
+[Stevedore@Siamond ~]$ ^C
+[Stevedore@Siamond ~]$ du -h /var/lib/docker | sed -n '/^[.0-9]*G/p'
+du: cannot read directory '/var/lib/docker': Permission denied
+[Stevedore@Siamond ~]$ docker ps -a
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                           PORTS                    NAMES
+e28aeccf9639        firethorn/firethorn-py:2.1.25   "python3"                2 weeks ago         Exited (0) 2 weeks ago                                    stevedore_firethorn-py_run_1
+1ff7b4d55a59        firethorn/firethorn:2.1.25      "/bin/sh -c '/var/lo…"   2 weeks ago         Exited (255) About an hour ago   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+a41574a8b02c        firethorn/ogsadai:2.1.25        "/bin/sh -c '/var/lo…"   2 weeks ago         Exited (255) About an hour ago   8080/tcp                 stevedore_jarmila_1
+ec94c09e8b07        firethorn/postgres:2.1.25       "docker-entrypoint.s…"   2 weeks ago         Exited (255) About an hour ago   5432/tcp                 stevedore_bethany_1
+eea740ba89cc        firethorn/postgres:2.1.25       "docker-entrypoint.s…"   2 weeks ago         Exited (255) About an hour ago   5432/tcp                 stevedore_carolina_1
+[Stevedore@Siamond ~]$ docker images
+REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
+firethorn/firethorn-py   2.1.25              a6f283ff327b        8 weeks ago         632MB
+firethorn/firethorn      2.1.25              a62687f25bcd        3 months ago        1.01GB
+firethorn/ogsadai        2.1.25              5d941ecc59e9        3 months ago        1.01GB
+firethorn/postgres       2.1.25              9023cc92f85f        3 months ago        236MB
+[Stevedore@Siamond ~]$ docker system df
+TYPE                TOTAL               ACTIVE              SIZE                RECLAIMABLE
+Images              4                   4                   1.928GB             965.7MB (50%)
+Containers          5                   0                   21.33kB             21.33kB (100%)
+Local Volumes       8                   8                   8.207GB             0B (0%)
+Build Cache                                                 0B                  0B
+[Stevedore@Siamond ~]$ docker system df -v
+Images space usage:
+
+REPOSITORY               TAG                 IMAGE ID            CREATED ago         SIZE                SHARED SIZE         UNIQUE SiZE         CONTAINERS
+firethorn/firethorn-py   2.1.25              a6f283ff327b        8 weeks ago ago     631.5MB             0B                  631.5MB             1
+firethorn/firethorn      2.1.25              a62687f25bcd        3 months ago ago    1.013GB             965.7MB             47.52MB             1
+firethorn/ogsadai        2.1.25              5d941ecc59e9        3 months ago ago    1.013GB             965.7MB             47.04MB             1
+firethorn/postgres       2.1.25              9023cc92f85f        3 months ago ago    236.4MB             0B                  236.4MB             2
+
+Containers space usage:
+
+CONTAINER ID        IMAGE                           COMMAND                  LOCAL VOLUMES       SIZE                CREATED ago         STATUS                           NAMES
+e28aeccf9639        firethorn/firethorn-py:2.1.25   "python3"                0                   9.99kB              2 weeks ago ago     Exited (0) 2 weeks ago           stevedore_firethorn-py_run_1
+1ff7b4d55a59        firethorn/firethorn:2.1.25      "/bin/sh -c '/var/lo…"   3                   0B                  2 weeks ago ago     Exited (255) About an hour ago   stevedore_gillian_1
+a41574a8b02c        firethorn/ogsadai:2.1.25        "/bin/sh -c '/var/lo…"   3                   11.3kB              2 weeks ago ago     Exited (255) About an hour ago   stevedore_jarmila_1
+ec94c09e8b07        firethorn/postgres:2.1.25       "docker-entrypoint.s…"   1                   0B                  2 weeks ago ago     Exited (255) About an hour ago   stevedore_bethany_1
+eea740ba89cc        firethorn/postgres:2.1.25       "docker-entrypoint.s…"   1                   0B                  2 weeks ago ago     Exited (255) About an hour ago   stevedore_carolina_1
+
+Local Volumes space usage:
+
+VOLUME NAME                                                        LINKS               SIZE
+0173c9812ad94c05497b3a99cf77523cfc2666dd862873d5250d6e11e64d3ad3   1                   563.3MB
+332998e2333979796b3ef122d62c5447e279de825379da8ffefe96d90a31bd97   1                   49.79kB
+3acafc7cf40db5956e9649f59b036510ffccc0422907f61437f29758123f56f3   1                   104.8MB
+4fd23610f67e057d5ebf4ced82401bfc598b51dbd53327dac393f77a31d5ec42   1                   2.247GB
+7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca   1                   5.29GB
+8c6ba9a41c502e1c6d9ebabf7090500d04fa5645ccaaf5638fc4302f4fd748cc   1                   1.319MB
+a1df164cc161d3a07f9d6e318374f0f6b702ea374b8646a02a12a08fd529f00f   1                   0B
+e81a18164c2bb1518d9f99605328cd2a297bae2755ae3c63dd8ce980680e965a   1                   18.46kB
+
+Build cache usage: 0B
+
+[Stevedore@Siamond ~]$ du -h /var/lib/docker | sed -n '/^[.0-9]*G/p'
+du: cannot read directory '/var/lib/docker': Permission denied
+[Stevedore@Siamond ~]$ sudo su
+[root@Siamond Stevedore]# du -h /var/lib/docker | sed -n '/^[.0-9]*G/p'
+35G	/var/lib/docker/btrfs/subvolumes
+35G	/var/lib/docker/btrfs
+4.8G	/var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca/_data/base/16384
+4.8G	/var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca/_data/base
+5.0G	/var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca/_data
+5.0G	/var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca
+2.1G	/var/lib/docker/volumes/4fd23610f67e057d5ebf4ced82401bfc598b51dbd53327dac393f77a31d5ec42/_data
+2.1G	/var/lib/docker/volumes/4fd23610f67e057d5ebf4ced82401bfc598b51dbd53327dac393f77a31d5ec42
+7.7G	/var/lib/docker/volumes
+43G	/var/lib/docker
+[root@Siamond Stevedore]#  docker system prune
+WARNING! This will remove:
+        - all stopped containers
+        - all networks not used by at least one container
+        - all dangling images
+        - all build cache
+Are you sure you want to continue? [y/N] Y
+Deleted Containers:
+e28aeccf96399d19bea6c4ad2667502f55fa20112b696bd1fdd46f07b9a79d11
+1ff7b4d55a59d2991e6c70eba50d408ee3b45a65d8fa8783b05015dfad5489e0
+a41574a8b02c75f2f05e035130ec80d6e4961236782b83580c10d13400ed2c1d
+ec94c09e8b07077ba120e10721295f8f710043b032f97003fd38ef5ebd39589f
+eea740ba89cc89217ed88c6b89ebf1447c061df59b5a4ed60bb79891ea85d5a5
+
+Deleted Networks:
+stevedore_rosana
+stevedore_miriam
+
+Total reclaimed space: 21.33kB
+[root@Siamond Stevedore]# du -h /var/lib/docker | sed -n '/^[.0-9]*G/p'
+30G	/var/lib/docker/btrfs/subvolumes
+30G	/var/lib/docker/btrfs
+4.8G	/var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca/_data/base/16384
+4.8G	/var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca/_data/base
+5.0G	/var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca/_data
+5.0G	/var/lib/docker/volumes/7e47e9d176e4aaabb4794237dfceae2b03867fc2de463c651f2593738e977cca
+2.1G	/var/lib/docker/volumes/4fd23610f67e057d5ebf4ced82401bfc598b51dbd53327dac393f77a31d5ec42/_data
+2.1G	/var/lib/docker/volumes/4fd23610f67e057d5ebf4ced82401bfc598b51dbd53327dac393f77a31d5ec42
+7.7G	/var/lib/docker/volumes
+37G	/var/lib/docker
+[root@Siamond Stevedore]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  516K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        15G   14G   88M 100% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   89M  135M  40% /boot
+tmpfs           395M     0  395M   0% /run/user/1001
+[root@Siamond Stevedore]# 
+[root@Siamond Stevedore]# df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda3        15G   14G   88M 100% /
+[root@Siamond Stevedore]# docker images 
+REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
+firethorn/firethorn-py   2.1.25              a6f283ff327b        8 weeks ago         632MB
+firethorn/firethorn      2.1.25              a62687f25bcd        3 months ago        1.01GB
+firethorn/ogsadai        2.1.25              5d941ecc59e9        3 months ago        1.01GB
+firethorn/postgres       2.1.25              9023cc92f85f        3 months ago        236MB
+[root@Siamond Stevedore]# docker rmi -f a62687f25bcd
+Untagged: firethorn/firethorn:2.1.25
+Untagged: firethorn/firethorn@sha256:2a61412c8f1239a1bd4ff8df22bd296c136830e0d0cd091a24200f3432480b41
+Deleted: sha256:a62687f25bcdcffab4a6fa16fed210bafb057d47ec67f0db9d696e6cf00b6ebb
+Deleted: sha256:f9c7e801e9083eca5d3fe04615e374a4a6b60eabe28420f0c0ab2bcc6c94f3e9
+Deleted: sha256:40cd9ffd4449520a00c0922090e19ac6dbf191713bc45ba8ebd94cf90baa1fb4
+[root@Siamond Stevedore]# 5d941ecc59e9^C
+[root@Siamond Stevedore]# ^C
+[root@Siamond Stevedore]# docker rmi -f 5d941ecc59e9
+docker rmi -f 9023cc92f85fUntagged: firethorn/ogsadai:2.1.25
+Untagged: firethorn/ogsadai@sha256:aad2db803c235c8d5d106522f8738b7a657dd5755bac6923c773c9dbd4f916dc
+Deleted: sha256:5d941ecc59e96deeb992a6da1553dd80ac7208724e1b827aa7f1b550e0681a56
+Deleted: sha256:43d6b906313362fc697e77ec9b2a3bcf6de182c7e02026ca9f2821fa9b8b11d0
+Deleted: sha256:616d35ec3a52a178430bb515b2180e3ccbe24c2be3d5068e01884656ae921a2a
+Deleted: sha256:afa878b28f305058302f97eb4b47f48323279f70bee1382796b759abb7df2d04
+Deleted: sha256:e4daa45db521695a4f0028c6000929784150b305db65abeb19970188f42f16a6
+Deleted: sha256:59df078e167731e77de6f896526bc1a5c928e7bd638df5578fe76ccc7732a891
+Deleted: sha256:dafdf82f2cc280cf198952bbd8d7618bb6d432152babb13d6c912b8824129ea8
+Deleted: sha256:184b524e8d09b4f52d7bdc748979e3817aae260faf206cda1e99abb4ad73b505
+Deleted: sha256:944552f6ef8d6437cb6da5ad22e40844ecee26108e10b05c6afc552c84afe79b
+Deleted: sha256:72dadff5227128af04fc6f6d8c221607afd24d2480a80958543447127ea200b8
+Deleted: sha256:4904a7121ea3f5ecbaa0096db1e967beeac974963500fc737479817fc6d8f266
+Deleted: sha256:48fe6a7e999cbb4e78c3e826a9fc118ca4a8e0211ed78eae4eda1a331d477f6c
+Deleted: sha256:d773901ac915fa039b79a5346212d5ed86eb33eef91cd151f90613429f17fda9
+Deleted: sha256:53006feebc56219610dfb659b751cb5cfff687549bef87fb67718f48e2a6b8a8
+Deleted: sha256:42aba73b86abbccaadb53ceca1e266ef00fbf8d8aa261c61348e5dc748b74479
+Deleted: sha256:4b904d81d4e9d91b5a3da0ace2832668ee60d49b254dcb582d40d9a4fa028133
+Deleted: sha256:c280492229a8b5ebcd034eaf85320ef5dd0db09a2381d01307a3624027c48a35
+Deleted: sha256:ca227abcaf229299073b5aeb2209b82544fd851dd65995aac13d668a26367be5
+Deleted: sha256:215aef2d8162ae7c402d5fd2ad7eb46fce074363f4f44c110e54918686910f1c
+Deleted: sha256:d855306bb1d7f7135f11278a41528232992738a2e5728e4db74ef79c13d2d58b
+Deleted: sha256:71aa7a635e3b3b9b421ed593aa40ecc9c409737c86c06d01f6e42ab22f7c7582
+Deleted: sha256:a69593d5e4e3d2887c13d5b6c0b7bb2b3b044478aefce9c45b160d11c852ebaa
+Deleted: sha256:c25f077acc0b5a96a1097db40d3b2cd8b67863ed93bb5dddb710952b3953f815
+Deleted: sha256:32566f8cb1398a1023485c89b62ab17d7d82e7580dc290c3a60d8bfa6e3d5061
+Deleted: sha256:13bc64625b78b79688962d5d53e2f51aff3d7afdf3a5f085312aaae97b912484
+Deleted: sha256:db5cefb065e03ef4c8b0daa369616f58fe288aa36cb20cbcbbce1e6a6794bbfb
+Deleted: sha256:a3885d22c331048899db09b30ba01b260e427bfef17e9af304a040ed90b3b22a
+Deleted: sha256:23f1575202b001fac3937c809105a29d24ae88444a87c5a989c8ffd303a9ac67
+Deleted: sha256:1eb765909fc4cd251bc097df4ccb2bcc691b034cb19f5b6057c5650181373248
+Deleted: sha256:5fbf4d9054254ff1e10fa0b5ad2841c80af78e6e5e3eab34f6a78201a1109cc6
+Deleted: sha256:98f629e0580181c376fc6a23db2f37aa31a9601ba0af5e27b395ef25b393fa81
+Deleted: sha256:422c54c995985fb522418b060dd350816aee62e69e0d64c459b9d839b75ffc62
+Deleted: sha256:a184b672860a39aaf108fa184b54deeceee05aae81495a44e2b22bd9ee6733b8
+Deleted: sha256:891e1e4ef82ad02a4ea1f030831f942d722c7694c4db64ca3239c8163b811c58
+[root@Siamond Stevedore]# docker rmi -f 9023cc92f85f
+Untagged: firethorn/postgres:2.1.25
+Untagged: firethorn/postgres@sha256:b4f45dc2f063f98d6b700205fa298a387a03a1a1985647f2348095400b1942c2
+Deleted: sha256:9023cc92f85f687e404054763a0aa90de82ba1f199ef39746730265ea0c6ef6f
+Deleted: sha256:72500da6422c4124c94f1dd658d18201f6618496fe080aed36ff98e5a3004799
+Deleted: sha256:182fba8e31840be7f8d5d54b8af922bfdad955c86d2c30d34f8b368bf6f001af
+Deleted: sha256:b7b372e2720c2ae5e9edee91808b53621b1874c298a8aaa52b59d5e6cd85973b
+Deleted: sha256:1fa394263bec3c2c705320d9db5d3767c2e30fc17f59a1e90cd04a0d82367af8
+Deleted: sha256:4590e327828314eeaca6fd2895aeeddb23a599583979a4f3db7ed6059322c515
+Deleted: sha256:66bd380c8a5f930d550249c610a405ea4b7b95b41b7d31e13c10e0d05fae3fc6
+Deleted: sha256:5da38ab4a04b4ae5b7f08e1c7b60dbea549923556c379b187556d3a367980d6c
+Deleted: sha256:226fd74963e4fe5cd9abaa676061fbd8c5b27ca1939f52e50631b890d6941eaf
+Deleted: sha256:8209a6a13fe32f7ceec294c31f25d24bafcd6365e67a6166becbcac0f25c642e
+Deleted: sha256:351df6fe10a59cbca87cb893eeefef8a3bd57a322d0c393c390ff9a73882c2e0
+Deleted: sha256:52b33962ec5fea7560a96e55d116ce49bb5e2ad40444d40cac1134e1bb911c8a
+Deleted: sha256:abe37e9630e2328c8b2a5114729e333bd3ef525b91cd0ac8fd0a74330541983b
+Deleted: sha256:f4cdd15917b100c1372447f8cb959bc08b64142c556a1fb087f6d958eec4473c
+Deleted: sha256:774f3bc6ea48ef0e2f24fa9524802f4b3fa5e9bd2a738a4b50f2198cfccd4f94
+Deleted: sha256:9c46f426bcb704beffafc951290ee7fe05efddbc7406500e7d0a3785538b8735
+[root@Siamond Stevedore]# docker images
+REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
+firethorn/firethorn-py   2.1.25              a6f283ff327b        8 weeks ago         632MB
+[root@Siamond Stevedore]# docker rmi -f a6f283ff327b
+Untagged: firethorn/firethorn-py:2.1.25
+Untagged: firethorn/firethorn-py@sha256:2d85033f5e7a322c953293a449875ac0abafe12c028aa769fe7c085552828d38
+Deleted: sha256:a6f283ff327b9df4675de3973cd6dbd37383adee439dc80d5825775bcf3fd4bc
+Deleted: sha256:6347440197d096f9c5ebce39c06513a8c184db8141b02fcb234f77146c37fe71
+Deleted: sha256:2d7531020bd74504773c1ae8c7c33d657e5d420107b762aaf2ee421c946183e5
+Deleted: sha256:14c1d669ddfa6b6738af20282409cffb474e68f18ff46b15cb1f243c8206cc4f
+Deleted: sha256:a61e8f69f67e713d181c6fe40f5a241f298365c021e19c0c51b48495f739f30c
+Deleted: sha256:6ddc47ea22edf62416c11987e88eb537629d1b1ddb3dc021d0e782c0fefa817c
+Deleted: sha256:8992bbabdf48da549d660b3d2e239ac9608ff3e827703be0bf5cc28b777f90c9
+Deleted: sha256:09c793f76cb4df0c099adaafaaa417b12b3f805ebf13991e9da54b029261b8f3
+Deleted: sha256:2a2bb089e5124c32ea95bdc5f2855b2a0092cc163f1ded56377c2919c9898eaa
+Deleted: sha256:295a3977e7a7e0075eccfe716992e67170025acd0e73d05ec735c90e61f6bc59
+Deleted: sha256:a270c1ff21b97df06785f04cb8dec309fc2e5eb0849bd2d13e0dd904af4c0e84
+Deleted: sha256:711e4cb62f50eb37292a0df824072b6a818211e3f9b3aae75a2067e65fa32eca
+[root@Siamond Stevedore]# docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+[root@Siamond Stevedore]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  516K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        15G   12G  1.4G  91% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   89M  135M  40% /boot
+tmpfs           395M     0  395M   0% /run/user/1001
+[root@Siamond Stevedore]# 
+

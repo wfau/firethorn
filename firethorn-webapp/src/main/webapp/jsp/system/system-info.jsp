@@ -7,6 +7,7 @@
     import="java.sql.Driver"
     import="java.sql.DriverManager"
     import="org.jsoftbiz.utils.OS"
+    import="java.io.File"
     contentType="application/json" 
     session="false"
 %><%!
@@ -35,6 +36,11 @@ catch (Exception ouch)
         "total" : <%= runtime.totalMemory() %>,
         "free" : <%= runtime.freeMemory() %>,
         "max" : <%= runtime.maxMemory() %>
+        },
+    "disk" : {
+        "total" : <%= new File("/").getTotalSpace() %>,
+        "free" : <%= new File("/").getFreeSpace() %>,
+        "usable" : <%= new File("/").getUsableSpace() %>
         }
     },
 "build": {
