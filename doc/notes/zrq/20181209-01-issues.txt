@@ -46,12 +46,6 @@
 
             doc/notes/zrq/20181016-02-update-vmimage.txt
 
-
-
-
-
-
-
         3) Explore options for extending the disc space.
 
             What happens if we use a 8G backing file for a 64G qcow volume ?
