@@ -292,7 +292,7 @@ import firethorn_utils.configurator as configur
 ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
 ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
 configurator =  configur.Configurator(ft)
-configurator.load_resources("https://raw.githubusercontent.com/stvoutsin/metadata/master/firethorn/config/osa-tap.json")
+configurator.load_resources("/home/firethorn.py/firethorn/data/dr9-tap.json")
 Importing JDBC Schema: ATLASDR1
 Importing JDBC Schema: ATLASDR2
 Importing JDBC Schema: ATLASDR3
@@ -323,8 +323,8 @@ ssh Stevedore@Acilamwen
 [Stevedore@Acilamwen ~]$ nano tap.roe.ac.uk.conf 
 
 ..
-    ProxyPassMatch    ^/osa\/(.*)$  http://ulov:8080/firethorn/tap/54/$1
-    ProxyPassReverse  ^/osa\/(.*)$  http://ulov:8080/firethorn/tap/54/$1
+    ProxyPassMatch    ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+    ProxyPassReverse  ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
 
     #ProxyPassMatch    ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/56/$1
     #ProxyPassReverse  ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/56/$1
@@ -334,6 +334,9 @@ ssh Stevedore@Acilamwen
 
     #ProxyPassMatch    ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/64/$1
     #ProxyPassReverse  ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/64/$1
+
+    ProxyPassMatch    ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
+    ProxyPassReverse  ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
 
 ...   
 
@@ -343,8 +346,8 @@ ssh Stevedore@Acilamwen
 
 ..
 
-    ProxyPassMatch    ^/osa\/(.*)$  http://ulov:8080/firethorn/tap/54/$1
-    ProxyPassReverse  ^/osa\/(.*)$  http://ulov:8080/firethorn/tap/54/$1
+    ProxyPassMatch    ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+    ProxyPassReverse  ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
 
     #ProxyPassMatch    ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/56/$1
     #ProxyPassReverse  ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/56/$1
@@ -354,6 +357,9 @@ ssh Stevedore@Acilamwen
 
     #ProxyPassMatch    ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/64/$1
     #ProxyPassReverse  ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/64/$1
+
+    ProxyPassMatch    ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
+    ProxyPassReverse  ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
 
 ..
 [root@bc8d6979e451 /]# exit
