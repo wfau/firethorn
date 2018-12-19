@@ -292,7 +292,7 @@ import firethorn_utils.configurator as configur
 ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
 ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
 configurator =  configur.Configurator(ft)
-configurator.load_resources("/home/firethorn.py/firethorn/data/dr9-tap.json")
+configurator.load_resources("/home/firethorn.py/firethorn/data/osa-tap.json")
 Importing JDBC Schema: ATLASDR1
 Importing JDBC Schema: ATLASDR2
 Importing JDBC Schema: ATLASDR3
