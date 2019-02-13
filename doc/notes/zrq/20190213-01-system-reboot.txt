@@ -1,0 +1,112 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # trop02 restar after shutdown
+    #
+
+
+    #  Deployment wiki page
+    # http://redmine.roe.ac.uk/projects/wva/wiki/20180712-WFAU-TAP-Updates
+
+    Current Status (Updated on 30/01/2019)
+
+        What we have currently is one prototype TAP service for the OSA which is being served at http://tap.roe.ac.uk/osa.
+
+            VM on trop02
+            Firethorn Chain deployed on Araybwyn
+            Apache Proxy on Acilamwen
+            Genius Demonstrator on Ibalehar
+
+            Firethorn Chain deployed using Docker-compose
+            Firethorn Version: 2.1.28
+            Notes on Deployment:
+
+
+
+# -----------------------------------------------------
+# List all the virtual machines.
+#[user@trop]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        list \
+            --all
+
+--START--
+ Id    Name                           State
+----------------------------------------------------
+ -     Acilamwen                      shut off
+ -     Araybwyn                       shut off
+ -     Eterathiel                     shut off
+ -     Ibalehar                       shut off
+ -     Lothigometh                    shut off
+--END--
+
+
+# -----------------------------------------------------
+# Start the virtual machines in sequence.
+#[user@trop]
+
+    #
+    # Firethorn on Araybwyn
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        start \
+            Araybwyn
+
+--START--
+--END--
+
+
+    #
+    # Genius Demonstrator on Ibalehar
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        start \
+            Ibalehar
+
+--START--
+--END--
+
+
+
+
+
+
+    #
+    # Apache Proxy on Acilamwen
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        start \
+            Acilamwen
+
+--START--
+--END--
+
+
+
+
