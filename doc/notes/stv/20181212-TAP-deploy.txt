@@ -1,0 +1,370 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+##########################################################
+##### Notes on Deploying WFAU TAP Services on trop02 #####
+##########################################################
+stv@trop02:~$ createvm
+
+INFO : Base pool  [base]
+INFO : Live pool  [live]
+INFO : Connection [qemu:///system]
+
+INFO : Data path  [/var/local/projects/ischnura/github/src/dat]
+
+INFO : Machines   [/var/local/projects/ischnura/github/src/dat/tropo-machines.txt]
+INFO : Template   [/var/local/projects/ischnura/github/src/dat/tropo-template.xml]
+
+[1] Araybwyn
+[2] Lothigometh
+[3] Ulov
+[4] Dwiema
+[5] Ibalehar
+[6] Eterathiel
+[7] Siamond
+[8] Acilamwen
+Select machine name (1) 1
+setlocale: No such file or directory
+
+[1] fedora-28-docker-base-20180708.qcow
+[2] fedora-28-8G-docker-base-20181016.qcow
+[3] fedora-28-32G-docker-base-20181016.qcow
+[4] fedora-28-16G-docker-base-20181016.qcow
+Select base image (1) 3
+setlocale: No such file or directory
+
+INFO : Node name [Araybwyn]
+INFO : Base name [fedora-28-32G-docker-base-20181016.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-28-32G-docker-base-20181016.qcow]
+INFO : Disc name [Araybwyn.qcow]
+INFO : Disc size [32GiB]
+
+INFO : MAC  [52:54:00:02:02:08]
+INFO : IPv4 [192.168.202.8]
+INFO : IPv6 []
+
+Create virtual machine (Y/n)Y
+
+Found existing storage volume [Araybwyn.qcow]
+Delete storage volume (Y/n)Y
+Deleting storage volume [Araybwyn.qcow]
+setlocale: No such file or directory
+Vol Araybwyn.qcow deleted
+
+Creating new volume [Araybwyn.qcow]
+setlocale: No such file or directory
+Vol Araybwyn.qcow created
+setlocale: No such file or directory
+Name:           Araybwyn.qcow
+Type:           file
+Capacity:       32.00 GiB
+Allocation:     196.00 KiB
+
+setlocale: No such file or directory
+Vol Araybwyn.iso deleted
+setlocale: No such file or directory
+Vol Araybwyn.iso created
+setlocale: No such file or directory
+setlocale: No such file or directory
+setlocale: No such file or directory
+Creating new virtual machine [Araybwyn]
+setlocale: No such file or directory
+Domain Araybwyn defined from /tmp/tmp.9JaMbpzgS7
+Starting new virtual machine [Araybwyn]
+setlocale: No such file or directory
+Domain Araybwyn started
+
+
+
+ssh Stevedore@Araybwyn
+[Stevedore@Araybwyn ~]$ 
+
+# -----------------------------------------------------
+# Add secret function.
+# -----------------------------------------------------
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store.20181212'
+
+    secret()
+    {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+    }
+
+    secret 'firethorn.ssh.keys' >> "${HOME}/.ssh/authorized_keys"
+
+
+
+# -----------------------------------------------------
+# Set the target branch and builtag
+# -----------------------------------------------------
+
+
+    export buildtag=2.1.28
+    export branch=default
+
+
+
+# -----------------------------------------------------
+# Create our chain.properties file
+# -----------------------------------------------------
+
+cat > "${HOME:?}/chain.properties" << EOF
+
+metadata=postgres
+metauser=$(pwgen 20 1)
+metapass=$(pwgen 20 1)
+
+userhost=$(secret 'firethorn.user.host')
+userdata=$(secret 'firethorn.user.data')
+useruser=$(secret 'firethorn.user.user')
+userpass=$(secret 'firethorn.user.pass')
+usertype=mssql
+
+datahost=$(secret 'firethorn.data.host')
+datadata=$(secret 'firethorn.data.data')
+datacatalog=$(secret 'firethorn.data.catalog')
+datatype=$(secret 'firethorn.data.type')
+datauser=$(secret 'firethorn.data.user')
+datapass=$(secret 'firethorn.data.pass')
+
+tapschemadata=$(secret 'firethorn.tapschema.database.name')
+tapschemauser=$(secret 'firethorn.tapschema.database.user')
+tapschemapass=$(secret 'firethorn.tapschema.database.pass')
+tapschemahost=$(secret 'firethorn.tapschema.database.host')
+tapschemaport=$(secret 'firethorn.tapschema.database.port')
+tapschematype=$(secret 'firethorn.tapschema.database.type')
+tapschemajdbc=$(secret 'firethorn.tapschema.jdbc.name')
+
+tunneluser=$(secret 'ssh.tunnel.user')
+tunnelhost=$(secret 'ssh.tunnel.host')
+
+admingroup=$(pwgen 20 1)	
+adminuser=$(pwgen 20 1)
+adminpass=$(pwgen 20 1)
+
+adql_query_delay_first=$(secret 'adql.query.delay.first')
+ 
+firethorn_limits_rows_absolute=$(secret 'firethorn.limits.rows.absolute')
+firethorn_limits_rows_default=$(secret 'firethorn.limits.rows.default')
+
+guestgroup=friends
+endpoint=$(secret 'endpoint')
+
+EOF
+
+
+
+# -----------------------------------------------------
+# Create our Firethorn properties.
+# -----------------------------------------------------
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.meta.type=pgsql
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.host=bethany
+firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
+firethorn.meta.data=postgres
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+
+firethorn.user.type=mssql
+firethorn.user.url=jdbc:jtds:sqlserver://${userhost:?}/${userdata:?}
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.host=${userhost:?}
+firethorn.user.data=${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+
+firethorn.tapschema.resource.name=${tapschemajdbc}
+firethorn.tapschema.database.name=${tapschemadata}
+firethorn.tapschema.database.host=${tapschemahost}
+firethorn.tapschema.database.port=${tapschemaport}
+firethorn.tapschema.database.user=${tapschemauser}
+firethorn.tapschema.database.pass=${tapschemapass}
+
+firethorn.admin.community=${admingroup:?}
+firethorn.admin.user.name=${adminuser:?}
+firethorn.admin.user.pass=${adminpass:?}
+
+firethorn.guest.community=${guestgroup:?}
+
+adql.query.delay.first=${adql_query_delay_first:?}
+
+firethorn.limits.rows.absolute=${firethorn_limits_rows_absolute:?}
+firethorn.limits.rows.default=${firethorn_limits_rows_default:?}
+	
+
+EOF
+
+
+
+# -----------------------------------------------------
+# Create our compose env file.
+# -----------------------------------------------------
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/.env" << EOF
+
+	buildtag=${branch:?}
+
+	metadata=postgres
+	metauser=${metauser:?}
+	metapass=${metapass:?}
+
+        datadata=${datadata:?}
+        datauser=${datauser:?}
+        datapass=${datapass:?}
+	datahost=${datahost:?}
+	datacatalog=${datacatalog:?}
+	datatype=mssql
+
+	tapschemadata=${tapschemadata:?}
+	tapschemauser=${tapschemauser:?}
+	tapschemapass=${tapschemapass:?}
+	tapschemahost=${tapschemahost}
+	tapschemaport=${tapschemaport:?}
+	tapschemajdbc=${tapschemajdbc:?}
+	tapschematype=${tapschematype:?}
+
+	userhost=${userhost:?}
+	userdata=${userdata:?}
+	useruser=${useruser:?}
+	userpass=${userpass:?}
+        usertype=mssql
+
+	admingroup=${admingroup:?}
+	adminuser=${adminuser:?}
+	adminpass=${adminpass:?}
+	guestgroup=${guestgroup:?}
+
+	adql_query_delay_first=${adql_query_delay_first:?}
+
+	firethorn_limits_rows_absolute=${firethorn_limits_rows_absolute:?}
+	firethorn_limits_rows_default=${firethorn_limits_rows_default:?}
+
+	endpoint=${endpoint:?}
+EOF
+
+
+
+# -----------------------------------------------------
+# Fetch the TAP Deployer
+# -----------------------------------------------------
+
+
+ wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/20b8901d807c/docker/compose/deploy/tap-deployer.yml  -O  docker-compose.yml
+
+
+
+# -----------------------------------------------------
+# Run Docker Compose tap-deployer.yml from firethorn.py
+# -----------------------------------------------------
+
+source "${HOME:?}/chain.properties"
+
+docker-compose --file "docker-compose.yml" run firethorn-py
+
+import firethorn
+import firethorn_utils.configurator as configur
+ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
+ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
+configurator =  configur.Configurator(ft)
+configurator.load_resources("/home/firethorn.py/firethorn/data/osa-tap.json")
+Importing JDBC Schema: ATLASDR1
+Importing JDBC Schema: ATLASDR2
+Importing JDBC Schema: ATLASDR3
+Importing JDBC Schema: 2MASS
+Importing JDBC Schema: 2XMM
+Importing JDBC Schema: WISE
+Importing JDBC Schema: VIKINGDR3
+Importing JDBC Schema: VHSDR1
+Importing JDBC Schema: MGC
+Importing JDBC Schema: GLIMPSE
+Importing JDBC Schema: FIRST
+Importing JDBC Schema: DENIS
+Importing JDBC Schema: VPHASDR3
+Importing JDBC Schema: VVVDR4
+Importing JDBC Schema: SDSSDR7
+Importing JDBC Schema: SDSSDR9
+
+TAP Service available at: http://gillian:8080/firethorn/tap/54/
+
+
+
+
+# -----------------------------------------------------
+# Update the Proxy Entry
+# -----------------------------------------------------
+ssh Stevedore@Acilamwen 
+
+[Stevedore@Acilamwen ~]$ nano tap.roe.ac.uk.conf 
+
+..
+    ProxyPassMatch    ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+    ProxyPassReverse  ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+
+    #ProxyPassMatch    ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/56/$1
+    #ProxyPassReverse  ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/56/$1
+
+    #ProxyPassMatch    ^/vsa\/(.*)$  http://ulov:8080/firethorn/tap/58/$1
+    #ProxyPassReverse  ^/vsa\/(.*)$  http://ulov:8080/firethorn/tap/58/$1
+
+    #ProxyPassMatch    ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/64/$1
+    #ProxyPassReverse  ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/64/$1
+
+    ProxyPassMatch    ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
+    ProxyPassReverse  ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
+
+...   
+
+[Stevedore@Acilamwen ~]$ nano tap.roe.ac.uk.conf 
+[Stevedore@Acilamwen ~]$ docker exec -it  apache bash
+[root@bc8d6979e451 /]# nano /etc/httpd/conf.d/tap.roe.ac.uk.conf
+
+..
+
+    ProxyPassMatch    ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+    ProxyPassReverse  ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+
+    #ProxyPassMatch    ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/56/$1
+    #ProxyPassReverse  ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/56/$1
+
+    #ProxyPassMatch    ^/vsa\/(.*)$  http://ulov:8080/firethorn/tap/58/$1
+    #ProxyPassReverse  ^/vsa\/(.*)$  http://ulov:8080/firethorn/tap/58/$1
+
+    #ProxyPassMatch    ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/64/$1
+    #ProxyPassReverse  ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/64/$1
+
+    ProxyPassMatch    ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
+    ProxyPassReverse  ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
+
+..
+[root@bc8d6979e451 /]# exit
+exit
+
+[Stevedore@Acilamwen ~]$ docker kill --signal 'USR1' 'apache'
+
+

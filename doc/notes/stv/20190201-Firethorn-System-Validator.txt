@@ -1,0 +1,58 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+##########################################################
+##### Notes on running Validator for Firethorn       #####
+##########################################################
+
+
+firethorn_base=http://tap.roe.ac.uk/firethorn ## Firethorn Base URL
+to_email= ## Email to Send validation Results to
+from_email= ## Email to Send validation Results from
+resourceid= ## Firethorn Resource
+ft_user= ## Firethorn User
+ft_pass= ## Firethorn Pass
+ft_group= ## Firethorn Group
+
+
+cat > "${HOME:?}/.env" << EOF
+
+	firethorn_base=${firethorn_base:?}
+	to_email=${to_email:?}
+	from_email=${from_email:?}
+        resourceid=${resourceid:?}
+        ft_user=${ft_user:?}
+        ft_pass=${ft_pass:?}
+        ft_group=${ft_group:?}
+EOF
+
+# -----------------------------------------------------
+# Fetch the Validator Deployer
+# -----------------------------------------------------
+
+
+wget https://raw.githubusercontent.com/stvoutsin/firethorn-utils/master/docker/firethorn-utils.yml  -O  docker-compose.yml
+docker-compose --file  docker-compose.yml run firethorn-utils
+
+python3 -c "import firethorn_utils.validator as validator; validator.main()"  -ft=${firethorn_base:?} -from=${from_email:?} -to=${to_email:?} -r=${resourceid:?} -u=${ft_user:?} -p=${ft_pass:?} -g=${ft_group:?} -v=True
+
+

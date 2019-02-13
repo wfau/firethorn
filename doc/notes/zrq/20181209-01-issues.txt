@@ -1,0 +1,196 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Our services appear at the top of the list in TopCat, and all of them return "503 Service unavailable".
+
+    If we know these services are not working, remove them from the public registry ?
+
+    ----
+
+    Symptoms seem consistent with VMs running out of disc space, but VMs do actually have some space left.
+
+    Are we running tests on the live services, or on a separate server, e,g, trop01 ?
+
+    Some tests to verify :
+
+        1) Deploy one of the archives, e.g. OSA, and test it.
+        2) Deploy one of the archives, e.g. WSA, and test it.
+        3) Deploy OSA and WSA and test it.
+        .. where does it start to fail ?
+
+    Test disc space :
+
+        1) Use a smaller VM image (16G or 8G) and see if we get the same symptoms sooner.
+
+        2) Create a VM image with 64G of disc space and run tests with that.
+
+            doc/notes/zrq/20181016-02-update-vmimage.txt
+
+        3) Explore options for extending the disc space.
+
+            What happens if we use a 8G backing file for a 64G qcow volume ?
+            Can we just expand the partitions to use up the new space ?
+            https://docs.oracle.com/cd/E37670_01/E37355/html/ol_use_case2_btrfs.html
+
+            Do we need to resize the partition first ?
+            https://www.thegeekdiary.com/how-to-resize-expand-a-btrfs-volume-filesystem/
+
+            How about adding a separate libvirt 'data' volume, and then adding that to the btrfs filesystem
+            https://www.thegeekdiary.com/how-to-resize-expand-a-btrfs-volume-filesystem/
+
+            Quick test - add a separate separate libvirt 'data' volume, and mount that as /var/lib/docker/volumes.
+            This gives docker more space, and it prevents docker/volumes from growing too large and taking the whole VM down.
+
+
+        4) Longer term refactoring
+
+            We could add a separate libvirt 'data' volume, and then mount that inside the VM as /var/lib/docker or /var/lib/docker/volumes.
+
+            Building on what we are doing for the Kafka nodes, we could create a 'data0' pool, and mount that as /var/lib/libvirt/images/data0 on the server.
+
+            This might help with the problem we have with the disjunct partitioning on the trop machines.
+
+            Physical disc partitions :
+
+                SSD partitions
+
+                    /dev/sda2        92G  1.6G   86G   2% /
+                    /dev/sda5        65G  4.4G   57G   8% /var
+                    /dev/sda6        53G  4.2G   46G   9% /home
+
+                4Tbyte discs
+
+                    /dev/sdb1       3.6T  8.9G  3.4T   1% /data1
+                    /dev/sdc1       3.6T  2.6T  867G  76% /data2
+
+            Create a /data0 directory on /, add that as a pool.
+
+                Name [data0]
+                Path [/data0/libvirt/images/data0]
+
+                Name [data1]
+                Path [/data1/libvirt/images/data1]
+
+                Name [data2]
+                Path [/data2/libvirt/images/data2]
+
+            Put the base images in /var (65G)
+
+                Name [default]
+                Path [/var/lib/libvirt/images]
+
+                Name [base]
+                Path [/var/lib/libvirt/images/base]
+
+            Put the live images in /home (53G)
+
+                Name [init]
+                Path [/home/libvirt/images/init]
+
+                Name [live]
+                Path [/home/libvirt/images/live]
+
+
+
+
+            To extend the size of a VM, create using the minimal 8G image.
+            Add a '{vmname}-data0-nn' volume from the data0 pool.
+            Use btrfs to add the data volume as part of the '/' root partition.
+            The extra space is transparent to the VM user.
+
+            Extra disc space can be added to a live VM.
+            -- ok, that's useful.
+
+
+            To extend the size of a VM, create using the minimal 8G image.
+            Add a '{vmname}-data1-nn' volume from the data1 pool.
+            Use btrfs to create a new partition and mount it as a new '/data1' directory.
+            The extra space is available to the VM user.
+
+            Add extra volumes to the VM :
+
+                '{vmname}-{pool}-{mm}'
+
+            Add shell scripts to /home/Stevedore/bin to manage the extra space.
+
+                1) as an extension to the '/' partition.
+
+                2) as a new partition '/data{n}'
+
+
+
+
+            Keep the base and live images in '/var' (65G)
+
+                Name [default]
+                Path [/var/lib/libvirt/images]
+
+                Name [base]
+                Path [/var/lib/libvirt/images/base]
+
+                Name [live]
+                Path [/var/lib/libvirt/images/live]
+
+            Add a /home (53G) directory for libvirt and make that available as a pool
+
+                Name [home]
+                Path [/home/libvirt/images/home]
+
+            Add a /data0 directory on '/' (92G), and make that available as a pool.
+
+                Name [data0]
+                Path [/data0/libvirt/images/data0]
+
+            Add a /data{n} directory on each of the HDD drives and make them available as pools.
+
+                Name [data1]
+                Path [/data1/libvirt/images/data1]
+
+                Name [data2]
+                Path [/data2/libvirt/images/data2]
+
+            extendvm script
+
+                select the pool to use (defaults to data0)
+
+                select the extension method
+                    1) add to '/'
+                    2) separate mount
+
+                shell script creates the volume
+                ssh into the VM and runs the commands to add the new space
+                https://www.thegeekdiary.com/how-to-resize-expand-a-btrfs-volume-filesystem/
+
+                ssh "sshopts" "${sshuser}@{vmname}" \
+                    "
+                    extendfs ${devname} '\'
+                    "
+
+                ssh "sshopts" "${sshuser}@{vmname}" \
+                    "
+                    extendfs ${devname} ${mountpath}
+                    "
+
+
+
+
