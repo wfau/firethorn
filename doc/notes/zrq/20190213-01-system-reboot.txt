@@ -65,11 +65,9 @@
 
 
 # -----------------------------------------------------
-# Start the virtual machines in sequence.
+# Start the Firethorn virtual machine.
 #[user@trop]
 
-    #
-    # Firethorn on Araybwyn
     source "${HOME}/libvirt.settings"
     virsh \
         --connect "${connection}" \
@@ -77,7 +75,295 @@
             Araybwyn
 
 --START--
+Domain Araybwyn started
 --END--
+
+# -----------------------------------------------------
+# Login and configure the VM.
+#[user@trop]
+
+    ssh Araybwyn
+
+# -----------------------------------------------------
+# Check the list of containers.
+#[user@virtual]
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                      PORTS               NAMES
+cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 days ago          Exited (0) 2 days ago                           stevedore_firethorn-py_run_2
+ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (137) 2 months ago                       stevedore_firethorn-py_run_1
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   2 months ago        Exited (143) 2 hours ago                        stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   2 months ago        Exited (143) 2 hours ago                        stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (0) 2 hours ago                          stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (0) 2 hours ago                          stevedore_bethany_1
+--END--
+
+# -----------------------------------------------------
+# Start the Firethorn container.
+#[user@virtual]
+
+    #
+    # Initial attempt used run rather than start, which created a new instance of firethorn
+    # running in the foreground. Debug output going to the terminal.
+    # Ctrl^C to stop it.
+    # Then docker rm to remove it.
+    #
+
+    export buildtag=2.1.28
+    source "${HOME:?}/chain.properties"
+
+    docker-compose \
+        --file "docker-compose.yml" \
+            start \
+                gillian
+
+
+
+--START--
+Starting stevedore_carolina_1 ... done
+Starting stevedore_jarmila_1  ... done
+Starting stevedore_bethany_1  ... done
+Starting gillian ... done
+--END--
+
+# -----------------------------------------------------
+# Check the list of containers.
+#[user@virtual]
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                      PORTS                    NAMES
+cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 days ago          Exited (0) 2 days ago                                stevedore_firethorn-py_run_2
+ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (137) 2 months ago                            stevedore_firethorn-py_run_1
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   2 months ago        Up 5 minutes (healthy)      0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   2 months ago        Up 10 minutes (healthy)     8080/tcp                 stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Up 10 minutes               5432/tcp                 stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Up 10 minutes               5432/tcp                 stevedore_bethany_1
+--END--
+
+# -----------------------------------------------------
+# Check the service status.
+#[user@virtual]
+
+    curl --silent http://localhost:8080/firethorn/system/info/ | jq '.'
+
+--START--
+{
+  "java": {
+    "name": "OpenJDK 64-Bit Server VM",
+    "build": "25.191-b12",
+    "version": "1.8.0_191",
+    "memory": {
+      "total": 401604608,
+      "free": 273246384,
+      "max": 919076864
+    },
+    "disk": {
+      "total": 33016512512,
+      "free": 19542188032,
+      "usable": 17879326720
+    }
+  },
+  "build": {
+    "name": "firethorn-core",
+    "version": "2.1.28",
+    "timestamp": "1544222112180",
+    "changeset": "6ac9b0b3d3c7"
+  },
+  "system": {
+    "time": "2019-02-13T18:38:17.562Z",
+    "name": "Linux",
+    "arch": "amd64",
+    "version": "4.18.13-200.fc28.x86_64",
+    "platform": "Fedora release 28 (Twenty Eight)"
+  },
+  "servlet": {
+    "server": "Apache Tomcat/9.0.10",
+    "context": "/firethorn"
+  },
+  "jdbc": {
+    "drivers": [
+      {
+        "class": "org.postgresql.Driver"
+      }
+    ]
+  }
+}
+--END--
+
+# -----------------------------------------------------
+# Check the TAP resource.
+#[user@virtual]
+
+    curl --silent http://localhost:8080/firethorn/adql/resource/54/ | jq '.'
+
+--START--
+{
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json",
+  "vosi": "http://localhost:8080/firethorn/adql/resource/54/vosi",
+  "schemas": "http://localhost:8080/firethorn/adql/resource/54/schemas/select",
+  "queries": "http://localhost:8080/firethorn/adql/resource/54/queries/select",
+  "fullname": "OSA ADQL resource",
+  "text": null,
+  "name": "OSA ADQL resource",
+  "owner": "http://localhost:8080/firethorn/community-member/163",
+  "url": "http://localhost:8080/firethorn/adql/resource/54",
+  "self": "http://localhost:8080/firethorn/adql/resource/54",
+  "ident": "54",
+  "created": "2018-12-12T18:44:59.555",
+  "modified": "2018-12-12T18:44:59.556"
+}
+--END--
+
+
+# -----------------------------------------------------
+# Start the Apache virtual machine.
+#[user@trop]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        start \
+            Acilamwen
+
+--START--
+Domain Acilamwen started
+--END--
+
+# -----------------------------------------------------
+# Login and configure the VM.
+#[user@trop]
+
+    ssh Acilamwen
+
+# -----------------------------------------------------
+# Check the list of containers.
+#[user@virtual]
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS              PORTS                NAMES
+bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   5 months ago        Up 6 seconds        0.0.0.0:80->80/tcp   apache
+--END--
+
+# -----------------------------------------------------
+# Start the Apache container.
+#[user@virtual]
+
+    #
+    # Different startup procedure compared to the firethorn container.
+    # Different build number compared to the firethorn container.
+
+    #
+    # ** no need to start - was set to restart from the original command line **
+    #
+
+# -----------------------------------------------------
+# Check the list of containers.
+#[user@virtual]
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS              PORTS                NAMES
+bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   5 months ago        Up 17 minutes       0.0.0.0:80->80/tcp   apache
+--END--
+
+# -----------------------------------------------------
+# Check the service status.
+#[user@virtual]
+
+    curl --silent http://tap.roe.ac.uk/firethorn/system/info/ | jq '.'
+
+--START--
+{
+  "java": {
+    "name": "OpenJDK 64-Bit Server VM",
+    "build": "25.191-b12",
+    "version": "1.8.0_191",
+    "memory": {
+      "total": 401604608,
+      "free": 266525736,
+      "max": 919076864
+    },
+    "disk": {
+      "total": 33016512512,
+      "free": 19541864448,
+      "usable": 17879003136
+    }
+  },
+  "build": {
+    "name": "firethorn-core",
+    "version": "2.1.28",
+    "timestamp": "1544222112180",
+    "changeset": "6ac9b0b3d3c7"
+  },
+  "system": {
+    "time": "2019-02-13T18:42:33.869Z",
+    "name": "Linux",
+    "arch": "amd64",
+    "version": "4.18.13-200.fc28.x86_64",
+    "platform": "Fedora release 28 (Twenty Eight)"
+  },
+  "servlet": {
+    "server": "Apache Tomcat/9.0.10",
+    "context": "/firethorn"
+  },
+  "jdbc": {
+    "drivers": [
+      {
+        "class": "org.postgresql.Driver"
+      }
+    ]
+  }
+}
+--END--
+
+# -----------------------------------------------------
+# Check the TAP resource.
+#[user@virtual]
+
+    curl --silent http://tap.roe.ac.uk/firethorn/adql/resource/54/ | jq '.'
+
+--START--
+{
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json",
+  "vosi": "http://tap.roe.ac.uk/firethorn/adql/resource/54/vosi",
+  "schemas": "http://tap.roe.ac.uk/firethorn/adql/resource/54/schemas/select",
+  "queries": "http://tap.roe.ac.uk/firethorn/adql/resource/54/queries/select",
+  "fullname": "OSA ADQL resource",
+  "text": null,
+  "name": "OSA ADQL resource",
+  "owner": "http://tap.roe.ac.uk/firethorn/community-member/163",
+  "url": "http://tap.roe.ac.uk/firethorn/adql/resource/54",
+  "self": "http://tap.roe.ac.uk/firethorn/adql/resource/54",
+  "ident": "54",
+  "created": "2018-12-12T18:44:59.555",
+  "modified": "2018-12-12T18:44:59.556"
+}
+--END--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     #
