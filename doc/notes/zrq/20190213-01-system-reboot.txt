@@ -119,12 +119,10 @@ f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   2
             start \
                 gillian
 
-
+    # Didn't capture accurate output.
+    # This was done in more than one attempt.
 
 --START--
-Starting stevedore_carolina_1 ... done
-Starting stevedore_jarmila_1  ... done
-Starting stevedore_bethany_1  ... done
 Starting gillian ... done
 --END--
 
@@ -274,7 +272,7 @@ bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   5 month
 --END--
 
 # -----------------------------------------------------
-# Check the service status.
+# Check the service status from the same VM.
 #[user@virtual]
 
     curl --silent http://tap.roe.ac.uk/firethorn/system/info/ | jq '.'
@@ -323,6 +321,10 @@ bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   5 month
 }
 --END--
 
+    # PASS
+    # Test works for clients on the same virtual machine.
+
+
 # -----------------------------------------------------
 # Check the TAP resource.
 #[user@virtual]
@@ -347,52 +349,363 @@ bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   5 month
 }
 --END--
 
+    # PASS
+    # Test works for clients on the same virtual machine.
 
 
+# -----------------------------------------------------
+# Check the service status from laptop on eduroam.
+#[user@laptop]
+
+    curl --silent http://tap.roe.ac.uk/firethorn/system/info/ | jq '.'
+
+--START--
+Timeout
+--END--
+
+    # FAIL
+    # Tests fail for clients on external machines.
 
 
+#---------------------------------------------------------------------
+# Notes from 2016
+# 20161129-02-trop-ipv4.txt#l22
+
+--START--
+#---------------------------------------------------------------------
+# Prevent bridge traffic being filtered.
+# Haven't figured out how to make this persitent yet.
+#[root@trop01]
+
+    sysctl -w net.bridge.bridge-nf-call-arptables=0
+    sysctl -w net.bridge.bridge-nf-call-iptables=0
+    sysctl -w net.bridge.bridge-nf-call-ip6tables=0
+--END--
+
+#---------------------------------------------------------------------
+# Prevent bridge traffic being filtered.
+# Haven't figured out how to make this persitent yet.
+#[root@trop]
+
+    sysctl -w net.bridge.bridge-nf-call-arptables=0
+    sysctl -w net.bridge.bridge-nf-call-iptables=0
+    sysctl -w net.bridge.bridge-nf-call-ip6tables=0
 
 
+# -----------------------------------------------------
+# Check the service status from laptop on eduroam.
+#[user@laptop]
 
+    curl http://tap.roe.ac.uk/firethorn/system/info/
 
+--START--
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>503 Service Unavailable</title>
+</head><body>
+<h1>Service Unavailable</h1>
+<p>The server is temporarily unable to service your
+request due to maintenance downtime or capacity
+problems. Please try again later.</p>
+</body></html>
+--END--
 
+    # FAIL
+    # Tests fail for clients on external machines.
 
+# -----------------------------------------------------
+# No longer able to login to the Firethorn virtual machine.
+#[user@trop]
 
+    ssh -v Araybwyn
 
+--START--
+OpenSSH_6.7p1 Debian-5+deb8u7, OpenSSL 1.0.1t  3 May 2016
+debug1: Reading configuration data /home/dmr/.ssh/config
+debug1: /home/dmr/.ssh/config line 17: Applying options for Araybwyn
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 19: Applying options for *
+debug1: Connecting to araybwyn [192.168.202.8] port 22.
+debug1: connect to address 192.168.202.8 port 22: No route to host
+ssh: connect to host araybwyn port 22: No route to host
+--END--
 
+# -----------------------------------------------------
+# Stop the Firethorn virtual machine.
+#[user@trop]
 
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        shutdown \
+            Araybwyn
 
+--START--
+Domain Araybwyn is being shutdown
+--END--
 
+# -----------------------------------------------------
+# Start the Firethorn virtual machine.
+#[user@trop]
 
-
-
-    #
-    # Genius Demonstrator on Ibalehar
     source "${HOME}/libvirt.settings"
     virsh \
         --connect "${connection}" \
         start \
-            Ibalehar
+            Araybwyn
 
 --START--
+Domain Araybwyn started
 --END--
 
 
+# -----------------------------------------------------
+# Login and configure the VM.
+#[user@trop]
 
+    ssh Araybwyn
 
+# -----------------------------------------------------
+# Check the list of containers.
+#[user@virtual]
 
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                       PORTS               NAMES
+cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 days ago          Exited (0) 2 days ago                            stevedore_firethorn-py_run_2
+ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (137) 2 months ago                        stevedore_firethorn-py_run_1
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   2 months ago        Exited (143) 2 minutes ago                       stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   2 months ago        Exited (143) 2 minutes ago                       stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (0) 2 minutes ago                         stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (0) 2 minutes ago                         stevedore_bethany_1
+--END--
+
+# -----------------------------------------------------
+# Start the Firethorn container.
+#[user@virtual]
+
+    export buildtag=2.1.28
+    source "${HOME:?}/chain.properties"
+
+    docker-compose \
+        --file "docker-compose.yml" \
+            start \
+                gillian
+
+--START--
+Starting gillian ... done
+--END--
+
+# -----------------------------------------------------
+# Check the list of containers.
+#[user@virtual]
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                             PORTS                    NAMES
+cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 days ago          Exited (0) 2 days ago                                       stevedore_firethorn-py_run_2
+ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (137) 2 months ago                                   stevedore_firethorn-py_run_1
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   2 months ago        Up 45 seconds (health: starting)   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   2 months ago        Exited (143) 3 minutes ago                                  stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (0) 3 minutes ago                                    stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (0) 3 minutes ago                                    stevedore_bethany_1
+--END--
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                          PORTS                    NAMES
+cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 days ago          Exited (0) 2 days ago                                    stevedore_firethorn-py_run_2
+ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (137) 2 months ago                                stevedore_firethorn-py_run_1
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   2 months ago        Up About a minute (unhealthy)   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   2 months ago        Exited (143) 4 minutes ago                               stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (0) 4 minutes ago                                 stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (0) 4 minutes ago                                 stevedore_bethany_1
+--END--
 
     #
-    # Apache Proxy on Acilamwen
-    source "${HOME}/libvirt.settings"
-    virsh \
-        --connect "${connection}" \
-        start \
-            Acilamwen
+    # Doesn't start the dependencies, and so ends up unhealthy :-(
+    #
+
+    docker-compose \
+        --file "docker-compose.yml" \
+            stop \
+                gillian
 
 --START--
+Stopping stevedore_gillian_1 ... done
 --END--
 
+    #
+    # Because we are using the 'start' command rather than the 'up' command ?
+    #
+
+# -----------------------------------------------------
+# Start the Firethorn container.
+#[user@virtual]
+
+    export buildtag=2.1.28
+    source "${HOME:?}/chain.properties"
+
+    docker-compose \
+        --file "docker-compose.yml" \
+            up --detach \
+                gillian
+
+--START--
+Starting stevedore_carolina_1 ... done
+Starting stevedore_jarmila_1  ... done
+Starting stevedore_bethany_1  ... done
+Starting stevedore_gillian_1  ... done
+--END--
+
+
+# -----------------------------------------------------
+# Check the list of containers.
+#[user@virtual]
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                      PORTS                    NAMES
+cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 days ago          Exited (0) 2 days ago                                stevedore_firethorn-py_run_2
+ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (137) 2 months ago                            stevedore_firethorn-py_run_1
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   2 months ago        Up 3 minutes (healthy)      0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   2 months ago        Up 5 minutes (healthy)      8080/tcp                 stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Up 5 minutes                5432/tcp                 stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Up 5 minutes                5432/tcp                 stevedore_bethany_1
+--END--
+
+
+# -----------------------------------------------------
+# Check the service status.
+#[user@virtual]
+
+    curl --silent http://localhost:8080/firethorn/system/info/ | jq '.'
+
+--START--
+{
+  "java": {
+    "name": "OpenJDK 64-Bit Server VM",
+    "build": "25.191-b12",
+    "version": "1.8.0_191",
+    "memory": {
+      "total": 391118848,
+      "free": 307786744,
+      "max": 919076864
+    },
+    "disk": {
+      "total": 33016512512,
+      "free": 19524775936,
+      "usable": 17861898240
+    }
+  },
+  "build": {
+    "name": "firethorn-core",
+    "version": "2.1.28",
+    "timestamp": "1544222112180",
+    "changeset": "6ac9b0b3d3c7"
+  },
+  "system": {
+    "time": "2019-02-13T19:41:29.841Z",
+    "name": "Linux",
+    "arch": "amd64",
+    "version": "4.18.13-200.fc28.x86_64",
+    "platform": "Fedora release 28 (Twenty Eight)"
+  },
+  "servlet": {
+    "server": "Apache Tomcat/9.0.10",
+    "context": "/firethorn"
+  },
+  "jdbc": {
+    "drivers": [
+      {
+        "class": "org.postgresql.Driver"
+      }
+    ]
+  }
+}
+--END--
+
+# -----------------------------------------------------
+# Check the TAP resource.
+#[user@virtual]
+
+    curl --silent http://localhost:8080/firethorn/adql/resource/54/ | jq '.'
+
+--START--
+{
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json",
+  "vosi": "http://localhost:8080/firethorn/adql/resource/54/vosi",
+  "schemas": "http://localhost:8080/firethorn/adql/resource/54/schemas/select",
+  "queries": "http://localhost:8080/firethorn/adql/resource/54/queries/select",
+  "fullname": "OSA ADQL resource",
+  "text": null,
+  "name": "OSA ADQL resource",
+  "owner": "http://localhost:8080/firethorn/community-member/163",
+  "url": "http://localhost:8080/firethorn/adql/resource/54",
+  "self": "http://localhost:8080/firethorn/adql/resource/54",
+  "ident": "54",
+  "created": "2018-12-12T18:44:59.555",
+  "modified": "2018-12-12T18:44:59.556"
+}
+--END--
+
+# -----------------------------------------------------
+# Check the service status from laptop on eduroam.
+#[user@laptop]
+
+    curl --silent http://tap.roe.ac.uk/firethorn/system/info/ | jq '.'
+
+--START--
+{
+  "java": {
+    "name": "OpenJDK 64-Bit Server VM",
+    "build": "25.191-b12",
+    "version": "1.8.0_191",
+    "memory": {
+      "total": 391118848,
+      "free": 273477032,
+      "max": 919076864
+    },
+    "disk": {
+      "total": 33016512512,
+      "free": 19524706304,
+      "usable": 17861828608
+    }
+  },
+  "build": {
+    "name": "firethorn-core",
+    "version": "2.1.28",
+    "timestamp": "1544222112180",
+    "changeset": "6ac9b0b3d3c7"
+  },
+  "system": {
+    "time": "2019-02-13T19:42:28.899Z",
+    "name": "Linux",
+    "arch": "amd64",
+    "version": "4.18.13-200.fc28.x86_64",
+    "platform": "Fedora release 28 (Twenty Eight)"
+  },
+  "servlet": {
+    "server": "Apache Tomcat/9.0.10",
+    "context": "/firethorn"
+  },
+  "jdbc": {
+    "drivers": [
+      {
+        "class": "org.postgresql.Driver"
+      }
+    ]
+  }
+--END--
+
+    #
+    # Yay !!
+    # Home time :-)
+    #
 
 
 
