@@ -1,0 +1,239 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Issue:
+## tap.roe.ac.u/osa not responding..
+
+
+
+wget http://tap.roe.ac.uk/osa/availability
+--2019-03-04 17:24:26--  http://tap.roe.ac.uk/osa/availability
+Resolving tap.roe.ac.uk (tap.roe.ac.uk)... 129.215.175.100
+Connecting to tap.roe.ac.uk (tap.roe.ac.uk)|129.215.175.100|:80... connected.
+HTTP request sent, awaiting response... 
+
+
+.. Hangs..
+
+## Check Firethorn VM
+
+ssh Stevedore@Araybwyn
+
+
+
+[Stevedore@Araybwyn ~]$ docker ps
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                 PORTS                    NAMES
+513af3cb732e        firethorn/firethorn:2.1.28   "/bin/sh -c '/var/lo…"   2 months ago        Up 10 days (healthy)   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28     "/bin/sh -c '/var/lo…"   2 months ago        Up 10 days (healthy)   8080/tcp                 stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28    "docker-entrypoint.s…"   2 months ago        Up 10 days             5432/tcp                 stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28    "docker-entrypoint.s…"   2 months ago        Up 10 days             5432/tcp                 stevedore_bethany_1
+
+
+
+
+[Stevedore@Araybwyn ~]$ docker exec -it stevedore_gillian_1 bash
+
+
+bash-4.4$ tail -f -n 1000 logs/firethorn-debug.log 
+
+
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug] Request properties 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug]   queryString [null] 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug]   authType    [null] 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug]   remoteAddr  [127.0.0.1] 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug] Request headers 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug]   [host][localhost:8081] 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug]   [user-agent][curl/7.59.0] 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug]   [accept][*/*] 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug] Request parameters 
+2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug] ---- 
+2019-03-04 15:24:31,497 DEBUG [callback-interface-9] [AnonymousAuthenticator] Adding anonymous Authentication 
+2019-03-04 15:24:31,499 DEBUG [callback-interface-9] [IdentityEntity] create(Community) [friends] 
+2019-03-04 15:24:31,527 DEBUG [callback-interface-9] [OperationEntity] authenticate() [30549949][30550027][anon-KPIGLNLMZKE3OAAAAFUUSTTRRQ][urn:anonymous] 
+2019-03-04 15:24:31,528 DEBUG [callback-interface-9] [AuthMethodEntity] create() [30549949][30550027][anon-KPIGLNLMZKE3OAAAAFUUSTTRRQ][urn:anonymous] 
+2019-03-04 15:24:31,532 DEBUG [callback-interface-9] [OperationEntity] primary(Authentication) 
+2019-03-04 15:24:31,532 DEBUG [callback-interface-9] [OperationEntity]   Authentication [Authentication[Ident[30549999]Identity[anon-KPIGLNLMZKE3OAAAAFUUSTTRRQ]Method[urn:anonymous]]] 
+2019-03-04 15:24:31,532 DEBUG [callback-interface-9] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[30550027]]] 
+2019-03-04 15:24:31,533 DEBUG [callback-interface-9] [HttpRequestDebug] Response headers 
+2019-03-04 15:24:31,533 DEBUG [callback-interface-9] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2019-03-04 15:24:31,533 DEBUG [callback-interface-9] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2019-03-04 15:24:31,533 DEBUG [callback-interface-9] [HttpRequestDebug]   [firethorn.auth.username][anon-KPIGLNLMZKE3...] 
+2019-03-04 15:24:31,533 DEBUG [callback-interface-9] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+2019-03-04 15:24:31,533 DEBUG [callback-interface-9] [HttpRequestDebug] ---- 
+2019-03-04 15:25:00,000 INFO  [FireThornTaskScheduler-56] [UserDataCleaner] process() [15517][10][PT24H][PT24H][DROP] 
+2019-03-04 15:25:00,001 DEBUG [FireThornTaskScheduler-56] [IdentityEntity] admin() 
+2019-03-04 15:25:00,003 DEBUG [FireThornTaskScheduler-56] [IdentityEntity] find (Community, String) [Jo9keiRu7moo6ooNee1s] 
+2019-03-04 15:25:00,004 DEBUG [FireThornTaskScheduler-56] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]] 
+2019-03-04 15:25:00,005 DEBUG [FireThornTaskScheduler-56] [OperationEntity] authenticate() [30549950][163][Jo9keiRu7moo6ooNee1s][urn:system] 
+2019-03-04 15:25:00,005 DEBUG [FireThornTaskScheduler-56] [AuthMethodEntity] create() [30549950][163][Jo9keiRu7moo6ooNee1s][urn:system] 
+2019-03-04 15:25:00,006 DEBUG [FireThornTaskScheduler-56] [OperationEntity] primary(Authentication) 
+2019-03-04 15:25:00,006 DEBUG [FireThornTaskScheduler-56] [OperationEntity]   Authentication [Authentication[Ident[30550000]Identity[Jo9keiRu7moo6ooNee1s]Method[urn:system]]] 
+2019-03-04 15:25:00,006 DEBUG [FireThornTaskScheduler-56] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]] 
+2019-03-04 15:25:00,006 DEBUG [FireThornTaskScheduler-56] [UserDataCleaner]   cutoff   [2019-03-03T15:25:00.006Z] 
+2019-03-04 15:25:00,006 DEBUG [FireThornTaskScheduler-56] [JdbcResourceEntity] userdata() 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [JdbcResourceEntity] Userdata resource [52][Userdata resource] 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [UserDataCleaner]   resource [52][Userdata resource] 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [JdbcResourceEntity] schemas() for [52][Userdata resource] 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] scan for [52][Userdata resource] 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] scantest for [52][Userdata resource] 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] prevscan   [2019-03-04T07:02:00.063Z] 
+2019-03-04 15:25:00,008 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] scanperiod [PT25H] 
+2019-03-04 15:25:00,009 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] prev scan is recent - skipping 
+2019-03-04 15:25:00,009 DEBUG [FireThornTaskScheduler-56] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@cd4956b] 
+2019-03-04 15:25:00,009 DEBUG [FireThornTaskScheduler-56] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@cd4956b] 
+2019-03-04 15:25:00,009 DEBUG [FireThornTaskScheduler-56] [BaseProtector] affirm(Iterable<Authentication>, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@cd4956b] 
+2019-03-04 15:25:00,009 DEBUG [FireThornTaskScheduler-56] [BaseProtector] check(Authentication, Action) [Authentication[Ident[30550000]Identity[Jo9keiRu7moo6ooNee1s]Method[urn:system]]][uk.ac.roe.wfau.firethorn.access.BaseAction@cd4956b] 
+2019-03-04 15:25:00,009 DEBUG [FireThornTaskScheduler-56] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]] 
+2019-03-04 15:25:00,009 DEBUG [FireThornTaskScheduler-56] [IdentityEntity] admin() 
+2019-03-04 15:25:00,010 DEBUG [FireThornTaskScheduler-56] [IdentityEntity] find (Community, String) [Jo9keiRu7moo6ooNee1s] 
+2019-03-04 15:25:00,011 DEBUG [FireThornTaskScheduler-56] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]] 
+2019-03-04 15:25:00,012 DEBUG [FireThornTaskScheduler-56] [UserDataCleaner]   schema [252][FirethornUserdataTAP20181212LIVE.dbo] 
+2019-03-04 15:25:00,012 DEBUG [FireThornTaskScheduler-56] [JdbcSchemaEntity] tables() for [252][FirethornUserdataTAP20181212LIVE.dbo] 
+2019-03-04 15:25:00,012 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] scan for [252][FirethornUserdataTAP20181212LIVE.dbo] 
+2019-03-04 15:25:00,012 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] scantest for [252][FirethornUserdataTAP20181212LIVE.dbo] 
+2019-03-04 15:25:00,012 DEBUG [FireThornTaskScheduler-56] [JdbcSchemaEntity] factory() 
+2019-03-04 15:25:00,012 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-03-04 15:25:00,012 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-03-04 15:25:00,012 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-03-04 15:25:00,013 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] prevscan   [2019-03-04T07:03:31.724Z] 
+2019-03-04 15:25:00,013 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] scanperiod [PT25H] 
+2019-03-04 15:25:00,013 DEBUG [FireThornTaskScheduler-56] [BaseComponentEntity] prev scan is recent - skipping 
+2019-03-04 15:25:00,013 DEBUG [FireThornTaskScheduler-56] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataTAP20181212LIVE.dbo] [2019-03-03T15:25:00.006Z] 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug] Request properties 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug]   queryString [null] 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug]   authType    [null] 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug]   remoteAddr  [127.0.0.1] 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug] Request headers 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug]   [host][localhost:8081] 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug]   [user-agent][curl/7.59.0] 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug]   [accept][*/*] 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug] Request parameters 
+2019-03-04 15:25:01,713 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+2019-03-04 15:25:01,740 DEBUG [callback-interface-3] [AnonymousAuthenticator] Adding anonymous Authentication 
+2019-03-04 15:25:01,742 DEBUG [callback-interface-3] [IdentityEntity] create(Community) [friends] 
+2019-03-04 15:25:01,746 DEBUG [callback-interface-3] [OperationEntity] authenticate() [30549951][30550028][anon-IJ5DZJQYQ7N2GAAAAFUUSTXHVY][urn:anonymous] 
+2019-03-04 15:25:01,746 DEBUG [callback-interface-3] [AuthMethodEntity] create() [30549951][30550028][anon-IJ5DZJQYQ7N2GAAAAFUUSTXHVY][urn:anonymous] 
+2019-03-04 15:25:01,760 DEBUG [callback-interface-3] [OperationEntity] primary(Authentication) 
+2019-03-04 15:25:01,760 DEBUG [callback-interface-3] [OperationEntity]   Authentication [Authentication[Ident[30550001]Identity[anon-IJ5DZJQYQ7N2GAAAAFUUSTXHVY]Method[urn:anonymous]]] 
+2019-03-04 15:25:01,760 DEBUG [callback-interface-3] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[30550028]]] 
+2019-03-04 15:25:01,761 DEBUG [callback-interface-3] [HttpRequestDebug] Response headers 
+2019-03-04 15:25:01,761 DEBUG [callback-interface-3] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2019-03-04 15:25:01,761 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2019-03-04 15:25:01,761 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.username][anon-IJ5DZJQYQ7N2...] 
+2019-03-04 15:25:01,761 DEBUG [callback-interface-3] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+2019-03-04 15:25:01,761 DEBUG [callback-interface-3] [HttpRequestDebug] ---- 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug] Request properties 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info] 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug]   queryString [null] 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug]   authType    [null] 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug]   remoteAddr  [127.0.0.1] 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug] Request headers 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug]   [host][localhost:8081] 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug]   [user-agent][curl/7.59.0] 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug]   [accept][*/*] 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug] Request parameters 
+2019-03-04 15:25:31,943 DEBUG [callback-interface-8] [HttpRequestDebug] ---- 
+2019-03-04 15:25:31,952 DEBUG [callback-interface-8] [AnonymousAuthenticator] Adding anonymous Authentication 
+2019-03-04 15:25:31,956 DEBUG [callback-interface-8] [IdentityEntity] create(Community) [friends] 
+2019-03-04 15:25:31,981 DEBUG [callback-interface-8] [OperationEntity] authenticate() [30550052][30550029][anon-OXE66RYYG5LJCAAAAFUUST25WQ][urn:anonymous] 
+2019-03-04 15:25:31,981 DEBUG [callback-interface-8] [AuthMethodEntity] create() [30550052][30550029][anon-OXE66RYYG5LJCAAAAFUUST25WQ][urn:anonymous] 
+2019-03-04 15:25:31,987 DEBUG [callback-interface-8] [OperationEntity] primary(Authentication) 
+2019-03-04 15:25:31,987 DEBUG [callback-interface-8] [OperationEntity]   Authentication [Authentication[Ident[30550102]Identity[anon-OXE66RYYG5LJCAAAAFUUST25WQ]Method[urn:anonymous]]] 
+2019-03-04 15:25:31,987 DEBUG [callback-interface-8] [OperationEntity]   Identity [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[30550029]]] 
+2019-03-04 15:25:31,988 DEBUG [callback-interface-8] [HttpRequestDebug] Response headers 
+2019-03-04 15:25:31,988 DEBUG [callback-interface-8] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2019-03-04 15:25:31,988 DEBUG [callback-interface-8] [HttpRequestDebug]   [firethorn.auth.identity][http://localhost:...] 
+2019-03-04 15:25:31,988 DEBUG [callback-interface-8] [HttpRequestDebug]   [firethorn.auth.username][anon-OXE66RYYG5LJ...] 
+2019-03-04 15:25:31,988 DEBUG [callback-interface-8] [HttpRequestDebug]   [firethorn.auth.community][friends] 
+2019-03-04 15:25:31,988 DEBUG [callback-interface-8] [HttpRequestDebug] ---- 
+
+
+## Check Apache Logs:
+
+ssh Stevedore@Acilamwen 
+    docker exec -it apache bash
+    tail -f -n 1000 /var/log/httpd/error_log  
+     ..
+
+[Wed Feb 13 19:21:03.434148 2019] [core:notice] [pid 1:tid 140063511570688] AH00094: Command line: 'httpd -D FOREGROUND'
+[Wed Feb 13 20:17:03.518490 2019] [mpm_event:notice] [pid 1:tid 140063511570688] AH00493: SIGUSR1 received.  Doing graceful restart
+[Wed Feb 13 20:17:03.555844 2019] [lbmethod_heartbeat:notice] [pid 1:tid 140063511570688] AH02282: No slotmem from mod_heartmonitor
+[Wed Feb 13 20:17:03.556624 2019] [http2:warn] [pid 1:tid 140063511570688] AH02951: mod_ssl does not seem to be enabled
+[Wed Feb 13 20:17:03.557467 2019] [mpm_event:notice] [pid 1:tid 140063511570688] AH00489: Apache/2.4.34 (Fedora) configured -- resuming normal operations
+[Wed Feb 13 20:17:03.557495 2019] [core:notice] [pid 1:tid 140063511570688] AH00094: Command line: 'httpd -D FOREGROUND'
+[Sun Mar 03 00:15:07.405452 2019] [mpm_event:error] [pid 1:tid 140063511570688] AH00484: server reached MaxRequestWorkers setting, consider raising the MaxRequestWorkers setting
+
+
+    ## tap.roe.ac.uk Error log
+
+    tail -f -n 10000 /var/log/httpd/tap.roe.ac.uk-error.log
+
+## AH00484: server reached MaxRequestWorkers setting, consider raising the MaxRequestWorkers setting
+
+[Fri Mar 01 00:36:41.161899 2019] [proxy_http:error] [pid 1217:tid 140062624831232] (70007)The timeout specified has expired: [client 133.40.215.109:56982] AH01102: error reading status line from remote server araybwyn:8080
+[Fri Mar 01 00:36:41.161996 2019] [proxy:error] [pid 1217:tid 140062624831232] [client 133.40.215.109:56982] AH00898: Error reading from remote server returned by /osa/sync
+[Sun Mar 03 00:52:56.134648 2019] [proxy_http:error] [pid 330:tid 140062524151552] (70007)The timeout specified has expired: [client 133.40.215.109:39175] AH01102: error reading status line from remote server araybwyn:8080
+[Sun Mar 03 00:52:56.134739 2019] [proxy:error] [pid 330:tid 140062524151552] [client 133.40.215.109:39175] AH00898: Error reading from remote server returned by /osa/sync
+[Sun Mar 03 00:52:56.135275 2019] [proxy_http:error] [pid 953:tid 140062532544256] (70007)The timeout specified has expired: [client 133.40.215.109:39179] AH01102: error reading status line from remote server araybwyn:8080
+[Sun Mar 03 00:52:56.135315 2019] [proxy:error] [pid 953:tid 140062532544256] [client 133.40.215.109:39179] AH00898: Error reading from remote server returned by /osa/sync
+[Sun Mar 03 00:52:56.135698 2019] [proxy_http:error] [pid 330:tid 140062490580736] (70007)The timeout specified has expired: [client 133.40.215.109:39173] AH01102: error reading status line from remote server araybwyn:8080
+[Sun Mar 03 00:52:56.135748 2019] [proxy:error] [pid 330:tid 140062490580736] [client 133.40.215.109:39173] AH00898: Error reading from remote server returned by /osa/sync
+[Sun Mar 03 00:52:56.135968 2019] [proxy_http:error] [pid 1283:tid 140062683547392] (70007)The timeout specified has expired: [client 133.40.215.109:39177] AH01102: error reading status line from remote server araybwyn:8080
+[Sun Mar 03 00:52:56.136027 2019] [proxy:error] [pid 1283:tid 140062683547392] [client 133.40.215.109:39177] AH00898: Error reading from remote server returned by /osa/sync
+[Sun Mar 03 00:52:56.136243 2019] [proxy_http:error] [pid 330:tid 140062465402624] (70007)The timeout specified has expired: [client 133.40.215.109:39181] AH01102: error reading status line from remote server araybwyn:8080
+[Sun Mar 03 00:52:56.136278 2019] [proxy:error] [pid 330:tid 140062465402624] [client 133.40.215.109:39181] AH00898: Error reading from remote server returned by /osa/sync
+[Sun Mar 03 00:52:56.137241 2019] [proxy_http:error] [pid 1283:tid 140062675154688] (70007)The timeout specified has expired: [client 133.40.215.109:39183] AH01102: error reading status line from remote server araybwyn:8080
+
+..
+
+[Mon Mar 04 12:40:01.554007 2019] [proxy:error] [pid 542:tid 140061483980544] [client 178.79.157.93:43836] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Mar 04 12:40:03.347248 2019] [proxy_http:error] [pid 542:tid 140062691940096] (70007)The timeout specified has expired: [client 94.66.222.128:25738] AH01102: error reading status line from remote server araybwyn:8080
+[Mon Mar 04 12:40:03.347304 2019] [proxy:error] [pid 542:tid 140062691940096] [client 94.66.222.128:25738] AH00898: Error reading from remote server returned by /firethorn/system/info
+[Mon Mar 04 13:07:21.755999 2019] [proxy_http:error] [pid 953:tid 140062532544256] (70007)The timeout specified has expired: [client 145.238.193.18:25063] AH01102: error reading status line from remote server araybwyn:8080
+[Mon Mar 04 13:07:21.756079 2019] [proxy:error] [pid 953:tid 140062532544256] [client 145.238.193.18:25063] AH00898: Error reading from remote server returned by /osa/sync
+[Mon Mar 04 13:40:01.241575 2019] [proxy_http:error] [pid 755:tid 140061861455616] (70007)The timeout specified has expired: [client 178.79.157.93:43840] AH01102: error reading status line from remote server araybwyn:8080
+[Mon Mar 04 13:40:01.241656 2019] [proxy:error] [pid 755:tid 140061861455616] [client 178.79.157.93:43840] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Mar 04 14:40:01.839986 2019] [proxy_http:error] [pid 755:tid 140062834550528] (70007)The timeout specified has expired: [client 178.79.157.93:43844] AH01102: error reading status line from remote server araybwyn:8080
+[Mon Mar 04 14:40:01.840082 2019] [proxy:error] [pid 755:tid 140062834550528] [client 178.79.157.93:43844] AH00898: Error reading from remote server returned by /osa/availability
+[Mon Mar 04 14:47:21.927419 2019] [proxy_http:error] [pid 953:tid 140061618198272] (70007)The timeout specified has expired: [client 145.238.193.18:25063] AH01102: error reading status line from remote server araybwyn:8080
+[Mon Mar 04 14:47:21.927514 2019] [proxy:error] [pid 953:tid 140061618198272] [client 145.238.193.18:25063] AH00898: Error reading from remote server returned by /osa/sync
+
+
+
+    ## tap.roe.ac.uk Error log
+
+    tail -f -n 10000 /var/log/httpd/tap.roe.ac.uk-access.log
+
+
+
+## Restart Firethorn Container 
+ssh Stevedore@Araybwyn 
+	
+bash-4.4$ docker stop stevedore_gillian_1
+bash-4.4$ docker start stevedore_gillian_1
+
+
