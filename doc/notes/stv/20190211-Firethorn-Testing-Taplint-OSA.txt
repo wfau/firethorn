@@ -1,0 +1,534 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Date: 11 Feb 2019
+## Test: Use TAPlint (stilts.jar) to validate live tap.roe.ac.uk/osa TAP service
+
+
+java -jar stilts.jar taplint tapurl=http://tap.roe.ac.uk/osa debug=true
+This is STILTS taplint, 3.1-5/0e19ffc (2018-11-02)
+Static report types: ERROR(123), WARNING(48), INFO(21), SUMMARY(9), FAILURE(21)
+
+Section TMV: Validate table metadata against XML schema
+I-TMV-VURL-1 Validating http://tap.roe.ac.uk/osa/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+S-TMV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section TME: Check content of tables metadata from /tables
+I-TME-TURL-1 Reading table metadata from http://tap.roe.ac.uk/osa/tables
+S-TME-SUMM-1 Schemas: 17, Tables: 737, Columns: 31445, Foreign Keys: 0
+S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
+S-TME-FLGO-1 Other column flags: none
+
+Section TMS: Check content of tables metadata from TAP_SCHEMA
+I-TMS-QSUB-1 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.schemas
+I-TMS-QGET-1 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
+I-TMS-QSUB-2 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.tables
+I-TMS-QGET-2 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
+I-TMS-QSUB-3 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.columns
+I-TMS-QGET-3 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
+I-TMS-QSUB-4 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.keys
+I-TMS-QGET-4 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
+I-TMS-QSUB-5 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-5 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
+I-TMS-QSUB-6 Submitting query: SELECT principal, indexed, std, "size" FROM TAP_SCHEMA.columns
+I-TMS-QGET-6 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=31455
+I-TMS-QSUB-7 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.columns
+I-TMS-QGET-7 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+*+FROM+TAP_SCHEMA.columns&MAXREC=1
+I-TMS-QSUB-8 Submitting query: SELECT ft_column_id, std, indexed, principal, arraysize, ts_column_id, datatype, utype, ucd, unit, description, column_name, table_name FROM TAP_SCHEMA.columns
+I-TMS-QGET-8 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+ft_column_id%2C+std%2C+indexed%2C+principal%2C+arraysize%2C+ts_column_id%2C+datatype%2C+utype%2C+ucd%2C+unit%2C+description%2C+column_name%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=31455
+I-TMS-QSUB-9 Submitting query: SELECT from_column, target_column, key_id FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-9 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=31455
+S-TMS-SUMM-1 Schemas: 17, Tables: 737, Columns: 31445, Foreign Keys: 0
+S-TMS-FLGS-1 Standard column flags: indexed: 0, principal: 7, std: 33
+S-TMS-QNUM-1 Successful/submitted TAP queries: 13/13
+S-TMS-QTIM-1 Average successful query time: 2.3s
+I-TMS-QSUB-x (4 more)
+I-TMS-QGET-x (4 more)
+
+Section TMC: Compare table metadata from /tables and TAP_SCHEMA
+
+Section CPV: Validate capabilities against XML schema
+I-CPV-VURL-1 Validating http://tap.roe.ac.uk/osa/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+S-CPV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section CAP: Check content of TAPRegExt capabilities record
+I-CAP-CURL-1 Reading capability metadata from http://tap.roe.ac.uk/osa/capabilities
+
+Section AVV: Validate availability against XML schema
+I-AVV-VURL-1 Validating http://tap.roe.ac.uk/osa/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section QGE: Make ADQL queries in sync GET mode
+I-QGE-QSUB-1 Submitting query: SELECT TOP 10 programmeID FROM ATLASDR3.EpochFrameStatus
+I-QGE-QGET-1 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+programmeID+FROM+ATLASDR3.EpochFrameStatus
+I-QGE-QSUB-2 Submitting query: SELECT programmeID FROM ATLASDR3.EpochFrameStatus
+I-QGE-QGET-2 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+programmeID+FROM+ATLASDR3.EpochFrameStatus&MAXREC=9
+I-QGE-QSUB-3 Submitting query: SELECT TOP 1 programmeID FROM ATLASDR3.EpochFrameStatus
+I-QGE-QGET-3 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+programmeID+FROM+ATLASDR3.EpochFrameStatus
+I-QGE-QSUB-4 Submitting query: SELECT TOP 1 programmeID FROM ATLASDR3.EpochFrameStatus
+I-QGE-QGET-4 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+programmeID+FROM+ATLASDR3.EpochFrameStatus
+I-QGE-QSUB-5 Submitting query: SELECT TOP 8 "coord2", "coord1" AS taplint_c_2, A.sourceIDName, extTableName AS taplint_c_4, extTableID, A.surveyID AS taplint_c_6 FROM ATLASDR3.ExternalSurveyTable AS A
+I-QGE-QGET-5 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+%22coord2%22%2C+%22coord1%22+AS+taplint_c_2%2C+A.sourceIDName%2C+extTableName+AS+taplint_c_4%2C+extTableID%2C+A.surveyID+AS+taplint_c_6++FROM+ATLASDR3.ExternalSurveyTable+AS+A
+I-QGE-QSUB-6 Submitting query: SELECT programmeID FROM ATLASDR3.ProgrammeFrame
+I-QGE-QGET-6 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+programmeID+FROM+ATLASDR3.ProgrammeFrame&MAXREC=0
+I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
+I-QGE-QGET-7 Query GET URL: http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
+S-QGE-QNUM-1 Successful/submitted TAP queries: 6/6
+S-QGE-QTIM-1 Average successful query time: 1.2s
+
+Section QPO: Make ADQL queries in sync POST mode
+I-QPO-QSUB-1 Submitting query: SELECT TOP 10 programmeID FROM ATLASDR3.EpochFrameStatus
+I-QPO-QSUB-2 Submitting query: SELECT programmeID FROM ATLASDR3.EpochFrameStatus
+I-QPO-QSUB-3 Submitting query: SELECT TOP 8 "coord2", "coord1" AS taplint_c_2, A.sourceIDName, extTableName AS taplint_c_4, extTableID, A.surveyID AS taplint_c_6 FROM ATLASDR3.ExternalSurveyTable AS A
+I-QPO-QSUB-4 Submitting query: SELECT programmeID FROM ATLASDR3.ProgrammeFrame
+I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
+S-QPO-QNUM-1 Successful/submitted TAP queries: 4/4
+S-QPO-QTIM-1 Average successful query time: 1.2s
+
+Section QAS: Make ADQL queries in async mode
+I-QAS-QSUB-1 Submitting query: SELECT TOP 10 programmeID FROM ATLASDR3.EpochFrameStatus
+I-QAS-QJOB-1 Submitted query at http://tap.roe.ac.uk/firethorn/tap/54/async/26774933
+I-QAS-QSUB-2 Submitting query: SELECT programmeID FROM ATLASDR3.EpochFrameStatus
+I-QAS-QJOB-2 Submitted query at http://tap.roe.ac.uk/firethorn/tap/54/async/26774934
+I-QAS-QSUB-3 Submitting query: SELECT TOP 8 "coord2", "coord1" AS taplint_c_2, A.sourceIDName, extTableName AS taplint_c_4, extTableID, A.surveyID AS taplint_c_6 FROM ATLASDR3.ExternalSurveyTable AS A
+I-QAS-QJOB-3 Submitted query at http://tap.roe.ac.uk/firethorn/tap/54/async/26774935
+I-QAS-QSUB-4 Submitting query: SELECT programmeID FROM ATLASDR3.ProgrammeFrame
+I-QAS-QJOB-4 Submitted query at http://tap.roe.ac.uk/firethorn/tap/54/async/26774936
+I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
+I-QAS-QJOB-5 Submitted query at http://tap.roe.ac.uk/firethorn/tap/54/async/26774937
+S-QAS-QNUM-1 Successful/submitted TAP queries: 4/4
+S-QAS-QTIM-1 Average successful query time: 1.0s
+
+Section UWS: Test asynchronous UWS/TAP behaviour
+I-UWS-CJOB-1 Created new job http://tap.roe.ac.uk/firethorn/tap/54/async/26774938
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://tap.roe.ac.uk/firethorn/tap/54/async/26774938/parameters
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://tap.roe.ac.uk/firethorn/tap/54/async/26774938/phase
+I-UWS-POPA-3 POSTed ACTION=DELETE to http://tap.roe.ac.uk/firethorn/tap/54/async/26774938
+I-UWS-CJOB-2 Created new job http://tap.roe.ac.uk/firethorn/tap/54/async/26774939
+I-UWS-CJOB-3 Created new job http://tap.roe.ac.uk/firethorn/tap/54/async/26774940
+I-UWS-VUWS-1 UWS job document implicitly V1.0
+E-UWS-ANBX-1 (l.1, c.337): cvc-elt.3.2.1: Element 'uws:ownerId' cannot have character or element information [children], because 'http://www.w3.org/2001/XMLSchema-instance,nil' is specified.
+E-UWS-BBHV-1 (l.1, c.437): cvc-elt.3.2.1: Element 'uws:startTime' cannot have character or element information [children], because 'http://www.w3.org/2001/XMLSchema-instance,nil' is specified.
+E-UWS-BFNC-1 (l.1, c.503): cvc-elt.3.2.1: Element 'uws:endTime' cannot have character or element information [children], because 'http://www.w3.org/2001/XMLSchema-instance,nil' is specified.
+E-UWS-HECO-1 (l.1, c.1016): The prefix "xlink" for attribute "xlink:href" associated with an element type "uws:result" is not bound.
+I-UWS-POPA-4 POSTed PHASE=RUN to http://tap.roe.ac.uk/firethorn/tap/54/async/26774940/phase
+I-UWS-JOFI-1 Job completed immediately - can't test phase progression
+E-UWS-ANBX-2 (l.1, c.337): cvc-elt.3.2.1: Element 'uws:ownerId' cannot have character or element information [children], because 'http://www.w3.org/2001/XMLSchema-instance,nil' is specified.
+E-UWS-BBHV-2 (l.1, c.439): cvc-elt.3.2.1: Element 'uws:startTime' cannot have character or element information [children], because 'http://www.w3.org/2001/XMLSchema-instance,nil' is specified.
+E-UWS-BFNC-2 (l.1, c.505): cvc-elt.3.2.1: Element 'uws:endTime' cannot have character or element information [children], because 'http://www.w3.org/2001/XMLSchema-instance,nil' is specified.
+E-UWS-HECO-2 (l.1, c.1076): The prefix "xlink" for attribute "xlink:href" associated with an element type "uws:result" is not bound.
+
+Section MDQ: Check table query result columns against declared metadata
+I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM "FIRST".first08Jul16Source
+I-MDQ-QSUB-2 Submitting query: SELECT TOP 1 * FROM "FIRST".firstSource
+I-MDQ-QSUB-3 Submitting query: SELECT TOP 1 * FROM "FIRST".firstSource12Feb16
+I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ArchiveCurationHistory
+I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM ATLASDR1.AstrCalVers
+I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM ATLASDR1.CurationTask
+I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM ATLASDR1.CurrentAstrometry
+I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ExternalSurvey
+I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ExternalSurveyTable
+E-MDQ-QERR-1 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ArchiveCurationHistory [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+E-MDQ-QERR-2 Failed TAP query SELECT TOP 1 * FROM VVVDR4.AstrCalVers [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+E-MDQ-QERR-3 Failed TAP query SELECT TOP 1 * FROM VVVDR4.CurationTask [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+E-MDQ-QERR-4 Failed TAP query SELECT TOP 1 * FROM VVVDR4.CurrentAstrometry [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+E-MDQ-QERR-5 Failed TAP query SELECT TOP 1 * FROM VVVDR4.EpochFrameStatus [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+E-MDQ-QERR-6 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalProduct [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+E-MDQ-QERR-7 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalProductCatalogue [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+E-MDQ-QERR-8 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalSurvey [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+E-MDQ-QERR-9 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalSurveyTable [Service error: "null"]
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+java.io.IOException: Service error: "null"
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultVOTable(VotLintTapRunner.java:366)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:113)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:214)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:304)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+
+## Manual Stop..
+## VVVDR4 is missing from ramses19
+## Queries are not completing
+
+

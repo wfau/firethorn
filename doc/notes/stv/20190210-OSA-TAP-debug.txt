@@ -1,0 +1,599 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+ssh Stevedore@Araybwyn
+ssh: connect to host araybwyn port 22: No route to host
+
+
+# -----------------------------------------------------
+# List the active virtual machines.
+# stv@trop02:~$
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        list
+
+ Id    Name                           State
+----------------------------------------------------
+ 118   Acilamwen                      running
+ 119   Ibalehar                       running
+ 120   Eterathiel                     running
+ 122   Lothigometh                    running
+ 131   Siamond                        running
+ 137   Araybwyn                       running
+
+
+
+# -----------------------------------------------------
+# Check disp space of all VMs
+
+    vmlist=(Acilamwen Ibalehar Eterathiel Lothigometh Siamond Araybwyn)
+
+    for vmname in ${vmlist[*]}
+    do
+        echo "--"
+        echo "Name [${vmname}]"
+        ssh "${vmname:?}" \
+            "
+            df -h
+            "
+    done
+Name [Acilamwen]
+
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+--
+Name [Ibalehar]
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  840K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        15G  6.7G  6.6G  51% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   89M  135M  40% /boot
+tmpfs           395M     0  395M   0% /run/user/1000
+--
+Name [Eterathiel]
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  660K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        15G  4.2G  8.9G  33% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   89M  135M  40% /boot
+tmpfs           395M     0  395M   0% /run/user/1000
+--
+Name [Lothigometh]
+Warning: the ECDSA host key for 'lothigometh' differs from the key for the IP address '192.168.202.9'
+Offending key for IP in /home/stv/.ssh/known_hosts:6
+Matching host key in /home/stv/.ssh/known_hosts:14
+Are you sure you want to continue connecting (yes/no)? yes
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+--
+Name [Siamond]
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+2b:94:9b:47:d7:51:e5:3d:0b:4e:25:97:66:d1:1d:a8.
+Please contact your system administrator.
+Add correct host key in /home/stv/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /home/stv/.ssh/known_hosts:15
+  remove with: ssh-keygen -f "/home/stv/.ssh/known_hosts" -R siamond
+ECDSA host key for siamond has changed and you have requested strict checking.
+Host key verification failed.
+--
+Name [Araybwyn]
+ssh: connect to host araybwyn port 22: No route to host
+
+
+
+# -----------------------------------------------------
+# Reboot the firethorn VM.
+#[user@trop02]
+
+    vmname=Araybwyn
+    source "${HOME}/libvirt.settings"
+
+	virsh \
+	--connect "${connection}" \
+	reboot \
+	    "${vmname:?}"
+
+	setlocale: No such file or directory
+	Domain Araybwyn is being rebooted
+
+
+# -----------------------------------------------------
+# Login to the firethorn VM.
+#[user@trop02]
+
+    vmname=Araybwyn
+
+    ssh "${vmname:?}"
+    ssh: connect to host araybwyn port 22: No route to host
+
+
+# -----------------------------------------------------
+# Check the VM status.
+#[user@trop02]
+
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        dominfo \
+            "${vmname:?}"
+
+	Id:             137
+	Name:           Araybwyn
+	UUID:           a65ad4ca-0662-4c43-a32c-91e4180d87bc
+	OS Type:        hvm
+	State:          running
+	CPU(s):         4
+	CPU time:       2407009.9s
+	Max memory:     4194304 KiB
+	Used memory:    4194304 KiB
+	Persistent:     yes
+	Autostart:      disable
+	Managed save:   no
+	Security model: none
+	Security DOI:   0
+
+
+    virsh \
+        --connect "${connection}" \
+        domstate \
+            "${vmname:?}"
+	
+	running
+
+
+
+
+    virsh \
+        --connect "${connection}" \
+        domstats \
+            "${vmname:?}"
+
+	setlocale: No such file or directory
+	Domain: 'Araybwyn'
+	  state.state=1
+	  state.reason=1
+	  cpu.time=2409237288565161
+	  cpu.user=30576620000000
+	  cpu.system=136984740000000
+	  balloon.current=4194304
+	  balloon.maximum=4194304
+	  vcpu.current=4
+	  vcpu.maximum=4
+	  vcpu.0.state=1
+	  vcpu.0.time=570895730000000
+	  vcpu.1.state=1
+	  vcpu.1.time=581303750000000
+	  vcpu.2.state=1
+	  vcpu.2.time=583100010000000
+	  vcpu.3.state=1
+	  vcpu.3.time=544334280000000
+	  net.count=1
+	  net.0.name=vnet8
+	  net.0.rx.bytes=12551250887
+	  net.0.rx.pkts=43229290
+	  net.0.rx.errs=0
+	  net.0.rx.drop=0
+	  net.0.tx.bytes=19564599609
+	  net.0.tx.pkts=41260751
+	  net.0.tx.errs=0
+	  net.0.tx.drop=0
+	  block.count=2
+	  block.0.name=vda
+	  block.0.rd.reqs=4052268
+	  block.0.rd.bytes=141822376960
+	  block.0.rd.times=2984247725045
+	  block.0.wr.reqs=356946307
+	  block.0.wr.bytes=39150523073536
+	  block.0.wr.times=157757107561479
+	  block.0.fl.reqs=56831971
+	  block.0.fl.times=105766094670793
+	  block.1.name=vdb
+	  block.1.rd.reqs=48
+	  block.1.rd.bytes=186368
+	  block.1.rd.times=3707658
+	  block.1.wr.reqs=0
+	  block.1.wr.bytes=0
+	  block.1.wr.times=0
+	  block.1.fl.reqs=0
+	  block.1.fl.times=0
+
+
+	virsh \
+	 --connect "${connection}" \
+	 dommemstat \
+	     "${vmname:?}"
+
+	setlocale: No such file or directory
+	actual 4194304
+	swap_in 0
+	swap_out 0
+	major_fault 85
+	minor_fault 69615
+	unused 3865252
+	available 4038208
+	rss 4356152
+
+
+
+    virsh \
+        --connect "${connection}" \
+        domblklist \
+            "${vmname:?}"
+
+	setlocale: No such file or directory
+	Target     Source
+	------------------------------------------------
+	vda        /libvirt/storage/live/Araybwyn.qcow
+	vdb        /var/lib/libvirt/images/init/Araybwyn.iso
+
+
+	
+
+    virsh \
+        --connect "${connection}" \
+        domblkinfo \
+            "${vmname:?}" \
+            'vda'
+
+	setlocale: No such file or directory
+	Capacity:       34359738368
+	Allocation:     19841687552
+	Physical:       19841687552
+
+	
+    virsh \
+        --connect "${connection}" \
+        domblkerror \
+            "${vmname:?}"
+
+	setlocale: No such file or directory
+	No errors found
+
+
+
+    virsh \
+        --connect "${connection}" \
+        domblkstat \
+            "${vmname:?}" \
+            'vda'
+
+	setlocale: No such file or directory
+	vda rd_req 4052268
+	vda rd_bytes 141822376960
+	vda wr_req 356946307
+	vda wr_bytes 39150523073536
+	vda flush_operations 56831971
+	vda rd_total_times 2984247725045
+	vda wr_total_times 157757107561479
+	vda flush_total_times 105766094670793
+
+
+
+#
+# Reboot didn't reboot. Looks exactly like the issue we've seen before with these crashes
+#
+
+
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        reboot \
+            "${vmname:?}"
+
+       Domain Araybwyn is being rebooted
+
+       ....
+
+    ssh Stevedore@Araybwyn 
+    ssh: connect to host araybwyn port 22: No route to host
+
+
+# -----------------------------------------------------
+# Try pulling the power cord ...
+#[user@trop]
+
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+         destroy \
+            "${vmname:?}"
+
+    setlocale: No such file or directory
+    Domain Araybwyn destroyed
+
+
+
+# -----------------------------------------------------
+# Try start it up again ...
+#[user@trop]
+
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+         start \
+            "${vmname:?}"
+
+    setlocale: No such file or directory
+    Domain Araybwyn started
+
+
+# -----------------------------------------------------
+# Login and check disk space ...
+
+stv@trop02:~$ ssh Stevedore@Araybwyn 
+Warning: Permanently added 'araybwyn' (ECDSA) to the list of known hosts.
+Last login: Wed Jan 30 18:18:46 2019 from 192.168.202.1
+
+	df -h
+	Filesystem      Size  Used Avail Use% Mounted on
+	devtmpfs        2.0G     0  2.0G   0% /dev
+	tmpfs           2.0G     0  2.0G   0% /dev/shm
+	tmpfs           2.0G  524K  2.0G   1% /run
+	tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+	/dev/vda3        31G   17G   14G  56% /
+	tmpfs           2.0G  4.0K  2.0G   1% /tmp
+	/dev/vda1       240M   89M  135M  40% /boot
+	tmpfs           395M     0  395M   0% /run/user/1001
+
+
+	docker ps -a
+	CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                                PORTS                    NAMES
+	ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (137) 2 months ago                                      stevedore_firethorn-py_run_1
+	513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   2 months ago        Exited (255) Less than a second ago   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+	f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   2 months ago        Exited (255) Less than a second ago   8080/tcp                 stevedore_jarmila_1
+	7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (255) Less than a second ago   5432/tcp                 stevedore_carolina_1
+	80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   2 months ago        Exited (255) Less than a second ago   5432/tcp                 stevedore_bethany_1
+
+
+# -----------------------------------------------------
+# Restart using compose
+
+	export buildtag=2.1.28
+	source "${HOME:?}/chain.properties"
+
+	docker-compose --file "docker-compose.yml" run firethorn-py
+
+	Starting stevedore_carolina_1 ... done
+	Starting stevedore_bethany_1  ... done
+	Starting stevedore_jarmila_1  ... done
+	Starting stevedore_gillian_1  ... done
+
+Python 3.5.2 (default, Nov 12 2018, 13:43:14) 
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+ta
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+# Create our Firethorn client.
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+# Get the Atlas AdqlResource.
+resource =firethorn.firethorn_engine.select_adql_resource_by_ident("http://tap.roe.ac.uk/firethorn/adql/resource/54")
+
+
+#
+# Create and run a query on the resource.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = resource.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+
+
+
+print(
+    query_obj.table()
+     )
+
+
+{
+  "ident": "26614953",
+  "self": "http://tap.roe.ac.uk/firethorn/adql/table/26614953",
+  "query": "http://tap.roe.ac.uk/firethorn/blue/query/26614753",
+  "metadata": {
+    "adql": {
+      "count": 1000,
+      "status": "COMPLETED"
+    }
+  },
+  "fullname": "temp.XX_SA2YV52UBIJ4EAAAAFUNSWH3SQ",
+  "depth": "PARTIAL",
+  "schema": "http://tap.roe.ac.uk/firethorn/adql/schema/26614902",
+  "root": "http://tap.roe.ac.uk/firethorn/jdbc/table/26614952",
+  "base": "http://tap.roe.ac.uk/firethorn/jdbc/table/26614952",
+  "modified": "2019-02-10T21:38:34.007",
+  "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/26614852",
+  "columns": "http://tap.roe.ac.uk/firethorn/adql/table/26614953/columns/select",
+  "created": "2019-02-10T21:38:34.007",
+  "parent": "http://tap.roe.ac.uk/firethorn/adql/schema/26614902",
+  "url": "http://tap.roe.ac.uk/firethorn/adql/table/26614953",
+  "owner": "http://tap.roe.ac.uk/firethorn/community-member/26614655",
+  "formats": {
+    "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/26614953/datatable",
+    "votable": "http://tap.roe.ac.uk/firethorn/adql/table/26614953/votable"
+  },
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+  "name": "XX_SA2YV52UBIJ4EAAAAFUNSWH3SQ",
+  "text": null
+}
+
+print(
+    query_obj.table().count()
+    )
+1000
+
+
+
+## Need to check why health checker cron job on my machine did not catch TAP service unresponsiveness
+## UPDATE (11/Feb/2019): Health Checker should now be fixed. Is set to run every 45mins
+
+
+## Let's check the Apache proxy logs the day the VM crashed (February 4th 2019)
+
+ssh Stevedore@Acilamwen
+[Stevedore@Acilamwen ~]$ docker exec -it apache bash
+[root@bc8d6979e451 /]# tail -f -n 10000 /var/log/httpd/tap.roe.ac.uk-access.log  | grep -C 10 "04/Feb/2019"
+
+..
+
+## Results can be found in 20190211-OSA-TAP-debug-Apache-Logs.txt
+
+## VM seems to die around 04/Feb/2019:13:05:17
+## There is a validator running queries on the TAP service just before it does
+
+195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 1335 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "POST /firethorn/blue/query/26607251 HTTP/1.1" 200 1976 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/blue/query/26607251 HTTP/1.1" 200 2929 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/blue/query/26607251 HTTP/1.1" 200 2929 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 12641 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+178.79.157.93 - - [04/Feb/2019:14:00:01 +0000] "GET /osa/availability HTTP/1.1" 503 299 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
+195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "POST /firethorn/blue/query/26613652 HTTP/1.1" 502 438 "-" "Python-urllib/3.4"
+
+
+## GET request to /firethorn/adql/resource/56 is the last successful request before crash
+
+## Possible hints in the last few queries?
+
+
+## http://tap.roe.ac.uk/firethorn/blue/query/26607246
+   SELECT TOP 10 * FROM BestDR9.GalaxyTag
+   - Completed Job
+   - VOTable with no rows (Table Deleted)
+   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+## http://tap.roe.ac.uk/firethorn/blue/query/26607247
+   SELECT TOP 10 * FROM VVVDR4.Multiframe
+   - Completed Job
+   - VOTable with no rows (Table Deleted)
+   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+
+## http://tap.roe.ac.uk/firethorn/blue/query/26607248
+   SELECT TOP 10 * FROM BestDR9.galSpecLine
+   - Completed Job
+   - VOTable with no rows (Table Deleted)
+
+
+## http://tap.roe.ac.uk/firethorn/blue/query/26607249
+   SELECT TOP 10 * FROM VVVDR4.MultiframeDetector
+   - Completed Job
+   - VOTable with no rows (Table Deleted)
+   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+
+## http://tap.roe.ac.uk/firethorn/blue/query/26607250
+   SELECT TOP 10 * FROM BestDR9.Run
+   - Completed Job
+   - VOTable with no rows (Table Deleted)
+   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+
+## http://tap.roe.ac.uk/firethorn/blue/query/26607251
+   SELECT TOP 10 * FROM BestDR9.Segue2Target1
+   - Completed Job
+   - VOTable with no rows (Table Deleted)
+   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+## dhttp://tap.roe.ac.uk/firethorn/blue/query/26613652
+   SELECT TOP 10 * FROM VVVDR4.MultiframeDetectorEsoKeys
+   - status is "READY"
+   - Query never started?
+   - 
+	"history": [
+	{
+		"type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+		"level": "INFO",
+		"task": "http://tap.roe.ac.uk/firethorn/blue/query/26613652",
+		"message": "Executing query",
+		"state": "READY",
+		"owner": "http://tap.roe.ac.uk/firethorn/community-member/163",
+		"url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/26613606",
+		"self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/26613606",
+		"ident": "26613606",
+		"created": "2019-02-04T13:05:17.348",
+		"modified": "2019-02-04T13:05:17.349"
+		}
+	],
+
+
+## Blue Query numbering seems strange.. Jumping from 26607251 which was the last completed query to 26613652 ?
+## http://tap.roe.ac.uk/firethorn/blue/query/26613651 for example does not exist (26613652 - 1)
+
+
+## Check the httpd error logs (/var/log/httpd/tap.roe.ac.uk-error.log)
+
+Mon Feb 04 14:00:20.094303 2019] [proxy:error] [pid 5522:tid 139756264474368] (113)No route to host: AH00957: HTTP: attempt to connect to 192.168.202.8:8080 (*) failed
+[Mon Feb 04 14:00:20.094393 2019] [proxy_http:error] [pid 5522:tid 139756264474368] [client 178.79.157.93:40936] AH01114: HTTP: failed to make connection to backend: araybwyn
+[Mon Feb 04 14:45:17.108362 2019] [proxy_http:error] [pid 5521:tid 139756549629696] (70007)The timeout specified has expired: [client 195.194.121.66:56730] AH01102: error reading status line from remote server araybwyn:8080
+[Mon Feb 04 14:45:17.108443 2019] [proxy:error] [pid 5521:tid 139756549629696] [client 195.194.121.66:56730] AH00898: Error reading from remote server returned by /firethorn/blue/query/26613652
+[Mon Feb 04 14:45:17.691333 2019] [proxy_http:error] [pid 5521:tid 139756532844288] (70007)The timeout specified has expired: [client 195.194.121.66:56736] AH01102: error reading status line from remote server araybwyn:8080
+[Mon Feb 04 14:45:17.691380 2019] [proxy:error] [pid 5521:tid 139756532844288] [client 195.194.121.66:56736] AH00898: Error reading from remote server returned by /firethorn/adql/table/26612173
+[Mon Feb 04 14:45:20.190543 2019] [proxy:error] [pid 5522:tid 139756423837440] (113)No route to host: AH00957: HTTP: attempt to connect to 192.168.202.8:8080 (*) failed
+
+

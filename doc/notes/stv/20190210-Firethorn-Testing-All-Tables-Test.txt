@@ -1,0 +1,1675 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Date: 10 Feb 2019
+
+## Firethorn Version: 2.1.28
+## Resource ID: 1808
+## VM: Cadelicia
+## Server: trop01
+## VM Version: 4.18.13-200.fc28.x86_64
+## VM Platform: Fedora release 28 (Twenty Eight)
+## User Database: FirethornUserdataZRQ20170621151245DEV
+
+
+## Test Started  10 February
+
+/usr/bin/python3 /home/stelios/ft_validator.py -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 -v=True
+
+--- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+Testing [BestDR1.SpecObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8134574
+ 
+Table query completed after 5.91491174697876 seconds
+Testing [BestDR1.TilingInfo]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8134579
+ 
+Table query completed after 5.300127029418945 seconds
+Testing [BestDR1.StripeDefs]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8134583
+ 
+Table query completed after 5.420400619506836 seconds
+Testing [BestDR1.HoleObj]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8134587
+ 
+Table query completed after 5.249052047729492 seconds
+Testing [BestDR1.Neighbors]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8134589
+ 
+Table query completed after 5.3175270557403564 seconds
+Testing [BestDR1.SDSSConstants]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8134593
+ 
+Table query completed after 2.1628799438476562 seconds
+Testing [BestDR1.PhotoTag]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8134594
+ 
+Table query completed after 5.693139553070068 seconds
+Testing [BestDR1.ObjMask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8134599
+ 
+Table query completed after 5.603372812271118 seconds
+Testing [BestDR1.RunShift]
+Rowcount:9
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141102
+ 
+Table query completed after 2.034121513366699 seconds
+Testing [BestDR1.QsoConcordance]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141104
+ 
+Table query completed after 5.678692817687988 seconds
+Testing [BestDR1.ProfileDefs]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141108
+ 
+Table query completed after 5.311837673187256 seconds
+Testing [BestDR1.TargetParam]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141111
+ 
+Table query completed after 1.9929795265197754 seconds
+Testing [BestDR1.MaskedObject]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141113
+ 
+Table query completed after 5.132030248641968 seconds
+Testing [BestDR1.Photoz]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141117
+ 
+Table query completed after 5.562393426895142 seconds
+Testing [BestDR1.QsoCatalogAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141121
+ 
+Table query completed after 5.333141088485718 seconds
+Testing [BestDR1."Match"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141123
+ 
+Table query completed after 5.282598257064819 seconds
+Testing [BestDR1.SiteConstants]
+Rowcount:6
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141126
+ 
+Table query completed after 5.2305357456207275 seconds
+Testing [BestDR1.USNO]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141129
+ 
+Table query completed after 5.409270763397217 seconds
+Testing [BestDR1.TileAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141132
+ 
+Table query completed after 5.297375679016113 seconds
+Testing [BestDR1.QueryResults]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141135
+ 
+Table query completed after 5.2676708698272705 seconds
+Testing [BestDR1."Region"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141138
+ 
+Table query completed after 5.144794940948486 seconds
+Testing [BestDR1.Rosat]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141139
+ 
+Table query completed after 5.407320499420166 seconds
+Testing [BestDR1.FileGroupMap]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141141
+ 
+Table query completed after 5.0799267292022705 seconds
+Testing [BestDR1.ELRedShift]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141142
+ 
+Table query completed after 5.0971574783325195 seconds
+Testing [BestDR1.SpecLineIndex]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141144
+ 
+Table query completed after 5.220660209655762 seconds
+Testing [BestDR1.Rmatrix]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141145
+ 
+Table query completed after 5.159454822540283 seconds
+Testing [BestDR1.XCRedshift]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8141149
+ 
+Table query completed after 5.463874340057373 seconds
+Testing [BestDR1."Diagnostics"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148103
+ 
+Table query completed after 5.2826151847839355 seconds
+Testing [BestDR1.LoadHistory]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148107
+ 
+Table query completed after 5.430750846862793 seconds
+Testing [BestDR1.TilingGeometry]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148111
+ 
+Table query completed after 5.221219778060913 seconds
+Testing [BestDR1.PhotoProfile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148114
+ 
+Table query completed after 5.742874383926392 seconds
+Testing [BestDR1.DBColumns]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148117
+ 
+Table query completed after 2.0540456771850586 seconds
+Testing [BestDR1.MatchHead]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148119
+ 
+Table query completed after 5.208236217498779 seconds
+Testing [BestDR1.History]
+Rowcount:6
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148123
+ 
+Table query completed after 5.243359565734863 seconds
+Testing [BestDR1.Field]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148127
+ 
+Table query completed after 8.46556282043457 seconds
+Testing [BestDR1.SpecLineAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148130
+ 
+Table query completed after 6.639212131500244 seconds
+Testing [BestDR1.DataConstants]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148135
+ 
+Table query completed after 5.419246435165405 seconds
+Testing [BestDR1.TilingNote]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148136
+ 
+Table query completed after 2.087616205215454 seconds
+Testing [BestDR1.SiteDiagnostics]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148137
+ 
+Table query completed after 5.613192558288574 seconds
+Testing [BestDR1.PhotoObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148142
+ 
+Table query completed after 8.457804679870605 seconds
+Testing [BestDR1.Frame]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8148148
+ 
+Table query completed after 5.627666234970093 seconds
+Testing [BestDR1."Zone"]
+ERROR:root:''
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+ERROR:root:http://localhost:8081/firethorn/blue/query/8156652
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+ERROR:root:''
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+ERROR:root:http://localhost:8081/firethorn/blue/query/8156652
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+ERROR:root:'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn_utils-0.1.0-py3.4.egg/firethorn_utils/validator.py", line 182, in validate
+    rowcount = query_obj.results().rowcount()
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/query.py", line 101, in results
+    if (self.adql_query.table()!=None):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/adql_query/adql_query.py", line 101, in table
+    table_json = self.get_json(self.json_object.get("results",None).get("table",None))
+AttributeError: 'NoneType' object has no attribute 'get'
+<class 'AttributeError'>
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156652
+ 
+{'BestDR1."Zone"': "<class 'AttributeError'>"}
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156652
+ 
+Table query completed after 8.552484273910522 seconds
+Testing [BestDR1.PartitionMap]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156653
+ 
+Table query completed after 2.1518712043762207 seconds
+Testing [BestDR1.DBObjects]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156656
+ 
+Table query completed after 5.371258020401001 seconds
+Testing [BestDR1.Sector]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156661
+ 
+Table query completed after 5.1141462326049805 seconds
+Testing [BestDR1.DBObjectDescription]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156665
+ 
+Table query completed after 2.2609810829162598 seconds
+Testing [BestDR1.Glossary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156667
+ 
+Table query completed after 5.170159816741943 seconds
+Testing [BestDR1.TilingRun]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156672
+ 
+Table query completed after 5.213626861572266 seconds
+Testing [BestDR1.Chunk]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156677
+ 
+Table query completed after 5.2088446617126465 seconds
+Testing [BestDR1.Segment]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156681
+ 
+Table query completed after 5.6126368045806885 seconds
+Testing [BestDR1."First"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156686
+ 
+Table query completed after 5.36435341835022 seconds
+Testing [BestDR1.PlateX]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156688
+ 
+Table query completed after 2.949679374694824 seconds
+Testing [BestDR1.PubHistory]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156690
+ 
+Table query completed after 2.0921645164489746 seconds
+Testing [BestDR1.FieldProfile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156691
+ 
+Table query completed after 5.288158178329468 seconds
+Testing [BestDR1.Best2Sector]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156695
+ 
+Table query completed after 5.140815258026123 seconds
+Testing [BestDR1.DBViewCols]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8156699
+ 
+Table query completed after 5.269805192947388 seconds
+Testing [BestDR1.Mask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161154
+ 
+Table query completed after 5.383679151535034 seconds
+Testing [BestDR1.Target]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161156
+ 
+Table query completed after 5.490220785140991 seconds
+Testing [BestDR1.IndexMap]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161161
+ 
+Table query completed after 5.202692747116089 seconds
+Testing [BestDR1.TiledTargetAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161164
+ 
+Table query completed after 6.609126806259155 seconds
+Testing [BestDR1.TargetInfo]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161169
+ 
+Table query completed after 5.1981353759765625 seconds
+Testing [BestDR1.Sector2Tile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161173
+ 
+Table query completed after 5.18147611618042 seconds
+Testing [BestDR1.SpecPhotoAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161178
+ 
+Table query completed after 5.995043516159058 seconds
+Testing [BestDR3.Algorithm]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161180
+ 
+Table query completed after 5.186557769775391 seconds
+Testing [BestDR3.Chunk]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161185
+ 
+Table query completed after 5.405439853668213 seconds
+Testing [BestDR3.DBColumns]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161188
+ 
+Table query completed after 5.3040642738342285 seconds
+Testing [BestDR3.DBObjects]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161191
+ 
+Table query completed after 5.3699586391448975 seconds
+Testing [BestDR3.DBViewCols]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161196
+ 
+Table query completed after 5.242100954055786 seconds
+Testing [BestDR3.DataConstants]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161199
+ 
+Table query completed after 5.43524432182312 seconds
+Testing [BestDR3."Diagnostics"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8161201
+ 
+Table query completed after 5.162170648574829 seconds
+Testing [BestDR3.ELRedShift]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168604
+ 
+Table query completed after 5.317128896713257 seconds
+Testing [BestDR3.Field]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168608
+ 
+Table query completed after 7.853348016738892 seconds
+Testing [BestDR3.FieldProfile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168612
+ 
+Table query completed after 5.235902547836304 seconds
+Testing [BestDR3.FileGroupMap]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168614
+ 
+Table query completed after 1.987274408340454 seconds
+Testing [BestDR3."First"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168615
+ 
+Table query completed after 5.140025854110718 seconds
+Testing [BestDR3.Frame]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168618
+ 
+Table query completed after 5.567891597747803 seconds
+Testing [BestDR3.Glossary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168621
+ 
+Table query completed after 5.6191558837890625 seconds
+Testing [BestDR3.History]
+Rowcount:1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168623
+ 
+Table query completed after 5.303930282592773 seconds
+Testing [BestDR3.HoleObj]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168625
+ 
+Table query completed after 5.29571533203125 seconds
+Testing [BestDR3.IndexMap]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168628
+ 
+Table query completed after 5.226339340209961 seconds
+Testing [BestDR3.LoadHistory]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168633
+ 
+Table query completed after 5.392591714859009 seconds
+Testing [BestDR3.Mask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168638
+ 
+Table query completed after 5.873681545257568 seconds
+Testing [BestDR3.MaskedObject]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168641
+ 
+Table query completed after 2.9377875328063965 seconds
+Testing [BestDR3."Match"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168642
+ 
+Table query completed after 5.125964641571045 seconds
+Testing [BestDR3.MatchHead]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168643
+ 
+Table query completed after 5.300876617431641 seconds
+Testing [BestDR3.Neighbors]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168647
+ 
+Table query completed after 5.348705053329468 seconds
+Testing [BestDR3.ObjMask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8168649
+ 
+Table query completed after 5.200954437255859 seconds
+Testing [BestDR3.PartitionMap]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177302
+ 
+Table query completed after 5.266723155975342 seconds
+Testing [BestDR3.PhotoObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177304
+ 
+Table query completed after 7.818704605102539 seconds
+Testing [BestDR3.PhotoProfile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177308
+ 
+Table query completed after 5.315683364868164 seconds
+Testing [BestDR3.PhotoTag]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177311
+ 
+Table query completed after 5.5650622844696045 seconds
+Testing [BestDR3.Photoz]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177313
+ 
+Table query completed after 5.412436246871948 seconds
+Testing [BestDR3.PlateX]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177317
+ 
+Table query completed after 5.652896404266357 seconds
+Testing [BestDR3.ProfileDefs]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177321
+ 
+Table query completed after 5.179040908813477 seconds
+Testing [BestDR3.PubHistory]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177323
+ 
+Table query completed after 5.748351573944092 seconds
+Testing [BestDR3.QsoCatalogAll]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177325
+ 
+Table query completed after 5.272192001342773 seconds
+Testing [BestDR3.QsoConcordance]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177327
+ 
+Table query completed after 2.390415906906128 seconds
+Testing [BestDR3.QueryResults]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177328
+ 
+Table query completed after 2.035592555999756 seconds
+Testing [BestDR3.RC3]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177329
+ 
+Table query completed after 5.615440130233765 seconds
+Testing [BestDR3.RecentQueries]
+Rowcount:2
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177333
+ 
+Table query completed after 5.161046743392944 seconds
+Testing [BestDR3."Region"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177337
+ 
+Table query completed after 5.132567405700684 seconds
+Testing [BestDR3.Rmatrix]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177339
+ 
+Table query completed after 5.083134174346924 seconds
+Testing [BestDR3.Rosat]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177340
+ 
+Table query completed after 5.376810073852539 seconds
+Testing [BestDR3.RunQA]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177343
+ 
+Table query completed after 5.273856163024902 seconds
+Testing [BestDR3.RunShift]
+Rowcount:9
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177345
+ 
+Table query completed after 5.144989490509033 seconds
+Testing [BestDR3.SDSSConstants]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8177350
+ 
+Table query completed after 6.286448240280151 seconds
+Testing [BestDR3.Sector]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183903
+ 
+Table query completed after 2.078784465789795 seconds
+Testing [BestDR3.Sector2Tile]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183904
+ 
+Table query completed after 1.9570422172546387 seconds
+Testing [BestDR3.Segment]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183905
+ 
+Table query completed after 5.51275372505188 seconds
+Testing [BestDR3.SiteConstants]
+Rowcount:6
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183909
+ 
+Table query completed after 5.120499610900879 seconds
+Testing [BestDR3.SiteDBs]
+Rowcount:1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183914
+ 
+Table query completed after 2.020522117614746 seconds
+Testing [BestDR3.SiteDiagnostics]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183916
+ 
+Table query completed after 5.179126501083374 seconds
+Testing [BestDR3.SpecLineAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183920
+ 
+Table query completed after 5.181104898452759 seconds
+Testing [BestDR3.SpecLineIndex]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183923
+ 
+Table query completed after 5.220137596130371 seconds
+Testing [BestDR3.SpecObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183925
+ 
+Table query completed after 5.4931135177612305 seconds
+Testing [BestDR3.SpecPhotoAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183926
+ 
+Table query completed after 5.91306209564209 seconds
+Testing [BestDR3.Stetson]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183929
+ 
+Table query completed after 5.2069830894470215 seconds
+Testing [BestDR3.StripeDefs]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183933
+ 
+Table query completed after 5.168819427490234 seconds
+Testing [BestDR3.TableDesc]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183937
+ 
+Table query completed after 5.2258360385894775 seconds
+Testing [BestDR3.Target]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183942
+ 
+Table query completed after 5.596705913543701 seconds
+Testing [BestDR3.TargetInfo]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183944
+ 
+Table query completed after 5.202038049697876 seconds
+Testing [BestDR3.TargetParam]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183946
+ 
+Table query completed after 1.9565892219543457 seconds
+Testing [BestDR3.TileAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183947
+ 
+Table query completed after 5.295959711074829 seconds
+Testing [BestDR3.TiledTargetAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8183949
+ 
+Table query completed after 5.17352557182312 seconds
+Testing [BestDR3.TilingGeometry]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187703
+ 
+Table query completed after 5.456555604934692 seconds
+Testing [BestDR3.TilingInfo]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187707
+ 
+Table query completed after 5.214065790176392 seconds
+Testing [BestDR3.TilingNote]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187709
+ 
+Table query completed after 5.1747283935546875 seconds
+Testing [BestDR3.TilingRun]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187712
+ 
+Table query completed after 5.30301570892334 seconds
+Testing [BestDR3.USNO]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187713
+ 
+Table query completed after 5.188025236129761 seconds
+Testing [BestDR3.XCRedshift]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187717
+ 
+Table query completed after 5.329555988311768 seconds
+Testing [BestDR3."Zone"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187720
+ 
+Table query completed after 6.008653879165649 seconds
+Testing [BestDR3.CoordType]
+Rowcount:4
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187724
+ 
+Table query completed after 5.070635557174683 seconds
+Testing [BestDR3.FieldMask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187726
+ 
+Table query completed after 5.219735860824585 seconds
+Testing [BestDR3.FieldQuality]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187729
+ 
+Table query completed after 5.1494529247283936 seconds
+Testing [BestDR3.FramesStatus]
+Rowcount:4
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187732
+ 
+Table query completed after 5.630788564682007 seconds
+Testing [BestDR3.HoleType]
+Rowcount:6
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187735
+ 
+Table query completed after 5.2170021533966064 seconds
+Testing [BestDR3.ImageMask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187738
+ 
+Table query completed after 5.271433591842651 seconds
+Testing [BestDR3.InsideMask]
+Rowcount:7
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187741
+ 
+Table query completed after 5.267342805862427 seconds
+Testing [BestDR3.MaskType]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187744
+ 
+Table query completed after 5.341984748840332 seconds
+Testing [BestDR3.ObjType]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8187748
+ 
+Table query completed after 5.156116247177124 seconds
+Testing [BestDR3.PhotoFlags]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194752
+ 
+Table query completed after 5.217034101486206 seconds
+Testing [BestDR3.PhotoMode]
+Rowcount:4
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194754
+ 
+Table query completed after 5.187937259674072 seconds
+Testing [BestDR3.PhotoStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194757
+ 
+Table query completed after 5.227283239364624 seconds
+Testing [BestDR3.PhotoType]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194760
+ 
+Table query completed after 5.45337438583374 seconds
+Testing [BestDR3.PrimTarget]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194763
+ 
+Table query completed after 6.074108839035034 seconds
+Testing [BestDR3.ProgramType]
+Rowcount:3
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194765
+ 
+Table query completed after 5.16812801361084 seconds
+Testing [BestDR3.PspStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194768
+ 
+Table query completed after 5.434267044067383 seconds
+Testing [BestDR3.SecTarget]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194771
+ 
+Table query completed after 5.276954412460327 seconds
+Testing [BestDR3.SpecClass]
+Rowcount:8
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194774
+ 
+Table query completed after 5.140192985534668 seconds
+Testing [BestDR3.SpecLineNames]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194777
+ 
+Table query completed after 2.1305747032165527 seconds
+Testing [BestDR3.SpecZStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194778
+ 
+Table query completed after 5.171198606491089 seconds
+Testing [BestDR3.SpecZWarning]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194781
+ 
+Table query completed after 5.260784387588501 seconds
+Testing [BestDR3.TiMask]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194784
+ 
+Table query completed after 5.328705072402954 seconds
+Testing [BestDR3.Tile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194786
+ 
+Table query completed after 6.510594844818115 seconds
+Testing [BestDR3.TilingBoundary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194789
+ 
+Table query completed after 5.308507680892944 seconds
+Testing [BestDR3.TilingMask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194793
+ 
+Table query completed after 5.385735511779785 seconds
+Testing [BestDR3.TiledTarget]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194796
+ 
+Table query completed after 5.408624649047852 seconds
+Testing [BestDR3.SpecObj]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8194799
+ 
+Table query completed after 5.654073476791382 seconds
+Testing [BestDR3.PhotoFamily]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204253
+ 
+Table query completed after 8.480682611465454 seconds
+Testing [BestDR3.PhotoObj]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204258
+ 
+Table query completed after 8.14093279838562 seconds
+Testing [BestDR3.PhotoPrimary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204262
+ 
+Table query completed after 7.7242937088012695 seconds
+Testing [BestDR3.PhotoSecondary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204267
+ 
+Table query completed after 8.320403337478638 seconds
+Testing [BestDR3.SpecLine]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204272
+ 
+Table query completed after 5.340973377227783 seconds
+Testing [BestDR3.SpecPhoto]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204276
+ 
+Table query completed after 5.907206773757935 seconds
+Testing [BestDR3.Galaxy]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204279
+ 
+Table query completed after 8.386973857879639 seconds
+Testing [BestDR3.Sky]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204282
+ 
+Table query completed after 7.964989900588989 seconds
+Testing [BestDR3.Star]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204288
+ 
+Table query completed after 7.398197174072266 seconds
+Testing [BestDR3.Unknown]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8204291
+ 
+Table query completed after 46.66764855384827 seconds
+Testing [BestDR5.SpecObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218759
+ 
+Table query completed after 5.615810871124268 seconds
+Testing [BestDR5.TilingInfo]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218763
+ 
+Table query completed after 5.376723289489746 seconds
+Testing [BestDR5.QsoBunch]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218767
+ 
+Table query completed after 5.304067611694336 seconds
+Testing [BestDR5.HoleType]
+Rowcount:6
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218771
+ 
+Table query completed after 5.192412853240967 seconds
+Testing [BestDR5.PhotoStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218774
+ 
+Table query completed after 5.230252742767334 seconds
+Testing [BestDR5.SDSSConstants]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218779
+ 
+Table query completed after 5.119266510009766 seconds
+Testing [BestDR5.SiteDiagnostics]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218782
+ 
+Table query completed after 5.303907632827759 seconds
+Testing [BestDR5.PubHistory]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218786
+ 
+Table query completed after 2.070233106613159 seconds
+Testing [BestDR5.QsoConcordance]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218789
+ 
+Table query completed after 6.03980278968811 seconds
+Testing [BestDR5.MaskType]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218794
+ 
+Table query completed after 5.468391418457031 seconds
+Testing [BestDR5.ProfileDefs]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218797
+ 
+Table query completed after 5.2715559005737305 seconds
+Testing [BestDR5.Rosat]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8218801
+ 
+Table query completed after 5.295662879943848 seconds
+Testing [BestDR5.TiMask]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224205
+ 
+Table query completed after 5.188801288604736 seconds
+Testing [BestDR5.ELRedShift]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224209
+ 
+Table query completed after 5.168790102005005 seconds
+Testing [BestDR5.SecTarget]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224213
+ 
+Table query completed after 5.276556491851807 seconds
+Testing [BestDR5.XCRedshift]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224217
+ 
+Table query completed after 8.17384934425354 seconds
+Testing [BestDR5.ObjType]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224221
+ 
+Table query completed after 5.250470399856567 seconds
+Testing [BestDR5.PhotoPrimary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224225
+ 
+Table query completed after 8.740397214889526 seconds
+Testing [BestDR5.History]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224231
+ 
+Table query completed after 5.537718296051025 seconds
+Testing [BestDR5.SpecLineIndex]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224235
+ 
+Table query completed after 5.232007265090942 seconds
+Testing [BestDR5.Sector]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224240
+ 
+Table query completed after 2.099292755126953 seconds
+Testing [BestDR5.PhotoFlags]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224242
+ 
+Table query completed after 5.308226585388184 seconds
+Testing [BestDR5.FieldQuality]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224247
+ 
+Table query completed after 5.327616930007935 seconds
+Testing [BestDR5.SpecObj]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8224251
+ 
+Table query completed after 5.831700325012207 seconds
+Testing [BestDR5.PhotoSecondary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228755
+ 
+Table query completed after 9.011852979660034 seconds
+Testing [BestDR5.TilingRun]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228761
+ 
+Table query completed after 5.395341634750366 seconds
+Testing [BestDR5.PhotoAux]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228765
+ 
+Table query completed after 5.234957218170166 seconds
+Testing [BestDR5.RunShift]
+Rowcount:9
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228768
+ 
+Table query completed after 5.245731592178345 seconds
+Testing [BestDR5.FieldProfile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228773
+ 
+Table query completed after 5.271168231964111 seconds
+Testing [BestDR5.Frame]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228777
+ 
+Table query completed after 6.564133405685425 seconds
+Testing [BestDR5.Region2Box]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228781
+ 
+Table query completed after 4.003237009048462 seconds
+Testing [BestDR5.Sky]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228784
+ 
+Table query completed after 11.050661325454712 seconds
+Testing [BestDR5.TilingBoundary]
+ERROR:root:''
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+ERROR:root:http://localhost:8081/firethorn/adql/table/8233753
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+ERROR:root:'list' object has no attribute 'get'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/adql/adql_table.py", line 78, in count
+    rowcount = self.json_object.get("metadata",[]).get("adql",[]).get("count",None)
+AttributeError: 'list' object has no attribute 'get'
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228789
+ 
+Table query completed after 6.155863285064697 seconds
+Testing [BestDR5.FramesStatus]
+ERROR:root:''
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+ERROR:root:http://localhost:8081/firethorn/adql/table/8233761
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+ERROR:root:unknown url type: 'None'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 90, in get_json
+    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+  File "/usr/lib/python3.4/urllib/request.py", line 266, in __init__
+    self.full_url = url
+  File "/usr/lib/python3.4/urllib/request.py", line 292, in full_url
+    self._parse()
+  File "/usr/lib/python3.4/urllib/request.py", line 321, in _parse
+    raise ValueError("unknown url type: %r" % self.full_url)
+ValueError: unknown url type: 'None'
+ERROR:root:None
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 90, in get_json
+    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+  File "/usr/lib/python3.4/urllib/request.py", line 266, in __init__
+    self.full_url = url
+  File "/usr/lib/python3.4/urllib/request.py", line 292, in full_url
+    self._parse()
+  File "/usr/lib/python3.4/urllib/request.py", line 321, in _parse
+    raise ValueError("unknown url type: %r" % self.full_url)
+ValueError: unknown url type: 'None'
+ERROR:root:unknown url type: 'None'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 90, in get_json
+    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+  File "/usr/lib/python3.4/urllib/request.py", line 266, in __init__
+    self.full_url = url
+  File "/usr/lib/python3.4/urllib/request.py", line 292, in full_url
+    self._parse()
+  File "/usr/lib/python3.4/urllib/request.py", line 321, in _parse
+    raise ValueError("unknown url type: %r" % self.full_url)
+ValueError: unknown url type: 'None'
+ERROR:root:None
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 90, in get_json
+    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+  File "/usr/lib/python3.4/urllib/request.py", line 266, in __init__
+    self.full_url = url
+  File "/usr/lib/python3.4/urllib/request.py", line 292, in full_url
+    self._parse()
+  File "/usr/lib/python3.4/urllib/request.py", line 321, in _parse
+    raise ValueError("unknown url type: %r" % self.full_url)
+ValueError: unknown url type: 'None'
+Rowcount:4
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228792
+ 
+Table query completed after 11.507460117340088 seconds
+Testing [BestDR5.StripeDefs]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228796
+ 
+Table query completed after 4.254635334014893 seconds
+Testing [BestDR5.TableDesc]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8228800
+ 
+Table query completed after 5.465003252029419 seconds
+Testing [BestDR5.QsoTarget]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234803
+ 
+Table query completed after 5.773759841918945 seconds
+Testing [BestDR5.FieldMask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234808
+ 
+Table query completed after 5.170363426208496 seconds
+Testing [BestDR5.TargetParam]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234811
+ 
+Table query completed after 2.8678228855133057 seconds
+Testing [BestDR5.QsoCatalog]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234814
+ 
+Table query completed after 2.86572527885437 seconds
+Testing [BestDR5.Photoz]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234816
+ 
+Table query completed after 6.057163238525391 seconds
+Testing [BestDR5."Match"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234820
+ 
+Table query completed after 5.354292154312134 seconds
+Testing [BestDR5.SiteConstants]
+Rowcount:7
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234823
+ 
+Table query completed after 5.245887756347656 seconds
+Testing [BestDR5.PhotoMode]
+Rowcount:4
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234827
+ 
+Table query completed after 5.399154424667358 seconds
+Testing [BestDR5."Region"]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234830
+ 
+Table query completed after 2.192530870437622 seconds
+Testing [BestDR5.Chunk]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234833
+ 
+Table query completed after 5.266291379928589 seconds
+Testing [BestDR5.SpecLine]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234837
+ 
+Table query completed after 5.62843656539917 seconds
+Testing [BestDR5.CoordType]
+Rowcount:4
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234841
+ 
+Table query completed after 5.16167426109314 seconds
+Testing [BestDR5.SpecLineAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234845
+ 
+Table query completed after 5.449520587921143 seconds
+Testing [BestDR5.StarTag]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8234849
+ 
+Table query completed after 5.506116628646851 seconds
+Testing [BestDR5.PspStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8240902
+ 
+Table query completed after 5.144065856933594 seconds
+Testing [BestDR5.Versions]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8240905
+ 
+Table query completed after 6.299852132797241 seconds
+Testing [BestDR5.BestTarget2Sector]
+ERROR:root:''
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+ERROR:root:http://localhost:8081/firethorn/adql/resource/1814
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/models/base/base_object.py", line 92, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 350, in _read_status
+    raise BadStatusLine(line)
+http.client.BadStatusLine: ''
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/8240909
+
+
+
+
+
+### -------------------Stopped Test Manually ! --------------------
+
+
+
+### ---------------------------------------
+
+## Check First exception:
+## http://localhost:8081/firethorn/blue/query/8156652
+## Query is "COMPLETED"
+## VOTable looks fine:
+## http://localhost:8081/firethorn/adql/table/8154929/votable
+
+
+
+## Validator not working correctly, these exceptions are not being recorded in the Exceptions list
+## Investigating..

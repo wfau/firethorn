@@ -1,0 +1,416 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Logs Stopped abruptly..Need to figure out what happened there
+
+--- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+Testing [BestDR1.SpecObjAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8704172/results/result [Done]
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': "http://localhost:8081/firethorn/tap/1808/async/8704172/results/result:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8707569')"}
+Table query completed after 2.516845941543579 seconds
+Testing [BestDR1.TilingInfo]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8704174/results/result [Done]
+Rowcount:5
+Table query completed after 2.774144411087036 seconds
+Testing [BestDR1.StripeDefs]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8704177/results/result [Done]
+Rowcount:5
+Table query completed after 1.6993911266326904 seconds
+Testing [BestDR1.HoleObj]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8704179/results/result [Done]
+Rowcount:5
+Table query completed after 1.7047719955444336 seconds
+Testing [BestDR1.Neighbors]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8704181/results/result [Done]
+Rowcount:5
+Table query completed after 1.6026051044464111 seconds
+Testing [BestDR1.SDSSConstants]
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': "http://localhost:8081/firethorn/tap/1808/async/8704172/results/result:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8707569')", 'BestDR1.SDSSConstants': "b'Internal Server Error'"}
+Table query completed after 39.23513984680176 seconds
+Testing [BestDR1.PhotoTag]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708963/results/result [Done]
+Rowcount:5
+Table query completed after 2.6312429904937744 seconds
+Testing [BestDR1.ObjMask]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708966/results/result [Done]
+Rowcount:5
+Table query completed after 1.7182416915893555 seconds
+Testing [BestDR1.RunShift]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708968/results/result [Done]
+Rowcount:5
+Table query completed after 1.7910006046295166 seconds
+Testing [BestDR1.QsoConcordance]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708970/results/result [Done]
+Rowcount:5
+Table query completed after 2.7656219005584717 seconds
+Testing [BestDR1.ProfileDefs]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708973/results/result [Done]
+Rowcount:5
+Table query completed after 1.5373332500457764 seconds
+Testing [BestDR1.TargetParam]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708974/results/result [Done]
+Rowcount:0
+Table query completed after 2.366006851196289 seconds
+Testing [BestDR1.MaskedObject]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708977/results/result [Done]
+Rowcount:5
+Table query completed after 2.1969997882843018 seconds
+Testing [BestDR1.Photoz]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708979/results/result [Done]
+Rowcount:5
+Table query completed after 1.9890367984771729 seconds
+Testing [BestDR1.QsoCatalogAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708982/results/result [Done]
+Rowcount:5
+Table query completed after 2.0014402866363525 seconds
+Testing [BestDR1."Match"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708984/results/result [Done]
+Rowcount:5
+Table query completed after 1.5980339050292969 seconds
+Testing [BestDR1.SiteConstants]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708986/results/result [Done]
+Rowcount:5
+Table query completed after 2.58417010307312 seconds
+Testing [BestDR1.USNO]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708990/results/result [Done]
+Rowcount:5
+Table query completed after 1.6473054885864258 seconds
+Testing [BestDR1.TileAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708992/results/result [Done]
+Rowcount:5
+Table query completed after 1.8628201484680176 seconds
+Testing [BestDR1.QueryResults]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708994/results/result [Done]
+Rowcount:5
+Table query completed after 1.826756477355957 seconds
+Testing [BestDR1."Region"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8708997/results/result [Done]
+Rowcount:5
+Table query completed after 1.6578490734100342 seconds
+Testing [BestDR1.Rosat]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8709000/results/result [Done]
+Rowcount:5
+Table query completed after 1.8743948936462402 seconds
+Testing [BestDR1.FileGroupMap]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713602/results/result [Done]
+Rowcount:5
+Table query completed after 1.6907932758331299 seconds
+Testing [BestDR1.ELRedShift]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713604/results/result [Done]
+Rowcount:5
+Table query completed after 1.745136022567749 seconds
+Testing [BestDR1.SpecLineIndex]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713607/results/result [Done]
+Rowcount:5
+Table query completed after 1.975459098815918 seconds
+Testing [BestDR1.Rmatrix]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713610/results/result [Done]
+Rowcount:5
+Table query completed after 1.5927815437316895 seconds
+Testing [BestDR1.XCRedshift]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713612/results/result [Done]
+Rowcount:5
+Table query completed after 1.7455968856811523 seconds
+Testing [BestDR1."Diagnostics"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713615/results/result [Done]
+Rowcount:5
+Table query completed after 1.640106201171875 seconds
+Testing [BestDR1.LoadHistory]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713617/results/result [Done]
+Rowcount:5
+Table query completed after 1.4949252605438232 seconds
+Testing [BestDR1.TilingGeometry]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713619/results/result [Done]
+Rowcount:5
+Table query completed after 1.6390578746795654 seconds
+Testing [BestDR1.PhotoProfile]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713622/results/result [Done]
+Rowcount:5
+Table query completed after 1.7363927364349365 seconds
+Testing [BestDR1.DBColumns]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713624/results/result [Done]
+Rowcount:5
+Table query completed after 1.5517396926879883 seconds
+Testing [BestDR1.MatchHead]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713626/results/result [Done]
+Rowcount:5
+Table query completed after 2.0020341873168945 seconds
+Testing [BestDR1.History]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713628/results/result [Done]
+Rowcount:0
+Table query completed after 1.7036395072937012 seconds
+Testing [BestDR1.Field]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713631/results/result [Done]
+Rowcount:5
+Table query completed after 5.304257154464722 seconds
+Testing [BestDR1.SpecLineAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713636/results/result [Done]
+Rowcount:5
+Table query completed after 1.8051977157592773 seconds
+Testing [BestDR1.DataConstants]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713638/results/result [Done]
+Rowcount:5
+Table query completed after 1.665292739868164 seconds
+Testing [BestDR1.TilingNote]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713640/results/result [Done]
+Rowcount:0
+Table query completed after 1.9253253936767578 seconds
+Testing [BestDR1.SiteDiagnostics]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713643/results/result [Done]
+Rowcount:5
+Table query completed after 1.7046444416046143 seconds
+Testing [BestDR1.PhotoObjAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713645/results/result [Done]
+Rowcount:5
+Table query completed after 7.628016471862793 seconds
+Testing [BestDR1.Frame]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8713650/results/result [Done]
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': "http://localhost:8081/firethorn/tap/1808/async/8704172/results/result:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8707569')", 'BestDR1.Frame': "http://localhost:8081/firethorn/tap/1808/async/8713650/results/result:1:6964: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000ffdb0043000a07070807060a0808080b0a0a0b0e18100e0d0d0e1d15161118231f2524221f2221262b372f26293429212230413134393b3e3e3e252e4449433c48373d3e3bffdb0043010a0b0b0e0d0 (in row 0, col 'column.8718575')", 'BestDR1.SDSSConstants': "b'Internal Server Error'"}
+Table query completed after 2.2798752784729004 seconds
+Testing [BestDR1."Zone"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718652/results/result [Done]
+Rowcount:5
+Table query completed after 1.6927249431610107 seconds
+Testing [BestDR1.PartitionMap]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718654/results/result [Done]
+Rowcount:5
+Table query completed after 2.6189818382263184 seconds
+Testing [BestDR1.DBObjects]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718657/results/result [Done]
+Rowcount:5
+Table query completed after 1.9236841201782227 seconds
+Testing [BestDR1.Sector]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718660/results/result [Done]
+Rowcount:5
+Table query completed after 1.6135475635528564 seconds
+Testing [BestDR1.DBObjectDescription]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718661/results/result [Done]
+Rowcount:0
+Table query completed after 1.5924067497253418 seconds
+Testing [BestDR1.Glossary]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718663/results/result [Done]
+Rowcount:0
+Table query completed after 1.6857430934906006 seconds
+Testing [BestDR1.TilingRun]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718667/results/result [Done]
+Rowcount:5
+Table query completed after 1.8153481483459473 seconds
+Testing [BestDR1.Chunk]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718669/results/result [Done]
+Rowcount:5
+Table query completed after 1.7545711994171143 seconds
+Testing [BestDR1.Segment]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718671/results/result [Done]
+Rowcount:5
+Table query completed after 2.030035972595215 seconds
+Testing [BestDR1."First"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718674/results/result [Done]
+Rowcount:5
+Table query completed after 1.6641960144042969 seconds
+Testing [BestDR1.PlateX]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718676/results/result [Done]
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': "http://localhost:8081/firethorn/tap/1808/async/8704172/results/result:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8707569')", 'BestDR1.Frame': "http://localhost:8081/firethorn/tap/1808/async/8713650/results/result:1:6964: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000ffdb0043000a07070807060a0808080b0a0a0b0e18100e0d0d0e1d15161118231f2524221f2221262b372f26293429212230413134393b3e3e3e252e4449433c48373d3e3bffdb0043010a0b0b0e0d0 (in row 0, col 'column.8718575')", 'BestDR1.PlateX': "http://localhost:8081/firethorn/tap/1808/async/8718676/results/result:1:14501: ValueError: invalid literal for int() with base 10: '5749ae00554a40005749ae00554ae0005749ae00554ae0005749ae00554ae00058326b80554a400058326b80554ae00058326b80554ae00058326b80554ae00057e4d700554a400057e4d700554ae00057e4d700554ae00057e4d700554ae00058726b8 (in row 0, col 'column.8720033')", 'BestDR1.SDSSConstants': "b'Internal Server Error'"}
+Table query completed after 2.3310344219207764 seconds
+Testing [BestDR1.PubHistory]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718680/results/result [Done]
+Rowcount:5
+Table query completed after 1.6275479793548584 seconds
+Testing [BestDR1.FieldProfile]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718681/results/result [Done]
+Rowcount:5
+Table query completed after 1.53342866897583 seconds
+Testing [BestDR1.Best2Sector]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718683/results/result [Done]
+Rowcount:0
+Table query completed after 1.5788097381591797 seconds
+Testing [BestDR1.DBViewCols]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718684/results/result [Done]
+Rowcount:5
+Table query completed after 2.030351400375366 seconds
+Testing [BestDR1.Mask]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718687/results/result [Done]
+Rowcount:5
+Table query completed after 1.9582936763763428 seconds
+Testing [BestDR1.Target]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718690/results/result [Done]
+Rowcount:5
+Table query completed after 1.8085696697235107 seconds
+Testing [BestDR1.IndexMap]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718692/results/result [Done]
+Rowcount:5
+Table query completed after 1.573610544204712 seconds
+Testing [BestDR1.TiledTargetAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718694/results/result [Done]
+Rowcount:5
+Table query completed after 2.127070188522339 seconds
+Testing [BestDR1.TargetInfo]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718697/results/result [Done]
+Rowcount:5
+Table query completed after 2.5366885662078857 seconds
+Testing [BestDR1.Sector2Tile]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8718700/results/result [Done]
+Rowcount:5
+Table query completed after 1.7868411540985107 seconds
+Testing [BestDR1.SpecPhotoAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722352/results/result [Done]
+Rowcount:5
+Table query completed after 3.5220696926116943 seconds
+Testing [BestDR3.Algorithm]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722355/results/result [Done]
+Rowcount:0
+Table query completed after 1.6830809116363525 seconds
+Testing [BestDR3.Chunk]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722358/results/result [Done]
+Rowcount:5
+Table query completed after 1.6858620643615723 seconds
+Testing [BestDR3.DBColumns]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722360/results/result [Done]
+Rowcount:5
+Table query completed after 2.8849270343780518 seconds
+Testing [BestDR3.DBObjects]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722364/results/result [Done]
+Rowcount:5
+Table query completed after 1.695075511932373 seconds
+Testing [BestDR3.DBViewCols]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722366/results/result [Done]
+Rowcount:5
+Table query completed after 1.5363984107971191 seconds
+Testing [BestDR3.DataConstants]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722368/results/result [Done]
+Rowcount:5
+Table query completed after 1.8075568675994873 seconds
+Testing [BestDR3."Diagnostics"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722371/results/result [Done]
+Rowcount:5
+Table query completed after 1.6590728759765625 seconds
+Testing [BestDR3.ELRedShift]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722373/results/result [Done]
+Rowcount:5
+Table query completed after 1.658531665802002 seconds
+Testing [BestDR3.Field]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722375/results/result [Done]
+Rowcount:5
+Table query completed after 5.609638690948486 seconds
+Testing [BestDR3.FieldProfile]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722380/results/result [Done]
+Rowcount:5
+Table query completed after 1.7017383575439453 seconds
+Testing [BestDR3.FileGroupMap]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722383/results/result [Done]
+Rowcount:0
+Table query completed after 1.653489351272583 seconds
+Testing [BestDR3."First"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722386/results/result [Done]
+Rowcount:5
+Table query completed after 1.6084203720092773 seconds
+Testing [BestDR3.Frame]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722388/results/result [Done]
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': "http://localhost:8081/firethorn/tap/1808/async/8704172/results/result:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8707569')", 'BestDR1.Frame': "http://localhost:8081/firethorn/tap/1808/async/8713650/results/result:1:6964: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000ffdb0043000a07070807060a0808080b0a0a0b0e18100e0d0d0e1d15161118231f2524221f2221262b372f26293429212230413134393b3e3e3e252e4449433c48373d3e3bffdb0043010a0b0b0e0d0 (in row 0, col 'column.8718575')", 'BestDR1.PlateX': "http://localhost:8081/firethorn/tap/1808/async/8718676/results/result:1:14501: ValueError: invalid literal for int() with base 10: '5749ae00554a40005749ae00554ae0005749ae00554ae0005749ae00554ae00058326b80554a400058326b80554ae00058326b80554ae00058326b80554ae00057e4d700554a400057e4d700554ae00057e4d700554ae00057e4d700554ae00058726b8 (in row 0, col 'column.8720033')", 'BestDR1.SDSSConstants': "b'Internal Server Error'", 'BestDR3.Frame': "http://localhost:8081/firethorn/tap/1808/async/8722388/results/result:1:6956: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000fffe01c95449544c452020203d20275344535320313436322d34302d332d313431206772692d746f2d42475220636f6d706f7369746520696d616765270a494e464f202020203d2027687474703a2f2 (in row 0, col 'column.8725069')"}
+Table query completed after 2.5130865573883057 seconds
+Testing [BestDR3.Glossary]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722390/results/result [Done]
+Rowcount:0
+Table query completed after 1.6657264232635498 seconds
+Testing [BestDR3.History]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722393/results/result [Done]
+Rowcount:1
+Table query completed after 1.6513605117797852 seconds
+Testing [BestDR3.HoleObj]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722395/results/result [Done]
+Rowcount:5
+Table query completed after 1.8023231029510498 seconds
+Testing [BestDR3.IndexMap]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722397/results/result [Done]
+Rowcount:5
+Table query completed after 1.6139745712280273 seconds
+Testing [BestDR3.LoadHistory]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8722399/results/result [Done]
+Rowcount:5
+Table query completed after 1.6670327186584473 seconds
+Testing [BestDR3.Mask]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726902/results/result [Done]
+Rowcount:5
+Table query completed after 1.7232489585876465 seconds
+Testing [BestDR3.MaskedObject]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726904/results/result [Done]
+Rowcount:0
+Table query completed after 1.5617115497589111 seconds
+Testing [BestDR3."Match"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726906/results/result [Done]
+Rowcount:5
+Table query completed after 1.649350643157959 seconds
+Testing [BestDR3.MatchHead]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726908/results/result [Done]
+Rowcount:5
+Table query completed after 1.6900990009307861 seconds
+Testing [BestDR3.Neighbors]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726911/results/result [Done]
+Rowcount:5
+Table query completed after 1.6604554653167725 seconds
+Testing [BestDR3.ObjMask]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726913/results/result [Done]
+Rowcount:5
+Table query completed after 1.8228862285614014 seconds
+Testing [BestDR3.PartitionMap]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726915/results/result [Done]
+Rowcount:5
+Table query completed after 1.7217628955841064 seconds
+Testing [BestDR3.PhotoObjAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726919/results/result [Done]
+Rowcount:5
+Table query completed after 6.874240398406982 seconds
+Testing [BestDR3.PhotoProfile]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726925/results/result [Done]
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': "http://localhost:8081/firethorn/tap/1808/async/8704172/results/result:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8707569')", 'BestDR3.PhotoProfile': "http://localhost:8081/firethorn/tap/1808/async/8726925/results/result:1:2056: ValueError: invalid literal for int() with base 10: '0000000a' (in row 4, col 'column.8728911')", 'BestDR1.SDSSConstants': "b'Internal Server Error'", 'BestDR1.Frame': "http://localhost:8081/firethorn/tap/1808/async/8713650/results/result:1:6964: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000ffdb0043000a07070807060a0808080b0a0a0b0e18100e0d0d0e1d15161118231f2524221f2221262b372f26293429212230413134393b3e3e3e252e4449433c48373d3e3bffdb0043010a0b0b0e0d0 (in row 0, col 'column.8718575')", 'BestDR1.PlateX': "http://localhost:8081/firethorn/tap/1808/async/8718676/results/result:1:14501: ValueError: invalid literal for int() with base 10: '5749ae00554a40005749ae00554ae0005749ae00554ae0005749ae00554ae00058326b80554a400058326b80554ae00058326b80554ae00058326b80554ae00057e4d700554a400057e4d700554ae00057e4d700554ae00057e4d700554ae00058726b8 (in row 0, col 'column.8720033')", 'BestDR3.Frame': "http://localhost:8081/firethorn/tap/1808/async/8722388/results/result:1:6956: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000fffe01c95449544c452020203d20275344535320313436322d34302d332d313431206772692d746f2d42475220636f6d706f7369746520696d616765270a494e464f202020203d2027687474703a2f2 (in row 0, col 'column.8725069')"}
+Table query completed after 1.6212382316589355 seconds
+Testing [BestDR3.PhotoTag]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726928/results/result [Done]
+Rowcount:5
+Table query completed after 2.642768383026123 seconds
+Testing [BestDR3.Photoz]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726931/results/result [Done]
+Rowcount:0
+Table query completed after 2.0193910598754883 seconds
+Testing [BestDR3.PlateX]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726933/results/result [Done]
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': "http://localhost:8081/firethorn/tap/1808/async/8704172/results/result:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8707569')", 'BestDR3.PhotoProfile': "http://localhost:8081/firethorn/tap/1808/async/8726925/results/result:1:2056: ValueError: invalid literal for int() with base 10: '0000000a' (in row 4, col 'column.8728911')", 'BestDR1.SDSSConstants': "b'Internal Server Error'", 'BestDR1.Frame': "http://localhost:8081/firethorn/tap/1808/async/8713650/results/result:1:6964: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000ffdb0043000a07070807060a0808080b0a0a0b0e18100e0d0d0e1d15161118231f2524221f2221262b372f26293429212230413134393b3e3e3e252e4449433c48373d3e3bffdb0043010a0b0b0e0d0 (in row 0, col 'column.8718575')", 'BestDR3.PlateX': "http://localhost:8081/firethorn/tap/1808/async/8726933/results/result:1:16524: ValueError: invalid literal for int() with base 10: '5749ae00554ae0005749ae00554ae0005749ae00554ae0005749ae00554ae00058326b80554ae00058326b80554ae00058326b80554ae00058326b80554ae00057e4d700554ae00057e4d700554ae00057e4d700554ae00057e4d700554ae00058726b8 (in row 0, col 'column.8730185')", 'BestDR1.PlateX': "http://localhost:8081/firethorn/tap/1808/async/8718676/results/result:1:14501: ValueError: invalid literal for int() with base 10: '5749ae00554a40005749ae00554ae0005749ae00554ae0005749ae00554ae00058326b80554a400058326b80554ae00058326b80554ae00058326b80554ae00057e4d700554a400057e4d700554ae00057e4d700554ae00057e4d700554ae00058726b8 (in row 0, col 'column.8720033')", 'BestDR3.Frame': "http://localhost:8081/firethorn/tap/1808/async/8722388/results/result:1:6956: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000fffe01c95449544c452020203d20275344535320313436322d34302d332d313431206772692d746f2d42475220636f6d706f7369746520696d616765270a494e464f202020203d2027687474703a2f2 (in row 0, col 'column.8725069')"}
+Table query completed after 2.416109323501587 seconds
+Testing [BestDR3.ProfileDefs]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726937/results/result [Done]
+Rowcount:5
+Table query completed after 1.8037059307098389 seconds
+Testing [BestDR3.PubHistory]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8726939/results/result [Done]
