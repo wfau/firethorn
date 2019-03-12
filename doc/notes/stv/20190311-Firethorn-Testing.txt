@@ -23,6 +23,11 @@
 
 # 11 March 2019 - Testing for Non-completing queries in Firethorn
 
+# This is run locally, with a tunneled connection to Gworewia which is running an httpd proxy
+# Firethorn Chain is running on Cadelicia on trop01
+
+# ssh -L '*:8081:Gworewia:80' Stevedore@Gworewia 
+
 stelios@stelios-pc:~$ /usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=${username:?} -p=${pass:?} -g=${group:?} -v=True -m=async
 
 --- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
