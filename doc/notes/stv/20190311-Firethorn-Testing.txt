@@ -193,4 +193,6 @@ Testing [BestDR1.ELRedShift]
 ## Grab Firethorn and OGSA-DAI logs from last two queries and compare
 ## Logs in separate notes files
 
+## Leaving this test running will continue to poll /PHASE of that job every second.
+## I can start another test which will run a few more queries successfully before hanging again
 
