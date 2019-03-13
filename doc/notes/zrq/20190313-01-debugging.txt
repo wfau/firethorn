@@ -1,0 +1,884 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Checking the network config on trop01, trop02.
+
+# -----------------------------------------------------
+# List the host interfaces.
+#[user@trop01]
+
+    /sbin/ifconfig
+
+    >   br0       Link encap:Ethernet  HWaddr 0c:c4:7a:35:10:78
+    >             inet addr:129.215.175.96  Bcast:129.215.175.255  Mask:255.255.255.0
+    >             inet6 addr: fe80::ec4:7aff:fe35:1078/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:12004050 errors:0 dropped:4032 overruns:0 frame:0
+    >             TX packets:2412599 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:0
+    >             RX bytes:6518887042 (6.0 GiB)  TX bytes:1536937090 (1.4 GiB)
+    >
+    >   br1       Link encap:Ethernet  HWaddr 0c:c4:7a:35:10:79
+    >             inet addr:192.168.137.228  Bcast:192.168.137.255  Mask:255.255.255.0
+    >             inet6 addr: fe80::ec4:7aff:fe35:1079/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:15301905 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:1872820 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:0
+    >             RX bytes:1836375752 (1.7 GiB)  TX bytes:302869588 (288.8 MiB)
+    >
+    >   eth0      Link encap:Ethernet  HWaddr 0c:c4:7a:35:10:78
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:15015713 errors:0 dropped:80557 overruns:0 frame:0
+    >             TX packets:2839663 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:1000
+    >             RX bytes:7119072135 (6.6 GiB)  TX bytes:1565128142 (1.4 GiB)
+    >
+    >   eth1      Link encap:Ethernet  HWaddr 0c:c4:7a:35:10:79
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:15371364 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:1921912 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:1000
+    >             RX bytes:2060528703 (1.9 GiB)  TX bytes:306109648 (291.9 MiB)
+    >
+    >   lo        Link encap:Local Loopback
+    >             inet addr:127.0.0.1  Mask:255.0.0.0
+    >             inet6 addr: ::1/128 Scope:Host
+    >             UP LOOPBACK RUNNING  MTU:65536  Metric:1
+    >             RX packets:5 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:5 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:0
+    >             RX bytes:442 (442.0 B)  TX bytes:442 (442.0 B)
+    >
+    >   virbr0    Link encap:Ethernet  HWaddr 52:54:00:02:01:01
+    >             inet addr:192.168.201.1  Bcast:192.168.201.255  Mask:255.255.255.0
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:5739657 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:5217241 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:0
+    >             RX bytes:1739589621 (1.6 GiB)  TX bytes:4595177382 (4.2 GiB)
+    >
+    >   vnet0     Link encap:Ethernet  HWaddr fe:54:00:02:01:0b
+    >             inet6 addr: fe80::fc54:ff:fe02:10b/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:4875894 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:5328872 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:500
+    >             RX bytes:1724623522 (1.6 GiB)  TX bytes:2482624343 (2.3 GiB)
+    >
+    >   vnet1     Link encap:Ethernet  HWaddr fe:54:00:02:01:0f
+    >             inet6 addr: fe80::fc54:ff:fe02:10f/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:2586816 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:3029897 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:500
+    >             RX bytes:586651337 (559.4 MiB)  TX bytes:1580489654 (1.4 GiB)
+    >
+    >   vnet2     Link encap:Ethernet  HWaddr fe:54:00:02:01:09
+    >             inet6 addr: fe80::fc54:ff:fe02:109/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:90647 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:174369 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:500
+    >             RX bytes:10317468 (9.8 MiB)  TX bytes:1111836614 (1.0 GiB)
+
+
+# -----------------------------------------------------
+# Check the host routing table.
+#[user@trop01]
+
+    ip route
+
+    >   default via 129.215.175.126 dev br0
+    >   129.215.175.0/24 dev br0  proto kernel  scope link  src 129.215.175.96
+    >   192.168.137.0/24 dev br1  proto kernel  scope link  src 192.168.137.228
+    >   192.168.201.0/24 dev virbr0  proto kernel  scope link  src 192.168.201.1
+
+
+# -----------------------------------------------------
+# List the running VMs.
+#[user@trop01]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        list \
+            --all
+
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    2     Cadelicia                      running
+    >    3     Gworewia                       running
+    >    4     Abecien                        running
+    >    -     Astoalith                      shut off
+    >    -     Froeseth                       shut off
+
+
+# -----------------------------------------------------
+# List the libvirt networks.
+#[user@trop01]
+
+   source "${HOME}/libvirt.settings"
+   virsh \
+       --connect "${connection}" \
+       net-list \
+           --all
+
+    >    Name                 State      Autostart     Persistent
+    >   ----------------------------------------------------------
+    >    bridged              active     yes           yes
+    >    default              active     yes           yes
+
+
+# -----------------------------------------------------
+# List the network config for each VM.
+#[user@trop01]
+
+   source "${HOME}/libvirt.settings"
+
+   for vmname in $(
+       virsh \
+           --connect "${connection}" \
+           list \
+               --all \
+               --name
+           )
+       do
+           echo "---- ----"
+           echo "Name [${vmname}]"
+           virsh \
+               --connect ${connection:?} \
+               dumpxml \
+                   "${vmname:?}" \
+           | xmlstarlet \
+               select \
+                   --root \
+                   --indent \
+                   --template \
+                       --copy-of '//interface'
+           done
+
+    >   ---- ----
+    >   Name [Cadelicia]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:01:0b"/>
+    >         <source network="default"/>
+    >         <target dev="vnet0"/>
+    >         <model type="virtio"/>
+    >         <alias name="net0"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+    >   ---- ----
+    >   Name [Gworewia]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:01:0f"/>
+    >         <source network="default"/>
+    >         <target dev="vnet1"/>
+    >         <model type="virtio"/>
+    >         <alias name="net0"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+    >   ---- ----
+    >   Name [Abecien]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:01:09"/>
+    >         <source network="default"/>
+    >         <target dev="vnet2"/>
+    >         <model type="virtio"/>
+    >         <alias name="net0"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+    >   ---- ----
+    >   Name [Astoalith]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:01:0d"/>
+    >         <source network="default"/>
+    >         <model type="virtio"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+    >   ---- ----
+    >   Name [Froeseth]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:01:0c"/>
+    >         <source network="default"/>
+    >         <model type="virtio"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+
+
+# -----------------------------------------------------
+# List the network config inside each running VM.
+#[user@trop01]
+
+    source "${HOME}/libvirt.settings"
+    source "${HOME}/ssh-options"
+
+    for vmname in $(
+        virsh \
+            --connect "${connection}" \
+            list \
+                --name
+            )
+        do
+            echo "---- ----"
+            echo "Name [${vmname}]"
+            ssh "${sshopts}" \
+                "${sshuser}@${vmname}" \
+                    '
+                    hostname
+                    /sbin/ifconfig
+                    '
+        done
+
+    >   ---- ----
+    >   Name [Cadelicia]
+    >   Cadelicia
+    >   br-22632ed44d29: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 172.18.0.1  netmask 255.255.0.0  broadcast 172.18.255.255
+    >           inet6 fe80::42:73ff:fe80:76af  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:42:73:80:76:af  txqueuelen 0  (Ethernet)
+    >           RX packets 5305999  bytes 2419166112 (2.2 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 4867217  bytes 1723981309 (1.6 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   br-71e2207eba61: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 172.19.0.1  netmask 255.255.0.0  broadcast 172.19.255.255
+    >           inet6 fe80::42:d5ff:fe6c:a28  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:42:d5:6c:0a:28  txqueuelen 0  (Ethernet)
+    >           RX packets 5305999  bytes 2419166112 (2.2 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 4867217  bytes 1723981309 (1.6 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+    >           inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+    >           ether 02:42:3c:0e:d2:46  txqueuelen 0  (Ethernet)
+    >           RX packets 0  bytes 0 (0.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 0  bytes 0 (0.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 192.168.201.11  netmask 255.255.255.0  broadcast 192.168.201.255
+    >           inet6 fe80::5054:ff:fe02:10b  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:02:01:0b  txqueuelen 1000  (Ethernet)
+    >           RX packets 5305999  bytes 2419166112 (2.2 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 4867217  bytes 1723981309 (1.6 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+    >           inet 127.0.0.1  netmask 255.0.0.0
+    >           inet6 ::1  prefixlen 128  scopeid 0x10<host>
+    >           loop  txqueuelen 1000  (Local Loopback)
+    >           RX packets 44  bytes 5546 (5.4 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 44  bytes 5546 (5.4 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   veth11c853c: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::380b:66ff:fe2d:170e  prefixlen 64  scopeid 0x20<link>
+    >           ether 3a:0b:66:2d:17:0e  txqueuelen 0  (Ethernet)
+    >           RX packets 0  bytes 0 (0.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 56  bytes 4056 (3.9 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   veth83056c9: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::7417:ceff:fe20:f457  prefixlen 64  scopeid 0x20<link>
+    >           ether 76:17:ce:20:f4:57  txqueuelen 0  (Ethernet)
+    >           RX packets 10877121  bytes 4005578910 (3.7 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 12205875  bytes 2300404508 (2.1 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   veth92ef890: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::d8ee:f1ff:fe92:5c6  prefixlen 64  scopeid 0x20<link>
+    >           ether da:ee:f1:92:05:c6  txqueuelen 0  (Ethernet)
+    >           RX packets 1841452  bytes 346527462 (330.4 MiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 1618954  bytes 532709720 (508.0 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vetha2b5f4c: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::2c80:e8ff:fe29:d3d6  prefixlen 64  scopeid 0x20<link>
+    >           ether 2e:80:e8:29:d3:d6  txqueuelen 0  (Ethernet)
+    >           RX packets 272  bytes 35908 (35.0 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 1580  bytes 121341 (118.4 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vethecb6b60: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::bcc5:3cff:fe82:1a16  prefixlen 64  scopeid 0x20<link>
+    >           ether be:c5:3c:82:1a:16  txqueuelen 0  (Ethernet)
+    >           RX packets 71666  bytes 9682024 (9.2 MiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 71216  bytes 8403961 (8.0 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   ---- ----
+    >   Name [Gworewia]
+    >   Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+    >   ---- ----
+    >   Name [Abecien]
+    >   Warning: Permanently added the ECDSA host key for IP address '192.168.201.9' to the list of known hosts.
+    >   Abecien
+    >   br-13eda4fe7f79: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 172.18.0.1  netmask 255.255.0.0  broadcast 172.18.255.255
+    >           inet6 fe80::42:62ff:fead:5ed1  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:42:62:ad:5e:d1  txqueuelen 0  (Ethernet)
+    >           RX packets 17856217  bytes 5080330027 (4.7 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 20457216  bytes 3144169131 (2.9 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   br-99bffb051055: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 172.19.0.1  netmask 255.255.0.0  broadcast 172.19.255.255
+    >           inet6 fe80::42:8dff:fe3a:f2f9  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:42:8d:3a:f2:f9  txqueuelen 0  (Ethernet)
+    >           RX packets 17856217  bytes 5080330027 (4.7 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 20457216  bytes 3144169131 (2.9 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+    >           inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+    >           ether 02:42:8b:c9:df:03  txqueuelen 0  (Ethernet)
+    >           RX packets 0  bytes 0 (0.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 0  bytes 0 (0.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 192.168.201.9  netmask 255.255.255.0  broadcast 192.168.201.255
+    >           inet6 fe80::5054:ff:fe02:109  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:02:01:09  txqueuelen 1000  (Ethernet)
+    >           RX packets 152892  bytes 1048462095 (999.8 MiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 84233  bytes 9878574 (9.4 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+    >           inet 127.0.0.1  netmask 255.0.0.0
+    >           inet6 ::1  prefixlen 128  scopeid 0x10<host>
+    >           loop  txqueuelen 1000  (Local Loopback)
+    >           RX packets 4  bytes 184 (184.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 4  bytes 184 (184.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   veth2c60b33: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::40:2ff:fec6:932  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:40:02:c6:09:32  txqueuelen 0  (Ethernet)
+    >           RX packets 5653  bytes 411062 (401.4 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 5706  bytes 343953 (335.8 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   veth5d8e2d0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::5423:10ff:fe15:19ca  prefixlen 64  scopeid 0x20<link>
+    >           ether 56:23:10:15:19:ca  txqueuelen 0  (Ethernet)
+    >           RX packets 25934163  bytes 3920517726 (3.6 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 23494810  bytes 5641746321 (5.2 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   veth962be92: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::dc8e:65ff:fe87:9dee  prefixlen 64  scopeid 0x20<link>
+    >           ether de:8e:65:87:9d:ee  txqueuelen 0  (Ethernet)
+    >           RX packets 17856218  bytes 5080330116 (4.7 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 20457216  bytes 3144169131 (2.9 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vetha436444: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::6819:6cff:fedf:d303  prefixlen 64  scopeid 0x20<link>
+    >           ether 6a:19:6c:df:d3:03  txqueuelen 0  (Ethernet)
+    >           RX packets 5607875  bytes 543643310 (518.4 MiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 5445309  bytes 770172511 (734.4 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vethbcbc4f4: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::1033:93ff:feef:9387  prefixlen 64  scopeid 0x20<link>
+    >           ether 12:33:93:ef:93:87  txqueuelen 0  (Ethernet)
+    >           RX packets 0  bytes 0 (0.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 61  bytes 4462 (4.3 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vetheee21d0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::e03e:d8ff:fe4a:62ca  prefixlen 64  scopeid 0x20<link>
+    >           ether e2:3e:d8:4a:62:ca  txqueuelen 0  (Ethernet)
+    >           RX packets 9523  bytes 987533 (964.3 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 9633  bytes 5567448 (5.3 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+# -----------------------------------------------------
+# List the host interfaces.
+#[user@trop02]
+
+    /sbin/ifconfig
+
+    >   br0       Link encap:Ethernet  HWaddr 0c:c4:7a:35:12:06
+    >             inet addr:129.215.175.97  Bcast:129.215.175.255  Mask:255.255.255.0
+    >             inet6 addr: fe80::ec4:7aff:fe35:1206/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:10026226 errors:0 dropped:4032 overruns:0 frame:0
+    >             TX packets:238090 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:0
+    >             RX bytes:3923658747 (3.6 GiB)  TX bytes:183924200 (175.4 MiB)
+    >
+    >   br1       Link encap:Ethernet  HWaddr 0c:c4:7a:35:12:07
+    >             inet addr:192.168.137.233  Bcast:192.168.137.255  Mask:255.255.255.0
+    >             inet6 addr: fe80::ec4:7aff:fe35:1207/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:15179219 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:1835219 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:0
+    >             RX bytes:2175202744 (2.0 GiB)  TX bytes:588439429 (561.1 MiB)
+    >
+    >   eth0      Link encap:Ethernet  HWaddr 0c:c4:7a:35:12:06
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:17090773 errors:0 dropped:80562 overruns:0 frame:0
+    >             TX packets:6474914 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:1000
+    >             RX bytes:7110997737 (6.6 GiB)  TX bytes:4118104605 (3.8 GiB)
+    >
+    >   eth1      Link encap:Ethernet  HWaddr 0c:c4:7a:35:12:07
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:15411187 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:1997415 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:1000
+    >             RX bytes:2403073715 (2.2 GiB)  TX bytes:599144313 (571.3 MiB)
+    >
+    >   lo        Link encap:Local Loopback
+    >             inet addr:127.0.0.1  Mask:255.0.0.0
+    >             inet6 addr: ::1/128 Scope:Host
+    >             UP LOOPBACK RUNNING  MTU:65536  Metric:1
+    >             RX packets:33 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:33 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:0
+    >             RX bytes:9766 (9.5 KiB)  TX bytes:9766 (9.5 KiB)
+    >
+    >   virbr1    Link encap:Ethernet  HWaddr 52:54:00:02:02:01
+    >             inet addr:192.168.202.1  Bcast:192.168.202.255  Mask:255.255.255.0
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:3576976 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:3430018 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:0
+    >             RX bytes:822002978 (783.9 MiB)  TX bytes:2372215949 (2.2 GiB)
+    >
+    >   vnet0     Link encap:Ethernet  HWaddr fe:54:00:02:02:08
+    >             inet6 addr: fe80::fc54:ff:fe02:208/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:5066308 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:5896751 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:500
+    >             RX bytes:2450502285 (2.2 GiB)  TX bytes:2196691731 (2.0 GiB)
+    >
+    >   vnet1     Link encap:Ethernet  HWaddr fe:54:00:02:02:0f
+    >             inet6 addr: fe80::fc54:ff:fe02:20f/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:9334025 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:10455151 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:500
+    >             RX bytes:1229677274 (1.1 GiB)  TX bytes:4047532200 (3.7 GiB)
+    >
+    >   vnet2     Link encap:Ethernet  HWaddr fe:54:00:00:01:01
+    >             inet6 addr: fe80::fc54:ff:fe00:101/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:1286 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:9968001 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:500
+    >             RX bytes:3361417 (3.2 MiB)  TX bytes:2432641781 (2.2 GiB)
+    >
+    >   vnet3     Link encap:Ethernet  HWaddr fe:54:00:00:01:00
+    >             inet6 addr: fe80::fc54:ff:fe00:100/64 Scope:Link
+    >             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+    >             RX packets:4280241 errors:0 dropped:0 overruns:0 frame:0
+    >             TX packets:14280569 errors:0 dropped:0 overruns:0 carrier:0
+    >             collisions:0 txqueuelen:500
+    >             RX bytes:3801775353 (3.5 GiB)  TX bytes:5062666320 (4.7 GiB)
+
+
+# -----------------------------------------------------
+# Check the host routing table.
+#[user@trop02]
+
+    ip route
+
+    >   default via 129.215.175.126 dev br0
+    >   129.215.175.0/24 dev br0  proto kernel  scope link  src 129.215.175.97
+    >   192.168.137.0/24 dev br1  proto kernel  scope link  src 192.168.137.233
+    >   192.168.202.0/24 dev virbr1  proto kernel  scope link  src 192.168.202.1
+
+
+# -----------------------------------------------------
+# List the running VMs.
+#[user@trop02]
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        list \
+            --all
+
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    3     Acilamwen                      running
+    >    5     Araybwyn                       running
+    >    -     Eterathiel                     shut off
+    >    -     Ibalehar                       shut off
+    >    -     Lothigometh                    shut off
+
+# -----------------------------------------------------
+# List the libvirt networks.
+#[user@trop02]
+
+   source "${HOME}/libvirt.settings"
+   virsh \
+       --connect "${connection}" \
+       net-list \
+           --all
+
+    >    Name                 State      Autostart     Persistent
+    >   ----------------------------------------------------------
+    >    bridged              active     yes           yes
+    >    default              active     yes           yes
+
+# -----------------------------------------------------
+# List the network config for each VM.
+#[user@trop02]
+
+   source "${HOME}/libvirt.settings"
+
+   for vmname in $(
+       virsh \
+           --connect "${connection}" \
+           list \
+               --all \
+               --name
+           )
+       do
+           echo "---- ----"
+           echo "Name [${vmname}]"
+           virsh \
+               --connect ${connection:?} \
+               dumpxml \
+                   "${vmname:?}" \
+           | xmlstarlet \
+               select \
+                   --root \
+                   --indent \
+                   --template \
+                       --copy-of '//interface'
+           done
+
+    >   ---- ----
+    >   Name [Acilamwen]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:02:0f"/>
+    >         <source network="default"/>
+    >         <target dev="vnet1"/>
+    >         <model type="virtio"/>
+    >         <alias name="net0"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >     <interface type="bridge">
+    >         <mac address="52:54:00:00:01:01"/>
+    >         <source bridge="br0"/>
+    >         <target dev="vnet2"/>
+    >         <model type="virtio"/>
+    >         <alias name="net1"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"/>
+    >       </interface>
+    >     <interface type="bridge">
+    >         <mac address="52:54:00:00:01:00"/>
+    >         <source bridge="br0"/>
+    >         <target dev="vnet3"/>
+    >         <model type="virtio"/>
+    >         <alias name="net2"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x08" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+    >   ---- ----
+    >   Name [Araybwyn]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:02:08"/>
+    >         <source network="default"/>
+    >         <target dev="vnet0"/>
+    >         <model type="virtio"/>
+    >         <alias name="net0"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+    >   ---- ----
+    >   Name [Eterathiel]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:02:0d"/>
+    >         <source network="default"/>
+    >         <model type="virtio"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+    >   ---- ----
+    >   Name [Ibalehar]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:02:0c"/>
+    >         <source network="default"/>
+    >         <model type="virtio"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+    >   ---- ----
+    >   Name [Lothigometh]
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:02:09"/>
+    >         <source network="default"/>
+    >         <model type="virtio"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
+
+    #
+    # Acilamwen has two interfaces on the bridged network.
+    # Used to connect to the floating IP addresses.
+    #
+
+# -----------------------------------------------------
+# List the network config inside each running VM.
+#[user@trop02]
+
+    source "${HOME}/libvirt.settings"
+    source "${HOME}/ssh-options"
+
+    for vmname in $(
+        virsh \
+            --connect "${connection}" \
+            list \
+                --name
+            )
+        do
+            echo "---- ----"
+            echo "Name [${vmname}]"
+            ssh "${sshopts}" \
+                "${sshuser}@${vmname}" \
+                    '
+                    hostname
+                    /sbin/ifconfig
+                    '
+        done
+
+    >   ---- ----
+    >   Name [Acilamwen]
+    >   Warning: Permanently added 'acilamwen' (ECDSA) to the list of known hosts.
+    >   Acilamwen
+    >   docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+    >           inet6 fe80::42:3ff:fe0a:69ed  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:42:03:0a:69:ed  txqueuelen 0  (Ethernet)
+    >           RX packets 12992151  bytes 4604729186 (4.2 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 12833044  bytes 4535625049 (4.2 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 192.168.202.15  netmask 255.255.255.0  broadcast 192.168.202.255
+    >           inet6 fe80::5054:ff:fe02:20f  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:02:02:0f  txqueuelen 1000  (Ethernet)
+    >           RX packets 10444329  bytes 4046623971 (3.7 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 9332619  bytes 1229584613 (1.1 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 129.215.175.101  netmask 255.255.255.0  broadcast 129.215.175.255
+    >           inet6 fe80::5054:ff:fe00:101  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:00:01:01  txqueuelen 1000  (Ethernet)
+    >           RX packets 9887390  bytes 2412165868 (2.2 GiB)
+    >           RX errors 0  dropped 3989  overruns 0  frame 0
+    >           TX packets 1283  bytes 3361291 (3.2 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   ens7: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+    >           inet6 fe80::5054:ff:fe00:100  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:00:01:00  txqueuelen 1000  (Ethernet)
+    >           RX packets 14189855  bytes 5009665483 (4.6 GiB)
+    >           RX errors 0  dropped 3989  overruns 0  frame 0
+    >           TX packets 4272940  bytes 3800463973 (3.5 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+    >           inet 127.0.0.1  netmask 255.0.0.0
+    >           inet6 ::1  prefixlen 128  scopeid 0x10<host>
+    >           loop  txqueuelen 1000  (Local Loopback)
+    >           RX packets 58  bytes 7636 (7.4 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 58  bytes 7636 (7.4 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   veth5cfbd1b: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::c83a:79ff:fe52:29a8  prefixlen 64  scopeid 0x20<link>
+    >           ether ca:3a:79:52:29:a8  txqueuelen 0  (Ethernet)
+    >           RX packets 12992151  bytes 4786619300 (4.4 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 12833701  bytes 4535671135 (4.2 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   ---- ----
+    >   Name [Araybwyn]
+    >   Warning: Permanently added 'araybwyn' (ECDSA) to the list of known hosts.
+    >   Araybwyn
+    >   br-29c8dfb66874: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 172.18.0.1  netmask 255.255.0.0  broadcast 172.18.255.255
+    >           inet6 fe80::42:86ff:fe9b:b546  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:42:86:9b:b5:46  txqueuelen 0  (Ethernet)
+    >           RX packets 16029956  bytes 3371976452 (3.1 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 13775880  bytes 3986155770 (3.7 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   br-a731247ae271: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 172.19.0.1  netmask 255.255.0.0  broadcast 172.19.255.255
+    >           inet6 fe80::42:7fff:fed8:c6f  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:42:7f:d8:0c:6f  txqueuelen 0  (Ethernet)
+    >           RX packets 16029956  bytes 3371976452 (3.1 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 13775880  bytes 3986155770 (3.7 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+    >           inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+    >           ether 02:42:40:22:58:93  txqueuelen 0  (Ethernet)
+    >           RX packets 0  bytes 0 (0.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 0  bytes 0 (0.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 192.168.202.8  netmask 255.255.255.0  broadcast 192.168.202.255
+    >           inet6 fe80::5054:ff:fe02:208  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:02:02:08  txqueuelen 1000  (Ethernet)
+    >           RX packets 5879509  bytes 2195682071 (2.0 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 5060034  bytes 2449703969 (2.2 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+    >           inet 127.0.0.1  netmask 255.0.0.0
+    >           inet6 ::1  prefixlen 128  scopeid 0x10<host>
+    >           loop  txqueuelen 1000  (Local Loopback)
+    >           RX packets 13  bytes 991 (991.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 13  bytes 991 (991.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vethc4dd1b8: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::8cbb:ecff:fe29:aa2a  prefixlen 64  scopeid 0x20<link>
+    >           ether 8e:bb:ec:29:aa:2a  txqueuelen 0  (Ethernet)
+    >           RX packets 21562  bytes 98533331 (93.9 MiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 30399  bytes 6638118 (6.3 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vethcaccef1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::1074:3ff:fe05:2247  prefixlen 64  scopeid 0x20<link>
+    >           ether 12:74:03:05:22:47  txqueuelen 0  (Ethernet)
+    >           RX packets 21376882  bytes 6825588531 (6.3 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 25370176  bytes 4327584879 (4.0 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vethdc78b5b: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::8405:ddff:fe86:b824  prefixlen 64  scopeid 0x20<link>
+    >           ether 86:05:dd:86:b8:24  txqueuelen 0  (Ethernet)
+    >           RX packets 1  bytes 42 (42.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 323  bytes 22718 (22.1 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vethec5b939: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::806a:6eff:fe07:90be  prefixlen 64  scopeid 0x20<link>
+    >           ether 82:6a:6e:07:90:be  txqueuelen 0  (Ethernet)
+    >           RX packets 16029956  bytes 3371976452 (3.1 GiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 13775880  bytes 3986155770 (3.7 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   vethffa8fd2: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::6059:4cff:fe27:bd3f  prefixlen 64  scopeid 0x20<link>
+    >           ether 62:59:4c:27:bd:3f  txqueuelen 0  (Ethernet)
+    >           RX packets 1112561  bytes 336686879 (321.0 MiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 1038565  bytes 262264009 (250.1 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+#
+# Acilamwen has interfaces, matching two addreses in our floating address pool.
+#
+
+    >   ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 129.215.175.101  netmask 255.255.255.0  broadcast 129.215.175.255
+    >           inet6 fe80::5054:ff:fe00:101  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:00:01:01  txqueuelen 1000  (Ethernet)
+    >           RX packets 9887390  bytes 2412165868 (2.2 GiB)
+    >           RX errors 0  dropped 3989  overruns 0  frame 0
+    >           TX packets 1283  bytes 3361291 (3.2 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >
+    >   ens7: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+    >           inet6 fe80::5054:ff:fe00:100  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:00:01:00  txqueuelen 1000  (Ethernet)
+    >           RX packets 14189855  bytes 5009665483 (4.6 GiB)
+    >           RX errors 0  dropped 3989  overruns 0  frame 0
+    >           TX packets 4272940  bytes 3800463973 (3.5 GiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+
+    >   test line
+    >   test line
+
+
