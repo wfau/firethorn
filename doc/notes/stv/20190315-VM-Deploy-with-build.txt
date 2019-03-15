@@ -1,0 +1,413 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+ssh Stevedore@Froeseth
+
+ sudo yum -y install maven
+
+ hg clone http://wfau.metagrid.co.uk/code/firethorn hg
+
+
+ nano firethorn.settings
+
+..
+FIRETHORN_NAME=hg
+FIRETHORN_BASE=/home/Stevedore/hg
+FIRETHORN_CODE=${FIRETHORN_BASE?}
+FIRETHORN_CONF=${FIRETHORN_BASE?}
+..
+
+
+
+# -----------------------------------------------------
+# Add secret function.
+# -----------------------------------------------------
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store.....'
+
+    secret()
+    {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+    }
+
+    secret 'firethorn.ssh.keys' >> "${HOME}/.ssh/authorized_keys"
+
+
+
+# -----------------------------------------------------
+# Set the target branch and builtag
+# -----------------------------------------------------
+
+
+    export buildtag=2.1.28
+    export branch=default
+
+# -----------------------------------------------------
+# Create our chain.properties file
+# -----------------------------------------------------
+
+cat > "${HOME:?}/chain.properties" << EOF
+
+metadata=postgres
+metauser=$(pwgen 20 1)
+metapass=$(pwgen 20 1)
+
+userhost=$(secret 'firethorn.user.host')
+userdata=$(secret 'firethorn.user.data')
+useruser=$(secret 'firethorn.user.user')
+userpass=$(secret 'firethorn.user.pass')
+usertype=mssql
+
+datahost=$(secret 'firethorn.data.host')
+datadata=$(secret 'firethorn.data.data')
+datacatalog=$(secret 'firethorn.data.catalog')
+datatype=$(secret 'firethorn.data.type')
+datauser=$(secret 'firethorn.data.user')
+datapass=$(secret 'firethorn.data.pass')
+
+tapschemadata=$(secret 'firethorn.tapschema.database.name')
+tapschemauser=$(secret 'firethorn.tapschema.database.user')
+tapschemapass=$(secret 'firethorn.tapschema.database.pass')
+tapschemahost=$(secret 'firethorn.tapschema.database.host')
+tapschemaport=$(secret 'firethorn.tapschema.database.port')
+tapschematype=$(secret 'firethorn.tapschema.database.type')
+tapschemajdbc=$(secret 'firethorn.tapschema.jdbc.name')
+
+tunneluser=$(secret 'ssh.tunnel.user')
+tunnelhost=$(secret 'ssh.tunnel.host')
+
+admingroup=$(pwgen 20 1)	
+adminuser=$(pwgen 20 1)
+adminpass=$(pwgen 20 1)
+
+adql_query_delay_first=$(secret 'adql.query.delay.first')
+ 
+firethorn_limits_rows_absolute=$(secret 'firethorn.limits.rows.absolute')
+firethorn_limits_rows_default=$(secret 'firethorn.limits.rows.default')
+
+guestgroup=friends
+endpoint=$(secret 'endpoint')
+
+EOF
+
+
+
+# -----------------------------------------------------
+# Create our Firethorn properties.
+# -----------------------------------------------------
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.meta.type=pgsql
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.host=bethany
+firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
+firethorn.meta.data=postgres
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+
+firethorn.user.type=mssql
+firethorn.user.url=jdbc:jtds:sqlserver://${userhost:?}/${userdata:?}
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.host=${userhost:?}
+firethorn.user.data=${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+
+firethorn.tapschema.resource.name=${tapschemajdbc}
+firethorn.tapschema.database.name=${tapschemadata}
+firethorn.tapschema.database.host=${tapschemahost}
+firethorn.tapschema.database.port=${tapschemaport}
+firethorn.tapschema.database.user=${tapschemauser}
+firethorn.tapschema.database.pass=${tapschemapass}
+
+firethorn.admin.community=${admingroup:?}
+firethorn.admin.user.name=${adminuser:?}
+firethorn.admin.user.pass=${adminpass:?}
+
+firethorn.guest.community=${guestgroup:?}
+
+adql.query.delay.first=${adql_query_delay_first:?}
+
+firethorn.limits.rows.absolute=${firethorn_limits_rows_absolute:?}
+firethorn.limits.rows.default=${firethorn_limits_rows_default:?}
+	
+
+EOF
+
+# -----------------------------------------------------
+# Build our Docker images.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+
+        docker-compose \
+            --file docker/compose/images.yml \
+            build
+
+    popd
+
+
+#---------------------------------------------------------------------
+# Make Changes to java Code
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+	nano hg/firethorn-webapp/src/main/java/uk/ac/roe/wfau/firethorn/webapp/tap/UWSJob.java	
+		... Fixes Here
+
+
+    popd
+
+#---------------------------------------------------------------------
+# Compile our Java code.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn clean install
+
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+        pushd firethorn-ogsadai/webapp
+            mvn docker:package
+        popd
+
+        export buildtag=$(hg branch)
+        pushd firethorn-webapp
+            mvn docker:package
+        popd
+
+    popd
+
+# -----------------------------------------------------
+# Fetch the current branch name.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        export buildtag=$(hg branch)
+
+    popd
+
+
+
+# -----------------------------------------------------
+# Fetch the TAP Deployer
+# -----------------------------------------------------
+
+
+ wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/20b8901d807c/docker/compose/deploy/tap-deployer.yml  -O  docker-compose.yml
+
+
+
+# -----------------------------------------------------
+# Run Docker Compose tap-deployer.yml from firethorn.py
+# -----------------------------------------------------
+
+source "${HOME:?}/chain.properties"
+## Modify compose file, change firethorn-py service to fetch firethorn-py:latest
+
+docker-compose --file "docker-compose.yml" run firethorn-py
+exit()
+
+
+docker start stevedore_firethorn-py_run_2
+docker exec -it stevedore_firethorn-py_run_2 bash
+
+## Modify /home/firethorn.py/firethorn/data/osa-tap.json, only deploy ATLASDR1 resource
+..
+
+python3
+
+import firethorn
+import firethorn_utils.configurator as configur
+ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
+ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
+configurator =  configur.Configurator(ft)
+configurator.load_resources("/home/firethorn.py/firethorn/data/osa-tap.json")
+
+   Importing JDBC Schema: ATLASDR1
+   TAP Service available at: http://gillian:8080/firethorn/tap/755/
+
+exit()
+
+
+
+# -----------------------------------------------------
+# Run Taplint Test
+# -----------------------------------------------------
+
+
+apt update
+apt install default-jre
+apt-get install wget
+wget http://www.star.bris.ac.uk/~mbt/stilts/stilts.jar
+
+java -Xmx4096m -jar stilts.jar -disk taplint tapurl=http://gillian:8080/firethorn/tap/755/ debug=true
+This is STILTS taplint, 3.1-5/0e19ffc (2018-11-02)
+Static report types: ERROR(123), WARNING(48), INFO(21), SUMMARY(9), FAILURE(21)
+
+Section TMV: Validate table metadata against XML schema
+I-TMV-VURL-1 Validating http://gillian:8080/firethorn/tap/755/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+S-TMV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section TME: Check content of tables metadata from /tables
+I-TME-TURL-1 Reading table metadata from http://gillian:8080/firethorn/tap/755/tables
+S-TME-SUMM-1 Schemas: 2, Tables: 67, Columns: 1143, Foreign Keys: 0
+S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
+S-TME-FLGO-1 Other column flags: none
+
+Section TMS: Check content of tables metadata from TAP_SCHEMA
+I-TMS-QSUB-1 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.schemas
+I-TMS-QGET-1 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
+I-TMS-QSUB-2 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.tables
+I-TMS-QGET-2 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
+I-TMS-QSUB-3 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.columns
+I-TMS-QGET-3 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
+I-TMS-QSUB-4 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.keys
+I-TMS-QGET-4 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
+I-TMS-QSUB-5 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-5 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
+I-TMS-QSUB-6 Submitting query: SELECT principal, indexed, std, "size" FROM TAP_SCHEMA.columns
+I-TMS-QGET-6 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=1153
+I-TMS-QSUB-7 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.columns
+I-TMS-QGET-7 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+*+FROM+TAP_SCHEMA.columns&MAXREC=1
+I-TMS-QSUB-8 Submitting query: SELECT ft_column_id, std, indexed, principal, arraysize, ts_column_id, datatype, utype, ucd, unit, description, column_name, table_name FROM TAP_SCHEMA.columns
+I-TMS-QGET-8 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+ft_column_id%2C+std%2C+indexed%2C+principal%2C+arraysize%2C+ts_column_id%2C+datatype%2C+utype%2C+ucd%2C+unit%2C+description%2C+column_name%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=1153
+I-TMS-QSUB-9 Submitting query: SELECT from_column, target_column, key_id FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-9 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=1153
+S-TMS-SUMM-1 Schemas: 2, Tables: 67, Columns: 1143, Foreign Keys: 0
+S-TMS-FLGS-1 Standard column flags: indexed: 0, principal: 7, std: 33
+S-TMS-QNUM-1 Successful/submitted TAP queries: 13/13
+S-TMS-QTIM-1 Average successful query time: 1.3s
+I-TMS-QSUB-x (4 more)
+I-TMS-QGET-x (4 more)
+
+Section TMC: Compare table metadata from /tables and TAP_SCHEMA
+
+Section CPV: Validate capabilities against XML schema
+I-CPV-VURL-1 Validating http://gillian:8080/firethorn/tap/755/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+S-CPV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section CAP: Check content of TAPRegExt capabilities record
+I-CAP-CURL-1 Reading capability metadata from http://gillian:8080/firethorn/tap/755/capabilities
+
+Section AVV: Validate availability against XML schema
+I-AVV-VURL-1 Validating http://gillian:8080/firethorn/tap/755/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section QGE: Make ADQL queries in sync GET mode
+I-QGE-QSUB-1 Submitting query: SELECT TOP 10 surveyID FROM ATLASDR1.Survey
+I-QGE-QGET-1 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+surveyID+FROM+ATLASDR1.Survey
+I-QGE-QSUB-2 Submitting query: SELECT surveyID FROM ATLASDR1.Survey
+I-QGE-QGET-2 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+surveyID+FROM+ATLASDR1.Survey&MAXREC=0
+I-QGE-QSUB-3 Submitting query: SELECT TOP 1 surveyID FROM ATLASDR1.Survey
+I-QGE-QGET-3 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+surveyID+FROM+ATLASDR1.Survey
+I-QGE-QSUB-4 Submitting query: SELECT TOP 1 surveyID FROM ATLASDR1.Survey
+I-QGE-QGET-4 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+surveyID+FROM+ATLASDR1.Survey
+I-QGE-QSUB-5 Submitting query: SELECT TOP 8 sdssPrimary, sdssType AS taplint_c_2, A.distanceMins, slaveObjID AS taplint_c_4, masterObjID FROM ATLASDR1.atlasSourceXDR5PhotoObj AS A
+I-QGE-QGET-5 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+sdssPrimary%2C+sdssType+AS+taplint_c_2%2C+A.distanceMins%2C+slaveObjID+AS+taplint_c_4%2C+masterObjID++FROM+ATLASDR1.atlasSourceXDR5PhotoObj+AS+A
+I-QGE-QSUB-6 Submitting query: SELECT masterObjID FROM ATLASDR1.atlasSourceXDR5PhotoObjAll
+I-QGE-QGET-6 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+masterObjID+FROM+ATLASDR1.atlasSourceXDR5PhotoObjAll&MAXREC=0
+I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
+I-QGE-QGET-7 Query GET URL: http://gillian:8080/firethorn/tap/755/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
+S-QGE-QNUM-1 Successful/submitted TAP queries: 6/6
+S-QGE-QTIM-1 Average successful query time: 1.2s
+
+Section QPO: Make ADQL queries in sync POST mode
+I-QPO-QSUB-1 Submitting query: SELECT TOP 10 surveyID FROM ATLASDR1.Survey
+I-QPO-QSUB-2 Submitting query: SELECT surveyID FROM ATLASDR1.Survey
+I-QPO-QSUB-3 Submitting query: SELECT TOP 8 sdssPrimary, sdssType AS taplint_c_2, A.distanceMins, slaveObjID AS taplint_c_4, masterObjID FROM ATLASDR1.atlasSourceXDR5PhotoObj AS A
+I-QPO-QSUB-4 Submitting query: SELECT masterObjID FROM ATLASDR1.atlasSourceXDR5PhotoObjAll
+I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
+S-QPO-QNUM-1 Successful/submitted TAP queries: 4/4
+S-QPO-QTIM-1 Average successful query time: 1.2s
+
+Section QAS: Make ADQL queries in async mode
+I-QAS-QSUB-1 Submitting query: SELECT TOP 10 surveyID FROM ATLASDR1.Survey
+I-QAS-QJOB-1 Submitted query at http://gillian:8080/firethorn/tap/755/async/15926
+I-QAS-QSUB-2 Submitting query: SELECT surveyID FROM ATLASDR1.Survey
+I-QAS-QJOB-2 Submitted query at http://gillian:8080/firethorn/tap/755/async/15927
+I-QAS-QSUB-3 Submitting query: SELECT TOP 8 sdssPrimary, sdssType AS taplint_c_2, A.distanceMins, slaveObjID AS taplint_c_4, masterObjID FROM ATLASDR1.atlasSourceXDR5PhotoObj AS A
+I-QAS-QJOB-3 Submitted query at http://gillian:8080/firethorn/tap/755/async/15928
+I-QAS-QSUB-4 Submitting query: SELECT masterObjID FROM ATLASDR1.atlasSourceXDR5PhotoObjAll
+I-QAS-QJOB-4 Submitted query at http://gillian:8080/firethorn/tap/755/async/15929
+I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
+I-QAS-QJOB-5 Submitted query at http://gillian:8080/firethorn/tap/755/async/15930
+S-QAS-QNUM-1 Successful/submitted TAP queries: 4/4
+S-QAS-QTIM-1 Average successful query time: 1.1s
+
+Section UWS: Test asynchronous UWS/TAP behaviour
+I-UWS-CJOB-1 Created new job http://gillian:8080/firethorn/tap/755/async/15931
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://gillian:8080/firethorn/tap/755/async/15931/parameters
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://gillian:8080/firethorn/tap/755/async/15931/phase
+I-UWS-POPA-3 POSTed ACTION=DELETE to http://gillian:8080/firethorn/tap/755/async/15931
+I-UWS-CJOB-2 Created new job http://gillian:8080/firethorn/tap/755/async/15932
+I-UWS-CJOB-3 Created new job http://gillian:8080/firethorn/tap/755/async/15933
+I-UWS-VUWS-1 UWS job document implicitly V1.0
+I-UWS-POPA-4 POSTed PHASE=RUN to http://gillian:8080/firethorn/tap/755/async/15933/phase
+I-UWS-JOFI-1 Job completed immediately - can't test phase progression
+
+Section MDQ: Check table query result columns against declared metadata
+I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ArchiveCurationHistory
+I-MDQ-QSUB-2 Submitting query: SELECT TOP 1 * FROM ATLASDR1.AstrCalVers
+I-MDQ-QSUB-3 Submitting query: SELECT TOP 1 * FROM ATLASDR1.CurationTask
+I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM ATLASDR1.CurrentAstrometry
+I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ExternalSurvey
+I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ExternalSurveyTable
+I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM ATLASDR1.Filter
+I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM ATLASDR1.FilterSections
+I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM ATLASDR1.Multiframe
+S-MDQ-QNUM-1 Successful/submitted TAP queries: 67/67
+S-MDQ-QTIM-1 Average successful query time: 1.2s
+I-MDQ-QSUB-x (58 more)
+
+Section OBS: Test implementation of ObsCore Data Model
+I-OBS-NODM-1 Table capabilities lists no ObsCore DataModel - no ObsCore tests
+
+Section UPL: Make queries with table uploads
+F-UPL-NOUP-1 Table capabilities lists no upload methods - will not attempt upload tests
+
+Section EXA: Check content of examples document
+I-EXA-EURL-1 Reading examples document from http://gillian:8080/firethorn/tap/755/examples
+F-EXA-EXNO-1 No examples document at http://gillian:8080/firethorn/tap/755/examples
+
+Totals: Errors: 0; Warnings: 0; Infos: 138; Summaries: 18; Failures: 2
+
