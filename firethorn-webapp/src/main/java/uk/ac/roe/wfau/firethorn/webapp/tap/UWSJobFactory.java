@@ -222,20 +222,21 @@ class UWSJobFactory extends AbstractComponent {
 			
 			try {
 				query = resource.blues().create(
-                    null, // JddcSchema
-                    null, // AdqlSchema
-			        "",
-			        null, // Default mode
-			        null, // Default syntax
-			        null, // No limits
-			        factories().blues().delays().create(
+	                    null, // JddcSchema
+	                    null, // AdqlSchema
+	                    "",
+                        null, // Mode.AUTO
+                        null, // Syntax.AUTO
+						null,
+						factories().blues().delays().create(
 	                        500,
 	                        null,
 	                        null
-                        ), // No delays
-			        null, // Nothing to wait for
-			        null  // No wait time 
-			        );
+                        ),
+						null, // Wait for COMPLETED
+						Long.valueOf(600000) // TODO This is not the right value.
+						);
+
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();
@@ -257,17 +258,22 @@ class UWSJobFactory extends AbstractComponent {
 			
 			try {
 				
+				
 				query = resource.blues().create(
-                    null, // JddcSchema
-                    null, // AdqlSchema
-			        querystring,
-                    null, // Default mode
-                    null, // Default syntax
-                    null, // No limits
-                    null, // No delays
-                    null, // Nothing to wait for
-                    null  // No wait time 
-			        );
+	                    null, // JddcSchema
+	                    null, // AdqlSchema
+	                    querystring,
+                        null, // Mode.AUTO
+                        null, // Syntax.AUTO
+						null,
+						factories().blues().delays().create(
+	                        500,
+	                        null,
+	                        null
+                        ),
+						null, // Wait for COMPLETED
+						Long.valueOf(600000) // TODO This is not the right value.
+						);
 			
 			} catch (final Exception ouch) {
 				ouch.printStackTrace();
