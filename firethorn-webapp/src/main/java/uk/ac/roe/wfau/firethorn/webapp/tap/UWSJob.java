@@ -533,7 +533,7 @@ public class UWSJob {
 			StringBuilder writer = new StringBuilder();
 			String ownerId = ((this.getOwnerId() == null) ? "" : this.getOwnerId());
 	        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
-	        writer.append("	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xlink='http://www.w3.org/1999/xlink' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd'>");
+	        writer.append("	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xlink='http://www.w3.org/1999/xlink' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://www.ivoa.net/xml/UWS/v1.0'>");
 	     
 	            writer.append("<uws:jobId>" + this.getJobId() + "</uws:jobId>");
 	            writer.append("<uws:ownerId xsi:nil='true'>" + ownerId + "</uws:ownerId>");
