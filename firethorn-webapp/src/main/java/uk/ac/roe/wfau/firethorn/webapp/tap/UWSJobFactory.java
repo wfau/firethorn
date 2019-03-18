@@ -130,7 +130,7 @@ class UWSJobFactory extends AbstractComponent {
 										query.advance(
 										        query.state(),
 										        TaskState.RUNNING,
-												Long.valueOf(600000)
+												Long.valueOf(0)
 										        );
 									} catch (InvalidStateException e) {
 										// TODO Auto-generated catch block
@@ -182,7 +182,7 @@ class UWSJobFactory extends AbstractComponent {
  										query.advance(
  										        query.state(),
  										        state,
- 												Long.valueOf(600000)
+ 												Long.valueOf(0)
  										        );
  									} catch (InvalidStateException e) {
  										// TODO Auto-generated catch block
@@ -234,7 +234,7 @@ class UWSJobFactory extends AbstractComponent {
 	                        null
                         ),
 						null, // Wait for COMPLETED
-						Long.valueOf(600000) // TODO This is not the right value.
+						Long.valueOf(0) // TODO This is not the right value.
 						);
 
 			
@@ -272,7 +272,7 @@ class UWSJobFactory extends AbstractComponent {
 	                        null
                         ),
 						null, // Wait for COMPLETED
-						Long.valueOf(600000) // TODO This is not the right value.
+						Long.valueOf(0) // TODO This is not the right value.
 						);
 			
 			} catch (final Exception ouch) {
