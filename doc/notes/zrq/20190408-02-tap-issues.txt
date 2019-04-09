@@ -697,21 +697,484 @@
             ....
             E-MDQ-QERR-9 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalSurveyTable [Service error: "null"]
 
-
         ## Manual Stop..
         ## VVVDR4 is missing from ramses19
         ## Queries are not completing
 
-        If it is missing from ramses19, then how did it get into the metadata ?
+            If it is missing from ramses19, then how did it get into the metadata ?
 
     ---- ----
     gedit ${notepath}/20190211-Firethorn-Testing-Taplint.txt
 
+        ## Date: 11 Feb 2019
+        ## Firethorn Version: 2.1.28
+        ## Resource ID: 1808
+        ## VM: Cadelicia
+        ## Server: trop01
+        ## VM Version: 4.18.13-200.fc28.x86_64
+        ## VM Platform: Fedora release 28 (Twenty Eight)
+        ## User Database: FirethornUserdataZRQ20170621151245DEV
+        ## localhost:8081 -> Cadelicia:8080
+
+            Section TMV: Validate table metadata against XML schema
+            ....
+
+            Section TME: Check content of tables metadata from /tables
+            ....
+
+            Section TMS: Check content of tables metadata from TAP_SCHEMA
+            ....
+
+            Section TMC: Compare table metadata from /tables and TAP_SCHEMA
+            ....
+
+            Section CPV: Validate capabilities against XML schema
+            ....
+
+            Section CAP: Check content of TAPRegExt capabilities record
+            ....
+
+            Section AVV: Validate availability against XML schema
+            ....
+
+            Section QGE: Make ADQL queries in sync GET mode
+            ....
+
+            Section QPO: Make ADQL queries in sync POST mode
+            ....
+
+            Section QAS: Make ADQL queries in async mode
+            ....
+
+            Section UWS: Test asynchronous UWS/TAP behaviour
+            ....
+
+            Section MDQ: Check table query result columns against declared metadata
+            I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM "FIRST".first08Jul16Source
+            I-MDQ-QSUB-2 Submitting query: SELECT TOP 1 * FROM "FIRST".firstSource
+            I-MDQ-QSUB-3 Submitting query: SELECT TOP 1 * FROM "FIRST".firstSource12Feb16
+            I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM BestDR1."Diagnostics"
+            I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM BestDR1."First"
+            I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM BestDR1."Match"
+            I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM BestDR1."Region"
+            I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM BestDR1."Zone"
+            I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM BestDR1.Best2Sector
+            E-MDQ-QERR-1 Failed TAP query SELECT TOP 1 * FROM BestDR3.SiteDBs [Service error: "null"]
+            ....
+
+        ## Hangs..
+
+            E-MDQ-QERR-2 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ArchiveCurationHistory [Service error: "null"]
+            ....
+            E-MDQ-QERR-3 Failed TAP query SELECT TOP 1 * FROM VVVDR4.AstrCalVers [Service error: "null"]
+            ....
+            E-MDQ-QERR-4 Failed TAP query SELECT TOP 1 * FROM VVVDR4.CurationTask [Service error: "null"]
+            ....
+            E-MDQ-QERR-5 Failed TAP query SELECT TOP 1 * FROM VVVDR4.CurrentAstrometry [Service error: "null"]
+            ....
+            E-MDQ-QERR-6 Failed TAP query SELECT TOP 1 * FROM VVVDR4.EpochFrameStatus [Service error: "null"]
+            ....
+            E-MDQ-QERR-7 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalProduct [Service error: "null"]
+            ....
+            E-MDQ-QERR-8 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalProductCatalogue [Service error: "null"]
+            ....
+            E-MDQ-QERR-9 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalSurvey [Service error: "null"]
+            ....
+
+        ## Manual stop..
+        ## It looks like these are running into timeouts
+
+        ## SELECT TOP 1 * FROM BestDR3.SiteDBs
+        ## Checking on Ramses19, it looks like BestDR3 is actually BESTDR3
+        ## Need to update tap deployment metadata to match this
+
+            If the catalog name isn't in quotes, then we shouldn't be case sensitive.
+
+        ## VVVDR4 Does not exist on ramses19 which is the server being tested
+        ## Check what one of the VVVDR4 Tables queries is doing
+        ## i.e. http://localhost:8081/firethorn/blue/query/7913021
+
+            If it is missing from ramses19, then how did it get into the metadata ?
+
+
+
+        ## Looks like its stuck with a status of Running
+        ## Results state is Completed though
+
+            {
+            ....
+            "input": "SELECT TOP 5 * FROM BestDR1.HoleObj",
+            ....
+            "results": {
+                "formats": {
+                    "datatable": "http://localhost:8081/firethorn/adql/table/7914719/datatable",
+                    "votable": "http://localhost:8081/firethorn/adql/table/7914719/votable"
+                    },
+                "count": 5,
+                "state": "COMPLETED",
+                "table": "http://localhost:8081/firethorn/adql/table/7914719"
+                },
+            ....
+            "status": "RUNNING",
+            ....
+            "history": [
+                    {
+                    ....
+                    "message": null,
+                    "state": "COMPLETED",
+                    ....
+                    },
+                    {
+                    ....
+                    "message": "Executing query",
+                    "state": "READY",
+                    ....
+                    }
+                ],
+            ....
+            "delays": {
+                "every": null,
+                "last": null,
+                "first": null
+                },
+            "limits": {
+                "cells": null,
+                "rows": 1000000,
+                "time": null
+                },
+            "syntax": {
+                "friendly": null,
+                "status": "VALID",
+                "message": null
+                },
+            ....
+            }
+
+        Suspect this is a result of race condition ?
+        Suspect taplint is using two stage async requests.
+        The callback must have happened to set the result state to COMPLETED.
+        Race condition means that callback COMPLETED is overwritten by update RUNNING.
+
     ---- ----
     gedit ${notepath}/20190211-Firethorn-Testing-VVVDR4-SDSSDR9-only.txt
 
+        ## Date: 11 Feb 2019
+
+        ## BestDR9 and VVVDR4 seem to appear in failing queries or just before VM crashes, so lets test just those
+        ## Also VVVDR4 is currently not on ramses19 for some reason, so this is expected to fail, but lets see if it will crash the server or cause loop
+
+        ## Modify firethorn-utils.validator to filter for those two only:
+
+            ...
+            for schema in  list(filter(lambda x: x.name().lower() in ["bestdr9", "vvvdr4"], resource.get_schemas())):
+            ...
+
+            /usr/bin/python3 -c "import firethorn_utils.validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3
+
+                --- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+                Testing [BestDR9.SpecObjAll]
+                Rowcount:10
+                Query: None
+                Query ID: http://localhost:8081/firethorn/blue/query/9658668
+
+                ....
+                ....
+                ....
+                ....
+
+                Table query completed after 1.5893499851226807 seconds
+                Testing [VVVDR4.vvvSourceXglimpse1_hrc]
+                Rowcount:-1
+                Query: None
+                Query ID: http://localhost:8081/firethorn/blue/query/9684250
+
+                Table query completed after 1.3341343402862549 seconds
+                Testing [VVVDR4.vvvSourceXglimpse1_mca]
+
+        ## Hangs Here..
+        ## should note that I was simultaneously running a TAPlint validation, where queries on VVVDR4 where timeing out..
+
+        ## ----------------------------------------------------------------------------------------------------------------
+
+        ## Kill Test as well as concurrent Taplint Validation test and try this again, but only VVVDR4..
+
+            /usr/bin/python3 -c "import firethorn_utils.validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3
+
+                --- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+                Testing [VVVDR4.ArchiveCurationHistory]
+                Rowcount:-1
+                Query: None
+                Query ID: http://localhost:8081/firethorn/blue/query/9689655
+                Table query completed after 1.4808361530303955 seconds
+
+                    ....
+                    ....
+                    ....
+                    ....
+
+                Testing [VVVDR4.Multiframe]
+                Rowcount:-1
+                Query: None
+                Query ID: http://localhost:8081/firethorn/blue/query/9689666
+                Table query completed after 2.3705923557281494 seconds
+
+                Testing [VVVDR4.MultiframeDetector]
+
+        ## Hangs..
+        ## Looking at the Firethorn logs this query looks like its running:
+        ## http://localhost:8081/firethorn/blue/query/9689667
+        ## Check Job status
+        ## status": "RUNNING",
+        ## results -> state: "EMPTY",
+
+            "history": [
+	                {
+	                ....
+	                "message": "Executing query",
+	                "state": "READY",
+	                ....
+	                }
+	            ],
+
+        ## Check OGSA-DAI Logs for clues:
+        ## Last Output is an Exception for that query:
+
+            2019-02-11 13:52:33,910 DEBUG event.LoggingActivityListener [pool-1-thread-3850,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	            at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:322)
+	            at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	            at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	            at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	            at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	            at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	            at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	            at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	            at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	            at java.lang.Thread.run(Thread.java:748)
+            Caused by: java.sql.SQLException: Invalid object name 'VVVDR4.dbo.MultiframeDetector'.
+	            at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+	            at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+	            at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+	            at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:671)
+	            at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:505)
+	            at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+	            at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	            at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	            at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+	            at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:415)
+	            at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:404)
+
+
+        ## Hmm..Previous queries failed, but this one seems to be stuck in a RUNNING loop
+        ## For some reason FAIL message was not propagated correctly here?
+
+        ## Memory usage on Cadelicia shows 1.65GB/4GB used and swap is 415M/1024M
+
+        ## ----------------------------------------------------------------------------------------------------------------
+
+        ## Run same test a third time..
+
+            /usr/bin/python3 -c "import firethorn_utils.validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3
+
+                ....
+                ....
+
+                Testing [VVVDR4.ArchiveCurationHistory]
+                Rowcount:-1
+                Query: None
+                Query ID: http://localhost:8081/firethorn/blue/query/9689668
+                Table query completed after 1.5432765483856201 seconds
+
+                ....
+                ....
+                ....
+                ....
+                ....
+                ....
+                ....
+                ....
+
+                Testing [VVVDR4.ProgrammeCurationHistory]
+                Rowcount:-1
+                Query: None
+                Query ID: http://localhost:8081/firethorn/blue/query/9689687
+                Table query completed after 1.4503490924835205 seconds
+
+                Testing [VVVDR4.ProgrammeFrame]
+                Rowcount:-1
+                Query: None
+                Query ID: http://localhost:8081/firethorn/blue/query/9689688
+                Table query completed after 1.4523231983184814 seconds
+
+                Testing [VVVDR4.ProgrammeTable]
+
+        ## Hangs here..
+
+        ## Basically every time test is run, it will hang at some Table query, which seems to be different everytime
+
+    ---- ----
+
+    Important thing .. need to modify the validator code to filter the targets.
+
+        ## Modify firethorn-utils.validator to filter for those two only:
+
+            ...
+            for schema in  list(filter(lambda x: x.name().lower() in ["bestdr9", "vvvdr4"], resource.get_schemas())):
+            ...
+
     ---- ----
     gedit ${notepath}/20190211-OSA-TAP-debug-Apache-Logs.txt
+
+        Apache log that covers transition from normal operation to 503 proxy error.
+        Ellipsis, '....', indicates one or more lines removed.
+        Blank lines highlights change in behaviour between consecutive lines.
+
+            178.79.157.93 - - [03/Feb/2019:14:00:02 +0000] "GET /osa/availability HTTP/1.1" 200 224 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
+            178.79.157.93 - - [03/Feb/2019:15:00:01 +0000] "GET /osa/availability HTTP/1.1" 200 224 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
+            178.79.157.93 - - [03/Feb/2019:16:00:01 +0000] "GET /osa/availability HTTP/1.1" 200 224 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
+            ....
+            ....
+            195.194.121.66 - - [04/Feb/2019:13:05:09 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 6944 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:09 +0000] "GET /firethorn/adql/table/26612167 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:09 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/adql/table/26612167 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+
+            195.194.121.66 - - [04/Feb/2019:13:05:09 +0000] "POST /firethorn/blue/query/26607249 HTTP/1.1" 200 7585 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/adql/table/26612167 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/blue/query/26607249 HTTP/1.1" 200 7585 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:11 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:11 +0000] "GET /firethorn/adql/table/26612167 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+
+            195.194.121.66 - - [04/Feb/2019:13:05:11 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 2562 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:12 +0000] "POST /firethorn/blue/query/26607250 HTTP/1.1" 200 3203 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:12 +0000] "GET /firethorn/blue/query/26607250 HTTP/1.1" 200 4156 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:13 +0000] "GET /firethorn/blue/query/26607250 HTTP/1.1" 200 4156 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:13 +0000] "GET /firethorn/adql/table/26612171 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:13 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:13 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:13 +0000] "GET /firethorn/blue/query/26607249 HTTP/1.1" 200 9010 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:14 +0000] "GET /firethorn/adql/table/26612171 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:14 +0000] "GET /firethorn/blue/query/26607249 HTTP/1.1" 200 9010 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:14 +0000] "GET /firethorn/adql/table/26612171 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:14 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:14 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:14 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:14 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:14 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/table/26612171 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+
+            195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 1335 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+
+            195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "POST /firethorn/blue/query/26607251 HTTP/1.1" 200 1976 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/blue/query/26607251 HTTP/1.1" 200 2929 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/blue/query/26607251 HTTP/1.1" 200 2929 "-" "Python-urllib/3.4"
+
+            195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 12641 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+
+            178.79.157.93  - - [04/Feb/2019:14:00:01 +0000] "GET /osa/availability HTTP/1.1" 503 299 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
+
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "POST /firethorn/blue/query/26613652 HTTP/1.1" 502 438 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 502 437 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:14:45:18 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:14:45:17 +0000] "GET /firethorn/blue/query/26613652 HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:14:45:20 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:14:45:20 +0000] "GET /firethorn/blue/query/26613652 HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
+
+            195.194.121.66 - - [04/Feb/2019:14:45:23 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:14:45:23 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
+            ....
+            195.194.121.66 - - [04/Feb/2019:14:45:38 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:14:45:38 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
+
+        Block of normal behaviour, multiple requests within a few seconds.
+
+            195.194.121.66 - - [04/Feb/2019:13:05:09 +0000] .... 200
+            ....
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] .... 200
+
+        External '/availability' request sits between good and bad requests.
+
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+            178.79.157.93  - - [04/Feb/2019:14:00:01 +0000] "GET /osa/availability HTTP/1.1" 503 299 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "POST /firethorn/blue/query/26613652 HTTP/1.1" 502 438 "-" "Python-urllib/3.4"
+
+        Question - why the 1hr difference between the log entries ?
+
+            https://serverfault.com/questions/661116/why-does-my-apache-access-log-timestamp-sometimes-go-backwards
+            "The time in the log message indicates when the request was received. However each request is only logged once processing it has completed."
+
+        Implication of that is crazy - it means many of the '13:05:17' requests took ~1hr to complete "
+
+        Interesting transition, 200, 200, 502, 502, 503, 503
+
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/schema/548      HTTP/1.1"  200 783 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/resource/56     HTTP/1.1"  200 617 "-" "Python-urllib/3.4"
+
+            178.79.157.93  - - [04/Feb/2019:14:00:01 +0000] "GET /osa/availability               HTTP/1.1"  503 299 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
+
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "POST /firethorn/blue/query/26613652 HTTP/1.1"  502 438 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/table/26612173  HTTP/1.1"  502 437 "-" "Python-urllib/3.4"
+
+            195.194.121.66 - - [04/Feb/2019:14:45:18 +0000] "GET /firethorn/adql/table/26612173  HTTP/1.1"  503 299 "-" "Python-urllib/3.4"
+            195.194.121.66 - - [04/Feb/2019:14:45:17 +0000] "GET /firethorn/blue/query/26613652  HTTP/1.1"  503 299 "-" "Python-urllib/3.4"
+
+        Edited to show time and status ..
+
+            13:05:17 status 200
+            13:05:17 status 200
+
+            14:00:01 status 503
+
+            13:05:17 status 502
+            13:05:17 status 502
+
+            14:45:18 status 503
+            14:45:17 status 503
+
+        Reading between the lines ... and constructing a story.
+
+            Timestamp indicates when the request starts.
+            Position  indicates when the request completes.
+
+            13:05:17 status 200 - GET  /adql/schema/548      PASS OK
+            13:05:17 status 200 - GET  /adql/resource/56     PASS OK
+
+            -- failure happens here --
+
+            14:00:01 status 503 - GET  /availability at 14:00 => immediate 503 response
+
+            13:05:17 status 502 - POST /firethorn/blue/query/26613652 at 13:05:17 => 502 response after 14:00:01 (+1hr)
+            13:05:17 status 502 - GET  /firethorn/adql/table/26612173 at 13:05:17 => 502 response after 14:00:01 (+1hr)
+
+            14:45:18 status 503 - GET  /firethorn/adql/table/26612173 at 14:45:18 => 503 response
+            14:45:17 status 503 - GET  firethorn/blue/query/26613652  at 14:45:17 => 503 response (>+1sec)
+
+        Suggest adding %D to the Apache logging ?
+
+            https://serverfault.com/a/734235
+            ".. enable the request duration logging, %D .."
+
+            https://serverfault.com/a/661150
+            ".. useful to include %D in the LogFormat .. can see how many microseconds each request took."
+
+        We don't know which set of tests this Apache log fragment applies to.
+        Need to add more metadata to the logs and the tests.
+
+        Add timestamp to the firethorn-py test logs so we can match them up with Apache logs.
+        Add fingerprint requests to the firethorn-py tests so we can match them up with Apache logs.
+
+            http://.../firethorn/logsync/$(uuid)
+
+
 
     ---- ----
     gedit ${notepath}/20190212-Firethorn-utils-Healthchecker-run.txt
