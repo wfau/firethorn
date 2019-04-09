@@ -1,0 +1,162 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Push the AstroH2 jar into our local Maven repository.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd 'zrq.github'
+
+                mvn install:install-file \
+                    -DgroupId=de.uni-heidelberg.zah \
+                    -DartifactId=astroh2 \
+                    -Dversion=0.3 \
+                    -Dpackaging=jar \
+                    -Dfile=lib/astroh2-0.3.jar
+
+# -----------------------------------------------------
+# Pull the Starlink jars into our local Maven repository.
+#[user@desktop]
+
+
+
+# -----------------------------------------------------
+# Add our remote archive repository to provide starlink jars.
+#[user@desktop]
+
+
+# -----------------------------------------------------
+# Build the TAP and ADQL classes.
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd 'zrq.github'
+
+                # Clean all the classes
+                mvn -f adql-pom.xml clean
+
+                # Remove the generated Java classes.
+                pushd src/adql/parser
+                    rm ADQLParser.java
+                    rm ADQLParserConstants.java
+                    rm ADQLParserTokenManager.java
+                    rm SimpleCharStream.java
+                    rm Token.java
+                    rm TokenMgrError.java
+                popd
+
+                # Restore the backups.
+                pushd src/adql/parser
+                    ln -f ParseException.java.backup   ParseException.java
+                    ln -f SimpleCharStream.java.backup SimpleCharStream.java
+                    ln -f TokenMgrError.java.backup    TokenMgrError.java
+                popd
+
+                # Build the JavaCC grammar
+                mvn -f adql-pom.xml javacc:javacc
+
+                # Fix the constructor.
+                sed -i '
+                    /this(stream, null)/ {
+                        s/null/(String)null/
+                        }
+                    ' target/generated-sources/javacc/adql/parser/ADQLParser.java
+
+
+                # Build the ADQL classes
+                mvn -f adql-pom.xml compile
+
+                # Build the TapLib classes
+                mvn -f tap-pom.xml compile
+
+                # Test the ADQL classes
+                mvn -f adql-pom.xml test
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# WHEN everything works - before git commit
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd 'zrq.github'
+
+                # Replace the generated Java classes.
+                generated=$(pwd)/target/generated-sources/javacc/adql/parser/
+                pushd src/adql/parser
+                    cp  ${generated}/ADQLParser.java .
+                    cp  ${generated}/ADQLParserConstants.java .
+                    cp  ${generated}/ADQLParserTokenManager.java .
+                    cp  ${generated}/Token.java .
+                popd
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Final clean test
+#[user@desktop]
+
+    source "${HOME:?}/projects.settings"
+    pushd "${EDINBURGH_PROJECTS:?}"
+        pushd 'taplib'
+            pushd 'zrq.github'
+
+                # Build the ADQL classes
+                mvn -f adql-pom.xml compile
+
+                # Build the TapLib classes
+                mvn -f tap-pom.xml compile
+
+                # Test the ADQL classes
+                mvn -f adql-pom.xml test
+
+            popd
+        popd
+    popd
+
+
+
+
+    #
+    # Git commit and push were not clean :-(
+    # Managed to get maven POM changes mixed in with the parser code.
+    # Text editor newline changes got in the way :-(
+    # Will need to do a 100% clean version when we are ready.
+    #
+
+
+
+
+
+
+
