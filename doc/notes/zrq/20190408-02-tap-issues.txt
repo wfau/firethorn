@@ -1,0 +1,741 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#
+# Catching up from notes
+# http://wfau.metagrid.co.uk/code/firethorn/file/tip/doc/notes/stv/
+
+# -----------------------------------------------------
+# Swap to the branch and update.
+#[user@desktop]
+
+    source "${HOME}/firethorn.settings"
+    pushd  "${FIRETHORN_CODE}"
+
+        hg pull
+        hg update
+        hg update 2.1.28-tap-issues
+
+
+    popd
+
+# -----------------------------------------------------
+# Read though the notes and logs.
+#[user@desktop]
+
+    notepath=${FIRETHORN_CODE}/doc/notes/stv/
+
+    ---- ----
+    gedit ${notepath}/20190201-Firethorn-System-Validator.txt
+
+            Notes on running validator
+
+            Set some environment variables.
+            Download the compose YML file.
+            YML file has one container, firethorn/firethorn-utils.
+            YML file command is [bash].
+            YML file passes env params to the container.
+
+            Manually run the Python validator
+
+                python3 -c "import firethorn_utils.validator as validator; validator.main()" -ft=${firethorn_base:?} -from=${from_email:?} -to=${to_email:?} -r=${resourceid:?} -u=${ft_user:?} -p=${ft_pass:?} -g=${ft_group:?} -v=True
+
+
+    ---- ----
+    gedit ${notepath}/20190210-Firethorn-Testing-All-Tables-Test-Results.txt
+
+        Lots of data .. not much information.
+        Makes sense if you know what the data is.
+
+    ---- ----
+    gedit ${notepath}/20190210-Firethorn-Testing-All-Tables-Test.txt
+
+        Test metadata describes what was being tested :-)
+
+            ## Date: 10 Feb 2019
+            ## Firethorn Version: 2.1.28
+            ## Resource ID: 1808
+            ## VM: Cadelicia
+            ## Server: trop01
+            ## VM Version: 4.18.13-200.fc28.x86_64
+            ## VM Platform: Fedora release 28 (Twenty Eight)
+            ## User Database: FirethornUserdataZRQ20170621151245DEV
+
+        Starting to see some exceptions, but we only have the Python errors not the server errors.
+
+    ---- ----
+    gedit ${notepath}/20190210-Firethorn-Testing-TAP-async-results.txt
+
+        No test metadata :-(
+
+            First time we see errors for BestDR1 data
+
+                BestDR1.SpecObjAll          invalid literal for int() with base 10:
+                BestDR1.Frame               invalid literal for int() with base 10:
+                BestDR1.PlateX              invalid literal for int() with base 10:
+                BestDR1.SDSSConstants       invalid literal for int() with base 10:
+
+    ---- ----
+    gedit ${notepath}/20190210-Firethorn-Testing-TAP-async.txt
+
+        Test metadata describes what was being tested :-)
+
+            ## Date: 10 Feb 2019
+            ## Firethorn Version: 2.1.28
+            ## Resource ID: 1808
+            ## VM: Cadelicia
+            ## Server: trop01
+            ## VM Version: 4.18.13-200.fc28.x86_64
+            ## VM Platform: Fedora release 28 (Twenty Eight)
+            ## User Database: FirethornUserdataZRQ20170621151245DEV
+
+            ## TEST 1
+            ## Go through all tables of a resource and run an asynchronous TAP query
+            ## Firethorn Utils can be used as described here:
+            ## http://wfau.metagrid.co.uk/code/firethorn/file/fa50d2cbcfdd/doc/notes/stv/20190201-Firethorn-System-Validator.txt
+            ## Test run on local machine, with a proxy connection to Cadelicia ("8080:8081")
+
+        Test itself is buried in the command line
+
+            /usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 -v=True -m=async
+
+        Test metadata doesn't say what the target table metadata contains.
+
+            Is this testing against the metadata in the WFAU github repo ?
+            What version of the metadata ?
+            Were all of the catalogs loaded ?
+
+            Is this the only clue '-r=1808' as to what resource was tested ?
+
+                ## Resource ID: 1808
+
+        Three tests run
+            Testing [BestDR1.SpecObjAll] - FAIL
+                huge stack trace from the Python client for a well known server error
+                    ValueError: invalid literal for int() with base 10:
+
+            Testing [BestDR1.TilingInfo] - PASS
+
+            Testing [BestDR1.StripeDefs] - FAIL
+
+                Testing stop here
+                Details of the [BestDR1.StripeDefs] follow.
+
+                This looks like the race condition issue.
+                OGSA-DAI log shows COMPLETED callback was made.
+                Firethorn job history shows COMPLETED callback was received.
+                Firethorn result status shows COMPLETED.
+                Firethorn job status shows RUNNING.
+
+                Notes highlight an InvalidStateTransitionException
+
+                    2019-02-10 20:37:05,930 DEBUG [FireThornTaskExecutor-53] [BlueTaskEntity]   state [COMPLETED][RUNNING]
+                    2019-02-10 20:37:05,930 ERROR [FireThornTaskExecutor-53] [BlueTaskEntity] InvalidStateTransitionException [8080048]
+
+
+    ---- ----
+    gedit ${notepath}/20190210-Firethorn-Testing-TAP-sync-results.txt
+
+        Test metadata describes what was being tested :-)
+
+            ## Date: 10 Feb 2019
+            ## Firethorn Version: 2.1.28
+            ## Resource ID: 1808
+            ## VM: Cadelicia
+            ## Server: trop01
+            ## VM Version: 4.18.13-200.fc28.x86_64
+            ## VM Platform: Fedora release 28 (Twenty Eight)
+            ## User Database: FirethornUserdataZRQ20170621151245DEV
+
+            ## TEST 1
+            ## Go through all tables of a resource and run a synchronous TAP query
+            ## Firethorn Utils can be used as described here:
+            ## http://wfau.metagrid.co.uk/code/firethorn/file/fa50d2cbcfdd/doc/notes/stv/20190201-Firethorn-System-Validator.txt
+            ## Test run on local machine, with a proxy connection to Cadelicia ("8080:8081")
+
+        Test itself is buried in the command line
+
+            /usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn  -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 -v=True -m=sync
+
+        Test metadata doesn't say what the target table metadata contains.
+
+            Is this testing against the metadata in the WFAU github repo ?
+            What version of the metadata ?
+            Were all of the catalogs loaded ?
+
+            Is this the only clue '-r=1808' as to what resource was tested ?
+
+                ## Resource ID: 1808
+
+        Lots of different errors in a BLOB of JSON.
+        Missing is a clear list of the errors.
+
+            VHSDR2.MultiframeDetector           ValueError: invalid literal for int() with base 10
+            VIDEODR5.FilterSections             ValueError: invalid literal for int() with base 10
+            IRAS.iras_asc                       ValueError: invalid literal for int() with base 10
+            VVVDR4.vvvSourceXDetection          HTTP Error 400
+            BestDR5.SpecObj                     ValueError: invalid literal for int() with base 10
+            BestDR7.\"Region\"                  ValueError: invalid literal for int() with base 10
+            BestDR1.PlateX                      ValueError: invalid literal for int() with base 10
+            BestDR7.SpecObj                     ValueError: invalid literal for int() with base 10
+            VVVDR4.ExternalProductCatalogue     HTTP Error 400
+            BestDR8.Frame                       ValueError: invalid literal for int() with base 10
+            BestDR9.Frame                       ValueError: invalid literal for int() with base 10
+            BestDR9.SpecObj                     ValueError: invalid literal for int() with base 10
+            VVVDR4.CurationTask                 HTTP Error 400
+            VVVDR4.vvvSource                    HTTP Error 400
+            BestDR1.Frame                       ValueError: invalid literal for int() with base 10
+            VVVDR4.vvvSourceXiras_psc           HTTP Error 400
+            VIKINGDR2.vikingTilePawTDOnly       ValueError: invalid literal for int() with base 10
+            BestDR9.segue1SpecObjAll            ValueError: invalid literal for int() with base 10
+            BestDR9.segueSpecObjAll             ValueError: invalid literal for int() with base 10
+            VVVDR4.Survey                       HTTP Error 400
+            VVVDR4.Provenance                   HTTP Error 400
+            VIDEODR2.CurrentAstrometry          ValueError: invalid literal for int() with base 10
+            VVVDR4.vvvSourceXtwomass_xsc        HTTP Error 400
+            VVVDR4.RequiredStack                HTTP Error 400
+            ROSAT.rosat_fsc                     E04: Invalid bit value 'true'
+            VVVDR4.vvvSourceExtinction          HTTP Error 400
+            VVVDR4.SurveyProgrammes             HTTP Error 400
+            BestDR3.PlateX                      ValueError: invalid literal for int() with base 10
+            VIDEODR4.CurrentAstrometry          ValueError: invalid literal for int() with base 10
+            VVVDR4.Programme                    HTTP Error 400
+            VMCDR1.MultiframeDetectorEsoKeys    ValueError: invalid literal for int() with base 10
+            BestDR3.SiteDBs                     HTTP Error 400
+            BestDR9.StarTag                     <urlopen error timed out>
+            BestDR9.\"Region\"                  ValueError: invalid literal for int() with base 10
+            VVVDR4.vvvDetection                 HTTP Error 400
+            BestDR9.SpecObjAll                  ValueError: invalid literal for int() with base 10
+            IRAS.iras_psc                       E04: Invalid bit value 'false'
+            BestDR5.QsoConcordance              E04: Invalid bit value 'true'
+            VVVDR4.vvvTilePawPrints             HTTP Error 400
+            VVVDR4.vvvVarFrameSetInfo           HTTP Error 400
+            UKIDSSDR5PLUS.MultiframeDetector    ValueError: invalid literal for int() with base 10
+            VVVDR4.ProgrammeTable               HTTP Error 400
+            VVVDR4.vvvSourceXSynopticSource     HTTP Error 400
+            BestDR5.QsoCatalog                  E04: Invalid bit value 'true'
+            VIDEODR3.MultiframeDetectorEsoKeys  ValueError: invalid literal for int() with base 10
+            BestDR1.SpecObjAll                  ValueError: invalid literal for int() with base 10
+            VIKINGDR3.MultiframeDetector        ValueError: invalid literal for int() with base 10
+            BestDR8.\"Region\"                  ValueError: invalid literal for int() with base 10
+            BestDR7.QsoCatalog                  E04: Invalid bit value 'true'
+            TWOMASS.twomass_sixx2_psc           <urlopen error timed out>
+            BestDR5.PhotoProfile                ValueError: invalid literal for int() with base 10
+            VVVDR4.Release                      HTTP Error 400
+            VVVDR4.vvvMergeLog                  HTTP Error 400
+            VVVDR4.ExternalProduct              <urlopen error timed out>
+            VVVDR4.Filter                       HTTP Error 400
+            VVVDR4.ExternalSurvey               <urlopen error timed out>
+            VVVDR4.vvvSourceXxmm3dr4            HTTP Error 400
+            BestDR3.PhotoProfile                ValueError: invalid literal for int() with base 10
+            BestDR9.Sky                         <urlopen error timed out>
+            VVVDR4.vvvSynopticSource            HTTP Error 400
+            VVVDR4.MultiframeEsoKeys            HTTP Error 400
+            BestDR3.SpecObjAll                  ValueError: invalid literal for int() with base 10
+            VVVDR4.ProductLinks                 HTTP Error 400
+            VIDEODR3.CurrentAstrometry          ValueError: invalid literal for int() with base 10
+            BestDR9.segue2SpecObjAll            ValueError: invalid literal for int() with base 10
+            VMCDR1.CurrentAstrometry            ValueError: invalid literal for int() with base 10
+            VMCDR2.MultiframeEsoKeys            ValueError: invalid literal for int() with base 10
+            BestDR8.SiteDiagnostics             <urlopen error timed out>",
+            VVVDR4.ExternalSurveyTable          HTTP Error 400
+            VVVDR4.vvvSourceXglimpse1_hrc       HTTP Error 400
+            VIDEODR3.videoTilePawTDOnly         ValueError: invalid literal for int() with base 10
+            BestDR3.SpecObj                     ValueError: invalid literal for int() with base 10
+            Stripe82.PhotoObjAll                ValueError: invalid literal for int() with base 10
+            BestDR5.SpecObjAll                  ValueError: invalid literal for int() with base 10
+            VIDEODR2.videoTilePawPrints         ValueError: invalid literal for int() with base 10
+            VIDEODR3.MultiframeDetector         ValueError: invalid literal for int() with base 10
+            BestDR5.QsoCatalogAll               Invalid bit value 'true'
+            VVVDR4.ProgrammeFrame               HTTP Error 400
+            VMCDR3.CurrentAstrometry            ValueError: invalid literal for int() with base 10
+            BestDR8.SDSSConstants               <urlopen error timed out>
+            VVVDR4.SectionDetectors             HTTP Error 400
+            VIDEODR3.videoTilePawPrints         ValueError: invalid literal for int() with base 10
+            VHSDR3.FilterSections               ValueError: invalid literal for int() with base 10
+            VHSDR1.MultiframeEsoKeys            ValueError: invalid literal for int() with base 10
+            VMCDR3.FilterSections               ValueError: invalid literal for int() with base 10
+            BestDR8.Sky                         <urlopen error timed out>
+            VVVDR4.FilterSections               HTTP Error 400
+            BestDR5.Frame                       ValueError: invalid literal for int() with base 10
+            BestDR3.Frame                       ValueError: invalid literal for int() with base 10
+            BestDR5.QsoTarget                   Invalid bit value 'false'
+            VVVDR4.vvvSourceXwise_allskysc      HTTP Error 400
+            VIDEODR4.MultiframeDetectorEsoKeys  ValueError: invalid literal for int() with base 10
+            VMCDR4.CurrentAstrometry            ValueError: invalid literal for int() with base 10
+            VHSDR2.CurrentAstrometry            ValueError: invalid literal for int() with base 10
+            VMCDR4.MultiframeDetector           ValueError: invalid literal for int() with base 10
+            BestDR7.Unknown                     <urlopen error timed out>
+            VMCDR2.MultiframeDetector           ValueError: invalid literal for int() with base 10
+            VVVDR4.vvvSourceXDR8gpsSource       HTTP Error 400
+            BestDR7.QsoConcordance              Invalid bit value 'true'
+            VMCDR4.FilterSections               ValueError: invalid literal for int() with base 10
+            VIKINGDR2.vikingTilePawPrints       ValueError: invalid literal for int() with base 10
+            VVVDR4.RequiredMosaic               HTTP Error 400
+            VVVDR4.vvvSourceXSSASource          HTTP Error 400
+            VVVDR4.MultiframeDetector           HTTP Error 400
+            BestDR7.QsoConcordanceAll           Invalid bit value 'true'
+            VVVDR4.vvvSynopticMergeLog          HTTP Error 400
+            BestDR7.PlateX                      ValueError: invalid literal for int() with base 10
+            VVVDR4.vvvSourceXglimpse2_mca       HTTP Error 400
+            BestDR7.Frame                       ValueError: invalid literal for int() with base 10
+            VVVDR4.vvvVariability               HTTP Error 400
+            VIDEODR2.videoTilePawTDOnly         ValueError: invalid literal for int() with base 10
+            VVVDR4.vvvSourceXglimpse2_hrc       HTTP Error 400
+            VVVDR4.vvvTilePawTDOnly             HTTP Error 400
+            BestDR8.SpecObj                     ValueError: invalid literal for int() with base 10
+            BestDR8.segueSpecObjAll             ValueError: invalid literal for int() with base 10
+            VVVDR4.AstrCalVers                  HTTP Error 400
+            VVVDR4.RequiredMergeLogMultiEpoch   HTTP Error 400
+            VMCDR3.MultiframeDetector           ValueError: invalid literal for int() with base 10
+            VVVDR4.RequiredNeighbours           HTTP Error 400
+            UKIDSSDR5PLUS.RequiredMosaic        ValueError: invalid literal for int() with base 10
+            VIDEODR4.FilterSections             ValueError: invalid literal for int() with base 10
+            VVVDR4.RequiredDiffImage            HTTP Error 400
+            VVVDR4.PreviousMFDZP                HTTP Error 400
+            VIKINGDR4.MultiframeDetectorEsoKeys ValueError: invalid literal for int() with base 10
+            VVVDR4.ArchiveCurationHistory       HTTP Error 400
+            VHSDR3.MultiframeDetectorEsoKeys    ValueError: invalid literal for int() with base 10
+            VIKINGDR4.FilterSections            ValueError: invalid literal for int() with base 10
+            UKIDSSDR6PLUS.RequiredMosaic        ValueError: invalid literal for int() with base 10
+            VHSDR1.vhsTilePawPrints             ValueError: invalid literal for int() with base 10
+            BestDR5.PlateX                      ValueError: invalid literal for int() with base 10
+            BestDR7.QsoTarget                   Invalid bit value 'false'
+            VVVDR4.vvvSourceXDetectionBestMatch HTTP Error 400
+            VVVDR4.Multiframe                   HTTP Error 400
+            VVVDR4.PhotCalVers                  HTTP Error 400
+            BestDR8.segue1SpecObjAll            ValueError: invalid literal for int() with base 10
+            VHSDR2.vhsTilePawPrints             ValueError: invalid literal for int() with base 10
+            UKIDSSDR4PLUS.RequiredMosaic        ValueError: invalid literal for int() with base 10
+            BestDR8.TwoMass                     <urlopen error timed out>
+            VVVDR4.vvvAstrometricInfo           HTTP Error 400
+            VVVDR4.EpochFrameStatus             HTTP Error 400
+            ROSAT.rosat_bsc                     ValueError: invalid literal for int() with base 10
+            BestDR5.QsoConcordanceAll           Invalid bit value 'true'
+            VVVDR4.ProgrammeCurationHistory     HTTP Error 400
+            VMCDR4.MultiframeDetectorEsoKeys    ValueError: invalid literal for int() with base 10
+            BestDR8.SpecObjAll                  <urlopen error timed out>
+            VVVDR4.MultiframeDetectorEsoKeys    HTTP Error 400
+            BestDR7.SpecObjAll                  ValueError: invalid literal for int() with base 10
+            VVVDR4.vvvSourceXglimpse1_mca       HTTP Error 400
+            VVVDR4.vvvSourceXtwomass_psc        HTTP Error 400
+            VVVDR4.RequiredTile                 HTTP Error 400
+            VIDEODR2.MultiframeDetector         ValueError: invalid literal for int() with base 10
+            BestDR7.QsoCatalogAll               Invalid bit value 'true'
+            BestDR8.segue2SpecObjAll            ValueError: invalid literal for int() with base 10
+            BestDR9.PhotoProfile                <urlopen error timed out>",
+            WISE.wise_prelimsc                  ValueError: invalid literal for int() with base 10
+            BestDR9.neighbors                   <urlopen error timed out>",
+            VVVDR4.vvvTileSet                   HTTP Error 400
+            VVVDR4.CurrentAstrometry            HTTP Error 400
+            VVVDR4.RequiredFilters              HTTP Error 400
+            VMCDR2.MultiframeDetectorEsoKeys    ValueError: invalid literal for int() with base 10
+            BestDR8.USNO                        ValueError: invalid literal for int() with base 10
+
+        Same set or errors reoccur
+
+            ValueError: invalid literal
+            Invalid bit value
+            HTTP Error 400
+            <urlopen error timed out>
+
+        So far no diagnosis about _why_ we are getting these errors.
+
+            ....
+
+    ---- ----
+    gedit ${notepath}/20190210-Firethorn-Testing-TAP-sync.txt
+
+        Test metadata describes what was being tested :-)
+
+            ## Date: 10 Feb 2019
+            ## Firethorn Version: 2.1.28
+            ## Resource ID: 1808
+            ## VM: Cadelicia
+            ## Server: trop01
+            ## VM Version: 4.18.13-200.fc28.x86_64
+            ## VM Platform: Fedora release 28 (Twenty Eight)
+            ## User Database: FirethornUserdataZRQ20170621151245DEV
+
+            ## TEST 1
+            ## Go through all tables of a resource and run a synchronous TAP query
+            ## Firethorn Utils can be used as described here:
+            ## http://wfau.metagrid.co.uk/code/firethorn/file/fa50d2cbcfdd/doc/notes/stv/20190201-Firethorn-System-Validator.txt
+
+        Test itself is buried in the command line
+
+            /usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 -v=True -m=sync
+
+        Test metadata doesn't say what the target table metadata contains.
+
+            Is this testing against the metadata in the WFAU github repo ?
+            What version of the metadata ?
+            Were all of the catalogs loaded ?
+
+            Is this the only clue '-r=1808' as to what resource was tested ?
+
+                ## Resource ID: 1808
+
+        Comment suggests same test as before, but no errors !?
+
+            ## Queries seem to be working fine, no query hangs so far
+            ## Will update once test has completed
+
+        No update ....
+
+    ---- ----
+    gedit ${notepath}/20190210-Firethorn-Testing.txt
+
+        Notes on issues found so far ..
+
+            # Issues found during testing
+            # Todo: Create Redmine issues with details
+
+            - TAP Async Test (All Tables):
+
+              - Query hanging
+                  Investigating shows that result state does not match query status
+
+              - Astropy Error while reading VOTable response
+                  "ValueError: invalid literal for int() with base 10:"
+                   .. Query returns an "img" field which has type unsignedByte in the VOTable
+                   .. Astropy tries to read this as an integer and fails
+                    https://msdn.microsoft.com/en-us/library/ee625175(v=exchg.80).aspx
+	            "The unsignedByte data type is an integer value between 0 and 255, inclusive."
+
+            - TAP Sync Test (All Tables):
+              - Same Astropy Error mentioned above
+
+            Firethorn Query Test (All Tables):
+              - Bad Status Line Exceptions
+
+        ----
+
+        Questions about these
+
+            Query hanging
+
+                No detail on how to reproduce this yet.
+
+            Astropy ValueError
+
+                What is the actual data in the database ?
+
+                What _should_ we return as the VOTable data type  ?
+
+                Are we returning the wrong type, or is Astropy unable to handle 'unsignedByte' ?
+
+                Have we reported this to Astropy ?
+                Have we suggested a fix to Astropy ?
+
+            Bad Status Line
+
+                What does this mean ?
+
+        ----
+
+        Issues not discussed
+
+            What is causing the "Invalid bit value" errors ?
+
+            What is causing the "HTTP Error 400" responses ?
+
+            What is causing the "urlopen error timed out" ?
+
+        ----
+
+        More questions than answers at this point
+
+
+    ---- ----
+    gedit ${notepath}/20190210-OSA-TAP-debug.txt
+
+        Virtual machines failing
+
+            [Acilamwen]
+
+                Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+
+            [Ibalehar]
+
+                Filesystem      Size  Used Avail Use% Mounted on
+                ....
+                /dev/vda3        15G  6.7G  6.6G  51% /
+
+            [Eterathiel]
+
+                Filesystem      Size  Used Avail Use% Mounted on
+                ....
+                /dev/vda3        15G  4.2G  8.9G  33% /
+
+            [Lothigometh]
+
+                Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+
+            [Siamond]
+
+                Host key verification failed.
+
+            Name [Araybwyn]
+
+                ssh: connect to host araybwyn port 22: No route to host
+
+        Concentrating on the firethorn VM, Araybwyn.
+
+            No route to host
+
+            Rebooted via virsh.
+
+            Still no access
+
+            Possible issues with memory ?
+
+                virsh dominfo
+
+                    ....
+	                Max memory:     4194304 KiB
+	                Used memory:    4194304 KiB
+                    ....
+
+            Needs a stronger reboot
+
+                virsh reboot doesn't reboot
+
+                virsh destroy
+                virsh start
+
+            Disc looks fine
+
+                Filesystem      Size  Used Avail Use% Mounted on
+                ....
+                /dev/vda3        31G   17G   14G  56% /
+
+            Restart servicesusing 'compose run'
+
+
+        Good notes on devbugging Apache logs
+
+            ## Need to check why health checker cron job on my machine did not catch TAP service unresponsiveness
+            ## UPDATE (11/Feb/2019): Health Checker should now be fixed. Is set to run every 45mins
+
+            ## Let's check the Apache proxy logs the day the VM crashed (February 4th 2019)
+
+            ## Results can be found in 20190211-OSA-TAP-debug-Apache-Logs.txt
+
+            ## VM seems to die around 04/Feb/2019:13:05:17
+            ## There is a validator running queries on the TAP service just before it does
+
+                195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 1335 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "POST /firethorn/blue/query/26607251 HTTP/1.1" 200 1976 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/blue/query/26607251 HTTP/1.1" 200 2929 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/blue/query/26607251 HTTP/1.1" 200 2929 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 12641 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
+                195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
+                178.79.157.93 - - [04/Feb/2019:14:00:01 +0000] "GET /osa/availability HTTP/1.1" 503 299 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
+                195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "POST /firethorn/blue/query/26613652 HTTP/1.1" 502 438 "-" "Python-urllib/3.4"
+
+                Odd use of words 'a validator running queries'
+                The IP address is one of ours.
+
+                    66.121.194.195.in-addr.arpa domain name pointer vpngate.roe.ac.uk.
+
+                Should this be 'oOne of *our* validators running queries' ..
+
+            ## GET request to /firethorn/adql/resource/56 is the last successful request before crash
+            ## Possible hints in the last few queries?
+
+                ## http://tap.roe.ac.uk/firethorn/blue/query/26607246
+                   SELECT TOP 10 * FROM BestDR9.GalaxyTag
+                   - Completed Job
+                   - VOTable with no rows (Table Deleted)
+                   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+                ## http://tap.roe.ac.uk/firethorn/blue/query/26607247
+                   SELECT TOP 10 * FROM VVVDR4.Multiframe
+                   - Completed Job
+                   - VOTable with no rows (Table Deleted)
+                   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+                ## http://tap.roe.ac.uk/firethorn/blue/query/26607248
+                   SELECT TOP 10 * FROM BestDR9.galSpecLine
+                   - Completed Job
+                   - VOTable with no rows (Table Deleted)
+
+                ## http://tap.roe.ac.uk/firethorn/blue/query/26607249
+                   SELECT TOP 10 * FROM VVVDR4.MultiframeDetector
+                   - Completed Job
+                   - VOTable with no rows (Table Deleted)
+                   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+                ## http://tap.roe.ac.uk/firethorn/blue/query/26607250
+                   SELECT TOP 10 * FROM BestDR9.Run
+                   - Completed Job
+                   - VOTable with no rows (Table Deleted)
+                   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+                ## http://tap.roe.ac.uk/firethorn/blue/query/26607251
+                   SELECT TOP 10 * FROM BestDR9.Segue2Target1
+                   - Completed Job
+                   - VOTable with no rows (Table Deleted)
+                   - A column with unsignedByte (This column type seems to be problematic, need to look into this)
+
+                ## http://tap.roe.ac.uk/firethorn/blue/query/26613652
+                   SELECT TOP 10 * FROM VVVDR4.MultiframeDetectorEsoKeys
+                   - status is "READY"
+                   - Query never started?
+                   -
+
+                    "history": [
+                        	{
+		                    "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+		                    "level": "INFO",
+		                    "task": "http://tap.roe.ac.uk/firethorn/blue/query/26613652",
+		                    "message": "Executing query",
+		                    "state": "READY",
+		                    "owner": "http://tap.roe.ac.uk/firethorn/community-member/163",
+		                    "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/26613606",
+		                    "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/26613606",
+		                    "ident": "26613606",
+		                    "created": "2019-02-04T13:05:17.348",
+		                    "modified": "2019-02-04T13:05:17.349"
+		                    }
+	                    ],
+
+                ## Blue Query numbering seems strange.. Jumping from 26607251 which was the last completed query to 26613652 ?
+                ## http://tap.roe.ac.uk/firethorn/blue/query/26613651 for example does not exist (26613652 - 1)
+
+                ## Check the httpd error logs (/var/log/httpd/tap.roe.ac.uk-error.log)
+
+                    [Mon Feb 04 14:00:20.094303 2019] [proxy:error] [pid 5522:tid 139756264474368] (113)No route to host:
+                        AH00957: HTTP: attempt to connect to 192.168.202.8:8080 (*) failed
+                    [Mon Feb 04 14:00:20.094393 2019] [proxy_http:error] [pid 5522:tid 139756264474368] [client 178.79.157.93:40936]
+                        AH01114: HTTP: failed to make connection to backend: araybwyn
+                    [Mon Feb 04 14:45:17.108362 2019] [proxy_http:error] [pid 5521:tid 139756549629696] (70007)The timeout specified has expired: [client 195.194.121.66:56730]
+                        AH01102: error reading status line from remote server araybwyn:8080
+                    [Mon Feb 04 14:45:17.108443 2019] [proxy:error] [pid 5521:tid 139756549629696] [client 195.194.121.66:56730]
+                        AH00898: Error reading from remote server returned by /firethorn/blue/query/26613652
+                    [Mon Feb 04 14:45:17.691333 2019] [proxy_http:error] [pid 5521:tid 139756532844288] (70007)The timeout specified has expired: [client 195.194.121.66:56736]
+                        AH01102: error reading status line from remote server araybwyn:8080
+                    [Mon Feb 04 14:45:17.691380 2019] [proxy:error] [pid 5521:tid 139756532844288] [client 195.194.121.66:56736]
+                        AH00898: Error reading from remote server returned by /firethorn/adql/table/26612173
+                    [Mon Feb 04 14:45:20.190543 2019] [proxy:error] [pid 5522:tid 139756423837440] (113)No route to host:
+                        AH00957: HTTP: attempt to connect to 192.168.202.8:8080 (*) failed
+
+
+    ---- ----
+    gedit ${notepath}/20190211-Firethorn-Testing-Taplint-OSA.txt
+
+        ## Date: 11 Feb 2019
+        ## Test: Use TAPlint (stilts.jar) to validate live tap.roe.ac.uk/osa TAP service
+
+            Section TMV: Validate table metadata against XML schema
+            I-TMV-VURL-1 Validating http://tap.roe.ac.uk/osa/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+            S-TMV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+            Section TME: Check content of tables metadata from /tables
+            I-TME-TURL-1 Reading table metadata from http://tap.roe.ac.uk/osa/tables
+            S-TME-SUMM-1 Schemas: 17, Tables: 737, Columns: 31445, Foreign Keys: 0
+            S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
+            S-TME-FLGO-1 Other column flags: none
+
+            ....
+
+            Section CPV: Validate capabilities against XML schema
+            I-CPV-VURL-1 Validating http://tap.roe.ac.uk/osa/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+            S-CPV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+            Section CAP: Check content of TAPRegExt capabilities record
+            I-CAP-CURL-1 Reading capability metadata from http://tap.roe.ac.uk/osa/capabilities
+
+            Section AVV: Validate availability against XML schema
+            I-AVV-VURL-1 Validating http://tap.roe.ac.uk/osa/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+            S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+            ....
+            ....
+            E-MDQ-QERR-1 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ArchiveCurationHistory [Service error: "null"]
+            ....
+            E-MDQ-QERR-2 Failed TAP query SELECT TOP 1 * FROM VVVDR4.AstrCalVers [Service error: "null"]
+            ....
+            E-MDQ-QERR-3 Failed TAP query SELECT TOP 1 * FROM VVVDR4.CurationTask [Service error: "null"]
+            ....
+            E-MDQ-QERR-4 Failed TAP query SELECT TOP 1 * FROM VVVDR4.CurrentAstrometry [Service error: "null"]
+            ....
+            E-MDQ-QERR-5 Failed TAP query SELECT TOP 1 * FROM VVVDR4.EpochFrameStatus [Service error: "null"]
+            ....
+            E-MDQ-QERR-6 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalProduct [Service error: "null"]
+            ....
+            E-MDQ-QERR-7 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalProductCatalogue [Service error: "null"]
+            ....
+            E-MDQ-QERR-8 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalSurvey [Service error: "null"]
+            ....
+            E-MDQ-QERR-9 Failed TAP query SELECT TOP 1 * FROM VVVDR4.ExternalSurveyTable [Service error: "null"]
+
+
+        ## Manual Stop..
+        ## VVVDR4 is missing from ramses19
+        ## Queries are not completing
+
+        If it is missing from ramses19, then how did it get into the metadata ?
+
+    ---- ----
+    gedit ${notepath}/20190211-Firethorn-Testing-Taplint.txt
+
+    ---- ----
+    gedit ${notepath}/20190211-Firethorn-Testing-VVVDR4-SDSSDR9-only.txt
+
+    ---- ----
+    gedit ${notepath}/20190211-OSA-TAP-debug-Apache-Logs.txt
+
+    ---- ----
+    gedit ${notepath}/20190212-Firethorn-utils-Healthchecker-run.txt
+
+    ---- ----
+    gedit ${notepath}/20190304-OSA-TAP-Debug.txt
+
+    ---- ----
+    gedit ${notepath}/20190309-Testing-Firethorn.txt
+
+    ---- ----
+    gedit ${notepath}/20190311-Failing-Query-FIRETHORN-logs.txt
+
+    ---- ----
+    gedit ${notepath}/20190311-Failing-Query-OGSADAI-logs.txt
+
+    ---- ----
+    gedit ${notepath}/20190311-Firethorn-Testing.txt
+
+    ---- ----
+    gedit ${notepath}/20190311-Working-Query-FIRETHORN-logs.txt
+
+    ---- ----
+    gedit ${notepath}/20190311-Working-Query-OGSADAI-logs.txt
+
+
+
