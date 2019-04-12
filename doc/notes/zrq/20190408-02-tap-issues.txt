@@ -43,7 +43,32 @@
 # Read though the notes and logs.
 #[user@desktop]
 
+    source "${HOME}/firethorn.settings"
     notepath=${FIRETHORN_CODE}/doc/notes/stv/
+
+    ---- ----
+20180725-Gworewia-Issues.txt
+20180725-Ramses-Databases.txt
+20180803-Gworewia-Debugging.txt
+20180806-TAP-Debugging.txt
+20180820-Gworewia-OSA-Resource-setup.txt
+20180820-trop02-TAP-deploy.txt
+20180825-OSA-GUI-trop02-deploy.txt
+20180829-OSA-GUI-trop02-deploy.txt
+20180903-Taplint-TAP-Results.txt
+20180904-OSA-GUI-trop02-deploy.txt
+20180907-Genius-trop02-deploy.txt
+20180912-OSA-Setup-Errors.txt
+20181016-Disk-Space-Issues.txt
+20181031-TAP-Ulov-deploy.txt
+20181103-Validation-Utils-osa.txt
+20181103-Validation-Utils-vsa.txt
+20181103-Validation-Utils-wsa.txt
+20181104-TAP-Validator.txt
+20181130-BestDRx-Region-Table-Issues.txt
+20181130-TAP-Issues.txt
+20181207-Firethorn-System-Checker.txt
+20181212-TAP-deploy.txt
 
     ---- ----
     gedit ${notepath}/20190201-Firethorn-System-Validator.txt
@@ -565,7 +590,7 @@
 
                     66.121.194.195.in-addr.arpa domain name pointer vpngate.roe.ac.uk.
 
-                Should this be 'oOne of *our* validators running queries' ..
+                My guess is this is 'one of *our* validators running queries' .. ?
 
             ## GET request to /firethorn/adql/resource/56 is the last successful request before crash
             ## Possible hints in the last few queries?
@@ -1026,7 +1051,7 @@
 
         Apache log that covers transition from normal operation to 503 proxy error.
         Ellipsis, '....', indicates one or more lines removed.
-        Blank lines highlights change in behaviour between consecutive lines.
+        Hline '--' highlights change in behaviour between consecutive lines.
 
             178.79.157.93 - - [03/Feb/2019:14:00:02 +0000] "GET /osa/availability HTTP/1.1" 200 224 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
             178.79.157.93 - - [03/Feb/2019:15:00:01 +0000] "GET /osa/availability HTTP/1.1" 200 224 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
@@ -1038,14 +1063,14 @@
             195.194.121.66 - - [04/Feb/2019:13:05:09 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/adql/table/26612167 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
-
+            ----
             195.194.121.66 - - [04/Feb/2019:13:05:09 +0000] "POST /firethorn/blue/query/26607249 HTTP/1.1" 200 7585 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/adql/table/26612167 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/blue/query/26607249 HTTP/1.1" 200 7585 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:10 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:11 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:11 +0000] "GET /firethorn/adql/table/26612167 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
-
+            ----
             195.194.121.66 - - [04/Feb/2019:13:05:11 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 2562 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:12 +0000] "POST /firethorn/blue/query/26607250 HTTP/1.1" 200 3203 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:12 +0000] "GET /firethorn/blue/query/26607250 HTTP/1.1" 200 4156 "-" "Python-urllib/3.4"
@@ -1064,31 +1089,31 @@
             195.194.121.66 - - [04/Feb/2019:13:05:14 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/table/26612171 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
-
+            ----
             195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 1335 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
-
+            ----
             195.194.121.66 - - [04/Feb/2019:13:05:15 +0000] "POST /firethorn/blue/query/26607251 HTTP/1.1" 200 1976 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/table/26612169 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/blue/query/26607251 HTTP/1.1" 200 2929 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/blue/query/26607251 HTTP/1.1" 200 2929 "-" "Python-urllib/3.4"
-
+            ----
             195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 201 12641 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:16 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 200 1123 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/schema/548 HTTP/1.1" 200 783 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/resource/56 HTTP/1.1" 200 617 "-" "Python-urllib/3.4"
-
+            ----
             178.79.157.93  - - [04/Feb/2019:14:00:01 +0000] "GET /osa/availability HTTP/1.1" 503 299 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
-
+            ----
             195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "POST /firethorn/blue/query/26613652 HTTP/1.1" 502 438 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 502 437 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:14:45:18 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:14:45:17 +0000] "GET /firethorn/blue/query/26613652 HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:14:45:20 +0000] "GET /firethorn/adql/table/26612173 HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:14:45:20 +0000] "GET /firethorn/blue/query/26613652 HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
-
+            ----
             195.194.121.66 - - [04/Feb/2019:14:45:23 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:14:45:23 +0000] "POST /firethorn/adql/resource/54/queries/create HTTP/1.1" 503 299 "-" "Python-urllib/3.4"
             ....
@@ -1118,12 +1143,12 @@
 
             195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/schema/548      HTTP/1.1"  200 783 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/resource/56     HTTP/1.1"  200 617 "-" "Python-urllib/3.4"
-
+            ----
             178.79.157.93  - - [04/Feb/2019:14:00:01 +0000] "GET /osa/availability               HTTP/1.1"  503 299 "-" "curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.27.1 zlib/1.2.3 libidn/1.18 libssh2/1.4.2"
-
+            ----
             195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "POST /firethorn/blue/query/26613652 HTTP/1.1"  502 438 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:13:05:17 +0000] "GET /firethorn/adql/table/26612173  HTTP/1.1"  502 437 "-" "Python-urllib/3.4"
-
+            ----
             195.194.121.66 - - [04/Feb/2019:14:45:18 +0000] "GET /firethorn/adql/table/26612173  HTTP/1.1"  503 299 "-" "Python-urllib/3.4"
             195.194.121.66 - - [04/Feb/2019:14:45:17 +0000] "GET /firethorn/blue/query/26613652  HTTP/1.1"  503 299 "-" "Python-urllib/3.4"
 
@@ -1131,12 +1156,12 @@
 
             13:05:17 status 200
             13:05:17 status 200
-
+            ----
             14:00:01 status 503
-
+            ----
             13:05:17 status 502
             13:05:17 status 502
-
+            ----
             14:45:18 status 503
             14:45:17 status 503
 
@@ -1147,14 +1172,12 @@
 
             13:05:17 status 200 - GET  /adql/schema/548      PASS OK
             13:05:17 status 200 - GET  /adql/resource/56     PASS OK
-
-            -- failure happens here --
-
-            14:00:01 status 503 - GET  /availability at 14:00 => immediate 503 response
-
+            ---- failure happens here ?
+            14:00:01 status 503 - GET  /availability at 14:00 => immediate 503 response ?
+            ----
             13:05:17 status 502 - POST /firethorn/blue/query/26613652 at 13:05:17 => 502 response after 14:00:01 (+1hr)
             13:05:17 status 502 - GET  /firethorn/adql/table/26612173 at 13:05:17 => 502 response after 14:00:01 (+1hr)
-
+            ----
             14:45:18 status 503 - GET  /firethorn/adql/table/26612173 at 14:45:18 => 503 response
             14:45:17 status 503 - GET  firethorn/blue/query/26613652  at 14:45:17 => 503 response (>+1sec)
 
@@ -1174,16 +1197,223 @@
 
             http://.../firethorn/logsync/$(uuid)
 
+        Response from firethorn would be immediate 404, so we get a common entry in all the logs.
 
+        We could add something that checks the logs for specific error messages and sends us an email asap.
 
     ---- ----
     gedit ${notepath}/20190212-Firethorn-utils-Healthchecker-run.txt
 
+        Command to invoke the Healthchecker.
+        Sends an email with warnings if the target service is low on memory or disk space.
+
+            /usr/bin/python3 -c "import firethorn_utils.system_checker as system_checker;system_checker.main()" -ft=http://localhost:8081/firethorn
+
+
     ---- ----
     gedit ${notepath}/20190304-OSA-TAP-Debug.txt
 
+        ## Issue:
+        ## tap.roe.ac.u/osa not responding..
+
+        ssh access still ok.
+
+        firethorn log fragment
+
+            tail -f -n 1000 logs/firethorn-debug.log)
+
+            2019-03-04 15:24:31,488 DEBUG [callback-interface-9] [HttpRequestDebug] Request properties
+            ....
+            2019-03-04 15:25:31,988 DEBUG [callback-interface-8] [HttpRequestDebug] ----
+
+        Shows system info requests on callback port (8081) and FireThornTaskScheduler runing garbage collector
+
+        Last entry in the firethorn log is [2019-03-04 15:25:31].
+        Although we don't know what [now] is ..
+
+        Apache log - total I think (command line asked for 1000, but only got 7)
+
+            tail -f -n 1000 /var/log/httpd/error_log
+
+            [Wed Feb 13 19:21:03.434148 2019] [core:notice] [pid 1:tid 140063511570688] AH00094: Command line: 'httpd -D FOREGROUND'
+            [Wed Feb 13 20:17:03.518490 2019] [mpm_event:notice] [pid 1:tid 140063511570688] AH00493: SIGUSR1 received.  Doing graceful restart
+            [Wed Feb 13 20:17:03.555844 2019] [lbmethod_heartbeat:notice] [pid 1:tid 140063511570688] AH02282: No slotmem from mod_heartmonitor
+            [Wed Feb 13 20:17:03.556624 2019] [http2:warn] [pid 1:tid 140063511570688] AH02951: mod_ssl does not seem to be enabled
+            [Wed Feb 13 20:17:03.557467 2019] [mpm_event:notice] [pid 1:tid 140063511570688] AH00489: Apache/2.4.34 (Fedora) configured -- resuming normal operations
+            [Wed Feb 13 20:17:03.557495 2019] [core:notice] [pid 1:tid 140063511570688] AH00094: Command line: 'httpd -D FOREGROUND'
+            [Sun Mar 03 00:15:07.405452 2019] [mpm_event:error] [pid 1:tid 140063511570688] AH00484: server reached MaxRequestWorkers setting, consider raising the MaxRequestWorkers setting
+
+        From this we know service was started [Wed Feb 13 19:21:03] and something happened around [Sun Mar 03 00:15:07].
+
+        Proxy error log
+
+            tail -f -n 10000 /var/log/httpd/tap.roe.ac.uk-error.log
+
+            Error messages are in pairs (original editing didn't match that)
+
+            [Fri Mar 01 00:36:41.161899 2019] [proxy_http:error] [pid 1217:tid 140062624831232] (70007)The timeout specified has expired: [client 133.40.215.109:56982] AH01102: error reading status line from remote server araybwyn:8080
+            [Fri Mar 01 00:36:41.161996 2019] [proxy:error] [pid 1217:tid 140062624831232] [client 133.40.215.109:56982] AH00898: Error reading from remote server returned by /osa/sync
+            ----
+            [Sun Mar 03 00:52:56.134648 2019] [proxy_http:error] [pid 330:tid 140062524151552] (70007)The timeout specified has expired: [client 133.40.215.109:39175] AH01102: error reading status line from remote server araybwyn:8080
+            [Sun Mar 03 00:52:56.134739 2019] [proxy:error] [pid 330:tid 140062524151552] [client 133.40.215.109:39175] AH00898: Error reading from remote server returned by /osa/sync
+            ....
+            [Sun Mar 03 00:52:56.135275 2019] [proxy_http:error] [pid 953:tid 140062532544256] (70007)The timeout specified has expired: [client 133.40.215.109:39179] AH01102: error reading status line from remote server araybwyn:8080
+            [Sun Mar 03 00:52:56.135315 2019] [proxy:error] [pid 953:tid 140062532544256] [client 133.40.215.109:39179] AH00898: Error reading from remote server returned by /osa/sync
+            ----
+            [Sun Mar 03 00:52:56.135698 2019] [proxy_http:error] [pid 330:tid 140062490580736] (70007)The timeout specified has expired: [client 133.40.215.109:39173] AH01102: error reading status line from remote server araybwyn:8080
+            [Sun Mar 03 00:52:56.135748 2019] [proxy:error] [pid 330:tid 140062490580736] [client 133.40.215.109:39173] AH00898: Error reading from remote server returned by /osa/sync
+            ----
+            [Sun Mar 03 00:52:56.135968 2019] [proxy_http:error] [pid 1283:tid 140062683547392] (70007)The timeout specified has expired: [client 133.40.215.109:39177] AH01102: error reading status line from remote server araybwyn:8080
+            [Sun Mar 03 00:52:56.136027 2019] [proxy:error] [pid 1283:tid 140062683547392] [client 133.40.215.109:39177] AH00898: Error reading from remote server returned by /osa/sync
+            ----
+            [Sun Mar 03 00:52:56.136243 2019] [proxy_http:error] [pid 330:tid 140062465402624] (70007)The timeout specified has expired: [client 133.40.215.109:39181] AH01102: error reading status line from remote server araybwyn:8080
+            [Sun Mar 03 00:52:56.136278 2019] [proxy:error] [pid 330:tid 140062465402624] [client 133.40.215.109:39181] AH00898: Error reading from remote server returned by /osa/sync
+            ....
+            ....
+            [Mon Mar 04 12:40:03.347248 2019] [proxy_http:error] [pid 542:tid 140062691940096] (70007)The timeout specified has expired: [client 94.66.222.128:25738] AH01102: error reading status line from remote server araybwyn:8080
+            [Mon Mar 04 12:40:03.347304 2019] [proxy:error] [pid 542:tid 140062691940096] [client 94.66.222.128:25738] AH00898: Error reading from remote server returned by /firethorn/system/info
+            ----
+            [Mon Mar 04 13:07:21.755999 2019] [proxy_http:error] [pid 953:tid 140062532544256] (70007)The timeout specified has expired: [client 145.238.193.18:25063] AH01102: error reading status line from remote server araybwyn:8080
+            [Mon Mar 04 13:07:21.756079 2019] [proxy:error] [pid 953:tid 140062532544256] [client 145.238.193.18:25063] AH00898: Error reading from remote server returned by /osa/sync
+            ----
+            [Mon Mar 04 13:40:01.241575 2019] [proxy_http:error] [pid 755:tid 140061861455616] (70007)The timeout specified has expired: [client 178.79.157.93:43840] AH01102: error reading status line from remote server araybwyn:8080
+            [Mon Mar 04 13:40:01.241656 2019] [proxy:error] [pid 755:tid 140061861455616] [client 178.79.157.93:43840] AH00898: Error reading from remote server returned by /osa/availability
+            ----
+            [Mon Mar 04 14:40:01.839986 2019] [proxy_http:error] [pid 755:tid 140062834550528] (70007)The timeout specified has expired: [client 178.79.157.93:43844] AH01102: error reading status line from remote server araybwyn:8080
+            [Mon Mar 04 14:40:01.840082 2019] [proxy:error] [pid 755:tid 140062834550528] [client 178.79.157.93:43844] AH00898: Error reading from remote server returned by /osa/availability
+            ----
+            [Mon Mar 04 14:47:21.927419 2019] [proxy_http:error] [pid 953:tid 140061618198272] (70007)The timeout specified has expired: [client 145.238.193.18:25063] AH01102: error reading status line from remote server araybwyn:8080
+            [Mon Mar 04 14:47:21.927514 2019] [proxy:error] [pid 953:tid 140061618198272] [client 145.238.193.18:25063] AH00898: Error reading from remote server returned by /osa/sync
+
+        Early stages [Fri Mar 01 00:36:41] we see a failed request from a client in Japan,  [133.40.215.109], to the sync endpoint.
+
+            [/osa/sync] from [133.40.215.109]
+
+        Middle stage [Sun Mar 03 00:52:56] to [Sun Mar 03 00:52:56] we see repeated requests from the same client in Japan, [133.40.215.109], to the same URL.
+        Very tight loop, less than a second between the requests, but error says timeout has expired ?
+
+            [/osa/sync] from [133.40.215.109]
+
+        Later stages [Mon Mar 04 12:40:03] to [Mon Mar 04 14:47:21] we see a mix of clients.
+        Separate requests, order of 30-4 minutes between them.
+        All with the same error message.
+
+            [/firethorn/system/info]    from [94.66.222.128]        Athens
+            [/osa/sync]                 from [145.238.193.18]       Paris
+            [/osa/availability]         from [178.79.157.93]        Linode - data.metagrid.co.uk
+
+        I think key part of the error messages is '(70007)The timeout specified has expired' and not 'AH01102: error reading status line from remote server'.
+
+        Proxy access log
+
+            "Looking through /var/log/httpd/tap.roe.ac.uk-access.log"
+
+            ....
+            ....
+            145.238.193.18 - - [02/Mar/2019:23:14:36 +0000] "GET /firethorn/tap/54/async/30320305 HTTP/1.1" 200 1120 "-" "STILTS/3.1-4 Java/1.7.0_161"
+            145.238.193.18 - - [02/Mar/2019:23:14:37 +0000] "GET /firethorn/tap/54/async/30320305 HTTP/1.1" 200 1120 "-" "STILTS/3.1-4 Java/1.7.0_161"
+            ....
+            ....
+            145.238.193.18 - - [02/Mar/2019:23:14:55 +0000] "GET /firethorn/tap/54/async/30320305 HTTP/1.1" 200 1120 "-" "STILTS/3.1-4 Java/1.7.0_161"
+            145.238.193.18 - - [02/Mar/2019:23:14:56 +0000] "GET /firethorn/tap/54/async/30320305 HTTP/1.1" 200 1120 "-" "STILTS/3.1-4 Java/1.7.0_161"
+            ----
+            133.40.215.109 - - [02/Mar/2019:23:12:56 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR9.FileGroupMap&LANG=ADQL HTTP/1.1" 502 395 "-" "Java/1.8.0_152"
+            133.40.215.109 - - [02/Mar/2019:23:12:56 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR9.DBColumns&LANG=ADQL HTTP/1.1" 502 395 "-" "Java/1.8.0_152"
+            ....
+            ....
+            133.40.215.109 - - [02/Mar/2019:23:14:56 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR7.SpecLineNames&LANG=ADQL HTTP/1.1" 502 395 "-" "Java/1.8.0_152"
+            133.40.215.109 - - [02/Mar/2019:23:14:56 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR7.SiteDBs&LANG=ADQL HTTP/1.1" 502 395 "-" "Java/1.8.0_152"
+            ----
+            145.238.193.18 - - [02/Mar/2019:23:14:57 +0000] "GET /firethorn/tap/54/async/30320305 HTTP/1.1" 502 441 "-" "STILTS/3.1-4 Java/1.7.0_161"
+            ----
+            133.40.215.109 - - [02/Mar/2019:23:14:58 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR7.UberCal&LANG=ADQL HTTP/1.1" 502 395 "-" "Java/1.8.0_152"
+            133.40.215.109 - - [02/Mar/2019:23:14:58 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR7.SpecZWarning&LANG=ADQL HTTP/1.1" 502 395 "-" "Java/1.8.0_152"
+            133.40.215.109 - - [02/Mar/2019:23:14:59 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR7.SpecLineIndex&LANG=ADQL HTTP/1.1" 502 395 "-" "Java/1.8.0_152"
+            ----
+            133.40.215.109 - - [03/Mar/2019:00:54:59 +0000] "GET /ssa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR5.TilingInfo&LANG=ADQL HTTP/1.1" 404 206 "-" "Java/1.8.0_152"
+            133.40.215.109 - - [03/Mar/2019:00:54:59 +0000] "GET /ssa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR5.QsoBunch&LANG=ADQL HTTP/1.1" 404 206 "-" "Java/1.8.0_152"
+            ....
+            ....
+            ....
+            ....
+            133.40.215.109 - - [03/Mar/2019:00:55:12 +0000] "GET /ssa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR1.DBObjects&LANG=ADQL HTTP/1.1" 404 206 "-" "Java/1.8.0_152"
+            133.40.215.109 - - [03/Mar/2019:00:55:12 +0000] "GET /ssa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR1.Sector&LANG=ADQL HTTP/1.1" 404 206 "-" "Java/1.8.0_152"
+
+            ---- ----
+
+            [02/Mar/2019:23:14:36] to [02/Mar/2019:23:14:56]
+            Stilts client from Paris, [145.238.193.18].
+            Polling async query status, /firethorn/tap/54/async/30320305, around 1/2 sec between requests.
+
+            [02/Mar/2019:23:12:56] to [02/Mar/2019:23:14:59]
+            20 requests from a Java client (not Stilts) in Japan [133.40.215.109] all within 2 minutes.
+            Validator queries for BestDR9 and BestDR7, all get a 502 error response.
+
+                SELECT TOP 1 * from BestDR9.FileGroupMap
+                ....
+                SELECT TOP 1 * from BestDR7.SpecLineIndex
+
+            In the middle of that section the Stilts client from Paris also gets a 502 response, and is not heard from again.
+
+                145.238.193.18 - - [02/Mar/2019:23:14:57 +0000] "GET /firethorn/tap/54/async/30320305 HTTP/1.1" 502 441 "-" "STILTS/3.1-4 Java/1.7.0_161"
+
+            Gap from [02/Mar/2019:23:14:59 +0000] to [03/Mar/2019:00:54:59 +0000].
+            No requests logged for 40 minutes.
+
+            [03/Mar/2019:00:54:59] to [03/Mar/2019:00:55:12]
+            Final seection, 322 validator requests within 1 minute.
+            All from the same Java client (not Stilts) in Japan [133.40.215.109].
+            Validator queries for BestDR1 to BestDR9, all get a 404 error response.
+
+                133.40.215.109 - - [03/Mar/2019:00:54:59 +0000] "GET /ssa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR5.TilingInfo&LANG=ADQL HTTP/1.1" 404 206 "-" "Java/1.8.0_152"
+                ....
+                133.40.215.109 - - [03/Mar/2019:00:55:12 +0000] "GET /ssa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR1.Sector&LANG=ADQL HTTP/1.1" 404 206 "-" "Java/1.8.0_152"
+
+            IF the timestamp in the Apache log files reflect the time when the request arrived, then this suggests the Japanese client sends ~100 validation requests in parallel.
+            Replacing them with new requests when they return a 404 error code.
+
+
+            At some point we change from 502 errors to 404 errors.
+            Is that a change in firethorn behaviour, or are the tables just not there ?
+
+            ---- ----
+
+            2019-02-13 20:17:03 Apache proxy started
+
+            2019-03-01 00:36:41 single failed request (timeout)
+
+            2019-03-02 23:14:36 STILTS polling job status (2 per sec) (permanent RUNNING?)
+            2019-03-02 23:14:56 --
+
+            2019-03-02 23:12:56 first 502 errors reported (out of sequence by 2 minutes)
+
+            2019-03-02 23:14:59 No requests logged for 40 minutes.
+            2019-03-02 00:54:59
+
+            2019-03-03 00:15:07 Apache warns about MaxRequestWorkers limit
+
+            2019-03-03 00:52:56 large block of /sync requests fail (timeout) all within a couple of seconds
+
+            2019-03-03 00:54:59 block of 322 /sync requests return 404
+            2019-03-03 00:55:12
+
+            2019-03-04 12:40:03 mix of failed requests, 30-40 minutes between them
+
+            2019-03-04 14:47:21 last request via proxy
+
+            2019-03-04 15:25:31 Firethorn still handling system info requests.
+
+
     ---- ----
     gedit ${notepath}/20190309-Testing-Firethorn.txt
+
+        # This is run locally, with a tunneled connection to Gworewia which is running an httpd proxy
+        # Firethorn Chain is running on Cadelicia on trop01
+        # ssh -L '*:8081:Gworewia:80' Stevedore@Gworewia
+
+
+        Trying to reproduce hung query by triggering ChaosMonkey targets.
+        Queries either COMPLETE or FAILED, unable to reproduce the hang.
 
     ---- ----
     gedit ${notepath}/20190311-Failing-Query-FIRETHORN-logs.txt
@@ -1194,11 +1424,61 @@
     ---- ----
     gedit ${notepath}/20190311-Firethorn-Testing.txt
 
-    ---- ----
-    gedit ${notepath}/20190311-Working-Query-FIRETHORN-logs.txt
+        # 11 March 2019 - Testing for Non-completing queries in Firethorn
+        # This is run locally, with a tunneled connection to Gworewia which is running an httpd proxy
+        # Firethorn Chain is running on Cadelicia on trop01
+        # ssh -L '*:8081:Gworewia:80' Stevedore@Gworewia
+
+            Testing [BestDR1.SpecObjAll]
+                ValueError: invalid literal for int() with base 10
+
+            ....
+            ....
+
+            Testing [BestDR1.FileGroupMap]
+                Rowcount:5
+                Table query completed after 2.302009105682373 seconds
+
+            Testing [BestDR1.ELRedShift]
+
+        ## Test Hangs Here
+
+        ## Grab Firethorn and OGSA-DAI logs from last two queries and compare
+        ## Logs in separate notes files
+
+        ## Leaving this test running will continue to poll /PHASE of that job every second.
+        ## I can start another test which will run a few more queries successfully before hanging again
 
     ---- ----
-    gedit ${notepath}/20190311-Working-Query-OGSADAI-logs.txt
 
+20190311-Working-Query-FIRETHORN-logs.txt
+20190311-Working-Query-OGSADAI-logs.txt
+20190312-Failing-Query-VVVDR4-FIRETHORN-logs.txt
+20190312-Failing-Query-VVVDR4-OGSADAI-logs.txt
+20190312-Working-Query-VVVDR4-FIRETHORN-logs.txt
+20190312-Working-Query-VVVDR4-OGSADAI-logs.txt
+20190315-VM-Deploy-with-build.txt
+20190316-Firethorn-Testing-Froeseth.txt
+20190316-Firethorn-Testing-Sync.txt
+20190318-Testing-Firethorn.txt
+20190319-FAIL-Query-OGSADAI.txt
+20190319-Working-Query-OGSADAI.txt
+
+
+---------------------------------------------------------------
+
+    Missing callnback.
+        Exception handling in OGSA-DAI means callback is never triggered.
+        Query a table that is in the metadata but is missing from the database.
+        So far, ChaosMonkey fails to reproduce this.
+
+    Incomplete jobs.
+        Race condition in TAP async and instant callback means COMPLETED status gets overwitten by RUNNING.
+        Adding a 1ms delay to the OGSA-DAI processing reduces the probability of this.
+        Fix is to refactor the TAP async handler.
+
+    Threadlock
+        Too many active threads locks up Tomcat.
+        Coordinate the query timeout limits to avoid this.
 
 
