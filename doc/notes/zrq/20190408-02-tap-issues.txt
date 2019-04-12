@@ -47,6 +47,8 @@
     notepath=${FIRETHORN_CODE}/doc/notes/stv/
 
     ---- ----
+
+TODO
 20180725-Gworewia-Issues.txt
 20180725-Ramses-Databases.txt
 20180803-Gworewia-Debugging.txt
@@ -1451,6 +1453,7 @@
 
     ---- ----
 
+TODO
 20190311-Working-Query-FIRETHORN-logs.txt
 20190311-Working-Query-OGSADAI-logs.txt
 20190312-Failing-Query-VVVDR4-FIRETHORN-logs.txt
