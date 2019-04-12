@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.28-tap-issues
+FROM firethorn/ubuntu:2.1.28-zrq-tap-controller
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #

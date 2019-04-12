@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:2.1.28-tap-issues
+FROM firethorn/fedora:2.1.28-zrq-tap-controller
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 RUN dnf install -y jq
