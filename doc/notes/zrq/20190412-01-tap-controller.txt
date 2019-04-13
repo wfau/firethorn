@@ -272,8 +272,6 @@ ssh-rsa ....
 # TODO Add this to the build script ?
 #[user@builder]
 
-    echo "Building Python client"
-
     : ${FIRETHORN_HOME:=/etc/firethorn}
     : ${FIRETHORN_CODE:=/var/local/build/firethorn}
 
@@ -325,11 +323,11 @@ ssh-rsa ....
     fi
 
 # -----------------------------------------------------
-# Create the Python client Dockerfiles.
+# Build the Python client images.
 # TODO Add these to the firethorn source code ..
 #[user@builder]
 
-    buildtag=$branch
+    buildtag=${branch:?}
 
     pushd "${PYTHON_BASE:?}"
 
@@ -364,25 +362,22 @@ ssh-rsa ....
 
 --START--
 REPOSITORY                  TAG                         IMAGE ID            CREATED             SIZE
-firethorn/pyclient-utils    2.1.28-zrq-tap-controller   c27f47bd177c        39 seconds ago      796MB
-firethorn/pyclient-client   2.1.28-zrq-tap-controller   df68faa429c1        4 minutes ago       796MB
-firethorn/pyclient-base     2.1.28-zrq-tap-controller   8c364f9e9433        5 minutes ago       766MB
-firethorn/firethorn         2.1.28-zrq-tap-controller   05fdb533ad6a        25 minutes ago      1.05GB
-firethorn/ogsadai           2.1.28-zrq-tap-controller   120dbb7e0d59        25 minutes ago      1.05GB
-firethorn/builder           2.1.28-zrq-tap-controller   b42b1cb918ea        28 minutes ago      1.69GB
-firethorn/tester            2.1.28-zrq-tap-controller   aacd382bd3b4        33 minutes ago      620MB
-firethorn/postgres          2.1.28-zrq-tap-controller   a3d310e1c39c        34 minutes ago      230MB
-firethorn/sql-proxy         2.1.28-zrq-tap-controller   80a8e3d177a3        34 minutes ago      675MB
-firethorn/apache            2.1.28-zrq-tap-controller   13599dd633bd        35 minutes ago      603MB
-firethorn/tomcat            2.1.28-zrq-tap-controller   6c7335f0fdcd        35 minutes ago      1GB
-firethorn/java              2.1.28-zrq-tap-controller   497cb5038824        37 minutes ago      935MB
-<none>                      <none>                      eacbc4c6e159        40 minutes ago      575MB
-<none>                      <none>                      baf79ca5dfb5        40 minutes ago      577MB
-firethorn/fedora            2.1.28-zrq-tap-controller   6d5599aa055d        About an hour ago   575MB
+firethorn/pyclient-utils    2.1.28-zrq-tap-controller   bf1d767ee8c6        12 seconds ago      791MB
+firethorn/pyclient-client   2.1.28-zrq-tap-controller   a2f17953c58f        2 minutes ago       790MB
+firethorn/pyclient-base     2.1.28-zrq-tap-controller   370f15dab0a2        2 minutes ago       760MB
+firethorn/firethorn         2.1.28-zrq-tap-controller   d1c23acecb25        4 minutes ago       1.05GB
+firethorn/ogsadai           2.1.28-zrq-tap-controller   8c8e14d2afad        4 minutes ago       1.05GB
+firethorn/builder           2.1.28-zrq-tap-controller   00237ff7a685        7 minutes ago       1.69GB
+firethorn/tester            2.1.28-zrq-tap-controller   db13e52ee1a3        12 minutes ago      620MB
+firethorn/postgres          2.1.28-zrq-tap-controller   9adae9703a5d        13 minutes ago      230MB
+firethorn/sql-proxy         2.1.28-zrq-tap-controller   3666f3a4aa2f        13 minutes ago      675MB
+firethorn/apache            2.1.28-zrq-tap-controller   13c03989798f        14 minutes ago      603MB
+firethorn/tomcat            2.1.28-zrq-tap-controller   386e834b07d9        14 minutes ago      1GB
+firethorn/java              2.1.28-zrq-tap-controller   32b410cffcf9        16 minutes ago      935MB
+firethorn/fedora            2.1.28-zrq-tap-controller   16afe8f89d16        17 minutes ago      575MB
 postgres                    10                          200d7af0a4e1        2 weeks ago         230MB
 firethorn/builder           latest                      ba037636b622        4 months ago        1.69GB
 fedora                      <none>                      cc510acfcd70        11 months ago       253MB
-nate/dockviz                latest                      93b5259c1e18        11 months ago       6.61MB
 --END--
 
 # -----------------------------------------------------
@@ -439,22 +434,6 @@ EOF
 #[user@virtual]
 
     wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/deploy/tap-deployer.yml'
-
-
-# -----------------------------------------------------
-# Update our compose file.
-#[user@virtual]
-
-    vi tap-deployer.yml
-
-
-        firethorn-py:
-            hostname:
-                "firethorn-py"
-            image:
-    -           "firethorn/firethorn-py:${buildtag:-latest}"
-    +           "firethorn/pyclient-utils:${buildtag:-latest}"
-
 
 
 # -----------------------------------------------------
@@ -520,24 +499,60 @@ configurator.load_resources(
     "https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/osa-tap.json"
     )
 
+---START---
+Importing JDBC Schema: ATLASDR1
+Importing JDBC Schema: ATLASDR2
+Importing JDBC Schema: ATLASDR3
+Importing JDBC Schema: 2MASS
+Importing JDBC Schema: 2XMM
+Importing JDBC Schema: WISE
+Importing JDBC Schema: VIKINGDR3
+Importing JDBC Schema: VHSDR1
+Importing JDBC Schema: MGC
+Importing JDBC Schema: GLIMPSE
+Importing JDBC Schema: FIRST
+Importing JDBC Schema: DENIS
+Importing JDBC Schema: VPHASDR3
+Importing JDBC Schema: VVVDR4
 
-    Importing JDBC Schema: ATLASDR1
-    Importing JDBC Schema: ATLASDR2
-    Importing JDBC Schema: ATLASDR3
-    Importing JDBC Schema: 2MASS
-    Importing JDBC Schema: 2XMM
-    Importing JDBC Schema: WISE
-    Importing JDBC Schema: VIKINGDR3
-    Importing JDBC Schema: VHSDR1
-    Importing JDBC Schema: MGC
-    Importing JDBC Schema: GLIMPSE
-    Importing JDBC Schema: FIRST
-    Importing JDBC Schema: DENIS
-    Importing JDBC Schema: VPHASDR3
-    Importing JDBC Schema: VVVDR4
-    Importing JDBC Schema: SDSSDR7
-    Importing JDBC Schema: SDSSDR9
-    TAP Service available at: http://gillian:8080/firethorn/tap/54/
+ERROR:root:HTTP Error 404:
+Traceback (most recent call last):
+  File "/home/python/pyclient/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib64/python3.6/urllib/request.py", line 223, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib64/python3.6/urllib/request.py", line 532, in open
+    response = meth(req, response)
+  File "/usr/lib64/python3.6/urllib/request.py", line 642, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib64/python3.6/urllib/request.py", line 570, in error
+    return self._call_chain(*args)
+  File "/usr/lib64/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib64/python3.6/urllib/request.py", line 650, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404:
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/home/python/pyclient/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib64/python3.6/json/__init__.py", line 354, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib64/python3.6/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib64/python3.6/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+Importing JDBC Schema: SDSSDR7
+Importing JDBC Schema: SDSSDR9
+TAP Service available at: http://gillian:8080/firethorn/tap/54/
+---END---
+
+
+# TODO
+# Need to add timestamps to the steps in order to track progress..
+
 
 #
 # Login using a guest account.
@@ -603,11 +618,81 @@ for schema in atlasadql.select_schemas():
         # py_table.pprint()
 
 
-Large pauses in processing ..
-Pauses appear to be SQLserver executing the query.
-Appear to get better each time we run the test.
+# -----------------------------------------------------
+# Watching the logs ...
+#[user@virtual]
+
+    Large pauses in processing ..
+    Pauses appear to be SQLserver executing the query.
+    Appear to get better each time we run the test.
+
+    All four cpu cores @ ~50%-60%
+    Mem 1,6G of 3.8G
+    Disc 8.0G of 15G = 61%
+
+    free -h
+
+--START--
+              total        used        free      shared  buff/cache   available
+Mem:           3.9G        1.5G        121M         94M        2.2G        2.0G
+Swap:          1.0G         21M        1.0G
+--END--
+
+    df -h
+
+--START--
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  864K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        15G  8.1G  5.2G  61% /
+tmpfs           2.0G   25M  2.0G   2% /tmp
+/dev/vda1       240M   89M  135M  40% /boot
+tmpfs           395M     0  395M   0% /run/user/1001
+--END--
+
+# -----------------------------------------------------
+# Thinking about the next version ...
+
+    While I'm watching the logs ....
+    RabbitMQ vs Kafka
+    https://stackoverflow.com/questions/42151544/is-there-any-reason-to-use-rabbitmq-over-kafka
+
+    RabbitMQ vs Kafka
+    https://www.cloudkarafka.com/blog/2016-12-05-apachekafka-vs-rabbitmq.html
 
 
+    Use a message broker to handle the updates between micro services.
 
+    Split Firethorn into several parts.
+
+    Simple REST service for users and groups.
+    Simple REST service for authentication.
+
+    Simple REST/CRUD service for ADQL/JDBC metadata.
+        - import operations handles as tasks
+        - execute is asynchronous, no wait
+
+    Simple REST/CRUD service for BlueQuery.
+        - query execution handles as tasks
+        - execute is asynchronous, no wait
+
+    Simple REST/CRUD service for data access.
+        - import operations handles as tasks
+        - export operations handles as tasks
+        - execute is asynchronous, no wait
+
+    MemCached in front of the metadata  database.
+    MemCached in front of the BlueQuery database.
+
+    RabbitMQ service for BlueQuery updates
+
+    REST service for BlueQuery, including long wait.
+    TAP  service for BlueQuery, including long wait.
+
+    VOSpace service for data access.
+    HTTP service for data import.
+    HTTP service for data export.
 
 
