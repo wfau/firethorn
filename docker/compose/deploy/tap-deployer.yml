@@ -36,7 +36,7 @@ services:
         networks:
             - miriam
         environment:
-            POSTGRES_DB:       "${tapschemadatabase}"
+            POSTGRES_DB:       "${tapschemadata}"
             POSTGRES_USER:     "${tapschemauser}"
             POSTGRES_PASSWORD: "${tapschemapass}"
 
@@ -92,9 +92,9 @@ services:
             firethorn.guest.community: "${guestgroup}"
             firethorn.admin.user.name: "${adminuser}"
             firethorn.admin.user.pass: "${adminpass}"
-            firethorn.tapschema.resource.name: "${tapschemajdbcname}"
+            firethorn.tapschema.resource.name: "${tapschemajdbc}"
             firethorn.tapschema.database.type: "pgsql"
-            firethorn.tapschema.database.name: "${tapschemadatabase}"
+            firethorn.tapschema.database.name: "${tapschemadata}"
             firethorn.tapschema.database.host: "carolina"
             firethorn.tapschema.database.user: "${tapschemauser}"
             firethorn.tapschema.database.pass: "${tapschemapass}"
@@ -103,9 +103,9 @@ services:
             bethany:
                 condition: service_started
             carolina:
-                condition: service_started            
+                condition: service_started
             jarmila:
-                condition: service_healthy            
+                condition: service_healthy
 
     firethorn-py:
         hostname:

@@ -1,0 +1,652 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create a new development branch.
+#[user@desktop]
+
+    devname=zrq-tap-controller
+
+    source "${HOME:?}/firethorn.settings"
+    gedit  "${FIRETHORN_CODE:?}/doc/notes/zrq/20180302-02-hg-branch.txt"
+
+    # Not a direct copy/paste.
+    # Skipped the update to default, so this branch is a child of the previous branch.
+    # Simplified the branch name to remove the double name.
+
+# -----------------------------------------------------
+# Print the branch name.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        source 'bin/util.sh'
+        getversion
+
+--START
+2.1.28-zrq-tap-controller
+--END
+
+    popd
+
+# -----------------------------------------------------
+
+    #
+    # Test plan ..
+
+    Deploy chain in a VM
+    Use Python client to deploy ATLAS metadata.
+    Use curl to test the TAP endpoint
+    Reproduce the race condition.
+        Add a ChaosMonkey trigger to return no rows immediately.
+
+    Use curl to run the same test on the BlueQuery endpoint.
+    If the bug does occur, then debug and fix the BlueQueryController
+    If the bug doen't occur, then replace TAPController with one based on the BlueQueryController.
+
+
+# -----------------------------------------------------
+# List the active virtual machines on trop01.
+#[user@trop01]
+
+    source "${HOME}/libvirt.settings"
+
+    virsh \
+        --connect ${connection:?} \
+        list \
+            --all
+
+--START--
+ Id    Name                           State
+----------------------------------------------------
+ 2     Cadelicia                      running
+ 3     Gworewia                       running
+ 4     Abecien                        running
+ 5     Froeseth                       running
+ -     Astoalith                      shut off
+--END--
+
+# -----------------------------------------------------
+# Figure out who is doing what ?
+#[user@trop01]
+
+
+    for vmname in $(
+        virsh \
+            --connect ${connection:?} \
+            --quiet \
+            list \
+        | awk '
+            {print $2}
+            '
+        )
+    do
+        echo ""
+        echo "---- VM [${vmname}]"
+        ssh ${vmname} '
+            hostname
+            date
+            docker ps
+            '
+    done
+
+
+--START--
+---- VM [Cadelicia]
+Cadelicia
+Fri 12 Apr 14:07:07 BST 2019
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                 PORTS                    NAMES
+742ffef40418        firethorn/firethorn-py:2.1.28   "python3"                3 months ago        Up 3 weeks                                      stevedore_firethorn-py_run_3
+22a4adf64bd9        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   3 months ago        Up 3 weeks (healthy)   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+b0539f583ffd        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   3 months ago        Up 8 weeks             5432/tcp                 stevedore_carolina_1
+5e7bb6d35b74        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   3 months ago        Up 8 weeks             5432/tcp                 stevedore_bethany_1
+98436a3d8bdf        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   3 months ago        Up 3 weeks (healthy)   8080/tcp                 stevedore_jarmila_1
+
+---- VM [Gworewia]
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+
+---- VM [Abecien]
+Abecien
+Fri 12 Apr 14:07:07 BST 2019
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                   PORTS                    NAMES
+2e578e4c70b0        firethorn/firethorn-py:2.1.28   "python3"                4 weeks ago         Up 4 weeks                                        stevedore_firethorn-py_run_2
+5d6d6888d9f2        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   4 weeks ago         Up 4 weeks (unhealthy)   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+370d8c48b8d9        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 weeks ago         Up 4 weeks               5432/tcp                 stevedore_bethany_1
+19f62fd9097e        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 weeks ago         Up 4 weeks               5432/tcp                 stevedore_carolina_1
+2b990b474bf2        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   4 weeks ago         Up 4 weeks (healthy)     8080/tcp                 stevedore_jarmila_1
+
+---- VM [Froeseth]
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+--END--
+
+
+# -----------------------------------------------------
+# Slack chat to check which machines are in use.
+#[user@trop01]
+
+--START--
+Dave Morris [1:53 PM]
+@stv Hiya
+I'm looking at replicating the TAP issues and need to use the VMs on trop01.
+trop01 VMs
+
+ Id  Name              State
+----------------------------------------------------
+ 2   Cadelicia           running
+ 3   Gworewia            running
+ 4   Abecien            running
+Do we need to keep any of these ?
+
+Stelios Voutsinas [2:05 PM]
+hiya
+I'd say if you can just leave Gworewia
+the rest can be deleted
+I'll probably start some testing again today, so I'll recreate a VM
+--END--
+
+# -----------------------------------------------------
+# List of available machine names.
+#[user@trop01]
+
+--START--
+[1] Delild
+[2] Abecien
+[3] Saewan
+[4] Cadelicia
+[5] Froeseth
+[6] Astoalith
+[7] Erennon
+[8] Gworewia
+--END--
+
+# -----------------------------------------------------
+# Start with Cadelicia.
+#[user@trop01]
+
+    createvm
+
+--START--
+INFO : Node name [Cadelicia]
+INFO : Base name [fedora-28-16G-docker-base-20181016.qcow]
+INFO : Base path [/var/lib/libvirt/images/base/fedora-28-16G-docker-base-20181016.qcow]
+INFO : Disc name [Cadelicia.qcow]
+INFO : Disc size [16GiB]
+--END--
+
+# -----------------------------------------------------
+# Remove the old SSH keys.
+# TODO Add this to the create script.
+#[user@trop01]
+
+    ssh-keygen \
+        -f "${HOME}/.ssh/known_hosts" \
+        -R cadelicia
+
+    ssh-keygen \
+        -f "${HOME}/.ssh/known_hosts" \
+        -R $(
+            grep 'Cadelicia' /etc/hosts | awk '{print $1}'
+            )
+
+# -----------------------------------------------------
+# Login to the new VM
+#[user@trop01]
+
+    ssh Cadelicia
+
+# -----------------------------------------------------
+# Add our secret function.
+#[user@virtual]
+
+    mkdir "${HOME:?}/bin"
+    cat > "${HOME:?}/bin/secret" << 'EOF'
+service='dave@shepseskaf.roe.ac.uk'
+if [ -n "${1}" ]
+then
+    ssh -q "${service:?}" "bin/secret \"${1}\""
+fi
+EOF
+    chmod u+x "${HOME:?}/bin/secret"
+
+    secret 'frog'
+
+# -----------------------------------------------------
+# Add our administrator SSH keys.
+#[user@virtual]
+
+    secret 'firethorn.ssh.keys' | tee --append "${HOME}/.ssh/authorized_keys"
+
+--START--
+ssh-rsa ....
+ssh-rsa ....
+ssh-rsa ....
+--END--
+
+
+# -----------------------------------------------------
+# Fetch our builder YML file.
+#[user@virtual]
+
+    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml'
+
+# -----------------------------------------------------
+# Run the builder container.
+#[user@virtual]
+
+    export branch=2.1.28-zrq-tap-controller
+
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+# -----------------------------------------------------
+# Run the builder build script.
+#[user@builder]
+
+    /builder/bin/00.00-build.sh
+
+# -----------------------------------------------------
+# Checkout the Python client code.
+# TODO Add this to the build script ?
+#[user@builder]
+
+    echo "Building Python client"
+
+    : ${FIRETHORN_HOME:=/etc/firethorn}
+    : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+    : ${PYTHON_BASE:=/var/local/build/python}
+
+    if [ ! -e "${PYTHON_BASE:?}" ]
+    then
+        mkdir -p "${PYTHON_BASE:?}"
+    fi
+
+    : ${PYCLIENT_REPO:=https://github.com/stvoutsin/firethorn.py}
+    : ${PYCLIENT_CODE:=${PYTHON_BASE:?}/pyclient}
+
+    if [ -e "${PYCLIENT_CODE:?}" ]
+    then
+        pushd "${PYCLIENT_CODE:?}"
+
+            echo "Updating Python client source code"
+            git pull
+
+        popd
+    else
+        pushd "$(dirname ${PYCLIENT_CODE:?})"
+
+            echo "Cloning Python client source code from [${PYCLIENT_REPO:?}]"
+            git clone "${PYCLIENT_REPO:?}" "$(basename ${PYCLIENT_CODE:?})"
+
+        popd
+    fi
+
+    : ${PYUTILS_REPO:=https://github.com/stvoutsin/firethorn-utils}
+    : ${PYUTILS_CODE:=${PYTHON_BASE:?}/pyutils}
+
+    if [ -e "${PYUTILS_CODE:?}" ]
+    then
+        pushd "${PYUTILS_CODE:?}"
+
+            echo "Updating Python utils source code"
+            git pull
+
+        popd
+    else
+        pushd "$(dirname ${PYUTILS_CODE:?})"
+
+            echo "Cloning Python utils source code from [${PYUTILS_REPO:?}]"
+            git clone "${PYUTILS_REPO:?}" "$(basename ${PYUTILS_CODE:?})"
+
+        popd
+    fi
+
+# -----------------------------------------------------
+# Create the Python client Dockerfiles.
+# TODO Add these to the firethorn source code ..
+#[user@builder]
+
+    pushd "${PYTHON_BASE:?}"
+
+cat > base-Dockerfile << 'EOF'
+FROM firethorn/tester:2.1.28-zrq-tap-controller
+LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+ENV pybase=/home/python
+
+RUN dnf -y install \
+    python3 \
+    python3-pip
+
+RUN pip3 install --upgrade pip
+RUN pip3 install numpy astropy requests
+
+WORKDIR ${pybase}
+EOF
+
+cat > client-Dockerfile << 'EOF'
+FROM firethorn/pyclient-base:2.1.28-zrq-tap-controller
+LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+COPY pyclient pyclient
+
+RUN  pip3 install --editable pyclient
+EOF
+
+cat > utils-Dockerfile << 'EOF'
+FROM firethorn/pyclient-client:2.1.28-zrq-tap-controller
+LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+COPY pyutils pyutils
+
+RUN  pip3 install --editable pyutils
+EOF
+
+    popd
+
+
+    buildtag=$branch
+
+    pushd "${PYTHON_BASE:?}"
+
+        docker build \
+            --tag  firethorn/pyclient-base:${buildtag:?} \
+            --file "base-Dockerfile" \
+            base
+
+        docker build \
+            --tag firethorn/pyclient-client:${buildtag:?} \
+            --file "client-Dockerfile" \
+            .
+
+        docker build \
+            --tag firethorn/pyclient-utils:${buildtag:?} \
+            --file "utils-Dockerfile" \
+            .
+
+    popd
+
+# -----------------------------------------------------
+# Exit back to the VM.
+#[user@builder]
+
+    exit
+
+# -----------------------------------------------------
+# Check our docker images.
+#[user@virtual]
+
+    docker images
+
+--START--
+REPOSITORY                  TAG                         IMAGE ID            CREATED             SIZE
+firethorn/pyclient-utils    2.1.28-zrq-tap-controller   c27f47bd177c        39 seconds ago      796MB
+firethorn/pyclient-client   2.1.28-zrq-tap-controller   df68faa429c1        4 minutes ago       796MB
+firethorn/pyclient-base     2.1.28-zrq-tap-controller   8c364f9e9433        5 minutes ago       766MB
+firethorn/firethorn         2.1.28-zrq-tap-controller   05fdb533ad6a        25 minutes ago      1.05GB
+firethorn/ogsadai           2.1.28-zrq-tap-controller   120dbb7e0d59        25 minutes ago      1.05GB
+firethorn/builder           2.1.28-zrq-tap-controller   b42b1cb918ea        28 minutes ago      1.69GB
+firethorn/tester            2.1.28-zrq-tap-controller   aacd382bd3b4        33 minutes ago      620MB
+firethorn/postgres          2.1.28-zrq-tap-controller   a3d310e1c39c        34 minutes ago      230MB
+firethorn/sql-proxy         2.1.28-zrq-tap-controller   80a8e3d177a3        34 minutes ago      675MB
+firethorn/apache            2.1.28-zrq-tap-controller   13599dd633bd        35 minutes ago      603MB
+firethorn/tomcat            2.1.28-zrq-tap-controller   6c7335f0fdcd        35 minutes ago      1GB
+firethorn/java              2.1.28-zrq-tap-controller   497cb5038824        37 minutes ago      935MB
+<none>                      <none>                      eacbc4c6e159        40 minutes ago      575MB
+<none>                      <none>                      baf79ca5dfb5        40 minutes ago      577MB
+firethorn/fedora            2.1.28-zrq-tap-controller   6d5599aa055d        About an hour ago   575MB
+postgres                    10                          200d7af0a4e1        2 weeks ago         230MB
+firethorn/builder           latest                      ba037636b622        4 months ago        1.69GB
+fedora                      <none>                      cc510acfcd70        11 months ago       253MB
+nate/dockviz                latest                      93b5259c1e18        11 months ago       6.61MB
+--END--
+
+# -----------------------------------------------------
+# Create our chain properties.
+#[user@virtual]
+
+    cat > "${HOME:?}/chain.properties" << EOF
+
+        buildtag=${branch:?}
+
+        metadata=data_$(pwgen 10 1)
+        metauser=user_$(pwgen 10 1)
+        metapass=pass_$(pwgen 10 1)
+
+        usertype=$(secret 'firethorn.user.type')
+        userhost=$(secret 'firethorn.user.host')
+        userdata=$(secret 'firethorn.user.data')
+        useruser=$(secret 'firethorn.user.user')
+        userpass=$(secret 'firethorn.user.pass')
+
+        datauser=$(secret 'firethorn.data.user')
+        datapass=$(secret 'firethorn.data.pass')
+
+        admingroup=group_$(pwgen 10 1)
+        adminuser=user_$(pwgen 10 1)
+        adminpass=pass_$(pwgen 20 1)
+
+        guestgroup=group_$(pwgen 10 1)
+        guestuser=user_$(pwgen 10 1)
+        guestpass=pass_$(pwgen 10 1)
+
+        #tapschemadata=data_$(pwgen 10 1)
+        tapschemadata=postgres
+        tapschemauser=user_$(pwgen 10 1)
+        tapschemapass=pass_$(pwgen 10 1)
+        tapschemajdbc=jdbc_$(pwgen 10 1)
+
+        adql_query_delay_first=10
+
+        firethorn_limits_rows_absolute=10000000
+        firethorn_limits_rows_default=100000
+
+EOF
+
+# -----------------------------------------------------
+# Link our compose config ** DON'T SKIP THIS **
+#[user@virtual]
+
+    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
+
+
+# -----------------------------------------------------
+# Download the latest version of our compose file.
+#[user@virtual]
+
+    wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/deploy/tap-deployer.yml'
+
+
+# -----------------------------------------------------
+# Update our compose file.
+#[user@virtual]
+
+    vi tap-deployer.yml
+
+
+        firethorn-py:
+            hostname:
+                "firethorn-py"
+            image:
+    -           "firethorn/firethorn-py:${buildtag:-latest}"
+    +           "firethorn/pyclient-utils:${buildtag:-latest}"
+
+
+
+# -----------------------------------------------------
+# Start our containers ...
+#[user@virtual]
+
+    docker-compose \
+        --file "tap-deployer.yml" \
+        run \
+            firethorn-py
+
+
+--START--
+Creating network "stevedore_miriam" with the default driver
+Creating network "stevedore_rosana" with the default driver
+Creating stevedore_jarmila_1  ... done
+Creating stevedore_bethany_1  ... done
+Creating stevedore_carolina_1 ... done
+Creating stevedore_gillian_1  ... done
+
+Python 3.6.5 (default, Mar 29 2018, 18:20:46)
+[GCC 8.0.1 20180317 (Red Hat 8.0.1-0.19)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+>>>
+--END--
+
+# -----------------------------------------------------
+# Run our Python installer.
+#[python]
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+import firethorn_utils.configurator as configur
+
+#
+# Create our Firethorn client.
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create our Configurator.
+configurator = configur.Configurator(
+    firethorn
+    )
+
+#
+# Load the OSA configutarion.
+configurator.load_resources(
+    "https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/osa-tap.json"
+    )
+
+
+    Importing JDBC Schema: ATLASDR1
+    Importing JDBC Schema: ATLASDR2
+    Importing JDBC Schema: ATLASDR3
+    Importing JDBC Schema: 2MASS
+    Importing JDBC Schema: 2XMM
+    Importing JDBC Schema: WISE
+    Importing JDBC Schema: VIKINGDR3
+    Importing JDBC Schema: VHSDR1
+    Importing JDBC Schema: MGC
+    Importing JDBC Schema: GLIMPSE
+    Importing JDBC Schema: FIRST
+    Importing JDBC Schema: DENIS
+    Importing JDBC Schema: VPHASDR3
+    Importing JDBC Schema: VVVDR4
+    Importing JDBC Schema: SDSSDR7
+    Importing JDBC Schema: SDSSDR9
+    TAP Service available at: http://gillian:8080/firethorn/tap/54/
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+#
+# Get the Atlas AdqlResource.
+atlasadql = firethorn.firethorn_engine.select_adql_resources()[0]
+
+#
+# Create and run a query on the resource.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = atlasadql.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+#
+# Iterate the metadata tree
+for schema in atlasadql.select_schemas():
+    for table in schema.select_tables():
+        print(
+            "table  [{}][{}][{}]".format(
+                schema.name(),
+                table.name(),
+                table.count(),
+                )
+            )
+        query_str = "SELECT TOP 10 * FROM {}.{}".format(
+            schema.name(),
+            table.name()
+            )
+        query_obj = atlasadql.create_query(
+            query_str,
+            "COMPLETED",
+            None,
+            3000000
+            )
+        print(
+            query_obj.table().count()
+            )
+
+
+
+        #
+        # ValueError: invalid literal for int() with base 10: '0000000a' (in row 9, col 'column.213133')
+        # py_table = query_obj.table().as_astropy()
+        # py_table.pprint()
+
+
+Large pauses in processing ..
+Pauses appear to be SQLserver executing the query.
+Appear to get better each time we run the test.
+
+
+
+
+

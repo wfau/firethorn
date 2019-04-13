@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,20 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/tester:2.1.28-zrq-tap-controller
+FROM firethorn/pyclient-base:2.1.28-zrq-tap-controller
 LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV base=/home/python
+COPY pyclient pyclient
 
-RUN dnf -y install \
-    python3 \
-    python3-pip
-
-COPY pyclient ${base}/pyclient
-
-RUN  pip3 install numpy astropy requests
-RUN  pip3 install --editable ${base}/pyclient
-
-WORKDIR ${base}
-
+RUN  pip3 install --editable pyclient
 

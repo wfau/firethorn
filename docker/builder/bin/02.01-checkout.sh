@@ -26,11 +26,11 @@
     then
         pushd "${FIRETHORN_CODE:?}"
 
-            echo "Updating source code from []"
+            echo "Updating source code"
 
             hg pull
             hg update
-        
+
         popd
     else
         pushd "$(dirname ${FIRETHORN_CODE:?})"
