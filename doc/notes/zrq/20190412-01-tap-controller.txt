@@ -329,62 +329,23 @@ ssh-rsa ....
 # TODO Add these to the firethorn source code ..
 #[user@builder]
 
-    pushd "${PYTHON_BASE:?}"
-
-cat > base-Dockerfile << 'EOF'
-FROM firethorn/tester:2.1.28-zrq-tap-controller
-LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
-
-ENV pybase=/home/python
-
-RUN dnf -y install \
-    python3 \
-    python3-pip
-
-RUN pip3 install --upgrade pip
-RUN pip3 install numpy astropy requests
-
-WORKDIR ${pybase}
-EOF
-
-cat > client-Dockerfile << 'EOF'
-FROM firethorn/pyclient-base:2.1.28-zrq-tap-controller
-LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
-
-COPY pyclient pyclient
-
-RUN  pip3 install --editable pyclient
-EOF
-
-cat > utils-Dockerfile << 'EOF'
-FROM firethorn/pyclient-client:2.1.28-zrq-tap-controller
-LABEL MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
-
-COPY pyutils pyutils
-
-RUN  pip3 install --editable pyutils
-EOF
-
-    popd
-
-
     buildtag=$branch
 
     pushd "${PYTHON_BASE:?}"
 
         docker build \
             --tag  firethorn/pyclient-base:${buildtag:?} \
-            --file "base-Dockerfile" \
-            base
+            --file "${FIRETHORN_CODE}/docker/client/base/Dockerfile" \
+            .
 
         docker build \
             --tag firethorn/pyclient-client:${buildtag:?} \
-            --file "client-Dockerfile" \
+            --file "${FIRETHORN_CODE}/docker/client/client/Dockerfile" \
             .
 
         docker build \
             --tag firethorn/pyclient-utils:${buildtag:?} \
-            --file "utils-Dockerfile" \
+            --file "${FIRETHORN_CODE}/docker/client/utils/Dockerfile" \
             .
 
     popd

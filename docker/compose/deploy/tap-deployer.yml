@@ -111,7 +111,7 @@ services:
         hostname:
             "firethorn-py"
         image:
-           "firethorn/firethorn-py:${buildtag:-latest}"
+           "firethorn/pyclient-utils:${buildtag:-latest}"
         read_only:
             false
         stdin_open:
