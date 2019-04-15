@@ -20,15 +20,15 @@
 #
 #
 
-# This is run locally, with a tunneled connection to Gworewia which is running an httpd proxy
-# Firethorn Chain is running on Froeseth on trop01
+## This is run locally, with a tunneled connection to Gworewia which is running an httpd proxy
+## Firethorn Chain is running on Froeseth on trop01
+## Testing Latest version of 2.1.28-tap-issues (Rev. e6178893e6c4)
+
 
 # ssh -L '*:8081:Gworewia:80' Stevedore@Gworewia 
 
 
 stelios@stelios-pc:~$ python3
-
-
 
 
 # -----------------------------------------------------
@@ -54,7 +54,7 @@ firethorn.login(
 # Select a specific resource by Identity (url)
 
 resource=firethorn.firethorn_engine.select_adql_resource_by_ident(
-    "http://localhost:8081/firethorn/adql/resource/514937"
+    "http://localhost:8081/firethorn/adql/resource/2103"
     )
 
 
@@ -64,7 +64,7 @@ workspace = firethorn.firethorn_engine.create_adql_resource(
     )
 
 # Select schema by Identity
-schema=resource.select_schema_by_ident("http://localhost:8081/firethorn/adql/schema/516856")
+schema=resource.select_schema_by_ident("http://localhost:8081/firethorn/adql/schema/2337")
 
 
 # Import the TAP_schema into our workspace
@@ -75,7 +75,7 @@ workspace.import_adql_schema(
 
 #
 # Create and run a query.
-query_str = "SELECT TOP 10 * FROM UKIDSSDR4PLUS.dxsSourceXtwoxmm"
+query_str = "SELECT TOP 10 * from ATLASDR1.Filter"
 query_obj = workspace.create_query(
     query_str,
     "COMPLETED",
@@ -102,7 +102,7 @@ params.update({"firethorn.monkey.data" : "dIgjKw32"})
 print(
     params
     )
-query_str = "SELECT TOP 10 * FROM UKIDSSDR4PLUS.dxsSourceXtwoxmm"
+query_str = "SELECT TOP 10 * from ATLASDR1.Filter"
 query_obj = workspace.create_query(
     query_str,
     "COMPLETED",
@@ -132,7 +132,7 @@ params.update({"firethorn.monkey.data" : "chahw2Ao"})
 print(
     params
     )
-query_str = "SELECT TOP 10 * FROM UKIDSSDR4PLUS.dxsSourceXtwoxmm"
+query_str = "SELECT TOP 10 * from ATLASDR1.Filter"
 query_obj = workspace.create_query(
     query_str,
     "COMPLETED",
@@ -161,7 +161,7 @@ params.update({"firethorn.monkey.data" : "jG2hdk00"})
 print(
     params
     )
-query_str = "SELECT TOP 10 * FROM UKIDSSDR4PLUS.dxsSourceXtwoxmm"
+query_str = "SELECT TOP 10 * from ATLASDR1.Filter"
 query_obj = workspace.create_query(
     query_str,
     "COMPLETED",
@@ -181,3 +181,59 @@ print(
 
 
 ## Fail propagated
+
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+params.update({"firethorn.monkey.data" : "jG2hdk00"})
+
+print(
+    params
+    )
+query_str = "SELECT TOP 10 * from ATLASDR1.Filter"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+
+
+## Fail propagated
+
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+params.update({"firethorn.monkey.data" : "chahw2Ao"})
+
+print(
+    params
+    )
+query_str = "SELECT TOP 10 * from ATLASDR1.Filter"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+

@@ -232,3 +232,128 @@ Caused by: java.sql.SQLException: Warning: Fatal error 823 occurred at Mar 19 20
             logger.debug("Original cause [" + e.getCause().getClass().getName() + "]");
             throw e.getCause();
         }
+
+
+
+
+
+
+## ------------------------------------------------------------------
+##
+## Try to reproduce 823 Exception which doesnt propagate to Firethorn
+## 
+## Replace line 476 in following class with the section below
+## http://wfau.metagrid.co.uk/code/firethorn/file/e6178893e6c4/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l376
+##
+## Since the 823 Exception produces the output in the "ExecutionException" Exception catch, we add an SQLException which then runs the same code after
+## (Monkey produces an SQLException)
+## Note that some of the exceptions call  cancelSQLStatement(); , but the one that is causing this issue does not.
+##
+## ------------------------------------------------------------------
+
+... 
+       	try
+	{
+	logger.debug("Initiating CallableStatement and starting background execution");
+            // This will initiate the Callable object and so
+            // basically execute Statement.executeQuery in the
+            // background. If execution is interrupted e.g. by
+            // interruption of the current thread as happens if an
+            // OGSA-DAI request is terminated, then an exception
+            // will be thrown.
+            this.mContext.monkey().sqlException(this, "jG2hdk00");
+            resultSet = future.get();
+            logger.debug("CallableStatement returned ResultSet");
+            this.mContext.monkey().sqlException(this, "chahw2Ao");
+        }
+	catch (ExecutionException e)
+        {
+            logger.debug("CallableStatement encountered problem in query execution");
+            logger.debug("Original cause [" + e.getCause().getClass().getName() + "]");
+            throw e.getCause();
+            //cancelSQLStatement();
+        }
+	catch (InterruptedException e)
+        {
+            logger.debug("CallableStatement interrupted");
+            cancelSQLStatement();
+        }
+	catch (CancellationException e)
+        {
+            logger.debug("CallableStatement cancelled");
+            cancelSQLStatement();
+        }
+	catch (SQLException e)
+        {
+            logger.debug("SQLCallableStatement encountered problem in query execution");
+            logger.debug("SQLOriginal cause [" + e.getCause().getClass().getName() + "]");
+            throw e.getCause();
+            //cancelSQLStatement();
+        }
+
+	return resultSet;
+    }
+... 
+
+## Was able to reproduce the case where query stays as "RUNNING" using the monkey test "jG2hdk00" once
+### http://froeseth:8080/firethorn/blue/query/22509
+## However this doesnt happen consistently, was only able to recreate once
+## Fail propagated
+## Code run was the following:
+
+# -----------------------------------------------------
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+firethorn = ftpy.Firethorn(
+    endpoint = "http://localhost:8081/firethorn"
+    )
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+# Select a specific resource by Identity (url)
+
+resource=firethorn.firethorn_engine.select_adql_resource_by_ident(
+    "http://localhost:8081/firethorn/adql/resource/2103"
+    )
+
+
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+# Select schema by Identity
+schema=resource.select_schema_by_ident("http://localhost:8081/firethorn/adql/schema/2337")
+
+
+# Import the TAP_schema into our workspace
+workspace.import_adql_schema(
+     schema
+ )
+
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+params.update({"firethorn.monkey.data" : "jG2hdk00"})
+
+print(
+    params
+    )
+query_str = "SELECT TOP 10 * from ATLASDR1.Filter"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
