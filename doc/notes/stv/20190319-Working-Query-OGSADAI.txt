@@ -1,5 +1,3 @@
-2019-03-19 13:04:29,894 DEBUG context.RequestContextFactory [http-nio-8080-exec-3,createContext:62] createContext(HttpServletRequest)
-2019-03-19 13:04:29,894 DEBUG context.RequestContextFactory [http-nio-8080-exec-3,createContext:64] remote [172.18.0.5]
 2019-03-19 13:04:29,961 DEBUG context.RequestContextFactory [http-nio-8080-exec-1,createContext:62] createContext(HttpServletRequest)
 2019-03-19 13:04:29,962 DEBUG context.RequestContextFactory [http-nio-8080-exec-1,createContext:64] remote [172.18.0.5]
 2019-03-19 13:04:30,112 DEBUG context.RequestContextFactory [http-nio-8080-exec-4,createContext:62] createContext(HttpServletRequest)

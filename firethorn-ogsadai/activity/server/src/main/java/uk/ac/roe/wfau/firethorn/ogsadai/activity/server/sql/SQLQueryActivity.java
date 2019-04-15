@@ -272,6 +272,8 @@ public class SQLQueryActivity
                 );
             
             logger.debug("Executing query");
+            this.mContext.monkey().sqlException(this, "dIgjKw32");
+
             ResultSet resultSet = executeQuery(expression);
             
             logger.debug("Processing tuples");
