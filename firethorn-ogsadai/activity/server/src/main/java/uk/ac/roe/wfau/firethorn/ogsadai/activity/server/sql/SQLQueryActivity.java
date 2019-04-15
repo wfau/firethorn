@@ -374,15 +374,16 @@ public class SQLQueryActivity
         try
         {
         logger.debug("Initiating CallableStatement and starting background execution");
-            // This will initiate the Callable object and so
-            // basically execute Statement.executeQuery in the
-            // background. If execution is interrupted e.g. by
-            // interruption of the current thread as happens if an
-            // OGSA-DAI request is terminated, then an exception
-            // will be thrown.
-            resultSet = future.get();
-            logger.debug("CallableStatement returned ResultSet");
-            this.mContext.monkey().sqlException(this, "chahw2Ao");
+	        // This will initiate the Callable object and so
+	        // basically execute Statement.executeQuery in the
+	        // background. If execution is interrupted e.g. by
+	        // interruption of the current thread as happens if an
+	        // OGSA-DAI request is terminated, then an exception
+	        // will be thrown.
+	        this.mContext.monkey().sqlException(this, "jG2hdk00");
+	        resultSet = future.get();
+	        logger.debug("CallableStatement returned ResultSet");
+	        this.mContext.monkey().sqlException(this, "chahw2Ao");
         }
         catch (ExecutionException e)
         {

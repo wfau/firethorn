@@ -1,0 +1,234 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#-------------------------------------------
+# Comparing Working and Failing Query Logs
+#-------------------------------------------
+
+# Logs seem to produce different output towards a the following sections
+# "Initialising query" in sql.SQLQueryActivity
+
+
+# Working Query Segment
+
+2019-03-19 13:04:30,175 DEBUG sql.SQLQueryActivity [pool-1-thread-39,processIteration:262] Initialising query
+2019-03-19 13:04:30,175 DEBUG sql.SQLQueryActivity [pool-1-thread-39,processIteration:274] Executing query
+2019-03-19 13:04:30,175 DEBUG sql.SQLQueryActivity [pool-1-thread-39,executeQuery:362] Creating CallableStatement for query
+2019-03-19 13:04:30,176 DEBUG sql.SQLQueryActivity [pool-1-thread-39,executeQuery:367] Submitting CallableStatement to ExecutorService
+2019-03-19 13:04:30,177 DEBUG sql.SQLQueryActivity [pool-1-thread-39,executeQuery:374] Initiating CallableStatement and starting background execution
+2019-03-19 13:04:30,181 DEBUG sql.SQLQueryActivity [pool-1-thread-39,executeQuery:382] CallableStatement returned ResultSet
+2019-03-19 13:04:30,181 DEBUG sql.SQLQueryActivity [pool-1-thread-39,processIteration:277] Processing tuples
+2019-03-19 13:04:30,183 DEBUG data.DelaysActivity [pool-1-thread-40,processIteration:129] processIteration(Object[])
+2019-03-19 13:04:30,183 DEBUG data.LimitsActivity [pool-1-thread-42,processIteration:173] processIteration(Object[])
+2019-03-19 13:04:30,184 DEBUG data.LimitsActivity [pool-1-thread-42,processIteration:181] Max rows  [1000000]
+2019-03-19 13:04:30,184 DEBUG data.LimitsActivity [pool-1-thread-42,processIteration:182] Max cells [-1]
+2019-03-19 13:04:30,184 DEBUG data.LimitsActivity [pool-1-thread-42,processIteration:183] Max time  [-1]
+019-03-19 13:04:30,184 DEBUG data.LimitsActivity [pool-1-thread-42,start:222] Start
+2019-03-19 13:04:30,188 DEBUG context.RequestContextFactory [http-nio-8080-exec-5,createContext:62] createContext(HttpServletRequest)
+2019-03-19 13:04:30,188 DEBUG context.RequestContextFactory [http-nio-8080-exec-5,createContext:64] remote [172.18.0.5]
+2019-03-19 13:04:30,195 DEBUG data.LimitsActivity [pool-1-thread-42,inner:410] Starting inner
+2019-03-19 13:04:30,196 DEBUG sql.SQLQueryActivity [pool-1-thread-39,processIteration:296] Processing done
+2019-03-19 13:04:30,196 DEBUG sql.SQLQueryActivity [pool-1-thread-39,processIteration:298] Closing result set and statement
+2019-03-19 13:04:30,203 DEBUG sql.SQLQueryActivity [pool-1-thread-39,processIteration:316] Time taken [7]
+2019-03-19 13:04:30,205 DEBUG activity.MatchedIterativeActivity [pool-1-thread-39,debug:84] performing last stage of processing
+2019-03-19 13:04:30,205 DEBUG activity.MatchedIterativeActivity [pool-1-thread-39,debug:84] performing clean-up
+2019-03-19 13:04:30,205 DEBUG sql.SQLQueryActivity [pool-1-thread-39,cleanUp:463] Shutting down ExecutorService
+2019-03-19 13:04:30,206 DEBUG sql.SQLQueryActivity [pool-1-thread-39,cleanUp:468] Closing Statement
+2019-03-19 13:04:30,206 DEBUG sql.SQLQueryActivity [pool-1-thread-39,cleanUp:475] Releasing Connection
+2019-03-19 13:04:30,206 DEBUG event.LoggingActivityListener [pool-1-thread-39,debug:84] COMPLETED: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-f8a7cc15-7e60-48f8-b1d9-fb5f3b24871b)
+
+
+
+# Failing Query Segment (Fatal error 823 Exception / Exception not propagated)
+
+2019-03-19 12:57:04,549 DEBUG sql.SQLQueryActivity [pool-1-thread-34,processIteration:262] Initialising query
+2019-03-19 12:57:04,549 DEBUG jdbc.JDBCDataResource [pool-1-thread-32,debug:84] Using JDBC URL : jdbc:apache:commons:dbcp:ogsadai-jdbcpool-ogsadai-0839c23f-5686-48e8-872c-493238105e91
+2019-03-19 12:57:04,550 DEBUG sql.SQLQueryActivity [pool-1-thread-34,processIteration:274] Executing query
+2019-03-19 12:57:04,550 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:362] Creating CallableStatement for query
+2019-03-19 12:57:04,550 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:367] Submitting CallableStatement to ExecutorService
+2019-03-19 12:57:04,551 DEBUG activity.MatchedIterativeActivity [pool-1-thread-32,debug:84] performing iterative stage of processing
+2019-03-19 12:57:04,551 DEBUG event.LoggingActivityListener [pool-1-thread-30,debug:84] PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-35043762-08f6-45ce-9e61-10bb8a2e963a)
+2019-03-19 12:57:04,552 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:374] Initiating CallableStatement and starting background execution
+2019-03-19 12:57:04,609 DEBUG context.RequestContextFactory [http-nio-8080-exec-10,createContext:62] createContext(HttpServletRequest)
+2019-03-19 12:57:04,609 DEBUG context.RequestContextFactory [http-nio-8080-exec-10,createContext:64] remote [172.18.0.5]
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:387] CallableStatement encountered problem in query execution
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:388] Original cause [java.sql.SQLException]
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,processIteration:321] Caught a SQLException, wrapping it in an ActivitySQLUserException
+2019-03-19 12:57:06,094 DEBUG activity.MatchedIterativeActivity [pool-1-thread-34,debug:84] performing clean-up
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,cleanUp:463] Shutting down ExecutorService
+2019-03-19 12:57:06,095 DEBUG sql.SQLQueryActivity [pool-1-thread-34,cleanUp:468] Closing Statement
+2019-03-19 12:57:06,096 WARN  activity.MatchedIterativeActivity [pool-1-thread-34,warnExceptionAndChildren:343] #1553000226096:535# There was a problem cleaning up the activity instance (activity name uk.org.ogsadai.SQLQuery, instance name uk.org.ogsadai.SQLQuery-ogsadai-3ae5cbc8-cb29-46d5-9def-b6874f6e351b).
+2019-03-19 12:57:06,096 WARN  activity.MatchedIterativeActivity [pool-1-thread-34,warnExceptionAndChildren:343] #1553000226096:535# java.sql.SQLException: Invalid state, the Connection object is closed.
+2019-03-19 12:57:06,097 DEBUG event.LoggingActivityListener [pool-1-thread-34,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:322)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.sql.SQLException: Warning: Fatal error 823 occurred at Mar 19 2019 12:57PM. Note the error and time, and contact your system administrator.
+	at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+	at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+	at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:671)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:505)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:415)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:404)
+	... 4 more
+
+
+
+# Failing Query Segment (Chaos Monkey Exception [dIgjKw32] / Fail propagated )
+
+2019-04-15 12:21:48,652 DEBUG sql.SQLQueryActivity [pool-1-thread-10,processIteration:262] Initialising query
+2019-04-15 12:21:48,652 DEBUG event.LoggingActivityListener [pool-1-thread-9,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-49575722-4700-4fed-aa31-78785544db50)
+2019-04-15 12:21:48,653 DEBUG sql.SQLQueryActivity [pool-1-thread-10,processIteration:274] Executing query
+2019-04-15 12:21:48,654 DEBUG sql.SQLQueryActivity [pool-1-thread-10,processIteration:323] Caught a SQLException, wrapping it in an ActivitySQLUserException
+2019-04-15 12:21:48,654 DEBUG activity.MatchedIterativeActivity [pool-1-thread-10,debug:84] performing clean-up
+2019-04-15 12:21:48,654 DEBUG sql.SQLQueryActivity [pool-1-thread-10,cleanUp:465] Shutting down ExecutorService
+2019-04-15 12:21:48,654 DEBUG sql.SQLQueryActivity [pool-1-thread-10,cleanUp:470] Closing Statement
+2019-04-15 12:21:48,655 DEBUG sql.SQLQueryActivity [pool-1-thread-10,cleanUp:477] Releasing Connection
+2019-04-15 12:21:48,656 DEBUG event.LoggingActivityListener [pool-1-thread-10,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:324)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.sql.SQLException: ChaosMonkey [uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity][dIgjKw32]
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamBase.sqlException(MonkeyParamBase.java:106)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:275)
+	... 9 more
+
+
+
+
+## Lets look through the Failing (Fatal 823) query segment and compare with source code:
+
+---
+2019-03-19 12:57:04,549 DEBUG sql.SQLQueryActivity [pool-1-thread-34,processIteration:262] Initialising query
+    ## http://wfau.metagrid.co.uk/code/firethorn/file/40515081521c/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l262
+---
+
+2019-03-19 12:57:04,549 DEBUG jdbc.JDBCDataResource [pool-1-thread-32,debug:84] Using JDBC URL : jdbc:apache:commons:dbcp:ogsadai-jdbcpool-ogsadai-0839c23f-5686-48e8-872c-493238105e91
+
+---
+2019-03-19 12:57:04,550 DEBUG sql.SQLQueryActivity [pool-1-thread-34,processIteration:274] Executing query
+    ## http://wfau.metagrid.co.uk/code/firethorn/file/40515081521c/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l275
+---
+
+2019-03-19 12:57:04,550 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:362] Creating CallableStatement for query
+2019-03-19 12:57:04,550 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:367] Submitting CallableStatement to ExecutorService
+2019-03-19 12:57:04,551 DEBUG activity.MatchedIterativeActivity [pool-1-thread-32,debug:84] performing iterative stage of processing
+2019-03-19 12:57:04,551 DEBUG event.LoggingActivityListener [pool-1-thread-30,debug:84] PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-35043762-08f6-45ce-9e61-10bb8a2e963a)
+
+---
+2019-03-19 12:57:04,552 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:374] Initiating CallableStatement and starting background execution
+    ## http://wfau.metagrid.co.uk/code/firethorn/file/40515081521c/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l374
+---
+
+
+2019-03-19 12:57:04,609 DEBUG context.RequestContextFactory [http-nio-8080-exec-10,createContext:62] createContext(HttpServletRequest)
+2019-03-19 12:57:04,609 DEBUG context.RequestContextFactory [http-nio-8080-exec-10,createContext:64] remote [172.18.0.5]
+
+---
+
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:387] CallableStatement encountered problem in query execution
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:388] Original cause [java.sql.SQLException]
+    ## http://wfau.metagrid.co.uk/code/firethorn/file/40515081521c/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l387
+---
+---
+
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,processIteration:321] Caught a SQLException, wrapping it in an ActivitySQLUserException
+    ## http://wfau.metagrid.co.uk/code/firethorn/file/40515081521c/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l321
+
+---
+
+2019-03-19 12:57:06,094 DEBUG activity.MatchedIterativeActivity [pool-1-thread-34,debug:84] performing clean-up
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,cleanUp:463] Shutting down ExecutorService
+2019-03-19 12:57:06,095 DEBUG sql.SQLQueryActivity [pool-1-thread-34,cleanUp:468] Closing Statement
+2019-03-19 12:57:06,096 WARN  activity.MatchedIterativeActivity [pool-1-thread-34,warnExceptionAndChildren:343] #1553000226096:535# There was a problem cleaning up the activity instance (activity name uk.org.ogsadai.SQLQuery, instance name uk.org.ogsadai.SQLQuery-ogsadai-3ae5cbc8-cb29-46d5-9def-b6874f6e351b).
+2019-03-19 12:57:06,096 WARN  activity.MatchedIterativeActivity [pool-1-thread-34,warnExceptionAndChildren:343] #1553000226096:535# java.sql.SQLException: Invalid state, the Connection object is closed.
+2019-03-19 12:57:06,097 DEBUG event.LoggingActivityListener [pool-1-thread-34,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:322)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.sql.SQLException: Warning: Fatal error 823 occurred at Mar 19 2019 12:57PM. Note the error and time, and contact your system administrator.
+	at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+	at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+	at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:671)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:505)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:415)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:404)
+	... 4 more
+
+
+
+        
+## Looks like: 
+## resultSet = future.get();
+## Produces an "ExecutionException" which is not propagated to Firethorn
+## Need to get ChaosMonkey to produce the same Exception
+
+        try
+        {
+        logger.debug("Initiating CallableStatement and starting background execution");
+            // This will initiate the Callable object and so
+            // basically execute Statement.executeQuery in the
+            // background. If execution is interrupted e.g. by
+            // interruption of the current thread as happens if an
+            // OGSA-DAI request is terminated, then an exception
+            // will be thrown.
+            resultSet = future.get();
+            logger.debug("CallableStatement returned ResultSet");
+            this.mContext.monkey().sqlException(this, "chahw2Ao");
+        }
+        catch (ExecutionException e)
+        {
+            logger.debug("CallableStatement encountered problem in query execution");
+            logger.debug("Original cause [" + e.getCause().getClass().getName() + "]");
+            throw e.getCause();
+        }
