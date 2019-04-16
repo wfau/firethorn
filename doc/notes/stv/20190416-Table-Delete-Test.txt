@@ -1,0 +1,487 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Testing a query on a result table, then deleting that table and testing query again
+## Test run on Revision 4d7aafcfe16d (2.1.28-tap-issues)
+
+
+# ssh -L '*:8081:Gworewia:80' Stevedore@Gworewia 
+
+## Schema:
+## http://localhost:8081/firethorn/adql/schema/37093/tables/select
+##
+## Table: 
+## http://localhost:8081/firethorn/adql/table/39290
+## 
+.. 
+{
+"type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+"formats": {
+"votable": "http://localhost:8081/firethorn/adql/table/39290/votable",
+"datatable": "http://localhost:8081/firethorn/adql/table/39290/datatable"
+},
+"metadata": {
+"adql": {
+"count": 10,
+"status": "COMPLETED"
+}
+},
+"query": "http://localhost:8081/firethorn/blue/query/39603",
+"schema": "http://localhost:8081/firethorn/adql/schema/37093",
+"depth": "PARTIAL",
+"base": "http://localhost:8081/firethorn/jdbc/table/39289",
+"columns": "http://localhost:8081/firethorn/adql/table/39290/columns/select",
+"fullname": "temp.XX_V3XRF4TOX22AGAAAAFVCOLMUXE",
+"resource": "http://localhost:8081/firethorn/adql/resource/36856",
+"parent": "http://localhost:8081/firethorn/adql/schema/37093",
+"root": "http://localhost:8081/firethorn/jdbc/table/39289",
+"text": null,
+"name": "XX_V3XRF4TOX22AGAAAAFVCOLMUXE",
+"owner": "http://localhost:8081/firethorn/community-member/165",
+"url": "http://localhost:8081/firethorn/adql/table/39290",
+"self": "http://localhost:8081/firethorn/adql/table/39290",
+"ident": "39290",
+"created": "2019-04-16T17:24:19.770",
+"modified": "2019-04-16T17:24:19.770"
+},
+..
+
+
+stelios@stelios-pc:~$ python3
+
+
+# -----------------------------------------------------
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+firethorn = ftpy.Firethorn(
+    endpoint = "http://localhost:8081/firethorn"
+    )
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )	
+
+# Select a specific resource by Identity (url)
+
+resource=firethorn.firethorn_engine.select_adql_resource_by_ident(
+    "http://localhost:8081/firethorn/adql/resource/36856"
+    )
+
+
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+# Select schema by Identity
+schema=resource.select_schema_by_ident("http://localhost:8081/firethorn/adql/schema/37093")
+
+
+# Import the TAP_schema into our workspace
+workspace.import_adql_schema(
+     schema
+ )
+
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 10 * from temp.XX_V3XRF4TOX22AGAAAAFVCOLMUXE"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+{
+  "results": {
+    "formats": {
+      "datatable": "http://localhost:8081/firethorn/adql/table/42352/datatable",
+      "votable": "http://localhost:8081/firethorn/adql/table/42352/votable"
+    },
+    "state": "COMPLETED",
+    "table": "http://localhost:8081/firethorn/adql/table/42352",
+    "count": 10
+  },
+  "fields": [],
+  "columns": [],
+  "adql": "SELECT TOP 10 *\nFROM temp.XX_V3XRF4TOX22AGAAAAFVCOLMUXE",
+  "ident": "39611",
+  "status": "COMPLETED",
+  "history": [
+    {
+      "modified": "2019-04-16T21:46:29.069",
+      "level": "INFO",
+      "owner": "http://localhost:8081/firethorn/community-member/42402",
+      "ident": "39662",
+      "task": "http://localhost:8081/firethorn/blue/query/39611",
+      "created": "2019-04-16T21:46:29.068",
+      "message": null,
+      "state": "COMPLETED",
+      "url": "http://localhost:8081/firethorn/blue/log/entry/39662",
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+      "self": "http://localhost:8081/firethorn/blue/log/entry/39662"
+    },
+    {
+      "modified": "2019-04-16T21:46:28.583",
+      "level": "INFO",
+      "owner": "http://localhost:8081/firethorn/community-member/42101",
+      "ident": "39661",
+      "task": "http://localhost:8081/firethorn/blue/query/39611",
+      "created": "2019-04-16T21:46:28.583",
+      "message": "Executing query",
+      "state": "READY",
+      "url": "http://localhost:8081/firethorn/blue/log/entry/39661",
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+      "self": "http://localhost:8081/firethorn/blue/log/entry/39661"
+    }
+  ],
+  "delays": {
+    "every": null,
+    "first": null,
+    "last": null
+  },
+  "input": "SELECT TOP 10 * from temp.XX_V3XRF4TOX22AGAAAAFVCOLMUXE",
+  "mode": "DIRECT",
+  "url": "http://localhost:8081/firethorn/blue/query/39611",
+  "resource": "http://localhost:8081/firethorn/adql/resource/36863",
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+  "resources": [
+    "http://localhost:8081/firethorn/jdbc/resource/52"
+  ],
+  "callback": "http://localhost:8081/firethorn/callback/39611",
+  "owner": "http://localhost:8081/firethorn/community-member/42101",
+  "osql": "SELECT TOP 10 [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_OICNN6LA7ZGE4AAAAFVCOLMU64] AS \"filterID\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GA3L6QBDMJJBGAAAAFVCOLMU7I] AS \"shortName\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_LKH44AVWZ57A6AAAAFVCOLMU7Q] AS \"name\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GANXWEZOASLXSAAAAFVCOLMU7Y] AS \"description\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_S4RM57SQGFNFIAAAAFVCOLMVAA] AS \"cutOn\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_TV6YY3AG4TXQGAAAAFVCOLMVAI] AS \"cutOff\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_WWBAXSUCWPDSEAAAAFVCOLMVAQ] AS \"aebv\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_YCSK2LNXTXZZEAAAAFVCOLMVAY] AS \"vegaToAB\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_P2BAI4NRHRD5MAAAAFVCOLMVBE] AS \"oneSecMLVg\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_AUOSHIQIJPPJ2AAAAFVCOLMVBM] AS \"isSectioned\"\nFROM [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE]",
+  "text": null,
+  "workspace": "http://localhost:8081/firethorn/adql/resource/36863",
+  "syntax": {
+    "message": null,
+    "status": "VALID",
+    "friendly": null
+  },
+  "name": "XX_22WTU7NNLLSGUAAAAFVCQHMU3Q",
+  "tables": [],
+  "self": "http://localhost:8081/firethorn/blue/query/39611",
+  "created": "2019-04-16T21:46:28.444",
+  "modified": "2019-04-16T21:46:29.095",
+  "limits": {
+    "time": null,
+    "rows": 1000000,
+    "cells": null
+  }
+}
+>>> print(
+...     query_obj.table()
+...     )
+{
+  "formats": {
+    "datatable": "http://localhost:8081/firethorn/adql/table/42352/datatable",
+    "votable": "http://localhost:8081/firethorn/adql/table/42352/votable"
+  },
+  "fullname": "temp.XX_SSRFKI547EROKAAAAFVCQHMVQE",
+  "base": "http://localhost:8081/firethorn/jdbc/table/39301",
+  "text": null,
+  "root": "http://localhost:8081/firethorn/jdbc/table/39301",
+  "metadata": {
+    "adql": {
+      "status": "COMPLETED",
+      "count": 10
+    }
+  },
+  "columns": "http://localhost:8081/firethorn/adql/table/42352/columns/select",
+  "name": "XX_SSRFKI547EROKAAAAFVCQHMVQE",
+  "owner": "http://localhost:8081/firethorn/community-member/42101",
+  "self": "http://localhost:8081/firethorn/adql/table/42352",
+  "created": "2019-04-16T21:46:28.610",
+  "modified": "2019-04-16T21:46:28.611",
+  "query": "http://localhost:8081/firethorn/blue/query/39611",
+  "depth": "PARTIAL",
+  "schema": "http://localhost:8081/firethorn/adql/schema/37100",
+  "parent": "http://localhost:8081/firethorn/adql/schema/37100",
+  "url": "http://localhost:8081/firethorn/adql/table/42352",
+  "resource": "http://localhost:8081/firethorn/adql/resource/36864",
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+  "ident": "42352"
+}
+>>> print(
+...     query_obj.table().count()
+...     )
+10
+
+
+
+## Query Completes without issue. 
+## Now delete table from database and run query again..
+
+## ssh -X stv@shepseskaf.roe.ac.uk 'rdesktop -ken-gb -g1024x600 -x l -u stelios ramses2'
+## .. Manual Delete
+
+
+#
+# Run query again
+
+query_str = "SELECT TOP 10 * from temp.XX_V3XRF4TOX22AGAAAAFVCOLMUXE"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+{
+  "results": {
+    "formats": {
+      "datatable": "http://localhost:8081/firethorn/adql/table/42354/datatable",
+      "votable": "http://localhost:8081/firethorn/adql/table/42354/votable"
+    },
+    "state": "EMPTY",
+    "table": "http://localhost:8081/firethorn/adql/table/42354",
+    "count": 0
+  },
+  "fields": [],
+  "columns": [],
+  "adql": "SELECT TOP 10 *\nFROM temp.XX_V3XRF4TOX22AGAAAAFVCOLMUXE",
+  "ident": "39612",
+  "status": "FAILED",
+  "history": [
+    {
+      "modified": "2019-04-16T21:49:55.168",
+      "level": "INFO",
+      "owner": "http://localhost:8081/firethorn/community-member/42101",
+      "ident": "39663",
+      "task": "http://localhost:8081/firethorn/blue/query/39612",
+      "created": "2019-04-16T21:49:55.167",
+      "message": "Executing query",
+      "state": "READY",
+      "url": "http://localhost:8081/firethorn/blue/log/entry/39663",
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+      "self": "http://localhost:8081/firethorn/blue/log/entry/39663"
+    }
+  ],
+  "delays": {
+    "every": null,
+    "first": null,
+    "last": null
+  },
+  "input": "SELECT TOP 10 * from temp.XX_V3XRF4TOX22AGAAAAFVCOLMUXE",
+  "mode": "DIRECT",
+  "url": "http://localhost:8081/firethorn/blue/query/39612",
+  "resource": "http://localhost:8081/firethorn/adql/resource/36863",
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+  "resources": [
+    "http://localhost:8081/firethorn/jdbc/resource/52"
+  ],
+  "callback": "http://localhost:8081/firethorn/callback/39612",
+  "owner": "http://localhost:8081/firethorn/community-member/42101",
+  "osql": "SELECT TOP 10 [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_OICNN6LA7ZGE4AAAAFVCOLMU64] AS \"filterID\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GA3L6QBDMJJBGAAAAFVCOLMU7I] AS \"shortName\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_LKH44AVWZ57A6AAAAFVCOLMU7Q] AS \"name\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GANXWEZOASLXSAAAAFVCOLMU7Y] AS \"description\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_S4RM57SQGFNFIAAAAFVCOLMVAA] AS \"cutOn\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_TV6YY3AG4TXQGAAAAFVCOLMVAI] AS \"cutOff\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_WWBAXSUCWPDSEAAAAFVCOLMVAQ] AS \"aebv\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_YCSK2LNXTXZZEAAAAFVCOLMVAY] AS \"vegaToAB\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_P2BAI4NRHRD5MAAAAFVCOLMVBE] AS \"oneSecMLVg\",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_AUOSHIQIJPPJ2AAAAFVCOLMVBM] AS \"isSectioned\"\nFROM [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE]",
+  "text": null,
+  "workspace": "http://localhost:8081/firethorn/adql/resource/36863",
+  "syntax": {
+    "message": null,
+    "status": "VALID",
+    "friendly": null
+  },
+  "name": "XX_3MS36PVMKSCL4AAAAFVCQIF324",
+  "tables": [],
+  "self": "http://localhost:8081/firethorn/blue/query/39612",
+  "created": "2019-04-16T21:49:55.031",
+  "modified": "2019-04-16T21:49:55.092",
+  "limits": {
+    "time": null,
+    "rows": 1000000,
+    "cells": null
+  }
+}
+>>> print(
+...     query_obj.table()
+...     )
+{
+  "formats": {
+    "datatable": "http://localhost:8081/firethorn/adql/table/42354/datatable",
+    "votable": "http://localhost:8081/firethorn/adql/table/42354/votable"
+  },
+  "fullname": "temp.XX_7Q6EA3GNKX26AAAAAFVCQIF4OQ",
+  "base": "http://localhost:8081/firethorn/jdbc/table/42353",
+  "text": null,
+  "root": "http://localhost:8081/firethorn/jdbc/table/42353",
+  "metadata": {
+    "adql": {
+      "status": "CREATED",
+      "count": -1
+    }
+  },
+  "columns": "http://localhost:8081/firethorn/adql/table/42354/columns/select",
+  "name": "XX_7Q6EA3GNKX26AAAAAFVCQIF4OQ",
+  "owner": "http://localhost:8081/firethorn/community-member/42101",
+  "self": "http://localhost:8081/firethorn/adql/table/42354",
+  "created": "2019-04-16T21:49:55.189",
+  "modified": "2019-04-16T21:49:55.189",
+  "query": "http://localhost:8081/firethorn/blue/query/39612",
+  "depth": "PARTIAL",
+  "schema": "http://localhost:8081/firethorn/adql/schema/37100",
+  "parent": "http://localhost:8081/firethorn/adql/schema/37100",
+  "url": "http://localhost:8081/firethorn/adql/table/42354",
+  "resource": "http://localhost:8081/firethorn/adql/resource/36864",
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+  "ident": "42354"
+}
+>>> print(
+...     query_obj.table().count()
+...     )
+-1
+
+
+## Query Failed, but does not hang. Fail was properly propagated to Firethorn
+##
+
+## Check OGSADAI logs..
+
+2019-04-16 21:49:55,543 DEBUG sql.SQLQueryActivity [pool-1-thread-54,processIteration:259] SQL QUERY: SELECT TOP 10 [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_OICNN6LA7ZGE4AAAAFVCOLMU64] AS "filterID",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GA3L6QBDMJJBGAAAAFVCOLMU7I] AS "shortName",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_LKH44AVWZ57A6AAAAFVCOLMU7Q] AS "name",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GANXWEZOASLXSAAAAFVCOLMU7Y] AS "description",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_S4RM57SQGFNFIAAAAFVCOLMVAA] AS "cutOn",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_TV6YY3AG4TXQGAAAAFVCOLMVAI] AS "cutOff",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_WWBAXSUCWPDSEAAAAFVCOLMVAQ] AS "aebv",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_YCSK2LNXTXZZEAAAAFVCOLMVAY] AS "vegaToAB",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_P2BAI4NRHRD5MAAAAFVCOLMVBE] AS "oneSecMLVg",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_AUOSHIQIJPPJ2AAAAFVCOLMVBM] AS "isSectioned"
+FROM [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE]
+2019-04-16 21:49:55,543 DEBUG sql.SQLQueryActivity [pool-1-thread-54,processIteration:262] Initialising query
+2019-04-16 21:49:55,544 DEBUG sql.SQLQueryActivity [pool-1-thread-54,processIteration:274] Executing query
+2019-04-16 21:49:55,544 DEBUG sql.SQLQueryActivity [pool-1-thread-54,executeQuery:364] Creating CallableStatement for query
+2019-04-16 21:49:55,545 DEBUG sql.SQLQueryActivity [pool-1-thread-54,executeQuery:369] Submitting CallableStatement to ExecutorService
+2019-04-16 21:49:55,546 DEBUG sql.SQLQueryActivity [pool-1-thread-54,executeQuery:376] Initiating CallableStatement and starting background execution
+2019-04-16 21:49:55,549 DEBUG sql.SQLQueryActivity [pool-1-thread-54,executeQuery:390] CallableStatement encountered problem in query execution
+2019-04-16 21:49:55,549 DEBUG sql.SQLQueryActivity [pool-1-thread-54,executeQuery:391] Original cause [java.sql.SQLException]
+2019-04-16 21:49:55,549 DEBUG sql.SQLQueryActivity [pool-1-thread-54,processIteration:323] Caught a SQLException, wrapping it in an ActivitySQLUserException
+2019-04-16 21:49:55,550 DEBUG activity.MatchedIterativeActivity [pool-1-thread-54,debug:84] performing clean-up
+2019-04-16 21:49:55,550 DEBUG sql.SQLQueryActivity [pool-1-thread-54,cleanUp:475] Shutting down ExecutorService
+2019-04-16 21:49:55,550 DEBUG sql.SQLQueryActivity [pool-1-thread-54,cleanUp:480] Closing Statement
+2019-04-16 21:49:55,551 DEBUG sql.SQLQueryActivity [pool-1-thread-54,cleanUp:487] Releasing Connection
+2019-04-16 21:49:55,552 DEBUG event.LoggingActivityListener [pool-1-thread-54,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:324)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.sql.SQLException: Invalid object name 'FirethornUserdataTAP20181212LIVE.dbo.XX_V3XRF4TOX22AGAAAAFVCOLMUXE'.
+	at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+	at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+	at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:671)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:505)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:427)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:416)
+	... 4 more
+
+
+## How does this compare to OGSADAI log from the "823 Fatal Error" query
+
+019-03-19 12:57:04,552 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:374] Initiating CallableStatement and starting background execution
+2019-03-19 12:57:04,609 DEBUG context.RequestContextFactory [http-nio-8080-exec-10,createContext:62] createContext(HttpServletRequest)
+2019-03-19 12:57:04,609 DEBUG context.RequestContextFactory [http-nio-8080-exec-10,createContext:64] remote [172.18.0.5]
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:387] CallableStatement encountered problem in query execution
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,executeQuery:388] Original cause [java.sql.SQLException]
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,processIteration:321] Caught a SQLException, wrapping it in an ActivitySQLUserException
+2019-03-19 12:57:06,094 DEBUG activity.MatchedIterativeActivity [pool-1-thread-34,debug:84] performing clean-up
+2019-03-19 12:57:06,094 DEBUG sql.SQLQueryActivity [pool-1-thread-34,cleanUp:463] Shutting down ExecutorService
+2019-03-19 12:57:06,095 DEBUG sql.SQLQueryActivity [pool-1-thread-34,cleanUp:468] Closing Statement
+2019-03-19 12:57:06,096 WARN  activity.MatchedIterativeActivity [pool-1-thread-34,warnExceptionAndChildren:343] #1553000226096:535# There was a problem cleaning up the activity instance (activity name uk.org.ogsadai.SQLQuery, instance name uk.org.ogsadai.SQLQuery-ogsadai-3ae5cbc8-cb29-46d5-9def-b6874f6e351b).
+2019-03-19 12:57:06,096 WARN  activity.MatchedIterativeActivity [pool-1-thread-34,warnExceptionAndChildren:343] #1553000226096:535# java.sql.SQLException: Invalid state, the Connection object is closed.
+2019-03-19 12:57:06,097 DEBUG event.LoggingActivityListener [pool-1-thread-34,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:322)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.sql.SQLException: Warning: Fatal error 823 occurred at Mar 19 2019 12:57PM. Note the error and time, and contact your system administrator.
+	at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+	at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+	at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:671)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:505)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:415)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:404)
+	... 4 more
+
+
+## Some of the differences I see are:
+## The second case (Fatal 823) has the following lines which I dont see equivalent here
+
+..
+2019-03-19 12:57:04,609 DEBUG context.RequestContextFactory [http-nio-8080-exec-10,createContext:62] createContext(HttpServletRequest)
+..
+2019-03-19 12:57:06,096 WARN  activity.MatchedIterativeActivity [pool-1-thread-34,warnExceptionAndChildren:343] #1553000226096:535# There was a problem cleaning up the activity instance (activity name uk.org.ogsadai.SQLQuery, instance name uk.org.ogsadai.SQLQuery-ogsadai-3ae5cbc8-cb29-46d5-9def-b6874f6e351b).
+2019-03-19 12:57:06,096 WARN  activity.MatchedIterativeActivity [pool-1-thread-34,warnExceptionAndChildren:343] #1553000226096:535# java.sql.SQLException: Invalid state, the Connection object is closed.
+..
+
+
+
+##  On the other hand this test has the following lines which dont appear in the (823) example
+..
+2019-04-16 21:49:55,551 DEBUG sql.SQLQueryActivity [pool-1-thread-54,cleanUp:487] Releasing Connection
+..
+
+
+## Other than that they look similar, except for the different Error message:
+
+    "Warning: Fatal error 823 occurred at Mar 19 2019 12:57PM. Note the error and time, and contact your system administrator."
+         vs
+    "Invalid object name 'FirethornUserdataTAP20181212LIVE.dbo.XX_V3XRF4TOX22AGAAAAFVCOLMUXE'."
+
+
