@@ -1,0 +1,214 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## The following runs a query on a Table that was deleted.
+## In this particular case, the fail was not properly propagated to Firethorn
+## This eventually returned a 502 Proxy Error
+
+... query_str = "SELECT TOP 10 * from temp.XX_V3XRF4TOX22AGAAAAFVCOLMUXE"
+>>> query_obj = workspace.create_query(
+...     query_str,
+...     "COMPLETED",
+...     None,
+...     3000000
+...     )
+
+ERROR:root:HTTP Error 502: Proxy Error
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/core/query_engine.py", line 124, in create_query
+    with urllib.request.urlopen(request, data) as response:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 469, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.4/urllib/request.py", line 579, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.4/urllib/request.py", line 507, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 587, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 502: Proxy Error
+
+## If we check the blue query status we see it as:
+## "status": "RUNNING",
+
+
+2019-04-17 13:36:16,853 DEBUG event.LoggingActivityListener [pool-1-thread-43,debug:84] PENDING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-15df7c00-a340-4e47-a7e7-ea8cb3c059c3)
+2019-04-17 13:36:16,853 DEBUG event.LoggingActivityListener [pool-1-thread-43,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-1d1af8cd-2e4d-438c-8699-2dd8df45a2e5)
+2019-04-17 13:36:16,854 DEBUG event.LoggingActivityListener [pool-1-thread-43,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-0ef2e6b9-f063-49a9-860f-9f9ea2d481ad)
+2019-04-17 13:36:16,854 DEBUG event.LoggingActivityListener [pool-1-thread-43,debug:84] PENDING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-4c660365-75de-4e62-b96e-aff634cd2ede)
+2019-04-17 13:36:16,854 DEBUG event.LoggingActivityListener [pool-1-thread-43,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-47cc78c5-bfe7-49ab-91b9-2394abe5c3f7)
+2019-04-17 13:36:16,854 DEBUG event.LoggingActivityListener [pool-1-thread-43,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-6cf18e79-eb0c-448b-87c9-8466a2505f48)
+2019-04-17 13:36:16,875 DEBUG event.LoggingActivityListener [pool-1-thread-44,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-47cc78c5-bfe7-49ab-91b9-2394abe5c3f7)
+2019-04-17 13:36:16,875 DEBUG activity.MatchedIterativeActivity [pool-1-thread-44,debug:84] performing first stage of processing
+2019-04-17 13:36:16,875 DEBUG event.LoggingActivityListener [pool-1-thread-45,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-0ef2e6b9-f063-49a9-860f-9f9ea2d481ad)
+2019-04-17 13:36:16,875 DEBUG file.SimpleFileLoginProvider [pool-1-thread-44,debug:84] In SimpleFileLogin:getLogin
+2019-04-17 13:36:16,876 DEBUG activity.MatchedIterativeActivity [pool-1-thread-45,debug:84] performing first stage of processing
+2019-04-17 13:36:16,876 DEBUG file.SimpleFileLoginProvider [pool-1-thread-44,debug:84] In getLogin: ResourceID:  User ID: null
+2019-04-17 13:36:16,876 DEBUG blue.ContextActivity [pool-1-thread-45,preprocess:126] preprocess()
+2019-04-17 13:36:16,876 DEBUG file.SimpleFileLoginProvider [pool-1-thread-44,debug:84] Found 4 lines that match
+2019-04-17 13:36:16,877 DEBUG file.SimpleFileLoginProvider [pool-1-thread-44,debug:84] Found a login for null
+2019-04-17 13:36:16,876 DEBUG activity.MatchedIterativeActivity [pool-1-thread-45,debug:84] performing iterative stage of processing
+2019-04-17 13:36:16,877 DEBUG jdbc.JDBCDataResource [pool-1-thread-44,debug:84] Using JDBC URL : jdbc:apache:commons:dbcp:ogsadai-jdbcpool-ogsadai-e276da99-d894-4732-88d3-9ab631334756
+2019-04-17 13:36:16,877 DEBUG blue.ContextActivity [pool-1-thread-45,processIteration:150] processIteration(Object[])
+2019-04-17 13:36:16,877 DEBUG blue.ContextActivity [pool-1-thread-45,processIteration:194]  value [SELECT TOP 10 [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_OICNN6LA7ZGE4AAAAFVCOLMU64] AS "filterID",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GA3L6QBDMJJBGAAAAFVCOLMU7I] AS "shortName",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_LKH44AVWZ57A6AAAAFVCOLMU7Q] AS "name",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GANXWEZOASLXSAAAAFVCOLMU7Y] AS "description",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_S4RM57SQGFNFIAAAAFVCOLMVAA] AS "cutOn",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_TV6YY3AG4TXQGAAAAFVCOLMVAI] AS "cutOff",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_WWBAXSUCWPDSEAAAAFVCOLMVAQ] AS "aebv",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_YCSK2LNXTXZZEAAAAFVCOLMVAY] AS "vegaToAB",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_P2BAI4NRHRD5MAAAAFVCOLMVBE] AS "oneSecMLVg",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_AUOSHIQIJPPJ2AAAAFVCOLMVBM] AS "isSectioned"
+FROM [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE]]
+2019-04-17 13:36:16,878 DEBUG activity.MatchedIterativeActivity [pool-1-thread-45,debug:84] performing last stage of processing
+2019-04-17 13:36:16,878 DEBUG blue.ContextActivity [pool-1-thread-45,postprocess:227] postprocess()
+2019-04-17 13:36:16,878 DEBUG activity.MatchedIterativeActivity [pool-1-thread-45,debug:84] performing clean-up
+2019-04-17 13:36:16,878 DEBUG activity.MatchedIterativeActivity [pool-1-thread-44,debug:84] performing iterative stage of processing
+2019-04-17 13:36:16,878 DEBUG event.LoggingActivityListener [pool-1-thread-45,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-0ef2e6b9-f063-49a9-860f-9f9ea2d481ad)
+2019-04-17 13:36:16,886 DEBUG event.LoggingActivityListener [pool-1-thread-45,debug:84] PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-15df7c00-a340-4e47-a7e7-ea8cb3c059c3)
+2019-04-17 13:36:16,887 DEBUG event.LoggingActivityListener [pool-1-thread-46,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-1d1af8cd-2e4d-438c-8699-2dd8df45a2e5)
+2019-04-17 13:36:16,887 DEBUG activity.MatchedIterativeActivity [pool-1-thread-46,debug:84] performing first stage of processing
+2019-04-17 13:36:16,887 DEBUG data.DelaysActivity [pool-1-thread-46,preprocess:102] preprocess()
+2019-04-17 13:36:16,887 DEBUG activity.MatchedIterativeActivity [pool-1-thread-46,debug:84] performing iterative stage of processing
+2019-04-17 13:36:16,889 DEBUG event.LoggingActivityListener [pool-1-thread-47,debug:84] PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-4c660365-75de-4e62-b96e-aff634cd2ede)
+2019-04-17 13:36:16,890 DEBUG activity.MatchedIterativeActivity [pool-1-thread-47,debug:84] performing first stage of processing
+2019-04-17 13:36:16,890 DEBUG event.LoggingActivityListener [pool-1-thread-48,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-6cf18e79-eb0c-448b-87c9-8466a2505f48)
+2019-04-17 13:36:16,890 DEBUG file.SimpleFileLoginProvider [pool-1-thread-47,debug:84] In SimpleFileLogin:getLogin
+2019-04-17 13:36:16,890 DEBUG activity.MatchedIterativeActivity [pool-1-thread-48,debug:84] performing first stage of processing
+2019-04-17 13:36:16,891 DEBUG data.LimitsActivity [pool-1-thread-48,preprocess:144] preprocess()
+2019-04-17 13:36:16,891 DEBUG activity.MatchedIterativeActivity [pool-1-thread-48,debug:84] performing iterative stage of processing
+2019-04-17 13:36:16,890 DEBUG file.SimpleFileLoginProvider [pool-1-thread-47,debug:84] In getLogin: ResourceID:  User ID: null
+2019-04-17 13:36:16,892 DEBUG file.SimpleFileLoginProvider [pool-1-thread-47,debug:84] Found 4 lines that match
+2019-04-17 13:36:16,892 DEBUG file.SimpleFileLoginProvider [pool-1-thread-47,debug:84] Found a login for null
+2019-04-17 13:36:16,892 DEBUG jdbc.JDBCDataResource [pool-1-thread-47,debug:84] Using JDBC URL : jdbc:apache:commons:dbcp:ogsadai-jdbcpool-ogsadai-e276da99-d894-4732-88d3-9ab631334756
+2019-04-17 13:36:16,892 DEBUG activity.MatchedIterativeActivity [pool-1-thread-47,debug:84] performing iterative stage of processing
+2019-04-17 13:36:16,892 DEBUG sql.SQLQueryActivity [pool-1-thread-47,processIteration:259] SQL QUERY: SELECT TOP 10 [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_OICNN6LA7ZGE4AAAAFVCOLMU64] AS "filterID",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GA3L6QBDMJJBGAAAAFVCOLMU7I] AS "shortName",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_LKH44AVWZ57A6AAAAFVCOLMU7Q] AS "name",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_GANXWEZOASLXSAAAAFVCOLMU7Y] AS "description",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_S4RM57SQGFNFIAAAAFVCOLMVAA] AS "cutOn",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_TV6YY3AG4TXQGAAAAFVCOLMVAI] AS "cutOff",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_WWBAXSUCWPDSEAAAAFVCOLMVAQ] AS "aebv",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_YCSK2LNXTXZZEAAAAFVCOLMVAY] AS "vegaToAB",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_P2BAI4NRHRD5MAAAAFVCOLMVBE] AS "oneSecMLVg",[FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE].[XX_AUOSHIQIJPPJ2AAAAFVCOLMVBM] AS "isSectioned"
+FROM [FirethornUserdataTAP20181212LIVE].[dbo].[XX_V3XRF4TOX22AGAAAAFVCOLMUXE]
+2019-04-17 13:36:16,893 DEBUG sql.SQLQueryActivity [pool-1-thread-47,processIteration:262] Initialising query
+2019-04-17 13:36:16,893 DEBUG sql.SQLQueryActivity [pool-1-thread-47,processIteration:274] Executing query
+2019-04-17 13:36:16,893 DEBUG sql.SQLQueryActivity [pool-1-thread-47,executeQuery:364] Creating CallableStatement for query
+2019-04-17 13:36:16,893 DEBUG sql.SQLQueryActivity [pool-1-thread-47,executeQuery:369] Submitting CallableStatement to ExecutorService
+2019-04-17 13:36:16,896 DEBUG sql.SQLQueryActivity [pool-1-thread-47,executeQuery:376] Initiating CallableStatement and starting background execution
+2019-04-17 13:36:16,898 DEBUG sql.SQLQueryActivity [pool-1-thread-47,executeQuery:390] CallableStatement encountered problem in query execution
+2019-04-17 13:36:16,898 DEBUG sql.SQLQueryActivity [pool-1-thread-47,executeQuery:391] Original cause [java.sql.SQLException]
+2019-04-17 13:36:16,898 DEBUG sql.SQLQueryActivity [pool-1-thread-47,processIteration:323] Caught a SQLException, wrapping it in an ActivitySQLUserException
+2019-04-17 13:36:16,899 DEBUG activity.MatchedIterativeActivity [pool-1-thread-47,debug:84] performing clean-up
+2019-04-17 13:36:16,899 DEBUG sql.SQLQueryActivity [pool-1-thread-47,cleanUp:468] Shutting down ExecutorService
+2019-04-17 13:36:16,899 DEBUG sql.SQLQueryActivity [pool-1-thread-47,cleanUp:473] Closing Statement
+2019-04-17 13:36:16,899 DEBUG sql.SQLQueryActivity [pool-1-thread-47,cleanUp:480] Releasing Connection
+2019-04-17 13:36:16,900 DEBUG event.LoggingActivityListener [pool-1-thread-47,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:324)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.sql.SQLException: Invalid object name 'FirethornUserdataTAP20181212LIVE.dbo.XX_V3XRF4TOX22AGAAAAFVCOLMUXE'.
+	at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+	at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+	at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:671)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:505)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:420)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:409)
+	... 4 more
+
+2019-04-17 13:36:16,900 WARN  event.LoggingActivityListener [pool-1-thread-47,warnExceptionAndChildren:343] #1555508176899:1029# A problem has occurred during processing of activity uk.org.ogsadai.SQLQuery with instance name uk.org.ogsadai.SQLQuery-ogsadai-4c660365-75de-4e62-b96e-aff634cd2ede.
+2019-04-17 13:36:16,901 WARN  event.LoggingActivityListener [pool-1-thread-47,warnExceptionAndChildren:343] #1555508176899:1029# The activity encountered a problem while interacting with a relational database.
+2019-04-17 13:36:16,901 WARN  event.LoggingActivityListener [pool-1-thread-47,warnExceptionAndChildren:343] #1555508176899:1029# java.sql.SQLException: Invalid object name 'FirethornUserdataTAP20181212LIVE.dbo.XX_V3XRF4TOX22AGAAAAFVCOLMUXE'.
+2019-04-17 13:36:16,901 DEBUG activity.MatchedIterativeActivity [pool-1-thread-46,debug:84] performing clean-up
+2019-04-17 13:36:16,902 DEBUG event.LoggingActivityListener [pool-1-thread-46,debug:84] uk.org.ogsadai.activity.io.DataError: The pipe has been closed due to an error that occurred at the data producer.
+	at uk.org.ogsadai.activity.io.BufferedPipe.read(BufferedPipe.java:154)
+	at uk.org.ogsadai.activity.event.EventfulPipe.read(EventfulPipe.java:118)
+	at uk.org.ogsadai.activity.io.TupleListActivityInput.read(TupleListActivityInput.java:77)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.performNextIteration(MatchedIterativeActivity.java:183)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:88)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2019-04-17 13:36:16,902 WARN  event.LoggingActivityListener [pool-1-thread-46,warnExceptionAndChildren:343] #1555508176901:1032# A problem has occurred during processing of activity uk.ac.roe.wfau.firethorn.Delays with instance name uk.ac.roe.wfau.firethorn.Delays-ogsadai-1d1af8cd-2e4d-438c-8699-2dd8df45a2e5.
+2019-04-17 13:36:16,902 WARN  event.LoggingActivityListener [pool-1-thread-46,warnExceptionAndChildren:343] #1555508176901:1032# The pipe has been closed due to an error that occurred at the data producer.
+2019-04-17 13:36:16,903 DEBUG activity.MatchedIterativeActivity [pool-1-thread-48,debug:84] performing clean-up
+2019-04-17 13:36:16,911 DEBUG context.RequestContextFactory [http-nio-8080-exec-2,createContext:62] createContext(HttpServletRequest)
+2019-04-17 13:36:16,911 DEBUG context.RequestContextFactory [http-nio-8080-exec-2,createContext:64] remote [172.18.0.5]
+2019-04-17 13:36:16,912 DEBUG event.LoggingActivityListener [pool-1-thread-48,debug:84] uk.org.ogsadai.activity.io.DataError: The pipe has been closed due to an error that occurred at the data producer.
+	at uk.org.ogsadai.activity.io.BufferedPipe.read(BufferedPipe.java:154)
+	at uk.org.ogsadai.activity.event.EventfulPipe.read(EventfulPipe.java:118)
+	at uk.org.ogsadai.activity.io.TupleListActivityInput.read(TupleListActivityInput.java:77)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.performNextIteration(MatchedIterativeActivity.java:183)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:88)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2019-04-17 13:36:16,912 WARN  event.LoggingActivityListener [pool-1-thread-48,warnExceptionAndChildren:343] #1555508176903:1035# A problem has occurred during processing of activity uk.ac.roe.wfau.firethorn.Limits with instance name uk.ac.roe.wfau.firethorn.Limits-ogsadai-6cf18e79-eb0c-448b-87c9-8466a2505f48.
+2019-04-17 13:36:16,913 WARN  event.LoggingActivityListener [pool-1-thread-48,warnExceptionAndChildren:343] #1555508176903:1035# The pipe has been closed due to an error that occurred at the data producer.
+2019-04-17 13:36:16,914 DEBUG activity.MatchedIterativeActivity [pool-1-thread-44,debug:84] performing clean-up
+2019-04-17 13:36:16,915 DEBUG event.LoggingActivityListener [pool-1-thread-44,debug:84] uk.org.ogsadai.activity.io.DataError: The pipe has been closed due to an error that occurred at the data producer.
+	at uk.org.ogsadai.activity.io.BufferedPipe.read(BufferedPipe.java:154)
+	at uk.org.ogsadai.activity.event.EventfulPipe.read(EventfulPipe.java:118)
+	at uk.org.ogsadai.activity.io.TupleListActivityInput.read(TupleListActivityInput.java:77)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.performNextIteration(MatchedIterativeActivity.java:183)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:88)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2019-04-17 13:36:16,915 WARN  event.LoggingActivityListener [pool-1-thread-44,warnExceptionAndChildren:343] #1555508176914:1039# A problem has occurred during processing of activity uk.ac.roe.wfau.firethorn.JdbcInsertData with instance name uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-47cc78c5-bfe7-49ab-91b9-2394abe5c3f7.
+2019-04-17 13:36:16,915 WARN  event.LoggingActivityListener [pool-1-thread-44,warnExceptionAndChildren:343] #1555508176914:1039# The pipe has been closed due to an error that occurred at the data producer.
+2019-04-17 13:36:16,915 DEBUG event.LoggingActivityListener [pool-1-thread-45,debug:84] uk.org.ogsadai.activity.io.DataError: The pipe has been closed due to an error that occurred at the data producer.
+	at uk.org.ogsadai.activity.io.BufferedPipe.read(BufferedPipe.java:154)
+	at uk.org.ogsadai.activity.event.EventfulPipe.read(EventfulPipe.java:118)
+	at uk.org.ogsadai.activity.delivery.DeliverToRequestStatusActivity.process(DeliverToRequestStatusActivity.java:138)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+2019-04-17 13:36:16,916 WARN  event.LoggingActivityListener [pool-1-thread-45,warnExceptionAndChildren:343] #1555508176915:1042# A problem has occurred during processing of activity uk.org.ogsadai.DeliverToRequestStatus with instance name uk.org.ogsadai.DeliverToRequestStatus-ogsadai-15df7c00-a340-4e47-a7e7-ea8cb3c059c3.
+2019-04-17 13:36:16,916 WARN  event.LoggingActivityListener [pool-1-thread-45,warnExceptionAndChildren:343] #1555508176915:1042# The pipe has been closed due to an error that occurred at the data producer.
+
+
+f
