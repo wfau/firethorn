@@ -380,7 +380,7 @@ public class SQLQueryActivity
 	        // interruption of the current thread as happens if an
 	        // OGSA-DAI request is terminated, then an exception
 	        // will be thrown.
-	        this.mContext.monkey().sqlException(this, "jG2hdk00");
+	        this.mContext.monkey().sqlException(this, "jG2hdk00", "Warning: Fatal error 823 occurred at Mar 19 2019 12:57PM. Note the error and time, and contact your system administrator.");
 	        resultSet = future.get();
 	        logger.debug("CallableStatement returned ResultSet");
 	        this.mContext.monkey().sqlException(this, "chahw2Ao");
