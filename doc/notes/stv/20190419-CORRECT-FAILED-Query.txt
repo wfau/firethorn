@@ -1,0 +1,585 @@
+2019-04-19 14:39:20,145 DEBUG [FireThornTaskExecutor-11] [SQLServerTranslator] SELECT TOP 10 [ATLASDR1].[dbo].[Filter].[filterID] AS "filterID",[ATLASDR1].[dbo].[Filter].[shortName] AS "shortName",[ATLASDR1].[dbo].[Filter].[name] AS "name",[ATLASDR1].[dbo].[Filter].[description] AS "description",[ATLASDR1].[dbo].[Filter].[cutOn] AS "cutOn",[ATLASDR1].[dbo].[Filter].[cutOff] AS "cutOff",[ATLASDR1].[dbo].[Filter].[aebv] AS "aebv",[ATLASDR1].[dbo].[Filter].[vegaToAB] AS "vegaToAB",[ATLASDR1].[dbo].[Filter].[oneSecMLVg] AS "oneSecMLVg",[ATLASDR1].[dbo].[Filter].[isSectioned] AS "isSectioned"
+FROM [ATLASDR1].[dbo].[Filter] 
+2019-04-19 14:39:20,145 DEBUG [FireThornTaskExecutor-11] [SQLServerTranslator] -------- 
+2019-04-19 14:39:20,145 INFO  [FireThornTaskExecutor-11] [AdqlQueryTimings] TIMING - adqldone() 
+2019-04-19 14:39:20,145 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] transition(TaskState) 
+2019-04-19 14:39:20,145 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   ident [2954] 
+2019-04-19 14:39:20,146 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   state [READY][READY] 
+2019-04-19 14:39:20,146 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] No-op status change [READY] 
+2019-04-19 14:39:20,146 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] After prepare() 
+2019-04-19 14:39:20,146 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   state [READY] 
+2019-04-19 14:39:20,146 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] Before execute() 
+2019-04-19 14:39:20,146 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   state [READY] 
+2019-04-19 14:39:20,146 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] execute() [2954][READY] 
+2019-04-19 14:39:20,147 DEBUG [FireThornTaskExecutor-11] [BlueTaskLogEntity] LogEntryEntity() 
+2019-04-19 14:39:20,147 DEBUG [FireThornTaskExecutor-11] [BlueTaskLogEntity]   task    [entity[class[uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity] ident[2954]]] 
+2019-04-19 14:39:20,147 DEBUG [FireThornTaskExecutor-11] [BlueTaskLogEntity]   level   [INFO] 
+2019-04-19 14:39:20,147 DEBUG [FireThornTaskExecutor-11] [BlueTaskLogEntity]   source  [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntity$EntityFactory] 
+2019-04-19 14:39:20,147 DEBUG [FireThornTaskExecutor-11] [BlueTaskLogEntity]   message [Executing query] 
+2019-04-19 14:39:20,154 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity$TaskRunner] thread(Updator) [2954] 
+2019-04-19 14:39:20,165 DEBUG [FireThornTaskExecutor-12] [BlueTaskEntity$TaskRunner] future(Updator) [2954] 
+2019-04-19 14:39:20,166 DEBUG [FireThornTaskExecutor-12] [BlueQueryEntity] Converting current instance [2954] 
+2019-04-19 14:39:20,172 DEBUG [FireThornTaskExecutor-12] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:20,173 DEBUG [FireThornTaskExecutor-12] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:20,173 DEBUG [FireThornTaskExecutor-12] [BlueQueryEntity] build() 
+2019-04-19 14:39:20,173 INFO  [FireThornTaskExecutor-12] [AdqlQueryTimings] TIMING - jdbcstart() 
+2019-04-19 14:39:20,175 DEBUG [FireThornTaskExecutor-12] [IdentityEntity] jdbcschema() 
+2019-04-19 14:39:20,177 DEBUG [FireThornTaskExecutor-12] [IdentityEntity] adqlschema() 
+2019-04-19 14:39:20,181 DEBUG [FireThornTaskExecutor-12] [JdbcSchemaEntity] tables() for [442][LIVEFirethornUserdataULOV20180719.dbo] 
+2019-04-19 14:39:20,181 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [442][LIVEFirethornUserdataULOV20180719.dbo] 
+2019-04-19 14:39:20,181 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [442][LIVEFirethornUserdataULOV20180719.dbo] 
+2019-04-19 14:39:20,181 DEBUG [FireThornTaskExecutor-12] [JdbcSchemaEntity] factory() 
+2019-04-19 14:39:20,181 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,181 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,181 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,181 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:35:05.764Z] 
+2019-04-19 14:39:20,182 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,182 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,182 DEBUG [FireThornTaskExecutor-12] [JdbcTableEntity] JdbcTableEntity [LIVEFirethornUserdataULOV20180719.dbo][XX_Q345NPYJSVNIUAAAAFVDMCM2OY][2019-04-19T14:39:20.182Z] 
+2019-04-19 14:39:20,182 DEBUG [FireThornTaskExecutor-12] [AdqlSchemaEntity] tables() for [445][temp] 
+2019-04-19 14:39:20,183 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [445][temp] 
+2019-04-19 14:39:20,183 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [445][temp] 
+2019-04-19 14:39:20,183 DEBUG [FireThornTaskExecutor-12] [AdqlSchemaEntity] factory() 
+2019-04-19 14:39:20,183 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,183 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,183 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,183 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:36:30.278Z] 
+2019-04-19 14:39:20,183 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,183 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,184 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,184 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,184 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,184 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,184 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,184 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,184 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [null] 
+2019-04-19 14:39:20,185 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,185 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is null - scanning 
+2019-04-19 14:39:20,185 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Checking for existing lock [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,185 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] No existing lock found [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,185 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Adding new lock [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY][2019-04-19T14:39:20.185Z] 
+2019-04-19 14:39:20,185 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Running scan [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,185 DEBUG [FireThornTaskExecutor-12] [JdbcTableEntity] scanimpl() for [2642][LIVEFirethornUserdataULOV20180719.dbo.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,187 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] scanner() for [mssql] 
+2019-04-19 14:39:20,190 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719][1] 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719] 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719] 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719] 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] Source is null, updating to EMPTY 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] State is EMPTY, initialising DataSource 
+2019-04-19 14:39:20,191 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,192 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,192 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] State is READY, initialising Connection 
+2019-04-19 14:39:20,192 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] With user/pass 
+2019-04-19 14:39:20,192 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] connecting .... 
+2019-04-19 14:39:20,198 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] .... connected 
+2019-04-19 14:39:20,245 DEBUG [FireThornTaskExecutor-12] [SQLServerScanner] Including schema [dbo] 
+2019-04-19 14:39:20,627 DEBUG [FireThornTaskExecutor-12] [JdbcTableEntity] scanning table [null] 
+2019-04-19 14:39:20,628 DEBUG [FireThornTaskExecutor-12] [JdbcTableEntity] Null table, skipping scan 
+2019-04-19 14:39:20,628 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,628 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719][1] 
+2019-04-19 14:39:20,628 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,628 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719] 
+2019-04-19 14:39:20,628 DEBUG [FireThornTaskExecutor-12] [JdbcTableEntity] columns() scan done for [2642][LIVEFirethornUserdataULOV20180719.dbo.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,629 DEBUG [FireThornTaskExecutor-12] [JdbcTableEntity] Matching columns [0] 
+2019-04-19 14:39:20,629 DEBUG [FireThornTaskExecutor-12] [JdbcTableEntity] Listed but not matched [0] 
+2019-04-19 14:39:20,629 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Releasing locks [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,629 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Found existing lock [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY][2019-04-19T14:39:20.185Z] 
+2019-04-19 14:39:20,629 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Removing .... 
+2019-04-19 14:39:20,629 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Notifying .... 
+2019-04-19 14:39:20,630 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][VARBINARY][0] 
+2019-04-19 14:39:20,630 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,630 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,630 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_GEOBEAS7O4YL4AAAAFVDMCM4GU] 
+2019-04-19 14:39:20,630 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,630 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,630 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,631 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,631 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,631 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,631 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [null] 
+2019-04-19 14:39:20,631 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,631 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is null - scanning 
+2019-04-19 14:39:20,631 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Checking for existing lock [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,631 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] No existing lock found [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,631 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Adding new lock [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY][2019-04-19T14:39:20.631Z] 
+2019-04-19 14:39:20,632 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Running scan [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,632 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Releasing locks [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,632 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Found existing lock [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY][2019-04-19T14:39:20.631Z] 
+2019-04-19 14:39:20,632 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Removing .... 
+2019-04-19 14:39:20,632 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Notifying .... 
+2019-04-19 14:39:20,632 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,633 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,633 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,633 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,633 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,633 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,633 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,633 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,634 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,634 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][CHAR][10] 
+2019-04-19 14:39:20,634 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,634 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,634 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_EUKQ5PTXZLKLCAAAAFVDMCM4HI] 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.632Z] 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,635 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,636 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,636 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,636 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,636 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,637 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,637 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,637 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,637 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,637 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][CHAR][16] 
+2019-04-19 14:39:20,637 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,637 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,638 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_EIT2PP64Z2FN4AAAAFVDMCM4HU] 
+2019-04-19 14:39:20,638 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,638 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,638 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,638 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,638 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,638 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,638 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.632Z] 
+2019-04-19 14:39:20,639 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,639 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,639 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,639 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,639 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,640 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,640 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,640 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,640 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,640 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,640 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,640 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][CHAR][256] 
+2019-04-19 14:39:20,641 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,641 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,641 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_DTNEBZRGEGGTCAAAAFVDMCM4IA] 
+2019-04-19 14:39:20,641 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,641 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,641 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,641 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,642 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,642 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,642 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.632Z] 
+2019-04-19 14:39:20,642 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,642 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,642 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,643 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,643 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,643 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,643 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,643 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,643 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,643 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,643 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,644 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][FLOAT][0] 
+2019-04-19 14:39:20,644 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,644 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,644 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_P6LV7YETCUXHCAAAAFVDMCM4IM] 
+2019-04-19 14:39:20,644 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,644 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,644 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,645 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,645 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,645 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,645 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.632Z] 
+2019-04-19 14:39:20,645 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,645 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,645 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,646 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,646 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,646 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,646 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,646 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,646 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,646 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,646 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,647 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][FLOAT][0] 
+2019-04-19 14:39:20,647 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,647 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,647 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_NO4I2O3KFBAPSAAAAFVDMCM4I4] 
+2019-04-19 14:39:20,647 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,647 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,647 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,648 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,648 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,648 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,648 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.632Z] 
+2019-04-19 14:39:20,648 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,648 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,648 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,649 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,649 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,649 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,649 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,649 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,649 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,649 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,649 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,650 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][FLOAT][0] 
+2019-04-19 14:39:20,650 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,650 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,650 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_TVX4DG3OIW2K4AAAAFVDMCM4JI] 
+2019-04-19 14:39:20,650 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,650 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,651 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,651 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,651 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,651 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,651 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.632Z] 
+2019-04-19 14:39:20,651 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,651 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,651 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,652 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,652 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,652 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,652 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,652 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,652 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,652 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,652 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,653 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][FLOAT][0] 
+2019-04-19 14:39:20,653 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,653 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,653 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_SGB6GSDWPKQCYAAAAFVDMCM4JU] 
+2019-04-19 14:39:20,653 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,653 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,654 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,654 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,654 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,654 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,654 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.632Z] 
+2019-04-19 14:39:20,654 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,654 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,654 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,655 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,655 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,655 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,655 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,655 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,655 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,655 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,655 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,656 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][FLOAT][0] 
+2019-04-19 14:39:20,656 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,656 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,656 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_5AMRP2WPM4UUEAAAAFVDMCM4KA] 
+2019-04-19 14:39:20,656 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,656 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,657 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,657 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,657 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,657 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,657 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.632Z] 
+2019-04-19 14:39:20,657 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,657 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,657 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,658 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,658 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,658 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,658 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,658 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,658 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,658 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,658 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,659 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity] JdbcColumnEntity [null][VARBINARY][0] 
+2019-04-19 14:39:20,659 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener] save(JdbcColumnEntity) 
+2019-04-19 14:39:20,659 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  ident [null] 
+2019-04-19 14:39:20,659 DEBUG [FireThornTaskExecutor-12] [JdbcColumnEntity$EntityListener]  name  [XX_OQC65GDZ6EAKAAAAAFVDMCM4KI] 
+2019-04-19 14:39:20,659 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] columns() for [2643][temp.XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,659 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,659 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,659 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,660 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,660 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,660 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.632Z] 
+2019-04-19 14:39:20,660 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,660 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,660 DEBUG [FireThornTaskExecutor-12] [AdqlTableEntity] realize() [2643][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,661 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,661 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcTable [XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,661 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scan for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,661 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scantest for [2642][XX_Q345NPYJSVNIUAAAAFVDMCM2OY] 
+2019-04-19 14:39:20,661 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,661 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2019-04-19 14:39:20,661 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2019-04-19 14:39:20,661 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prevscan   [2019-04-19T14:39:20.629Z] 
+2019-04-19 14:39:20,662 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] scanperiod [PT25H] 
+2019-04-19 14:39:20,662 DEBUG [FireThornTaskExecutor-12] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,692 DEBUG [FireThornTaskExecutor-12] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:20,696 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_GEOBEAS7O4YL4AAAAFVDMCM4GU] 
+2019-04-19 14:39:20,697 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,697 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_GEOBEAS7O4YL4AAAAFVDMCM4GU] 
+2019-04-19 14:39:20,697 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [VARBINARY] 
+2019-04-19 14:39:20,697 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [0] 
+2019-04-19 14:39:20,697 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [VARBINARY(MAX)] 
+2019-04-19 14:39:20,697 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_EUKQ5PTXZLKLCAAAAFVDMCM4HI] 
+2019-04-19 14:39:20,697 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,698 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_EUKQ5PTXZLKLCAAAAFVDMCM4HI] 
+2019-04-19 14:39:20,698 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [CHAR] 
+2019-04-19 14:39:20,698 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [10] 
+2019-04-19 14:39:20,698 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [CHAR(10)] 
+2019-04-19 14:39:20,698 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_EIT2PP64Z2FN4AAAAFVDMCM4HU] 
+2019-04-19 14:39:20,698 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,698 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_EIT2PP64Z2FN4AAAAFVDMCM4HU] 
+2019-04-19 14:39:20,698 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [CHAR] 
+2019-04-19 14:39:20,698 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [16] 
+2019-04-19 14:39:20,699 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [CHAR(16)] 
+2019-04-19 14:39:20,699 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_DTNEBZRGEGGTCAAAAFVDMCM4IA] 
+2019-04-19 14:39:20,699 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,699 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_DTNEBZRGEGGTCAAAAFVDMCM4IA] 
+2019-04-19 14:39:20,699 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [CHAR] 
+2019-04-19 14:39:20,699 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [256] 
+2019-04-19 14:39:20,699 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [CHAR(256)] 
+2019-04-19 14:39:20,699 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_P6LV7YETCUXHCAAAAFVDMCM4IM] 
+2019-04-19 14:39:20,700 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,700 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_P6LV7YETCUXHCAAAAFVDMCM4IM] 
+2019-04-19 14:39:20,700 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [FLOAT] 
+2019-04-19 14:39:20,700 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [0] 
+2019-04-19 14:39:20,700 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [FLOAT] 
+2019-04-19 14:39:20,700 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_NO4I2O3KFBAPSAAAAFVDMCM4I4] 
+2019-04-19 14:39:20,700 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,700 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_NO4I2O3KFBAPSAAAAFVDMCM4I4] 
+2019-04-19 14:39:20,701 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [FLOAT] 
+2019-04-19 14:39:20,701 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [0] 
+2019-04-19 14:39:20,701 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [FLOAT] 
+2019-04-19 14:39:20,701 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_TVX4DG3OIW2K4AAAAFVDMCM4JI] 
+2019-04-19 14:39:20,701 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,701 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_TVX4DG3OIW2K4AAAAFVDMCM4JI] 
+2019-04-19 14:39:20,701 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [FLOAT] 
+2019-04-19 14:39:20,701 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [0] 
+2019-04-19 14:39:20,702 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [FLOAT] 
+2019-04-19 14:39:20,702 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_SGB6GSDWPKQCYAAAAFVDMCM4JU] 
+2019-04-19 14:39:20,702 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,702 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_SGB6GSDWPKQCYAAAAFVDMCM4JU] 
+2019-04-19 14:39:20,702 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [FLOAT] 
+2019-04-19 14:39:20,702 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [0] 
+2019-04-19 14:39:20,702 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [FLOAT] 
+2019-04-19 14:39:20,702 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_5AMRP2WPM4UUEAAAAFVDMCM4KA] 
+2019-04-19 14:39:20,702 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,703 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_5AMRP2WPM4UUEAAAAFVDMCM4KA] 
+2019-04-19 14:39:20,703 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [FLOAT] 
+2019-04-19 14:39:20,703 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [0] 
+2019-04-19 14:39:20,703 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [FLOAT] 
+2019-04-19 14:39:20,703 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] Create JdbcColumn [XX_OQC65GDZ6EAKAAAAAFVDMCM4KI] 
+2019-04-19 14:39:20,703 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] sqltype() 
+2019-04-19 14:39:20,703 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   name [XX_OQC65GDZ6EAKAAAAAFVDMCM4KI] 
+2019-04-19 14:39:20,703 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   type [VARBINARY] 
+2019-04-19 14:39:20,703 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   size [0] 
+2019-04-19 14:39:20,704 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator]   temp [VARBINARY(MAX)] 
+2019-04-19 14:39:20,704 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] SQL statement [CREATE TABLE [LIVEFirethornUserdataULOV20180719].[dbo].[XX_Q345NPYJSVNIUAAAAFVDMCM2OY] ([XX_GEOBEAS7O4YL4AAAAFVDMCM4GU] VARBINARY(MAX) , [XX_EUKQ5PTXZLKLCAAAAFVDMCM4HI] CHAR(10) , [XX_EIT2PP64Z2FN4AAAAFVDMCM4HU] CHAR(16) , [XX_DTNEBZRGEGGTCAAAAFVDMCM4IA] CHAR(256) , [XX_P6LV7YETCUXHCAAAAFVDMCM4IM] FLOAT , [XX_NO4I2O3KFBAPSAAAAFVDMCM4I4] FLOAT , [XX_TVX4DG3OIW2K4AAAAFVDMCM4JI] FLOAT , [XX_SGB6GSDWPKQCYAAAAFVDMCM4JU] FLOAT , [XX_5AMRP2WPM4UUEAAAAFVDMCM4KA] FLOAT , [XX_OQC65GDZ6EAKAAAAAFVDMCM4KI] VARBINARY(MAX) )] 
+2019-04-19 14:39:20,704 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,704 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719][1] 
+2019-04-19 14:39:20,704 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,704 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719] 
+2019-04-19 14:39:20,704 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,704 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719] 
+2019-04-19 14:39:20,704 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,705 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719] 
+2019-04-19 14:39:20,705 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2019-04-19 14:39:20,705 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] State is READY, initialising Connection 
+2019-04-19 14:39:20,705 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] With user/pass 
+2019-04-19 14:39:20,705 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] connecting .... 
+2019-04-19 14:39:20,710 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] .... connected 
+2019-04-19 14:39:20,715 DEBUG [FireThornTaskExecutor-12] [SQLServerOperator] SQL result [0] 
+2019-04-19 14:39:20,716 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,716 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719][1] 
+2019-04-19 14:39:20,716 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,716 DEBUG [FireThornTaskExecutor-12] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719] 
+2019-04-19 14:39:20,716 INFO  [FireThornTaskExecutor-12] [AdqlQueryTimings] TIMING - jdbcdone() 
+2019-04-19 14:39:20,720 DEBUG [FireThornTaskExecutor-12] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:20,726 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] before refresh() 
+2019-04-19 14:39:20,733 DEBUG [FireThornTaskExecutor-11] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:20,733 DEBUG [FireThornTaskExecutor-11] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:20,734 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] after refresh() 
+2019-04-19 14:39:20,735 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Getting base BaseResource 
+2019-04-19 14:39:20,735 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Found base BaseResource [OSA JDBC] 
+2019-04-19 14:39:20,735 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Getting direct resource 
+2019-04-19 14:39:20,735 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] primary(JdbcResource) [53] 
+2019-04-19 14:39:20,735 DEBUG [FireThornTaskExecutor-11] [OgsaServiceEntity] primary() 
+2019-04-19 14:39:20,738 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] primary(OgsaService, JdbcResource) [3052][53] 
+2019-04-19 14:39:20,741 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] Found primary OgsaJdbcResource [3102] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] Checking ogsaid ... 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-ba7cd6f0-d6a0-49c6-84ca-4f242f91ad48] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scan for [3102][XX_VTOX6LWNN5QGUAAAAFVDMBNZT4] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] scantest() 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   name   [XX_VTOX6LWNN5QGUAAAAFVDMBNZT4] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ident  [3102] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ogsaid [ogsadai-ba7cd6f0-d6a0-49c6-84ca-4f242f91ad48] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] prevscan   [2019-04-19T14:35:07.706Z] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] start time [2019-04-19T14:32:32.225Z] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scantest for [3102][XX_VTOX6LWNN5QGUAAAAFVDMBNZT4] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity] factory() 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory]   value [PT11M] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Factory scanperiod  [PT11M] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prevscan   [2019-04-19T14:35:07.706Z] 
+2019-04-19 14:39:20,742 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scanperiod [PT11M] 
+2019-04-19 14:39:20,743 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,743 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] Found ogsaid [ogsadai-ba7cd6f0-d6a0-49c6-84ca-4f242f91ad48][ACTIVE] 
+2019-04-19 14:39:20,743 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Using direct resource [XX_VTOX6LWNN5QGUAAAAFVDMBNZT4] 
+2019-04-19 14:39:20,743 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Getting source OgsaService 
+2019-04-19 14:39:20,743 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Found source OgsaService [http://jarmila:8080/ogsadai/services] 
+2019-04-19 14:39:20,743 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Getting target table 
+2019-04-19 14:39:20,746 DEBUG [FireThornTaskExecutor-11] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-19 14:39:20,747 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Found target table [[LIVEFirethornUserdataULOV20180719].[dbo].[XX_Q345NPYJSVNIUAAAAFVDMCM2OY]] 
+2019-04-19 14:39:20,747 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Getting target OgsaBaseResource 
+2019-04-19 14:39:20,747 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] primary(JdbcResource) [52] 
+2019-04-19 14:39:20,747 DEBUG [FireThornTaskExecutor-11] [OgsaServiceEntity] primary() 
+2019-04-19 14:39:20,748 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] primary(OgsaService, JdbcResource) [3052][52] 
+2019-04-19 14:39:20,750 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] Found primary OgsaJdbcResource [3103] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] Checking ogsaid ... 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-a052f525-6dea-413e-b5d1-ba8ad55a333d] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scan for [3103][XX_LQEN4Y6NEFM2GAAAAFVDMBNZWA] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] scantest() 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   name   [XX_LQEN4Y6NEFM2GAAAAFVDMBNZWA] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ident  [3103] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ogsaid [ogsadai-a052f525-6dea-413e-b5d1-ba8ad55a333d] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] prevscan   [2019-04-19T14:35:07.880Z] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] start time [2019-04-19T14:32:32.225Z] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scantest for [3103][XX_LQEN4Y6NEFM2GAAAAFVDMBNZWA] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity] factory() 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory]   value [PT11M] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Factory scanperiod  [PT11M] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prevscan   [2019-04-19T14:35:07.880Z] 
+2019-04-19 14:39:20,751 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scanperiod [PT11M] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity$EntityFactory] Found ogsaid [ogsadai-a052f525-6dea-413e-b5d1-ba8ad55a333d][ACTIVE] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Found target OgsaBaseResource [XX_LQEN4Y6NEFM2GAAAAFVDMBNZWA] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Setting state to [RUNNING] [2954] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] transition(TaskState) 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   ident [2954] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   state [READY][RUNNING] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] accept(TaskState) 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   ident [2954] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   state [READY][RUNNING] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Activating handler [2954] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] handle() [] 
+2019-04-19 14:39:20,752 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity$Handle] event() [2954]:[RUNNING]->[RUNNING]:[false]->[true] 
+2019-04-19 14:39:20,753 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Creating workflow [2954] 
+2019-04-19 14:39:20,753 DEBUG [FireThornTaskExecutor-11] [OgsaExecResourceEntity$EntityFactory] primary(OgsaService) [3052] 
+2019-04-19 14:39:20,755 DEBUG [FireThornTaskExecutor-11] [OgsaExecResourceEntity$EntityFactory] No primary OgsaExecResource, creating a new one 
+2019-04-19 14:39:20,755 DEBUG [FireThornTaskExecutor-11] [OgsaExecResourceEntity$EntityFactory] simple(OgsaService) [3052] 
+2019-04-19 14:39:20,755 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] ogsaid [CREATED][DataRequestExecutionResource] 
+2019-04-19 14:39:20,755 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scan for [3106][XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,755 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] scantest() 
+2019-04-19 14:39:20,755 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   name   [XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ident  [3106] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ogsaid [DataRequestExecutionResource] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] prevscan   [null] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] start time [2019-04-19T14:32:32.225Z] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scantest for [3106][XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [OgsaExecResourceEntity] factory() 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory]   value [PT11M] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Factory scanperiod  [PT11M] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prevscan   [null] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scanperiod [PT11M] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prev scan is null - scanning 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Checking for existing lock [3106][XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] No existing lock found [3106][XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Adding new lock [3106][XX_53BKMDT76VSM4AAAAFVDMCM4WM][2019-04-19T14:39:20.756Z] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Running scan [3106][XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,756 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] scanimpl() 
+2019-04-19 14:39:20,757 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   name   [XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,757 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ident  [3106] 
+2019-04-19 14:39:20,757 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ogsaid [DataRequestExecutionResource] 
+2019-04-19 14:39:20,757 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] ping() 
+2019-04-19 14:39:20,757 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   name   [XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,757 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ident  [3106] 
+2019-04-19 14:39:20,757 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ogsaid [DataRequestExecutionResource] 
+2019-04-19 14:39:20,757 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] Service request [3106][http://jarmila:8080/ogsadai/services/dataResources/DataRequestExecutionResource] 
+2019-04-19 14:39:20,766 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] Service response [3106][null] 
+2019-04-19 14:39:20,766 ERROR [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] Ping test failed [3106][DataRequestExecutionResource][404] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] status(status) 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   name   [XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ident  [3106] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ogsaid [DataRequestExecutionResource] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   status [ERROR] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Releasing locks [3106][XX_53BKMDT76VSM4AAAAFVDMCM4WM] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Found existing lock [3106][XX_53BKMDT76VSM4AAAAFVDMCM4WM][2019-04-19T14:39:20.756Z] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Removing .... 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Notifying .... 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-ba7cd6f0-d6a0-49c6-84ca-4f242f91ad48] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scan for [3102][XX_VTOX6LWNN5QGUAAAAFVDMBNZT4] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] scantest() 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   name   [XX_VTOX6LWNN5QGUAAAAFVDMBNZT4] 
+2019-04-19 14:39:20,767 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ident  [3102] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ogsaid [ogsadai-ba7cd6f0-d6a0-49c6-84ca-4f242f91ad48] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] prevscan   [2019-04-19T14:35:07.706Z] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] start time [2019-04-19T14:32:32.225Z] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scantest for [3102][XX_VTOX6LWNN5QGUAAAAFVDMBNZT4] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity] factory() 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory]   value [PT11M] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Factory scanperiod  [PT11M] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prevscan   [2019-04-19T14:35:07.706Z] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scanperiod [PT11M] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-a052f525-6dea-413e-b5d1-ba8ad55a333d] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scan for [3103][XX_LQEN4Y6NEFM2GAAAAFVDMBNZWA] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] scantest() 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   name   [XX_LQEN4Y6NEFM2GAAAAFVDMBNZWA] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ident  [3103] 
+2019-04-19 14:39:20,768 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity]   ogsaid [ogsadai-a052f525-6dea-413e-b5d1-ba8ad55a333d] 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] prevscan   [2019-04-19T14:35:07.880Z] 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [OgsaBaseResourceEntity] start time [2019-04-19T14:32:32.225Z] 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scantest for [3103][XX_LQEN4Y6NEFM2GAAAAFVDMBNZWA] 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [OgsaJdbcResourceEntity] factory() 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity$EntityFactory]   value [PT11M] 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] Factory scanperiod  [PT11M] 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prevscan   [2019-04-19T14:35:07.880Z] 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] scanperiod [PT11M] 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [BaseComponentEntity] prev scan is recent - skipping 
+2019-04-19 14:39:20,769 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Executing workflow [2954] 
+2019-04-19 14:39:20,915 DEBUG [FireThornTaskExecutor-11] [OgsaContextClient] monkey(MonkeyParam) 
+2019-04-19 14:39:21,021 DEBUG [FireThornTaskExecutor-11] [SimpleWorkflowResult] RequestExecutionStatus [uk.org.ogsadai.resource.request.status.COMPLETED_WITH_ERROR] 
+2019-04-19 14:39:21,021 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] After workflow [2954] 
+2019-04-19 14:39:21,021 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Before refresh [2954][RUNNING] 
+2019-04-19 14:39:21,025 DEBUG [FireThornTaskExecutor-11] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:21,026 DEBUG [FireThornTaskExecutor-11] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:21,026 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] After refresh [2954][READY] 
+2019-04-19 14:39:21,026 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Workflow result [2954][FAILED] 
+2019-04-19 14:39:21,026 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] transition(TaskState) 
+2019-04-19 14:39:21,026 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   ident [2954] 
+2019-04-19 14:39:21,026 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   state [READY][FAILED] 
+2019-04-19 14:39:21,027 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] accept(TaskState) 
+2019-04-19 14:39:21,027 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   ident [2954] 
+2019-04-19 14:39:21,027 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   state [READY][FAILED] 
+2019-04-19 14:39:21,027 DEBUG [FireThornTaskExecutor-11] [BlueQueryEntity] Finishing execute() [2954][FAILED] 
+2019-04-19 14:39:21,027 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity] After execute() 
+2019-04-19 14:39:21,027 DEBUG [FireThornTaskExecutor-11] [BlueTaskEntity]   state [FAILED] 
+2019-04-19 14:39:21,029 DEBUG [FireThornTaskExecutor-11] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:21,043 DEBUG [FireThornTaskExecutor-10] [BlueTaskEntity] Finished thread() 
+2019-04-19 14:39:21,043 DEBUG [FireThornTaskExecutor-10] [BlueTaskEntity]   state [READY] 
+2019-04-19 14:39:21,043 DEBUG [FireThornTaskExecutor-10] [BlueTaskEntity] Refreshing state 
+2019-04-19 14:39:21,047 DEBUG [FireThornTaskExecutor-10] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:21,047 DEBUG [FireThornTaskExecutor-10] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:21,048 DEBUG [FireThornTaskExecutor-10] [BlueTaskEntity] Finished running() 
+2019-04-19 14:39:21,049 DEBUG [FireThornTaskExecutor-10] [BlueTaskEntity]   state [FAILED] 
+2019-04-19 14:39:21,049 DEBUG [main-interface-5] [BlueQueryEntity] Converting current instance [2954] 
+2019-04-19 14:39:21,055 DEBUG [main-interface-5] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:21,055 DEBUG [main-interface-5] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-19 14:39:21,055 DEBUG [main-interface-5] [BlueTaskEntity] waitfor() [2954]:[FAILED]->[FAILED]->[COMPLETED]:[3000000] 
+2019-04-19 14:39:21,057 DEBUG [main-interface-5] [BlueTaskEntity] handle() [] 
+2019-04-19 14:39:21,057 DEBUG [main-interface-5] [BlueQueryEntity] update(Handle) [2954][FAILED][RUNNING] 
+2019-04-19 14:39:21,057 DEBUG [main-interface-5] [BlueQueryEntity] transition() [2954][EMPTY][EMPTY][0] 
+2019-04-19 14:39:21,057 DEBUG [main-interface-5] [BlueQueryEntity] No-op state change [EMPTY][EMPTY] 
+

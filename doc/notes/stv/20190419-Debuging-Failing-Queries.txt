@@ -1,0 +1,92 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+## Testing OGSA resources after a Non-Propagating Failed query (using ChaosMonkey)
+
+
+## In Ogsadai Container :
+bash-4.4$ curl http://localhost:8080/ogsadai/services/dataResources/
+["firethorn-dqp-001","ogsadai-bfedaee6-da3e-483e-9ebf-75c04919100f","ogsadai-4ec571ee-61e0-4468-bb7f-d7daa875a64e"]
+
+
+## In Metadata Database:
+
+## Check OGSA Resources
+postgres=# select * from ft020116ogsajdbcresourceentity;
+ ident |         created         |        modified         |     uidhi     |        uidlo         |             name              | text |        scandate         | scanperiod | status  |                  
+  ogsaid                    | ogstatus | owner | service | resource 
+-------+-------------------------+-------------------------+---------------+----------------------+-------------------------------+------+-------------------------+------------+---------+------------------
+----------------------------+----------+-------+---------+----------
+  3102 | 2019-04-19 14:35:06.015 | 2019-04-19 14:35:06.016 | 1555684506015 | -5990492090341040022 | XX_VTOX6LWNN5QGUAAAAFVDMBNZT4 |      | 2019-04-19 17:04:07.293 |            | CREATED | ogsadai-ba7cd6f0-
+d6a0-49c6-84ca-4f242f91ad48 | ERROR    |   166 |    3052 |       53
+  3103 | 2019-04-19 14:35:06.032 | 2019-04-19 14:35:06.032 | 1555684506032 |  6631794971527698851 | XX_LQEN4Y6NEFM2GAAAAFVDMBNZWA |      | 2019-04-19 17:04:07.331 |            | CREATED | ogsadai-a052f525-
+6dea-413e-b5d1-ba8ad55a333d | ERROR    |   166 |    3052 |       52
+  4852 | 2019-04-19 17:04:07.294 | 2019-04-19 17:04:07.295 | 1555693447294 | -8115330116846123003 | XX_R5QI4QLOLOEAKAAAAFVDNDRIPY |      | 2019-04-19 17:19:52.442 |            | CREATED | ogsadai-b30f4e08-
+2244-4630-9c31-ce10b108d7ec | ERROR    |  4456 |    3052 |       53
+  4853 | 2019-04-19 17:04:07.333 | 2019-04-19 17:04:07.333 | 1555693447333 | -1222187757109834120 | XX_54E6VNOYUMHHQAAAAFVDNDRIUU |      | 2019-04-19 17:19:52.5   |            | CREATED | ogsadai-61974082-
+6fae-422a-aef4-9b4a79adb1d9 | ERROR    |  4456 |    3052 |       52
+  5352 | 2019-04-19 17:19:52.443 | 2019-04-19 17:19:52.455 | 1555694392443 |  8517361695587168083 | XX_OYZ36VOQ7XXVGAAAAFVDNHEUPM |      | 2019-04-19 17:48:32.404 |            | CREATED | ogsadai-5d1ade1d-
+6d4f-42ff-a82b-f659525cf1e5 | ERROR    |  4957 |    3052 |       53
+  5353 | 2019-04-19 17:19:52.5   | 2019-04-19 17:19:52.501 | 1555694392500 | -8826415763085932194 | XX_QWBELIFZLLEV4AAAAFVDNHEUWQ |      | 2019-04-19 17:48:32.437 |            | CREATED | ogsadai-d56022fd-
+138f-41b0-b6ff-bbf225f3f2c0 | ERROR    |  4957 |    3052 |       52
+  6002 | 2019-04-19 17:48:32.405 | 2019-04-19 17:48:32.407 | 1555696112405 | -8539280855216382307 | XX_RF7GCTRDRCPJ2AAAAFVDNNWTCU |      | 2019-04-19 18:04:52.248 |            | CREATED | ogsadai-28eeb504-
+1068-4602-892a-1c780c0e11b9 | ERROR    |  5606 |    3052 |       53
+  6552 | 2019-04-19 18:04:52.248 | 2019-04-19 18:04:52.25  | 1555697092248 | -8666973590146405320 | XX_Q64LS4DZUGWDQAAAAFVDNROGTA |      | 2019-04-19 18:04:53.541 |            | CREATED | ogsadai-4ec571ee-
+61e0-4468-bb7f-d7daa875a64e | ACTIVE   |  6156 |    3052 |       53
+  6003 | 2019-04-19 17:48:32.437 | 2019-04-19 17:48:32.438 | 1555696112437 | -3815049966156708500 | XX_ZMHDQRGO3UCWYAAAAFVDNNWTGU |      | 2019-04-19 18:04:52.275 |            | CREATED | ogsadai-a4f97a02-
+5da3-486c-b972-65c51b574a91 | ERROR    |  5606 |    3052 |       52
+  6553 | 2019-04-19 18:04:52.276 | 2019-04-19 18:04:52.276 | 1555697092276 |  5598837196533693748 | XX_JWZRBRBOUJ6TIAAAAFVDNROGWQ |      | 2019-04-19 18:04:53.692 |            | CREATED | ogsadai-bfedaee6-
+da3e-483e-9ebf-75c04919100f | ACTIVE   |  6156 |    3052 |       52
+(10 rows)
+
+
+
+postgres=# select ident,created,status,ogsaid, ogstatus,resource from ft020116ogsajdbcresourceentity;
+ ident |         created         | status  |                    ogsaid                    | ogstatus | resource 
+-------+-------------------------+---------+----------------------------------------------+----------+----------
+  3102 | 2019-04-19 14:35:06.015 | CREATED | ogsadai-ba7cd6f0-d6a0-49c6-84ca-4f242f91ad48 | ERROR    |       53
+  3103 | 2019-04-19 14:35:06.032 | CREATED | ogsadai-a052f525-6dea-413e-b5d1-ba8ad55a333d | ERROR    |       52
+  4852 | 2019-04-19 17:04:07.294 | CREATED | ogsadai-b30f4e08-2244-4630-9c31-ce10b108d7ec | ERROR    |       53
+  4853 | 2019-04-19 17:04:07.333 | CREATED | ogsadai-61974082-6fae-422a-aef4-9b4a79adb1d9 | ERROR    |       52
+  5352 | 2019-04-19 17:19:52.443 | CREATED | ogsadai-5d1ade1d-6d4f-42ff-a82b-f659525cf1e5 | ERROR    |       53
+  5353 | 2019-04-19 17:19:52.5   | CREATED | ogsadai-d56022fd-138f-41b0-b6ff-bbf225f3f2c0 | ERROR    |       52
+  6002 | 2019-04-19 17:48:32.405 | CREATED | ogsadai-28eeb504-1068-4602-892a-1c780c0e11b9 | ERROR    |       53
+  6552 | 2019-04-19 18:04:52.248 | CREATED | ogsadai-4ec571ee-61e0-4468-bb7f-d7daa875a64e | ACTIVE   |       53
+  6003 | 2019-04-19 17:48:32.437 | CREATED | ogsadai-a4f97a02-5da3-486c-b972-65c51b574a91 | ERROR    |       52
+  6553 | 2019-04-19 18:04:52.276 | CREATED | ogsadai-bfedaee6-da3e-483e-9ebf-75c04919100f | ACTIVE   |       52
+(10 rows)
+
+
+
+postgres=# select * from ft020116ogsaserviceentity;
+ ident |         created         |        modified         |     uidhi     |        uidlo        |                 name                 | text | scandate | scanperiod | status  |               endpoint    
+           | http | ogstatus | version | owner 
+-------+-------------------------+-------------------------+---------------+---------------------+--------------------------------------+------+----------+------------+---------+---------------------------
+-----------+------+----------+---------+-------
+  3052 | 2019-04-19 14:35:06.003 | 2019-04-19 14:35:06.006 | 1555684506003 | -257637931932058849 | http://jarmila:8080/ogsadai/services |      |          |            | CREATED | http://jarmila:8080/ogsada
+i/services |      | ACTIVE   |         |   166
+(1 row)
+
+
+## Testing OGSA resources after a Correctly Propagating Failed query (using ChaosMonkey) shows the same results
+
