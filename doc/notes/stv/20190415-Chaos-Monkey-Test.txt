@@ -54,7 +54,7 @@ firethorn.login(
 # Select a specific resource by Identity (url)
 
 resource=firethorn.firethorn_engine.select_adql_resource_by_ident(
-    "http://localhost:8081/firethorn/adql/resource/2103"
+    "http://localhost:8081/firethorn/adql/resource/54"
     )
 
 
@@ -64,7 +64,7 @@ workspace = firethorn.firethorn_engine.create_adql_resource(
     )
 
 # Select schema by Identity
-schema=resource.select_schema_by_ident("http://localhost:8081/firethorn/adql/schema/2337")
+schema=resource.select_schema_by_ident("http://localhost:8081/firethorn/adql/schema/437")
 
 
 # Import the TAP_schema into our workspace
