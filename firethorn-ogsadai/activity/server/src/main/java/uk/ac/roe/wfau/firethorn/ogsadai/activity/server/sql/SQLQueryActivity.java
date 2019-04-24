@@ -320,8 +320,9 @@ public class SQLQueryActivity
 
         catch (SQLException e)
             {
-            logger.debug("Caught a SQLException, wrapping it in an ActivitySQLUserException");
-            throw new ActivitySQLUserException(e);
+	    logger.debug("Caught a SQLException, sending a callback");
+	    callback.failed();
+	    throw new ActivitySQLUserException(e);
             }
         catch (PipeIOException e)
             {
@@ -414,7 +415,21 @@ public class SQLQueryActivity
         @Override
         public ResultSet call() throws Exception
         {
-            mContext.monkey().sqlException(this, "Eoph9xie");
+            if (mContext.monkey().test(this, "Eoph9xie"))
+	    {
+                try {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException ouch)
+                {
+                    logger.debug("Sleep interrupted");
+                }
+                
+                 throw new SQLException(
+                     "Delayed SQLException"
+                 );
+            }
+
             final ResultSet results = super.call();
             mContext.monkey().sqlException(this, "oz4Kie0M");
             return results;
