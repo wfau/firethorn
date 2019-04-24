@@ -320,28 +320,29 @@ public class SQLQueryActivity
 
         catch (SQLException e)
             {
-	    logger.debug("Caught a SQLException, sending a callback");
-	    callback.failed();
-	    throw new ActivitySQLUserException(e);
+	        logger.error("Caught a SQLException, sending a callback");
+	        callback.failed();
+	        throw new ActivitySQLUserException(e);
             }
         catch (PipeIOException e)
             {
-            logger.debug("Caught a PipeIOException, wrapping it in an ActivityPipeProcessingException");
+            logger.error("Caught a PipeIOException, wrapping it in an ActivityPipeProcessingException");
             throw new ActivityPipeProcessingException(e);
             }
         catch (PipeTerminatedException e)
             {
-            logger.debug("Caught a PipeTerminatedException, wrapping it in an ActivityTerminatedException");
+            logger.error("Caught a PipeTerminatedException, wrapping it in an ActivityTerminatedException");
             throw new ActivityTerminatedException();
             }
         catch (IOException e)
             {
-            logger.debug("Caught an IOException, wrapping it in an ActivityIOException");
+            logger.error("Caught an IOException, sending a callback");
+    	    callback.failed();
             throw new ActivityIOException(e);
             }
         catch (Throwable e)
             {
-            logger.debug("Caught a Throwable, wrapping it in an ActivityProcessingException");
+            logger.error("Caught a Throwable, wrapping it in an ActivityProcessingException");
             throw new ActivityProcessingException(e);
             }
         }
