@@ -1,0 +1,444 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+ssh Stevedore@Araybwyn
+ssh: connect to host araybwyn port 22: No route to host
+
+
+# -----------------------------------------------------
+# List the active virtual machines.
+# stv@trop02:~$
+	
+	virsh \
+	>         --connect "${connection}" \
+	>         list
+
+	setlocale: No such file or directory
+ 
+Id    Name                           State
+----------------------------------------------------
+ 3     Acilamwen                      running
+ 6     Araybwyn                       running
+
+
+
+
+# -----------------------------------------------------
+# Check disk space of all VMs
+
+
+vmlist=(Acilamwen Araybwyn)
+
+for vmname in ${vmlist[*]}
+>     do
+>         echo "--"
+>         echo "Name [${vmname}]"
+>         ssh "${vmname:?}" \
+>             "
+>             df -h
+>             "
+>     done
+--
+Name [Acilamwen]
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+--
+Name [Araybwyn]
+ssh: connect to host araybwyn port 22: No route to host
+
+
+
+
+# -----------------------------------------------------
+# Reboot the firethorn VM.
+# stv@trop02:~$
+
+    vmname=Araybwyn
+    source "${HOME}/libvirt.settings"
+
+	virsh \
+	--connect "${connection}" \
+	reboot \
+	    "${vmname:?}"
+
+	setlocale: No such file or directory
+	Domain Araybwyn is being rebooted
+
+
+# -----------------------------------------------------
+# Login to the firethorn VM.
+# stv@trop02:~$
+
+    vmname=Araybwyn
+
+    ssh "${vmname:?}"
+    ssh: connect to host araybwyn port 22: No route to host
+
+
+# -----------------------------------------------------
+# Check the VM status.
+# stv@trop02:~$
+
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        dominfo \
+            "${vmname:?}"
+
+Id:             6
+Name:           Araybwyn
+UUID:           a65ad4ca-0662-4c43-a32c-91e4180d87bc
+OS Type:        hvm
+State:          running
+CPU(s):         4
+CPU time:       783601.4s
+Max memory:     4194304 KiB
+Used memory:    4194304 KiB
+Persistent:     yes
+Autostart:      disable
+Managed save:   no
+Security model: none
+Security DOI:   0
+
+
+
+    virsh \
+        --connect "${connection}" \
+        domstate \
+            "${vmname:?}"
+	
+	running
+
+
+
+
+    virsh \
+        --connect "${connection}" \
+        domstats \
+            "${vmname:?}"
+
+	setlocale: No such file or directory
+	Domain: 'Araybwyn'
+	  state.state=1
+	  state.reason=1
+	  cpu.time=785415372081224
+	  cpu.user=36850540000000
+	  cpu.system=137433620000000
+	  balloon.current=4194304
+	  balloon.maximum=4194304
+	  vcpu.current=4
+	  vcpu.maximum=4
+	  vcpu.0.state=1
+	  vcpu.0.time=191511150000000
+	  vcpu.1.state=1
+	  vcpu.1.time=160686720000000
+	  vcpu.2.state=1
+	  vcpu.2.time=146815730000000
+	  vcpu.3.state=1
+	  vcpu.3.time=133039200000000
+	  net.count=1
+	  net.0.name=vnet0
+	  net.0.rx.bytes=8760633485
+	  net.0.rx.pkts=40815593
+	  net.0.rx.errs=0
+	  net.0.rx.drop=0
+	  net.0.tx.bytes=17038380088
+	  net.0.tx.pkts=39162201
+	  net.0.tx.errs=0
+	  net.0.tx.drop=0
+	  block.count=2
+	  block.0.name=vda
+	  block.0.rd.reqs=4681231
+	  block.0.rd.bytes=101605817344
+	  block.0.rd.times=2968455437655
+	  block.0.wr.reqs=520676112
+	  block.0.wr.bytes=47246008038400
+	  block.0.wr.times=273501681954057
+	  block.0.fl.reqs=58771451
+	  block.0.fl.times=128714065178477
+	  block.1.name=vdb
+	  block.1.rd.reqs=48
+	  block.1.rd.bytes=186368
+	  block.1.rd.times=2764623
+	  block.1.wr.reqs=0
+	  block.1.wr.bytes=0
+	  block.1.wr.times=0
+	  block.1.fl.reqs=0
+	  block.1.fl.times=0
+
+
+
+
+	virsh \
+	 --connect "${connection}" \
+	 dommemstat \
+	     "${vmname:?}"
+
+
+	actual 4194304
+	swap_in 0
+	swap_out 0
+	major_fault 106
+	minor_fault 65006
+	unused 3792832
+	available 4038224
+	rss 4321284
+
+
+
+
+    virsh \
+        --connect "${connection}" \
+        domblklist \
+            "${vmname:?}"
+
+	setlocale: No such file or directory
+	Target     Source
+	------------------------------------------------
+	vda        /libvirt/storage/live/Araybwyn.qcow
+	vdb        /var/lib/libvirt/images/init/Araybwyn.iso
+
+
+	
+
+    virsh \
+        --connect "${connection}" \
+        domblkinfo \
+            "${vmname:?}" \
+            'vda'
+
+	setlocale: No such file or directory
+
+	Capacity:       34359738368
+	Allocation:     27541970944
+	Physical:       27541970944
+
+
+	
+    virsh \
+        --connect "${connection}" \
+        domblkerror \
+            "${vmname:?}"
+
+	setlocale: No such file or directory
+	No errors found
+
+
+
+    virsh \
+        --connect "${connection}" \
+        domblkstat \
+            "${vmname:?}" \
+            'vda'
+
+	setlocale: No such file or directory
+
+	vda rd_req 4681231
+	vda rd_bytes 101605817344
+	vda wr_req 520676112
+	vda wr_bytes 47246008038400
+	vda flush_operations 58771451
+	vda rd_total_times 2968455437655
+	vda wr_total_times 273501681954057
+	vda flush_total_times 128714065178477
+
+
+
+
+#
+# Reboot didn't reboot. 
+#
+
+
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+        reboot \
+            "${vmname:?}"
+
+       Domain Araybwyn is being rebooted
+
+
+    ssh Stevedore@Araybwyn 
+    ssh: connect to host araybwyn port 22: No route to host
+
+
+# -----------------------------------------------------
+# Try pulling the power cord ...
+# stv@trop02:~$
+
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+         destroy \
+            "${vmname:?}"
+
+    setlocale: No such file or directory
+    Domain Araybwyn destroyed
+
+
+
+# -----------------------------------------------------
+# Try start it up again ...
+# stv@trop02:~$
+
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+         start \
+            "${vmname:?}"
+
+    setlocale: No such file or directory
+    Domain Araybwyn started
+
+
+# -----------------------------------------------------
+# Login and check disk space ...
+
+stv@trop02:~$ ssh Stevedore@Araybwyn 
+Warning: Permanently added 'araybwyn' (ECDSA) to the list of known hosts.
+Last login: Wed Jan 30 18:18:46 2019 from 192.168.202.1
+
+	df -h
+	Filesystem      Size  Used Avail Use% Mounted on
+	devtmpfs        2.0G     0  2.0G   0% /dev
+	tmpfs           2.0G     0  2.0G   0% /dev/shm
+	tmpfs           2.0G  532K  2.0G   1% /run
+	tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+	/dev/vda3        31G   25G  5.5G  82% /
+	tmpfs           2.0G  4.0K  2.0G   1% /tmp
+	/dev/vda1       240M   89M  135M  40% /boot
+	tmpfs           395M     0  395M   0% /run/user/1001
+
+
+	docker ps -a
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                       PORTS                    NAMES
+2fe430d3956d        firethorn/firethorn-py:2.1.28   "python3"                5 weeks ago         Exited (255) 3 minutes ago                            stevedore_firethorn-py_run_4
+659eaacbdddc        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (0) 2 months ago                               stevedore_firethorn-py_run_3
+cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (255) 2 months ago                             stevedore_firethorn-py_run_2
+ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                4 months ago        Exited (137) 4 months ago                             stevedore_firethorn-py_run_1
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   4 months ago        Exited (255) 3 minutes ago   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   4 months ago        Exited (255) 3 minutes ago   8080/tcp                 stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Exited (255) 3 minutes ago   5432/tcp                 stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Exited (255) 3 minutes ago   5432/tcp                 stevedore_bethany_1
+
+
+
+# -----------------------------------------------------
+# Restart using compose
+
+	export buildtag=2.1.28
+	source "${HOME:?}/chain.properties"
+
+	docker-compose --file "docker-compose.yml" run firethorn-py
+
+	Starting stevedore_bethany_1  ... done
+	Starting stevedore_jarmila_1  ... done
+	Starting stevedore_carolina_1 ... done
+	Starting stevedore_gillian_1  ... done
+
+Python 3.5.2 (default, Nov 12 2018, 13:43:14) 
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+
+>>> 
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+# Create our Firethorn client.
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+# Get the Atlas AdqlResource.
+resource =firethorn.firethorn_engine.select_adql_resource_by_ident("http://tap.roe.ac.uk/firethorn/adql/resource/54")
+
+
+#
+# Create and run a query on the resource.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = resource.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+
+
+
+print(
+    query_obj.table()
+     )
+{
+  "modified": "2019-04-25T23:27:06.596",
+  "created": "2019-04-25T23:27:06.596",
+  "self": "http://tap.roe.ac.uk/firethorn/adql/table/56637553",
+  "depth": "PARTIAL",
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+  "root": "http://tap.roe.ac.uk/firethorn/jdbc/table/56637552",
+  "columns": "http://tap.roe.ac.uk/firethorn/adql/table/56637553/columns/select",
+  "fullname": "temp.XX_HYK3D7TV7462UAAAAFVFNUXTME",
+  "text": null,
+  "base": "http://tap.roe.ac.uk/firethorn/jdbc/table/56637552",
+  "query": "http://tap.roe.ac.uk/firethorn/blue/query/56637352",
+  "parent": "http://tap.roe.ac.uk/firethorn/adql/schema/56637502",
+  "ident": "56637553",
+  "owner": "http://tap.roe.ac.uk/firethorn/community-member/56637258",
+  "name": "XX_HYK3D7TV7462UAAAAFVFNUXTME",
+  "url": "http://tap.roe.ac.uk/firethorn/adql/table/56637553",
+  "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/56637452",
+  "formats": {
+    "votable": "http://tap.roe.ac.uk/firethorn/adql/table/56637553/votable",
+    "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/56637553/datatable"
+  },
+  "metadata": {
+    "adql": {
+      "count": 1000,
+      "status": "COMPLETED"
+    }
+  },
+  "schema": "http://tap.roe.ac.uk/firethorn/adql/schema/56637502"
+}
+
+
