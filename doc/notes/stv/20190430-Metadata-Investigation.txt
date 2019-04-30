@@ -1,0 +1,286 @@
+
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Following is the counts for all tables in the Metadata Database of the Araybwyn VM, currently running the OSA TAP service Firethorn chain
+## The VM & Services were setup 4 months ago, on December 12th 2018
+##
+##
+##
+## This shows the row counts that have accumulated over this 4 month period until today (30 April 2019)
+##
+
+
+
+
+## --------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+## Log into Araybwyn
+
+ssh Stevedore@Araybwyn 
+
+
+
+## Log into Postgres Metadata Database
+docker exec -it stevedore_bethany_1 bash
+
+
+## psql
+
+root@80da24dbaf6a:/# psql -host localhost --dbname postgres --username ${metauser:?}
+
+postgres=# \dt 
+                                 List of relations
+ Schema |                   Name                    | Type  |        Owner         
+--------+-------------------------------------------+-------+----------------------
+ public | ft020116adqlcolumnentity                  | table | liengooXien1mooP0tae
+ public | ft020116adqlresourceentity                | table | liengooXien1mooP0tae
+ public | ft020116adqlschemaentity                  | table | liengooXien1mooP0tae
+ public | ft020116adqltableentity                   | table | liengooXien1mooP0tae
+ public | ft020116authmethodentity                  | table | liengooXien1mooP0tae
+ public | ft020116bluequeryentity                   | table | liengooXien1mooP0tae
+ public | ft020116bluequeryentityjointobaseresource | table | liengooXien1mooP0tae
+ public | ft020116bluetaskentity                    | table | liengooXien1mooP0tae
+ public | ft020116bluetasklogentity                 | table | liengooXien1mooP0tae
+ public | ft020116bluetaskparam                     | table | liengooXien1mooP0tae
+ public | ft020116communityentity                   | table | liengooXien1mooP0tae
+ public | ft020116configproperty                    | table | liengooXien1mooP0tae
+ public | ft020116identityentity                    | table | liengooXien1mooP0tae
+ public | ft020116ivoacolumnentity                  | table | liengooXien1mooP0tae
+ public | ft020116ivoaresourceentity                | table | liengooXien1mooP0tae
+ public | ft020116ivoaschemaentity                  | table | liengooXien1mooP0tae
+ public | ft020116ivoatableentity                   | table | liengooXien1mooP0tae
+ public | ft020116jdbccolumnentity                  | table | liengooXien1mooP0tae
+ public | ft020116jdbcresourceentity                | table | liengooXien1mooP0tae
+ public | ft020116jdbcschemaentity                  | table | liengooXien1mooP0tae
+ public | ft020116jdbctableentity                   | table | liengooXien1mooP0tae
+ public | ft020116ogsadqpresourceentity             | table | liengooXien1mooP0tae
+ public | ft020116ogsaexecresourceentity            | table | liengooXien1mooP0tae
+ public | ft020116ogsaivoaresourceentity            | table | liengooXien1mooP0tae
+ public | ft020116ogsajdbcresourceentity            | table | liengooXien1mooP0tae
+ public | ft020116ogsaserviceentity                 | table | liengooXien1mooP0tae
+ public | ft020116operationentity                   | table | liengooXien1mooP0tae
+(27 rows)
+
+
+
+postgres=# select count(*) from ft020116adqlcolumnentity;
+  count  
+---------
+ 4250859
+(1 row)
+
+postgres=# select count(*) from ft020116adqlresourceentity;
+ count  
+--------
+ 116657
+(1 row)
+
+postgres=# select count(*) from ft020116adqlschemaentity;
+ count  
+--------
+ 116679
+(1 row)
+
+postgres=# select count(*) from ft020116adqltableentity;
+ count  
+--------
+ 158317
+(1 row)
+
+postgres=# select count(*) from ft020116authmethodentity;
+ count   
+----------
+ 15943196
+(1 row)
+
+postgres=# select count(*) from ft020116bluequeryentity;
+ count  
+--------
+ 162540
+(1 row)
+
+postgres=# select count(*) from ft020116bluequeryentityjointobaseresource;
+ count  
+--------
+ 156885
+(1 row)
+
+postgres=# select count(*) from ft020116bluetaskentity;
+ count  
+--------
+ 162540
+(1 row)
+
+postgres=# select count(*) from ft020116bluetasklogentity;
+ count  
+--------
+ 521063
+(1 row)
+
+postgres=# select count(*) from ft020116bluetaskparam;
+ count 
+-------
+  2540
+(1 row)
+
+postgres=# select count(*) from ft020116communityentity;
+ count 
+-------
+     2
+(1 row)
+
+postgres=# select count(*) from ft020116configproperty;
+ count 
+-------
+     0
+(1 row)
+
+postgres=# select count(*) from ft020116identityentity;
+^[[A  count   
+----------
+ 15252163
+(1 row)
+
+postgres=# select count(*) from ft020116ivoacolumnentity;
+ count 
+-------
+     0
+(1 row)
+
+postgres=# select count(*) from ft020116ivoaresourceentity;
+ count 
+-------
+     0
+(1 row)
+
+postgres=# select count(*) from ft020116ivoaschemaentity;
+ count 
+-------
+     0
+(1 row)
+
+postgres=# select count(*) from ft020116ivoatableentity;
+ count 
+-------
+     0
+(1 row)
+
+postgres=# select count(*) from ft020116jdbccolumnentity;
+  count  
+---------
+ 4251185
+(1 row)
+
+postgres=# select count(*) from ft020116jdbcresourceentity;
+ count 
+-------
+    15
+(1 row)
+
+postgres=# select count(*) from ft020116jdbcschemaentity;
+ count 
+-------
+  1206
+(1 row)
+
+postgres=# select count(*) from ft020116jdbctableentity;
+ count  
+--------
+ 158727
+(1 row)
+
+postgres=# select count(*) from ft020116ogsadqpresourceentity;
+ count 
+-------
+     0
+(1 row)
+
+postgres=# select count(*) from ft020116ogsaexecresourceentity;
+ count  
+--------
+ 156650
+(1 row)
+
+postgres=# select count(*) from ft020116ogsaivoaresourceentity;
+ count 
+-------
+     0
+(1 row)
+
+postgres=# select count(*) from ft020116ogsajdbcresourceentity;
+ count 
+-------
+     4
+(1 row)
+
+postgres=# select count(*) from ft020116ogsaserviceentity;
+ count 
+-------
+     1
+(1 row)
+
+postgres=# select count(*) from ft020116operationentity;
+
+
+
+
+## ------------------------------------------------------------------------------
+
+
+##
+##   Looks like the Largest Tables are:
+##
+##   ft020116adqlcolumnentity - 4 million rows
+##   ft020116jdbccolumnentity - 4 million rows
+##   ft020116authmethodentity - 15 million rows
+##   ft020116identityentity - 15 million rows
+
+
+## Disk space usage:
+##
+## We are currently sitting at 77% usage:
+
+[Stevedore@Araybwyn ~]$ df -h
+
+	Filesystem      Size  Used Avail Use% Mounted on
+	devtmpfs        2.0G     0  2.0G   0% /dev
+	tmpfs           2.0G     0  2.0G   0% /dev/shm
+	tmpfs           2.0G  792K  2.0G   1% /run
+	tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+	/dev/vda3        31G   23G  7.0G  77% /
+	tmpfs           2.0G   25M  2.0G   2% /tmp
+	/dev/vda1       240M   89M  135M  40% /boot
+	tmpfs           395M     0  395M   0% /run/user/1001
+
+
+## Bethany, the Metadata Database is using up 12G
+
+## Estimated growth per month: 3.5 Gb
+## Very rough estimation: Disk space will by 100% after about two months 
+
+
+## -------------------------------------------------------------------------------
+
+
+
