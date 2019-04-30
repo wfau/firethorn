@@ -241,7 +241,10 @@ postgres=# select count(*) from ft020116ogsaserviceentity;
 (1 row)
 
 postgres=# select count(*) from ft020116operationentity;
-
+ count 
+-------
+15943206
+(1 row)
 
 
 
